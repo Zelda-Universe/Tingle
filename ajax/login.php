@@ -1,0 +1,55 @@
+<?php
+	include('../config.php');
+	
+	session_start("zmap");
+	begin();
+	
+	if (!isset($_POST['user']) || !isset($_POST['password'])) {
+		echo json_encode(array("success"=>false, "msg"=>"Ops, something went wrong..."));
+		exit();		
+	}
+   
+   $username = mysql_real_escape_string($_POST['user']);
+   $password = mysql_real_escape_string($_POST['password']);
+   $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
+   
+   
+   $query = "select id, username, password from " . $map_prefix . "user " .
+            " where username = '" . $username . "'"
+            ;
+	$result = mysql_query($query);
+   
+   if ($result) {
+      $row = mysql_fetch_assoc($result);
+      if (isset($row['password']) && password_verify($password, $row['password'])) {
+         $user['id'] = $row['id'];
+         $user['username'] = $row['username'];
+         $user['level'] = 5;//$row['level'];
+
+         $hash = password_hash($username . $row['password'], PASSWORD_DEFAULT, ['cost' => 13]);
+         
+         if (isset($_POST['remember'])) {
+            setcookie('user_id', $user['id'], strtotime( '+30 days' ), "/", "", "", TRUE);
+            setcookie('username', $user['username'], strtotime( '+30 days' ), "/", "", "", TRUE);
+            setcookie('r', $hash, strtotime( '+30 days' ), "/", "", "", TRUE);
+         }
+
+         $_SESSION['username'] = $user['username'];
+         $_SESSION['user_id'] = $user['id'];
+         $_SESSION['r'] = $hash;
+         $_SESSION['level'] = $user['level'];
+         
+         $uquery = "update " . $map_prefix . "user set ip = '" . $ip . "', last_login=now() where id = " . $row['id'];
+         //echo $uquery;
+         mysql_query($uquery);
+         commit();
+         
+         echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));
+
+      } else {
+         echo json_encode(array("success"=>false, "msg"=>"User or password invalid!"));
+      }
+	} else {
+      echo json_encode(array("success"=>false, "msg"=>"User or password invalid!"));
+   }
+?>

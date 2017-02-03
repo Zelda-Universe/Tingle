@@ -1,6 +1,37 @@
 <!DOCTYPE html>
 <?php 
    if (!isset($_GET['game'])) {
+      $url = 'http' . (isset($_SERVER['HTTPS']) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}/{$_SERVER['REQUEST_URI']}";
+      header( 'Location: ' . $url . '?game=BotW' ) ;
+   }
+?>
+<html>
+   <head>
+      <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+      <title><?php include_once('get_container_name.php'); ?> Map | ZeldaMaps.com</title>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+      
+      <!-- Third-Party LIBs -->
+   <?php 
+      if ($_SERVER['SERVER_ADDR'] == "127.0.0.1" || $_SERVER['SERVER_ADDR'] == '::1') {
+   ?>
+
+      <!-- JQuery 3.0.0 | Downloaded 2016-06-28 | http://jquery.com/ -->
+      <script src="scripts/jquery.min.js"></script>
+   
+      <!-- Leaflet 1.0.2+4bbb16c | Downloaded 2016-12-13 | http://leafletjs.com/download.html -->
+      <link rel="stylesheet" href="scripts/leaflet.css?<?php echo filemtime('scripts/leaflet.css'); ?>" />
+      <script src="scripts/leaflet-src.js?<?php echo filemtime('scripts/leaflet-src.js'); ?>"></script>
+      
+      <!-- Leaflet.markercluster (leaflet.markercluster@1.0.0) | Downloaded 2016-12-13 | https://github.com/Leaflet/Leaflet.markercluster -->
+      <link rel="stylesheet" href="scripts/MarkerCluster.css?<?php echo filemtime('scripts/MarkerCluster.css'); ?>" />
+      <link rel="stylesheet" href="scripts/MarkerCluster.Default.css?<?php echo filemtime('scripts/MarkerCluster.Default.css'); ?>" />
+      <script src="scripts/leaflet.markercluster-src.js?<?php echo filemtime('scripts/leaflet.markercluster-src.js'); ?>" /></script>
+      
+      <!-- Leaflet.toolbar | Downloaded 2016-12-16 | https://github.com/Leaflet/Leaflet.toolbar -->
+      <link rel="stylesheet" href="scripts/leaflet.toolbar-src.css?<?php echo filemtime('scripts/leaflet.toolbar-src.css'); ?>" />
+      <script src="scripts/leaflet.toolbar-src.js?<?php echo filemtime('scripts/leaflet.toolbar-src.js'); ?>" /></script>
       
       <!-- jQuery Unslider | Download 2016-06-28 | http://unslider.com/ -->
       <script src="scripts/jquery.event.move.js"></script>
@@ -29,6 +60,7 @@
       <script src="scripts/L.Control.SlideMenu.js?<?php echo filemtime('scripts/L.Control.SlideMenu.js'); ?>"></script>
       <link rel="stylesheet" href="scripts/L.Control.SlideMenu.css?<?php echo filemtime('scripts/L.Control.SlideMenu.css'); ?>">
 
+      <!-- TESTE -->
       <link rel="stylesheet" href="scripts/style.css">
  
       <script src="http://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js"></script>

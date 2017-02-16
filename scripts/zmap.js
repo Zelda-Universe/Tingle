@@ -1038,7 +1038,12 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
          */
          var latlng = L.latLng(markers[i].getLatLng().lat, markers[i].getLatLng().lng);
          map.setView(latlng, vZoom);
-         markers[i].openPopup();
+         
+         // Check if the marker at the zoom level is inside cluster... if it's, we need to open cluster before popup
+         if (markerCluster.getVisibleParent(markers[i])) {
+            markerCluster.getVisibleParent(markers[i]).spiderfy();            
+         }
+         markers[i].openPopup();         
          
          // Check if popup was opened. Sometimes, it may not due to leaflet lazy loading on mobile devices
          if (markers[i].getPopup().getLatLng() == undefined) {

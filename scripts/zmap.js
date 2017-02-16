@@ -999,7 +999,7 @@ ZMap.prototype.buildMap = function() {
 ZMap.prototype.goTo = function(vGoTo) {
    
    if (vGoTo.marker) {
-      this._openMarker(vGoTo.marker, vGoTo.zoom);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom);
       // Open Marker already does a change map, so it takes precedence
       return;
    }
@@ -1015,7 +1015,6 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   
    for (var i = 0; i < markers.length; i++) {
       if (markers[i].id == vMarkerId) {
          
@@ -1037,8 +1036,8 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
           5 = 8
           6 = 4
          */
-         var latlng = L.latLng(markers[i].getLatLng().lat+Math.pow(2,map.getMaxZoom()+2-vZoom), markers[i].getLatLng().lng);
-         //map.setView(latlng, vZoom);
+         var latlng = L.latLng(markers[i].getLatLng().lat, markers[i].getLatLng().lng);
+         map.setView(latlng, vZoom);
          markers[i].openPopup();
          
          // Check if popup was opened. Sometimes, it may not due to leaflet lazy loading on mobile devices

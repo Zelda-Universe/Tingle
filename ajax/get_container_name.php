@@ -1,5 +1,6 @@
 <?php
-   include('config.php');
+   $path = DIRNAME(__FILE__);
+   include('$path/../config.php');
 
    $game = $_GET["game"];
     
@@ -9,8 +10,8 @@
                      or c.short_name = '" . $game . "')
                 and c.visible = 1;
     ";
-   $result = @mysql_query($query) or die(mysql_error());
+   $result = @$mysqli->query($query) or die($mysqli->error);
    
-   $row = mysql_fetch_array($result);
+   $row = $result->fetch_array();
    echo $row['name'];
 ?>

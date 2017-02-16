@@ -8,7 +8,7 @@
 <html>
    <head>
       <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
-      <title><?php include_once('get_container_name.php'); ?> Map | ZeldaMaps.com</title>
+      <title><?php include_once('ajax/get_container_name.php'); ?> Map | ZeldaMaps.com</title>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
       

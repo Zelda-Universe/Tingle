@@ -27,7 +27,7 @@
          
          $uquery = "update " . $map_prefix . "user set ip = '" . $ip . "', last_login=now() where id = " . $user['id'];
          //echo $uquery;
-         mysql_query($uquery);
+         $mysqli->query($uquery);
          commit();
          
          echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));

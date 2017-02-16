@@ -12,9 +12,9 @@
 				    and m.last_updated > \'' . $_SESSION["last_updated"] . '\';
     ';
 	
-   $result = @mysql_query($query) or die(mysql_error());
+   $result = @$mysqli->query($query) or die(mysql_error());
 	
-	$row = mysql_fetch_array($result, MYSQL_ASSOC);
+	$row = $mysqli->fetch_array($result, MYSQL_ASSOC);
 	
 	if ($row['last_updated'] != $_SESSION["last_updated"]
 			&& $row['last_updated'] != "") {
@@ -26,7 +26,7 @@
 	*/
    $last_update = $temp = '1800-01-01 00:00:00';
 	$query = "SET SESSION group_concat_max_len = 4294967295";
-	$result = @mysql_query($query);
+	$result = @$mysqli->query($query);
    
    $search =  str_replace(' ', '%', $_GET['q']);
 	
@@ -72,10 +72,10 @@
               group by m.id;
     ';
 	//echo $query . "\n";
-   $result = @mysql_query($query) or die(mysql_error());
+   $result = @$mysqli->query($query) or die($mysqli->error);
 
 	$res = array();
-	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+	while ($row = $result->fetch_assoc()) {
 		$row["title"] = html_entity_decode($row["title"], ENT_QUOTES, "UTF-8");
       $row["loc"] = array($row["y"],$row["x"]);
       //$row["loc"]['id'] = $row["id"];

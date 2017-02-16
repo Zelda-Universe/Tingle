@@ -63,18 +63,18 @@
    }
 
 	//echo $query;
-   $result = @mysql_query($query); // or die(mysql_error());
-   $num = mysql_affected_rows();
+   $result = @$mysqli->query($query); // or die(mysql_error());
+   $num = $result->affected_rows;
    
    if ($result) {
       if (!isset($_POST['markerId'])) {
-         $marker_id = mysql_insert_id();
+         $marker_id = $mysqli->insert_id;
       } else {
          $marker_id = $_POST['markerId'];
          
          $query = "update " . $map_prefix . "marker_tab set visible = 0 where visible = 1 and marker_id = " . $marker_id;
          //echo $query;
-			$result = @mysql_query($query); // or die(mysql_error());
+			$result = @$mysqli->query($query); // or die($mysqli->error());
       }
       
     	for ($i = 0; $i < sizeof($_POST['tabText']); $i++) {
@@ -112,8 +112,8 @@
 											 , 1
 											 , 1)";	
 			//echo $query;
-			$result = @mysql_query($query); // or die(mysql_error());
-			$num = mysql_affected_rows();										 
+			$result = @$mysqli->query($query); // or die(mysql_error());
+			$num = $mysqli->num_rows;										 
 			
 			if (!$result) {
 				break;
@@ -132,11 +132,11 @@
          
          echo json_encode(array("success"=>true, "action"=>(!isset($_POST['markerId'])?"ADD":"UPDATE"), "marker"=>$output));
 		} else {
-			echo json_encode(array("success"=>false, "msg"=>mysql_error()));
+			echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
 			rollback();
 		}
     } else {
-        echo json_encode(array("success"=>false, "msg"=>mysql_error()));
+        echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
 		rollback();
     }
 	

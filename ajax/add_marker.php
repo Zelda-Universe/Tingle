@@ -1,5 +1,6 @@
 <?php
-	include('../config.php');
+   $path = DIRNAME(__FILE__);
+   include('$path/../config.php');
 	
 	session_start("zmap");
 	begin();
@@ -127,7 +128,7 @@
          $_GET['game'] = $_POST['game'];
          
          ob_start();
-         include('get_markers.php');		
+         include('$path/get_markers.php');		
          $output = ob_get_clean();
          
          echo json_encode(array("success"=>true, "action"=>(!isset($_POST['markerId'])?"ADD":"UPDATE"), "marker"=>$output));

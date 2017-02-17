@@ -1,5 +1,6 @@
 <?php
-   include('../config.php');
+   $path = DIRNAME(__FILE__);
+   include('$path/../config.php');
 
    $map = $_GET["game"];
     
@@ -12,7 +13,7 @@
 
                from " . $map_prefix . "map m
                   , " . $map_prefix . "container c
-              where c.id = " . $map . "
+              where c.id = '" . $map . "'
                 and c.id = m.container_id
                 and m.visible = 1
              order by m.map_order

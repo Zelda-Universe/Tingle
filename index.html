@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+      <title>Map | ZeldaMaps.com</title>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+      
+      <!-- Third-Party LIBs -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+      <link rel="stylesheet" href="scripts/leaflet.css?" />
+      <script src="scripts/leaflet.js?"></script>
+      <link rel="stylesheet" href="scripts/MarkerCluster.css?" />
+      <link rel="stylesheet" href="scripts/MarkerCluster.Default.css?" />
+      <script src="scripts/leaflet.markercluster.js?" /></script>
+      <link rel="stylesheet" href="scripts/leaflet.toolbar.css?" />
+      <script src="scripts/leaflet.toolbar-src.js?" /></script>
+      <script src="scripts/jquery.event.move.js?" /></script>
+      <script src="scripts/jquery.event.swipe.js?" /></script>
+      <script src="scripts/unslider-min.js?" /></script>
+      <link rel="stylesheet" href="scripts/unslider.css?">
+      <link rel="stylesheet" href="scripts/unslider-dots.css?">   
+      <script src="scripts/easy-button.js?" /></script>
+      <link rel="stylesheet" href="scripts/easy-button.css?" /></script>
+      <link rel="stylesheet" href="scripts/style.css">
+      <link rel="stylesheet" type="text/css" href="scripts/font-awesome/css/font-awesome.css" />
+      <script src="scripts/L.Control.Window.js?"></script>
+      <link rel="stylesheet" href="scripts/L.Control.Window.css?" />
+      <script src="scripts/leaflet.contextmenu.js?"></script>
+      <link rel="stylesheet" href="scripts/leaflet.contextmenu.css?" />
+      <script src="scripts/L.Control.SlideMenu.js?"></script>
+      <link rel="stylesheet" href="scripts/L.Control.SlideMenu.css?">
+       
+      <script src="http://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js"></script>
+      <link rel="stylesheet" href="http://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css">
+      <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+      <script>tinymce.init({ selector:'textarea' });</script>
+      
+      <script>
+      var urlParams;
+      (window.onpopstate = function () {
+          var match,
+              pl     = /\+/g,  // Regex for replacing addition symbol with a space
+              search = /([^&=]+)=?([^&]*)/g,
+              decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+              query  = window.location.search.substring(1);
+
+          urlParams = {};
+          while (match = search.exec(query))
+             urlParams[decode(match[1])] = decode(match[2]);
+      })();
+      var game = urlParams["game"];
+      if(game===undefined) {
+          window.location.href = "?game=BotW";
+      }
+      $.getJSON("ajax.php?command=get_container_name&game="+game,function(data){
+          if(!data.success) {
+            document.title="Zelda Map | ZeldaMaps.com";
+            return;
+          }
+          document.title=data.name+" Map | ZeldaMaps.com";
+      });
+      </script>
+
+      <!-- Internal LIBS -->
+      <script src="scripts/zmap.js"></script>
+      <script src="scripts/zmain.js"></script>
+      <script src="scripts/Control.ZLayers2.js"></script>
+      <link rel="stylesheet" href="scripts/zmain.css" />
+
+   </head>
+   <body>
+      <div id="map"></div>
+      <!--<div id="logoContainer">
+         <img src="http://maps.zelda.com.br/beta_maps.png">
+      </div>-->
+
+      <script disabled type="text/javascript">
+         
+         var _gaq = _gaq || [];
+         _gaq.push(['_setAccount', 'UA-31332716-1']);
+         _gaq.push(['_setDomainName', 'maps.zelda.com.br']);
+         _gaq.push(['_trackPageview']);
+         
+         (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         })();
+   
+      </script> 
+   </body>
+</html>

@@ -13,5 +13,5 @@
    $result = @$mysqli->query($query) or die($mysqli->error);
    
    $row = $result->fetch_array();
-   echo $row['name'];
+   echo json_encode(array("success"=>true,"name"=>$row['name']));
 ?>

@@ -1,6 +1,7 @@
 <?php
    if (!isset($_GET['newMarkerId'])) {
-      include('../config.php');
+     $path = DIRNAME(__FILE__);
+     include('$path/../config.php');
    }
    /*
 	session_start("map");

@@ -999,7 +999,7 @@ ZMap.prototype.buildMap = function() {
 ZMap.prototype.goTo = function(vGoTo) {
    
    if (vGoTo.marker) {
-      this._openMarker(vGoTo.marker, vGoTo.zoom);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom);
       // Open Marker already does a change map, so it takes precedence
       return;
    }
@@ -1015,7 +1015,6 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   
    for (var i = 0; i < markers.length; i++) {
       if (markers[i].id == vMarkerId) {
          
@@ -1037,9 +1036,14 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
           5 = 8
           6 = 4
          */
-         var latlng = L.latLng(markers[i].getLatLng().lat+Math.pow(2,map.getMaxZoom()+2-vZoom), markers[i].getLatLng().lng);
-         //map.setView(latlng, vZoom);
-         markers[i].openPopup();
+         var latlng = L.latLng(markers[i].getLatLng().lat, markers[i].getLatLng().lng);
+         map.setView(latlng, vZoom);
+         
+         // Check if the marker at the zoom level is inside cluster... if it's, we need to open cluster before popup
+         if (markerCluster.getVisibleParent(markers[i])) {
+            markerCluster.getVisibleParent(markers[i]).spiderfy();            
+         }
+         markers[i].openPopup();         
          
          // Check if popup was opened. Sometimes, it may not due to leaflet lazy loading on mobile devices
          if (markers[i].getPopup().getLatLng() == undefined) {
@@ -1068,16 +1072,21 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
    $.ajax({
            type: "POST",
            url: "ajax/del_marker.php",
-           data: {markerId: vMarkerId},
+           data: {markerId: vMarkerId, userId: user.id},
            success: function(data) {
-               for (var i = 0; i < markers.length; i++) {
-                  // Just hide the marker on the marker array ... on reaload, query won't get it.
-                  if (markers[i].id == vMarkerId) {
-                     markers[i].visible = 0;
-                     markers[i].categoryId = -1;
+               data = jQuery.parseJSON(data);
+               if (data.success) {
+                  for (var i = 0; i < markers.length; i++) {
+                     // Just hide the marker on the marker array ... on reaload, query won't get it.
+                     if (markers[i].id == vMarkerId) {
+                        markers[i].visible = 0;
+                        markers[i].categoryId = -1;
+                     }
                   }
+                  _this.refreshMap();
+               } else {
+                  alert(data.msg);
                }
-               _this.refreshMap();
            }
          });
 }
@@ -1126,12 +1135,14 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
       var catSelection2 = "";
       
       categories.forEach(function(entry) {
-         if (entry.markerCategoryTypeId == 3) {
-            catSelection2 = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"> ' + entry.name + '</option>';
-         }
-         if (entry.parentId != null) {
+         //@History - 2017-02-13 - Removed validation if the parent id is null , so parent categories can be added as markers per Joshua's request 
+         //if (entry.markerCategoryTypeId == 3) {
+         //   catSelection2 = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"> ' + entry.name + '</option>';
+         //}
+         // 
+         //if (entry.parentId != null) {
             catSelection = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"' + (vMarker!=null&&vMarker.categoryId==entry.id?"selected":"") + '> ' + entry.name + '</option>';
-         }
+         //}
       });
       catSelection = catSelection + catSelection2;
       var popupContent = '<h2 class="popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2><div class="popupContent" style="overflow-y: auto; max-height:400px;">'+

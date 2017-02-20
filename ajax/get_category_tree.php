@@ -1,5 +1,6 @@
 <?php
-   include('../config.php');
+   $path = DIRNAME(__FILE__);
+   include('$path/../config.php');
 
    $map = $_GET["game"];
 
@@ -11,11 +12,11 @@
               order by id
             ';
 
-   $result = @mysql_query($query) or die(mysql_error());
+   $result = @$mysqli->query($query) or die($mysqli->error);
 
    $arr_treeview = array();
    
-   while ($row = mysql_fetch_array($result)) {
+   while ($row = $result->fetch_array()) {
       $arr_child = array();
       $node['id']   = $row['id'];
       $node['name'] = $row['name'];
@@ -30,9 +31,9 @@
                  order by id
                ';
 
-      $result2 = mysql_query($query);
+      $result2 = $mysqli->query($query);
       if ($result2) {
-         while ($row2 = mysql_fetch_array($result2)) {
+         while ($row2 = $result2->fetch_array()) {
             $children['id'] = $row2['id'];
             $children['name'] = $row2['name'];
             $children['img']  = $row2['img'];

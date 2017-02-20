@@ -1,5 +1,6 @@
 <?php
-	include('../config.php');
+   $path = DIRNAME(__FILE__);
+   include('$path/../config.php');
 
    $map = $_GET["game"];
    
@@ -16,10 +17,10 @@
               order by parent_id desc, id asc;
    ';
    //echo $query;
-   $result = @mysql_query($query) or die(mysql_error());
+   $result = @$mysqli->query($query) or die($mysqli->error);
    
    $res = array();
-   while($row = mysql_fetch_assoc($result)) {
+   while($row = $result->fetch_assoc()) {
         $res[] = $row;
    }
    echo json_encode($res);

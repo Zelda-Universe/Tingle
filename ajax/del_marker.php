@@ -1,5 +1,6 @@
 <?php
-	include('../config.php');
+   $path = DIRNAME(__FILE__);
+   include('$path/../config.php');
 	
 	session_start("zmap");
 	begin();
@@ -15,21 +16,21 @@
 	}
    
    if ($_SESSION['user_id'] != $_POST['userId']) {
-		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
+      echo json_encode(array("success"=>false, "msg"=>"You can't delete a marker that is not yours!" . $_SESSION['user_id'] . " - " . $_POST['userId']));
 		exit();	
 	}
    
     //----------------------------------------------------------//
     $query = "update " . $map_prefix . "marker set visible = 0 where id = " . $_POST['markerId'] . "";
 	//echo $query;
-   $result = @mysql_query($query); // or die(mysql_error());
-   $num = mysql_affected_rows();
+   $result = @$mysqli->query($query); // or die(mysql_error());
+   $num = $mysqli->affected_rows;
    
    if ($result) {
 		echo json_encode(array("success"=>true, "msg"=>"Marker deleted!"));
       commit();
    } else {
-      echo json_encode(array("success"=>false, "msg"=>mysql_error()));
+      echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
 		rollback();
    }
 ?>

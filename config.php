@@ -21,23 +21,37 @@
 		
 		$map_prefix = "";
    }
+   
+   $path = DIRNAME(__FILE__);
+    
+    if(file_exists("$path/.env")) {
+        $ENV = parse_ini_file("$path/.env");
+        $dbms = $ENV["DBMS"];
+        $dbhost = $ENV["DBHOST"];
+        $dbport = $ENV["DBPORT"];
+        $dbname = $ENV["DBNAME"];
+        $dbuser = $ENV["DBUSER"];
+        $dbpasswd = $ENV["DBPASSWD"];
+        $map_prefix = $ENV["PREFIX"];
+        $_ENV = array_merge($ENV,$_ENV);
+    }
 	
-    $connection = mysql_connect($dbhost, $dbuser, $dbpasswd) or die('Database connection problem.');
-    mysql_select_db ($dbname, $connection) or die('Database connection problem.');
-    mysql_query("SET NAMES 'utf8'");
-    mysql_query('SET character_set_connection=utf8');
-    mysql_query('SET character_set_client=utf8');
-    mysql_query('SET character_set_results=utf8');
+    $mysqli = new mysqli($dbhost, $dbuser, $dbpasswd) or die('Database connection problem.');
+    $mysqli->select_db ($dbname) or die('Database connection problem.');
+    $mysqli->query("SET NAMES 'utf8'");
+    $mysqli->query('SET character_set_connection=utf8');
+    $mysqli->query('SET character_set_client=utf8');
+    $mysqli->query('SET character_set_results=utf8');
 	
 	function begin() {
-		@mysql_query("BEGIN");
+		@$mysqli->query("BEGIN");
 	}
 	
 	function commit() {
-		@mysql_query("COMMIT");
+		@$mysqli->query("COMMIT");
 	}
 	
 	function rollback()	{
-		@mysql_query("ROLLBACK");
+		@$mysqli->query("ROLLBACK");
 	}		
 ?>

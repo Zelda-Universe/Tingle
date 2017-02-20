@@ -1,5 +1,6 @@
 <?php
-	include('../config.php');
+   $path = DIRNAME(__FILE__);
+   include('$path/../config.php');
 	
 	session_start("zmap");
 	begin();
@@ -9,18 +10,18 @@
 		exit();		
 	}
    
-   $username = mysql_real_escape_string($_POST['user']);
-   $password = mysql_real_escape_string($_POST['password']);
+   $username = $mysqli->real_escape_string($_POST['user']);
+   $password = $mysqli->real_escape_string($_POST['password']);
    $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
    
    
    $query = "select id, username, password from " . $map_prefix . "user " .
             " where username = '" . $username . "'"
             ;
-	$result = mysql_query($query);
+	$result = $mysqli->query($query);
    
    if ($result) {
-      $row = mysql_fetch_assoc($result);
+      $row = $result->fetch_assoc();
       if (isset($row['password']) && password_verify($password, $row['password'])) {
          $user['id'] = $row['id'];
          $user['username'] = $row['username'];
@@ -41,7 +42,7 @@
          
          $uquery = "update " . $map_prefix . "user set ip = '" . $ip . "', last_login=now() where id = " . $row['id'];
          //echo $uquery;
-         mysql_query($uquery);
+         $mysqli->query($uquery);
          commit();
          
          echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));

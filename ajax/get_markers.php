@@ -1,6 +1,7 @@
 <?php
    if (!isset($_GET['newMarkerId'])) {
-      include('../config.php');
+     $path = DIRNAME(__FILE__);
+     include('$path/../config.php');
    }
    /*
 	session_start("map");
@@ -12,9 +13,9 @@
 				    and m.last_updated > \'' . $_SESSION["last_updated"] . '\';
     ';
 	
-   $result = @mysql_query($query) or die(mysql_error());
+   $result = @$mysqli->query($query) or die(mysql_error());
 	
-	$row = mysql_fetch_array($result, MYSQL_ASSOC);
+	$row = $mysqli->fetch_array($result, MYSQL_ASSOC);
 	
 	if ($row['last_updated'] != $_SESSION["last_updated"]
 			&& $row['last_updated'] != "") {
@@ -26,7 +27,7 @@
 	*/
    $last_update = $temp = '1800-01-01 00:00:00';
 	$query = "SET SESSION group_concat_max_len = 4294967295";
-	$result = @mysql_query($query);
+	$result = @$mysqli->query($query);
 	
    $query = 'select m.id
                   , mp.id                        as mapId
@@ -83,10 +84,10 @@
               group by m.id;
     ';
 	//echo $query . "\n";
-   $result = @mysql_query($query) or die(mysql_error());
+   $result = @$mysqli->query($query) or die($mysqli->error);
 
 	$res = array();
-	while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
+	while ($row = $result->fetch_assoc()) {
 		$row["tabTitle"] = html_entity_decode($row["tabTitle"], ENT_QUOTES, "UTF-8");
 		$row["tabText"] = html_entity_decode($row["tabText"], ENT_QUOTES, "UTF-8");
 		$row["name"] = html_entity_decode($row["name"], ENT_QUOTES, "UTF-8");

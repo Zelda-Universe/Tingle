@@ -1,0 +1,9 @@
+RewriteEngine on
+RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
+# For Development Purposes
+#RewriteRule ^images/(.*)$ http://maps.zelda.com.br/v2/images/$1 [P,L]
+#RewriteRule ^ajax/(.*)$ http://maps.zelda.com.br/v2/ajax/$1 [P,L]
+
+<Files ".env">
+  Require all denied
+</Files>

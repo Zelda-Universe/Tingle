@@ -1,5 +1,6 @@
 <?php
-   include('../config.php');
+   $path = DIRNAME(__FILE__);
+   include('$path/../config.php');
 
    $map = $_GET["game"];
     
@@ -12,7 +13,7 @@
 
                from " . $map_prefix . "map m
                   , " . $map_prefix . "container c
-              where c.id = " . $map . "
+              where c.id = '" . $map . "'
                 and c.id = m.container_id
                 and m.visible = 1
              order by m.map_order
@@ -20,11 +21,11 @@
    ;";
    //echo $query;
     
-   $result = @mysql_query($query) or die(mysql_error());
+   $result = @$mysqli->query($query) or die($mysqli->error);
    
    $res = array();
    
-   while ($row = mysql_fetch_assoc($result)) {
+   while ($row = $result->fetch_assoc()) {
       
       $query = "select sm.id
                      , sm.name
@@ -72,12 +73,12 @@
                ";
       //echo $query;
       
-      $result2 = mysql_query($query);
+      $result2 = $mysqli->query($query);
       
       if ($result2) {
          
          $arr_child = array();
-         while ($row2 = mysql_fetch_assoc($result2)) {
+         while ($row2 = $result2->fetch_assoc()) {
             
             $query = "select sml.id
                            , sml.name
@@ -120,11 +121,11 @@
             ";
             
             //echo $query;
-            $result3 = mysql_query($query);
+            $result3 = $mysqli->query($query);
             
             if ($result3) {
                $arr_layer = array();
-               while ($row3 = mysql_fetch_assoc($result3)) {
+               while ($row3 = $result3->fetch_assoc()) {
                   array_push($arr_layer, $row3);
                }
                $row2['submapLayer'] = $arr_layer;

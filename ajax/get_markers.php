@@ -84,12 +84,7 @@
               group by m.id;
     ';
 	//echo $query . "\n";
-   $result = @$mysqli->query($query);
-
-	if(!$result) {
-		print($mysqli->error);
-		return;
-	}
+   $result = @$mysqli->query($query) or die($mysqli->error);
 
 	$res = array();
 	while ($row = $result->fetch_assoc()) {

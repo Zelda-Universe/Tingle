@@ -10,12 +10,7 @@
                      or c.short_name = '" . $game . "')
                 and c.visible = 1;
     ";
-   $result = @$mysqli->query($query);
-
-	if(!$result) {
-		print($mysqli->error);
-		return;
-	}
+   $result = @$mysqli->query($query) or die($mysqli->error);
    
    $row = $result->fetch_array();
    echo json_encode(array("success"=>true,"name"=>$row['name']));

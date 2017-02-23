@@ -8,12 +8,12 @@
 	if (!isset($_SESSION['user_id']) || !isset($_SESSION['username']) || !isset($_SESSION['r']) || !isset($_SESSION['level'])) {
       session_destroy();
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
-		return;		
+		exit();		
 	};
    
    if (!isset($_COOKIE['user_id']) || !isset($_COOKIE['username']) || !isset($_COOKIE['r'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
-		return;		
+		exit();		
    }
    
   

@@ -12,13 +12,13 @@
          && !is_numeric($_POST['userId'])
          && !is_numeric($_POST['submapId']) )
    {
-		echo json_encode(array("success"=>false, "msg"=>"Something went wrong!"));
-		return;
+		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
+		exit();
 	}
    
 	if ($_SESSION['user_id'] != $_POST['userId']) {
-		echo json_encode(array("success"=>false, "msg"=>"Not logged in!"));
-		return;
+		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
+		exit();	
 	}
 	
    //----------------------------------------------------------//

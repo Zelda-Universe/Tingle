@@ -7,17 +7,17 @@
 	
 	if (!isset($_POST['markerId']) && !isset($_POST['userId'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
-		return;
+		exit();
 	}
 
 	if (!is_numeric($_POST['markerId']) && !is_numeric($_POST['userId'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
-		return;
+		exit();
 	}
    
    if ($_SESSION['user_id'] != $_POST['userId']) {
-	   echo json_encode(array("success"=>false, "msg"=>"You can't delete a marker that is not yours!" . $_SESSION['user_id'] . " - " . $_POST['userId']));
-		return;	
+      echo json_encode(array("success"=>false, "msg"=>"You can't delete a marker that is not yours!" . $_SESSION['user_id'] . " - " . $_POST['userId']));
+		exit();	
 	}
    
     //----------------------------------------------------------//

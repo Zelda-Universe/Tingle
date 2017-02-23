@@ -7,7 +7,7 @@
 	
 	if (!isset($_POST['user']) || !isset($_POST['password']) || !isset($_POST['name']) || !isset($_POST['email'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Must fill all the form fields"));
-		exit();		
+		return;		
 	}
    
    $username = $mysqli->real_escape_string($_POST['user']);

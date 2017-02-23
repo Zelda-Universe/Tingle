@@ -12,7 +12,12 @@
               order by id
             ';
 
-   $result = @$mysqli->query($query) or die($mysqli->error);
+   $result = @$mysqli->query($query);
+
+	if(!$result) {
+		print($mysqli->error);
+		return;
+	}
 
    $arr_treeview = array();
    

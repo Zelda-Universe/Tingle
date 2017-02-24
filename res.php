@@ -53,7 +53,9 @@
             }
             //*/
             $output.="$filedata\n";
-            $data[$file]=filemtime($fpath);
+            if(stripos($file,"//")===false) {
+                $data[$file]=filemtime($fpath);
+            }
         }
         file_put_contents("$path/cache/index$ext",$output);
         header("Content-Length: ".strlen($output));

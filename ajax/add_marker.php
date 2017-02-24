@@ -2,7 +2,7 @@
    $path = DIRNAME(__FILE__);
    include('$path/../config.php');
 	
-	session_start("zmap");
+	start_session("zmap");
 	begin();
 	
    if (!is_numeric($_POST['categoryId'])

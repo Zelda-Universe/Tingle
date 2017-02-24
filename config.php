@@ -44,14 +44,26 @@
     $mysqli->query('SET character_set_results=utf8');
 	
 	function begin() {
+		global $mysqli;
 		@$mysqli->query("BEGIN");
 	}
 	
 	function commit() {
+		global $mysqli;
 		@$mysqli->query("COMMIT");
 	}
 	
 	function rollback()	{
+		global $mysqli;
 		@$mysqli->query("ROLLBACK");
-	}		
+	}
+
+	function start_session($name="zmap") {
+		if(!defined("PHP_MAJOR_VERSION") || PHP_MAJOR_VERSION<7) {
+			session_start($name);
+		} else {
+			$opts = ["name"=>$name];
+			session_start($opts);
+		}
+	}
 ?>

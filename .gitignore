@@ -1,2 +1,6 @@
 #Environment File
 .env
+
+#Cached Files
+cache/index.js
+cache/index.css

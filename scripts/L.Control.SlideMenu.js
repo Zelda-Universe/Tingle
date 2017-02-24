@@ -103,4 +103,4 @@ L.Control.SlideMenu = L.Control.extend({
 
 L.control.slideMenu = function(innerHTML, options) {
     return new L.Control.SlideMenu(innerHTML, options);
-}
+};

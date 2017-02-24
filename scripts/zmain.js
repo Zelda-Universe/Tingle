@@ -72,7 +72,7 @@ function getMaps() {
 };
 
 function getUserInfo() {
-   $.getJSON("ajax/get_user_info.php", function(vResults) {
+   $.getJSON("ajax.php?command=get_user_info", function(vResults) {
       zMap.setUser(vResults.user);
    });
 };

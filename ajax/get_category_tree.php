@@ -1,6 +1,6 @@
 <?php
    $path = DIRNAME(__FILE__);
-   include('$path/../config.php');
+   include("$path/../config.php");
 
    $map = $_GET["game"];
 
@@ -12,7 +12,12 @@
               order by id
             ';
 
-   $result = @$mysqli->query($query) or die($mysqli->error);
+   $result = @$mysqli->query($query);
+
+	if(!$result) {
+		print($mysqli->error);
+		return;
+	}
 
    $arr_treeview = array();
    

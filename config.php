@@ -23,9 +23,11 @@
    }
    
    $path = DIRNAME(__FILE__);
+
+	define("MAPROOT",$path);
     
-    if(file_exists("$path/.env")) {
-        $ENV = parse_ini_file("$path/.env");
+    if(file_exists(MAPROOT."/.env")) {
+        $ENV = parse_ini_file(MAPROOT."/.env");
         $dbms = $ENV["DBMS"];
         $dbhost = $ENV["DBHOST"];
         $dbport = $ENV["DBPORT"];
@@ -44,14 +46,26 @@
     $mysqli->query('SET character_set_results=utf8');
 	
 	function begin() {
+		global $mysqli;
 		@$mysqli->query("BEGIN");
 	}
 	
 	function commit() {
+		global $mysqli;
 		@$mysqli->query("COMMIT");
 	}
 	
 	function rollback()	{
+		global $mysqli;
 		@$mysqli->query("ROLLBACK");
-	}		
+	}
+
+	function start_session($name="zmap") {
+		if(!defined("PHP_MAJOR_VERSION") || PHP_MAJOR_VERSION<7) {
+			session_start($name);
+		} else {
+			$opts = ["name"=>$name];
+			session_start($opts);
+		}
+	}
 ?>

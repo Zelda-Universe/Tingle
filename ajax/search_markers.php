@@ -1,7 +1,7 @@
 <?php
    if (!isset($_GET['newMarkerId'])) {
      $path = DIRNAME(__FILE__);
-     include('$path/../config.php');
+     include("$path/../config.php");
    }
    /*
 	session_start("map");
@@ -73,7 +73,12 @@
               group by m.id;
     ';
 	//echo $query . "\n";
-   $result = @$mysqli->query($query) or die($mysqli->error);
+   $result = @$mysqli->query($query);
+
+	if(!$result) {
+		print($mysqli->error);
+		return;
+	}
 
 	$res = array();
 	while ($row = $result->fetch_assoc()) {

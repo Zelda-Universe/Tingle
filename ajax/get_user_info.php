@@ -1,19 +1,19 @@
 <?php
    $path = DIRNAME(__FILE__);
-   include('$path/../config.php');
+   include("$path/../config.php");
 	
-	session_start("zmap");
+	start_session("zmap");
 	begin();
 	
 	if (!isset($_SESSION['user_id']) || !isset($_SESSION['username']) || !isset($_SESSION['r']) || !isset($_SESSION['level'])) {
-      session_destroy();
+		session_destroy();
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
-		exit();		
+		return;		
 	};
    
    if (!isset($_COOKIE['user_id']) || !isset($_COOKIE['username']) || !isset($_COOKIE['r'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
-		exit();		
+		return;		
    }
    
   
@@ -33,6 +33,5 @@
          
          echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));
 	} else {
-      echo json_encode(array("success"=>false, "msg"=>"Ops, something went wrong..."));
+      echo json_encode(array("success"=>false, "msg"=>"Oops, something went wrong..."));
    }
-?>

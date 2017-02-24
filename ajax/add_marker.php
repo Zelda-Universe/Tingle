@@ -1,6 +1,6 @@
 <?php
    $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
+   include_once("$path/../config.php");
 	
 	start_session("zmap");
 	begin();
@@ -13,12 +13,12 @@
          && !is_numeric($_POST['submapId']) )
    {
 		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
-		exit();
+		return;
 	}
    
 	if ($_SESSION['user_id'] != $_POST['userId']) {
 		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
-		exit();	
+		return;	
 	}
 	
    //----------------------------------------------------------//
@@ -126,9 +126,8 @@
          commit();
          $_GET['newMarkerId'] = $marker_id;
          $_GET['game'] = $_POST['game'];
-         
          ob_start();
-         include('$path/get_markers.php');		
+         include("$path/ajax/get_markers.php");
          $output = ob_get_clean();
          
          echo json_encode(array("success"=>true, "action"=>(!isset($_POST['markerId'])?"ADD":"UPDATE"), "marker"=>$output));

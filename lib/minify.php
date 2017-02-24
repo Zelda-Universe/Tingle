@@ -1,6 +1,11 @@
 <?php
-include_once("$path/lib/JSMin.php");
-include_once("$path/lib/CSSmin.php");
+function includeMini() {
+    $path = DIRNAME(__FILE__);
+    include_once("$path/JSMin.php");
+    include_once("$path/CSSmin.php");
+}
+
+includeMini();
 
 $php_limits = array(
     'memory_limit' => 128 * 1048576,

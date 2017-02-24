@@ -21,7 +21,12 @@
    ;";
    //echo $query;
     
-   $result = @$mysqli->query($query) or die($mysqli->error);
+   $result = @$mysqli->query($query);
+
+	if(!$result) {
+		print($mysqli->error);
+		return;
+	}
    
    $res = array();
    

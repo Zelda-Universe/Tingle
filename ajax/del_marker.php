@@ -1,23 +1,23 @@
 <?php
    $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
+   include_once("$path/../config.php");
 	
 	start_session("zmap");
 	begin();
 	
 	if (!isset($_POST['markerId']) && !isset($_POST['userId'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
-		exit();
+		return;
 	}
 
 	if (!is_numeric($_POST['markerId']) && !is_numeric($_POST['userId'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
-		exit();
+		return;
 	}
    
    if ($_SESSION['user_id'] != $_POST['userId']) {
       echo json_encode(array("success"=>false, "msg"=>"You can't delete a marker that is not yours!" . $_SESSION['user_id'] . " - " . $_POST['userId']));
-		exit();	
+		return;	
 	}
    
     //----------------------------------------------------------//

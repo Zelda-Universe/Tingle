@@ -1,6 +1,5 @@
 <?php
 	// LOCAL
-	ini_set("display_errors",true);
    error_reporting((E_ALL ^ E_DEPRECATED) & ~E_NOTICE);
 	if ($_SERVER['SERVER_ADDR'] == "127.0.0.1" || $_SERVER['SERVER_ADDR'] == '::1') {
 		$dbms = 'mysql';

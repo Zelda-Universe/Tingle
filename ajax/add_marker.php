@@ -65,7 +65,7 @@
 
 	//echo $query;
    $result = @$mysqli->query($query); // or die(mysql_error());
-   $num = $result->affected_rows;
+   $num = $result->num_rows;
    
    if ($result) {
       if (!isset($_POST['markerId'])) {
@@ -114,7 +114,7 @@
 											 , 1)";	
 			//echo $query;
 			$result = @$mysqli->query($query); // or die(mysql_error());
-			$num = $mysqli->num_rows;										 
+			$num = $result->num_rows;										 
 			
 			if (!$result) {
 				break;

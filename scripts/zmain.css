@@ -477,6 +477,10 @@ hr {
 .popupContent p img {
    color: whitesmoke;
 }
+.popupContent div img {
+   max-width: 400px;
+   height: auto;
+}
 .unslider-nav {
     margin-top: 5px;
 }

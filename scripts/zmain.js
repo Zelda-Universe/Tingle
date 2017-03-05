@@ -129,7 +129,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.showCategoryControlOpened  = getUrlParamValue('showCategoryControlOpened', getCookie('isCategoryOpen')=="true");//vContainer.showCategoryControl);
       vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
 
-      vContainer.zoom                       = getUrlParamValue('zoom', 1); /*TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
+      vContainer.zoom                       = getUrlParamValue('zoom', 3); /*@TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
       if (vContainer.zoom > vContainer.maxZoom) {
          vContainer.zoom = vContainer.maxZoom;
       }

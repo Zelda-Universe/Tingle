@@ -23,8 +23,8 @@ function ZMap() {
    
    this.categoryActions = [];
    
-   //this.defaultTilesURL = 'tiles/'; // Local
-   this.defaultTilesURL = 'http://maps.zelda.com.br/tiles/';
+   this.defaultTilesURL = 'tiles/'; // Local
+   //this.defaultTilesURL = 'http://maps.zelda.com.br/tiles/';
    this.catCtrl;
    
    this.newMarker = null;
@@ -663,7 +663,10 @@ ZMap.prototype.buildMap = function() {
       var x = document.getElementsByClassName("leaflet-bottommenu");
       for (var i = 0; i < x.length; i++) {
           x[i].style.display = "";
-      } 
+      }
+      
+      document.getElementById("mobileAds").style.display = 'none';
+      
    } else {
       var x = document.getElementsByClassName("leaflet-control-layers");
       for (var i = 0; i < x.length; i++) {
@@ -674,6 +677,8 @@ ZMap.prototype.buildMap = function() {
       for (var i = 0; i < x.length; i++) {
           x[i].style.display = "none";
       }
+      
+      document.getElementById("desktopAds").style.display = 'none';
    }
    
    // INTRODUCTORY / WELCOME TEXT
@@ -681,8 +686,12 @@ ZMap.prototype.buildMap = function() {
       setTimeout(function () {
          map.closePopup();
          var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                   .content("<p>That look on your face tells me that you have no recollection of me, however, I think you are now ready. Ready to hear what happened 100 years ago!</p>"
-                           +"<p>Introductory text Introductory text Introductory text Introductory text Introductory text Introductory text Introductory text Introductory text</p>"
+                   .content("<p>Hello there!</p>"
+                           +"<p>I have always been fascinated about game maps, specially those from <i>The Legend of Zelda</i>. I started by drawing maps in my notebook while playing the first <i>Zelda</i> games. Then, I created ASCII maps for <i>Ocarina of Time</i>. While playing more recent <i>Zelda</i> games, I used screenshots to piece together complete maps.</p>"
+                           +"<p>Now, we are finally at a point where we can easily create interative maps to share with other fans. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for each and every <i>Legend of Zelda</i> game.</p>"
+                           +"<p>Right now, ours hands are full playing <i>Breah of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
+                           +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
+                           +"<div style='float: right'>Danilo Passos.</div>"
                    ).prompt({buttonOK: 'Don\'t show this again!'
                             , buttonCancel: 'Close'
                             , callback:function(e){
@@ -1163,10 +1172,10 @@ ZMap.prototype._buildContextMenu = function() {
                                        '<p class="divTableCell"><label class="control-label col-sm-5"><strong>User: </strong></label></p>'+
                                        '<p class="divTableCell"><input type="string" placeholder="Username" class="form-control" id="user" name="user"></p>'+
                                     '</div>'+
-                                    '<div class="divTableRow">' +
-                                       '<p class="divTableCell"></p>'+
-                                       '<p class="divTableCell"><span class=\"infoWindowIcn\" style="float: right;" onclick=\"_this._createRegisterForm(); return false\">New user?</span></p>'+
-                                    '</div>'+
+//                                    '<div class="divTableRow">' +
+//                                       '<p class="divTableCell"></p>'+
+//                                       '<p class="divTableCell"><span class=\"infoWindowIcn\" style="float: right;" onclick=\"_this._createRegisterForm(); return false\">New user?</span></p>'+
+//                                    '</div>'+
                                     '<br>'+
                                     '<div class="divTableRow">' +
                                        '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Password: </strong></label></p>'+

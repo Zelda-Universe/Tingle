@@ -108,7 +108,21 @@ html, body, #map {
   width: 200px;
   height: 100px;
 }
-
+#mobileAds {
+  position: absolute;
+  z-index: 999;
+  top: 0px;
+  left: 0px;
+  height: 100px;
+  width: 100vw;
+}
+#desktopAds {
+  position: absolute;
+  z-index: 999;
+  bottom: 16px;
+  width: 100vw;
+  height: 100px;
+}
 
 /* DivTable.com */
 .divTable{

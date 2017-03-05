@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?2sk0qc');
-  src:  url('fonts/icomoon.eot?2sk0qc#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?2sk0qc') format('truetype'),
-    url('fonts/icomoon.woff?2sk0qc') format('woff'),
-    url('fonts/icomoon.svg?2sk0qc#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?j9yrb1');
+  src:  url('fonts/icomoon.eot?j9yrb1#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?j9yrb1') format('truetype'),
+    url('fonts/icomoon.woff?j9yrb1') format('woff'),
+    url('fonts/icomoon.svg?j9yrb1#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,20 +24,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-info:before {
+.icon-film:before {
+  content: "\f008";
+}
+.icon-bomb:before {
+  content: "\e91d";
+}
+.icon-BotW_Great-Fairy:before {
   content: "\e91a";
 }
-.icon-pencil:before {
-  content: "\e914";
-}
-.icon-search:before {
-  content: "\e986";
-}
-.icon-link:before {
-  content: "\e9cb";
-}
-.icon-cross:before {
-  content: "\ea0f";
+.icon-BotW_Stables:before {
+  content: "\e91c";
 }
 .icon-Button:before {
   content: "\e915";
@@ -116,5 +113,20 @@
 }
 .icon-BotW_Armor:before {
   content: "\e913";
+}
+.icon-pencil:before {
+  content: "\e914";
+}
+.icon-bubble2:before {
+  content: "\e96e";
+}
+.icon-search:before {
+  content: "\e986";
+}
+.icon-link:before {
+  content: "\e9cb";
+}
+.icon-cross:before {
+  content: "\ea0f";
 }
 

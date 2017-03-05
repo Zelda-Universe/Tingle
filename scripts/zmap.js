@@ -30,6 +30,8 @@ function ZMap() {
    this.newMarker = null;
    
    this.user;
+   
+   this.curCatVisible = null;
 };
 
 
@@ -365,6 +367,10 @@ ZMap.prototype._createMarkerPopup = function(marker) {
       popup.setContent(div);
       
       marker.bindPopup(popup);
+      marker.on('click',function() {
+      console.log("ID: " + marker.id)// + " - Lat, Lon : " + marker._latlng.lat + ", " + marker._latlng.lng);
+      })
+      
    }
    
    // Type 2 = Gateway to other marker
@@ -614,12 +620,6 @@ ZMap.prototype.buildMap = function() {
                       , contextmenuWidth: 140
 //                      , contextmenuItems: _this._buildContextMenu()
    });
-   _this._buildContextMenu();
-   
-   if (mapOptions.showZoomControl) {
-      L.control.zoom({position:'bottomright'}).addTo(map);
-   }
-                      
    
    // Get all the base maps
    var baseMaps = {};
@@ -638,64 +638,43 @@ ZMap.prototype.buildMap = function() {
    mapControl = L.control.zlayers2(baseMaps, null, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
    mapControl.addTo(map);
    
-
-
-
    map.addLayer(markerCluster);
-
-
-   // OLD CAT MENU
-   if (this.categoryActions.length > 0) {
-      catCtrl = new L.Toolbar.Control({
-         position: 'bottomleft',
-         actions: this.categoryActions
-      })
-      catCtrl.addTo(map);
-   }
    
+   
+   
+   var bottomMenu = L.control.bottomMenu("bottom", categoryTree);
+   bottomMenu.addTo(map);
 
-   // New CAT MENU
-   // @TODO: NEW IMPROVEMENTS
-   if (mapOptions.showCategoryControl) {
-      //@TODO: use Leaflet to create elements and give handles to clicks instead of plain javascript
-      var contents = '<center><img src="http://maps.zelda.com.br/beta_maps.png"></center>';
-      for (var i = 0; i < categoryTree.length; i++) {
-         contents += '<hr>';
-         contents += '<a id="catMenu' + categoryTree[i].id + '" class="leaflet-menu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].id +  ');event.preventDefault();"><ul class="leaflet-menu-ul"><li><span class="leaflet-menu-icon icon-' + categoryTree[i].img + '" style="background-color: ' + categoryTree[i].color + '" ></span></li><li><p class="catTitle" style="color: ' + categoryTree[i].color + '">' + categoryTree[i].name + '</p></li></ul></a>';
-         if (categoryTree[i].children.length > 0) {
-            contents += '<ul class="leaflet-menu-ul">';
-            for (var j = 0; j < categoryTree[i].children.length; j++) {
-               contents += '<li><a id="catMenu' + categoryTree[i].children[j].id + '" class="leaflet-menu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].children[j].id +  ');event.preventDefault();"><span class="leaflet-menu-icon icon-' + categoryTree[i].children[j].img + '"></span><br><p>' + categoryTree[i].children[j].name + '</p></a></li>';
-            }
-            contents += '</ul>';
-         }
+   if (!bottomMenu.isMobile()) {
+      _this._buildContextMenu();
+   
+      if (mapOptions.showZoomControl) {
+         L.control.zoom({position:'bottomright'}).addTo(map);
       }
-      var slideMenu = L.control.slideMenu(contents);
-      slideMenu.addTo(map);
-       
-      if (!L.Browser.mobile && mapOptions.showCategoryControlOpened == true) {
-         setTimeout(function () {
-            slideMenu.show();
-         }, 500);
+
+      var x = document.getElementsByClassName("leaflet-control-layers");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
+      }
+      var x = document.getElementsByClassName("leaflet-control-attribution");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
       }  
-      
-      var catCloseButton = document.getElementsByClassName('leaflet-menu-close-button');
-      if (catCloseButton.length > 0) {
-         L.DomEvent.on(catCloseButton[0], 'click', function() {
-            //@TODO: find a better way
-            setCookie('isCategoryOpen', false);
-         }, this);
+      var x = document.getElementsByClassName("leaflet-bottommenu");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "";
+      } 
+   } else {
+      var x = document.getElementsByClassName("leaflet-control-layers");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
       }
-      
-      var catOpenButton = document.getElementsByClassName('leaflet-bar-part-single');
-      if (catOpenButton.length > 0) {
-         L.DomEvent.on(catOpenButton[0], 'click', function() {
-            //@TODO: find a better way
-            setCookie('isCategoryOpen', true);
-         }, this);
+         
+      var x = document.getElementsByClassName("leaflet-control-attribution");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
       }
    }
-   // New CAT MENU END 
    
    // INTRODUCTORY / WELCOME TEXT
    if (!getCookie('showWelcome')) {
@@ -713,114 +692,6 @@ ZMap.prototype.buildMap = function() {
                    .show();
       }, 500);
    }
-   
-   // SEARCH
-   // Since AJAX is taking care of the filter, we just return the records instead of using the default filter
-   function filterData(text, records) {
-      return records;
-	}
-	function formatData(json) {	//default callback for format data to indexed data
-		var propName = this.options.propertyName,
-			propLoc = this.options.propertyLoc,
-			i, jsonret = {};
-      
-      for(i in json) {
-         jsonret[ json[i].title ] = L.latLng( json[i].loc[0], json[i].loc[1] );
-         jsonret[ json[i].title ]['markerId'] = json[i].id;
-         jsonret[ json[i].title ]['categoryId'] = json[i].markerCategoryId;
-      }
-		return jsonret;
-	}
-	function searchByAjax(text, callResponse)//callback for 3rd party ajax requests
-	{
-		return $.ajax({
-			url: 'ajax/search_markers.php',	//read comments in search.php for more information usage
-			type: 'GET',
-			data: {game: mapOptions.id, q: text},
-			dataType: 'json',
-			success: function(json) {
-				callResponse(json);
-			}
-		});
-	}
-   function customTip(text,val) {
-      return '<a href="#">'
-               + '<span style="float: left; width: 18px; height: 18px; line-height: 18px; font-size: 12px; padding: 0px; margin-right: 5px; background-color: ' + categories[val.categoryId].color + '" class="leaflet-menu-icon icon-' + categories[val.categoryId].img + '"></span>'
-               +text
-             +'</a>';
-   }
-   var controlSearch;
-   
-   if (!L.Browser.mobile) {
-      controlSearch = new L.Control.Search({
-         position:'topleft',		
-         //layer: markerCluster,
-         sourceData: searchByAjax,
-         filterData: filterData,
-         formatData: formatData,
-         initial: false,
-         zoom: 4,
-         marker: false,
-         buildTip: customTip,
-         markerLocation: true
-      });
-   } else {
-      controlSearch = new L.Control.Search({
-         position:'topleft',		
-         //layer: markerCluster,
-         sourceData: searchByAjax,
-         filterData: filterData,
-         formatData: formatData,
-         initial: false,
-         zoom: 4,
-         marker: false,
-         buildTip: customTip,
-         autoType: false,
-         tipAutoSubmit: true,
-         autoCollapse: false,
-         autoCollapseTime: 20000,
-         delayType: 800,	//with mobile device typing is more slow
-      });
-	}
-
-	map.addControl( controlSearch );
-   
-   /* NEW DEV */
-   /**
-	var drawnItems = new L.FeatureGroup().addTo(map);
-
-   new L.DrawToolbar.Control({
-      position: 'topleft',
-      className: 'leaflet-draw-toolbar',
-      repeatMode: true
-   }).addTo(map);
-
-   map.on('draw:created', function(evt) {
-      var type = evt.layerType,
-         layer = evt.layer;
-
-      if (!map.hasLayer(drawnItems)) {
-         drawnItems = new L.FeatureGroup().addTo(map);
-      }
-      drawnItems.addLayer(layer);
-   });
-   /* END DEV */
-
-   map.on('click', function(e) { 
-      return;
-      console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
-      
-      newMarker = new L.marker(e.latlng).addTo(map);
-      
-      var popupContent = _this._createPopupNewMarker(null, e.latlng);
-      
-      newMarker.bindPopup(popupContent,{
-         minWidth: 400,
-         maxHeight: 240,
-      }).openPopup();
-
-      console.log(newMarker);
-   });
    
    map.on('popupclose', function(e) {
       _this._closeNewMarker();
@@ -924,52 +795,6 @@ ZMap.prototype.buildMap = function() {
          map.panTo(map.unproject(px),{animate: true}); 
       }
    });
-   
-   
-   
-   // Info Box with credits
-   var creditsPopup = L.popup({maxWidth: '100px', className: 'credits' }).setContent(
-      "<h3><u><center>Hyrule Legends | Zelda.com.br</center></u></h3>"
-      + "<div>CEO/Devolpment: Danilo Passos</div>"
-      + "<div>Designer: Emanuel Sousa</div>"
-      + "<br>"
-      + "<h3><u><center>Zelda Universe</center></u></h3>"
-      + "<div>CEO: Jason Rappaport</div>"
-      + "<div>Guides Director: Joshua Lindquist</div>"
-      + "<div>Layout Designer: Connor Strickland</div>"
-      + "<br>"
-      + "<center><img src=\"images/credits.png\" width=\"224\" height=\"80\"><br><br><b>It's dangerous to go alone.<br>Here, use our maps!</b></center>"
-   );
-
-   L.easyButton('icon-info info-box-icon', function(btn, map){
-      if (creditsPopup.isOpen()) {
-         //map.closePopup();
-      } else {
-         //creditsPopup.setLatLng([map.getCenter().lat - (Math.pow(2,map.getMaxZoom()+2-map.getZoom())/2), map.getCenter().lng]).openOn(map);
-      }
-      
-      map.closePopup();
-      var win =  L.control.window(map,{title:'Credits',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                .content("<h3><u><center>Hyrule Legends | Zelda.com.br</center></u></h3>"
-                        + "<div>CEO/Devolpment: Danilo Passos</div>"
-                        + "<div>Designer: Emanuel Sousa</div>"
-                        + "<br>"
-                        + "<h3><u><center>Zelda Universe</center></u></h3>"
-                        + "<div>CEO: Jason Rappaport</div>"
-                        + "<div>Guides Director: Joshua Lindquist</div>"
-                        + "<div>Layout Designer: Connor Strickland</div>"
-                        + "<br>"
-                        + "<center><img src=\"images/credits.png\" width=\"224\" height=\"80\"><br><br><b>It's dangerous to go alone.<br>Here, use our maps!</b></center>")
-                .prompt({buttonOK: '&nbsp;', buttonCancel: 'Close'})
-                .show();
-   }).addTo(map);
-   
-   
-   map.on('movestart', function(e){if (creditsPopup.isOpen()) {
-      map.closePopup();
-   }}, this);
-   // Info Box with credits
-   
    
     var inputClick = function(vMap, vOverlayMap) {
       _this._closeNewMarker();
@@ -1237,22 +1062,68 @@ ZMap.prototype._copyToClipboard = function(vMarkerId) {
 
 ZMap.prototype._updateCategoryVisibility = function(vCatId, vChecked) {
    
-   categories[vCatId].checked = (vChecked==null?!categories[vCatId].checked:vChecked);
-   if (categories[vCatId].checked) {
-      document.getElementById("catMenu" + vCatId).style.opacity = 1;
+   var toogle = false;
+   if (this.curCatVisible == vCatId) {
+      toogle = true;
+      this.curCatVisible = null;
    } else {
-      document.getElementById("catMenu" + vCatId).style.opacity = 0.35;
+      this.curCatVisible = vCatId;
    }
-   _this.updateMarkerVisibility(vCatId, categories[vCatId].checked);
    
-   if (categories[vCatId].parentId == null) {
+   // @TODO: Improve logic... done in a hurry
+   if (categories[vCatId].parentId != null) {
       function forEachCat(element, index, array) {
-         if (element.parentId == vCatId) {
-            _this._updateCategoryVisibility(element.id, categories[vCatId].checked);
+         
+         if (element.id == vCatId) {
+            categories[element.id].checked = true;
+         } else {
+            categories[element.id].checked = toogle;
          }
+         _this.updateMarkerVisibility(element.id, categories[element.id].checked);
       }
       categories.forEach(forEachCat);
    }
+      
+   if (categories[vCatId].parentId == null) {
+      function forEachCat(element, index, array) {
+         
+         if (element.parentId != null && element.parentId != vCatId) {
+            categories[element.id].checked = toogle;
+         }
+         if (element.parentId == null && element.id != vCatId) {
+            categories[element.id].checked = toogle;
+         }
+         if (element.parentId != null && element.parentId == vCatId) {
+            categories[element.id].checked = true;
+         }
+         if (element.parentId == null && element.id == vCatId) {
+            categories[element.id].checked = true;
+         }
+         _this.updateMarkerVisibility(element.id, categories[element.id].checked);
+      }
+      categories.forEach(forEachCat);
+   }
+   
+   function forEachCat2(element, index, array) {
+      var catMenu = document.getElementById("catMenu" + element.id);
+      if (catMenu) { 
+      
+         if (categories[element.id].checked) {
+            catMenu.style.opacity = 1;
+         } else {
+            catMenu.style.opacity = 0.35;
+         }
+      }
+      var catMenuMobile = document.getElementById("catMenuMobile" + element.id);
+      if (catMenuMobile) { 
+         if (categories[element.id].checked) {
+            catMenuMobile.style.opacity = 1;
+         } else {
+            catMenuMobile.style.opacity = 0.35;
+         }
+      }
+   }
+   categories.forEach(forEachCat2);
 }
 
 ZMap.prototype._buildContextMenu = function() {

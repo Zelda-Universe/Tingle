@@ -23,13 +23,15 @@ function ZMap() {
    
    this.categoryActions = [];
    
-   //this.defaultTilesURL = 'tiles/'; // Local
-   this.defaultTilesURL = 'http://maps.zelda.com.br/tiles/';
+   this.defaultTilesURL = 'tiles/'; // Local
+   //this.defaultTilesURL = 'http://maps.zelda.com.br/tiles/';
    this.catCtrl;
    
    this.newMarker = null;
    
    this.user;
+   
+   this.curCatVisible = null;
 };
 
 
@@ -365,6 +367,10 @@ ZMap.prototype._createMarkerPopup = function(marker) {
       popup.setContent(div);
       
       marker.bindPopup(popup);
+      marker.on('click',function() {
+      console.log("ID: " + marker.id)// + " - Lat, Lon : " + marker._latlng.lat + ", " + marker._latlng.lng);
+      })
+      
    }
    
    // Type 2 = Gateway to other marker
@@ -614,12 +620,6 @@ ZMap.prototype.buildMap = function() {
                       , contextmenuWidth: 140
 //                      , contextmenuItems: _this._buildContextMenu()
    });
-   _this._buildContextMenu();
-   
-   if (mapOptions.showZoomControl) {
-      L.control.zoom({position:'bottomright'}).addTo(map);
-   }
-                      
    
    // Get all the base maps
    var baseMaps = {};
@@ -638,189 +638,85 @@ ZMap.prototype.buildMap = function() {
    mapControl = L.control.zlayers2(baseMaps, null, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
    mapControl.addTo(map);
    
-
-
-
    map.addLayer(markerCluster);
-
-
-   // OLD CAT MENU
-   if (this.categoryActions.length > 0) {
-      catCtrl = new L.Toolbar.Control({
-         position: 'bottomleft',
-         actions: this.categoryActions
-      })
-      catCtrl.addTo(map);
-   }
    
+   
+   
+   var bottomMenu = L.control.bottomMenu("bottom", categoryTree);
+   bottomMenu.addTo(map);
 
-   // New CAT MENU
-   // @TODO: NEW IMPROVEMENTS
-   if (mapOptions.showCategoryControl) {
-      //@TODO: use Leaflet to create elements and give handles to clicks instead of plain javascript
-      var contents = '<center><img src="http://maps.zelda.com.br/beta_maps.png"></center>';
-      for (var i = 0; i < categoryTree.length; i++) {
-         contents += '<hr>';
-         contents += '<a id="catMenu' + categoryTree[i].id + '" class="leaflet-menu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].id +  ');event.preventDefault();"><ul class="leaflet-menu-ul"><li><span class="leaflet-menu-icon icon-' + categoryTree[i].img + '" style="background-color: ' + categoryTree[i].color + '" ></span></li><li><p class="catTitle" style="color: ' + categoryTree[i].color + '">' + categoryTree[i].name + '</p></li></ul></a>';
-         if (categoryTree[i].children.length > 0) {
-            contents += '<ul class="leaflet-menu-ul">';
-            for (var j = 0; j < categoryTree[i].children.length; j++) {
-               contents += '<li><a id="catMenu' + categoryTree[i].children[j].id + '" class="leaflet-menu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].children[j].id +  ');event.preventDefault();"><span class="leaflet-menu-icon icon-' + categoryTree[i].children[j].img + '"></span><br><p>' + categoryTree[i].children[j].name + '</p></a></li>';
-            }
-            contents += '</ul>';
-         }
+   if (!bottomMenu.isMobile()) {
+      _this._buildContextMenu();
+   
+      if (mapOptions.showZoomControl) {
+         L.control.zoom({position:'bottomright'}).addTo(map);
       }
-      var slideMenu = L.control.slideMenu(contents);
-      slideMenu.addTo(map);
-       
-      if (!L.Browser.mobile && mapOptions.showCategoryControlOpened == true) {
-         setTimeout(function () {
-            slideMenu.show();
-         }, 500);
+
+      var x = document.getElementsByClassName("leaflet-control-layers");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
+      }
+      var x = document.getElementsByClassName("leaflet-control-attribution");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
       }  
-      
-      var catCloseButton = document.getElementsByClassName('leaflet-menu-close-button');
-      if (catCloseButton.length > 0) {
-         L.DomEvent.on(catCloseButton[0], 'click', function() {
-            //@TODO: find a better way
-            setCookie('isCategoryOpen', false);
-         }, this);
+      var x = document.getElementsByClassName("leaflet-bottommenu");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "";
       }
       
-      var catOpenButton = document.getElementsByClassName('leaflet-bar-part-single');
-      if (catOpenButton.length > 0) {
-         L.DomEvent.on(catOpenButton[0], 'click', function() {
-            //@TODO: find a better way
-            setCookie('isCategoryOpen', true);
-         }, this);
+      document.getElementById("mobileAds").style.display = 'none';
+      
+   } else {
+      var x = document.getElementsByClassName("leaflet-control-layers");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
       }
+         
+      var x = document.getElementsByClassName("leaflet-control-attribution");
+      for (var i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
+      }
+      
+      document.getElementById("desktopAds").style.display = 'none';
    }
-   // New CAT MENU END 
    
    // INTRODUCTORY / WELCOME TEXT
    if (!getCookie('showWelcome')) {
       setTimeout(function () {
          map.closePopup();
-         var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                   .content("<p>That look on your face tells me that you have no recollection of me, however, I think you are now ready. Ready to hear what happened 100 years ago!</p>"
-                           +"<p>Introductory text Introductory text Introductory text Introductory text Introductory text Introductory text Introductory text Introductory text</p>"
-                   ).prompt({buttonOK: 'Don\'t show this again!'
-                            , buttonCancel: 'Close'
-                            , callback:function(e){
-                                 setCookie('showWelcome', false);
-                              }
-                           })
-                   .show();
+         if (!bottomMenu.isMobile()) {
+            var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
+                      .content("<p>Hello there!</p>"
+                              +"<p>I have always been fascinated about game maps, specially those from <i>The Legend of Zelda</i>. I started by drawing maps in my notebook while playing the first <i>Zelda</i> games. Then, I created ASCII maps for <i>Ocarina of Time</i>. While playing more recent <i>Zelda</i> games, I used screenshots to piece together complete maps.</p>"
+                              +"<p>Now, we are finally at a point where we can easily create interative maps to share with other fans. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps f every <i>Legend of Zelda</i> game.</p>"
+                              +"<p>Right now, ours hands are full playing <i>Breah of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
+                              +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
+                              +"<div style='float: right'>Danilo Passos.</div>"
+                      ).prompt({buttonOK: 'Don\'t show this again!'
+                               , buttonCancel: 'Close'
+                               , callback:function(e){
+                                    setCookie('showWelcome', false);
+                                 }
+                              })
+                      .show();
+         } else {
+            var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
+                      .content("<p>Hello there!</p>"
+                              +"<p>I have always been fascinated about game maps, specially those from <i>The Legend of Zelda</i>. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps f every <i>Legend of Zelda</i> game.</p>"
+                              +"<p>Right now, ours hands are full playing <i>Breah of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
+                              +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
+                              +"<div style='float: right'>Danilo Passos.</div>"
+                      ).prompt({buttonOK: 'Don\'t show this again!'
+                               , buttonCancel: 'Close'
+                               , callback:function(e){
+                                    setCookie('showWelcome', false);
+                                 }
+                              })
+                      .show();
+         }
       }, 500);
    }
-   
-   // SEARCH
-   // Since AJAX is taking care of the filter, we just return the records instead of using the default filter
-   function filterData(text, records) {
-      return records;
-	}
-	function formatData(json) {	//default callback for format data to indexed data
-		var propName = this.options.propertyName,
-			propLoc = this.options.propertyLoc,
-			i, jsonret = {};
-      
-      for(i in json) {
-         jsonret[ json[i].title ] = L.latLng( json[i].loc[0], json[i].loc[1] );
-         jsonret[ json[i].title ]['markerId'] = json[i].id;
-         jsonret[ json[i].title ]['categoryId'] = json[i].markerCategoryId;
-      }
-		return jsonret;
-	}
-	function searchByAjax(text, callResponse)//callback for 3rd party ajax requests
-	{
-		return $.ajax({
-			url: 'ajax/search_markers.php',	//read comments in search.php for more information usage
-			type: 'GET',
-			data: {game: mapOptions.id, q: text},
-			dataType: 'json',
-			success: function(json) {
-				callResponse(json);
-			}
-		});
-	}
-   function customTip(text,val) {
-      return '<a href="#">'
-               + '<span style="float: left; width: 18px; height: 18px; line-height: 18px; font-size: 12px; padding: 0px; margin-right: 5px; background-color: ' + categories[val.categoryId].color + '" class="leaflet-menu-icon icon-' + categories[val.categoryId].img + '"></span>'
-               +text
-             +'</a>';
-   }
-   var controlSearch;
-   
-   if (!L.Browser.mobile) {
-      controlSearch = new L.Control.Search({
-         position:'topleft',		
-         //layer: markerCluster,
-         sourceData: searchByAjax,
-         filterData: filterData,
-         formatData: formatData,
-         initial: false,
-         zoom: 4,
-         marker: false,
-         buildTip: customTip,
-         markerLocation: true
-      });
-   } else {
-      controlSearch = new L.Control.Search({
-         position:'topleft',		
-         //layer: markerCluster,
-         sourceData: searchByAjax,
-         filterData: filterData,
-         formatData: formatData,
-         initial: false,
-         zoom: 4,
-         marker: false,
-         buildTip: customTip,
-         autoType: false,
-         tipAutoSubmit: true,
-         autoCollapse: false,
-         autoCollapseTime: 20000,
-         delayType: 800,	//with mobile device typing is more slow
-      });
-	}
-
-	map.addControl( controlSearch );
-   
-   /* NEW DEV */
-   /**
-	var drawnItems = new L.FeatureGroup().addTo(map);
-
-   new L.DrawToolbar.Control({
-      position: 'topleft',
-      className: 'leaflet-draw-toolbar',
-      repeatMode: true
-   }).addTo(map);
-
-   map.on('draw:created', function(evt) {
-      var type = evt.layerType,
-         layer = evt.layer;
-
-      if (!map.hasLayer(drawnItems)) {
-         drawnItems = new L.FeatureGroup().addTo(map);
-      }
-      drawnItems.addLayer(layer);
-   });
-   /* END DEV */
-
-   map.on('click', function(e) { 
-      return;
-      console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng);
-      
-      newMarker = new L.marker(e.latlng).addTo(map);
-      
-      var popupContent = _this._createPopupNewMarker(null, e.latlng);
-      
-      newMarker.bindPopup(popupContent,{
-         minWidth: 400,
-         maxHeight: 240,
-      }).openPopup();
-
-      console.log(newMarker);
-   });
    
    map.on('popupclose', function(e) {
       _this._closeNewMarker();
@@ -925,52 +821,6 @@ ZMap.prototype.buildMap = function() {
       }
    });
    
-   
-   
-   // Info Box with credits
-   var creditsPopup = L.popup({maxWidth: '100px', className: 'credits' }).setContent(
-      "<h3><u><center>Hyrule Legends | Zelda.com.br</center></u></h3>"
-      + "<div>CEO/Devolpment: Danilo Passos</div>"
-      + "<div>Designer: Emanuel Sousa</div>"
-      + "<br>"
-      + "<h3><u><center>Zelda Universe</center></u></h3>"
-      + "<div>CEO: Jason Rappaport</div>"
-      + "<div>Guides Director: Joshua Lindquist</div>"
-      + "<div>Layout Designer: Connor Strickland</div>"
-      + "<br>"
-      + "<center><img src=\"images/credits.png\" width=\"224\" height=\"80\"><br><br><b>It's dangerous to go alone.<br>Here, use our maps!</b></center>"
-   );
-
-   L.easyButton('icon-info info-box-icon', function(btn, map){
-      if (creditsPopup.isOpen()) {
-         //map.closePopup();
-      } else {
-         //creditsPopup.setLatLng([map.getCenter().lat - (Math.pow(2,map.getMaxZoom()+2-map.getZoom())/2), map.getCenter().lng]).openOn(map);
-      }
-      
-      map.closePopup();
-      var win =  L.control.window(map,{title:'Credits',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                .content("<h3><u><center>Hyrule Legends | Zelda.com.br</center></u></h3>"
-                        + "<div>CEO/Devolpment: Danilo Passos</div>"
-                        + "<div>Designer: Emanuel Sousa</div>"
-                        + "<br>"
-                        + "<h3><u><center>Zelda Universe</center></u></h3>"
-                        + "<div>CEO: Jason Rappaport</div>"
-                        + "<div>Guides Director: Joshua Lindquist</div>"
-                        + "<div>Layout Designer: Connor Strickland</div>"
-                        + "<br>"
-                        + "<center><img src=\"images/credits.png\" width=\"224\" height=\"80\"><br><br><b>It's dangerous to go alone.<br>Here, use our maps!</b></center>")
-                .prompt({buttonOK: '&nbsp;', buttonCancel: 'Close'})
-                .show();
-   }).addTo(map);
-   
-   
-   map.on('movestart', function(e){if (creditsPopup.isOpen()) {
-      map.closePopup();
-   }}, this);
-   // Info Box with credits
-   
-   
     var inputClick = function(vMap, vOverlayMap) {
       _this._closeNewMarker();
       
@@ -999,7 +849,7 @@ ZMap.prototype.buildMap = function() {
 ZMap.prototype.goTo = function(vGoTo) {
    
    if (vGoTo.marker) {
-      this._openMarker(vGoTo.marker, vGoTo.zoom);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom);
       // Open Marker already does a change map, so it takes precedence
       return;
    }
@@ -1015,7 +865,6 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   
    for (var i = 0; i < markers.length; i++) {
       if (markers[i].id == vMarkerId) {
          
@@ -1037,9 +886,14 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
           5 = 8
           6 = 4
          */
-         var latlng = L.latLng(markers[i].getLatLng().lat+Math.pow(2,map.getMaxZoom()+2-vZoom), markers[i].getLatLng().lng);
-         //map.setView(latlng, vZoom);
-         markers[i].openPopup();
+         var latlng = L.latLng(markers[i].getLatLng().lat, markers[i].getLatLng().lng);
+         map.setView(latlng, vZoom);
+         
+         // Check if the marker at the zoom level is inside cluster... if it's, we need to open cluster before popup
+         if (markerCluster.getVisibleParent(markers[i])) {
+            markerCluster.getVisibleParent(markers[i]).spiderfy();            
+         }
+         markers[i].openPopup();         
          
          // Check if popup was opened. Sometimes, it may not due to leaflet lazy loading on mobile devices
          if (markers[i].getPopup().getLatLng() == undefined) {
@@ -1068,16 +922,21 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
    $.ajax({
            type: "POST",
            url: "ajax/del_marker.php",
-           data: {markerId: vMarkerId},
+           data: {markerId: vMarkerId, userId: user.id},
            success: function(data) {
-               for (var i = 0; i < markers.length; i++) {
-                  // Just hide the marker on the marker array ... on reaload, query won't get it.
-                  if (markers[i].id == vMarkerId) {
-                     markers[i].visible = 0;
-                     markers[i].categoryId = -1;
+               data = jQuery.parseJSON(data);
+               if (data.success) {
+                  for (var i = 0; i < markers.length; i++) {
+                     // Just hide the marker on the marker array ... on reaload, query won't get it.
+                     if (markers[i].id == vMarkerId) {
+                        markers[i].visible = 0;
+                        markers[i].categoryId = -1;
+                     }
                   }
+                  _this.refreshMap();
+               } else {
+                  alert(data.msg);
                }
-               _this.refreshMap();
            }
          });
 }
@@ -1126,12 +985,14 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
       var catSelection2 = "";
       
       categories.forEach(function(entry) {
-         if (entry.markerCategoryTypeId == 3) {
-            catSelection2 = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"> ' + entry.name + '</option>';
-         }
-         if (entry.parentId != null) {
+         //@History - 2017-02-13 - Removed validation if the parent id is null , so parent categories can be added as markers per Joshua's request 
+         //if (entry.markerCategoryTypeId == 3) {
+         //   catSelection2 = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"> ' + entry.name + '</option>';
+         //}
+         // 
+         //if (entry.parentId != null) {
             catSelection = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"' + (vMarker!=null&&vMarker.categoryId==entry.id?"selected":"") + '> ' + entry.name + '</option>';
-         }
+         //}
       });
       catSelection = catSelection + catSelection2;
       var popupContent = '<h2 class="popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2><div class="popupContent" style="overflow-y: auto; max-height:400px;">'+
@@ -1226,22 +1087,68 @@ ZMap.prototype._copyToClipboard = function(vMarkerId) {
 
 ZMap.prototype._updateCategoryVisibility = function(vCatId, vChecked) {
    
-   categories[vCatId].checked = (vChecked==null?!categories[vCatId].checked:vChecked);
-   if (categories[vCatId].checked) {
-      document.getElementById("catMenu" + vCatId).style.opacity = 1;
+   var toogle = false;
+   if (this.curCatVisible == vCatId) {
+      toogle = true;
+      this.curCatVisible = null;
    } else {
-      document.getElementById("catMenu" + vCatId).style.opacity = 0.35;
+      this.curCatVisible = vCatId;
    }
-   _this.updateMarkerVisibility(vCatId, categories[vCatId].checked);
    
-   if (categories[vCatId].parentId == null) {
+   // @TODO: Improve logic... done in a hurry
+   if (categories[vCatId].parentId != null) {
       function forEachCat(element, index, array) {
-         if (element.parentId == vCatId) {
-            _this._updateCategoryVisibility(element.id, categories[vCatId].checked);
+         
+         if (element.id == vCatId) {
+            categories[element.id].checked = true;
+         } else {
+            categories[element.id].checked = toogle;
          }
+         _this.updateMarkerVisibility(element.id, categories[element.id].checked);
       }
       categories.forEach(forEachCat);
    }
+      
+   if (categories[vCatId].parentId == null) {
+      function forEachCat(element, index, array) {
+         
+         if (element.parentId != null && element.parentId != vCatId) {
+            categories[element.id].checked = toogle;
+         }
+         if (element.parentId == null && element.id != vCatId) {
+            categories[element.id].checked = toogle;
+         }
+         if (element.parentId != null && element.parentId == vCatId) {
+            categories[element.id].checked = true;
+         }
+         if (element.parentId == null && element.id == vCatId) {
+            categories[element.id].checked = true;
+         }
+         _this.updateMarkerVisibility(element.id, categories[element.id].checked);
+      }
+      categories.forEach(forEachCat);
+   }
+   
+   function forEachCat2(element, index, array) {
+      var catMenu = document.getElementById("catMenu" + element.id);
+      if (catMenu) { 
+      
+         if (categories[element.id].checked) {
+            catMenu.style.opacity = 1;
+         } else {
+            catMenu.style.opacity = 0.35;
+         }
+      }
+      var catMenuMobile = document.getElementById("catMenuMobile" + element.id);
+      if (catMenuMobile) { 
+         if (categories[element.id].checked) {
+            catMenuMobile.style.opacity = 1;
+         } else {
+            catMenuMobile.style.opacity = 0.35;
+         }
+      }
+   }
+   categories.forEach(forEachCat2);
 }
 
 ZMap.prototype._buildContextMenu = function() {
@@ -1281,10 +1188,10 @@ ZMap.prototype._buildContextMenu = function() {
                                        '<p class="divTableCell"><label class="control-label col-sm-5"><strong>User: </strong></label></p>'+
                                        '<p class="divTableCell"><input type="string" placeholder="Username" class="form-control" id="user" name="user"></p>'+
                                     '</div>'+
-                                    '<div class="divTableRow">' +
-                                       '<p class="divTableCell"></p>'+
-                                       '<p class="divTableCell"><span class=\"infoWindowIcn\" style="float: right;" onclick=\"_this._createRegisterForm(); return false\">New user?</span></p>'+
-                                    '</div>'+
+//                                    '<div class="divTableRow">' +
+//                                       '<p class="divTableCell"></p>'+
+//                                       '<p class="divTableCell"><span class=\"infoWindowIcn\" style="float: right;" onclick=\"_this._createRegisterForm(); return false\">New user?</span></p>'+
+//                                    '</div>'+
                                     '<br>'+
                                     '<div class="divTableRow">' +
                                        '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Password: </strong></label></p>'+

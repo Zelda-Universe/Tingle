@@ -1,6 +1,6 @@
 @font-face {
    font-family: HyliaSerif;
-   src: url("HyliaSerifBeta-Regular.otf") format("opentype");
+   src: url("fonts/HyliaSerifBeta-Regular.otf") format("opentype");
 }
 
 .leaflet-control-zoom-fullscreen { background-image: url(icon-fullscreen.png); }
@@ -108,7 +108,21 @@ html, body, #map {
   width: 200px;
   height: 100px;
 }
-
+#mobileAds {
+  position: absolute;
+  z-index: 999;
+  top: 0px;
+  left: 0px;
+  height: 100px;
+  width: 100vw;
+}
+#desktopAds {
+  position: absolute;
+  z-index: 999;
+  bottom: 16px;
+  width: 100vw;
+  height: 100px;
+}
 
 /* DivTable.com */
 .divTable{
@@ -476,6 +490,10 @@ hr {
 }
 .popupContent p img {
    color: whitesmoke;
+}
+.popupContent div img {
+   max-width: 400px;
+   height: auto;
 }
 .unslider-nav {
     margin-top: 5px;

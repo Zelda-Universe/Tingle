@@ -43,7 +43,7 @@ function getCookie(cname) {
 
 function getMapCategories() {
    
-   $.getJSON("ajax/get_categories.php?game=" + gameId, function(vResults){
+   $.getJSON("ajax.php?command=get_categories&game=" + gameId, function(vResults){
       $.each(vResults, function(i,category){
          zMap.addCategory(category);
       });
@@ -53,7 +53,7 @@ function getMapCategories() {
 
 function getMapCategoriesTree() {
    
-   $.getJSON("ajax/get_category_tree.php?game=" + gameId, function(vResults){
+   $.getJSON("ajax.php?command=get_category_tree&game=" + gameId, function(vResults){
       zMap.buildCategoryMenu(vResults);
    });
    
@@ -61,7 +61,7 @@ function getMapCategoriesTree() {
 
 function getMaps() {
    
-   $.getJSON("ajax/get_map.php?game=" + gameId, function(vResults){
+   $.getJSON("ajax.php?command=get_map&game=" + gameId, function(vResults){
       $.each(vResults, function(i,map){
          zMap.addMap(map);
       });
@@ -72,13 +72,13 @@ function getMaps() {
 };
 
 function getUserInfo() {
-   $.getJSON("ajax/get_user_info.php", function(vResults) {
+   $.getJSON("ajax.php?command=get_user_info", function(vResults) {
       zMap.setUser(vResults.user);
    });
 };
 
 function getMakers(){
-   $.getJSON("ajax/get_markers.php?game=" + gameId, function(vResults){
+   $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults){
       
       zMap.buildMap();
       $.each(vResults,function(i, marker){
@@ -115,7 +115,7 @@ function getUrlParamValue(vParamName, vDefaultValue) {
 
 // Initial Load
 //  Get map that we want to load (the game ID)
-$.getJSON("ajax/get_container.php?game=" + gameId, function(vResults){
+$.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
    
    // Should only get only one map 
    $.each(vResults, function(i, vContainer) {
@@ -129,7 +129,7 @@ $.getJSON("ajax/get_container.php?game=" + gameId, function(vResults){
       vContainer.showCategoryControlOpened  = getUrlParamValue('showCategoryControlOpened', getCookie('isCategoryOpen')=="true");//vContainer.showCategoryControl);
       vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
 
-      vContainer.zoom                       = getUrlParamValue('zoom', 1); /*TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
+      vContainer.zoom                       = getUrlParamValue('zoom', 4); /*@TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
       if (vContainer.zoom > vContainer.maxZoom) {
          vContainer.zoom = vContainer.maxZoom;
       }

@@ -1,7 +1,8 @@
 <?php
-	include('../config.php');
+   $path = DIRNAME(__FILE__);
+   include("$path/../config.php");
 	
-	session_start("zmap");
+	start_session("zmap");
    session_destroy();
    
    setcookie('user_id', '', time() - 1*24*60*60);

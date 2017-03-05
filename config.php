@@ -1,6 +1,6 @@
 <?php
 	// LOCAL
-   error_reporting(E_ALL ^ E_DEPRECATED);
+   error_reporting((E_ALL ^ E_DEPRECATED) & ~E_NOTICE);
 	if ($_SERVER['SERVER_ADDR'] == "127.0.0.1" || $_SERVER['SERVER_ADDR'] == '::1') {
 		$dbms = 'mysql';
 		$dbhost = 'localhost';
@@ -21,23 +21,51 @@
 		
 		$map_prefix = "";
    }
+   
+   $path = DIRNAME(__FILE__);
+
+	define("MAPROOT",$path);
+    
+    if(file_exists(MAPROOT."/.env")) {
+        $ENV = parse_ini_file(MAPROOT."/.env");
+        $dbms = $ENV["DBMS"];
+        $dbhost = $ENV["DBHOST"];
+        $dbport = $ENV["DBPORT"];
+        $dbname = $ENV["DBNAME"];
+        $dbuser = $ENV["DBUSER"];
+        $dbpasswd = $ENV["DBPASSWD"];
+        $map_prefix = $ENV["PREFIX"];
+        $_ENV = array_merge($ENV,$_ENV);
+    }
 	
-    $connection = mysql_connect($dbhost, $dbuser, $dbpasswd) or die('Database connection problem.');
-    mysql_select_db ($dbname, $connection) or die('Database connection problem.');
-    mysql_query("SET NAMES 'utf8'");
-    mysql_query('SET character_set_connection=utf8');
-    mysql_query('SET character_set_client=utf8');
-    mysql_query('SET character_set_results=utf8');
+    $mysqli = new mysqli($dbhost, $dbuser, $dbpasswd) or die('Database connection problem.');
+    $mysqli->select_db ($dbname) or die('Database connection problem.');
+    $mysqli->query("SET NAMES 'utf8'");
+    $mysqli->query('SET character_set_connection=utf8');
+    $mysqli->query('SET character_set_client=utf8');
+    $mysqli->query('SET character_set_results=utf8');
 	
 	function begin() {
-		@mysql_query("BEGIN");
+		global $mysqli;
+		@$mysqli->query("BEGIN");
 	}
 	
 	function commit() {
-		@mysql_query("COMMIT");
+		global $mysqli;
+		@$mysqli->query("COMMIT");
 	}
 	
 	function rollback()	{
-		@mysql_query("ROLLBACK");
-	}		
+		global $mysqli;
+		@$mysqli->query("ROLLBACK");
+	}
+
+	function start_session($name="zmap") {
+		if(!defined("PHP_MAJOR_VERSION") || PHP_MAJOR_VERSION<7) {
+			session_start($name);
+		} else {
+			$opts = ["name"=>$name];
+			session_start($opts);
+		}
+	}
 ?>

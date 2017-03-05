@@ -86,9 +86,56 @@ L.Control.BottomMenu = L.Control.extend({
         this._menu.style.height = (this.options.height - OPEN_TO) + 'px';
        
         var headerMenu = L.DomUtil.create('header', 'ex1', this._menu);
+        var xDown = null;                                                        
+        var yDown = null;
+        
+        if( this.options.mobile) {
+            L.DomEvent
+               .on(headerMenu, 'click', L.DomEvent.stopPropagation)
+               .on( headerMenu, 'touchstart', function( e) {
+                   xDown = e.touches[0].clientX;                                      
+                   yDown = e.touches[0].clientY;
+               }, this)
+               .on( headerMenu, 'touchmove', function( e) {
+                   if ( ! xDown || ! yDown ) {
+                       return;
+                   }
+
+                   var xUp = e.touches[0].clientX;                                    
+                   var yUp = e.touches[0].clientY;
+
+                   var xDiff = xDown - xUp;
+                   var yDiff = yDown - yUp;
+
+                   // ensures y movement is more significant
+                   if ( Math.abs( xDiff ) < Math.abs( yDiff ) ) {/*most significant*/
+                       if ( yDiff > 0 ) { // swipe up
+                           //console.log('swipe up');
+                           //console.log( this._open);
+                           if( !this._open)
+                           {
+                               this._animate(this._menu, this._startPosition, OPEN_TO, true);
+                               this._open = true;
+                           }  
+                       } else { // swipe down
+                           //console.log('swipe down');
+                           //console.log( this._open);
+                           if( this._open)
+                           {
+                               this._animate(this._menu, OPEN_TO, this._startPosition, false);
+                               this._open = false;
+                           }
+                       }                       
+                   }
+                      
+                   /* reset values */
+                   xDown = null;
+                   yDown = null;  
+               }, this);
+        }
         
         // Left Header Div
-        if (this.options.mobile) {
+        /*
         var leftText = 'Categories';
         var leftDiv = L.DomUtil.create('div', 'header-right', headerMenu);
         leftDiv.style.marginRight = '40px';
@@ -109,8 +156,7 @@ L.Control.BottomMenu = L.Control.extend({
                    this._animate(this._menu, OPEN_TO, this._startPosition, this._open);
                 }
             }, this);
-        }
-        /*
+        
         // Right Header Div
         var rightText = 'Game';
         var rightDiv = L.DomUtil.create('div', 'header-right', headerMenu);
@@ -137,7 +183,7 @@ L.Control.BottomMenu = L.Control.extend({
         var logoDiv = L.DomUtil.create('div', 'logo', headerMenu);
         var imgLogo = L.DomUtil.create('img', '', logoDiv);
         imgLogo.src  = 'images/zmaps_white.png';
-        imgLogo.style.width = '175px';
+        imgLogo.style.height = '100px';
 
         L.DomUtil.create('hr', '', this._menu);
 
@@ -182,10 +228,9 @@ L.Control.BottomMenu = L.Control.extend({
          }
          
          // @TODO: Temp dev
-         if (!this.options.mobile) {
-           logoDiv.style.margin = 'auto';
-        }
-
+         logoDiv.style.margin = 'auto';
+         logoDiv.style.height = '100px';
+        
         return this._container;
     },
 

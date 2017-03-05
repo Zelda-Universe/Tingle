@@ -10,6 +10,7 @@
     overflow: auto;
     cursor: default;
     z-index: 9999;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.4) !important; 
 }
 
 .leaflet-bottommenu::-webkit-scrollbar{
@@ -43,11 +44,12 @@
     overflow: auto;
 }
 
-.leaflet-bottommenu header hr {
+.leaflet-bottommenu hr {
    width: 100%;
    background-color: white;
    border: 0;
    height: 2px;
+   opacity: 0.2;
 }
 .leaflet-bottommenu .ex1 .header-left {
     display:inline-block;

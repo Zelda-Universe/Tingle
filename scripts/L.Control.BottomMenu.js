@@ -228,10 +228,9 @@ L.Control.BottomMenu = L.Control.extend({
          }
          
          // @TODO: Temp dev
-         if (!this.options.mobile) {
-           logoDiv.style.margin = 'auto';
-        }
-
+         logoDiv.style.margin = 'auto';
+         logoDiv.style.height = '100px';
+        
         return this._container;
     },
 

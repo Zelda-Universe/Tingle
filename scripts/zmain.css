@@ -113,7 +113,7 @@ html, body, #map {
   z-index: 999;
   top: 0px;
   left: 0px;
-  height: 100px;
+  height: 50px;
   width: 100vw;
 }
 #desktopAds {

@@ -247,11 +247,11 @@ L.Control.BottomMenu = L.Control.extend({
     },
     
     /** 001 - BEGIN **/
-    show() {
+    show:function() {
        this._animate(this._menu, this._startPosition, 0, true);
     },
     
-    isMobile() {
+    isMobile:function() {
        return this.options.mobile;
     },
     /** 001 - END **/

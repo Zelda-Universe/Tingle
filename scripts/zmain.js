@@ -92,16 +92,13 @@ function getMakers(){
       });
       
    });
-};
-
-zMap = new ZMap();
-var gameId = getUrlParam("game");
+}
 
 // Get value of parameters
 function getUrlParamValue(vParamName, vDefaultValue) {
-   var vParamName = getUrlParam(vParamName);
-   
-   if (vParamName == undefined || vParamName == "") {
+   vParamName = getUrlParam(vParamName);
+
+   if (vParamName === undefined || vParamName === "") {
       return vDefaultValue;
    }
    if (vParamName == "false") {
@@ -111,53 +108,58 @@ function getUrlParamValue(vParamName, vDefaultValue) {
       return true;
    }
    return vParamName;
-};
+}
 
-// Initial Load
-//  Get map that we want to load (the game ID)
-$.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
-   
-   // Should only get only one map 
-   $.each(vResults, function(i, vContainer) {
-      
-      vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
-      vContainer.collapsed                  = getUrlParamValue('collapsed', false);
-      vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
-      if (getCookie('isCategoryOpen') == '') {
-         setCookie('isCategoryOpen',"true");
-      }
-      vContainer.showCategoryControlOpened  = getUrlParamValue('showCategoryControlOpened', getCookie('isCategoryOpen')=="true");//vContainer.showCategoryControl);
-      vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
+$(function(){
+  zMap = new ZMap();
+  gameId = getUrlParam("game");
 
-      vContainer.zoom                       = getUrlParamValue('zoom', 4); /*@TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
-      if (vContainer.zoom > vContainer.maxZoom) {
-         vContainer.zoom = vContainer.maxZoom;
-      }
-      vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
-      vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
-      vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
+  // Initial Load
+  //  Get map that we want to load (the game ID)
+  $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
 
-      vContainer.help                       = getUrlParamValue('help', true);
-      
-      if (vContainer.bgColor[0] != '#') {
-         vContainer.bgColor = '#' + vContainer.bgColor;
-      }
-      $("#map").css("background-color", vContainer.bgColor);
-      $("body").css("background-color", vContainer.bgColor);
-      $("html").css("background-color", vContainer.bgColor);
-      
-      zMap.constructor(vContainer);
-      
-      gameId = vContainer.id;
-      
-      getMapCategories();
-      
-      if (vContainer.showCategoryControl) {
-         getMapCategoriesTree();
-      }
-      getMaps();
+     // Should only get only one map 
+     $.each(vResults, function(i, vContainer) {
 
-      getUserInfo();
-   });
-   
+        vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
+        vContainer.collapsed                  = getUrlParamValue('collapsed', false);
+        vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
+        if (getCookie('isCategoryOpen') == '') {
+           setCookie('isCategoryOpen',"true");
+        }
+        vContainer.showCategoryControlOpened  = getUrlParamValue('showCategoryControlOpened', getCookie('isCategoryOpen')=="true");//vContainer.showCategoryControl);
+        vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
+
+        vContainer.zoom                       = getUrlParamValue('zoom', 4); /*@TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
+        if (vContainer.zoom > vContainer.maxZoom) {
+           vContainer.zoom = vContainer.maxZoom;
+        }
+        vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
+        vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
+        vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
+
+        vContainer.help                       = getUrlParamValue('help', true);
+
+        if (vContainer.bgColor[0] != '#') {
+           vContainer.bgColor = '#' + vContainer.bgColor;
+        }
+        $("#map").css("background-color", vContainer.bgColor);
+        $("body").css("background-color", vContainer.bgColor);
+        $("html").css("background-color", vContainer.bgColor);
+
+        zMap.constructor(vContainer);
+
+        gameId = vContainer.id;
+
+        getMapCategories();
+
+        if (vContainer.showCategoryControl) {
+           getMapCategoriesTree();
+        }
+        getMaps();
+
+        getUserInfo();
+     });
+
+  });
 });

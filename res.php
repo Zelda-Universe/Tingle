@@ -11,6 +11,9 @@
     define('DO_MINIFY',isset($_GET['minify'])?
                           ($_GET['minify']!=="0"):
                           (IS_LOCAL?false:true));
+    define('UPDATE',isset($_GET['update'])?
+                          ($_GET['update']!=="0"):
+                          false);
     $path = DIRNAME(__FILE__);
     
     $type = strtolower($_GET['type']);
@@ -58,7 +61,7 @@
       
       $folpath = dirname($file)."/";
       $filedata = "";
-      if(file_exists($cfpath) && !$nToUpdate) {
+      if(file_exists($cfpath) && !$nToUpdate && !UPDATE) {
         $filedata = file_get_contents($cfpath);
       } else {
         $filedata = file_get_contents($fpath);
@@ -67,9 +70,9 @@
               $filedata = minify_js($filedata);
           } else {
               $filedata = minify_css($filedata);
-              $filedata = preg_replace('/(url\(\'?(?!.*\/\/))/i', '$1'.$folpath, $filedata);
           }
         }
+        $filedata = preg_replace('/(url\([\'"]?(?!.*\/\/))/i', '$1'.$folpath, $filedata);
 
         $filedata = "/* START $file */\n".
                       $filedata.
@@ -93,7 +96,7 @@
     if(isset($data["_self"])) {
       unset($data["_self"]);
     }
-    if(!$update && file_exists("$path/cache/index$ext") && !isset($_GET['update']) && !IS_LOCAL) {
+    if(!$update && file_exists("$path/cache/index".(DO_MINIFY?".min":"")."$ext") && !isset($_GET['update']) && !IS_LOCAL) {
         foreach($data as $file=>$time) {
             if(stripos($file,"//")!==false || !file_exists("$path/$file")) {
                 continue;
@@ -106,11 +109,12 @@
     } else {
         $update=true;
     }
+    $cfmpath = "$path/cache/index".(DO_MINIFY?".min":"")."$ext";
     if($update) {
         include "$path/lib/minify.php";
         $output = "";
-        if(!file_exists("$path/cache/index$ext")) {
-          $output = "/* cache/index$ext */\n";
+        if(!file_exists($cfmpath)) {
+          $output = "/* cache/index".(DO_MINIFY?".min":"")."$ext */\n";
           $nToUpdate;
           foreach($data as $file=>$time) {
               $filedata = read_cached_file($file,$time);
@@ -123,9 +127,9 @@
                   $data[$file]=NOW;
               }
           }
-          file_put_contents("$path/cache/index$ext",$output);
+          file_put_contents($cfmpath,$output);
         } else {
-          $output = file_get_contents("$path/cache/index$ext");
+          $output = file_get_contents($cfmpath);
           $nToUpdate;
           foreach($data as $file=>$time) {
               $filedata = read_cached_file($file,$time);
@@ -147,13 +151,13 @@
                   $data[$file]=NOW;
               }
           }
-          file_put_contents("$path/cache/index$ext",$output);
+          file_put_contents("$path/cache/index".(DO_MINIFY?".min":"")."$ext",$output);
         }
-        ob_clean();
+        ob_end_clean();
         header("Content-Length: ".strlen($output));
         header("X-Updated: true");
-        print $output;
-
+        readfile("$path/cache/index".(DO_MINIFY?".min":"")."$ext");
+        ob_start();
         $output = "";
         foreach($data as $file=>$time) {
             $output.="$file=$time\n";
@@ -162,12 +166,11 @@
         $output.="_self=$now";
         file_put_contents("$path/$type.ini",$output);
         touch("$path/$type.ini",$now);
+        ob_end_clean();
         return;
     }
-    
-    $out = file_get_contents("$path/cache/index$ext");
-    ob_clean();
+    ob_end_clean();
     
     header("Content-Length: ".strlen($out));
     header("X-Updated: false");
-    print $out;
+    readfile("$path/cache/index".(DO_MINIFY?".min":"")."$ext");

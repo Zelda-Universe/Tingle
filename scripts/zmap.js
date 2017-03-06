@@ -689,7 +689,7 @@ ZMap.prototype.buildMap = function() {
             var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
                       .content("<p>Hello there!</p>"
                               +"<p>I have always been fascinated about game maps, specially those from <i>The Legend of Zelda</i>. I started by drawing maps in my notebook while playing the first <i>Zelda</i> games. Then, I created ASCII maps for <i>Ocarina of Time</i>. While playing more recent <i>Zelda</i> games, I used screenshots to piece together complete maps.</p>"
-                              +"<p>Now, we are finally at a point where we can easily create interative maps to share with other fans. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps f every <i>Legend of Zelda</i> game.</p>"
+                              +"<p>Now, we are finally at a point where we can easily create interative maps to share with other fans. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for every <i>Legend of Zelda</i> game.</p>"
                               +"<p>Right now, ours hands are full playing <i>Breah of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
                               +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
                               +"<div style='float: right'>Danilo Passos.</div>"
@@ -703,7 +703,7 @@ ZMap.prototype.buildMap = function() {
          } else {
             var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
                       .content("<p>Hello there!</p>"
-                              +"<p>I have always been fascinated about game maps, specially those from <i>The Legend of Zelda</i>. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps f every <i>Legend of Zelda</i> game.</p>"
+                              +"<p>I have always been fascinated about game maps, specially those from <i>The Legend of Zelda</i>. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for every <i>Legend of Zelda</i> game.</p>"
                               +"<p>Right now, ours hands are full playing <i>Breah of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
                               +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
                               +"<div style='float: right'>Danilo Passos.</div>"

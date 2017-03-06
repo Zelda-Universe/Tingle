@@ -357,19 +357,28 @@ ZMap.prototype._createMarkerPopup = function(marker) {
       }
       div.innerHTML = content;   
       
-      var popup = L.popup({
-         //minWidth:600,
-         //minHeight: 600,
-         maxWidth: (L.Browser.mobile?300:400),
-         offset: L.point(0, -10),
-         className: (marker.tabText.length>1?'multiTab':'singleTab')
-      });
+      var popup;
+      if (!L.Browser.mobile) {
+         popup = L.popup({
+            maxWidth: 400,
+            offset: L.point(0, -10),
+            className: (marker.tabText.length>1?'multiTab':'singleTab')
+         });
+      } else {
+         popup = L.popup({
+            maxWidth: 300,
+            maxHeight: window.innerHeight / 2,
+            offset: L.point(0, -10),
+            className: (marker.tabText.length>1?'multiTab':'singleTab')
+         });
+
+      }
       popup.setContent(div);
       
       marker.bindPopup(popup);
-      marker.on('click',function() {
-      console.log("ID: " + marker.id)// + " - Lat, Lon : " + marker._latlng.lat + ", " + marker._latlng.lng);
-      })
+//      marker.on('click',function() {
+//         console.log("ID: " + marker.id)// + " - Lat, Lon : " + marker._latlng.lat + ", " + marker._latlng.lng);
+//      })
       
    }
    
@@ -688,9 +697,9 @@ ZMap.prototype.buildMap = function() {
          if (!bottomMenu.isMobile()) {
             var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
                       .content("<p>Hello there!</p>"
-                              +"<p>I have always been fascinated about game maps, specially those from <i>The Legend of Zelda</i>. I started by drawing maps in my notebook while playing the first <i>Zelda</i> games. Then, I created ASCII maps for <i>Ocarina of Time</i>. While playing more recent <i>Zelda</i> games, I used screenshots to piece together complete maps.</p>"
-                              +"<p>Now, we are finally at a point where we can easily create interative maps to share with other fans. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for every <i>Legend of Zelda</i> game.</p>"
-                              +"<p>Right now, ours hands are full playing <i>Breah of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
+                              +"<p>I have always been fascinated with game maps, especially those from <i>The Legend of Zelda</i>. I started by drawing maps in my notebook while playing the first <i>Zelda</i> games. Then, I created ASCII maps for <i>Ocarina of Time</i>. While playing more recent <i>Zelda</i> games, I used screenshots to piece together complete maps.</p>"
+                              +"<p>Now, we are finally at a point where we can easily create interactive maps to share with other fans. This project is a partnership between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for every <i>Legend of Zelda</i> game.</p>"
+                              +"<p>Right now, our hands are full playing <i>Breath of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
                               +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
                               +"<div style='float: right'>Danilo Passos.</div>"
                       ).prompt({buttonOK: 'Don\'t show this again!'
@@ -702,11 +711,9 @@ ZMap.prototype.buildMap = function() {
                       .show();
          } else {
             var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                      .content("<p>Hello there!</p>"
-                              +"<p>I have always been fascinated about game maps, specially those from <i>The Legend of Zelda</i>. This project is a partneship between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for every <i>Legend of Zelda</i> game.</p>"
-                              +"<p>Right now, ours hands are full playing <i>Breah of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
+                      .content("<p>This project is a partnership between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>. We hope to create maps for every <i>Legend of Zelda</i> game.</p>"
+                              +"<p>Right now, our hands are full playing <i>Breath of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
                               +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
-                              +"<div style='float: right'>Danilo Passos.</div>"
                       ).prompt({buttonOK: 'Don\'t show this again!'
                                , buttonCancel: 'Close'
                                , callback:function(e){

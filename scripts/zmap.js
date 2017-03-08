@@ -900,7 +900,9 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
          try {
             if (markerCluster.getVisibleParent(markers[i])) {
                markerCluster.getVisibleParent(markers[i]).spiderfy();            
-            }
+            } 
+         } catch (err) {
+            // Do nothing, since the parent can`t spiderfy
          }
          markers[i].openPopup();         
          

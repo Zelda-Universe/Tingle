@@ -12,7 +12,7 @@ L.Control.BottomMenu = L.Control.extend({
 
       L.Util.setOptions(this, options);
         
-      if (L.Browser.mobile) {
+      if (L.Browser.mobile && window.innerWidth < 768) {
          this.options.mobile = true;
       } else {
          this.options.mobile = false;

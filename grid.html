@@ -5,6 +5,7 @@
       <title>Map | ZeldaMaps.com</title>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+      <meta name="robots" content="noindex">
       
       <!-- Third-Party LIBs -->
       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
@@ -12,6 +13,9 @@
       <link rel="stylesheet" type="text/css" href="res.php?type=css" />
       <script type="text/javascript" src="//cdn.tinymce.com/4/tinymce.min.js"></script>
       <script>tinymce.baseURL="//cdn.tinymce.com/4";tinymce.init({ selector:'textarea' });</script>
+      <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+      <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
       
       <script>
       var urlParams;
@@ -51,30 +55,51 @@
 
    </head>
    <body>
-      <div id="map"></div>
+      <div id="map" style="width: 29vw; float: left"></div>
+      <div id="jsGrid" style="width: 70vw; float: right"></div>
+      <script>
+         $(function() {
+          
+             $("#jsGrid").jsGrid({
+                 height: window.innerHeight,
+                 width: "70vw",
+          
+                 sorting: true,
+                 paging: false,
+                 autoload: true,
+                 rowClick: function(args) { console.log(args.item.id); zMap._openMarker(args.item.id); },
+          
+                 controller: {
+                     loadData: function() {
+                         var d = $.Deferred();
+          
+                         $.ajax({
+                             url: "ajax.php?command=get_markers&game=19",
+                             dataType: "json"
+                         }).done(function(response) {
+                             d.resolve(response);
+                         });
+          
+                         return d.promise();
+                     }
+                 },
+          
+                 fields: [
+                     { name: "id", title: 'ID', type: "number" },
+                     { name: "name", title: 'Name', type: "text" },
+                     { name: "description", title: 'Desc', type: "textarea", width: 100 },
+                     { name: "userName", title: 'User', type: "text" },
+                     { name: "tabText", title: 'Text', type: "textarea", width: 150 },
+                     { name: "visible", title: "Visible?", type: "checkbox" }
+
+                 ]
+             });
+          
+         });
+      </script>
       <div id="mobileAds">
-         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-         <!-- Zelda Maps -->
-         <ins class="adsbygoogle"
-             style="display:block; max-height: 50px; height: 50px"
-             data-ad-client="ca-pub-7269573247649351"
-             data-ad-slot="4512666333"
-             </ins>
-         <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-         </script>
       </div>
       <div id="desktopAds" align="center">
-         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-         <!-- Zelda Maps -->
-         <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-7269573247649351"
-             data-ad-slot="4512666333"
-             data-ad-format="auto"></ins>
-         <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-         </script>
       </div>
       <script>
        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -86,5 +111,20 @@
        ga('send', 'pageview');
 
       </script>
+      <script>
+         setTimeout(function () {
+            var x = document.getElementsByClassName("leaflet-bottommenu");
+            for (var i = 0; i < x.length; i++) {
+                x[i].style.display = "none";
+            }
+         }, 1000);
+         document.getElementById("mobileAds").style.display = 'none';
+         document.getElementById("desktopAds").style.display = 'none';
+      </script>
+      <style>
+         ::-webkit-scrollbar {
+            display: block !important;
+         }
+      </style>
    </body>
 </html>

@@ -23,8 +23,8 @@ function ZMap() {
    
    this.categoryActions = [];
    
-   this.defaultTilesURL = 'tiles/'; // Local
-   //this.defaultTilesURL = 'http://maps.zelda.com.br/tiles/';
+   //this.defaultTilesURL = 'tiles/'; // Local
+   this.defaultTilesURL = 'https://zeldamaps.com/tiles/';
    this.catCtrl;
    
    this.newMarker = null;
@@ -897,8 +897,10 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
          map.setView(latlng, vZoom);
          
          // Check if the marker at the zoom level is inside cluster... if it's, we need to open cluster before popup
-         if (markerCluster.getVisibleParent(markers[i])) {
-            markerCluster.getVisibleParent(markers[i]).spiderfy();            
+         try {
+            if (markerCluster.getVisibleParent(markers[i])) {
+               markerCluster.getVisibleParent(markers[i]).spiderfy();            
+            }
          }
          markers[i].openPopup();         
          

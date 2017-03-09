@@ -24,7 +24,8 @@ function ZMap() {
    this.categoryActions = [];
    
    //this.defaultTilesURL = 'tiles/'; // Local
-   this.defaultTilesURL = 'https://zeldamaps.com/tiles/';
+   this.defaultTilesURL = 'http://maps.zelda.com.br/tiles/';
+
    this.catCtrl;
    
    this.newMarker = null;
@@ -32,6 +33,7 @@ function ZMap() {
    this.user;
    
    this.curCatVisible = null;
+   this.bottomMenu;
 };
 
 
@@ -317,68 +319,112 @@ ZMap.prototype._createMarkerPopup = function(marker) {
    
    // Type 1 = Normal popup
    if (marker.categoryTypeId == 1) {
-      var div = document.createElement('DIV');
-      div.id = 'divP' + marker.id;
-      div.className = 'banner';
-      
-      var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
-      
-      content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + (L.Browser.mobile?400:400)+"px;'>";
-      if (marker.tabText.length > 1) {
-         var ul = "<ul>";
-         for (var i = 0; i < marker.tabText.length; i++) {
-            if (i == 0) {
-               ul = ul + "<li style=\"minHeight: 120px;\"><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
-            } else {
-               ul = ul + "<li id='citem-" + i + "' style='display: none'><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+     
+      if (!bottomMenu.isMobile()) {
+         var div = document.createElement('DIV');
+         div.id = 'divP' + marker.id;
+         div.className = 'banner';
+         
+         var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
+         
+         content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + (L.Browser.mobile?400:400)+"px;'>";
+         if (marker.tabText.length > 1) {
+            var ul = "<ul>";
+            for (var i = 0; i < marker.tabText.length; i++) {
+               if (i == 0) {
+                  ul = ul + "<li style=\"minHeight: 120px;\"><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
+               } else {
+                  ul = ul + "<li id='citem-" + i + "' style='display: none'><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+               }
             }
+            ul = ul + "</ul>";
+            content = content + ul;
+         } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
+            content = content  + "<div>" + marker.tabText[0] + "</div>";
          }
-         ul = ul + "</ul>";
-         content = content + ul;
-      } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
-         content = content  + "<div>" + marker.tabText[0] + "</div>";
-      }
-      
-      if (user != null && user.level >= 5) {
-         content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
-                   + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
-                   + "<br style='height:0pt; clear:both;'>"
-                   + "<p style=\"float: right;\">"
-                     + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                     + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
-                     + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
-                   + "</p>"
-                + "</div>";
+         
+         if (user != null && user.level >= 5) {
+            content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
+                      + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
+                      + "<br style='height:0pt; clear:both;'>"
+                      + "<p style=\"float: right;\">"
+                        + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                        + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
+                        + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
+                      + "</p>"
+                   + "</div>";
+         } else {
+            content += "<p style=\"float: right;\">"
+                        + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                      + "</p>"
+                   + "</div>";
+         }
+         div.innerHTML = content;   
+         
+         var popup;
+         if (!L.Browser.mobile) {
+            popup = L.popup({
+               maxWidth: 400,
+               offset: L.point(0, -10),
+               className: (marker.tabText.length>1?'multiTab':'singleTab')
+            });
+            
+         } else { // mobile
+            popup = L.popup({
+               maxWidth: 400,
+               offset: L.point(0, -10),
+               className: (marker.tabText.length>1?'multiTab':'singleTab')
+            });
+         }
+         
+         popup.setContent(div);
+         
+         
+          marker.bindPopup(popup);
       } else {
-         content += "<p style=\"float: right;\">"
-                     + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                   + "</p>"
-                + "</div>";
-      }
-      div.innerHTML = content;   
-      
-      var popup;
-      if (!L.Browser.mobile) {
-         popup = L.popup({
-            maxWidth: 400,
-            offset: L.point(0, -10),
-            className: (marker.tabText.length>1?'multiTab':'singleTab')
+         marker.on('click',function() {
+            var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
+            content = content + "<div>";
+            if (marker.tabText.length > 1) {
+               var ul = "<ul>";
+               for (var i = 0; i < marker.tabText.length; i++) {
+                  if (i == 0) {
+                     ul = ul + "<li style=\"minHeight: 120px;\"><div class='popup-div-content' style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
+                  } else {
+                     ul = ul + "<li id='citem-" + i + "' style='display: none'><div class='popup-div-content' style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+                  }
+               }
+               ul = ul + "</ul>";
+               content = content + ul;
+            } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
+               content = content  + "<div class='popup-div-content'>" + marker.tabText[0] + "</div>";
+            }
+            
+            content = content + "<div class='popup-div-content'>";
+            if (user != null && user.level >= 5) {
+               content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
+                         + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
+                         + "<br style='height:0pt; clear:both;'>"
+                         + "<p style=\"float: right;\">"
+                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                           + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
+                           + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
+                         + "</p>"
+                      + "</div>";
+            } else {
+               content += "<p style=\"float: right;\">"
+                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                         + "</p>"
+                      + "</div>";
+            }
+            content = content + "</div>";
+            
+            bottomMenu.setContents(content); 
+            if (!bottomMenu._open) {
+               bottomMenu.show();
+            }
          });
-      } else {
-         popup = L.popup({
-            maxWidth: 300,
-            maxHeight: window.innerHeight / 2,
-            offset: L.point(0, -10),
-            className: (marker.tabText.length>1?'multiTab':'singleTab')
-         });
-
       }
-      popup.setContent(div);
-      
-      marker.bindPopup(popup);
-//      marker.on('click',function() {
-//         console.log("ID: " + marker.id)// + " - Lat, Lon : " + marker._latlng.lat + ", " + marker._latlng.lng);
-//      })
       
    }
    
@@ -651,7 +697,7 @@ ZMap.prototype.buildMap = function() {
    
    
    
-   var bottomMenu = L.control.bottomMenu("bottom", categoryTree);
+   bottomMenu = L.control.bottomMenu("bottom", categoryTree);
    bottomMenu.addTo(map);
 
    if (!bottomMenu.isMobile()) {

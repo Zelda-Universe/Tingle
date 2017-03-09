@@ -221,7 +221,7 @@ L.Control.BottomMenu = L.Control.extend({
          this._contentsCat.innerHTML = this._category;
          this._contentsCat.style.clear = 'both';
          if (this.options.mobile) {
-            this._contentsCat.style.height = (this.options.height - this.options.openTo - 100 - 20) + 'px';
+            this._contentsCat.style.height = (this.options.height - this.options.openTo - 100) + 'px';
          } else {
             this._contentsCat.style.height = (this.options.height - this.options.openTo - 100) + 'px';
          }

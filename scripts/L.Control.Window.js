@@ -206,6 +206,8 @@ L.Control.Window = L.Control.extend({
         this.setPromptCallback(promptObject.callback);
         
         this.setActionCallback(promptObject.action);
+        
+        this.setCancelCallback(promptObject.cancelCallback);
 
         var cancel = this.options.prompt.buttonCancel || 'CANCEL';
 
@@ -226,7 +228,7 @@ L.Control.Window = L.Control.extend({
         this._btnOK=btnOK;
         
         var btnCancel= L.DomUtil.create('button','',this._containerPromptButtons);
-        L.DomEvent.on(btnCancel, 'click', this.close, this);
+        L.DomEvent.on(btnCancel, 'click',this.cancelCallback, this);
         btnCancel.innerHTML=cancel
 
         return this;
@@ -255,6 +257,13 @@ L.Control.Window = L.Control.extend({
         var cb = function() { var result = callback(); if (result != false) { self.close(); }};
         /** 001 - END **/
         this.promptCallback = cb;
+        return this;
+    },
+    setCancelCallback : function(callback){
+        var self = this;
+        if (typeof(callback)!= 'function') { callback = function() {console.warn('No callback function specified!');}}
+        var cb = function() { var result = callback(); if (result != false) { self.close(); }};
+        this.cancelCallback = cb;
         return this;
     },
     setActionCallback : function(callback){

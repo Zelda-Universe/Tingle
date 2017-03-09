@@ -20,6 +20,11 @@
 		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
 		return;	
 	}
+   
+   $visible = 0;
+   if ($_SESSION['level'] >= 5) {
+      $visible = 1;
+   }
 	
    //----------------------------------------------------------//
    if (!isset($_POST['markerId'])) {
@@ -47,7 +52,7 @@
                                         , ".$_POST['lng']."
                                         , ".$_POST['lat']."
                                         , " . (isset($_POST['isGlobal'])?1:0) . "
-                                        , 1
+                                        , " . $visible . "
                                         , now()                                     
                                   )";
    } else {

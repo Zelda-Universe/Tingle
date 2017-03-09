@@ -25,6 +25,10 @@
 	}	
    $_SESSION["last_updated"] 
 	*/
+   $visible = "1";
+   if (isset($_GET['all'])) {
+      $visible = "0,1";
+   }
    $last_update = $temp = '1800-01-01 00:00:00';
 	$query = "SET SESSION group_concat_max_len = 4294967295";
 	$result = @$mysqli->query($query);
@@ -71,7 +75,7 @@
                 and smp.map_id = mp.id
 				    and mp.container_id = ' . $_GET["game"] . '
 				    and m.user_id = u.id
-                and m.visible = 1
+                and m.visible in (' . $visible . ')
                 ';
 				    /*and ((m.visible = 1 and m.last_updated > \'' . $last_update . '\')
 				         OR  (m.visible = 0 and \'' . $last_update . '\' != \'1800-01-01 00:00:00\' and m.last_updated > \'' . $last_update . '\'))

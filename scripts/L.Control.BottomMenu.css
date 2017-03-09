@@ -171,3 +171,16 @@
     display: none; 
 }
 
+#menu-custom-content {
+   clear: both;
+   color: white;
+}
+#menu-custom-content  img {
+   width: 100%;
+   height: auto;
+}
+
+.popup-div-content {
+   margin-left: 16px;
+   margin-right: 16px;
+}

@@ -24,7 +24,8 @@ function ZMap() {
    this.categoryActions = [];
    
    //this.defaultTilesURL = 'tiles/'; // Local
-   this.defaultTilesURL = 'https://zeldamaps.com/tiles/';
+   this.defaultTilesURL = 'http://maps.zelda.com.br/tiles/';
+
    this.catCtrl;
    
    this.newMarker = null;
@@ -32,6 +33,7 @@ function ZMap() {
    this.user;
    
    this.curCatVisible = null;
+   this.bottomMenu;
 };
 
 
@@ -302,6 +304,7 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.tabId           = vMarker.tabId.split('<|>');
    marker.tabUserId       = vMarker.tabUserId.split('<|>');
    marker.tabUserName     = vMarker.tabUserName.split('<|>');
+   marker.userId          = vMarker.userId;
    marker.userName        = vMarker.userName;
    marker.globalMarker    = vMarker.globalMarker;
    marker.visible         = true;
@@ -317,68 +320,119 @@ ZMap.prototype._createMarkerPopup = function(marker) {
    
    // Type 1 = Normal popup
    if (marker.categoryTypeId == 1) {
-      var div = document.createElement('DIV');
-      div.id = 'divP' + marker.id;
-      div.className = 'banner';
-      
-      var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
-      
-      content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + (L.Browser.mobile?400:400)+"px;'>";
-      if (marker.tabText.length > 1) {
-         var ul = "<ul>";
-         for (var i = 0; i < marker.tabText.length; i++) {
-            if (i == 0) {
-               ul = ul + "<li style=\"minHeight: 120px;\"><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
-            } else {
-               ul = ul + "<li id='citem-" + i + "' style='display: none'><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+     
+      if (!bottomMenu.isMobile()) {
+         var div = document.createElement('DIV');
+         div.id = 'divP' + marker.id;
+         div.className = 'banner';
+         
+         var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
+         
+         content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + (L.Browser.mobile?400:400)+"px;'>";
+         if (marker.tabText.length > 1) {
+            var ul = "<ul>";
+            for (var i = 0; i < marker.tabText.length; i++) {
+               if (i == 0) {
+                  ul = ul + "<li style=\"minHeight: 120px;\"><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
+               } else {
+                  ul = ul + "<li id='citem-" + i + "' style='display: none'><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+               }
             }
+            ul = ul + "</ul>";
+            content = content + ul;
+         } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
+            content = content  + "<div>" + marker.tabText[0] + "</div>";
          }
-         ul = ul + "</ul>";
-         content = content + ul;
-      } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
-         content = content  + "<div>" + marker.tabText[0] + "</div>";
-      }
-      
-      if (user != null && user.level >= 5) {
-         content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
-                   + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
-                   + "<br style='height:0pt; clear:both;'>"
-                   + "<p style=\"float: right;\">"
-                     + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                     + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
-                     + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
-                   + "</p>"
-                + "</div>";
+         
+         if (user != null) {
+            if (user.level >= 10 || (user.level >= 5 && marker.userId == user.id)) {
+               content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
+                         + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
+                         + "<br style='height:0pt; clear:both;'>"
+                         + "<p style=\"float: right;\">"
+                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                           + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
+                           + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
+                         + "</p>"
+                      + "</div>";
+            } else {
+               content += "<p style=\"float: right;\">"
+                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                         + "</p>"
+                      + "</div>";
+            }
+         } else {
+            content += "<p style=\"float: right;\">"
+                        + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                      + "</p>"
+                   + "</div>";
+         }
+         div.innerHTML = content;   
+         
+         var popup;
+         if (!L.Browser.mobile) {
+            popup = L.popup({
+               maxWidth: 400,
+               offset: L.point(0, -10),
+               className: (marker.tabText.length>1?'multiTab':'singleTab')
+            });
+            
+         } else { // mobile
+            popup = L.popup({
+               maxWidth: 400,
+               offset: L.point(0, -10),
+               className: (marker.tabText.length>1?'multiTab':'singleTab')
+            });
+         }
+         
+         popup.setContent(div);
+         
+         
+          marker.bindPopup(popup);
       } else {
-         content += "<p style=\"float: right;\">"
-                     + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                   + "</p>"
-                + "</div>";
-      }
-      div.innerHTML = content;   
-      
-      var popup;
-      if (!L.Browser.mobile) {
-         popup = L.popup({
-            maxWidth: 400,
-            offset: L.point(0, -10),
-            className: (marker.tabText.length>1?'multiTab':'singleTab')
+         marker.on('click',function() {
+            var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
+            content = content + "<div>";
+            if (marker.tabText.length > 1) {
+               var ul = "<ul>";
+               for (var i = 0; i < marker.tabText.length; i++) {
+                  if (i == 0) {
+                     ul = ul + "<li style=\"minHeight: 120px;\"><div class='popup-div-content' style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
+                  } else {
+                     ul = ul + "<li id='citem-" + i + "' style='display: none'><div class='popup-div-content' style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+                  }
+               }
+               ul = ul + "</ul>";
+               content = content + ul;
+            } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
+               content = content  + "<div class='popup-div-content'>" + marker.tabText[0] + "</div>";
+            }
+            
+            content = content + "<div class='popup-div-content'>";
+            if (user != null && user.level >= 5) {
+               content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
+                         + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
+                         + "<br style='height:0pt; clear:both;'>"
+                         + "<p style=\"float: right;\">"
+                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                           + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
+                           + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
+                         + "</p>"
+                      + "</div>";
+            } else {
+               content += "<p style=\"float: right;\">"
+                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                         + "</p>"
+                      + "</div>";
+            }
+            content = content + "</div>";
+            
+            bottomMenu.setContents(content); 
+            if (!bottomMenu._open) {
+               bottomMenu.show();
+            }
          });
-      } else {
-         popup = L.popup({
-            maxWidth: 300,
-            maxHeight: window.innerHeight / 2,
-            offset: L.point(0, -10),
-            className: (marker.tabText.length>1?'multiTab':'singleTab')
-         });
-
       }
-      popup.setContent(div);
-      
-      marker.bindPopup(popup);
-//      marker.on('click',function() {
-//         console.log("ID: " + marker.id)// + " - Lat, Lon : " + marker._latlng.lat + ", " + marker._latlng.lng);
-//      })
       
    }
    
@@ -651,7 +705,7 @@ ZMap.prototype.buildMap = function() {
    
    
    
-   var bottomMenu = L.control.bottomMenu("bottom", categoryTree);
+   bottomMenu = L.control.bottomMenu("bottom", categoryTree);
    bottomMenu.addTo(map);
 
    if (!bottomMenu.isMobile()) {
@@ -690,6 +744,23 @@ ZMap.prototype.buildMap = function() {
       document.getElementById("desktopAds").style.display = 'none';
    }
    
+   function showChangeLog() {
+      if (!getCookie('showChangeLogV0.2')) {
+         var win = L.control.window(map,{title:'Changelog',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
+                   .content("<p>New to version alpha 0.2</p>"
+                           +"<p>- You can now add your own markers! Right click on the map and log in / create an account to start adding (best suited for desktop).</p>"
+                           +"<p>- Optimizations for mobile devices.</p>"
+                           +"<p>- Tons of new markers everyday!</p>"
+                   ).prompt({buttonOK: 'Don\'t show this again!'
+                            , buttonCancel: 'Close'
+                            , callback:function(e){
+                                 setCookie('showChangeLogV0.2', false);
+                              }
+                           })
+                   .show();
+      }
+   }
+   
    // INTRODUCTORY / WELCOME TEXT
    if (!getCookie('showWelcome')) {
       setTimeout(function () {
@@ -698,7 +769,7 @@ ZMap.prototype.buildMap = function() {
             var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
                       .content("<p>Hello there!</p>"
                               +"<p>I have always been fascinated with game maps, especially those from <i>The Legend of Zelda</i>. I started by drawing maps in my notebook while playing the first <i>Zelda</i> games. Then, I created ASCII maps for <i>Ocarina of Time</i>. While playing more recent <i>Zelda</i> games, I used screenshots to piece together complete maps.</p>"
-                              +"<p>Now, we are finally at a point where we can easily create interactive maps to share with other fans. This project is a partnership between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for every <i>Legend of Zelda</i> game.</p>"
+                              +"<p>Now, we are finally at a point where we can easily create interactive maps to share with other fans. This project is a <b>partnership</b> between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for every <i>Legend of Zelda</i> game.</p>"
                               +"<p>Right now, our hands are full playing <i>Breath of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
                               +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
                               +"<div style='float: right'>Danilo Passos.</div>"
@@ -706,22 +777,35 @@ ZMap.prototype.buildMap = function() {
                                , buttonCancel: 'Close'
                                , callback:function(e){
                                     setCookie('showWelcome', false);
+                                    showChangeLog();
                                  }
+                               , cancelCallback:function(e){
+                                    showChangeLog()
+                               }
                               })
                       .show();
          } else {
             var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                      .content("<p>This project is a partnership between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>. We hope to create maps for every <i>Legend of Zelda</i> game.</p>"
+                      .content("<p>This project is a <b>partnership</b> between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>. We hope to create maps for every <i>Legend of Zelda</i> game.</p>"
                               +"<p>Right now, our hands are full playing <i>Breath of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
                               +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
                       ).prompt({buttonOK: 'Don\'t show this again!'
                                , buttonCancel: 'Close'
                                , callback:function(e){
                                     setCookie('showWelcome', false);
+                                    showChangeLog();
                                  }
+                               , cancelCallback:function(e){
+                                    showChangeLog()
+                               }
                               })
                       .show();
          }
+         
+      }, 500);
+   } else {
+      setTimeout(function () {
+         showChangeLog();
       }, 500);
    }
    
@@ -780,27 +864,32 @@ ZMap.prototype.buildMap = function() {
                     success: function(data) {
                         data = jQuery.parseJSON(data);
                         if (data.success) {
-                           marker = jQuery.parseJSON(data.marker)[0];
-                           
-                           tinymce.remove();
-                           _this._closeNewMarker();
-                           if (data.action == "ADD") {
-                              _this.addMarker(marker);
-                              _this.refreshMap();
+                           if (user.level < 5) {
+                              tinymce.remove();
+                              _this._closeNewMarker();
+                              alert("Thank you for your contribution!\n\nYour marker is pending review and, if approved, it will show up shortly.");
                            } else {
-                              for (var i = 0; i < markers.length; i++) {
-                                 // Just hide the marker on the marker array ... on reaload, query won't get it.
-                                 if (markers[i].id == marker.id) {
-                                    markers[i].id = -1;
-                                    markers[i].visible = 0;
-                                    markers[i].categoryId = -1;
+                              marker = jQuery.parseJSON(data.marker)[0];
+                              
+                              tinymce.remove();
+                              _this._closeNewMarker();
+                              if (data.action == "ADD") {
+                                 _this.addMarker(marker);
+                                 _this.refreshMap();
+                              } else {
+                                 for (var i = 0; i < markers.length; i++) {
+                                    // Just hide the marker on the marker array ... on reaload, query won't get it.
+                                    if (markers[i].id == marker.id) {
+                                       markers[i].id = -1;
+                                       markers[i].visible = 0;
+                                       markers[i].categoryId = -1;
+                                    }
                                  }
+                                 _this.addMarker(marker);
+                                 _this.refreshMap();
+                                 markers[markers.length - 1].openPopup();
                               }
-                              _this.addMarker(marker);
-                              _this.refreshMap();
-                              markers[markers.length - 1].openPopup();
                            }
-                           
                         } else {
                            console.log(data.msg);
                            alert("Ops, something went wrong!");
@@ -1199,10 +1288,10 @@ ZMap.prototype._buildContextMenu = function() {
                                        '<p class="divTableCell"><label class="control-label col-sm-5"><strong>User: </strong></label></p>'+
                                        '<p class="divTableCell"><input type="string" placeholder="Username" class="form-control" id="user" name="user"></p>'+
                                     '</div>'+
-//                                    '<div class="divTableRow">' +
-//                                       '<p class="divTableCell"></p>'+
-//                                       '<p class="divTableCell"><span class=\"infoWindowIcn\" style="float: right;" onclick=\"_this._createRegisterForm(); return false\">New user?</span></p>'+
-//                                    '</div>'+
+                                    '<div class="divTableRow">' +
+                                       '<p class="divTableCell"></p>'+
+                                       '<p class="divTableCell"><span class=\"infoWindowIcn\" style="float: right;" onclick=\"_this._createRegisterForm(); return false\">New user?</span></p>'+
+                                    '</div>'+
                                     '<br>'+
                                     '<div class="divTableRow">' +
                                        '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Password: </strong></label></p>'+

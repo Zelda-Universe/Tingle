@@ -4,6 +4,7 @@ L.Control.BottomMenu = L.Control.extend({
         width: window.innerWidth,
         height: window.innerHeight,
         delay: '10',
+        openTo: 100,
     },
     _category: '',
     _open: false,
@@ -67,7 +68,6 @@ L.Control.BottomMenu = L.Control.extend({
     
     onAdd: function (map) {
 
-        var OPEN_TO = 100;
         var containerClass;
         
         this._menu;
@@ -83,7 +83,7 @@ L.Control.BottomMenu = L.Control.extend({
         
         
         this._menu.style.width = this.options.width + 'px';
-        this._menu.style.height = (this.options.height - OPEN_TO) + 'px';
+        this._menu.style.height = (this.options.height - this.options.openTo) + 'px';
        
         var headerMenu = L.DomUtil.create('header', 'ex1', this._menu);
         var xDown = null;                                                        
@@ -114,7 +114,7 @@ L.Control.BottomMenu = L.Control.extend({
                            //console.log( this._open);
                            if( !this._open)
                            {
-                               this._animate(this._menu, this._startPosition, OPEN_TO, true);
+                               this._animate(this._menu, this._startPosition, this.options.openTo, true);
                                this._open = true;
                            }  
                        } else { // swipe down
@@ -122,8 +122,9 @@ L.Control.BottomMenu = L.Control.extend({
                            //console.log( this._open);
                            if( this._open)
                            {
-                               this._animate(this._menu, OPEN_TO, this._startPosition, false);
+                               this._animate(this._menu, this.options.openTo, this._startPosition, false);
                                this._open = false;
+                               //TODO reset contents
                            }
                        }                       
                    }
@@ -194,43 +195,43 @@ L.Control.BottomMenu = L.Control.extend({
         L.DomEvent.on(this._menu, 'mousewheel', L.DomEvent.stopPropagation);
         /** 001 - END **/
         if (this.options.mobile) {
-            var closeButton = L.DomUtil.create('button', 'leaflet-bottommenu-close-button fa', this._menu);
-
             if (this._isLeftPosition) {
                this._menu.style.top = this._startPosition + 'px';
-               closeButton.style.float = 'right';
-               L.DomUtil.addClass(closeButton, 'fa-chevron-left');
             }
             else {
                this._menu.style.right = '-' + this.options.width;
-               closeButton.style.float = 'left';
-               L.DomUtil.addClass(closeButton, 'fa-chevron-right');
             }
             
-            L.DomEvent
-               .on(closeButton, 'click', L.DomEvent.stopPropagation)
-               .on(closeButton, 'click', function() {
-                   // Close
-                   this._animate(this._menu, OPEN_TO, this._startPosition, false);
-                   this._open = false;
-               }, this);
-            
          }
-        
+         
          this._contents = L.DomUtil.create('div', 'leaflet-bottommenu-contents', this._menu);
          //this._contents.innerHTML = '<ul class="leaflet-bottommenu-ul"><li><a id="catMenu1911" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1911);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Meat"></span><br><p>Food (Beef)</p></a></li><li><a id="catMenu1912" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1912);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Fish"></span><br><p>Food (Fish)</p></a></li><li><a id="catMenu1913" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1913);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Herb"></span><br><p>Herbs</p></a></li><li><a id="catMenu1914" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1914);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Mushroom"></span><br><p>Mushrooms</p></a></li><li><a id="catMenu1915" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1915);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Materials"></span><br><p>Materials</p></a></li><li><a id="catMenu1916" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1916);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Korok-Seeds"></span><br><p>Korok Seeds</p></a></li></ul>';
-         this._contents.innerHTML = this._category;
-         this._contents.style.clear = 'both';
+         this._contents.id = 'menu-custom-content';
+         this._contents.innerHTML = "";
+         this._contents.style.display = 'none';
          if (this.options.mobile) {
-            this._contents.style.height = (this.options.height - OPEN_TO - 100 - 20) + 'px';
+            this._contents.style.height = (this.options.height - this.options.openTo - 100) + 'px';
          } else {
-            this._contents.style.height = (this.options.height - OPEN_TO - 100) + 'px';
+            this._contents.style.height = (this.options.height - this.options.openTo - 100) + 'px';
          }
+         
+         this._contentsCat = L.DomUtil.create('div', 'leaflet-bottommenu-contents', this._menu);
+         //this._contents.innerHTML = '<ul class="leaflet-bottommenu-ul"><li><a id="catMenu1911" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1911);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Meat"></span><br><p>Food (Beef)</p></a></li><li><a id="catMenu1912" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1912);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Fish"></span><br><p>Food (Fish)</p></a></li><li><a id="catMenu1913" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1913);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Herb"></span><br><p>Herbs</p></a></li><li><a id="catMenu1914" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1914);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Mushroom"></span><br><p>Mushrooms</p></a></li><li><a id="catMenu1915" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1915);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Materials"></span><br><p>Materials</p></a></li><li><a id="catMenu1916" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(1916);event.preventDefault();"><span class="leaflet-bottommenu-icon icon-BotW_Korok-Seeds"></span><br><p>Korok Seeds</p></a></li></ul>';
+         this._contentsCat.id = 'menu-cat-content';
+         this._contentsCat.innerHTML = this._category;
+         this._contentsCat.style.clear = 'both';
+         if (this.options.mobile) {
+            this._contentsCat.style.height = (this.options.height - this.options.openTo - 100 - 20) + 'px';
+         } else {
+            this._contentsCat.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+         }
+
          
          // @TODO: Temp dev
          logoDiv.style.margin = 'auto';
          logoDiv.style.height = '100px';
         
+        this._baseContents = this._contents;
         return this._container;
     },
 
@@ -242,13 +243,28 @@ L.Control.BottomMenu = L.Control.extend({
 
 
     setContents: function(innerHTML) {
-        this._innerHTML = innerHTML;
-        this._contents.innerHTML = this._innerHTML;
+         this._innerHTML = innerHTML;
+         this._contents.innerHTML = this._innerHTML;
+         this._contents.style.display = '';
+         this._contentsCat.style.display = 'none';
+         if (innerHTML != null && (innerHTML.search("<ul>") >= 0 || innerHTML.search("<ul class=") >= 0)) {
+            
+            slider = $('#' + this._contents.id).unslider({keys: false,               //  Enable keyboard (left, right) arrow shortcuts
+                                                          dots: true,               //  Display dot navigation
+                                                          arrows: true,
+                                                          fluid: true,
+                                                        });
+            $.each( $("li[id^='citem-']"), function () {
+                  $(this).show();
+               });
+            slider.unslider('initSwipe');
+         }
     },
     
     /** 001 - BEGIN **/
     show() {
-       this._animate(this._menu, this._startPosition, 0, true);
+       bottomMenu._open = true;
+       this._animate(this._menu, this._startPosition, this.options.openTo, true);
     },
     
     isMobile() {
@@ -269,6 +285,11 @@ L.Control.BottomMenu = L.Control.extend({
         }
         
         if (from == to) {
+           if (!isOpen) {
+              this._contents.style.display = 'none';
+              this._contentsCat.style.display = '';
+
+           }
            return;
         }
 

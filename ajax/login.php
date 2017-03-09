@@ -15,7 +15,7 @@
    $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
    
    
-   $query = "select id, username, password from " . $map_prefix . "user " .
+   $query = "select id, username, password, level from " . $map_prefix . "user " .
             " where username = '" . $username . "'"
             ;
 	$result = $mysqli->query($query);
@@ -25,7 +25,7 @@
       if (isset($row['password']) && password_verify($password, $row['password'])) {
          $user['id'] = $row['id'];
          $user['username'] = $row['username'];
-         $user['level'] = 5;//$row['level'];
+         $user['level'] = $row['level'];
 
          $hash = password_hash($username . $row['password'], PASSWORD_DEFAULT, ['cost' => 13]);
          

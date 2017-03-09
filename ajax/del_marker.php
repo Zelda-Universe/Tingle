@@ -15,8 +15,10 @@
 		return;
 	}
    
-   if ($_SESSION['user_id'] != $_POST['userId']) {
-      echo json_encode(array("success"=>false, "msg"=>"You can't delete a marker that is not yours!" . $_SESSION['user_id'] . " - " . $_POST['userId']));
+   if ($_SESSION['level'] == 1 
+      || ($_SESSION['level'] == 5 && ($_SESSION['user_id'] != $_POST['userId'])) // @TODO: Improve this to get actual marker user, since he can change the POST data
+   ) {
+      echo json_encode(array("success"=>false, "msg"=>"You can't delete this marker!"));
 		return;	
 	}
    

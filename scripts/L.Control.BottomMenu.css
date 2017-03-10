@@ -167,7 +167,7 @@
    overflow-y: scroll;
 }
 
-::-webkit-scrollbar { 
+.leaflet-bottommenu-contents::-webkit-scrollbar { 
     display: none; 
 }
 

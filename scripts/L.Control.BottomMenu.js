@@ -229,7 +229,7 @@ L.Control.BottomMenu = L.Control.extend({
          
          // @TODO: Temp dev
          logoDiv.style.margin = 'auto';
-         logoDiv.style.height = '100px';
+         logoDiv.style.height = '98px';
         
         this._baseContents = this._contents;
         return this._container;

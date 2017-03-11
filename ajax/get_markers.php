@@ -26,7 +26,7 @@
    $_SESSION["last_updated"] 
 	*/
    $visible = "1";
-   if (isset($_GET['all'])) {
+   if (isset($_GET['all']) || (strpos($_SERVER["HTTP_REFERER"], 'grid.html') !== false)) {
       $visible = "0,1";
    }
    $last_update = $temp = '1800-01-01 00:00:00';
@@ -85,7 +85,8 @@
       $query .= 'and m.id = ' . $_GET['newMarkerId'];
    }
    $query .= '
-              group by m.id;
+              group by m.id
+              order by m.id desc;
     ';
 	//echo $query . "\n";
    $result = @$mysqli->query($query);

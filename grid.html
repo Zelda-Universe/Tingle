@@ -75,28 +75,35 @@
                          var d = $.Deferred();
           
                          $.ajax({
-                             url: "ajax.php?command=get_markers&game=19",
+                             url: "ajax.php?command=get_markers&game=19&all=true",
                              dataType: "json"
+                              
                          }).done(function(response) {
-                             d.resolve(response);
+                              d.resolve(response);
                          });
           
-                         return d.promise();
+                         return d.promise(); 
                      }
                  },
           
                  fields: [
-                     { name: "id", title: 'ID', type: "number" },
-                     { name: "name", title: 'Name', type: "text" },
-                     { name: "description", title: 'Desc', type: "textarea", width: 100 },
-                     { name: "userName", title: 'User', type: "text" },
-                     { name: "tabText", title: 'Text', type: "textarea", width: 150 },
-                     { name: "visible", title: "Visible?", type: "checkbox" }
+                     { name: "id", title: 'ID', type: "number", width: 30 },
+                     { name: "name", title: 'Name', type: "text", width: 50 },
+                     { name: "description", title: 'Desc', type: "textarea", width: 50 },
+                     { name: "userName", title: 'User', type: "text", width: 50 },
+                     { name: "tabText", title: 'Text', type: "textarea" },
+                     { name: "visible", title: "Visible?", type: "checkbox", width: 30,
+                            itemTemplate: function(value, item) {
+                                return ((value)==1?"true":"false");
+                            },
+                     }
 
                  ]
              });
           
+
          });
+
       </script>
       <div id="mobileAds">
       </div>
@@ -125,6 +132,11 @@
       <style>
          ::-webkit-scrollbar {
             display: block !important;
+         }
+         
+         .jsgrid-cell img {
+            width: 100%;
+            height: auto;
          }
       </style>
    </body>

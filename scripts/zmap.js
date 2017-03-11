@@ -24,7 +24,7 @@ function ZMap() {
    this.categoryActions = [];
    
    //this.defaultTilesURL = 'tiles/'; // Local
-   this.defaultTilesURL = 'http://maps.zelda.com.br/tiles/';
+   this.defaultTilesURL = 'https://zeldamaps.com/tiles/';
 
    this.catCtrl;
    
@@ -307,7 +307,8 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.userId          = vMarker.userId;
    marker.userName        = vMarker.userName;
    marker.globalMarker    = vMarker.globalMarker;
-   marker.visible         = true;
+   marker.visible         = true;            // Used by the application to hide / show markers (everything is starting as visible) @TODO: might need to change this
+   marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    
    _this._createMarkerPopup(marker);
@@ -1106,7 +1107,15 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
                                  '</select>'+
                               '</p>'+
                            '</div>'+
-                        '<div class="divTableBody">' +
+                        '<div class="divTableBody">';
+      if (vMarker!=null && user!=null && user.level >= 10) {
+      popupContent = popupContent +
+                           '<div class="divTableRow">' +
+                              '<p class="divTableCell" style="vertical-align:top"><label class="control-label col-sm-5"><strong>Visible? </strong></label></p>'+
+                              '<p class="divTableCell"><input type="checkbox" placeholder="Visible?" class="form-control" id="isVisible" name="isVisible"'+(vMarker!=null&&vMarker.dbVisible==1?' checked':'')+'></p>'+
+                           '</div>';
+      }
+      popupContent = popupContent +
                            '<div class="divTableRow">' +
                               '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Title: </strong></label></p>'+
                               '<p class="divTableCell"><input type="string" placeholder="Title of Marker - Required" class="form-control" id="markerTitle" name="markerTitle"'+ (vMarker!=null?' value="' + vMarker.title + '"':'') +'></p>'+

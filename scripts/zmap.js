@@ -670,7 +670,7 @@ ZMap.prototype.buildMap = function() {
                                               });
    }
 
-   bounds = new L.LatLngBounds(new L.LatLng(324, -64), new L.LatLng(-256-8, 256+128));
+   bounds = new L.LatLngBounds(new L.LatLng(-50, 35), new L.LatLng(-206, 221));
    
 
    //map = L.map('map', { center:      new L.LatLng(mapOptions.centerX - 128,mapOptions.centerY + 128)
@@ -809,6 +809,8 @@ ZMap.prototype.buildMap = function() {
          showChangeLog();
       }, 500);
    }
+   
+   //map.on('click', function(e) { alert(1);console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng) });
    
    map.on('popupclose', function(e) {
       _this._closeNewMarker();

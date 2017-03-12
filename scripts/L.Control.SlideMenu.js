@@ -76,7 +76,7 @@ L.Control.SlideMenu = L.Control.extend({
     },
     
     /** 001 - BEGIN **/
-    show() {
+    show: function() {
        this._animate(this._menu, this._startPosition, 0, true);
     },
     /** 001 - END **/

@@ -30,7 +30,9 @@ L.Control.BottomMenu = L.Control.extend({
 
       this.options.iconQty = 4;
       this.options.iconSize = 80;
-      this.options.iconSpace = Math.floor((this.options.width - (this.options.iconQty * this.options.iconSize)) / (this.options.iconQty + 1));
+      this.options.scrollbarWidth = 18; // IE / FF
+      this.options.iconSpace = Math.floor((this.options.width - (this.options.iconQty * this.options.iconSize)) / (this.options.iconQty + 1)
+                                                              - (this.options.scrollbarWidth / (this.options.iconQty+1)));
         
       var contents = "";
       contents += '<ul class="leaflet-bottommenu-ul">';
@@ -262,12 +264,12 @@ L.Control.BottomMenu = L.Control.extend({
     },
     
     /** 001 - BEGIN **/
-    show() {
+    show: function() {
        bottomMenu._open = true;
        this._animate(this._menu, this._startPosition, this.options.openTo, true);
     },
     
-    isMobile() {
+    isMobile: function() {
        return this.options.mobile;
     },
     /** 001 - END **/

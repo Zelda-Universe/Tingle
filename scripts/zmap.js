@@ -329,7 +329,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
          
          var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
          
-         content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + (L.Browser.mobile?400:400)+"px;'>";
+         content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + Math.floor($(document).height() * 0.6) +"px;'>";
          if (marker.tabText.length > 1) {
             var ul = "<ul>";
             for (var i = 0; i < marker.tabText.length; i++) {
@@ -670,7 +670,7 @@ ZMap.prototype.buildMap = function() {
                                               });
    }
 
-   bounds = new L.LatLngBounds(new L.LatLng(-50, 35), new L.LatLng(-206, 221));
+   bounds = new L.LatLngBounds(new L.LatLng(-49.875, 34.25), new L.LatLng(-206, 221));
    
 
    //map = L.map('map', { center:      new L.LatLng(mapOptions.centerX - 128,mapOptions.centerY + 128)
@@ -810,7 +810,10 @@ ZMap.prototype.buildMap = function() {
       }, 500);
    }
    
-   //map.on('click', function(e) { alert(1);console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng) });
+//   map.on('click', function(e) {
+//      console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng) 
+//      _this.addPolyline([{lat: -126.75, lng: 134.3125}, {lat: -128.25, lng: 143}]);
+//   });
    
    map.on('popupclose', function(e) {
       _this._closeNewMarker();
@@ -902,6 +905,10 @@ ZMap.prototype.buildMap = function() {
 
              e.preventDefault(); // avoid to execute the actual submit of the form.
          });
+         var px = map.project(e.popup._latlng); // find the pixel location on the map where the popup anchor is
+         px.y -= e.popup._container.clientHeight/2 // find the height of the popup container, divide by 2, subtract from the Y axis of marker location
+         map.panTo(map.unproject(px),{animate: true}); 
+
       } else if ((e.popup.getContent().innerHTML)!=null){
          if ((e.popup.getContent().innerHTML).search("<ul>") >= 0 || (e.popup.getContent().innerHTML).search("<ul class=") >= 0) {
             var slider = $('#' + e.popup.getContent().id).unslider({keys: false,               //  Enable keyboard (left, right) arrow shortcuts
@@ -937,6 +944,25 @@ ZMap.prototype.buildMap = function() {
    mapControl.inputClick = inputClick;
    setTimeout(_this.refreshMap, 300);
 };
+
+
+ZMap.prototype.addPolyline = function(vPoints) {
+   var pointList = [];
+   for (var i = 0; i < vPoints.length; i++) {
+      if (vPoints[i].lat != undefined && vPoints[i].lng != undefined) {
+         pointList.push(new L.LatLng(vPoints[i].lat, vPoints[i].lng));
+      }
+   }
+   
+   var firstpolyline = new L.Polyline(pointList, {
+      color: 'red',
+      weight: 3,
+      opacity: 0.5,
+      smoothFactor: 1
+   });
+   firstpolyline.addTo(map);
+      
+}
 
 /** 
  * Go To a submap, layer or marker
@@ -1098,7 +1124,8 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
          //}
       });
       catSelection = catSelection + catSelection2;
-      var popupContent = '<h2 class="popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2><div class="popupContent" style="overflow-y: auto; max-height:400px;">'+
+      var popupContent = '<div class="banner"><h2 class="popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2>'+
+               '<div class="popupContent" style="overflow-y: auto; max-height:' + Math.floor($(document).height() * 0.4) + 'px">' +
                   '<form role="form" id="form" enctype="multipart/form-data" class="form-horizontal">'+
                      '<div class="divTable">' +
                            '<div class="divTableRow">' +
@@ -1111,7 +1138,7 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
                            '</div>'+
                         '<div class="divTableBody">';
       if (vMarker!=null && user!=null && user.level >= 10) {
-      popupContent = popupContent +
+         popupContent = popupContent +
                            '<div class="divTableRow">' +
                               '<p class="divTableCell" style="vertical-align:top"><label class="control-label col-sm-5"><strong>Visible? </strong></label></p>'+
                               '<p class="divTableCell"><input type="checkbox" placeholder="Visible?" class="form-control" id="isVisible" name="isVisible"'+(vMarker!=null&&vMarker.dbVisible==1?' checked':'')+'></p>'+
@@ -1170,7 +1197,7 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
                         '<p style="text-align:center;" class="divTableCell"><button type="submit" value="submit" class="submit" style="margin-left: 20px;">Submit</button></p>'+
                      '</div>'+
                      '<br>' +
-                     '</form></div>';
+                     '</form></div></div>';
    return popupContent;
 }
 
@@ -1280,9 +1307,9 @@ ZMap.prototype._buildContextMenu = function() {
       newMarker.bindPopup(popupContent,{
          //minWidth: 400,
          //maxHeight: 240,
-         minWidth: $(document).width() / 2,
-         maxHeight: $(document).height() / 2,
-         minHeight: $(document).height() / 2,
+         maxWidth: Math.floor($(document).width() * 0.6),
+         //maxHeight: Math.floor($(document).height() * 0.6),
+         //minHeight: Math.floor($(document).height() * 0.6),
       }).openPopup();
       
       map.contextmenu.hide();

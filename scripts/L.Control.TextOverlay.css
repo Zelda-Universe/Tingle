@@ -1,0 +1,69 @@
+@font-face {
+   font-family: Sheikah;
+   src: url('../fonts/Sheikah.ttf') format('truetype');
+}
+
+.leaflet-textoverlay {
+  position:absolute;
+  top:0;
+  left:0;
+  text-align:center;
+  color: black;
+   -webkit-text-fill-color: white; /* Will override color (regardless of order) */
+   -webkit-text-stroke-width: 1px;
+   -webkit-text-stroke-color: black;
+  font-size:40px;
+  line-height:0.5em;
+}
+
+.leaflet-textoverlay::before,
+.leaflet-textoverlay::after{
+  display:none;
+}
+
+.leaflet-textoverlay-arrow-left::before {
+  content:"";
+  display:inline-block;
+  position:absolute;
+  top:-27px;
+  height:108px;
+  width:20px;
+  background-size: cover;
+  background-position:0;
+  filter: invert(100%);
+  left:-20px;
+  background-image:url('../images/arrow_left.png');
+}
+
+.leaflet-textoverlay-arrow-right::after {
+  content:"";
+  display:inline-block;
+  position:absolute;
+  top:-27px;
+  height:108px;
+  width:20px;
+  background-size: cover;
+  background-position:0;
+  filter: invert(100%);
+  right:-20px;
+  background-image:url('../images/arrow_right.png');
+}
+
+.leaflet-textoverlay-top {
+  font-family:HyliaSerif;
+  font-size:1em;
+}
+
+.leaflet-textoverlay-bottom {
+  font-family:Sheikah;
+  font-size:0.5em;
+}
+
+.leaflet-textoverlay-bottom p {
+  display:inline-block;
+  margin:0;
+  -webkit-margin-before:0;
+  -webkit-margin-after:0;
+  -webkit-margin-start:0;
+  -webkit-margin-end:0;
+}

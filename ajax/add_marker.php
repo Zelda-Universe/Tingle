@@ -20,9 +20,27 @@
 		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
 		return;	
 	}
-	
+
+   // If it`s an update
+   if (isset($_POST['markerId'])) {
+      // Validate the rank of the user
+      if ($_SESSION['level'] < 5 
+         || ($_SESSION['level'] < 10 && ($_SESSION['user_id'] != $_POST['userId'])) // @TODO: Improve this to get actual marker user, since he can change the POST data
+      ) {
+         echo json_encode(array("success"=>false, "msg"=>"You can't delete this marker!"));
+         return;	
+      }
+   } else {
+      // Ok, anyone can add marker :)
+   }
+   
    //----------------------------------------------------------//
    if (!isset($_POST['markerId'])) {
+   $visible = 0;
+      if ($_SESSION['level'] >= 5) {
+         $visible = 1;
+      }
+
       $query = "insert into " . $map_prefix . "marker (
                                           id
                                         , submap_id
@@ -47,7 +65,7 @@
                                         , ".$_POST['lng']."
                                         , ".$_POST['lat']."
                                         , " . (isset($_POST['isGlobal'])?1:0) . "
-                                        , 1
+                                        , " . $visible . "
                                         , now()                                     
                                   )";
    } else {
@@ -59,7 +77,14 @@
                      , x = ".$_POST['lng']."
                      , y = ".$_POST['lat']."
                      , global = " . (isset($_POST['isGlobal'])?1:0) . "
-                     , last_updated = now()                                     
+                     , last_updated = now()
+               ";
+      if ($_SESSION['level'] >= 10) {
+      $query = $query . "
+                     , visible = " . (isset($_POST['isVisible'])?1:0);
+      }
+
+      $query = $query . "
                  where id = " . $_POST['markerId'];
    }
 

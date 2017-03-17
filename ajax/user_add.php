@@ -18,7 +18,7 @@
    $hash = password_hash($password, PASSWORD_DEFAULT, ['cost' => 13]);
    
    $query = "INSERT INTO " . $map_prefix . "user " . " (username, password, name, email, created, ip, last_login, level, visible) VALUES" .
-            "('" . $username . "', '" . $hash . "', '" . $name . "', '" . $email . "', now(), '" . $ip . "', now(), 5, 1)"
+            "('" . $username . "', '" . $hash . "', '" . $name . "', '" . $email . "', now(), '" . $ip . "', now(), 1, 1)"
             ;
    //echo $query;
 	$result = $mysqli->query($query);

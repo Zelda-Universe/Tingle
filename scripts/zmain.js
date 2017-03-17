@@ -142,9 +142,6 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       if (vContainer.bgColor[0] != '#') {
          vContainer.bgColor = '#' + vContainer.bgColor;
       }
-      $("#map").css("background-color", vContainer.bgColor);
-      $("body").css("background-color", vContainer.bgColor);
-      $("html").css("background-color", vContainer.bgColor);
       
       zMap.constructor(vContainer);
       
@@ -158,6 +155,11 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       getMaps();
 
       getUserInfo();
+
+      $("#map").css("background-color", vContainer.bgColor);
+      $("body").css("background-color", vContainer.bgColor);
+      $("html").css("background-color", vContainer.bgColor);
+      
    });
    
 });

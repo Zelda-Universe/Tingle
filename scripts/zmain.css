@@ -303,7 +303,7 @@ html, body, #map {
 }
 
 .map-icon-svg  {
-   font-size: 32px;
+   font-size: 28px; /*32px;*/
    color: white;
    font-family: HyliaSerif; 
    
@@ -316,7 +316,7 @@ html, body, #map {
 }
 
 .icon-marker {
-   font-size: 22px;
+   font-size: 18px; /*22px;*/
    top: 5px;
    left: 5px;
 }

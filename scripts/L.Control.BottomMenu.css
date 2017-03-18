@@ -167,7 +167,20 @@
    overflow-y: scroll;
 }
 
-::-webkit-scrollbar { 
-    display: none; 
+.leaflet-bottommenu-contents::-webkit-scrollbar { 
+     
 }
 
+#menu-custom-content {
+   clear: both;
+   color: white;
+}
+#menu-custom-content  img {
+   width: 100%;
+   height: auto;
+}
+
+.popup-div-content {
+   margin-left: 16px;
+   margin-right: 16px;
+}

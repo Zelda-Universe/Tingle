@@ -80,10 +80,17 @@
 
 	var eventOptions = { bubbles: true, cancelable: true };
 
-	var eventsSymbol = Symbol('events');
+	var eventsSymbol = window.Symbol?Symbol('events'):'events-'+(Math.random()*Number.MAX_SAFE_INTEGER).toFixed(0);
 
 	function createEvent(type) {
-		return new CustomEvent(type, eventOptions);
+		var evt;
+		try {
+			evt = new CustomEvent(type, eventOptions);
+		} catch(err) {
+			evt = document.createEvent("CustomEvent");
+			evt.initCustomEvent('',eventOptions.bubbles,eventOptions.cancelable,null);
+		}
+		return evt;
 	}
 
 	function getEvents(node) {
@@ -94,11 +101,12 @@
 		types = types.split(rspaces);
 
 		var events = getEvents(node);
-		var handlers, type;
+		var handlers, ti, type;
 
 		function handler(e) { fn(e, data); }
 
-		for (type of types) {
+		for (ti in types) {
+			type=types[ti];
 			handlers = events[type] || (events[type] = []);
 			handlers.push([fn, handler]);
 			node.addEventListener(type, handler);
@@ -109,11 +117,12 @@
 		types = types.split(rspaces);
 
 		var events = getEvents(node);
-		var type, handlers, i;
+		var type, handlers, i, ti;
 
 		if (!events) { return; }
 
-		for (type of types) {
+		for (ti in types) {
+			type = types[ti];
 			handlers = events[type];
 			if (!handlers) { continue; }
 			i = handlers.length;
@@ -521,8 +530,9 @@
 
 		handleObj.handler = function(e) {
 			// Copy move properties across from originalEvent
-			var property;
-			for (property of properties) {
+			var property, i;
+			for (i in properties) {
+				property = properties[i];
 				e[property] = e.originalEvent[property];
 			}
 			handler.apply(this, arguments);

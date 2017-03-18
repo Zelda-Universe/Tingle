@@ -1,6 +1,6 @@
 @font-face {
    font-family: HyliaSerif;
-   src: url("fonts/HyliaSerifBeta-Regular.otf") format("opentype");
+   src: url("../fonts/HyliaSerifBeta-Regular.otf") format("opentype");
 }
 
 .leaflet-control-zoom-fullscreen { background-image: url(icon-fullscreen.png); }

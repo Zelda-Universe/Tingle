@@ -92,16 +92,13 @@ function getMakers(){
       });
       
    });
-};
-
-zMap = new ZMap();
-var gameId = getUrlParam("game");
+}
 
 // Get value of parameters
 function getUrlParamValue(vParamName, vDefaultValue) {
-   var vParamName = getUrlParam(vParamName);
-   
-   if (vParamName == undefined || vParamName == "") {
+   vParamName = getUrlParam(vParamName);
+
+   if (vParamName === undefined || vParamName === "") {
       return vDefaultValue;
    }
    if (vParamName == "false") {
@@ -111,10 +108,14 @@ function getUrlParamValue(vParamName, vDefaultValue) {
       return true;
    }
    return vParamName;
-};
+}
 
-// Initial Load
-//  Get map that we want to load (the game ID)
+$(function(){
+  zMap = new ZMap();
+  gameId = getUrlParam("game");
+
+  // Initial Load
+  //  Get map that we want to load (the game ID)
 $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
    
    // Should only get only one map 
@@ -161,5 +162,4 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       $("html").css("background-color", vContainer.bgColor);
       
    });
-   
 });

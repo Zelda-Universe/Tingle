@@ -276,8 +276,9 @@ ZMap.prototype.addMarker = function(vMarker) {
    if (vMarker.markerCategoryTypeId != 3) {
       marker = new L.Marker([vMarker.y,vMarker.x], { title: vMarker.name
                                                    //, icon: new markerIcon({iconUrl: mapOptions.markerURL + categories[vMarker.markerCategoryId].img + '.' + mapOptions.markerExt})
-                                                   , icon: new markerIcon({className: 'map-icon-svg' 
-                                                                          ,html: "<i class='icon-Button' style='color: " + categories[vMarker.markerCategoryId].color + ";'></i><div style='position: absolute;' class='icon-marker icon-" + categories[vMarker.markerCategoryId].img + "'></div>"
+                                                   , icon: new markerIcon({className: 'map-icon-svg'
+//                                                                          ,html: "<i class='icon-Button' style='color: " + categories[vMarker.markerCategoryId].color + ";'></i><div style='position: absolute;' class='icon-marker icon-" + categories[vMarker.markerCategoryId].img + "'></div>"
+                                                                            ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.markerCategoryId].color + "; border-color: " + categories[vMarker.markerCategoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.markerCategoryId].img + "'></span></div>"
                                                                            })
                                                    });
    } else {
@@ -322,7 +323,8 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.complete        = false;
    for (var i = 0; i < completedMarkers.length; i++) {
       if (marker.id == completedMarkers[i]) {
-         marker.complete = true;
+		_this._doSetMarkerDoneIcon(marker, true);
+		break;
       }
    }
    
@@ -366,7 +368,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
                          + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
                          + "<br style='height:0pt; clear:both;'>"
                          + "<p style=\"float: right;\">"
-                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+						   + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
                            + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
                            + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
                          + "</p>"
@@ -379,6 +381,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
             }
          } else {
             content += "<p style=\"float: right;\">"
+						+ "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
                         + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
                       + "</p>"
                    + "</div>";
@@ -425,10 +428,9 @@ ZMap.prototype._createMarkerPopup = function(marker) {
          });
          
          marker.on('contextmenu',function(e){
-            marker.complete = true;
-            completedMarkers.push(marker.id);
-            setCookie('completedMarkers', JSON.stringify(completedMarkers));
-            _this.refreshMap();
+			 if (!marker.complete) {
+				_this._doSetMarkerDoneAndCookie(marker);
+			 }
          });
       } else {
          marker.on('click',function() {
@@ -499,14 +501,104 @@ ZMap.prototype._rebuildMarkerPopup = function() {
    }
 }
 
+ZMap.prototype._setMarkerDone = function(vID, vComplete) {
+	for (var i = 0; i < markers.length; i++) {
+		if (markers[i].id == vID) {
+			if (vComplete) {
+				_this._doSetMarkerDoneAndCookie(markers[i], vComplete);
+			} else {
+				_this._doSetMarkerUndoneAndCookie(markers[i], vComplete);
+			}
+			break;
+		}
+	}
+}
+
+ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
+	if (vComplete) {
+		vMarker.complete = true;
+		vMarker.setIcon(new markerIcon({className: 'map-icon-svg'
+									 ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span><span class='icon-checkmark completeMarker'></span></div>"
+									 }));
+
+	} else {
+		vMarker.complete = false;
+		vMarker.setIcon(new markerIcon({className: 'map-icon-svg'
+									 ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span></div>"
+									 }));
+
+		
+	}
+}
+
+ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
+	for (var i = 0; i < completedMarkers.length; i++) {
+		if (completedMarkers[i] == vMarker.id) {
+			return;
+		}
+	}
+	completedMarkers.push(vMarker.id);
+	_this._doSetMarkerDoneIcon(vMarker, true);
+	setCookie('completedMarkers', JSON.stringify(completedMarkers));
+}
+
+
+if (!Array.prototype.filter) {
+  Array.prototype.filter = function(fun/*, thisArg*/) {
+    'use strict';
+
+    if (this === void 0 || this === null) {
+      throw new TypeError();
+    }
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+    if (typeof fun !== 'function') {
+      throw new TypeError();
+    }
+
+    var res = [];
+    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+    for (var i = 0; i < len; i++) {
+      if (i in t) {
+        var val = t[i];
+
+        // NOTE: Technically this should Object.defineProperty at
+        //       the next index, as push can be affected by
+        //       properties on Object.prototype and Array.prototype.
+        //       But that method's new, and collisions should be
+        //       rare, so use the more-compatible alternative.
+        if (fun.call(thisArg, val, i, t)) {
+          res.push(val);
+        }
+      }
+    }
+
+    return res;
+  };
+}
+
+ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
+	console.log(1);
+	for (var i = 0; i < completedMarkers.length; i++) {
+		completedMarkers = completedMarkers.filter(function(item) { 
+			return item !== vMarker.id;
+		});
+		break;
+	}
+	_this._doSetMarkerDoneIcon(vMarker, false);
+	setCookie('completedMarkers', JSON.stringify(completedMarkers));
+}
+
+
 ZMap.prototype.undoMarkerComplete = function() {
    var mID = completedMarkers.pop();
    if (mID != undefined) {
       for (var i = 0; i < markers.length; i++) {
          if (markers[i].id == mID) {
-            markers[i].complete = false;
-            _this.refreshMap();
+            _this._doSetMarkerDoneIcon(markers[i], false);
             setCookie('completedMarkers', JSON.stringify(completedMarkers));
+            //_this.refreshMap();
             break;
          }
       }
@@ -516,10 +608,6 @@ ZMap.prototype.undoMarkerComplete = function() {
 ZMap.prototype.updateMarkerVisibility = function(vCatId, vVisible) {
    
    for (var i = 0; i < markers.length; i++) {
-      if (markers[i].complete) {
-         markers[i].visible = false;
-         continue;
-      }
       if (markers[i].categoryId == vCatId) {
          markers[i].visible = vVisible;
       }
@@ -535,7 +623,7 @@ ZMap.prototype.refreshMap = function() {
    }
    var oMap = maps[currentMap]._overlayMap;
    for (var i = 0; i < markers.length; i++) {
-      if (markers[i].visible && !markers[i].complete
+      if (markers[i].visible
             && ( (oMap && oMap[currentOverlaypMap] && oMap[currentOverlaypMap].id == 'mID' + markers[i].submapId && markers[i].mapOverlayId==null)
                  || (oMap && maps[currentMap].id == 'mID' + markers[i].submapId && oMap[currentOverlaypMap] && oMap[currentOverlaypMap].id == 'mID' + markers[i].mapOverlayId)
                  || (oMap == undefined && maps[currentMap].id == 'mID' + markers[i].submapId)
@@ -1302,7 +1390,8 @@ ZMap.prototype.editMarker = function(vMarkerId) {
 */
       newMarker = new L.Marker(vMarker._latlng, { title: vMarker.name
                                                 , icon: new markerIcon({className: 'map-icon-svg' 
-                                                                       ,html: "<i class='icon-Button' style='color: " + categories[vMarker.categoryId].color + ";'></i><div style='position: absolute;' class='icon-marker icon-" + categories[vMarker.categoryId].img + "'></div>"
+                                                                       //,html: "<i class='icon-Button' style='color: " + categories[vMarker.categoryId].color + ";'></i><div style='position: absolute;' class='icon-marker icon-" + categories[vMarker.categoryId].img + "'></div>"
+                                                                       ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.markerCategoryId].color + "; border-color: " + categories[vMarker.markerCategoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.markerCategoryId].img + "'></span></div>"
                                                                         })
                                                 }).addTo(map);
                                              

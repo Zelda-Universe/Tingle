@@ -20,9 +20,13 @@ function setCookie(cname, cvalue, exdays) {
       d.setTime(d.getTime() + (exdays*24*60*60*1000));
       var expires = "expires="+ d.toUTCString();
    } else {
-      var expires="";
+      var d = new Date();
+      d.setTime(d.getTime() + (365*24*60*60*1000));
+      var expires = "expires="+ d.toUTCString();
+
    }
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+   //console.log(expires);
+   document.cookie = cname + "=" + cvalue + ";" + expires;
 }
 
 function getCookie(cname) {
@@ -113,13 +117,22 @@ function getUrlParamValue(vParamName, vDefaultValue) {
    return vParamName;
 };
 
+function KeyPress(e) {
+      var evtobj = window.event? event : e
+      if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
+         zMap.undoMarkerComplete();
+      }
+}
+
+document.onkeydown = KeyPress;
+
 // Initial Load
 //  Get map that we want to load (the game ID)
 $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
    
    // Should only get only one map 
    $.each(vResults, function(i, vContainer) {
-      
+
       vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
       vContainer.collapsed                  = getUrlParamValue('collapsed', false);
       vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
@@ -152,6 +165,13 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       if (vContainer.showCategoryControl) {
          getMapCategoriesTree();
       }
+      
+      
+      var completedMarkers = getCookie('completedMarkers');
+      if (completedMarkers != undefined && completedMarkers != null && completedMarkers != "") {
+         zMap.addCompletedMarkers(JSON.parse(completedMarkers));
+      }
+      
       getMaps();
 
       getUserInfo();

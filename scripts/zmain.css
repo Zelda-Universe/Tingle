@@ -270,8 +270,7 @@ html, body, #map {
 }
 
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
-   /*border: 2px solid rgba(0,0,0,0.2) */
-   border: none;
+   border: 2px solid rgba(0,0,0,0.2);
 }
 
 .leaflet-bar a {

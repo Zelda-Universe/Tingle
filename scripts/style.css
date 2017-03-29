@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?j9yrb1');
-  src:  url('fonts/icomoon.eot?j9yrb1#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?j9yrb1') format('truetype'),
-    url('fonts/icomoon.woff?j9yrb1') format('woff'),
-    url('fonts/icomoon.svg?j9yrb1#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?fmflj2');
+  src:  url('fonts/icomoon.eot?fmflj2#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?fmflj2') format('truetype'),
+    url('fonts/icomoon.woff?fmflj2') format('woff'),
+    url('fonts/icomoon.svg?fmflj2#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,98 +24,98 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-film:before {
-  content: "\f008";
-}
-.icon-bomb:before {
-  content: "\e91d";
-}
-.icon-BotW_Great-Fairy:before {
-  content: "\e91a";
-}
-.icon-BotW_Stables:before {
-  content: "\e91c";
-}
-.icon-Button:before {
-  content: "\e915";
-}
-.icon-BotW_Korok-Seeds:before {
-  content: "\e91b";
-}
-.icon-BotW_Dungeon:before {
-  content: "\e916";
-}
-.icon-BotW_Farm:before {
-  content: "\e917";
-}
-.icon-BotW_The-Temple-of-Time:before {
-  content: "\e918";
-}
-.icon-BotW_Village:before {
-  content: "\e919";
-}
-.icon-BotW_Weapons:before {
+.icon-BotW_Armor:before {
   content: "\e900";
 }
-.icon-BotW_Tower-of-Resurrection:before {
+.icon-BotW_Meat:before {
   content: "\e901";
 }
-.icon-BotW_Shrines:before {
+.icon-BotW_Boss-Alternate:before {
   content: "\e902";
 }
-.icon-BotW_Shrine-of-Resurrection:before {
+.icon-BotW_Boss:before {
   content: "\e903";
 }
-.icon-BotW_Shields:before {
+.icon-BotW_Bow-n-Arrows:before {
   content: "\e904";
 }
-.icon-BotW_Points-of-Interest:before {
+.icon-BotW_Dungeon:before {
   content: "\e905";
 }
-.icon-BotW_Mushroom:before {
+.icon-BotW_Enemies:before {
   content: "\e906";
 }
-.icon-BotW_Meat:before {
+.icon-BotW_Enemy-Camp:before {
   content: "\e907";
 }
-.icon-BotW_Materials:before {
+.icon-BotW_Equipment:before {
   content: "\e908";
 }
-.icon-BotW_Locations:before {
+.icon-BotW_Farm:before {
   content: "\e909";
 }
-.icon-BotW_Items:before {
+.icon-BotW_Fish:before {
   content: "\e90a";
 }
-.icon-BotW_Herb:before {
+.icon-BotW_Great-Fairy:before {
   content: "\e90b";
 }
 .icon-BotW_Guardian:before {
   content: "\e90c";
 }
-.icon-BotW_Fish:before {
+.icon-BotW_Herb:before {
   content: "\e90d";
 }
-.icon-BotW_Equipment:before {
+.icon-BotW_Items:before {
   content: "\e90e";
 }
-.icon-BotW_Enemy-Camp:before {
+.icon-BotW_Korok-Seeds:before {
   content: "\e90f";
 }
-.icon-BotW_Enemies:before {
+.icon-BotW_Locations:before {
   content: "\e910";
 }
-.icon-BotW_Bow-n-Arrows:before {
+.icon-BotW_Materials:before {
   content: "\e911";
 }
-.icon-BotW_Boss:before {
+.icon-BotW_Mushroom:before {
   content: "\e912";
 }
-.icon-BotW_Armor:before {
+.icon-BotW_Points-of-Interest:before {
   content: "\e913";
 }
-.icon-pencil:before {
+.icon-BotW_Shields:before {
   content: "\e914";
+}
+.icon-BotW_Shrine-of-Resurrection:before {
+  content: "\e915";
+}
+.icon-BotW_Shrines:before {
+  content: "\e916";
+}
+.icon-BotW_Stables:before {
+  content: "\e917";
+}
+.icon-BotW_The-Temple-of-Time:before {
+  content: "\e918";
+}
+.icon-BotW_Tower-of-Resurrection:before {
+  content: "\e919";
+}
+.icon-BotW_Village:before {
+  content: "\e91a";
+}
+.icon-BotW_Weapons:before {
+  content: "\e91b";
+}
+.icon-bomb:before {
+  content: "\e91d";
+}
+.icon-film:before {
+  content: "\e91e";
+}
+.icon-pencil:before {
+  content: "\e91f";
 }
 .icon-bubble2:before {
   content: "\e96e";
@@ -128,5 +128,17 @@
 }
 .icon-cross:before {
   content: "\ea0f";
+}
+.icon-checkmark:before {
+  content: "\ea10";
+}
+.icon-checkmark2:before {
+  content: "\ea11";
+}
+.icon-checkbox-checked:before {
+  content: "\ea52";
+}
+.icon-checkbox-unchecked:before {
+  content: "\ea53";
 }
 

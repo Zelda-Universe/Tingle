@@ -302,7 +302,7 @@ html, body, #map {
 }
 
 .map-icon-svg  {
-   font-size: 28px; /*32px;*/
+   /*font-size: 28px; /*32px;*/
    color: white;
    font-family: HyliaSerif; 
    
@@ -603,5 +603,11 @@ hr {
    margin: 5px 0;
  }
 
- 
- 
+ .completeMarker {
+    font-size: 18px !important;
+    position: absolute !important;
+    left: 16px;
+    top: 16px;
+    color: gold !important;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+ }

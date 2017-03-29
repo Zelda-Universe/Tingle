@@ -329,7 +329,40 @@ ZMap.prototype.addMarker = function(vMarker) {
    }
    
    _this._createMarkerPopup(marker);
-   
+	
+
+	if (marker.categoryTypeId == 1) {
+		marker.on('click',function() {
+			try {
+				L.geoJson(JSON.parse(marker.description), {
+					onEachFeature: function (feature, layer) {
+						//@TODO: Dynamic color
+						layer.options.color = "#f06eaa",
+						layer.options.weight = 2,
+						drawnItems.addLayer(layer);
+					}
+				});
+			} catch (err) {
+				// @TODO: DO NOT USE TRY!!!! :)
+			}
+	//            L.geoJson(JSON.parse(marker.description)).eachLayer(function (layer) {
+	//               layer.setRadius(layer.feature.properties.radius);
+	//               layer.addTo(drawnItems);
+	//            });
+		});
+		
+		  
+		marker.on('contextmenu',function(e){
+			if (!marker.complete) {
+				_this._doSetMarkerDoneAndCookie(marker);
+			} else {
+				_this._doSetMarkerUndoneAndCookie(marker);
+			}
+			_this._createMarkerPopup(marker);
+			map.closePopup();
+		});
+	}
+
    markers.push(marker);
 };
 
@@ -408,32 +441,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
          
          popup.setContent(div);
          
-         
          marker.bindPopup(popup);
-          
-         marker.on('click',function() {
-            try {
-               L.geoJson(JSON.parse(marker.description), {
-                 onEachFeature: function (feature, layer) {
-                   layer.options.color = "#ffffff",
-                   layer.options.weight = 2,
-                   drawnItems.addLayer(layer);
-                 }
-               });
-            } catch (err) {
-               // @TODO: DO NOT USE TRY!!!! :)
-            }
-//            L.geoJson(JSON.parse(marker.description)).eachLayer(function (layer) {
-//               layer.setRadius(layer.feature.properties.radius);
-//               layer.addTo(drawnItems);
-//            });
-         });
-         
-         marker.on('contextmenu',function(e){
-			 if (!marker.complete) {
-				_this._doSetMarkerDoneAndCookie(marker);
-			 }
-         });
       } else {
          marker.on('click',function() {
             var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
@@ -480,7 +488,6 @@ ZMap.prototype._createMarkerPopup = function(marker) {
             }
          });
       }
-      
    }
    
    // Type 2 = Gateway to other marker
@@ -509,9 +516,9 @@ ZMap.prototype._setMarkerDone = function(vID, vComplete) {
 	for (var i = 0; i < markers.length; i++) {
 		if (markers[i].id == vID) {
 			if (vComplete) {
-				_this._doSetMarkerDoneAndCookie(markers[i], vComplete);
+				_this._doSetMarkerDoneAndCookie(markers[i]);
 			} else {
-				_this._doSetMarkerUndoneAndCookie(markers[i], vComplete);
+				_this._doSetMarkerUndoneAndCookie(markers[i]);
 			}
 			break;
 		}
@@ -583,7 +590,6 @@ if (!Array.prototype.filter) {
 }
 
 ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
-	console.log(1);
 	for (var i = 0; i < completedMarkers.length; i++) {
 		completedMarkers = completedMarkers.filter(function(item) { 
 			return item !== vMarker.id;
@@ -982,17 +988,13 @@ ZMap.prototype.buildMap = function() {
       }, 500);
    }
    
-//   map.on('click', function(e) {
-//      console.log("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng) 
-//      _this.addPolyline([{lat: -126.75, lng: 134.3125}, {lat: -128.25, lng: 143}]);
-//   });
-   
    map.on('popupclose', function(e) {
       drawnItems.clearLayers();
       _this._closeNewMarker();
    });
    
    map.on('popupopen', function(e) {
+		drawnItems.clearLayers();
       if (newMarker != null) {
          var wrapper         = $(".divTabBody"); //Fields wrapper
          var add_button      = $(".add_field_button"); //Add button ID
@@ -1249,24 +1251,6 @@ ZMap.prototype._getCentroid = function (arr) {
     }
     var sixSignedArea = 3 * twoTimesSignedArea;
     return { lat: cxTimes6SignedArea / sixSignedArea, lng: cyTimes6SignedArea / sixSignedArea }
-}
-
-ZMap.prototype.addPolyline = function(vPoints) {
-   var pointList = [];
-   for (var i = 0; i < vPoints.length; i++) {
-      if (vPoints[i].lat != undefined && vPoints[i].lng != undefined) {
-         pointList.push(new L.LatLng(vPoints[i].lat, vPoints[i].lng));
-      }
-   }
-   
-   var firstpolyline = new L.Polyline(pointList, {
-      color: 'red',
-      weight: 3,
-      opacity: 0.5,
-      smoothFactor: 1
-   });
-   firstpolyline.addTo(map);
-      
 }
 
 /** 

@@ -34,6 +34,10 @@ function ZMap() {
    
    this.curCatVisible = null;
    this.bottomMenu;
+   
+   this.drawnItems;
+   
+   this.completedMarkers = [];
 };
 
 
@@ -95,6 +99,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
    */
    newMarker = null;
    user = null;
+   completedMarkers = [];
 };
 
 // Add a map category
@@ -115,6 +120,11 @@ ZMap.prototype.setUser = function(vUser) {
    _this._buildContextMenu();
    _this._rebuildMarkerPopup();
 };
+
+// Add a map category
+ZMap.prototype.addCompletedMarkers = function(vComplete) {
+   completedMarkers = vComplete;
+}; 
 
 /** 
  * Add a map passed through as a parameter
@@ -259,7 +269,6 @@ ZMap.prototype.addMarker = function(vMarker) {
       console.log("Wrong marker category. Marker ID: " + vMarker.id);
       return;
    }
-   
 
    var marker;
    
@@ -310,6 +319,12 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.visible         = true;            // Used by the application to hide / show markers (everything is starting as visible) @TODO: might need to change this
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
+   marker.complete        = false;
+   for (var i = 0; i < completedMarkers.length; i++) {
+      if (marker.id == completedMarkers[i]) {
+         marker.complete = true;
+      }
+   }
    
    _this._createMarkerPopup(marker);
    
@@ -389,7 +404,32 @@ ZMap.prototype._createMarkerPopup = function(marker) {
          popup.setContent(div);
          
          
-          marker.bindPopup(popup);
+         marker.bindPopup(popup);
+          
+         marker.on('click',function() {
+            try {
+               L.geoJson(JSON.parse(marker.description), {
+                 onEachFeature: function (feature, layer) {
+                   layer.options.color = "#ffffff",
+                   layer.options.weight = 2,
+                   drawnItems.addLayer(layer);
+                 }
+               });
+            } catch (err) {
+               // @TODO: DO NOT USE TRY!!!! :)
+            }
+//            L.geoJson(JSON.parse(marker.description)).eachLayer(function (layer) {
+//               layer.setRadius(layer.feature.properties.radius);
+//               layer.addTo(drawnItems);
+//            });
+         });
+         
+         marker.on('contextmenu',function(e){
+            marker.complete = true;
+            completedMarkers.push(marker.id);
+            setCookie('completedMarkers', JSON.stringify(completedMarkers));
+            _this.refreshMap();
+         });
       } else {
          marker.on('click',function() {
             var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
@@ -459,9 +499,27 @@ ZMap.prototype._rebuildMarkerPopup = function() {
    }
 }
 
+ZMap.prototype.undoMarkerComplete = function() {
+   var mID = completedMarkers.pop();
+   if (mID != undefined) {
+      for (var i = 0; i < markers.length; i++) {
+         if (markers[i].id == mID) {
+            markers[i].complete = false;
+            _this.refreshMap();
+            setCookie('completedMarkers', JSON.stringify(completedMarkers));
+            break;
+         }
+      }
+   }
+}
+
 ZMap.prototype.updateMarkerVisibility = function(vCatId, vVisible) {
    
    for (var i = 0; i < markers.length; i++) {
+      if (markers[i].complete) {
+         markers[i].visible = false;
+         continue;
+      }
       if (markers[i].categoryId == vCatId) {
          markers[i].visible = vVisible;
       }
@@ -477,7 +535,7 @@ ZMap.prototype.refreshMap = function() {
    }
    var oMap = maps[currentMap]._overlayMap;
    for (var i = 0; i < markers.length; i++) {
-      if (markers[i].visible
+      if (markers[i].visible && !markers[i].complete
             && ( (oMap && oMap[currentOverlaypMap] && oMap[currentOverlaypMap].id == 'mID' + markers[i].submapId && markers[i].mapOverlayId==null)
                  || (oMap && maps[currentMap].id == 'mID' + markers[i].submapId && oMap[currentOverlaypMap] && oMap[currentOverlaypMap].id == 'mID' + markers[i].mapOverlayId)
                  || (oMap == undefined && maps[currentMap].id == 'mID' + markers[i].submapId)
@@ -655,6 +713,13 @@ ZMap.prototype._createHelpText = function(categoryTree, showCategoryHead) {
    return helpText;
 }
 
+L.LatLng.prototype.distanceTo = function (other) {
+    var dx = other.lng - this.lng;
+    var dy = other.lat - this.lat;
+    return Math.sqrt(dx*dx + dy*dy);
+}
+
+
 ZMap.prototype.buildMap = function() {
    console.log("Leaflet Version: " + L.version);
    console.log("Zelda Maps Version: " + _this.version);
@@ -699,12 +764,10 @@ ZMap.prototype.buildMap = function() {
       overlayMaps[maps[0]._overlayMap[i].title] = maps[0]._overlayMap[i];
    }
    
-   mapControl = L.control.zlayers2(baseMaps, null, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
+   mapControl = L.control.zcontrol(baseMaps, null, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
    mapControl.addTo(map);
-   
+
    map.addLayer(markerCluster);
-   
-   
    
    bottomMenu = L.control.bottomMenu("bottom", categoryTree);
    bottomMenu.addTo(map);
@@ -746,16 +809,17 @@ ZMap.prototype.buildMap = function() {
    }
    
    function showChangeLog() {
-      if (!getCookie('showChangeLogV0.2')) {
+      if (!getCookie('showChangeLogV0.3')) {
          var win = L.control.window(map,{title:'Changelog',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                   .content("<p>New to version alpha 0.2</p>"
-                           +"<p>- You can now add your own markers! Right click on the map and log in / create an account to start adding (best suited for desktop).</p>"
-                           +"<p>- Optimizations for mobile devices.</p>"
-                           +"<p>- Tons of new markers everyday!</p>"
+                   .content("<p>New to version alpha 0.3</p>"
+                           +"<p>- Mark as complete! You can now right-click a marker (desktop) or long press it (mobile) to hide a marker indefinitely. You can undo this by using ctrl + z in case of a mistake. This shall help you in the quest to get all koroks, making it much easier to see what you're missing. This feature uses cookies, so please don't clean it.</p>"
+                           +"<p>- Don't show this again has been fixed. Sorry if you read the intro everytime :).</p>"
+                           +"<p>- (Admins only) Ability to draw lines and polygons. Very soon, we will have paths for those pesky koroks, side-quests, etc.</p>"
+                           +"<p>- The following markers were extracted from the game files and their position are considered final: Koroks, Shrines, Towers, Villages, Stables, Great Fairies! More to come...</p>"
                    ).prompt({buttonOK: 'Don\'t show this again!'
                             , buttonCancel: 'Close'
                             , callback:function(e){
-                                 setCookie('showChangeLogV0.2', false);
+                                 setCookie('showChangeLogV0.3', false);
                               }
                            })
                    .show();
@@ -816,6 +880,7 @@ ZMap.prototype.buildMap = function() {
 //   });
    
    map.on('popupclose', function(e) {
+      drawnItems.clearLayers();
       _this._closeNewMarker();
    });
    
@@ -943,8 +1008,140 @@ ZMap.prototype.buildMap = function() {
    
    mapControl.inputClick = inputClick;
    setTimeout(_this.refreshMap, 300);
+   
+   
+   drawnItems = new L.FeatureGroup().addTo(map);
+   editActions = [
+            L.Edit.Popup.Edit,
+            L.Edit.Popup.Delete
+   ];
+   /*
+   editActions = [
+            L.Edit.Popup.Edit,
+            L.Edit.Popup.Delete,
+            L.ToolbarAction.extendOptions({
+               toolbarIcon: { 
+                  className: 'leaflet-color-picker', 
+                  html: '<span class="fa fa-eyedropper"></span>' 
+               },
+               subToolbar: new L.Toolbar({ actions: [
+                  L.ColorPicker.extendOptions({ color: '#db1d0f' }),
+                  L.ColorPicker.extendOptions({ color: '#025100' }),
+                  L.ColorPicker.extendOptions({ color: '#ffff00' }),
+                  L.ColorPicker.extendOptions({ color: '#0000ff' })
+               ]})
+
+            })
+         ];
+*/
+
+   if (user != null && user.level >= 5) {
+      new L.DrawToolbar.Control({ 
+            position: 'bottomleft',
+            className: 'leaflet-draw-toolbar',
+         }).addTo(map);
+   }
+
+   map.on('draw:created', function(e) {
+      drawnItems.clearLayers();
+      _this._closeNewMarker();
+      
+      var type = e.layerType
+        , layer = e.layer;
+      
+      //console.log(e);
+      if (type == "polygon" || type == "rectangle" || type == "polyline") {
+         drawnItems.addLayer(layer);
+
+         layer.on('click', function(event) {
+            new L.EditToolbar.Popup(event.latlng, {
+               className: 'leaflet-draw-toolbar',
+               actions: editActions
+            }).addTo(map, layer);
+         });
+         
+         var latLng = {};
+         var poly;
+         
+         if (type == "polygon" || type == "rectangle") {
+            latLng = _this._getCentroid(layer._latlngs[0]);
+         } else {
+            latLng = layer._latlngs[0];
+         }
+         poly = JSON.stringify(drawnItems.toGeoJSON());
+
+         newMarker = new L.marker(latLng).addTo(map);
+         var popupContent = _this._createPopupNewMarker(null, latLng, poly);
+         newMarker.bindPopup(popupContent,{
+                                             maxWidth: Math.floor($(document).width() * 0.6),
+                                          }
+         ).openPopup();
+      } else if (type == "circle") {
+         drawnItems.addLayer(layer);
+
+         layer.on('click', function(event) {
+            new L.EditToolbar.Popup(event.latlng, {
+               className: 'leaflet-draw-toolbar',
+               actions: editActions
+            }).addTo(map, layer);
+         });
+         
+         _this._closeNewMarker();
+         newMarker = new L.marker(layer._latlng).addTo(map);
+         
+         var circle = drawnItems.toGeoJSON();
+         //console.log(circle);
+         circle.features[0].properties.radius = layer.getRadius();
+         circle = JSON.stringify(circle);
+         
+         var popupContent = _this._createPopupNewMarker(null, layer._latlng, circle);
+         newMarker.bindPopup(popupContent,{
+                                             maxWidth: Math.floor($(document).width() * 0.6),
+                                          }
+         ).openPopup();
+      } else if (type == "marker") {
+         _this._closeNewMarker();
+         newMarker = new L.marker(layer._latlng).addTo(map);
+         var popupContent = _this._createPopupNewMarker(null, layer._latlng);
+         newMarker.bindPopup(popupContent,{
+                                             maxWidth: Math.floor($(document).width() * 0.6),
+                                          }
+         ).openPopup();
+
+      } else {         
+         drawnItems.addLayer(layer);
+
+         layer.on('click', function(event) {
+            new L.EditToolbar.Popup(event.latlng, {
+               className: 'leaflet-draw-toolbar',
+               actions: editActions
+            }).addTo(map, layer);
+            //_this._createPopupNewMarker(null, )
+         });
+      }
+   
+   });
 };
 
+ZMap.prototype._getCentroid = function (arr) {
+    var twoTimesSignedArea = 0;
+    var cxTimes6SignedArea = 0;
+    var cyTimes6SignedArea = 0;
+
+    var length = arr.length
+
+    var x = function (i) { return arr[i % length].lat };
+    var y = function (i) { return arr[i % length].lng };
+
+    for ( var i = 0; i < arr.length; i++) {
+        var twoSA = x(i)*y(i+1) - x(i+1)*y(i);
+        twoTimesSignedArea += twoSA;
+        cxTimes6SignedArea += (x(i) + x(i+1)) * twoSA;
+        cyTimes6SignedArea += (y(i) + y(i+1)) * twoSA;
+    }
+    var sixSignedArea = 3 * twoTimesSignedArea;
+    return { lat: cxTimes6SignedArea / sixSignedArea, lng: cyTimes6SignedArea / sixSignedArea }
+}
 
 ZMap.prototype.addPolyline = function(vPoints) {
    var pointList = [];
@@ -1105,7 +1302,11 @@ ZMap.prototype.editMarker = function(vMarkerId) {
 
 }
 
-ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {  
+ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
+   _this._createPopupNewMarker(vMarker, vLatLng, null);
+}
+
+ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng, vPoly) {  
       if (user == null) {
          alert('You are not logged!');
          return;
@@ -1152,7 +1353,7 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
 
                            '<div class="divTableRow">' +
                               '<p class="divTableCell" style="vertical-align:top"><label class="control-label col-sm-5"><strong>Description: </strong></label></p>'+
-                              '<p class="divTableCell"><textarea placeholder="Internal Description - Not visible to user" class="form-control" rows="3" cols=30 id="markerDescription" name="markerDescription">' + (vMarker!=null?vMarker.description:'') + '</textarea></p>'+
+                              '<p class="divTableCell"><textarea placeholder="Internal Description - Not visible to user" class="form-control" rows="3" cols=30 id="markerDescription" name="markerDescription">' + (vMarker!=null?vMarker.description:'') + (vPoly!=null?vPoly:'') + '</textarea></p>'+
                            '</div>'+
                            '<div class="divTableRow">' +
                               '<p class="divTableCell" style="vertical-align:top"><label class="control-label col-sm-5"><strong>Global? </strong></label></p>'+
@@ -1167,7 +1368,7 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
                      '</div>'+
                      '<div class="divTabBody">'
 ;
-                           if (vMarker!=null) {
+                           if (vMarker!=null&&vMarker.tabText!=null) {
                               for (var i = 0; i < vMarker.tabText.length; i++) {
       popupContent = popupContent +
                            '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (' + (i+1) + '): </strong></label></p>'+

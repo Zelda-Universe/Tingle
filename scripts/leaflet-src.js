@@ -10508,6 +10508,10 @@ L.extend(L.GeoJSON, {
 		switch (geometry.type) {
 		case 'Point':
 			latlng = coordsToLatLng(coords);
+         /** 001 - BEGIN **/
+         if (geojson.properties.radius)
+            return new L.Circle(latlng, geojson.properties.radius);
+         /** 001 - END **/
 			return pointToLayer ? pointToLayer(geojson, latlng) : new L.Marker(latlng);
 
 		case 'MultiPoint':

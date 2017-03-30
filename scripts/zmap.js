@@ -1379,7 +1379,7 @@ ZMap.prototype.editMarker = function(vMarkerId) {
       newMarker = new L.Marker(vMarker._latlng, { title: vMarker.name
                                                 , icon: new markerIcon({className: 'map-icon-svg' 
                                                                        //,html: "<i class='icon-Button' style='color: " + categories[vMarker.categoryId].color + ";'></i><div style='position: absolute;' class='icon-marker icon-" + categories[vMarker.categoryId].img + "'></div>"
-                                                                       ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.markerCategoryId].color + "; border-color: " + categories[vMarker.markerCategoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.markerCategoryId].img + "'></span></div>"
+                                                                       ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span></div>"
                                                                         })
                                                 }).addTo(map);
                                              

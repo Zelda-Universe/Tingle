@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?fmflj2');
-  src:  url('fonts/icomoon.eot?fmflj2#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?fmflj2') format('truetype'),
-    url('fonts/icomoon.woff?fmflj2') format('woff'),
-    url('fonts/icomoon.svg?fmflj2#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?clb6qz');
+  src:  url('fonts/icomoon.eot?clb6qz#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?clb6qz') format('truetype'),
+    url('fonts/icomoon.woff?clb6qz') format('woff'),
+    url('fonts/icomoon.svg?clb6qz#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -27,10 +27,10 @@
 .icon-BotW_Armor:before {
   content: "\e900";
 }
-.icon-BotW_Meat:before {
+.icon-BotW_Beef:before {
   content: "\e901";
 }
-.icon-BotW_Boss-Alternate:before {
+.icon-BotW_Blupee:before {
   content: "\e902";
 }
 .icon-BotW_Boss:before {
@@ -51,10 +51,10 @@
 .icon-BotW_Equipment:before {
   content: "\e908";
 }
-.icon-BotW_Farm:before {
+.icon-BotW_Fish:before {
   content: "\e909";
 }
-.icon-BotW_Fish:before {
+.icon-BotW_Food-n-Materials:before {
   content: "\e90a";
 }
 .icon-BotW_Great-Fairy:before {
@@ -63,7 +63,7 @@
 .icon-BotW_Guardian:before {
   content: "\e90c";
 }
-.icon-BotW_Herb:before {
+.icon-BotW_Herbs:before {
   content: "\e90d";
 }
 .icon-BotW_Items:before {
@@ -75,50 +75,53 @@
 .icon-BotW_Locations:before {
   content: "\e910";
 }
-.icon-BotW_Materials:before {
+.icon-BotW_Memories:before {
   content: "\e911";
 }
-.icon-BotW_Mushroom:before {
+.icon-BotW_Mini-Game:before {
   content: "\e912";
 }
-.icon-BotW_Points-of-Interest:before {
+.icon-BotW_Mushrooms:before {
   content: "\e913";
 }
-.icon-BotW_Shields:before {
+.icon-BotW_Points-of-Interest:before {
   content: "\e914";
 }
-.icon-BotW_Shrine-of-Resurrection:before {
+.icon-BotW_Sheikah-Tower:before {
   content: "\e915";
 }
-.icon-BotW_Shrines:before {
+.icon-BotW_Shields:before {
   content: "\e916";
 }
-.icon-BotW_Stables:before {
+.icon-BotW_Shrine-Quest:before {
   content: "\e917";
 }
-.icon-BotW_The-Temple-of-Time:before {
+.icon-BotW_Shrines-of-Trials:before {
   content: "\e918";
 }
-.icon-BotW_Tower-of-Resurrection:before {
+.icon-BotW_Side-Quest:before {
   content: "\e919";
 }
-.icon-BotW_Village:before {
+.icon-BotW_Stables:before {
   content: "\e91a";
 }
-.icon-BotW_Weapons:before {
+.icon-BotW_Treasure-Chest:before {
   content: "\e91b";
 }
-.icon-bomb:before {
-  content: "\e91d";
+.icon-BotW_Village:before {
+  content: "\e91c";
 }
-.icon-film:before {
+.icon-BotW_Weapons:before {
   content: "\e91e";
+}
+.icon-BotW_Bomb:before {
+  content: "\e91d";
 }
 .icon-pencil:before {
   content: "\e91f";
 }
-.icon-bubble2:before {
-  content: "\e96e";
+.icon-BotW_Book:before {
+  content: "\e920";
 }
 .icon-search:before {
   content: "\e986";

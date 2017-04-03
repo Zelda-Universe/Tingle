@@ -924,7 +924,7 @@ ZMap.prototype.buildMap = function() {
             var win = L.control.window(map,{title:'Changelog',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
                       .content("<p>New to version alpha 0.4</p>"
                               +"<p>- Remember to right-click (Desktop) or long press (Mobile) to set a marker as complete!</p>"
-                              +"<p>- 1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books and Cooking Pots. These markers were extracted from the game files and their position are considered final, along with Koroks, Shrines, Towers, Villages, Stables, Great Fairies!</p>"
+                              +"<p>- 1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books and Cooking Pots.</p>"
                       ).prompt({buttonOK: 'Don\'t show this again!'
                                , buttonCancel: 'Close'
                                , callback:function(e){

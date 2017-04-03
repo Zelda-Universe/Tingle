@@ -606,8 +606,14 @@ hr {
  .completeMarker {
     font-size: 18px !important;
     position: absolute !important;
-    left: 16px;
-    top: 16px;
+    left: 12px;
+    top: 12px;
     color: gold !important;
     text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+ }
+ 
+ .circleMap {
+	width: 26px !important;
+	height: 26px !important;
+	line-height: 24px !important;
  }

@@ -907,32 +907,28 @@ ZMap.prototype.buildMap = function() {
    }
    
    function showChangeLog() {
-      if (!getCookie('showChangeLogV0.3')) {
+      if (!getCookie('showChangeLogV0.4')) {
          if (!bottomMenu.isMobile()) {
             var win = L.control.window(map,{title:'Changelog',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                      .content("<p>New to version alpha 0.3</p>"
-                              +"<p>- Mark as complete! You can now right-click a marker (desktop only) to hide a marker indefinitely. You can undo this by using ctrl + z in case of a mistake. This shall help you in the quest to get all koroks, making it much easier to see what you're missing. This feature uses cookies, so please don't clean it.</p>"
-                              +"<p>- Don't show this again has been fixed. Sorry if you read the intro everytime :).</p>"
-                              +"<p>- (Admins only) Ability to draw lines and polygons. Very soon, we will have paths for those pesky koroks, side-quests, etc.</p>"
-                              +"<p>- The following markers were extracted from the game files and their position are considered final: Koroks, Shrines, Towers, Villages, Stables, Great Fairies! More to come...</p>"
+                      .content("<p>New to version alpha 0.4</p>"
+                              +"<p>- Remember to right-click (Desktop) or long press (Mobile) to set a marker as complete!</p>"
+                              +"<p>- 1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books and Cooking Pots. These markers were extracted from the game files and their position are considered final, along with Koroks, Shrines, Towers, Villages, Stables, Great Fairies!</p>"
                       ).prompt({buttonOK: 'Don\'t show this again!'
                                , buttonCancel: 'Close'
                                , callback:function(e){
-                                    setCookie('showChangeLogV0.3', false);
+                                    setCookie('showChangeLogV0.4', false);
                                  }
                               })
                       .show();
          } else {
             var win = L.control.window(map,{title:'Changelog',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                      .content("<p>New to version alpha 0.3</p>"
-                              +"<p>- Mark as complete! You can now right-click a marker to hide a marker indefinitely. You can undo this by using ctrl + z. This feature uses cookies, so please don't clean it.</p>"
-                              +"<p>- Don't show this again has been fixed. Sorry if you read the intro everytime :).</p>"
-                              +"<p>- (Admins only) Ability to draw lines and polygons. Soon, we will have paths for Koroks, side-quests, etc.</p>"
-                              +"<p>- The following markers were extracted from the game files and their position are considered final: Koroks, Shrines, Towers, Villages, Stables, Great Fairies! More to come...</p>"
+                      .content("<p>New to version alpha 0.4</p>"
+                              +"<p>- Remember to right-click (Desktop) or long press (Mobile) to set a marker as complete!</p>"
+                              +"<p>- 1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books and Cooking Pots.</p>"
                       ).prompt({buttonOK: 'Don\'t show this again!'
                                , buttonCancel: 'Close'
                                , callback:function(e){
-                                    setCookie('showChangeLogV0.3', false);
+                                    setCookie('showChangeLogV0.4', false);
                                  }
                               })
                       .show();

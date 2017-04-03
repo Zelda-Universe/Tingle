@@ -278,7 +278,7 @@ ZMap.prototype.addMarker = function(vMarker) {
                                                    //, icon: new markerIcon({iconUrl: mapOptions.markerURL + categories[vMarker.markerCategoryId].img + '.' + mapOptions.markerExt})
                                                    , icon: new markerIcon({className: 'map-icon-svg'
 //                                                                          ,html: "<i class='icon-Button' style='color: " + categories[vMarker.markerCategoryId].color + ";'></i><div style='position: absolute;' class='icon-marker icon-" + categories[vMarker.markerCategoryId].img + "'></div>"
-                                                                            ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.markerCategoryId].color + "; border-color: " + categories[vMarker.markerCategoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.markerCategoryId].img + "'></span></div>"
+                                                                            ,html: "<div class='circle circleMap' style='background-color: " + categories[vMarker.markerCategoryId].color + "; border-color: " + categories[vMarker.markerCategoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.markerCategoryId].img + "'></span></div>"
                                                                            })
                                                    });
    } else {
@@ -529,13 +529,13 @@ ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
 	if (vComplete) {
 		vMarker.complete = true;
 		vMarker.setIcon(new markerIcon({className: 'map-icon-svg'
-									 ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span><span class='icon-checkmark completeMarker'></span></div>"
+									 ,html: "<div class='circle circleMap' style='background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span><span class='icon-checkmark completeMarker'></span></div>"
 									 }));
 
 	} else {
 		vMarker.complete = false;
 		vMarker.setIcon(new markerIcon({className: 'map-icon-svg'
-									 ,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span></div>"
+									 ,html: "<div class='circle circleMap' style='background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span></div>"
 									 }));
 
 		
@@ -987,6 +987,11 @@ ZMap.prototype.buildMap = function() {
          showChangeLog();
       }, 500);
    }
+
+//   map.on('click', function(e) {
+//      console.log(e.latlng);
+//   });
+
    
    map.on('popupclose', function(e) {
       drawnItems.clearLayers();

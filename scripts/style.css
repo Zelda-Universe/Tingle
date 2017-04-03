@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?clb6qz');
-  src:  url('fonts/icomoon.eot?clb6qz#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?clb6qz') format('truetype'),
-    url('fonts/icomoon.woff?clb6qz') format('woff'),
-    url('fonts/icomoon.svg?clb6qz#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?pubbhc');
+  src:  url('fonts/icomoon.eot?pubbhc#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?pubbhc') format('truetype'),
+    url('fonts/icomoon.woff?pubbhc') format('woff'),
+    url('fonts/icomoon.svg?pubbhc#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-BotW_Cooking_Pot:before {
+  content: "\e921";
+}
 .icon-BotW_Armor:before {
   content: "\e900";
 }

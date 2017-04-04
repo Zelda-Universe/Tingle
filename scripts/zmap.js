@@ -171,6 +171,8 @@ ZMap.prototype.addMap = function(vMap) {
                                              , noWrap:          true
 //                                             , continuousWorld: false  // default is false
                                              , tileSize:        mapOptions.tileSize
+                                             , updateWhenIdle: true
+                                             , updateWhenZooming: false
                                              }
       );
                                                
@@ -193,6 +195,8 @@ ZMap.prototype.addMap = function(vMap) {
                                              //, opacity:         vMap.subMap[0].opacity
                                              , noWrap:          true
                                              , tileSize:        mapOptions.tileSize
+                                             , updateWhenIdle: true
+                                             , updateWhenZooming: false
                                              }
       );
                                                
@@ -209,6 +213,8 @@ ZMap.prototype.addMap = function(vMap) {
                                               , opacity:         vMap.subMap[i].opacity
                                               , noWrap:   true
                                               , tileSize: mapOptions.tileSize
+                                              , updateWhenIdle: true
+                                              , updateWhenZooming: false
                                             }
          );
 
@@ -237,6 +243,8 @@ ZMap.prototype.addMap = function(vMap) {
                                                                          , zIndex:   (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
                                                                          , tileSize: mapOptions.tileSize
                                                                          , opacity: submap.opacity
+																		 , updateWhenIdle:  false
+																		 , updateWhenZooming: false
                                                                          });
                overlay2.id             = 'mID' + submap.id;
                overlay2.originalId     = submap.id;

@@ -5,6 +5,7 @@
 	$map = $_GET["game"];
     
    $query = 'select id
+                  , short_name as shortName
                   , marker_url as markerURL
 				      , marker_ext as markerExt
 				      , background_color as bgColor

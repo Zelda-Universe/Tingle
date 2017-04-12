@@ -9,6 +9,7 @@
 body {
 	padding: 0;
 	margin: 0;
+   overflow: hidden;
 }
 html, body, #map {
 	height: 100%;
@@ -120,8 +121,16 @@ html, body, #map {
   position: absolute;
   z-index: 999;
   bottom: 16px;
-  width: 100vw;
-  height: 100px;
+  height: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+}
+iframe::-webkit-scrollbar {  
+    display: none;
+}  
+iframe {
+  overflow:hidden;
 }
 
 /* DivTable.com */
@@ -265,16 +274,17 @@ html, body, #map {
    
 }
 
-.leaflet-bar a:last-child {
-   border-bottom: 1px solid #ccc;
+.leaflet-bar a {
+   box-shadow: 0 3px 14px rgba(0,0,0,0.4) !important;
+   border: 0;
 }
 
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar {
-   border: 2px solid rgba(0,0,0,0.2);
+   
 }
 
 .leaflet-bar a {
-   background-color: #6a6869;
+   background-color: #333;
 }
 
 .leaflet-bar a {
@@ -616,4 +626,9 @@ hr {
 	width: 26px !important;
 	height: 26px !important;
 	line-height: 24px !important;
+ }
+ 
+ 
+ .leaflet-control-zoom  {
+    border: 0px !important;
  }

@@ -67,6 +67,9 @@ ZMap.prototype.constructor = function(vMapOptions) {
       alert("Need to pass options to map constructor");
       return false;
    } else {
+      if (vMapOptions.showCompleted == undefined) {
+         vMapOptions.showCompleted = true;
+      }
       mapOptions = vMapOptions;
    }
    
@@ -650,6 +653,7 @@ ZMap.prototype.refreshMap = function() {
    var oMap = maps[currentMap]._overlayMap;
    for (var i = 0; i < markers.length; i++) {
       if (markers[i].visible
+            && (mapOptions.showCompleted == true || (mapOptions.showCompleted == false && markers[i].complete != true))
             && ( (oMap && oMap[currentOverlaypMap] && oMap[currentOverlaypMap].id == 'mID' + markers[i].submapId && markers[i].mapOverlayId==null)
                  || (oMap && maps[currentMap].id == 'mID' + markers[i].submapId && oMap[currentOverlaypMap] && oMap[currentOverlaypMap].id == 'mID' + markers[i].mapOverlayId)
                  || (oMap == undefined && maps[currentMap].id == 'mID' + markers[i].submapId)
@@ -1762,7 +1766,7 @@ ZMap.prototype._buildContextMenu = function() {
       map.contextmenu.addItem(contextMenu[i]);
    }
 }
-   
+
 ZMap.prototype._createRegisterForm = function() {
    
    L.control.window(map,{title:'Create User', closeButton:false, modal: true, 'prompt.buttonCancel':''})
@@ -1817,4 +1821,19 @@ ZMap.prototype._createRegisterForm = function() {
                         }
                      })
                .show();
+}
+
+
+ZMap.prototype._toogleCompleted  = function() { 
+   mapOptions.showCompleted = !mapOptions.showCompleted;
+   if (mapOptions.showCompleted) {
+      document.getElementById('lblComplete').innerHTML = "Hide Completed"; 
+      document.getElementById('catCheckMark').style.color = "gold";
+      setCookie('showCompleted',"true");
+   } else {
+      document.getElementById('lblComplete').innerHTML = "Show Completed";
+      document.getElementById('catCheckMark').style.color = "white";
+      setCookie('showCompleted',"false");
+   }
+   _this.refreshMap();
 }

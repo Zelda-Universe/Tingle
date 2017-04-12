@@ -1011,8 +1011,10 @@ ZMap.prototype.buildMap = function() {
    });
    
    map.on('popupopen', function(e) {
+      
       function initEditor() {
-         tinymce.init({selector:'textarea.tabText',
+         if (user.level >= 5) {
+            tinymce.init({selector:'textarea.tabText',
                         menubar: false,
                         plugins: [
                            'lists link image anchor code',
@@ -1023,8 +1025,20 @@ ZMap.prototype.buildMap = function() {
                         },
                         toolbar: 'undo redo | styleselect | bold italic | link image media | bullist numlist outdent indent | code',
                         content_css: '//www.tinymce.com/css/codepen.min.css'
-         });
+            });
+         } else {
+            tinymce.init({selector:'textarea.tabText',
+                        menubar: false,
+                        plugins: [
+                           'lists link image anchor code',
+                           'media table contextmenu paste code'
+                        ],
+                        toolbar: 'undo redo | styleselect | bold italic | link image media | bullist numlist outdent indent | code',
+                        content_css: '//www.tinymce.com/css/codepen.min.css'
+            });
+         }
       }
+      
 		drawnItems.clearLayers();
       if (newMarker != null) {
          var wrapper         = $(".divTabBody"); //Fields wrapper

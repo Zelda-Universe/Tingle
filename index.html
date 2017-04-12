@@ -85,6 +85,29 @@
          </script>
       </div>
       <div id="desktopAds" align="center">
+         <script>
+         var width = $(document).width();
+         var adsWidth = 0;
+         var adsHeight = 0;
+         if (width > 970) {
+            adsWidth = 970;
+            adsHeight = 90;
+         } else if (width > 728) {
+            adsWidth = 728;
+            adsHeight = 90;
+         } else if (width > 468) {
+            adsWidth = 468;
+            adsHeight = 60;
+         } else {
+            adsWidth = 234;
+            adsHeight = 60;
+         }
+         
+         document.getElementById('desktopAds').style.width = adsWidth + 'px';
+         document.getElementById('desktopAds').style.height = adsHeight + 'px';
+         document.getElementById('desktopAds').style.marginLeft = ((width - adsWidth) / 2) + 'px';
+         </script>
+
          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
          <!-- Zelda Maps -->
          <ins class="adsbygoogle"

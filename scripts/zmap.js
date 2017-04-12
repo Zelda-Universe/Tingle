@@ -381,75 +381,83 @@ ZMap.prototype._createMarkerPopup = function(marker) {
    if (marker.categoryTypeId == 1) {
      
       if (!bottomMenu.isMobile()) {
-         var div = document.createElement('DIV');
-         div.id = 'divP' + marker.id;
-         div.className = 'banner';
          
-         var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
-         
-         content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + Math.floor($(document).height() * 0.6) +"px;'>";
-         if (marker.tabText.length > 1) {
-            var ul = "<ul>";
-            for (var i = 0; i < marker.tabText.length; i++) {
-               if (i == 0) {
-                  ul = ul + "<li style=\"minHeight: 120px;\"><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
-               } else {
-                  ul = ul + "<li id='citem-" + i + "' style='display: none'><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+         marker.on('click',function() {
+            if (marker.getPopup() == undefined) {
+               var div = document.createElement('DIV');
+               div.id = 'divP' + marker.id;
+               div.className = 'banner';
+               
+               var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
+               
+               content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + Math.floor($(document).height() * 0.6) +"px;'>";
+               if (marker.tabText.length > 1) {
+                  var ul = "<ul>";
+                  for (var i = 0; i < marker.tabText.length; i++) {
+                     if (i == 0) {
+                        ul = ul + "<li style=\"minHeight: 120px;\"><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
+                     } else {
+                        ul = ul + "<li id='citem-" + i + "' style='display: none'><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+                     }
+                  }
+                  ul = ul + "</ul>";
+                  content = content + ul;
+               } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
+                  content = content  + "<div>" + marker.tabText[0] + "</div>";
                }
-            }
-            ul = ul + "</ul>";
-            content = content + ul;
-         } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
-            content = content  + "<div>" + marker.tabText[0] + "</div>";
-         }
-         
-         if (user != null) {
-            if (user.level >= 10 || (user.level >= 5 && marker.userId == user.id)) {
-               content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
-                         + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
-                         + "<br style='height:0pt; clear:both;'>"
-                         + "<p style=\"float: right;\">"
-						   + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
-						   + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                           + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
-                           + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
-                         + "</p>"
-                      + "</div>";
-            } else {
-               content += "<p style=\"float: right;\">"
-						   + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
+               
+               if (user != null) {
+                  if (user.level >= 10 || (user.level >= 5 && marker.userId == user.id)) {
+                     content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
+                               + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
+                               + "<br style='height:0pt; clear:both;'>"
+                               + "<p style=\"float: right;\">"
+                           + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
                            + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                         + "</p>"
-                      + "</div>";
+                                 + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
+                                 + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
+                               + "</p>"
+                            + "</div>";
+                  } else {
+                     content += "<p style=\"float: right;\">"
+                           + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
+                                 + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                               + "</p>"
+                            + "</div>";
+                  }
+               } else {
+                  content += "<p style=\"float: right;\">"
+                        + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
+                              + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                            + "</p>"
+                         + "</div>";
+               }
+               div.innerHTML = content;   
+               
+               var popup;
+               if (!L.Browser.mobile) {
+                  popup = L.popup({
+                     maxWidth: 400,
+                     offset: L.point(0, -10),
+                     className: (marker.tabText.length>1?'multiTab':'singleTab')
+                  });
+                  
+               } else { // mobile
+                  popup = L.popup({
+                     maxWidth: 400,
+                     offset: L.point(0, -10),
+                     className: (marker.tabText.length>1?'multiTab':'singleTab')
+                  });
+               }
+               
+               popup.setContent(div);
+               
+               marker.bindPopup(popup);
+               marker.openPopup();
+            } else {
+               // Do nothing ... popup is already bind
             }
-         } else {
-            content += "<p style=\"float: right;\">"
-						+ "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
-                        + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                      + "</p>"
-                   + "</div>";
-         }
-         div.innerHTML = content;   
-         
-         var popup;
-         if (!L.Browser.mobile) {
-            popup = L.popup({
-               maxWidth: 400,
-               offset: L.point(0, -10),
-               className: (marker.tabText.length>1?'multiTab':'singleTab')
-            });
-            
-         } else { // mobile
-            popup = L.popup({
-               maxWidth: 400,
-               offset: L.point(0, -10),
-               className: (marker.tabText.length>1?'multiTab':'singleTab')
-            });
-         }
-         
-         popup.setContent(div);
-         
-         marker.bindPopup(popup);
+         });
       } else {
          marker.on('click',function() {
             var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
@@ -1003,6 +1011,20 @@ ZMap.prototype.buildMap = function() {
    });
    
    map.on('popupopen', function(e) {
+      function initEditor() {
+         tinymce.init({selector:'textarea.tabText',
+                        menubar: false,
+                        plugins: [
+                           'lists link image anchor code',
+                           'media table contextmenu paste code'
+                        ],
+                        file_browser_callback: function(field_name, url, type, win) {
+                           if (type=='image') $('#imageUploadForm input').click();
+                        },
+                        toolbar: 'undo redo | styleselect | bold italic | link image media | bullist numlist outdent indent | code',
+                        content_css: '//www.tinymce.com/css/codepen.min.css'
+         });
+      }
 		drawnItems.clearLayers();
       if (newMarker != null) {
          var wrapper         = $(".divTabBody"); //Fields wrapper
@@ -1019,38 +1041,16 @@ ZMap.prototype.buildMap = function() {
                               '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (' + c + '): </strong></label></p>'+
                               '<p><textarea id="tabText'+c+'" name="tabText[]" class="tabText" cols=40 rows=5></textarea></p>'
                               ); 
-            //$('#tabText' + c).froalaEditor({imageDefaultWidth: '100%', theme: 'zmaps-froala', toolbarButtons});
-            tinymce.init({selector:'textarea.tabText',
-                           menubar: false,
-                           plugins: [
-                              'advlist autolink lists link image charmap print preview anchor',
-                              'searchreplace visualblocks code fullscreen',
-                              'insertdatetime media table contextmenu paste code'
-                           ],
-                           toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image fullscreen code',
-                           content_css: '//www.tinymce.com/css/codepen.min.css'
-            });
+            initEditor();
          });
          
-         for (var i = 0; i < $('.tabText').length; i++) {
-            //$('#tabText' + i).froalaEditor({imageDefaultWidth: '100%', theme: 'zmaps-froala', toolbarButtons});
-         }
-         tinymce.init({selector:'textarea.tabText',
-                        menubar: false,
-                        plugins: [
-                           'advlist autolink lists link image charmap print preview anchor',
-                           'searchreplace visualblocks code fullscreen',
-                           'insertdatetime media table contextmenu paste code'
-                        ],
-                        toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image fullscreen code',
-                        content_css: '//www.tinymce.com/css/codepen.min.css'
-         });
+         initEditor();
          
-         $("#form").submit(function(e) {
+         $("#newMarkerForm").submit(function(e) {
             $.ajax({
                     type: "POST",
                     url: "ajax/add_marker.php",
-                    data: $("#form").serialize(), // serializes the form's elements.
+                    data: $("#newMarkerForm").serialize(), // serializes the form's elements.
                     success: function(data) {
                         data = jQuery.parseJSON(data);
                         if (data.success) {
@@ -1339,7 +1339,7 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
  ZMap.prototype._closeNewMarker = function() {  
    if (newMarker != null) {
       tinymce.remove();
-      $("#form").remove();
+      $("#newMarkerForm").remove();
       map.removeLayer(newMarker);
       newMarker = null;
    }
@@ -1429,8 +1429,22 @@ ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng, vPoly) {
       });
       catSelection = catSelection + catSelection2;
       var popupContent = '<div class="banner"><h2 class="popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2>'+
-               '<div class="popupContent" style="overflow-y: auto; max-height:' + Math.floor($(document).height() * 0.4) + 'px">' +
-                  '<form role="form" id="form" enctype="multipart/form-data" class="form-horizontal">'+
+               '<div class="popupContent" style="overflow-y: auto; max-height:' + Math.floor($(document).height() * 0.4) + 'px">'
+      ;
+      
+      if (user.level >= 5) {
+         popupContent = popupContent +
+                  '<iframe id="form_target" name="form_target" style="display:none"></iframe>'+
+                  '<form id="imageUploadForm" action="content/upload.php" target="form_target" method="post" enctype="multipart/form-data" style="width:0px;height:0;overflow:hidden">'+
+                      '<input name="image" type="file" onchange="$(\'#imageUploadForm\').submit();this.value=\'\';">'+
+                      '<input style="display: none;" type="text" id="game" name="game" value="'+mapOptions.shortName+'" />'+
+                      '<input style="display: none;" type="text" id="userId" name="userId" value="' + user.id + '" />'+
+                  '</form>'
+         ;
+      }
+      
+      popupContent = popupContent +
+                  '<form role="form" id="newMarkerForm" enctype="multipart/form-data" class="form-horizontal">'+
                      '<div class="divTable">' +
                            '<div class="divTableRow">' +
                               '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Category: </strong></label></p>'+
@@ -1609,7 +1623,7 @@ ZMap.prototype._buildContextMenu = function() {
       var popupContent = _this._createPopupNewMarker(null, e.latlng);
       
       newMarker.bindPopup(popupContent,{
-         //minWidth: 400,
+         minWidth: Math.floor($(document).width() * 0.4),
          //maxHeight: 240,
          maxWidth: Math.floor($(document).width() * 0.6),
          //maxHeight: Math.floor($(document).height() * 0.6),

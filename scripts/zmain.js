@@ -156,6 +156,14 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
          vContainer.bgColor = '#' + vContainer.bgColor;
       }
       
+      var showCompleted = getCookie('showCompleted');
+      if (showCompleted == '') {
+         setCookie('showCompleted',"true");
+         vContainer.showCompleted = true;
+      } else {
+         vContainer.showCompleted = (showCompleted == 'true');
+      }
+      
       zMap.constructor(vContainer);
       
       gameId = vContainer.id;

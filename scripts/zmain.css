@@ -9,6 +9,7 @@
 body {
 	padding: 0;
 	margin: 0;
+   overflow: hidden;
 }
 html, body, #map {
 	height: 100%;
@@ -123,6 +124,13 @@ html, body, #map {
   height: 90px;
   left: 50%;
   transform: translateX(-50%);
+  overflow: hidden;
+}
+iframe::-webkit-scrollbar {  
+    display: none;
+}  
+iframe {
+  overflow:hidden;
 }
 
 /* DivTable.com */

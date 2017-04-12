@@ -570,6 +570,9 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
 	completedMarkers.push(vMarker.id);
 	_this._doSetMarkerDoneIcon(vMarker, true);
 	setCookie('completedMarkers', JSON.stringify(completedMarkers));
+   if (!mapOptions.showCompleted) {
+      _this.refreshMap();
+   }
 }
 
 

@@ -76,6 +76,7 @@
 				    and mp.container_id = ' . $_GET["game"] . '
 				    and m.user_id = u.id
                 and m.visible in (' . $visible . ')
+                and mc.visible = 1
                 ';
 				    /*and ((m.visible = 1 and m.last_updated > \'' . $last_update . '\')
 				         OR  (m.visible = 0 and \'' . $last_update . '\' != \'1800-01-01 00:00:00\' and m.last_updated > \'' . $last_update . '\'))

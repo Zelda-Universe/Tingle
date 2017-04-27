@@ -17,6 +17,18 @@ html, body, #map {
 	background-color: #565656;/*#DEECFD;/*rgb(222, 236, 253); /*#deecfd;*/
 }
 
+html{
+margin:0;
+padding:0;
+overflow: hidden;
+}
+body{
+position: absolute;
+width:100%;
+height:100%;
+overflow: auto;
+}
+
 .labelIcon {
 	margin-left: -60px !important;
 	margin-top: -24px !important;

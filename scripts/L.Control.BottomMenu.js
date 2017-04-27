@@ -4,7 +4,7 @@ L.Control.BottomMenu = L.Control.extend({
         width: window.innerWidth,
         height: window.innerHeight,
         delay: '0',
-        openTo: 100,
+        openTo: 24,
     },
     _category: '',
     _open: false,
@@ -30,8 +30,8 @@ L.Control.BottomMenu = L.Control.extend({
       this.options.iconQty = 4;
       this.options.iconSize = 80;
       this.options.scrollbarWidth = 18; // IE / FF
-      this.options.iconSpace = Math.floor((this.options.width - (this.options.iconQty * this.options.iconSize)) / (this.options.iconQty + 1)
-                                                              - (this.options.scrollbarWidth / (this.options.iconQty+1)));
+      this.options.iconSpace = Math.floor((this.options.width - (this.options.iconQty * this.options.iconSize)) / (this.options.iconQty)
+                                                              - (this.options.scrollbarWidth / (this.options.iconQty)));
         
       var contents = "";
       contents += '<ul class="leaflet-bottommenu-ul">';

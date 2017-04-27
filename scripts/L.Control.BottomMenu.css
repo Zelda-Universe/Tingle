@@ -36,8 +36,6 @@
     color: #4285F4;
 }
 
-
-
 .leaflet-bottommenu header {
     /*border: 1px solid blue;*/
     width: 100%;
@@ -51,6 +49,7 @@
    height: 2px;
    opacity: 0.2;
 }
+
 .leaflet-bottommenu .ex1 .header-left {
     display:inline-block;
     width: 20%;
@@ -58,17 +57,20 @@
     text-align: center;
     margin-top: 25px;
 }
+
 .leaflet-bottommenu .ex1 .logo {
     width: auto !important;
     height: 80px !important;
     object-fit: contain;
     overflow: hidden;
 }
+
 .leaflet-bottommenu .ex1 .logo img {
     display: block;
     height: 80px !important;
     margin: auto;
 }
+
 .leaflet-bottommenu .ex1 .header-right {
     display:inline-block;
     width: 20%;
@@ -77,7 +79,6 @@
     margin-top: 25px;
 }
 
-
 .leaflet-bottommenu-header-icon {
    color: white;   
    text-align: center;
@@ -85,7 +86,6 @@
    font-size: 32px;
    margin: auto auto auto auto;
 }
-
 
 .leaflet-bottommenu-a {
    text-decoration: none;
@@ -154,8 +154,6 @@
     margin-left: 46px;  /* Dynamically changed */
     width: 70px; /* Dynamically changed */
 }
-
-
 
 .leaflet-bottommenu-ul > li > a > p { 
    text-align: center;

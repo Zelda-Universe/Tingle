@@ -32,6 +32,14 @@
       <script src="scripts/jquery.event.swipe.js"></script>
       <!--<![endif]-->
       <script src="scripts/noBounce.js"></script>
+      <script>
+		window.onload = function() {
+			noBounce.init({
+				animate: true,
+				element: document.getElementById("map")
+			});
+		}
+	  </script>
       <script type="text/javascript" src="res.php?type=javascript"></script>
       <link rel="stylesheet" type="text/css" href="res.php?type=css" />
       <script type="text/javascript" src="//cdn.tinymce.com/4/tinymce.min.js"></script>

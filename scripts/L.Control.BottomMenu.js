@@ -30,7 +30,7 @@ L.Control.BottomMenu = L.Control.extend({
       this.options.iconQty = 4;
       this.options.iconSize = 80;
       this.options.scrollbarWidth = 18; // IE / FF
-      this.options.iconSpace = Math.floor(2((this.options.width - (this.options.iconQty * this.options.iconSize)) / (this.options.iconQty + 1)
+      this.options.iconSpace = Math.floor(2*((this.options.width - (this.options.iconQty * this.options.iconSize)) / (this.options.iconQty + 1)
                                                               - (this.options.scrollbarWidth / (this.options.iconQty+1))));
         
       var contents = "";

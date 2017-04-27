@@ -16,13 +16,12 @@
 .leaflet-bottommenu::-webkit-scrollbar{
     width: 7px;
     height: 7px;
-    margin: 1px;
-    background: transparent;
+    background: #f2f2f2;
 }
 
 .leaflet-bottommenu::-webkit-scrollbar-thumb{
     border-radius: 2px;
-    background: #777;
+    background: #777;   
 }
 
 .leaflet-bottommenu-close-button{
@@ -101,7 +100,6 @@
    /* color: black; */
 }
 
-
 .leaflet-bottommenu-a > p {
    font-size: 16px;
    margin-top: 10px;
@@ -109,9 +107,6 @@
    color: white;
    opacity: inherit;
 }
-
-
-
 
 .leaflet-bottommenu-ul {
    padding-left: 0px;
@@ -168,11 +163,11 @@
 }
 
 .leaflet-bottommenu-contents {
-   overflow-y: scroll;
+	overflow-y: scroll;
 }
 
 .leaflet-bottommenu-contents::-webkit-scrollbar { 
-     
+    background: transparent;
 }
 
 #menu-custom-content {

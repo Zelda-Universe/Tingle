@@ -213,9 +213,9 @@ L.Control.BottomMenu = L.Control.extend({
          this._contents.innerHTML = "";
          this._contents.style.display = 'none';
          if (this.options.mobile) {
-            this._contents.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+            this._contents.style.height = (this.options.height - this.options.openTo - 80) + 'px';
          } else {
-            this._contents.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+            this._contents.style.height = (this.options.height - this.options.openTo - 80) + 'px';
          }
          
          this._contentsCat = L.DomUtil.create('div', 'leaflet-bottommenu-contents', this._menu);
@@ -224,15 +224,10 @@ L.Control.BottomMenu = L.Control.extend({
          this._contentsCat.innerHTML = this._category;
          this._contentsCat.style.clear = 'both';
          if (this.options.mobile) {
-            this._contentsCat.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+            this._contentsCat.style.height = (this.options.height - this.options.openTo - 80) + 'px';
          } else {
-            this._contentsCat.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+            this._contentsCat.style.height = (this.options.height - this.options.openTo - 80) + 'px';
          }
-
-         
-         // @TODO: Temp dev
-         logoDiv.style.margin = 'auto';
-         logoDiv.style.height = '80px';
         
         this._baseContents = this._contents;
         return this._container;

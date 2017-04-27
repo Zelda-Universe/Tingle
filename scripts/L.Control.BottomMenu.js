@@ -34,9 +34,6 @@ L.Control.BottomMenu = L.Control.extend({
                                                               - (this.options.scrollbarWidth / (this.options.iconQty+1)));
         
       var contents = "";
-      if(this.options.mobile == true) {
-	    contents += '<div class="grabber"><div>';
-      }
       contents += '<ul class="leaflet-bottommenu-ul">';
       //@TODO: improve!!!!!!
       contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile-1" class="leaflet-bottommenu-a" href="#" onclick="_this._toogleCompleted();event.preventDefault();"><div class="circle" style="background-color: purple; border-color: purple"><span id="catCheckMark" class="icon-checkmark"' + (mapOptions.showCompleted?' style="color: gold; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;"':' style="color: white; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;"')+ '></span></div><p id="lblComplete">' + (mapOptions.showCompleted?'Hide Completed':'Show Completed') + '</p></a></li>';
@@ -185,12 +182,18 @@ L.Control.BottomMenu = L.Control.extend({
                 }
             }, this);
         */
+        
+        if (this.options.mobile) {
+	        // Grabber
+			L.DomUtil.create('div', 'grabber', this._menu);
+		}
             
         // Logo
         var logoDiv = L.DomUtil.create('div', 'logo', headerMenu);
         var imgLogo = L.DomUtil.create('img', '', logoDiv);
         imgLogo.src  = 'images/zmaps_white.png';
 
+		
         L.DomUtil.create('hr', '', this._menu);
 
         

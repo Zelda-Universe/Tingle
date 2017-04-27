@@ -3001,6 +3001,7 @@ L.Map = L.Evented.extend({
 	createPane: function (name, container) {
 		var className = 'leaflet-pane' + (name ? ' leaflet-' + name.replace('Pane', '') + '-pane' : ''),
 		    pane = L.DomUtil.create('div', className, container || this._mapPane);
+		    pane.id = 'map-pane';
 
 		if (name) {
 			this._panes[name] = pane;

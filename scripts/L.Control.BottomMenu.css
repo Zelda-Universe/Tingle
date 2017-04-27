@@ -184,8 +184,8 @@
 }
 
 .leaflet-bottommenu-contents {
-	overflow-y: scroll !important;
-	-webkit-overflow-scrolling: touch !important;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 }
 
 .leaflet-bottommenu-contents::-webkit-scrollbar { 

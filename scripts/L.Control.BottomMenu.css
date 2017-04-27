@@ -71,7 +71,7 @@
     margin: auto;
 }
 
-.leaflet-bottommenu .ex1 .grabber {
+.grabber {
 	width: 36px;
 	height: 5px;
 	background: rgba(255,255,255,.2);

@@ -21,9 +21,8 @@ L.Control.BottomMenu = L.Control.extend({
          this.options.height = 500;
       }
       
-      
       this._innerHTML = innerHTML;
-      this._startPosition = (parseInt(this.options.height, 10)) -100;
+      this._startPosition = (parseInt(this.options.height, 10)) - 80;
       this._isLeftPosition = this.options.position == 'topleft' ||
       this.options.position == 'bottomleft' ? true : false;
         
@@ -188,7 +187,6 @@ L.Control.BottomMenu = L.Control.extend({
         var logoDiv = L.DomUtil.create('div', 'logo', headerMenu);
         var imgLogo = L.DomUtil.create('img', '', logoDiv);
         imgLogo.src  = 'images/zmaps_white.png';
-        imgLogo.style.height = '80px';
 
         L.DomUtil.create('hr', '', this._menu);
 
@@ -214,9 +212,9 @@ L.Control.BottomMenu = L.Control.extend({
          this._contents.innerHTML = "";
          this._contents.style.display = 'none';
          if (this.options.mobile) {
-            this._contents.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+            this._contents.style.height = (this.options.height - this.options.openTo - 80) + 'px';
          } else {
-            this._contents.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+            this._contents.style.height = (this.options.height - this.options.openTo - 80) + 'px';
          }
          
          this._contentsCat = L.DomUtil.create('div', 'leaflet-bottommenu-contents', this._menu);
@@ -225,15 +223,10 @@ L.Control.BottomMenu = L.Control.extend({
          this._contentsCat.innerHTML = this._category;
          this._contentsCat.style.clear = 'both';
          if (this.options.mobile) {
-            this._contentsCat.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+            this._contentsCat.style.height = (this.options.height - this.options.openTo - 80) + 'px';
          } else {
-            this._contentsCat.style.height = (this.options.height - this.options.openTo - 100) + 'px';
+            this._contentsCat.style.height = (this.options.height - this.options.openTo - 80) + 'px';
          }
-
-         
-         // @TODO: Temp dev
-         logoDiv.style.margin = 'auto';
-         logoDiv.style.height = '98px';
         
         this._baseContents = this._contents;
         return this._container;

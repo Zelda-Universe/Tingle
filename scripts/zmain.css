@@ -116,7 +116,7 @@ html, body, #map {
 #mobileAds {
   position: absolute;
   z-index: 999;
-  bottom: 92px;
+  bottom: 192px;
   left: 8px;
   right: 8px;
   height: 50px;

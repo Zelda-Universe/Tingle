@@ -61,10 +61,12 @@
 .leaflet-bottommenu .ex1 .logo {
     width: auto !important;
     height: 80px !important;
-    object-fit: contain !important;
+    object-fit: contain;
+    overflow: hidden;
 }
 .leaflet-bottommenu .ex1 .logo img {
     display: block;
+    height: 80px !important;
 }
 .leaflet-bottommenu .ex1 .header-right {
     display:inline-block;

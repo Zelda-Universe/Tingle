@@ -34,10 +34,7 @@
       <script src="scripts/noBounce.js"></script>
       <script>
 		window.onload = function() {
-			noBounce.init({
-				animate: true,
-				element: document.find( "leaflet-map-pane" );
-			});
+			noBounce.init();
 		}
 	  </script>
       <script type="text/javascript" src="res.php?type=javascript"></script>
@@ -83,7 +80,7 @@
 
    </head>
    <body>
-      <div id="map" style="overflow: hidden;"></div>
+      <div id="map"></div>
       <div id="mobileAds">
          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
          <!-- Zelda Maps -->

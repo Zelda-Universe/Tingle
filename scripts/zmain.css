@@ -9,11 +9,13 @@
 body {
 	padding: 0;
 	margin: 0;
-   overflow: hidden;
+    overflow: hidden;
 }
+
 html, body, #map {
 	height: 100%;
 	background-color: #565656;/*#DEECFD;/*rgb(222, 236, 253); /*#deecfd;*/
+	overflow: hidden !important;
 }
 
 .labelIcon {
@@ -33,8 +35,8 @@ html, body, #map {
 	padding-top: 15px !important;
 	font-family: HyliaSerif, Verdana, Arial, sans-serif; 
 	font-size: 16px;
-   letter-spacing: 3px;
-   color: white;
+    letter-spacing: 3px;
+    color: white;
 	text-align: center;
 	vertical-align: middle;
 }

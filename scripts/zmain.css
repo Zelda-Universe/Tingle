@@ -9,7 +9,6 @@
 body {
 	padding: 0;
 	margin: 0;
-	position: fixed;
     overflow: hidden;
 }
 
@@ -17,6 +16,10 @@ html, body, #map {
 	height: 100%;
 	background-color: #565656;/*#DEECFD;/*rgb(222, 236, 253); /*#deecfd;*/
 	overflow: hidden;
+}
+
+#map {
+	position: fixed;
 }
 
 .labelIcon {

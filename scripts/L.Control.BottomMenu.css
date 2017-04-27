@@ -113,7 +113,7 @@
 
 .leaflet-bottommenu-a > p {
    font-size: 16px;
-   margin-top: 12px;
+   margin-top: 10px;
    line-height: 100%;
    color: white;
    opacity: inherit;
@@ -122,6 +122,8 @@
 .leaflet-bottommenu-ul {
    padding-left: 0px;
    opacity: inherit;
+   margin-top: 0;
+   padding-top: 12px;
 }
 
 .leaflet-bottommenu-icon {
@@ -150,7 +152,16 @@
 }
 
 
-.circle{width: 64px; height: 64px; border-radius: 64px; line-height: 64px; display: inline-block; text-align: center;     vertical-align: middle;}
+.circle {
+	width: 64px;
+	height: 64px;
+	border-radius: 64px;
+	line-height: 64px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+
 .circle span { 
    position: relative;
    color: white;
@@ -186,7 +197,7 @@
    clear: both;
    color: white;
 }
-#menu-custom-content  img {
+#menu-custom-content img {
    width: 100%;
    height: auto;
 }

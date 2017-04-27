@@ -18,10 +18,6 @@ html, body, #map {
 	overflow: hidden;
 }
 
-#map {
-	position: fixed;
-}
-
 .labelIcon {
 	margin-left: -60px !important;
 	margin-top: -24px !important;

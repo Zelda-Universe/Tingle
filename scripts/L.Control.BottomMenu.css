@@ -1,30 +1,30 @@
-.leaflet-control-bottommenu{
+.leaflet-control-bottommenu {
     cursor: pointer;
     overflow: hidden;
 }
 
-.leaflet-bottommenu{
+.leaflet-bottommenu {
     position: absolute;
     background-color: rgba(0,0,0, 0.7);
     border-radius: 10px;
-    overflow: auto;
+    overflow: hidden;
     cursor: default;
     z-index: 9999;
     box-shadow: 0 3px 14px rgba(0,0,0,0.4) !important; 
 }
 
-.leaflet-bottommenu::-webkit-scrollbar{
+.leaflet-bottommenu::-webkit-scrollbar {
     width: 7px;
     height: 7px;
     background: #f2f2f2;
 }
 
-.leaflet-bottommenu::-webkit-scrollbar-thumb{
+.leaflet-bottommenu::-webkit-scrollbar-thumb {
     border-radius: 2px;
-    background: #777;   
+    background: #777; 
 }
 
-.leaflet-bottommenu-close-button{
+.leaflet-bottommenu-close-button {
     background-color: transparent;
     border: none;
     font-size: 14pt;
@@ -32,7 +32,7 @@
     cursor: pointer;
 }
 
-.leaflet-bottommenu-close-button:hover{
+.leaflet-bottommenu-close-button:hover {
     color: #4285F4;
 }
 
@@ -46,12 +46,12 @@
    width: 100%;
    background-color: white;
    border: 0;
-   height: 2px;
+   height: 1px;
    opacity: 0.2;
 }
 
 .leaflet-bottommenu .ex1 .header-left {
-    display:inline-block;
+    display: inline-block;
     width: 20%;
     float: left;
     text-align: center;

@@ -169,6 +169,7 @@
 .leaflet-bottommenu-ul > li > a > p { 
    text-align: center;
    color: white;
+   font-size: 12px;
 }
 
 .leaflet-bottommenu-contents {

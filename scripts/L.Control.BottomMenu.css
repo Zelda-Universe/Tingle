@@ -5,7 +5,7 @@
 
 .leaflet-bottommenu {
     position: absolute;
-    background-color: rgba(0,0,0, 0.7);
+    background-color: rgba(0,0,0, 0.8);
     border-radius: 10px;
     overflow: hidden;
     cursor: default;

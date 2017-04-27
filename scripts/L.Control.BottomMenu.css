@@ -59,9 +59,8 @@
     margin-top: 25px;
 }
 .leaflet-bottommenu .ex1 .logo {
-    width:  180px; /* width of the logo */
-    /*margin: 0px auto 0 auto;*/
-    /*border: 1px solid red;*/
+    width: auto;
+    height: 80px;
 }
 .leaflet-bottommenu .ex1 .logo img {
     display: block;

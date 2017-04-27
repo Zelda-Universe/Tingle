@@ -107,7 +107,8 @@ html, body, #map {
   top: 5px;
   left: 5px;
   width: 200px;
-  height: 100px;
+  height: auto;
+  padding: 12px;
 }
 #mobileAds {
   position: absolute;

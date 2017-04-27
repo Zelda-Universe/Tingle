@@ -9,8 +9,8 @@
     border-radius: 10px;
     overflow: hidden;
     cursor: default;
-    z-index: 9999;
-    box-shadow: 0 16px 32px rgba(0,0,0,.6) !important; 
+    z-index: 9999 !important;
+    box-shadow: 0 16px 32px rgba(0,0,0,.6) !important;
 }
 
 .leaflet-bottommenu::-webkit-scrollbar {

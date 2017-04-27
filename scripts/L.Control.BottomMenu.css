@@ -173,6 +173,7 @@
 
 .leaflet-bottommenu-contents {
 	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
 }
 
 .leaflet-bottommenu-contents::-webkit-scrollbar { 

@@ -182,12 +182,18 @@ L.Control.BottomMenu = L.Control.extend({
                 }
             }, this);
         */
+        
+        if (this.options.mobile) {
+	        // Grabber
+			L.DomUtil.create('div', 'grabber', this._menu);
+		}
             
         // Logo
         var logoDiv = L.DomUtil.create('div', 'logo', headerMenu);
         var imgLogo = L.DomUtil.create('img', '', logoDiv);
         imgLogo.src  = 'images/zmaps_white.png';
 
+		
         L.DomUtil.create('hr', '', this._menu);
 
         

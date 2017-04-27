@@ -3,7 +3,7 @@ L.Control.BottomMenu = L.Control.extend({
         position: 'topleft',
         width: window.innerWidth,
         height: window.innerHeight,
-        delay: '10',
+        delay: '0',
         openTo: 100,
     },
     _category: '',

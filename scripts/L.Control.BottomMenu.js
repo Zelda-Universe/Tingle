@@ -188,7 +188,7 @@ L.Control.BottomMenu = L.Control.extend({
         var logoDiv = L.DomUtil.create('div', 'logo', headerMenu);
         var imgLogo = L.DomUtil.create('img', '', logoDiv);
         imgLogo.src  = 'images/zmaps_white.png';
-        imgLogo.style.height = '98px';
+        imgLogo.style.height = '80px';
 
         L.DomUtil.create('hr', '', this._menu);
 

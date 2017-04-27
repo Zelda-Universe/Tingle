@@ -104,10 +104,8 @@ html, body, #map {
 #logoContainer {
   position: absolute;
   z-index: 999;
-  top: 5px;
-  left: 5px;
   width: 200px;
-  height: auto;
+  height: 80px;
   padding: 12px;
 }
 #mobileAds {

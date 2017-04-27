@@ -1,6 +1,6 @@
 .leaflet-control-bottommenu{
     cursor: pointer;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .leaflet-bottommenu{

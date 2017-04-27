@@ -21,9 +21,8 @@ L.Control.BottomMenu = L.Control.extend({
          this.options.height = 500;
       }
       
-      
       this._innerHTML = innerHTML;
-      this._startPosition = (parseInt(this.options.height, 10)) -100;
+      this._startPosition = (parseInt(this.options.height, 10)) - 80;
       this._isLeftPosition = this.options.position == 'topleft' ||
       this.options.position == 'bottomleft' ? true : false;
         

@@ -186,7 +186,6 @@
 .leaflet-bottommenu-contents {
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
-	width: 100%;
 }
 
 .leaflet-bottommenu-contents::-webkit-scrollbar { 

@@ -60,7 +60,7 @@
 }
 .leaflet-bottommenu .ex1 .logo {
     width: auto;
-    height: 80px;
+    height: 80px !important;
 }
 .leaflet-bottommenu .ex1 .logo img {
     display: block;

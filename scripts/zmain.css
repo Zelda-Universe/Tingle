@@ -13,9 +13,11 @@ body {
 }
 
 html, body, #map {
-	height: 100%;
-	background-color: #565656;/*#DEECFD;/*rgb(222, 236, 253); /*#deecfd;*/
-	overflow: hidden !important;
+	height: 100vh;
+	width: 100vw;
+	background-color: #565656; /*#DEECFD;/*rgb(222, 236, 253); /*#deecfd;*/
+	overflow: hidden;
+	position: fixed;
 }
 
 .labelIcon {

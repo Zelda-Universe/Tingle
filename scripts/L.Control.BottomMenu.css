@@ -10,7 +10,7 @@
     overflow: hidden;
     cursor: default;
     z-index: 9999;
-    box-shadow: 0 3px 14px rgba(0,0,0,0.4) !important; 
+    box-shadow: 0 16px 32px rgba(0,0,0,1) !important; 
 }
 
 .leaflet-bottommenu::-webkit-scrollbar {

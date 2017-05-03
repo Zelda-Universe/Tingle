@@ -36,6 +36,17 @@
       <script type="text/javascript" src="//cdn.tinymce.com/4/tinymce.min.js"></script>
       <script>tinymce.baseURL="//cdn.tinymce.com/4";tinymce.init({ selector:'textarea' });</script>
       
+      <!-- Curse Ad Script -->
+      <script>
+		var script = document.createElement('script');
+		var tstamp = new Date();
+		script.id = 'factorem';
+		script.src = '//cdm.cursecdn.com/js/zeldauniverse/cdmfactorem_min.js?sec=home&misc=' + tstamp.getTime();
+		script.async = false;
+		script.type='text/javascript';
+		document.head.appendChild(script);
+	 </script>
+      
       <script>
       var urlParams;
       $(function(){
@@ -76,16 +87,8 @@
    <body>
       <div id="map"></div>
       <div id="mobileAds">
-         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-         <!-- Zelda Maps -->
-         <ins class="adsbygoogle"
-             style="display:block; max-height: 50px; height: 50px"
-             data-ad-client="ca-pub-7269573247649351"
-             data-ad-slot="4512666333"
-             ></ins>
-         <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-         </script>
+         <!-- Curse Ad Div -->
+         <div id='cdm-zone-01'></div>
       </div>
       <div id="desktopAds" align="center">
          <script>
@@ -106,17 +109,8 @@
             document.getElementById('desktopAds').style.width = adsWidth + 'px';
             document.getElementById('desktopAds').style.height = adsHeight + 'px';
          </script>
-
-         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-         <!-- Zelda Maps -->
-         <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-7269573247649351"
-             data-ad-slot="4512666333"
-             data-ad-format="auto"></ins>
-         <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-         </script>
+         <!-- Curse Ad -->
+         <div id='cdm-zone-04'></div>
       </div>
       <script>
        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -128,5 +122,8 @@
        ga('send', 'pageview');
 
       </script>
+      
+      <!-- End Curse Ad Zone -->
+      <div id='cdm-zone-end'></div>
    </body>
 </html>

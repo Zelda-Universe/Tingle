@@ -36,6 +36,17 @@
       <script type="text/javascript" src="//cdn.tinymce.com/4/tinymce.min.js"></script>
       <script>tinymce.baseURL="//cdn.tinymce.com/4";tinymce.init({ selector:'textarea' });</script>
       
+      <!-- Curse Ad Script -->
+      <script>
+		var script = document.createElement('script');
+		var tstamp = new Date();
+		script.id = 'factorem';
+		script.src = '//cdm.cursecdn.com/js/zeldamaps/cdmfactorem_min.js?sec=home&misc=' + tstamp.getTime();
+		script.async = false;
+		script.type='text/javascript';
+		document.head.appendChild(script);
+	  </script>
+      
       <script>
       var urlParams;
       $(function(){
@@ -75,17 +86,9 @@
    </head>
    <body>
       <div id="map"></div>
-      <div id="mobileAds">
-         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-         <!-- Zelda Maps -->
-         <ins class="adsbygoogle"
-             style="display:block; max-height: 50px; height: 50px"
-             data-ad-client="ca-pub-7269573247649351"
-             data-ad-slot="4512666333"
-             ></ins>
-         <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-         </script>
+      <div id="mobileAds" align="center">
+         <!-- Curse Ad Div -->
+         <div id='cdm-zone-01'></div>
       </div>
       <div id="desktopAds" align="center">
          <script>
@@ -106,18 +109,11 @@
             document.getElementById('desktopAds').style.width = adsWidth + 'px';
             document.getElementById('desktopAds').style.height = adsHeight + 'px';
          </script>
-
-         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-         <!-- Zelda Maps -->
-         <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-7269573247649351"
-             data-ad-slot="4512666333"
-             data-ad-format="auto"></ins>
-         <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-         </script>
+         <!-- Curse Ad -->
+         <div id='cdm-zone-04'></div>
       </div>
+      
+      <!-- Google Analytics -->
       <script>
        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -128,5 +124,25 @@
        ga('send', 'pageview');
 
       </script>
+      
+      <!-- comScore -->
+	  <script>
+		var _comscore = _comscore || [];
+		_comscore.push({ c1: "2", c2: "6035118" });
+		(function() {
+		   var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
+		   s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+		   el.parentNode.insertBefore(s, el);
+		})();
+	  </script>
+	  <noscript>
+	       <img src="http://b.scorecardresearch.com/p?c1=2&amp;c2=6035118&amp;cv=2.0&amp;cj=1" />
+	  </noscript>
+	
+	  <!-- Nielsen Online SiteCensus -->
+	  <div><img src="//secure-us.imrworldwide.com/cgi-bin/m?ci=us-603339h&amp;cg=0&amp;cc=1&amp;ts=noscript" width="1" height="1" alt="" /></div>
+      
+      <!-- End Curse Ad Zone -->
+      <div id='cdm-zone-end'></div>
    </body>
 </html>

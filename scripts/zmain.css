@@ -121,9 +121,6 @@ html, body, #map {
   right: 12px;
   height: 50px;
   width: auto;
-  div {
-	  margin: 0 auto;
-  }
 }
 #desktopAds {
   position: absolute;

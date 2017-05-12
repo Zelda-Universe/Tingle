@@ -340,12 +340,19 @@ ZMap.prototype.addMarker = function(vMarker) {
       }
    }
    
+   markers.push(marker);
+   marker.pos = markers.length - 1;
+   
    marker.on('click',function() {
-      _this._createMarkerPopup(marker);
-      
-      _this._closeNewMarker();
-      newMarker = L.marker(marker._latlng).addTo(map);
-      //map.panTo(marker.getLatLng());
+      if (newMarker == null || (newMarker.markerId != marker.id)) {
+         _this._createMarkerPopup(marker);
+         
+         _this._closeNewMarker();
+         newMarker = L.marker(marker._latlng).addTo(map);
+         newMarker.markerId = marker.id;
+         newMarker.markerPos = marker.pos;
+         //map.panTo(marker.getLatLng());
+      }
    });
 
    marker.on('contextmenu',function(e){
@@ -362,9 +369,12 @@ ZMap.prototype.addMarker = function(vMarker) {
             //mapControl.resetContent();
          }
       }
-   });
+      if (newMarker == null || (newMarker.markerId != marker.id)) {
+         
+         //map.panTo(marker.getLatLng());
+      }
 
-   markers.push(marker);
+   });
 };
 
 ZMap.prototype._closeNewMarker = function() {  
@@ -540,6 +550,10 @@ ZMap.prototype.buildMap = function() {
    
    map.on('moveend', function(e) {
       _this.refreshMap();
+      if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {
+         _this._closeNewMarker();
+         mapControl.resetContent();
+      }
    });
 
    map.on('zoomend', function() {

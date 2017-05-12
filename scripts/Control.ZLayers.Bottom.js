@@ -228,7 +228,7 @@ L.Control.ZLayersBottom = L.Control.Layers.extend({
       this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
       this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
 
-      this._contents.innerHTML = this._buildCategoryMenu(categoryTree);
+      this._contents.innerHTML = this._category;
       this.contentType = 'category';
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
 
@@ -280,10 +280,10 @@ L.Control.ZLayersBottom = L.Control.Layers.extend({
       //@TODO: improve!!!!!!
       contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile-1" class="leaflet-bottommenu-a" href="#" onclick="_this._toogleCompleted();event.preventDefault();"><div class="circle" style="background-color: purple; border-color: purple"><span id="catCheckMark" class="icon-checkmark"' + (mapOptions.showCompleted?' style="color: gold; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;"':' style="color: white; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;"')+ '></span></div><p id="lblComplete">' + (mapOptions.showCompleted?'Hide Completed':'Show Completed') + '</p></a></li>';
       for (var i = 0; i < categoryTree.length; i++) {
-         contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].id +  ');event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].img + '"></span></div><p>' + categoryTree[i].name + '</p></a></li>';
+         contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].id +  ');mapControl._category = document.getElementById(\'menu-cat-content\').innerHTML; event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].img + '"></span></div><p>' + categoryTree[i].name + '</p></a></li>';
          if (categoryTree[i].children.length > 0) {
             for (var j = 0; j < categoryTree[i].children.length; j++) {
-               contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].children[j].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].children[j].id +  ');event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].children[j].img + '"></span></div><p>' + categoryTree[i].children[j].name + '</p></a></li>';
+               contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].children[j].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].children[j].id +  ');mapControl._category = document.getElementById(\'menu-cat-content\').innerHTML; event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].children[j].img + '"></span></div><p>' + categoryTree[i].children[j].name + '</p></a></li>';
             }
          }
       }

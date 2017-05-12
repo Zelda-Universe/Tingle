@@ -27,6 +27,7 @@
       $node['name'] = $row['name'];
       $node['img']  = $row['img'];
       $node['color']= $row['color'];
+      $node['visible_zoom']= $row['visibleZoom'];
 
       $query = 'select *
                   from ' . $map_prefix . 'marker_category
@@ -44,6 +45,7 @@
             $children['img']  = $row2['img'];
             $children['color']  = $row2['color'];
             $children['checked'] = $row2['default_checked'] == 1 ? true : false;
+            $children['visible_zoom']= $row2['visibleZoom'];
             array_push($arr_child, $children);
          }
          $node['children'] = $arr_child;

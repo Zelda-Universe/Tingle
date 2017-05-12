@@ -35,10 +35,20 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
       <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-      
+
       <!-- LIBs -->
-      <script type="text/javascript" src="res.php?type=javascript"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css" />
+      <script src="scripts/leaflet.contextmenu.js?<?php echo filemtime('scripts/leaflet.contextmenu.js'); ?>"></script>
+      <link rel="stylesheet" href="styles/leaflet.contextmenu.css?<?php echo filemtime('styles/leaflet.contextmenu.css'); ?>" />
+      
+      <link rel="stylesheet" href="styles/style.css?<?php echo filemtime('styles/style.css'); ?>" />
+      
+      <script src="scripts/Control.ZLayers.js?<?php echo filemtime('scripts/Control.ZLayers.js'); ?>"></script>
+      <script src="scripts/Control.ZLayers.Bottom.js?<?php echo filemtime('scripts/Control.ZLayers.Bottom.js'); ?>"></script>
+      
+      
+      <script src="scripts/zmap.js?<?php echo filemtime('scripts/zmap.js'); ?>"></script>
+      <script src="scripts/zmain.js?<?php echo filemtime('scripts/zmain.js'); ?>"></script>
+      <link rel="stylesheet" href="styles/zmain.css?<?php echo filemtime('styles/zmain.css'); ?>" />
       
       <!-- Curse Ad Script -->
       <script>

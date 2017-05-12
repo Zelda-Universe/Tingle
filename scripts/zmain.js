@@ -88,6 +88,7 @@ function getMakers(){
       $.each(vResults,function(i, marker){
          zMap.addMarker(marker);
       });
+      getUserInfo();
       zMap.refreshMap();
       zMap.goTo({ map        : getUrlParamValue('map', null)
                 , subMap     : getUrlParamValue('subMap', null)
@@ -181,8 +182,6 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       }
       
       getMaps();
-
-      getUserInfo();
 
       $("#map").css("background-color", vContainer.bgColor);
       $("body").css("background-color", vContainer.bgColor);

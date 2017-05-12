@@ -617,6 +617,12 @@ ZMap.prototype.buildMap = function() {
       }
       setCookie('showChangeLogV0.5', false);
    }
+   
+   if (!mapControl.isMobile()) {
+      document.getElementById("mobileAds").style.display = 'none';
+   } else {
+      document.getElementById("desktopAds").style.display = 'none';
+   }
 };
 
 ZMap.prototype.setUser = function(vUser) {

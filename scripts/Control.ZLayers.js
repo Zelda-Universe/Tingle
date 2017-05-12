@@ -2,7 +2,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
 	options: {
 		collapsed: true,
 		position: 'topleft',
-		autoZIndex: false
+		autoZIndex: false,
+      headerHeight: 80,
 	},
    _category: '',
    contentType: 'category', // category, marker
@@ -94,7 +95,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       
       var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', form1);
       logoDiv.src  = 'images/zmaps_white.png';
-      logoDiv.style.height = '98px';
+      logoDiv.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
       logoDiv.style.textAlign = 'center';
 
       this._separator = L.DomUtil.create('div', className + '-separator', form1);
@@ -113,9 +114,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
    },	
    
    setContent: function(vContent, vType) {
-      if (vType != 'newMarker' && newMarker != null) {
-         map.removeLayer(newMarker);
-      }
       this._contents.innerHTML = '';
 
       var closeButton = L.DomUtil.create('a', 'button', this._contents);
@@ -143,7 +141,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
          map.removeLayer(newMarker);
       }
 
-      this._contents.innerHTML = this._buildCategoryMenu(categoryTree);
+      this._contents.innerHTML = this._category;
       this.contentType = 'category';
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
    },
@@ -183,6 +181,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       if (this._contents != undefined) {
          this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
       }
+      
       this.options.collapsed = false;
       return this.expand();
    },
@@ -193,10 +192,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
       //@TODO: improve!!!!!!
       contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile-1" class="leaflet-bottommenu-a" href="#" onclick="_this._toogleCompleted();event.preventDefault();"><div class="circle" style="background-color: purple; border-color: purple"><span id="catCheckMark" class="icon-checkmark"' + (mapOptions.showCompleted?' style="color: gold; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;"':' style="color: white; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;"')+ '></span></div><p id="lblComplete">' + (mapOptions.showCompleted?'Hide Completed':'Show Completed') + '</p></a></li>';
       for (var i = 0; i < categoryTree.length; i++) {
-         contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].id +  ');event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].img + '"></span></div><p>' + categoryTree[i].name + '</p></a></li>';
+         contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].id +  ');mapControl._category = document.getElementById(\'menu-cat-content\').innerHTML; event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].img + '"></span></div><p>' + categoryTree[i].name + '</p></a></li>';
          if (categoryTree[i].children.length > 0) {
             for (var j = 0; j < categoryTree[i].children.length; j++) {
-               contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].children[j].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].children[j].id +  ');event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].children[j].img + '"></span></div><p>' + categoryTree[i].children[j].name + '</p></a></li>';
+               contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].children[j].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].children[j].id +  ');mapControl._category = document.getElementById(\'menu-cat-content\').innerHTML; event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].children[j].img + '"></span></div><p>' + categoryTree[i].children[j].name + '</p></a></li>';
             }
          }
       }

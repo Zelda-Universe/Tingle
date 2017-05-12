@@ -11,6 +11,7 @@
 			         , img
                   , color
                   , marker_category_type_id as markerCategoryTypeId
+                  , visible_zoom            as visibleZoom
                from ' . $map_prefix . 'marker_category mc
               where mc.container_id = ' . $map . '
 			       and mc.visible = 1

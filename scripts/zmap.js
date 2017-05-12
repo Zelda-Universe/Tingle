@@ -1,7 +1,7 @@
 function ZMap() {
    var _this;
    
-   this.version = '0.01';
+   this.version = '0.2';
    
    this.mapOptions = {};
    
@@ -19,50 +19,135 @@ function ZMap() {
    this.markers;
    this.categories;
    this.categoryTree;
-   this.markerIcon;
-   
-   this.categoryActions = [];
+   this.markerIconSmall;
+   this.markerIconMedium;
    
    //this.defaultTilesURL = 'tiles/'; // Local
    this.defaultTilesURL = 'https://zeldamaps.com/tiles/';
 
-   this.catCtrl;
-   
-   this.newMarker = null;
+   this.newMarker;
    
    this.user;
    
-   this.curCatVisible = null;
-   this.bottomMenu;
-   
-   this.drawnItems;
-   
-   this.completedMarkers = [];
+   this.hasUserCheck;
+   this.userWarnedAboutMarkerQty;
+   this.userWarnedAboutLogin;
+
+   this.completedMarkers;
+
+   this.currentIcon;
+
+   this.langMsgs = {
+      GENERAL_ERROR   : "I AM ERROR! %1",
+
+      LOGOUT_SUCCESS : "May the Goddess smile upon you, %1!",
+      LOGOUT_ERROR   : "I AM ERROR! Please, try to clean your cache and restart your browser to safely logoff.",
+
+      LOGIN_WELCOME  : "Hey, listen!",
+      LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
+      LOGIN_ERROR   : "I AM ERROR! %1",
+
+      REGISTER_WELCOME  : "It's dangerous to go alone!",
+      REGISTER_SUCCESS : "Excuuuuse me, %1! Your user was created!",
+      REGISTER_ERROR   : "I AM ERROR! %1",
+
+      MARKER_COMPLETE_WARNING : "It seems you are not logged in, so your completed markers will be stored in a cookie. If you log in, your markers will be saved on our database.",
+     
+      MARKER_ADD_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be saved to our database. ERROR: %1",
+      MARKER_DEL_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be deleted from our database. ERROR: %1",
+      MARKER_COMPLETE_TRANSFER_ERROR : "There seems to be a problem moving your completed markers from cookie to our database. We will try again later. ERROR: %1",
+      MARKER_COMPLETE_TRANSFER_SUCCESS : "All your completed markers were moved from cookies to our database and tied to your account.",
+      MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account but something didn`t went right. We try again the next time you login.",
+
+      MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be deleted from our database.",
+      MARKER_EDIT_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be edited in our database.",
+      MARKER_ADD_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be added to our database. ERROR: %1",
+      MARKER_DEL_SUCCESS : "Marker %1 has been successfully deleted.",
+      MARKER_EDIT_SUCCESS : "Marker %1 has been successfully edited.",
+      MARKER_ADD_SUCCESS : "Marker %1 has been successfully added.",
+      MARKER_ADD_SUCCESS_RESTRICTED : "Thank you for your contribution! Your marker is pending review and, if approved, it will show up shortly.",
+      
+      GO_TO_MARKER_ERROR : "You’ve met with a terrible fate, haven’t you? Marker %1 couldn`t be found on this map.",
+   }
 };
 
 
-/** 
- * Constructor of ZMap
- *
- * @param vMapOptions.markerURL        - URL of markers icons
- * @param vMapOptions.markerExt        - File extesion of marker icons 
- * @param vMapOptions.bgColor          - Background color of the map  (can be overidden by URL parameter - bgColor)
- * @param vMapOptions.showStreeView    - NOT USED BY LEAFLET
- * @param vMapOptions.showMapControl   - Shows/Hides map control (can be overidden by URL parameter - showMapControl
- * @param vMapOptions.showPanControl   - NOT USED BY LEAFLET
- * @param vMapOptions.showZoomControl  - Show/Hides zoom control (can be overidden by URL parameter - showZoomControl)
- * @param vMapOptions.centerX          - Initial center of map on the X axis, Longitude (can be overidden by URL parameter - x)
- * @param vMapOptions.centerY          - Initial center of map on the Y axis, Latitude (can be overidden by URL parameter - y)
- * @param vMapOptions.clusterMaxZoom   - Max zoom that the markers will be clustered
- * @param vMapOptions.clusterGridSize  - Grid size of clusters
- * @param vMapOptions.tileSize         - Tile Size of the map tiles
- **/
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                            BEGIN  -  AUXILIARY                           *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
+
+// Format string like java
+// http://stackoverflow.com/questions/16371871/replacing-1-and-2-in-my-javascript-string
+String.prototype.format = function() {
+  var args=arguments;
+  return this.replace(/%(\d+)/g, function(_,m) {
+    return args[--m];
+  });
+}
+
+// Remove elements from array
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+if (!Array.prototype.filter) {
+  Array.prototype.filter = function(fun/*, thisArg*/) {
+    'use strict';
+
+    if (this === void 0 || this === null) {
+      throw new TypeError();
+    }
+
+    var t = Object(this);
+    var len = t.length >>> 0;
+    if (typeof fun !== 'function') {
+      throw new TypeError();
+    }
+
+    var res = [];
+    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+    for (var i = 0; i < len; i++) {
+      if (i in t) {
+        var val = t[i];
+
+        // NOTE: Technically this should Object.defineProperty at
+        //       the next index, as push can be affected by
+        //       properties on Object.prototype and Array.prototype.
+        //       But that method's new, and collisions should be
+        //       rare, so use the more-compatible alternative.
+        if (fun.call(thisArg, val, i, t)) {
+          res.push(val);
+        }
+      }
+    }
+
+    return res;
+  };
+}
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                             END  -  AUXILIARY                            *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
+
+
+
 ZMap.prototype.constructor = function(vMapOptions) {
-   
+   toastr.options.preventDuplicates = true;
+
    _this = this;
-   mapOptions = {};
    
-   // Check if a option was passed
+   hasUserCheck = false;
+   userWarnedAboutMarkerQty = false;
+   userWarnedAboutLogin = false;
+   mapOptions = {};
+   maps = [];
+   markers = [];
+   categoryTree = [];
+   categories = [];
+   completedMarkers = [];
+   user = null;
+   newMarker = null;
+   
    if (vMapOptions == null) {
       alert("Need to pass options to map constructor");
       return false;
@@ -72,92 +157,48 @@ ZMap.prototype.constructor = function(vMapOptions) {
       }
       mapOptions = vMapOptions;
    }
+
+
+//   markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
+
+
+   var icnSizeMedium = 23; // Default value to avoid traps
+   var icnSizeSmall = 16; // Default value to avoid traps
    
-   maps = [];
-   _overlayMap=[];
-   markers = [];
-   categories = [];
-   categoryTree = [];
-   markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
-   currentMap = 0;
-   currentOverlaypMap = -1;
-   markerIcon = L.DivIcon.extend({options:{ iconSize:    [32,32]
-                                      , iconAnchor:  [16,16]
-                                      , popupAnchor: [0,0]
-                                      }
-                             });
-
-   /*
-   markerIcon = L.Icon.extend({options:{ iconSize:    [32,32]
-                                      , iconAnchor:  [16,16]
-                                      , popupAnchor: [0,0]
-                                      }
-                             });
-                             
-   labelIcon = L.DivIcon.extend({options:{ iconSize:    [121,49]
-                                          , iconAnchor:  [60,25]
+   markerIconMedium = L.DivIcon.extend({options:{ iconSize:    [icnSizeMedium,icnSizeMedium]
+                                          , iconAnchor:  [Math.floor(icnSizeMedium/2),Math.floor(icnSizeMedium/2)]
                                           , popupAnchor: [0,0]
-                                      }
-                             });
-   */
-   newMarker = null;
-   user = null;
-   completedMarkers = [];
-};
+                                          }
+                          });
+   markerIconSmall = L.DivIcon.extend({options:{ iconSize:    [icnSizeSmall,icnSizeSmall]
+                                          , iconAnchor:  [Math.floor(icnSizeSmall/2),Math.floor(icnSizeSmall/2)]
+                                          , popupAnchor: [0,0]
+                                          }
+                          });
 
+
+   if (map.getZoom > 5) {
+      currentIcon = 'Medium';
+   } else {
+      currentIcon = 'Small';
+   }
+};
+  
 // Add a map category
 ZMap.prototype.addCategory = function(category) {
    categories[category.id]          = new Object();
    categories[category.id].id       = category.id;
    categories[category.id].parentId = category.parentId;
    categories[category.id].checked  = (category.checked==1?true:false);
+   categories[category.id].userChecked = false;
    categories[category.id].name     = category.name;
    categories[category.id].img      = category.img;
    categories[category.id].color    = category.color;
+   categories[category.id].visibleZoom          = category.visibleZoom;
    categories[category.id].markerCategoryTypeId = category.markerCategoryTypeId;
 };
 
-// Add a map category
-ZMap.prototype.setUser = function(vUser) {
-   user = vUser;
-   _this._buildContextMenu();
-   _this._rebuildMarkerPopup();
-};
-
-// Add a map category
-ZMap.prototype.addCompletedMarkers = function(vComplete) {
-   completedMarkers = vComplete;
-}; 
-
-/** 
- * Add a map passed through as a parameter
- *  A map can be an overlay, meaning that one map can be on top of another (not changing maps)
- *  This is useful for same area maps (Light World / Dark World or Present / Future Maps)
- * 
- * Overlay maps MUST be an overlay of itself, so it shows up on the controls
- *
- * @param vMap.id               - Map ID (Unique)
- * @param vMap.mapTypeName      - Map Type (FlatMap = Games) - NOT USED //@TODO: Treat different map types!
- * @param vMap.googleDefault    - If it's a google default (used for real world maps) - NOT USED //@TODO: Treat different map types!
- * @param vMap.name             - Name of the map
- * @param vMap.tileURL          - URL of directory of the tiles corresponding to this map
- * @param vMap.tileExt          - File extension of the tiles
- * @param vMap.mapOverlayId     - ID of the map that this will be show on top of
- *                                Ex: Light World (ID 1) will have an overlay_id of 1 (itself, for controls)
- *                                    Dark World (ID 2) will have an overlay_id of 1 (the light world, so it will show on top of it)
- *                                    Temple 1 (ID 3) will have an overlay_id of null, since it won't show on top of anything, and nothing will be on top of it
- * @param vMap.mapOverlayName   - Name of the overlay map (may be different, this is used on the overlay controls). Most of the time, it will be the same
- * @param vMap.maxZoom         - Max Zoom this map can go (overlay maps should have the same max zoom)
- * @param vMap.mapCopyright     - Copyright info of the map
- * @param vMap.mapMapper        - The person whom put this map together
- * @param vMap.isDefault        - The default map (not used)
- * @param vMap.default_zoom     - The initial zoom level when the map loads
- * @param vMap.img404           - Image to show when no tile image is found
- * @param vMap.empty_map        - If it's a empty map
- *
- **/
 ZMap.prototype.addMap = function(vMap) {
-   
    // If there is no subMap, we can't add to the map
    if (vMap.subMap.length == 0) {
       console.log("No subMap configured for \"" + vMap.name + "\"!!!");
@@ -165,16 +206,15 @@ ZMap.prototype.addMap = function(vMap) {
    }
    
    // If only one submap exists, we just add it without any overlay
-   if (vMap.subMap.length == 1 && vMap.subMap[0].submapLayer.length == 0) {
-      
+   if (vMap.subMap.length == 1 
+         && vMap.subMap[0].submapLayer.length == 0) {
       var tLayer = L.tileLayer(this.defaultTilesURL + vMap.subMap[0].tileURL + '{z}_{x}_{y}.' + vMap.subMap[0].tileExt
-                                           , { maxZoom:         vMap.maxZoom
-                                             , attribution:     vMap.mapCopyright + ', ' + vMap.subMap[0].mapMapper
-                                             , opacity:         vMap.subMap[0].opacity
-                                             , noWrap:          true
-//                                             , continuousWorld: false  // default is false
-                                             , tileSize:        mapOptions.tileSize
-                                             , updateWhenIdle: true
+                                           , { maxZoom:           vMap.maxZoom
+                                             , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[0].mapMapper
+                                             , opacity:           vMap.subMap[0].opacity
+                                             , noWrap:            true
+                                             , tileSize:          mapOptions.tileSize
+                                             , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              }
       );
@@ -183,22 +223,18 @@ ZMap.prototype.addMap = function(vMap) {
       tLayer.originalId  = vMap.id;
       tLayer.title       = vMap.name;
       tLayer._overlayMap = [];
+      
       maps.push(tLayer);
-      
    } else {
-      
       // Create the base map 
       //  We create it as an empty map, so different sized overlay maps won't show on top
       //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
       /* TODO: Improve this to use no tile at all (remove tile border)*/
       var tLayer = L.tileLayer(this.defaultTilesURL + vMap.subMap[0].tileURL + 'blank.png'
-                                           , { maxZoom:         vMap.maxZoom
-                                             // Attibution will be on the overlay!
-                                             //, attribution:     vMap.mapCopyright + ", Mapper: " + vMap.subMap[0].mapMapper
-                                             //, opacity:         vMap.subMap[0].opacity
-                                             , noWrap:          true
-                                             , tileSize:        mapOptions.tileSize
-                                             , updateWhenIdle: true
+                                           , { maxZoom:           vMap.maxZoom
+                                             , noWrap:            true
+                                             , tileSize:          mapOptions.tileSize
+                                             , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              }
       );
@@ -225,9 +261,6 @@ ZMap.prototype.addMap = function(vMap) {
          overlay.originalId  = vMap.subMap[i].id;
          overlay.title       = vMap.subMap[i].name;
          overlay.isDefault   = vMap.subMap[i].isDefault;
-         if (currentOverlaypMap == -1 && overlay.isDefault == 1) {
-            currentOverlaypMap = tLayer._overlayMap.length;
-         }
          
          if (vMap.subMap[i].submapLayer.length > 0) {
             
@@ -246,8 +279,8 @@ ZMap.prototype.addMap = function(vMap) {
                                                                          , zIndex:   (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
                                                                          , tileSize: mapOptions.tileSize
                                                                          , opacity: submap.opacity
-																		 , updateWhenIdle:  false
-																		 , updateWhenZooming: false
+                                                       , updateWhenIdle:  false
+                                                       , updateWhenZooming: false
                                                                          });
                overlay2.id             = 'mID' + submap.id;
                overlay2.originalId     = submap.id;
@@ -267,50 +300,18 @@ ZMap.prototype.addMap = function(vMap) {
       
       maps.push(tLayer);
    }
-   
-   if (currentOverlaypMap < 0) {
-      currentOverlaypMap = 0;
-   }
 }
 
 ZMap.prototype.addMarker = function(vMarker) {
    if (vMarker == null) {
       return;
-   } else if (categories[vMarker.markerCategoryId] == null) {
-      console.log("Wrong marker category. Marker ID: " + vMarker.id);
-      return;
-   }
+   } 
 
    var marker;
-   
-   // != 3 means it's not a label
-   if (vMarker.markerCategoryTypeId != 3) {
       marker = new L.Marker([vMarker.y,vMarker.x], { title: vMarker.name
-                                                   //, icon: new markerIcon({iconUrl: mapOptions.markerURL + categories[vMarker.markerCategoryId].img + '.' + mapOptions.markerExt})
-                                                   , icon: new markerIcon({className: 'map-icon-svg'
-//                                                                          ,html: "<i class='icon-Button' style='color: " + categories[vMarker.markerCategoryId].color + ";'></i><div style='position: absolute;' class='icon-marker icon-" + categories[vMarker.markerCategoryId].img + "'></div>"
-                                                                            ,html: "<div class='circle circleMap' style='background-color: " + categories[vMarker.markerCategoryId].color + "; border-color: " + categories[vMarker.markerCategoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.markerCategoryId].img + "'></span></div>"
-                                                                           })
-                                                   });
-   } else {
-      marker = new L.Marker([vMarker.y,vMarker.x], { zIndexOffset: -1000
-                                                   , icon: new L.DivIcon({ className: 'labelText'
-                                                                         , html: vMarker.name})
-/*
-                                                                         , html:      '<div class="labelContainer" style="background-image: url('
-                                                                                      + mapOptions.markerURL
-                                                                                      + '_'
-                                                                                      + categories[vMarker.markerCategoryId].img
-                                                                                      + '.' + mapOptions.markerExt
-                                                                                      + ')"><div class="labelText">'
-                                                                                      + vMarker.name
-                                                                                      + '</div></div>'
-                                                                         })
-*/
+                                                   , icon: _this._createMarkerIcon(vMarker.markerCategoryId)
                                                    });
 
-   }
-   
    marker.id              = vMarker.id;
    marker.title           = vMarker.name;
    marker.description     = vMarker.description;
@@ -334,242 +335,794 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.complete        = false;
    for (var i = 0; i < completedMarkers.length; i++) {
       if (marker.id == completedMarkers[i]) {
-		_this._doSetMarkerDoneIcon(marker, true);
-		break;
+      _this._doSetMarkerDoneIcon(marker, true);
+      break;
       }
    }
    
-   _this._createMarkerPopup(marker);
-	
-
-	if (marker.categoryTypeId == 1) {
-		marker.on('click',function() {
-			try {
-				L.geoJson(JSON.parse(marker.description), {
-					onEachFeature: function (feature, layer) {
-						//@TODO: Dynamic color
-						layer.options.color = "#f06eaa",
-						layer.options.weight = 2,
-						drawnItems.addLayer(layer);
-					}
-				});
-			} catch (err) {
-				// @TODO: DO NOT USE TRY!!!! :)
-			}
-	//            L.geoJson(JSON.parse(marker.description)).eachLayer(function (layer) {
-	//               layer.setRadius(layer.feature.properties.radius);
-	//               layer.addTo(drawnItems);
-	//            });
-		});
-		
-		  
-		marker.on('contextmenu',function(e){
-			if (!marker.complete) {
-				_this._doSetMarkerDoneAndCookie(marker);
-			} else {
-				_this._doSetMarkerUndoneAndCookie(marker);
-			}
-			_this._createMarkerPopup(marker);
-			map.closePopup();
-		});
-	}
-
    markers.push(marker);
+   marker.pos = markers.length - 1;
+   
+   marker.on('click',function() {
+      if (newMarker == null || (newMarker.markerId != marker.id)) {
+         _this._createMarkerPopup(marker);
+         
+         _this._closeNewMarker();
+         newMarker = L.marker(marker._latlng).addTo(map);
+         newMarker.markerId = marker.id;
+         newMarker.markerPos = marker.pos;
+         //map.panTo(marker.getLatLng());
+      }
+   });
+
+   marker.on('contextmenu',function(e){
+      if (!marker.complete) {
+        _this._doSetMarkerDoneAndCookie(marker);
+      } else {
+        _this._doSetMarkerUndoneAndCookie(marker);
+      }
+      if (mapControl.isCollapsed() == false) {
+         if (mapControl.getContentType() == 'm'+marker.id && mapOptions.showCompleted == true) {
+            //@TODO: Improve to not show marker content if this was not being displayed
+            _this._createMarkerPopup(marker);
+         } else {
+            //mapControl.resetContent();
+         }
+      }
+      if (newMarker == null || (newMarker.markerId != marker.id)) {
+         
+         //map.panTo(marker.getLatLng());
+      }
+
+   });
 };
 
-//@TODO: Use L.DOM.UTIL instead of plain html
+ZMap.prototype._closeNewMarker = function() {  
+   if (newMarker != null) {
+      map.removeLayer(newMarker);
+      newMarker = null;
+   }
+}
+
+
 ZMap.prototype._createMarkerPopup = function(marker) {
-   
-   // Type 1 = Normal popup
-   if (marker.categoryTypeId == 1) {
-     
-      if (!bottomMenu.isMobile()) {
-         
-         marker.on('click',function() {
-            if (marker.getPopup() == undefined) {
-               var div = document.createElement('DIV');
-               div.id = 'divP' + marker.id;
-               div.className = 'banner';
-               
-               var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
-               
-               content = content + "<div class='popupContent' style='overflow-y: auto; max-height:" + Math.floor($(document).height() * 0.6) +"px;'>";
-               if (marker.tabText.length > 1) {
-                  var ul = "<ul>";
-                  for (var i = 0; i < marker.tabText.length; i++) {
-                     if (i == 0) {
-                        ul = ul + "<li style=\"minHeight: 120px;\"><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
-                     } else {
-                        ul = ul + "<li id='citem-" + i + "' style='display: none'><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
-                     }
-                  }
-                  ul = ul + "</ul>";
-                  content = content + ul;
-               } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
-                  content = content  + "<div>" + marker.tabText[0] + "</div>";
-               }
-               
-               if (user != null) {
-                  if (user.level >= 10 || (user.level >= 5 && marker.userId == user.id)) {
-                     content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
-                               + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
-                               + "<br style='height:0pt; clear:both;'>"
-                               + "<p style=\"float: right;\">"
-                           + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
-                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                                 + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
-                                 + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
-                               + "</p>"
-                            + "</div>";
-                  } else {
-                     content += "<p style=\"float: right;\">"
-                           + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
-                                 + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                               + "</p>"
-                            + "</div>";
-                  }
-               } else {
-                  content += "<p style=\"float: right;\">"
-                        + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
-                              + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                            + "</p>"
-                         + "</div>";
-               }
-               div.innerHTML = content;   
-               
-               var popup;
-               if (!L.Browser.mobile) {
-                  popup = L.popup({
-                     maxWidth: 400,
-                     offset: L.point(0, -10),
-                     className: (marker.tabText.length>1?'multiTab':'singleTab')
-                  });
-                  
-               } else { // mobile
-                  popup = L.popup({
-                     maxWidth: 400,
-                     offset: L.point(0, -10),
-                     className: (marker.tabText.length>1?'multiTab':'singleTab')
-                  });
-               }
-               
-               popup.setContent(div);
-               
-               marker.bindPopup(popup);
-               marker.openPopup();
-            } else {
-               // Do nothing ... popup is already bind
-            }
-         });
+   var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
+   content = content + "<div class='popupContent'>";
+   for (var i = 0; i < marker.tabText.length; i++) {
+      content = content + marker.tabText[i];
+   }
+   /*
+   if (marker.tabText.length > 1) {
+      var ul = "<ul>";
+      for (var i = 0; i < marker.tabText.length; i++) {
+         if (i == 0) {
+            ul = ul + "<li style=\"minHeight: 120px;\"><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
+         } else {
+            ul = ul + "<li id='citem-" + i + "' style='display: none'><div style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
+         }
+      }
+      ul = ul + "</ul>";
+      content = content + ul;
+   } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
+      content = content  + "<div>" + marker.tabText[0] + "</div>";
+   }*/
+
+   if (user != null) {
+      if (user.level >= 10 || (user.level >= 5 && marker.userId == user.id)) {
+         content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
+                   + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
+                   + "<br style='height:0pt; clear:both;'>"
+                   + "<p style=\"float: right;\">"
+                   + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
+                   + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                     + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
+                     + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
+                   + "</p>"
+                + "</div>";
       } else {
-         marker.on('click',function() {
-            var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
-            content = content + "<div>";
-            if (marker.tabText.length > 1) {
-               var ul = "<ul>";
-               for (var i = 0; i < marker.tabText.length; i++) {
-                  if (i == 0) {
-                     ul = ul + "<li style=\"minHeight: 120px;\"><div class='popup-div-content' style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";   
-                  } else {
-                     ul = ul + "<li id='citem-" + i + "' style='display: none'><div class='popup-div-content' style='font: 12px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif;'>" + marker.tabText[i] + "</div></li>";
-                  }
-               }
-               ul = ul + "</ul>";
-               content = content + ul;
-            } else if (marker.tabText.length == 1 && marker.tabText[0] != "") {
-               content = content  + "<div class='popup-div-content'>" + marker.tabText[0] + "</div>";
-            }
-            
-            content = content + "<div class='popup-div-content'>";
-            if (user != null && user.level >= 5) {
-               content +=  "<p style='text-align: left; float:left; margin-right: 10px;'><B> ID:</b> " + marker.id + "</p>"
-                         + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
-                         + "<br style='height:0pt; clear:both;'>"
-                         + "<p style=\"float: right;\">"
-						   + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
-                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                           + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
-                           + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
-                         + "</p>"
-                      + "</div>";
-            } else {
-               content += "<p style=\"float: right;\">"
-    					   + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
-                           + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
-                         + "</p>"
-                      + "</div>";
-            }
-            content = content + "</div>";
-            
-            bottomMenu.setContents(content); 
-            if (!bottomMenu._open) {
-               bottomMenu.show();
-            }
-         });
+         content += "<p style=\"float: right;\">"
+               + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
+                     + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                   + "</p>"
+                + "</div>";
+      }
+   } else {
+      content += "<p style=\"float: right;\">"
+            + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
+                  + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
+                + "</p>"
+             + "</div>";
+   }
+
+
+   mapControl.setContent(content, 'm'+marker.id);
+}
+
+ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
+   if (map.getZoom() > 5) {
+      return new markerIconMedium({className: 'map-icon-svg'
+                            ,html: "<div class='circle circleMap-medium ' style='background-color: " + categories[vCatId].color + "; " 
+                                                                      + "border-color: " + categories[vCatId].color + "'>" 
+                                       + "<span class='icon-" + categories[vCatId].img + " icnText-medium'></span>"
+                                       + (vComplete?"<span class='icon-checkmark completeMarker completeMarker-Medium'></span>":"")
+                                 + "</div>"
+      });
+   } else {
+      return new markerIconSmall({className: 'map-icon-svg'
+                            ,html: "<div class='circle circleMap-small' style='background-color: " + categories[vCatId].color + "; " 
+                                                                      + "border-color: " + categories[vCatId].color + "'>" 
+                                       + "<span class='icon-" + categories[vCatId].img + " icnText-small'></span>"
+                                       + (vComplete?"<span class='icon-checkmark completeMarker completeMarker-Small'></span>":"")
+                                 + "</div>"
+      });
+   }
+}
+
+ZMap.prototype._copyToClipboard = function(vMarkerId) {  
+   var href = window.location.href.split("?");
+   
+   var params = href[1].split("&");
+   
+   var clipboardParams = "";
+   
+   for (var i = 0; i < params.length; i++) {
+      if (params[i].search("game=") == 0 
+         || params[i].search("showMapControl=") == 0
+         || params[i].search("collapsed=") == 0
+         || params[i].search("showCategoryControl=") == 0
+         || params[i].search("showZoomControl=") == 0
+         || params[i].search("bgColor=") == 0
+         || params[i].search("help=") == 0
+      ) {            
+         clipboardParams = clipboardParams + params[i] + "&";
       }
    }
    
-   // Type 2 = Gateway to other marker
-   if (marker.categoryTypeId == 2) {
-      marker.on('click',function() {
-         // Search the marker that we want to "jump" to
+   window.prompt("Copy to clipboard: Ctrl+C, Enter", href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom());
+}
+
+
+ZMap.prototype.refreshMap = function() {
+   var mapBounds = map.getBounds().pad(0.15);
+   
+    for (var i = markers.length -1; i >= 0; i--) {
+        var m = markers[i];
+        var shouldBeVisible = markers[i].visible
+                              && mapBounds.contains(m.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
+                              && (
+                                  (hasUserCheck == false && categories[m.categoryId].visibleZoom <= map.getZoom())
+                                  || hasUserCheck == true && categories[m.categoryId].userChecked == true) // Check if we should show at this zoom level
+                              && (mapOptions.showCompleted == true || (mapOptions.showCompleted == false && markers[i].complete != true)) // Should we show completed markers?
+                              ;
+        if (!shouldBeVisible) {
+            map.removeLayer(m);
+        } else if (shouldBeVisible) {
+            m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
+            map.addLayer(m);
+        }
+    }
+};
+
+ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
+   categoryTree = vCategoryTree;
+}
+
+ZMap.prototype.buildMap = function() {
+   console.log("Leaflet Version: " + L.version);
+   console.log("Zelda Maps Version: " + _this.version);
+   
+   if (!L.CRS.Simple) {
+      L.CRS.Simple = L.Util.extend({}, L.CRS, { projection:     L.Projection.LonLat
+                                              , transformation: new L.Transformation(1,0,1,0)
+                                              });
+   }
+   
+   map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
+                      , zoom:        mapOptions.zoom
+                      , zoomControl: false
+                      , crs:         L.CRS.Simple
+                      , layers: [maps[0]]
+                      , maxBounds: new L.LatLngBounds(new L.LatLng(-49.875, 34.25), new L.LatLng(-206, 221))
+                      , maxBoundsViscosity: 1.0
+                      , contextmenu: true
+                      , contextmenuWidth: 140
+         });   
+   
+   
+   // Get all the base maps
+   var baseMaps = {};
+   for (var i = 0; i < maps.length; i++) {
+      baseMaps[maps[i].title] = maps[i];
+   }
+   
+   if (L.Browser.mobile && window.innerWidth < 768) {
+      mapControl = L.control.zlayersbottom(baseMaps, categoryTree, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
+   } else {
+      mapControl = L.control.zlayers(baseMaps, categoryTree, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
+      L.control.zoom({position:'bottomright'}).addTo(map);
+   }
+   //@TODO: REDO!
+   mapControl.setCurrentMap(19, 1900);
+   mapControl.addTo(map);
+
+   //map.addLayer(markerCluster);
+   
+   
+   map.on('moveend', function(e) {
+      _this.refreshMap();
+      if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {
+         _this._closeNewMarker();
+         mapControl.resetContent();
+      }
+   });
+
+   map.on('zoomend', function() {
+      if (map.getZoom() > 5 && currentIcon == 'Small') {
+         currentIcon = 'Medium';
+      } else if (map.getZoom() > 5 && currentIcon == 'Small') {
+         currentIcon = 'Small';
+      } else {
+         return;
+      }
+      var mapBounds = map.getBounds().pad(0.15);
+         
+      for (var i = markers.length -1; i >= 0; i--) {
+         var m = markers[i];
+         if (mapBounds.contains(m.getLatLng())) {
+            m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
+         }
+      }
+   });
+
+   _this._buildContextMenu();
+
+
+   if (!getCookie('showChangeLogV0.5')) {   
+      // @TODO: USe proper HTML5 :P
+      var v0d5 = '<center><b>Zelda Maps v0.5 Released!</b></center><br>' +
+                  '- Completed markers are tied to your account!<br>' +
+                  '- You can now select multiple categories at the same type.<br>' +
+                  '- The top left box can now be collpased.<br>' +
+                  '- Marker clustering has been disabled (experimental?).<br>' +
+                  '- Markers now show up according to zoom.<br>' +
+                  '- Usability fixes and improvements all over the place.<br><br>'+
+                  '<center><a href="https://discord.gg/GUpq8" target="new_">Tell us your thoughts! Join us on Discord.</a></center>'
+         ;
+
+      if (mapControl.isMobile()) {
+         toastr.options = {
+           "closeButton": true,
+           "timeOut": 10000,
+           "extendedTimeOut": 2000,
+         }
+         toastr.info(v0d5).css("width",(window.innerWidth-24)+"px");
+         toastr.options = {
+           "closeButton": false,
+           "timeOut": 5000,
+           "extendedTimeOut": 1000,
+         }
+
+      } else {
+         toastr.options = {
+           "closeButton": true,
+           "timeOut": 10000,
+           "extendedTimeOut": 2000,
+         }
+         toastr.info(v0d5).css("width","450px");
+         toastr.options = {
+           "closeButton": false,
+           "timeOut": 5000,
+           "extendedTimeOut": 1000,
+         }
+      }
+      setCookie('showChangeLogV0.5', false);
+   }
+};
+
+ZMap.prototype.setUser = function(vUser) {
+   user = vUser;
+   _this._buildContextMenu();
+
+   if (user != null) {
+      // Transfer cookies completed markers to database
+      var cookieCompletedMarkers = getCookie('completedMarkers');
+      if (cookieCompletedMarkers != undefined && cookieCompletedMarkers != null && cookieCompletedMarkers != "") {
+         _this.transferCompletedMarkersToDB();
+      } else {
+         _this.getUserCompletedMarkers();
+      }
+
+   }
+};
+
+
+
+//************* CATEGORY MENU *************//
+ZMap.prototype._updateCategoryVisibility = function(vCatId, vChecked) {
+
+   // Change the category visibility of the category parameter
+   var previousUserCheck;
+   
+   function forEachCatUserChecked(element, index, array) {
+      if (element.id == vCatId) {
+         if (element.userChecked == true) {
+            element.userChecked = false;
+         } else {
+            element.userChecked = true;
+         }
+
+         if (element.parentId != undefined) {
+            return;
+         } else {
+            previousUserCheck = element.userChecked;
+         }
+      }
+
+      if (element.parentId == vCatId) {
+         element.userChecked = previousUserCheck;
+      }
+   }   
+   categories.forEach(forEachCatUserChecked);
+
+
+   // After change the parameter category visibility, just check if we have any category checked
+   hasUserCheck = false;
+   var c = 0;
+   function forEachCat(element, index, array) {
+      if (element.userChecked == true) {
+         hasUserCheck = true;
+         c++;
+      }
+   }
+   categories.forEach(forEachCat);
+
+   if (c > 5 && !userWarnedAboutMarkerQty) {
+      toastr.warning('Combining a lot of categories might impact performance.');
+      userWarnedAboutMarkerQty = true;
+   }
+
+
+   // Finally, just update the category menus
+   function forEachCat2(element, index, array) {
+      var catMenu = document.getElementById("catMenu" + element.id);
+      if (catMenu) { 
+      
+         if (categories[element.id].userChecked || !hasUserCheck) {
+            catMenu.style.opacity = 1;
+         } else {
+            catMenu.style.opacity = 0.35;
+         }
+      }
+      var catMenuMobile = document.getElementById("catMenuMobile" + element.id);
+      if (catMenuMobile) { 
+         if (categories[element.id].userChecked || !hasUserCheck) {
+            catMenuMobile.style.opacity = 1;
+         } else {
+            catMenuMobile.style.opacity = 0.35;
+         }
+      }
+   }
+   categories.forEach(forEachCat2);
+   _this.refreshMap();
+}
+
+ZMap.prototype.updateMarkerVisibility = function(vCatId, vVisible) {
+   
+   for (var i = 0; i < markers.length; i++) {
+      if (markers[i].categoryId == vCatId) {
+         markers[i].visible = vVisible;
+      }
+   }
+   
+   _this.refreshMap();
+   
+};
+
+
+//************* CATEGORY MENU *************//
+
+
+
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                         BEGIN - MARKER HANDLING                          *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
+ZMap.prototype.deleteMarker = function(vMarkerId) {  
+   $.ajax({
+           type: "POST",
+           url: "ajax/del_marker.php",
+           data: {markerId: vMarkerId, userId: user.id},
+           success: function(data) {
+               data = jQuery.parseJSON(data);
+               if (data.success) {
+                  for (var i = 0; i < markers.length; i++) {
+                     // Just hide the marker on the marker array ... on reaload, query won't get it.
+                     if (markers[i].id == vMarkerId) {
+                        markers[i].visible = 0;
+                        markers[i].categoryId = -1;
+                        toastr.success(_this.langMsgs.MARKER_DEL_SUCCESS.format(markers[i].id));
+                        if (mapControl.isMobile()) {
+                           mapControl.closeDrawer();
+                        } else {
+                           mapControl.resetContent();
+                        }
+                        _this.refreshMap();
+                        break;
+                     }
+                  }
+               } else {
+                  toastr.error(_this.langMsgs.MARKER_DEL_ERROR.format(data.msg));
+                  //alert(data.msg);
+               }
+           }
+         });
+}
+
+
+ZMap.prototype.editMarker = function(vMarkerId) { 
+   var vMarker;
+   for (var i = 0; i < markers.length; i++) {
+      // Just hide the marker on the marker array ... on reaload, query won't get it.
+      if (markers[i].id == vMarkerId) {
+         vMarker = markers[i];
+      }
+   }
+   
+   map.closePopup(); // Safe coding
+   
+   _this._createMarkerForm(vMarker, vMarker._latlng);
+   
+}
+
+
+ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {  
+   if (user == null) {
+      toastr.error(_this.langMsgs.GENERAL_ERROR.format('You are not logged!'));
+      return;
+   }
+
+   // Clean TinyMCE
+   tinymce.remove();
+
+   var catSelection = "";
+   categories.forEach(function(entry) {
+      catSelection = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"' + (vMarker!=null&&vMarker.categoryId==entry.id?"selected":"") + '> ' + entry.name + '</option>';
+   });
+   
+   var popupContent = '<h2 class="text-center popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2>';
+   
+   if (user.level >= 5) {
+      popupContent = popupContent +
+         '<iframe id="form_target" name="form_target" style="display:none"></iframe>'+
+         '<form id="imageUploadForm" action="content/upload.php" target="form_target" method="post" enctype="multipart/form-data" style="width:0px;height:0;overflow:hidden">'+
+             '<input name="image" type="file" onchange="$(\'#imageUploadForm\').submit();this.value=\'\';">'+
+             '<input style="display: none;" type="text" id="game" name="game" value="'+mapOptions.shortName+'" />'+
+             '<input style="display: none;" type="text" id="userId" name="userId" value="' + user.id + '" />'+
+         '</form>'
+      ;
+   }
+
+   popupContent = popupContent +
+         '<div id="markerForm" style="padding: 10px">'+
+            '<form class="leaflet-control-layers-list" role="newMarkerForm" id="newMarkerForm" enctype="multipart/form-data">'
+   ;
+
+   if (vMarker!=null && user!=null && user.level >= 10) {
+      popupContent = popupContent +
+               '<div id="isVisible" class="checkbox">'+
+                  '<label>'+
+                     '<input type="checkbox" id="isVisible" name="isVisible" '+(vMarker!=null&&vMarker.dbVisible==1?' checked':'')+'> Visible?'+
+                  '</label>'+
+               '</div>'
+      ;
+   }
+
+   popupContent = popupContent +
+               '<div class="form-group">'+
+                  '<label for="categoryId" class="control-label">Category</label>'+
+                     '<select class="form-control" name="categoryId" id="categoryId">'+ catSelection +'</select>'+
+                  '<span class="help-block"></span>'+
+               '</div>'+
+               '<div class="form-group">'+
+                  '<label for="markerTitle" class="control-label">Title</label>'+
+                  '<input type="text" class="form-control" id="markerTitle" name="markerTitle" value="'+ (vMarker!=null?vMarker.title:'') + '" required="" title="Please enter a title for the marker" placeholder="Title of Marker">'+
+                  '<span class="help-block"></span>'+
+               '</div>'+
+               '<div class="form-group">'+
+                  '<label for="markerDescription" class="control-label">Description</label>'+
+                  '<textarea type="text" class="form-control" id="markerDescription" name="markerDescription" value="" title="Please enter a description for the marker" placeholder="Internal Description (not visible to viewers)">'+ (vMarker!=null?vMarker.description:'') + '</textarea>'+
+                  '<span class="help-block"></span>'+
+               '</div>'+
+               '<div id="isGlobal" class="checkbox">'+
+                  '<label>'+
+                     '<input type="checkbox" id="isGlobal" name="isGlobal" '+(vMarker!=null&&vMarker.globalMarker==1?' checked':'')+'> Global? (Ex: Appears on both Light World / Dark World)'+
+                  '</label>'+
+               '</div>'+
+               '<input style="display: none;" type="text" id="game" name="game" value="' + mapOptions.id + '" />'+
+               '<input style="display: none;" type="text" id="lat" name="lat" value="' + vLatLng.lat + '" />'+
+               '<input style="display: none;" type="text" id="lng" name="lng" value="' + vLatLng.lng + '" />'+
+               '<input style="display: none;" type="text" id="userId" name="userId" value="' + user.id + '" />'+
+               (vMarker!=null ? '<input style="display: none;" type="text" id="markerId" name="markerId" value="'+vMarker.id+'" />' : '')+
+               '<input style="display: none;" type="text" id="submapId" name="submapId" value="'+mapControl.getCurrentMap().subMapId+'" />'+
+               '<div class="divTabBody">'
+   ;
+                  
+/*
+                           '<div class="divTableRow">' +
+                           '<div class="divTableCell"><label class="control-label col-sm-5"><strong>Tab Title (1): </strong></label></div>'+
+                           '<div class="divTableCell tabTitle"><input size="38" type="string" placeholder="Title of Tab Content - Optional" class="form-control" id="tabTitle[]" name="tabTitle[]"></div>'+
+                        '</div>'+
+*/
+   if (vMarker!=null&&vMarker.tabText!=null) {
+      for (var i = 0; i < vMarker.tabText.length; i++) {
+
+         popupContent = popupContent +
+                  '<div class="form-group">'+
+                     '<label for="tabText'+i+'" class="control-label">Tab Text (' + (i+1) + ')</label>'+
+                     '<textarea type="text" class="form-control tabText" name="tabText[]" id="tabText'+i+'" value="" placeholder="Please describe the marker">'+ (vMarker!=null?vMarker.tabText[i]:'') + '</textarea>'+
+                     '<span class="help-block"></span>'+
+                  '</div>';
+      }
+   } else {
+      popupContent = popupContent +
+                  '<div class="form-group">'+
+                     '<label for="tabText0" class="control-label">Tab Text (1)</label>'+
+                     '<textarea type="text" class="form-control tabText" name="tabText[]" id="tabText0" value="" placeholder="Please describe the marker"></textarea>'+
+                     '<span class="help-block"></span>'+
+                  '</div>';
+   }
+
+   popupContent = popupContent +
+               '</div>'+
+               '<div class="form-group">'+
+                  '<div>'+
+                     '<button id="add_field_button" type="button" class="btn btn-link">Add more</button>'+
+                  '</div>'+
+               '</div>'+
+               '<div class="modal-footer">'+
+                  '<div>'+
+                     '<button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>'+
+                  '</div>'+
+               '</div>'
+   ;
+
+   popupContent = popupContent +
+            '</form>'+
+         '</div>'
+   ;
+
+/*
+   popupContent = popupContent +
+                        if (vMarker!=null&&vMarker.tabText!=null) {
+                           for (var i = 0; i < vMarker.tabText.length; i++) {
+   popupContent = popupContent +
+                        '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (' + (i+1) + '): </strong></label></p>'+
+                        '<p><textarea id="tabText'+i+'" name="tabText[]" class="tabText" cols=40 rows=5>'+ (vMarker!=null?vMarker.tabText[i]:'')+'</textarea></p>'
+                           }
+                        } else {
+   popupContent = popupContent +
+                           '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (1): </strong></label></p>'+
+                           '<p><textarea id="tabText0" name="tabText[]" class="tabText" cols=40 rows=5></textarea></p>'
+                        }
+*/
+   mapControl.setContent(popupContent, 'newMarker');
+
+   function initEditor() {
+      var toolbarButtons = ['undo redo | styleselect | bullist numlist outdent indent | bold italic | link image media | fullscreen code'];
+      var toolbarPlugins = ['lists link image anchor code','media table contextmenu paste fullscreen code'];
+      if (user.level >= 5) {
+         tinymce.init({selector:'textarea.tabText',
+                     menubar: false,
+                     plugins: [toolbarPlugins],
+                     file_browser_callback: function(field_name, url, type, win) {
+                        if (type=='image') $('#imageUploadForm input').click();
+                     },
+                     toolbar: toolbarButtons,
+                     content_css: '//www.tinymce.com/css/codepen.min.css'
+         });
+      } else {
+         tinymce.init({selector:'textarea.tabText',
+                     menubar: false,
+                     plugins: [toolbarPlugins],
+                     toolbar: toolbarButtons,
+                     content_css: '//www.tinymce.com/css/codepen.min.css'
+         });
+      }
+   }
+   initEditor();
+
+   var wrapper         = $(".divTabBody"); //Fields wrapper
+   var add_button      = $("#add_field_button"); //Add button ID
+   
+   $(add_button).click(function(e){ //on add input button click
+      e.preventDefault();
+      
+      var c = ($('.tabText').length+1);
+      $(wrapper).append(
+               '<div class="form-group">'+
+                  '<label for="tabText'+c+'" class="control-label">Tab Text (' + c + ')</label>'+
+                  '<textarea type="text" class="form-control tabText" id="tabText'+c+'" name="tabText[]" value="" placeholder="Please describe the marker"></textarea>'+
+                  '<span class="help-block"></span>'+
+               '</div>'
+                        ); 
+      initEditor();
+   });
+
+   $("#newMarkerForm").submit(function(e) {
+      $.ajax({
+              type: "POST",
+              url: "ajax/add_marker.php",
+              data: $("#newMarkerForm").serialize(), // serializes the form's elements.
+              success: function(data) {
+                  data = jQuery.parseJSON(data);
+                  if (data.success) {
+                     if (user.level < 5) {
+                        tinymce.remove();
+                        mapControl.resetContent();
+                        toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS_RESTRICTED);
+                     } else {
+                        marker = jQuery.parseJSON(data.marker)[0];
+                        tinymce.remove();
+                        
+                        if (data.action == "ADD") {
+                           _this.addMarker(marker);
+                        } else {
+                           for (var i = 0; i < markers.length; i++) {
+                              // Just hide the marker on the marker array ... on reaload, query won't get it.
+                              if (markers[i].id == marker.id) {
+                                 markers[i].id = -1;
+                                 markers[i].visible = 0;
+                                 markers[i].categoryId = -1;
+                              }
+                           }
+                           _this.addMarker(marker);
+                        }
+                        map.addLayer(markers[markers.length - 1]);
+                        _this._createMarkerPopup(markers[markers.length - 1]);
+                        toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS.format(marker.id));
+                     }
+                  } else {
+                     console.log(data.msg);
+                     toastr.error(_this.langMsgs.MARKER_ADD_ERROR.format(data.msg));
+                  }
+              }
+            });
+
+       e.preventDefault(); // avoid to execute the actual submit of the form.
+   });
+}
+
+
+
+
+
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                           END - MARKER HANDLING                          *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
+
+
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                          BEGIN - MARKER INFO                             *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
+
+
+
+
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                          BEGIN - MARKER COMPLETE                         *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
+ZMap.prototype.transferCompletedMarkersToDB = function() {
+   var tempCompletedMarkers = completedMarkers;
+   for (var i = 0; i < tempCompletedMarkers.length; i++) {
+      $.ajax({
+              type: "POST",
+              url: "ajax.php?command=add_complete_marker",
+              async: false,
+              data: {markerId: tempCompletedMarkers[i], userId: user.id},
+              success: function(data) {
+                  //data = jQuery.parseJSON(data);
+                  if (data.success) {
+                     completedMarkers = completedMarkers.filter(function(item) { 
+                        return item !== tempCompletedMarkers[i];
+                     });
+                  } else {
+                     toastr.error(_this.langMsgs.MARKER_COMPLETE_TRANSFER_ERROR.format(data.msg));
+                     //alert(data.msg);
+                  }
+              }
+            });
+   }
+
+   // If there was any completed marker left on the cookie (for whatever reason), keep it on the cookie for next refresh
+   if (completedMarkers.length > 0) {
+      setCookie('completedMarkers', JSON.stringify(completedMarkers));
+      toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS);
+   // Else, just delete the cookie all together
+   } else {
+      document.cookie = 'completedMarkers=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);
+   }
+
+   // Finally, reload completed markers from database (sanity check)
+   _this.getUserCompletedMarkers();
+}; 
+
+ZMap.prototype.getUserCompletedMarkers = function(vMarker, vComplete) {
+   //@TODO: Use gameID from zmap, not zmain
+   $.getJSON("ajax.php?command=get_user_completed_markers&game=" + gameId + "&userId=" + user.id, function(vResults) {
+      $.each(vResults, function(i,marker){
+         
          for (var i = 0; i < markers.length; i++) {
-            // If we find the marker to jump to, we do a change map (in case is a different map), go to it, and then show pop (if any)
-            if (marker.jumpMarkerId == markers[i].id) {
-               mapControl.changeMap(markers[i].mapId, markers[i].submapId);
-               map.panTo(markers[i].getLatLng());
-               markers[i].openPopup();
+            if (markers[i].id == marker.markerId) {
+               completedMarkers.push(marker.markerId);
+               _this._doSetMarkerDoneIcon(markers[i], true);
+               break;
             }
          }
-      })
-   }
+         _this.refreshMap();
+      });
+   });
 }
 
-ZMap.prototype._rebuildMarkerPopup = function() {
-   for (var i = 0; i < markers.length; i++) {
-      _this._createMarkerPopup(markers[i]);
-   }
-}
+ZMap.prototype.addCompletedMarkers = function(vComplete) {
+   completedMarkers = vComplete;
+}; 
 
 ZMap.prototype._setMarkerDone = function(vID, vComplete) {
-	for (var i = 0; i < markers.length; i++) {
-		if (markers[i].id == vID) {
-			if (vComplete) {
-				_this._doSetMarkerDoneAndCookie(markers[i]);
-			} else {
-				_this._doSetMarkerUndoneAndCookie(markers[i]);
-			}
-			break;
-		}
-	}
+   for (var i = 0; i < markers.length; i++) {
+      if (markers[i].id == vID) {
+         if (vComplete) {
+            _this._doSetMarkerDoneAndCookie(markers[i]);
+         } else {
+            _this._doSetMarkerUndoneAndCookie(markers[i]);
+         }
+         break;
+      }
+   }
 }
 
 ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
-	if (vComplete) {
-		vMarker.complete = true;
-		vMarker.setIcon(new markerIcon({className: 'map-icon-svg'
-									 ,html: "<div class='circle circleMap' style='background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span><span class='icon-checkmark completeMarker'></span></div>"
-									 }));
-
-	} else {
-		vMarker.complete = false;
-		vMarker.setIcon(new markerIcon({className: 'map-icon-svg'
-									 ,html: "<div class='circle circleMap' style='background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span></div>"
-									 }));
-
-		
-	}
+   vMarker.complete = vComplete;
+   vMarker.setIcon(_this._createMarkerIcon(vMarker.categoryId, vComplete));
 }
 
 ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
-	for (var i = 0; i < completedMarkers.length; i++) {
-		if (completedMarkers[i] == vMarker.id) {
-			return;
-		}
-	}
-	completedMarkers.push(vMarker.id);
-	_this._doSetMarkerDoneIcon(vMarker, true);
-	setCookie('completedMarkers', JSON.stringify(completedMarkers));
+   for (var i = 0; i < completedMarkers.length; i++) {
+      if (completedMarkers[i] == vMarker.id) {
+         return;
+      }
+   }
+   completedMarkers.push(vMarker.id);
+   _this._doSetMarkerDoneIcon(vMarker, true);
+   if (user != null || user != undefined) {
+      $.ajax({
+              type: "POST",
+              url: "ajax.php?command=add_complete_marker",
+              data: {markerId: vMarker.id, userId: user.id},
+              success: function(data) {
+                  //data = jQuery.parseJSON(data);
+                  if (data.success) {
+                     
+                  } else {
+                     toastr.error(_this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg));
+                     //alert(data.msg);
+                  }
+              }
+            });
+   } else {
+      setCookie('completedMarkers', JSON.stringify(completedMarkers));
+      if (!userWarnedAboutLogin) {
+         toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
+         userWarnedAboutLogin = true;
+      }
+   }
    if (!mapOptions.showCompleted) {
       _this.refreshMap();
    }
@@ -612,24 +1165,66 @@ if (!Array.prototype.filter) {
 }
 
 ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
-	for (var i = 0; i < completedMarkers.length; i++) {
-		completedMarkers = completedMarkers.filter(function(item) { 
-			return item !== vMarker.id;
-		});
-		break;
-	}
-	_this._doSetMarkerDoneIcon(vMarker, false);
-	setCookie('completedMarkers', JSON.stringify(completedMarkers));
+   completedMarkers = completedMarkers.filter(function(item) { 
+      return item !== vMarker.id;
+   });
+   _this._doSetMarkerDoneIcon(vMarker, false);
+   
+   if (user != null || user != undefined) {
+      $.ajax({
+              type: "POST",
+              url: "ajax.php?command=del_complete_marker",
+              data: {markerId: vMarker.id, userId: user.id},
+              success: function(data) {
+                  //data = jQuery.parseJSON(data);
+                  if (data.success) {
+                     
+                  } else {
+                     toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
+                     //alert(data.msg);
+                  }
+              }
+            });
+   } else {
+      setCookie('completedMarkers', JSON.stringify(completedMarkers));
+      if (!userWarnedAboutLogin) {
+         toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
+         userWarnedAboutLogin = true;
+      }
+   }
+   vMarker.complete = false;
+   if (!mapOptions.showCompleted) {
+      _this.refreshMap();
+   }
 }
 
 
+// This is done by ctrl + z
 ZMap.prototype.undoMarkerComplete = function() {
    var mID = completedMarkers.pop();
    if (mID != undefined) {
       for (var i = 0; i < markers.length; i++) {
          if (markers[i].id == mID) {
             _this._doSetMarkerDoneIcon(markers[i], false);
-            setCookie('completedMarkers', JSON.stringify(completedMarkers));
+            if (user != null || user != undefined) {
+               $.ajax({
+                       type: "POST",
+                       url: "ajax.php?command=del_complete_marker",
+                       data: {markerId: mID, userId: user.id},
+                       success: function(data) {
+                           //data = jQuery.parseJSON(data);
+                           if (data.success) {
+                              
+                           } else {
+                              toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
+                              //alert(data.msg);
+                           }
+                       }
+                     });
+
+            } else {
+               setCookie('completedMarkers', JSON.stringify(completedMarkers));
+            }
             //_this.refreshMap();
             break;
          }
@@ -637,651 +1232,278 @@ ZMap.prototype.undoMarkerComplete = function() {
    }
 }
 
-ZMap.prototype.updateMarkerVisibility = function(vCatId, vVisible) {
-   
-   for (var i = 0; i < markers.length; i++) {
-      if (markers[i].categoryId == vCatId) {
-         markers[i].visible = vVisible;
-      }
+ZMap.prototype._toogleCompleted  = function() { 
+   mapOptions.showCompleted = !mapOptions.showCompleted;
+   if (mapOptions.showCompleted) {
+      document.getElementById('lblComplete').innerHTML = "Hide Completed"; 
+      document.getElementById('catCheckMark').style.color = "gold";
+      setCookie('showCompleted',"true");
+   } else {
+      document.getElementById('lblComplete').innerHTML = "Show Completed";
+      document.getElementById('catCheckMark').style.color = "white";
+      setCookie('showCompleted',"false");
    }
-   
    _this.refreshMap();
-   
-};
-
-ZMap.prototype.refreshMap = function() {
-   if (maps.length == 0) {
-      return; //TODO: alert error
-   }
-   var oMap = maps[currentMap]._overlayMap;
-   for (var i = 0; i < markers.length; i++) {
-      if (markers[i].visible
-            && (mapOptions.showCompleted == true || (mapOptions.showCompleted == false && markers[i].complete != true))
-            && ( (oMap && oMap[currentOverlaypMap] && oMap[currentOverlaypMap].id == 'mID' + markers[i].submapId && markers[i].mapOverlayId==null)
-                 || (oMap && maps[currentMap].id == 'mID' + markers[i].submapId && oMap[currentOverlaypMap] && oMap[currentOverlaypMap].id == 'mID' + markers[i].mapOverlayId)
-                 || (oMap == undefined && maps[currentMap].id == 'mID' + markers[i].submapId)
-                 || (maps[currentMap].id == 'mID' + markers[i].mapId && markers[i].globalMarker==1)
-               )
-      ) {
-         markerCluster.addLayer(markers[i]);
-      } else {
-         if (markerCluster.hasLayer(markers[i])) {
-            markerCluster.removeLayer(markers[i]);
-         }
-      }
-   }
-};
-
-ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
-   categoryTree = vCategoryTree;
-   return;
-   
-   /* A sub-action which completes as soon as it is activated.
-   * Sub-actions receive their parent action as an argument to
-   * their `initialize` function. We save a reference to this
-   * parent action so we can disable it as soon as the sub-action
-   * completes.
-   */
-   var immediateSubAction = L.ToolbarAction.extend({
-      initialize: function(map, myAction) {
-          this.map = map;
-          this.myAction = myAction;
-          L.ToolbarAction.prototype.initialize.call(this);                
-      },
-      addHooks: function() {
-          this.myAction.disable();
-      }
-   });
-   
-   for (var i = 0; i < categoryTree.length; i++) {
-      var categorySubActions = [];
-      for (var j = 0; j < categoryTree[i].children.length; j++) {
-        var subAction = immediateSubAction.extend({
-                           options: {
-                              toolbarIcon: {
-                                 //TODO: Do logic for opacity
-                                 html: '<span class="icon-' + categoryTree[i].children[j].img + '"></span>',//'<i class="fa fa-question" aria-hidden="true"></i>',
-                                 tooltip: categoryTree[i].children[j].name
-                              },
-                              categoryId: categoryTree[i].children[j].id,
-                              checked: categoryTree[i].children[j].checked
-                           },
-                           addHooks: function () {
-                              this.options.checked = !this.options.checked;
-                              if (this.options.checked) {
-                                 this._icon.className = "icn";
-                              } else {
-                                 this._icon.className = "icnChecked";
-                              }
-                              _this.updateMarkerVisibility(this.options.categoryId, this.options.checked);
-                              //immediateSubAction.prototype.addHooks.call(this);                                 
-                              
-                           }
-
-                       });
-        categorySubActions.push(subAction);
-      }
-      
-      var customAction = L.ToolbarAction.extend({
-                           options: {
-                              toolbarIcon: {
-                                 html: '<span class="icon-' + categoryTree[i].img + '"></span>',//'<i><img src="' + mapOptions.markerURL + categoryTree[i].img + '-ui.' + mapOptions.markerExt + '"></i>',
-                                 tooltip: categoryTree[i].name
-                              },
-                              subToolbar: new L.Toolbar({ 
-                                 actions: categorySubActions
-                              })
-                           }
-      });
-      
-      this.categoryActions.push(customAction);
-   }
-   
-   /* 
-   if (mapOptions.help) {
-      var helpText = this._createHelpText(categoryTree, true);
-      var customAction = L.ToolbarAction.extend({
-                           options: {
-                              toolbarIcon: {
-                                 html: '<i class="fa fa-question" aria-hidden="true"></i>',
-                                 tooltip: 'Help'
-                              }
-                           },
-                           content: 111,
-                           addHooks: function () {
-                              var helpPopup = L.popup({minWidth: (L.Browser.mobile?'200':'400'), className: 'credits' }).setContent(
-                                 helpText.join("")
-                              );
-                              helpPopup.setLatLng([map.getCenter().lat - (Math.pow(2,map.getMaxZoom()+2-map.getZoom())/2), map.getCenter().lng]).openOn(map);
-                           }
-      });
-
-      this.categoryActions.push(customAction);
-      
-      var helpText2 = this._createHelpText(categoryTree, false);
-      var customAction = L.ToolbarAction.extend({
-                           options: {
-                              toolbarIcon: {
-                                 html: '<i class="fa fa-question" aria-hidden="true"></i>',
-                                 tooltip: 'Help'
-                              }
-                           },
-                           content: 111,
-                           addHooks: function () {
-                              var helpPopup = L.popup({minWidth: (L.Browser.mobile?'200':'400'), className: 'credits' }).setContent(
-                                 helpText2.join("")
-                              );
-                              helpPopup.setLatLng([map.getCenter().lat - (Math.pow(2,map.getMaxZoom()+2-map.getZoom())/2), map.getCenter().lng]).openOn(map);
-                           }
-      });
-
-      this.categoryActions.push(customAction);
-   }*/
 }
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                           END - MARKER COMPLETE                          *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
 
-ZMap.prototype._createHelpText = function(categoryTree, showCategoryHead) {
-   var helpText = [];
-   var cellCount = (L.Browser.mobile?2:4);
+
+
+
+
+
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                           BEGIN - CONTEXT MENU                           *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
+ZMap.prototype._buildContextMenu = function() {
    
-   if (showCategoryHead) {
-      for (var i = 0; i < categoryTree.length; i++) {
-         helpText.push('<div class="divTable"><div class="divTableHead"><img src="' + mapOptions.markerURL + categoryTree[i].img + '-ui.' + mapOptions.markerExt + '">' + categoryTree[i].name + '<img src="' + mapOptions.markerURL + categoryTree[i].img + '-ui.' + mapOptions.markerExt + '"></div>');
-         helpText.push('<div class="divTableBody">');
-         for (var j = 0; j < categoryTree[i].children.length; j++) {
-            var divContent = '<div class="divTableCell" style="width: ' + (100/cellCount) + '%;"><img src="' + mapOptions.markerURL + categoryTree[i].children[j].img + '-ui.' + mapOptions.markerExt + '">' + categoryTree[i].children[j].name + '</div>';
-            if (j % cellCount == 0) {
-               helpText.push('<div class="divTableRow">');
-               helpText.push(divContent);
-            } else if ((j % cellCount) == cellCount - 1) {
-               helpText.push(divContent);
-               helpText.push('</div>');
-            } else {
-               helpText.push(divContent);
-            }
-         }
-         for (var j = categoryTree[i].children.length % cellCount; j < cellCount; j++) {
-               helpText.push('<div class="divTableCell" style="width: ' + (100/cellCount) + '%;">&nbsp;</div>');
-            }
-            helpText.push('</div>');
-         
-         helpText.push("</div></div>");
-      }
-   } else {
-      var z = 0;
-      helpText.push('<div class="divTable"><div class="divTableHead">Icons</div>');
-      helpText.push('<div class="divTableBody">');
-      for (var i = 0; i < categoryTree.length; i++) {
-         for (var j = 0; j < categoryTree[i].children.length; j++) {
-            var divContent = '<div class="divTableCell" style="width: ' + (100/cellCount) + '%;"><img src="' + mapOptions.markerURL + categoryTree[i].children[j].img + '-ui.' + mapOptions.markerExt + '">' + categoryTree[i].children[j].name + '</div>';
-            if (z % cellCount == 0) {
-               helpText.push('<div class="divTableRow">');
-               helpText.push(divContent);
-            } else if ((z % cellCount) == cellCount - 1) {
-               helpText.push(divContent);
-               helpText.push('</div>');
-            } else {
-               helpText.push(divContent);
-            }
-            z++;
-         }
-      }
-      for (var j = z % cellCount; j < cellCount; j++) {
-         helpText.push('<div class="divTableCell" style="width: ' + (100/cellCount) + '%;">&nbsp;</div>');
-      }
-      helpText.push('</div>');
-      helpText.push("</div></div>");
-   }
-   return helpText;
-}
-
-L.LatLng.prototype.distanceTo = function (other) {
-    var dx = other.lng - this.lng;
-    var dy = other.lat - this.lat;
-    return Math.sqrt(dx*dx + dy*dy);
-}
-
-
-ZMap.prototype.buildMap = function() {
-   console.log("Leaflet Version: " + L.version);
-   console.log("Zelda Maps Version: " + _this.version);
-   if (maps.length == 0) {
-      console.log("ERROR: Incorrect Map Configuration");
-//      return; //TODO: Print error
-   }
-
-   
-   if (!L.CRS.Simple) {
-      L.CRS.Simple = L.Util.extend({}, L.CRS, { projection:     L.Projection.LonLat
-                                              , transformation: new L.Transformation(1,0,1,0)
-                                              });
-   }
-
-   bounds = new L.LatLngBounds(new L.LatLng(-49.875, 34.25), new L.LatLng(-206, 221));
-   
-
-   //map = L.map('map', { center:      new L.LatLng(mapOptions.centerX - 128,mapOptions.centerY + 128)
-   map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
-                      , zoom:        mapOptions.zoom
-                      , zoomControl: false
-                      , crs:         L.CRS.Simple
-                      , maxBounds:   bounds
-                      , maxBoundsViscosity: 1.0
-                      , contextmenu: true
-                      , contextmenuWidth: 140
-//                      , contextmenuItems: _this._buildContextMenu()
-   });
-   
-   // Get all the base maps
-   var baseMaps = {};
-   for (var i = 0; i < maps.length; i++) {
-      baseMaps[maps[i].title] = maps[i];
+   // Check if map and/or context was built
+   if (map == null || map.contextmenu == null) {
+      return;
    }
    
-   
-   // MAP CONTROL!
-   var overlayMaps = {};
-
-   for (var i = 0; i < maps[0]._overlayMap.length; i++) {
-      overlayMaps[maps[0]._overlayMap[i].title] = maps[0]._overlayMap[i];
-   }
-   
-   mapControl = L.control.zcontrol(baseMaps, null, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
-   mapControl.addTo(map);
-
-   map.addLayer(markerCluster);
-   
-   bottomMenu = L.control.bottomMenu("bottom", categoryTree);
-   bottomMenu.addTo(map);
-
-   if (!bottomMenu.isMobile()) {
-      _this._buildContextMenu();
-   
-      if (mapOptions.showZoomControl) {
-         L.control.zoom({position:'bottomright'}).addTo(map);
-      }
-
-      var x = document.getElementsByClassName("leaflet-control-layers");
-      for (var i = 0; i < x.length; i++) {
-          x[i].style.display = "none";
-      }
-      var x = document.getElementsByClassName("leaflet-control-attribution");
-      for (var i = 0; i < x.length; i++) {
-          x[i].style.display = "none";
-      }  
-      var x = document.getElementsByClassName("leaflet-bottommenu");
-      for (var i = 0; i < x.length; i++) {
-          x[i].style.display = "";
-      }
+   function addMarker(e) {
       
-      document.getElementById("mobileAds").style.display = 'none';
-      
-   } else {
-      var x = document.getElementsByClassName("leaflet-control-layers");
-      for (var i = 0; i < x.length; i++) {
-          x[i].style.display = "none";
-      }
-         
-      var x = document.getElementsByClassName("leaflet-control-attribution");
-      for (var i = 0; i < x.length; i++) {
-          x[i].style.display = "none";
-      }
-      
-      document.getElementById("desktopAds").style.display = 'none';
-   }
-   
-   function showChangeLog() {
-      if (!getCookie('showChangeLogV0.4')) {
-         if (!bottomMenu.isMobile()) {
-            var win = L.control.window(map,{title:'Changelog',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                      .content("<p>New to version alpha 0.4</p>"
-                              +"<p>- Remember to right-click (Desktop) or long press (Mobile) to set a marker as complete!</p>"
-                              +"<p>- 1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books and Cooking Pots. These markers were extracted from the game files and their position are considered final, along with Koroks, Shrines, Towers, Villages, Stables, Great Fairies!</p>"
-                      ).prompt({buttonOK: 'Don\'t show this again!'
-                               , buttonCancel: 'Close'
-                               , callback:function(e){
-                                    setCookie('showChangeLogV0.4', false);
-                                 }
-                              })
-                      .show();
-         } else {
-            var win = L.control.window(map,{title:'Changelog',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                      .content("<p>New to version alpha 0.4</p>"
-                              +"<p>- Remember to right-click (Desktop) or long press (Mobile) to set a marker as complete!</p>"
-                              +"<p>- 1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books and Cooking Pots.</p>"
-                      ).prompt({buttonOK: 'Don\'t show this again!'
-                               , buttonCancel: 'Close'
-                               , callback:function(e){
-                                    setCookie('showChangeLogV0.4', false);
-                                 }
-                              })
-                      .show();
-         }
-      }
-   }
-   
-   // INTRODUCTORY / WELCOME TEXT
-   if (!getCookie('showWelcome')) {
-      setTimeout(function () {
-         map.closePopup();
-         if (!bottomMenu.isMobile()) {
-            var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                      .content("<p>Hello there!</p>"
-                              +"<p>I have always been fascinated with game maps, especially those from <i>The Legend of Zelda</i>. I started by drawing maps in my notebook while playing the first <i>Zelda</i> games. Then, I created ASCII maps for <i>Ocarina of Time</i>. While playing more recent <i>Zelda</i> games, I used screenshots to piece together complete maps.</p>"
-                              +"<p>Now, we are finally at a point where we can easily create interactive maps to share with other fans. This project is a <b>partnership</b> between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>, and we hope to create maps for every <i>Legend of Zelda</i> game.</p>"
-                              +"<p>Right now, our hands are full playing <i>Breath of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
-                              +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
-                              +"<div style='float: right'>Danilo Passos.</div>"
-                      ).prompt({buttonOK: 'Don\'t show this again!'
-                               , buttonCancel: 'Close'
-                               , callback:function(e){
-                                    setCookie('showWelcome', false);
-                                    showChangeLog();
-                                 }
-                               , cancelCallback:function(e){
-                                    showChangeLog()
-                               }
-                              })
-                      .show();
-         } else {
-            var win = L.control.window(map,{title:'Welcome to Zelda Maps!',closeButton:false,maxWidth:400,modal: true,'prompt.buttonCancel':''})
-                      .content("<p>This project is a <b>partnership</b> between <a href='https://www.zelda.com.br' target='new_'>Hyrule Legends</a> and <a href='http://zeldauniverse.net' target='new_'>Zelda Universe</a>. We hope to create maps for every <i>Legend of Zelda</i> game.</p>"
-                              +"<p>Right now, our hands are full playing <i>Breath of the Wild</i>, but we are constantly updating and adding new features. So keep checking in on us.</p>"
-                              +"<div style='float: right'>May the Goddess smile upon you.</div><br style='clear:both'>"
-                      ).prompt({buttonOK: 'Don\'t show this again!'
-                               , buttonCancel: 'Close'
-                               , callback:function(e){
-                                    setCookie('showWelcome', false);
-                                    showChangeLog();
-                                 }
-                               , cancelCallback:function(e){
-                                    showChangeLog()
-                               }
-                              })
-                      .show();
-         }
-         
-      }, 500);
-   } else {
-      setTimeout(function () {
-         showChangeLog();
-      }, 500);
-   }
+      map.closePopup(); // Safe coding
 
-//   map.on('click', function(e) {
-//      console.log(e.latlng);
-//   });
-
-   
-   map.on('popupclose', function(e) {
-      drawnItems.clearLayers();
-      _this._closeNewMarker();
-   });
-   
-   map.on('popupopen', function(e) {
-      
-      function initEditor() {
-         if (user.level >= 5) {
-            tinymce.init({selector:'textarea.tabText',
-                        menubar: false,
-                        plugins: [
-                           'lists link image anchor code',
-                           'media table contextmenu paste code'
-                        ],
-                        file_browser_callback: function(field_name, url, type, win) {
-                           if (type=='image') $('#imageUploadForm input').click();
-                        },
-                        toolbar: 'undo redo | styleselect | bold italic | link image media | bullist numlist outdent indent | code',
-                        content_css: '//www.tinymce.com/css/codepen.min.css'
-            });
-         } else {
-            tinymce.init({selector:'textarea.tabText',
-                        menubar: false,
-                        plugins: [
-                           'lists link image anchor code',
-                           'media table contextmenu paste code'
-                        ],
-                        toolbar: 'undo redo | styleselect | bold italic | link image media | bullist numlist outdent indent | code',
-                        content_css: '//www.tinymce.com/css/codepen.min.css'
-            });
-         }
-      }
-      
-		drawnItems.clearLayers();
       if (newMarker != null) {
-         var wrapper         = $(".divTabBody"); //Fields wrapper
-         var add_button      = $(".add_field_button"); //Add button ID
-         
-         var toolbarButtons = ['bold', 'italic', 'underline', 'strikeThrough', 'fontFamily', 'fontSize', '|', 'specialCharacters', 'color', 'emoticons', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertHR', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', 'undo', 'redo', 'clearFormatting', 'selectAll', 'html'];
-         $(add_button).click(function(e){ //on add input button click
-            e.preventDefault();
-            var c = ($('.tabText').length+1);
-            $(wrapper).append(/*'<div class="divTableRow">' +
-                                 '<div class="divTableCell"><label class="control-label col-sm-5"><strong>Tab Title (' + ($('.tabTitle').length+1) + '): </strong></label></div>'+
-                                 '<div class="divTableCell tabTitle"><input size=38 type="string" placeholder="Title of Tab Content - Optional" class="form-control" id="tabTitle[]" name="tabTitle[]"></div>'+
-                              '</div>'+*/
-                              '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (' + c + '): </strong></label></p>'+
-                              '<p><textarea id="tabText'+c+'" name="tabText[]" class="tabText" cols=40 rows=5></textarea></p>'
-                              ); 
-            initEditor();
-         });
-         
-         initEditor();
-         
-         $("#newMarkerForm").submit(function(e) {
-            $.ajax({
-                    type: "POST",
-                    url: "ajax/add_marker.php",
-                    data: $("#newMarkerForm").serialize(), // serializes the form's elements.
-                    success: function(data) {
-                        data = jQuery.parseJSON(data);
-                        if (data.success) {
-                           if (user.level < 5) {
-                              tinymce.remove();
-                              _this._closeNewMarker();
-                              alert("Thank you for your contribution!\n\nYour marker is pending review and, if approved, it will show up shortly.");
-                           } else {
-                              marker = jQuery.parseJSON(data.marker)[0];
-                              
-                              tinymce.remove();
-                              _this._closeNewMarker();
-                              if (data.action == "ADD") {
-                                 _this.addMarker(marker);
-                                 _this.refreshMap();
-                              } else {
-                                 for (var i = 0; i < markers.length; i++) {
-                                    // Just hide the marker on the marker array ... on reaload, query won't get it.
-                                    if (markers[i].id == marker.id) {
-                                       markers[i].id = -1;
-                                       markers[i].visible = 0;
-                                       markers[i].categoryId = -1;
-                                    }
-                                 }
-                                 _this.addMarker(marker);
-                                 _this.refreshMap();
-                                 markers[markers.length - 1].openPopup();
-                              }
-                           }
-                        } else {
-                           console.log(data.msg);
-                           alert("Ops, something went wrong!");
-                        }
-                    }
-                  });
-
-             e.preventDefault(); // avoid to execute the actual submit of the form.
-         });
-         var px = map.project(e.popup._latlng); // find the pixel location on the map where the popup anchor is
-         px.y -= e.popup._container.clientHeight/2 // find the height of the popup container, divide by 2, subtract from the Y axis of marker location
-         map.panTo(map.unproject(px),{animate: true}); 
-
-      } else if ((e.popup.getContent().innerHTML)!=null){
-         if ((e.popup.getContent().innerHTML).search("<ul>") >= 0 || (e.popup.getContent().innerHTML).search("<ul class=") >= 0) {
-            var slider = $('#' + e.popup.getContent().id).unslider({keys: false,               //  Enable keyboard (left, right) arrow shortcuts
-                                                                    dots: true,               //  Display dot navigation
-                                                                    arrows: true,
-                                                                    fluid: true,
-                                                                    });
-            $.each( $("li[id^='citem-']"), function () {
-               $(this).show();
-            });
-            slider.unslider('initSwipe');
-         }
-         var px = map.project(e.popup._latlng); // find the pixel location on the map where the popup anchor is
-         px.y -= e.popup._container.clientHeight/2 // find the height of the popup container, divide by 2, subtract from the Y axis of marker location
-         map.panTo(map.unproject(px),{animate: true}); 
+         map.removeLayer(newMarker);
       }
-   });
-   
-    var inputClick = function(vMap, vOverlayMap) {
-      _this._closeNewMarker();
-      
-      if (vMap != null) {
-         currentMap = vMap;
-      }
-      if (vOverlayMap != null) {
-         currentOverlaypMap = vOverlayMap;
-      }
-      _this.refreshMap();
-      //drawnItems.removeFrom(map);
-   };
-   
-   
-   mapControl.inputClick = inputClick;
-   setTimeout(_this.refreshMap, 300);
-   
-   
-   drawnItems = new L.FeatureGroup().addTo(map);
-   editActions = [
-            L.Edit.Popup.Edit,
-            L.Edit.Popup.Delete
-   ];
-   /*
-   editActions = [
-            L.Edit.Popup.Edit,
-            L.Edit.Popup.Delete,
-            L.ToolbarAction.extendOptions({
-               toolbarIcon: { 
-                  className: 'leaflet-color-picker', 
-                  html: '<span class="fa fa-eyedropper"></span>' 
-               },
-               subToolbar: new L.Toolbar({ actions: [
-                  L.ColorPicker.extendOptions({ color: '#db1d0f' }),
-                  L.ColorPicker.extendOptions({ color: '#025100' }),
-                  L.ColorPicker.extendOptions({ color: '#ffff00' }),
-                  L.ColorPicker.extendOptions({ color: '#0000ff' })
-               ]})
-
-            })
-         ];
-*/
-
-   if (user != null && user.level >= 5) {
-      new L.DrawToolbar.Control({ 
-            position: 'bottomleft',
-            className: 'leaflet-draw-toolbar',
-         }).addTo(map);
+      newMarker = new L.marker(e.latlng).addTo(map);
+      map.contextmenu.hide();
+      map.panTo(e.latlng);
+      _this._createMarkerForm(null, e.latlng);
    }
 
-   map.on('draw:created', function(e) {
-      drawnItems.clearLayers();
-      _this._closeNewMarker();
-      
-      var type = e.layerType
-        , layer = e.layer;
-      
-      //console.log(e);
-      if (type == "polygon" || type == "rectangle" || type == "polyline") {
-         drawnItems.addLayer(layer);
-
-         layer.on('click', function(event) {
-            new L.EditToolbar.Popup(event.latlng, {
-               className: 'leaflet-draw-toolbar',
-               actions: editActions
-            }).addTo(map, layer);
-         });
-         
-         var latLng = {};
-         var poly;
-         
-         if (type == "polygon" || type == "rectangle") {
-            latLng = _this._getCentroid(layer._latlngs[0]);
-         } else {
-            latLng = layer._latlngs[0];
-         }
-         poly = JSON.stringify(drawnItems.toGeoJSON());
-
-         newMarker = new L.marker(latLng).addTo(map);
-         var popupContent = _this._createPopupNewMarker(null, latLng, poly);
-         newMarker.bindPopup(popupContent,{
-                                             maxWidth: Math.floor($(document).width() * 0.6),
-                                          }
-         ).openPopup();
-      } else if (type == "circle") {
-         drawnItems.addLayer(layer);
-
-         layer.on('click', function(event) {
-            new L.EditToolbar.Popup(event.latlng, {
-               className: 'leaflet-draw-toolbar',
-               actions: editActions
-            }).addTo(map, layer);
-         });
-         
-         _this._closeNewMarker();
-         newMarker = new L.marker(layer._latlng).addTo(map);
-         
-         var circle = drawnItems.toGeoJSON();
-         //console.log(circle);
-         circle.features[0].properties.radius = layer.getRadius();
-         circle = JSON.stringify(circle);
-         
-         var popupContent = _this._createPopupNewMarker(null, layer._latlng, circle);
-         newMarker.bindPopup(popupContent,{
-                                             maxWidth: Math.floor($(document).width() * 0.6),
-                                          }
-         ).openPopup();
-      } else if (type == "marker") {
-         _this._closeNewMarker();
-         newMarker = new L.marker(layer._latlng).addTo(map);
-         var popupContent = _this._createPopupNewMarker(null, layer._latlng);
-         newMarker.bindPopup(popupContent,{
-                                             maxWidth: Math.floor($(document).width() * 0.6),
-                                          }
-         ).openPopup();
-
-      } else {         
-         drawnItems.addLayer(layer);
-
-         layer.on('click', function(event) {
-            new L.EditToolbar.Popup(event.latlng, {
-               className: 'leaflet-draw-toolbar',
-               actions: editActions
-            }).addTo(map, layer);
-            //_this._createPopupNewMarker(null, )
-         });
-      }
+   function login() {
+      _this._createLoginForm();
+   }
    
-   });
-};
-
-ZMap.prototype._getCentroid = function (arr) {
-    var twoTimesSignedArea = 0;
-    var cxTimes6SignedArea = 0;
-    var cyTimes6SignedArea = 0;
-
-    var length = arr.length
-
-    var x = function (i) { return arr[i % length].lat };
-    var y = function (i) { return arr[i % length].lng };
-
-    for ( var i = 0; i < arr.length; i++) {
-        var twoSA = x(i)*y(i+1) - x(i+1)*y(i);
-        twoTimesSignedArea += twoSA;
-        cxTimes6SignedArea += (x(i) + x(i+1)) * twoSA;
-        cyTimes6SignedArea += (y(i) + y(i+1)) * twoSA;
-    }
-    var sixSignedArea = 3 * twoTimesSignedArea;
-    return { lat: cxTimes6SignedArea / sixSignedArea, lng: cyTimes6SignedArea / sixSignedArea }
+   // Create context options
+   var contextMenu;
+   
+   if (user == null) {
+      contextMenu = [{
+         text: 'Login',
+         hideOnSelect: true,
+         callback: login
+      }];
+   } else {
+      contextMenu = [{ 
+         text: 'Add Marker',
+         hideOnSelect: true,
+         callback: addMarker
+      }];
+   }
+   
+   contextMenu.push({
+         text: 'Center map here',
+         callback: function(e) { map.panTo(e.latlng); }
+      }, '-', {   
+         text: 'Zoom in',
+         //icon: 'images/zoom-in.png',
+         callback: function() {map.zoomIn()}
+      }, {
+         text: 'Zoom out',
+         //icon: 'images/zoom-out.png',
+         callback: function() {map.zoomOut()}
+      });
+      
+   if (user != null) {
+      contextMenu.push('-', {
+         text: 'Change Password',
+         callback: function() {
+            toastr.warning('Under construction! Check back in a few days.');
+         }
+      }, {        
+         text: 'Log Out',
+         callback: function() {
+            $.ajax({
+               type: "POST",
+               url: "ajax.php?command=logout",
+               success: function(data) {
+                  //data = jQuery.parseJSON(data);
+                  if (data.success) {
+                     toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
+                     user = null;
+                     _this._buildContextMenu();
+                     mapControl.resetContent();
+                  } else {
+                     toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
+                  }
+               }
+            });
+         }
+      });
+   }
+   
+   // Rebuild Context Menu by removing all items and adding them back together
+   map.contextmenu.removeAllItems();
+   for (var i = 0; i < contextMenu.length; i++) {
+      map.contextmenu.addItem(contextMenu[i]);
+   }
 }
+
+
+ZMap.prototype._createRegisterForm = function() {
+   mapControl.setContent('<div id="newuser" style="padding: 10px">'+
+                        '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
+                        '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
+                              '<div class="form-group">'+
+                                 '<label for="name" class="cols-sm-2 control-label">Your Username</label>'+
+                                 '<div class="cols-sm-10">'+
+                                    '<div class="input-group">'+
+                                       '<span class="input-group-addon"><i class="icon-fa-user fa" aria-hidden="true"></i></span>'+
+                                       '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Enter your Username"/>'+
+                                    '</div>'+
+                                 '</div>'+
+                              '</div>'+
+                              '<div class="form-group">'+
+                                 '<label for="password" class="cols-sm-2 control-label">Password</label>'+
+                                 '<div class="cols-sm-10">'+
+                                    '<div class="input-group">'+
+                                       '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
+                                       '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Enter your Password"/>'+
+                                    '</div>'+
+                                 '</div>'+
+                              '</div>'+
+                              '<div class="form-group">'+
+                                 '<label for="name" class="cols-sm-2 control-label">Your Name</label>'+
+                                 '<div class="cols-sm-10">'+
+                                    '<div class="input-group">'+
+                                       '<span class="input-group-addon"><i class="icon-fa-user fa" aria-hidden="true"></i></span>'+
+                                       '<input type="text" class="form-control" name="name" id="name" required="" placeholder="Enter your Name"/>'+
+                                    '</div>'+
+                                 '</div>'+
+                              '</div>'+
+
+                              '<div class="form-group">'+
+                                 '<label for="name" class="cols-sm-2 control-label">Your Email</label>'+
+                                 '<div class="cols-sm-10">'+
+                                    '<div class="input-group">'+
+                                       '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
+                                       '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your Email"/>'+
+                                    '</div>'+
+                                 '</div>'+
+                              '</div>'+
+
+                              '<div class="modal-footer">'+
+                                 '<div>'+
+                                    '<button type="submit" class="btn btn-primary btn-lg btn-block">Register</button>'+
+                                 '</div>'+
+                               '</div>'+
+                        '</form>'+
+                     '</div>'
+   , 'registerFrm');
+
+
+   $("#newuserform").submit(function(e) {
+      $.ajax({
+        type: "POST",
+        async: false,
+        url: "ajax.php?command=user_add",
+        data: $("#newuserform").serialize(), // serializes the form's elements.
+        success: function(data) {
+            //data = jQuery.parseJSON(data);
+            if (data.success) {
+               toastr.success(_this.langMsgs.REGISTER_SUCCESS.format($("#user")[0].value));
+               _this._createLoginForm();
+            } else {
+               console.log(data.msg);
+               toastr.error(_this.langMsgs.REGISTER_ERROR.format(data.msg));
+            }
+        }
+      });
+
+      e.preventDefault();
+   });
+}
+
+ZMap.prototype._createLoginForm = function() {
+   mapControl.setContent('<div id="login" style="padding: 10px">'+
+                           '<h3 class="text-center">' + this.langMsgs.LOGIN_WELCOME + '</h3>'+
+                           '<form class="leaflet-control-layers-list" role="loginform" id="loginform" enctype="multipart/form-data">'+
+                           '<div class="form-group">'+
+                              '<label for="name" class="cols-sm-2 control-label">Your Name</label>'+
+                              '<div class="cols-sm-10">'+
+                                 '<div class="input-group">'+
+                                    '<span class="input-group-addon"><i class="icon-fa-user fa" aria-hidden="true"></i></span>'+
+                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Enter your Username"/>'+
+                                 '</div>'+
+                              '</div>'+
+                           '</div>'+
+                           '<div class="form-group">'+
+                              '<label for="password" class="cols-sm-2 control-label">Password</label>'+
+                              '<div class="cols-sm-10">'+
+                                 '<div class="input-group">'+
+                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
+                                    '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Enter your Password"/>'+
+                                 '</div>'+
+                              '</div>'+
+                           '</div>'+
+                           '<div id="remember" class="checkbox">'+
+                              '<label>'+
+                                 '<input type="checkbox" id="remember" name="remember" checked> Remember me'+
+                              '</label>'+
+                           '</div>'+
+                           '<div class="modal-footer">'+
+                              '<div>'+
+                                 '<button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>'+
+                              '</div>'+
+                              '<div>'+
+                           /*'           <button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>'+*/
+                                 '<button id="login_register_btn" type="button" class="btn btn-link">Register</button>'+
+                              '</div>'+
+                           '</div>'+
+                           '</form>'+
+                        '</div>', 'lgnFrm');
+
+   $("#loginform").submit(function(e) {
+      var result = false;
+      $.ajax({
+        type: "POST",
+        async: false,
+        url: "ajax.php?command=login",
+        data: $("#loginform").serialize(),
+        success: function(data) {
+            //data = jQuery.parseJSON(data);
+            if (data.success) {
+               _this.setUser(data.user);
+               toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
+               mapControl.resetContent();
+            } else {
+               console.log(data.msg);
+               toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));
+            }
+        }
+      });
+      e.preventDefault();
+   });
+
+   $("#login_register_btn").click(function(e) {
+      _this._createRegisterForm();
+      e.preventDefault();
+   });
+
+}
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                            END - CONTEXT MENU                            *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
+
+
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                              BEGIN - GO TO                               *************//
+//*************                                                                          *************//
+//****************************************************************************************************//
 
 /** 
  * Go To a submap, layer or marker
@@ -1332,511 +1554,19 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
          */
          var latlng = L.latLng(markers[i].getLatLng().lat, markers[i].getLatLng().lng);
          map.setView(latlng, vZoom);
+         _this._createMarkerPopup(markers[i]);
+         newMarker = L.marker(markers[i]._latlng).addTo(map);
          
-         // Check if the marker at the zoom level is inside cluster... if it's, we need to open cluster before popup
-         try {
-            if (markerCluster.getVisibleParent(markers[i])) {
-               markerCluster.getVisibleParent(markers[i]).spiderfy();            
-            } 
-         } catch (err) {
-            // Do nothing, since the parent can`t spiderfy
-         }
-         markers[i].openPopup();         
-         
-         // Check if popup was opened. Sometimes, it may not due to leaflet lazy loading on mobile devices
-         if (markers[i].getPopup().getLatLng() == undefined) {
-            setTimeout(_this._openMarker(vMarkerId, vZoom), 300);
-         } else {
-            $('#mkrDiv'+vMarkerId).unslider({arrows:false});
-         }
+         //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
          return;
          
       }
    }
+   
+   toastr.error(_this.langMsgs.GO_TO_MARKER_ERROR.format(vMarkerId));
 }
-
-  /************ NEW MARKER **********************/
-   
- ZMap.prototype._closeNewMarker = function() {  
-   if (newMarker != null) {
-      tinymce.remove();
-      $("#newMarkerForm").remove();
-      map.removeLayer(newMarker);
-      newMarker = null;
-   }
-}
-
- ZMap.prototype.deleteMarker = function(vMarkerId) {  
-   $.ajax({
-           type: "POST",
-           url: "ajax/del_marker.php",
-           data: {markerId: vMarkerId, userId: user.id},
-           success: function(data) {
-               data = jQuery.parseJSON(data);
-               if (data.success) {
-                  for (var i = 0; i < markers.length; i++) {
-                     // Just hide the marker on the marker array ... on reaload, query won't get it.
-                     if (markers[i].id == vMarkerId) {
-                        markers[i].visible = 0;
-                        markers[i].categoryId = -1;
-                     }
-                  }
-                  _this.refreshMap();
-               } else {
-                  alert(data.msg);
-               }
-           }
-         });
-}
-
-ZMap.prototype.editMarker = function(vMarkerId) { 
-   var vMarker;
-   for (var i = 0; i < markers.length; i++) {
-      // Just hide the marker on the marker array ... on reaload, query won't get it.
-      if (markers[i].id == vMarkerId) {
-         vMarker = markers[i];
-      }
-   }
-   
-   map.closePopup();
-   
-   //return;
-/*   newMarker = new L.Marker(vMarker._latlng, { title: vMarker.name
-                                                   //, icon: new markerIcon({iconUrl: mapOptions.markerURL + categories[vMarker.categoryId].img + '.' + mapOptions.markerExt})
-                                                   , icon: new markerIcon({className: 'map-icon-svg icon-' + categories[vMarker.categoryId].img})
-                                             }).addTo(map);
-*/
-      newMarker = new L.Marker(vMarker._latlng, { title: vMarker.name
-                                                , icon: new markerIcon({className: 'map-icon-svg' 
-                                                                       //,html: "<i class='icon-Button' style='color: " + categories[vMarker.categoryId].color + ";'></i><div style='position: absolute;' class='icon-marker icon-" + categories[vMarker.categoryId].img + "'></div>"
-                                                                       ,html: "<div class='circle circleMap' style='background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span></div>"
-                                                                       //,html: "<div class='circle' style='width: 32px; height: 32px; line-height: 32px; background-color: " + categories[vMarker.categoryId].color + "; border-color: " + categories[vMarker.categoryId].color + "'><span style='font-size: 18px;' class='icon-" + categories[vMarker.categoryId].img + "'></span></div>"
-                                                                        })
-                                                }).addTo(map);
-                                             
-   var popupContent = _this._createPopupNewMarker(vMarker, vMarker._latlng);
-   
-   newMarker.bindPopup(popupContent,{
-      //minWidth: 400,
-      minWidth: $(document).width() / 2,
-      maxHeight: $(document).height() / 2,
-      minHeight: $(document).height() / 2,
-      offset: L.point(0, -10)
-   }).openPopup();
-
-}
-
-ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng) {
-   _this._createPopupNewMarker(vMarker, vLatLng, null);
-}
-
-ZMap.prototype._createPopupNewMarker = function(vMarker, vLatLng, vPoly) {  
-      if (user == null) {
-         alert('You are not logged!');
-         return;
-      }
-      var catSelection = "";
-      var catSelection2 = "";
-      
-      categories.forEach(function(entry) {
-         //@History - 2017-02-13 - Removed validation if the parent id is null , so parent categories can be added as markers per Joshua's request 
-         //if (entry.markerCategoryTypeId == 3) {
-         //   catSelection2 = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"> ' + entry.name + '</option>';
-         //}
-         // 
-         //if (entry.parentId != null) {
-            catSelection = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"' + (vMarker!=null&&vMarker.categoryId==entry.id?"selected":"") + '> ' + entry.name + '</option>';
-         //}
-      });
-      catSelection = catSelection + catSelection2;
-      var popupContent = '<div class="banner"><h2 class="popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2>'+
-               '<div class="popupContent" style="overflow-y: auto; max-height:' + Math.floor($(document).height() * 0.4) + 'px">'
-      ;
-      
-      if (user.level >= 5) {
-         popupContent = popupContent +
-                  '<iframe id="form_target" name="form_target" style="display:none"></iframe>'+
-                  '<form id="imageUploadForm" action="content/upload.php" target="form_target" method="post" enctype="multipart/form-data" style="width:0px;height:0;overflow:hidden">'+
-                      '<input name="image" type="file" onchange="$(\'#imageUploadForm\').submit();this.value=\'\';">'+
-                      '<input style="display: none;" type="text" id="game" name="game" value="'+mapOptions.shortName+'" />'+
-                      '<input style="display: none;" type="text" id="userId" name="userId" value="' + user.id + '" />'+
-                  '</form>'
-         ;
-      }
-      
-      popupContent = popupContent +
-                  '<form role="form" id="newMarkerForm" enctype="multipart/form-data" class="form-horizontal">'+
-                     '<div class="divTable">' +
-                           '<div class="divTableRow">' +
-                              '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Category: </strong></label></p>'+
-                              '<p class="divTableCell">' +
-                                 '<select name="categoryId" id="categoryId">'+
-                                 catSelection +
-                                 '</select>'+
-                              '</p>'+
-                           '</div>'+
-                        '<div class="divTableBody">';
-      if (vMarker!=null && user!=null && user.level >= 10) {
-         popupContent = popupContent +
-                           '<div class="divTableRow">' +
-                              '<p class="divTableCell" style="vertical-align:top"><label class="control-label col-sm-5"><strong>Visible? </strong></label></p>'+
-                              '<p class="divTableCell"><input type="checkbox" placeholder="Visible?" class="form-control" id="isVisible" name="isVisible"'+(vMarker!=null&&vMarker.dbVisible==1?' checked':'')+'></p>'+
-                           '</div>';
-      }
-      popupContent = popupContent +
-                           '<div class="divTableRow">' +
-                              '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Title: </strong></label></p>'+
-                              '<p class="divTableCell"><input type="string" placeholder="Title of Marker - Required" class="form-control" id="markerTitle" name="markerTitle"'+ (vMarker!=null?' value="' + vMarker.title + '"':'') +'></p>'+
-                           '</div>'+
-
-                           '<div class="divTableRow">' +
-                              '<p class="divTableCell" style="vertical-align:top"><label class="control-label col-sm-5"><strong>Description: </strong></label></p>'+
-                              '<p class="divTableCell"><textarea placeholder="Internal Description - Not visible to user" class="form-control" rows="3" cols=30 id="markerDescription" name="markerDescription">' + (vMarker!=null?vMarker.description:'') + (vPoly!=null?vPoly:'') + '</textarea></p>'+
-                           '</div>'+
-                           '<div class="divTableRow">' +
-                              '<p class="divTableCell" style="vertical-align:top"><label class="control-label col-sm-5"><strong>Global? </strong></label></p>'+
-                              '<p class="divTableCell"><input type="checkbox" placeholder="Title of Marker - Required" class="form-control" id="isGlobal" name="isGlobal"'+(vMarker!=null&&vMarker.globalMarker==1?' checked':'')+'> (Ex: Appears on both Light World / Dark World)</p>'+
-                           '</div>'+
-/*                           '<div class="divTableRow">' +
-                              '<div class="divTableCell"><label class="control-label col-sm-5"><strong>Tab Title (1): </strong></label></div>'+
-                              '<div class="divTableCell tabTitle"><input size="38" type="string" placeholder="Title of Tab Content - Optional" class="form-control" id="tabTitle[]" name="tabTitle[]"></div>'+
-                           '</div>'+
-*/
-                        '</div>'+
-                     '</div>'+
-                     '<div class="divTabBody">'
-;
-                           if (vMarker!=null&&vMarker.tabText!=null) {
-                              for (var i = 0; i < vMarker.tabText.length; i++) {
-      popupContent = popupContent +
-                           '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (' + (i+1) + '): </strong></label></p>'+
-                           '<p><textarea id="tabText'+i+'" name="tabText[]" class="tabText" cols=40 rows=5>'+ (vMarker!=null?vMarker.tabText[i]:'')+'</textarea></p>'
-                              }
-                           } else {
-      popupContent = popupContent +
-                              '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (1): </strong></label></p>'+
-                              '<p><textarea id="tabText0" name="tabText[]" class="tabText" cols=40 rows=5></textarea></p>'
-                           }
-
-      popupContent = popupContent + '</div>';
-                     //...
-                     if (vMarker!=null) {
-                        popupContent = popupContent +
-                        '<input style="display: none;" type="text" id="markerId" name="markerId" value="'+vMarker.id+'" />';
-                     }
-      popupContent = popupContent +
-                     '<input style="display: none;" type="text" id="game" name="game" value="'+mapOptions.id+'" />'+
-                     '<input style="display: none;" type="text" id="lat" name="lat" value="' + vLatLng.lat + '" />'+
-                     '<input style="display: none;" type="text" id="lng" name="lng" value="' + vLatLng.lng + '" />'+
-                     '<input style="display: none;" type="text" id="userId" name="userId" value="' + user.id + '" />'+
-                     '<input style="display: none;" type="text" id="submapId" name="submapId" value="'+mapControl.getCurrentMap().subMapId+'" />'+
-                     '<br>' +
-                     '<div class="divTableRow">'+
-                        '<p style="text-align:center;" class="divTableCell"><button class="add_field_button">Add More</button></p>'+
-                        '<p style="text-align:center;" class="divTableCell"><button type="submit" value="submit" class="submit" style="margin-left: 20px;">Submit</button></p>'+
-                     '</div>'+
-                     '<br>' +
-                     '</form></div></div>';
-   return popupContent;
-}
-
-ZMap.prototype._copyToClipboard = function(vMarkerId) {  
-   var href = window.location.href.split("?");
-   
-   var params = href[1].split("&");
-   
-   var clipboardParams = "";
-   
-   for (var i = 0; i < params.length; i++) {
-      if (params[i].search("game=") == 0 
-         || params[i].search("showMapControl=") == 0
-         || params[i].search("collapsed=") == 0
-         || params[i].search("showCategoryControl=") == 0
-         || params[i].search("showZoomControl=") == 0
-         || params[i].search("bgColor=") == 0
-         || params[i].search("help=") == 0
-      ) {            
-         clipboardParams = clipboardParams + params[i] + "&";
-      }
-   }
-   window.prompt("Copy to clipboard: Ctrl+C, Enter", href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom());
-}
-
-ZMap.prototype._updateCategoryVisibility = function(vCatId, vChecked) {
-   
-   var toogle = false;
-   if (this.curCatVisible == vCatId) {
-      toogle = true;
-      this.curCatVisible = null;
-   } else {
-      this.curCatVisible = vCatId;
-   }
-   
-   // @TODO: Improve logic... done in a hurry
-   if (categories[vCatId].parentId != null) {
-      function forEachCat(element, index, array) {
-         
-         if (element.id == vCatId) {
-            categories[element.id].checked = true;
-         } else {
-            categories[element.id].checked = toogle;
-         }
-         _this.updateMarkerVisibility(element.id, categories[element.id].checked);
-      }
-      categories.forEach(forEachCat);
-   }
-      
-   if (categories[vCatId].parentId == null) {
-      function forEachCat(element, index, array) {
-         
-         if (element.parentId != null && element.parentId != vCatId) {
-            categories[element.id].checked = toogle;
-         }
-         if (element.parentId == null && element.id != vCatId) {
-            categories[element.id].checked = toogle;
-         }
-         if (element.parentId != null && element.parentId == vCatId) {
-            categories[element.id].checked = true;
-         }
-         if (element.parentId == null && element.id == vCatId) {
-            categories[element.id].checked = true;
-         }
-         _this.updateMarkerVisibility(element.id, categories[element.id].checked);
-      }
-      categories.forEach(forEachCat);
-   }
-   
-   function forEachCat2(element, index, array) {
-      var catMenu = document.getElementById("catMenu" + element.id);
-      if (catMenu) { 
-      
-         if (categories[element.id].checked) {
-            catMenu.style.opacity = 1;
-         } else {
-            catMenu.style.opacity = 0.35;
-         }
-      }
-      var catMenuMobile = document.getElementById("catMenuMobile" + element.id);
-      if (catMenuMobile) { 
-         if (categories[element.id].checked) {
-            catMenuMobile.style.opacity = 1;
-         } else {
-            catMenuMobile.style.opacity = 0.35;
-         }
-      }
-   }
-   categories.forEach(forEachCat2);
-}
-
-ZMap.prototype._buildContextMenu = function() {
-   
-   // Check if map and/or context was built
-   if (map == null || map.contextmenu == null) {
-      return;
-   }
-   
-   function addMarker(e) {
-      //alert(e.latlng);
-      map.closePopup();
-      _this._closeNewMarker();
-      newMarker = new L.marker(e.latlng).addTo(map);
-      
-      var popupContent = _this._createPopupNewMarker(null, e.latlng);
-      
-      newMarker.bindPopup(popupContent,{
-         minWidth: Math.floor($(document).width() * 0.4),
-         //maxHeight: 240,
-         maxWidth: Math.floor($(document).width() * 0.6),
-         //maxHeight: Math.floor($(document).height() * 0.6),
-         //minHeight: Math.floor($(document).height() * 0.6),
-      }).openPopup();
-      
-      map.contextmenu.hide();
-   }
-
-   function login() {
-      
-      L.control.window(map,{title:'Login', closeButton:false, modal: true, 'prompt.buttonCancel':''})
-                  .content('<div id="login" class="popupContent" style="overflow-y: auto; max-height:400px;">'+
-                           '<form role="loginform" id="loginform" enctype="multipart/form-data" class="form-horizontal">'+
-                              '<div class="divTable">' +
-                                 '<div class="divTableBody">' +
-                                    '<div class="divTableRow">' +
-                                       '<p class="divTableCell"><label class="control-label col-sm-5"><strong>User: </strong></label></p>'+
-                                       '<p class="divTableCell"><input type="string" placeholder="Username" class="form-control" id="user" name="user"></p>'+
-                                    '</div>'+
-                                    '<div class="divTableRow">' +
-                                       '<p class="divTableCell"></p>'+
-                                       '<p class="divTableCell"><span class=\"infoWindowIcn\" style="float: right;" onclick=\"_this._createRegisterForm(); return false\">New user?</span></p>'+
-                                    '</div>'+
-                                    '<br>'+
-                                    '<div class="divTableRow">' +
-                                       '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Password: </strong></label></p>'+
-                                       '<p class="divTableCell"><input type="password" placeholder="Password" class="form-control" id="password" name="password"></p>'+
-                                    '</div>'+
-                                    '<br>'+
-                                    '<div class="divTableRow">' +
-                                       '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Remember me: </strong></label></p>'+
-                                       '<p class="divTableCell"><input type="checkbox" s="form-control" id="remember" name="remember"></p>'+
-                                    '</div>'+
-                                 '</div>'+
-                              '</div>'+
-                           '</form>'+
-                        '</div>'
-                  ).prompt({buttonOK: 'Login'
-                         , buttonCancel: 'Cancel'
-                         , callback:function(e){
-                              var result = false;
-                              $.ajax({
-                                type: "POST",
-                                async: false,
-                                url: "ajax/login.php",
-                                data: $("#loginform").serialize(), // serializes the form's elements.
-                                success: function(data) {
-                                    data = jQuery.parseJSON(data);
-                                    if (data.success) {
-                                       user = data.user;
-                                       _this._buildContextMenu();
-                                       map.closePopup();
-                                       _this._rebuildMarkerPopup();
-                                       result = true;
-                                    } else {
-                                       console.log(data.msg);
-                                       alert(data.msg);
-                                    }
-                                }
-                              });
-                              return result;
-                           }
-                        })
-                  .show();
-   }
-   
-   // Create context options
-   var contextMenu;
-   
-   if (user == null) {
-      contextMenu = [{
-         text: 'Login',
-         hideOnSelect: true,
-         callback: login
-      }];
-   } else {
-      contextMenu = [{ 
-         text: 'Add Marker',
-         hideOnSelect: true,
-         callback: addMarker
-      }];
-   }
-   
-   contextMenu.push({
-         text: 'Center map here',
-         callback: function(e) { map.panTo(e.latlng); }
-      }, '-', {   
-         text: 'Zoom in',
-         //icon: 'images/zoom-in.png',
-         callback: function() {map.zoomIn()}
-      }, {
-         text: 'Zoom out',
-         //icon: 'images/zoom-out.png',
-         callback: function() {map.zoomOut()}
-      });
-      
-   if (user != null) {
-      contextMenu.push('-', {
-         text: 'Change Password',
-//         callback: alert(1)
-      }, {        
-         text: 'Log Out',
-         callback: function() {
-            $.ajax({
-               type: "POST",
-               url: "ajax/logout.php",
-               success: function(data) {
-                  user = null;
-                  _this._buildContextMenu();
-                  map.closePopup();
-                  _this._rebuildMarkerPopup();
-               }
-            });            
-         }
-      });
-   }
-   
-   // Rebuild Context Menu by removing all items and adding them back together
-   map.contextmenu.removeAllItems();
-   for (var i = 0; i < contextMenu.length; i++) {
-      map.contextmenu.addItem(contextMenu[i]);
-   }
-}
-
-ZMap.prototype._createRegisterForm = function() {
-   
-   L.control.window(map,{title:'Create User', closeButton:false, modal: true, 'prompt.buttonCancel':''})
-               .content('<div id="newuser" class="popupContent" style="overflow-y: auto; max-height:400px;">'+
-                        '<form role="newuserform" id="newuserform" enctype="multipart/form-data" class="form-horizontal">'+
-                           '<div class="divTable">' +
-                              '<div class="divTableBody">' +
-                                 '<div class="divTableRow">' +
-                                    '<p class="divTableCell"><label class="control-label col-sm-5"><strong>User: </strong></label></p>'+
-                                    '<p class="divTableCell"><input type="string" placeholder="Username" class="form-control" id="user" name="user"></p>'+
-                                 '</div>'+
-                                 '<br>'+
-                                 '<div class="divTableRow">' +
-                                    '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Password: </strong></label></p>'+
-                                    '<p class="divTableCell"><input type="password" placeholder="Password" class="form-control" id="password" name="password"></p>'+
-                                 '</div>'+
-                                 '<br>'+
-                                 '<div class="divTableRow">' +
-                                    '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Name: </strong></label></p>'+
-                                    '<p class="divTableCell"><input type="string" placeholder="John Smith" class="form-control" id="name" name="name"></p>'+
-                                 '</div>'+
-                                 '<br>'+
-                                 '<div class="divTableRow">' +
-                                    '<p class="divTableCell"><label class="control-label col-sm-5"><strong>Email: </strong></label></p>'+
-                                    '<p class="divTableCell"><input type="string" placeholder="example@email.com" class="form-control" id="email" name="email"></p>'+
-                                 '</div>'+
-                              '</div>'+
-                           '</div>'+
-                        '</form>'+
-                     '</div>'
-               ).prompt({buttonOK: 'Create'
-                      , buttonCancel: 'Cancel'
-                      , callback:function(e){
-                           var result = false;
-                           $.ajax({
-                             type: "POST",
-                             async: false,
-                             url: "ajax/user_add.php",
-                             data: $("#newuserform").serialize(), // serializes the form's elements.
-                             success: function(data) {
-                                 data = jQuery.parseJSON(data);
-                                 if (data.success) {
-                                    alert(data.msg);
-                                    result = true;
-                                 } else {
-                                    console.log(data.msg);
-                                    alert(data.msg);
-                                 }
-                             }
-                           });
-                           return result;
-                        }
-                     })
-               .show();
-}
-
-
-ZMap.prototype._toogleCompleted  = function() { 
-   mapOptions.showCompleted = !mapOptions.showCompleted;
-   if (mapOptions.showCompleted) {
-      document.getElementById('lblComplete').innerHTML = "Hide Completed"; 
-      document.getElementById('catCheckMark').style.color = "gold";
-      setCookie('showCompleted',"true");
-   } else {
-      document.getElementById('lblComplete').innerHTML = "Show Completed";
-      document.getElementById('catCheckMark').style.color = "white";
-      setCookie('showCompleted',"false");
-   }
-   _this.refreshMap();
-}
+//****************************************************************************************************//
+//*************                                                                          *************//
+//*************                              END - GO TO                               *************//
+//*************                                                                          *************//
+//****************************************************************************************************//

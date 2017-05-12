@@ -355,3 +355,24 @@ a.icon-shrink {
 .leaflet-bar a, .leaflet-bar a:hover {
    border-bottom: 0;
 }
+
+/**** ADS ***/
+
+#mobileAds {
+  position: absolute;
+  z-index: 999;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  height: 50px;
+  width: auto;
+}
+#desktopAds {
+  position: absolute;
+  z-index: 999;
+  bottom: 16px;
+  height: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+}

@@ -102,6 +102,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       
       this._contents = L.DomUtil.create('div', 'main-content ' + className + '-list');
       
+      L.DomEvent.disableClickPropagation(this._contents);
       L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
       this._contents.innerHTML = this._category;

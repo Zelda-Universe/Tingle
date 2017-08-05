@@ -79,7 +79,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       
       
       form1.style.width = '360px';
-      
+/*      
       var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', form1);
       shrinkButton.innerHTML = '';
       shrinkButton.href="#close";
@@ -91,7 +91,43 @@ L.Control.ZLayers = L.Control.Layers.extend({
              _this._closeNewMarker();
              e.preventDefault();
          }, this)
+*/
+      var headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', form1);
 
+      var headerDivLeft = L.DomUtil.create('div', 'col-xs-2', headerDiv);
+      var barsButton = L.DomUtil.create('a', 'button icon-bars', headerDivLeft);
+      barsButton.innerHTML = '';
+      barsButton.href="#close";
+      L.DomEvent
+         .on(barsButton, 'click', L.DomEvent.stopPropagation)
+         .on(barsButton, 'click', function(e) {
+             // Open
+             this._collapse();
+             _this._closeNewMarker();
+             e.preventDefault();
+         }, this);
+
+      var headerDivMid = L.DomUtil.create('div', 'col-xs-8', headerDiv);
+      headerDivMid.innerHTML = '<div class="form-group"><div class="icon-addon addon-sm"><input type="text" placeholder="Ex: Oman Au Shrine" class="form-control marker-search" id="marker-search"><label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label></div></div>';
+
+      
+      L.DomEvent.disableClickPropagation(headerDivMid);
+      L.DomEvent.on(headerDivMid, 'click', L.DomEvent.stopPropagation);
+
+      var headerDivRight = L.DomUtil.create('div', 'col-xs-2', headerDiv);
+      var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', headerDivRight);
+      shrinkButton.innerHTML = '';
+      shrinkButton.href="#close";
+      L.DomEvent
+         .on(shrinkButton, 'click', L.DomEvent.stopPropagation)
+         .on(shrinkButton, 'click', function(e) {
+             // Open
+             this._collapse();
+             _this._closeNewMarker();
+             e.preventDefault();
+         }, this);
+
+      this._separator = L.DomUtil.create('div', className + '-separator', form1);
       
       var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', form1);
       logoDiv.src  = 'images/zmaps_white.png';
@@ -117,7 +153,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
    setContent: function(vContent, vType) {
       this._contents.innerHTML = '';
 
-      var closeButton = L.DomUtil.create('a', 'button', this._contents);
+      var closeButton = L.DomUtil.create('a', 'button icon-close', this._contents);
       closeButton.innerHTML = '×';
       closeButton.href="#close";
       L.DomEvent

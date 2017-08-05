@@ -171,8 +171,7 @@ html, body, #map {
 }
 
 a.button {
-   float: right;
-   padding: 5px 5px 0 0;
+   padding: 0px;
    border: none;
    text-align: center;
    width: 18px;
@@ -183,8 +182,16 @@ a.button {
    font-weight: bold;
    background: transparent;
 }
+
+a.button:hover {
+   color: white;
+}
 a.icon-shrink {
-   padding: 10px 25px 0 0;
+   
+}
+a.icon-close {
+   float: right;
+   padding: 5px 5px 0 0;
 }
 
 
@@ -375,4 +382,140 @@ a.icon-shrink {
   left: 50%;
   transform: translateX(-50%);
   overflow: hidden;
+}
+
+  
+.row.vertical-divider {
+  overflow: hidden;
+}
+.row.vertical-divider > div[class^="col-"] {
+   text-align: center;
+   height: 30px;
+   border-left: 1px solid rgb(255, 255, 255);
+   border-right: 0px solid rgb(255, 255, 255);
+   border-left: 1px solid rgba(255, 255, 255, .2);
+   border-right: 0px solid rgba(255, 255, 255, .2);
+   -webkit-background-clip: padding-box; /* for Safari */
+   background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
+}
+.row.vertical-divider div[class^="col-"]:first-child {
+  border-left: none;
+}
+.row.vertical-divider div[class^="col-"]:last-child {
+  border-right: none;
+}
+
+.row-header {
+   height: 30px; 
+   line-height: 30px;
+}
+
+.leaflet-control-layers-list .row {
+   margin-left: 0px;
+   margin-right: 0px;
+}
+
+.marker-search {
+   background-color: inherit;
+   border: 0px;
+   font: 16px/14px Tahoma,Verdana,sans-serif;
+   color: #c3c3c3;
+}
+.glyphicon-search {
+   color: #c3c3c3;  
+   font-size: 16px/14px !important;
+}
+
+.marker-search:focus {
+   -webkit-box-shadow: none;
+   box-shadow: none;
+}
+
+
+.center-block {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.input-group .icon-addon .form-control {
+    border-radius: 0;
+}
+
+
+
+
+.icon-addon {
+    position: relative;
+    color: #555;
+    display: block;
+}
+
+.icon-addon:after,
+.icon-addon:before {
+    display: table;
+    content: " ";
+}
+
+.icon-addon:after {
+    clear: both;
+}
+
+.icon-addon.addon-md .glyphicon,
+.icon-addon .glyphicon, 
+.icon-addon.addon-md .fa,
+.icon-addon .fa {
+    position: absolute;
+    z-index: 2;
+    left: 10px;
+    font-size: 14px;
+    width: 20px;
+    margin-left: -2.5px;
+    text-align: center;
+    padding: 10px 0;
+    top: 1px
+}
+
+.icon-addon.addon-lg .form-control {
+    line-height: 1.33;
+    height: 46px;
+    font-size: 18px;
+    padding: 10px 16px 10px 40px;
+}
+
+.icon-addon.addon-sm .form-control {
+    height: 30px;
+    padding: 5px 10px 5px 28px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.icon-addon.addon-lg .fa,
+.icon-addon.addon-lg .glyphicon {
+    font-size: 18px;
+    margin-left: 0;
+    left: 11px;
+    top: 4px;
+}
+
+.icon-addon.addon-md .form-control,
+.icon-addon .form-control {
+    padding-left: 30px;
+    float: left;
+    font-weight: normal;
+}
+
+.icon-addon.addon-sm .fa,
+.icon-addon.addon-sm .glyphicon {
+    margin-left: 0;
+    font-size: 14px;
+    left: 5px;
+    top: -2px
+}
+
+.icon-addon .form-control:focus + .glyphicon,
+.icon-addon:hover .glyphicon,
+.icon-addon .form-control:focus + .fa,
+.icon-addon:hover .fa {
+    color: white;
 }

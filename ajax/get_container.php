@@ -17,8 +17,6 @@
 				      , cluster_grid_size as clusterGridSize
                   , max_zoom as maxZoom
 				      , tile_size as tileSize
-				      , icon_width as iconWidth
-				      , icon_height as iconHeight
                from ' . $map_prefix . 'container c
               where (c.id = \'' . $map . '\'
                      or c.short_name = \'' . $map . '\')

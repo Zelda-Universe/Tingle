@@ -14,6 +14,8 @@
         $ext = ".js";
     }
 
+    if(!file_exists("$path/cache")) mkdir("$path/cache");
+
     header("Content-Type: $mtype");
 
     $data = parse_ini_file("$path/$type.ini");

@@ -1,6 +1,12 @@
+#User-specific runtime files
 #Environment File
 .env
+ZM_nginx.conf
 
 #Cached Files
 cache/*
 !cache/index.html
+
+#Runtime-updated Files
+css.ini
+javascript.ini

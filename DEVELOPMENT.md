@@ -21,7 +21,26 @@
 
 # Etc.
 
+## Update Sample Database Data
+
+  We will store somewhat of a snapshot of the mined, active, production data in the `dev/db/zelda_maps.sql` file so developers and others can start using the project faster, and at all.
+
+  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/exportDatabaseCustom.sh`.  Then you can review any changes/updates to commit in place of that file.
+
+  This will export the structure, but not the content for the 'user' tables, as this may contain more sensitive information we do not want to store in the code repository.
+
+  Our export format guidelines:
+  - It's usually better to print one insert per line for easier diffing.
+    - This was also chosen over performance since the dataset is small.
+    - [StackOverflow - Using mysqldump to format one insert per line?](https://stackoverflow.com/questions/15750535/using-mysqldump-to-format-one-insert-per-line)
+  - We like to include the database step for completeness sake, and more easily getting the project running.
+    - [StackOverflow - Mysqldump not creating create database syntax](https://stackoverflow.com/questions/9223130/mysqldump-not-creating-create-database-syntax)
+  - Keep as few redundant statements in there are possible.
+    - A good rule for anything that doesn't require or encourage redundancy.
+
 ## MySQL Workbench (MWB) File Handling
+
+  **Update:** Since the MWB file in our project only contains the schema information, and we need to give developers at least some populated data to work with, it will only be used to design the structure of the tables, so we will no longer use it to merge data into the database for working, either directly, or by exporting it into SQL.
 
   I felt it may be more convenient to deal with a SQL file, at least for non-designing (development/deployment) tasks, especially when one does not use that particular database control program.
 

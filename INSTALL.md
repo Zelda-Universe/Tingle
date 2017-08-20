@@ -7,8 +7,11 @@
       * Add `/usr/local/mysql/bin` to user path variable.
       * `mysql_secure_installation`
       * A separate account is recommended to only read the related database schemas, so add an account for this project to use.
-      * Import the `!dbsetup/zmodel.sql` file.
-      * Grant the new db user all schema privileges to the newly imported `zmap_v2` schema.
+        * `mysql -u root -p -e "CREATE USER 'zmaps'@'localhost' IDENTIFIED BY '<password>'"`
+      * Import the `dev/db/zelda_maps.sql` file.
+        * `mysql -u root -p zelda_maps < "dev/db/zelda_maps.sql"`
+      * Grant the new db user all schema privileges to the newly imported `zelda_maps` schema.
+        * ``mysql -u root -p -e "GRANT ALL PRIVILEGES ON `zelda_maps`.* to 'zmaps'@'localhost'"``
       * `cp .env.example .env`
       * Edit the newly copied `.env` file to your database's parameters for connection location and account credentials.
     * Set-up web server

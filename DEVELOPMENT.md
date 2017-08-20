@@ -25,7 +25,7 @@
 
   We will store somewhat of a snapshot of the mined, active, production data in the `dev/db/zelda_maps.sql` file so developers and others can start using the project faster, and at all.
 
-  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/exportDatabaseCustom.sh`.  Then you can review any changes/updates to commit in place of that file.
+  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/db/exportDatabaseCustom.sh`.  Then you can review any changes/updates to commit in place of that file.
 
   This will export the structure, but not the content for the 'user' tables, as this may contain more sensitive information we do not want to store in the code repository.
 

@@ -38,11 +38,11 @@ for table in $noAITables; do ignoreTablesOptions+="--ignore-table='$database.$ta
 structureOptions="--no-data";
 dataOptions="--no-create-info --skip-add-drop-table --skip-extended-insert";
 
-keepAIFilePath="$SDIR/db/zelda_maps-structure_with-AI.sql";
-toRemoveAIFilePath="$SDIR/db/zelda_maps-structure_to-remove-AI.sql";
-aiRemovedFilePath="$SDIR/db/zelda_maps-structure_AI-removed.sql";
-dataFilePath="$SDIR/db/zelda_maps-data.sql";
-completeFilePath="$SDIR/db/zelda_maps-complete.sql";
+keepAIFilePath="$SDIR/zelda_maps-structure_with-AI.sql";
+toRemoveAIFilePath="$SDIR/zelda_maps-structure_to-remove-AI.sql";
+aiRemovedFilePath="$SDIR/zelda_maps-structure_AI-removed.sql";
+dataFilePath="$SDIR/zelda_maps-data.sql";
+completeFilePath="$SDIR/zelda_maps-complete.sql";
 # TODO: eval the ignore params or all command line so tables get ignored???
 
 pauseWhenEnabled;

@@ -92,25 +92,42 @@ L.Control.ZLayers = L.Control.Layers.extend({
              e.preventDefault();
          }, this)
 */
+      // Currently unused, but could be effective.
+      // TODO: Would be more awesome if this worked if the ordering for fetching
+      // potential user info came earlier since it is depended on by more
+      // component code locations, rather than creating the form now and hiding
+      // it later on, but hey
+      var createLoginControl = !zMap.getUser();
+      var largerSearchArea = !createLoginControl;
+
       var headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', form1);
 
-      var headerDivLeft = L.DomUtil.create('div', 'col-xs-2', headerDiv);
-      var barsButton = L.DomUtil.create('a', 'button icon-bars', headerDivLeft);
-      barsButton.innerHTML = '';
-      barsButton.href="#close";
-      L.DomEvent
-         .on(barsButton, 'click', L.DomEvent.stopPropagation)
-         .on(barsButton, 'click', function(e) {
-             // Open
-             this._collapse();
-             _this._closeNewMarker();
-             e.preventDefault();
-         }, this);
+      // var barsButton = L.DomUtil.create('a', 'button icon-bars', headerDivLeft);
+      // barsButton.innerHTML = '';
+      // barsButton.href="#close";
+      // L.DomEvent
+      //    .on(barsButton, 'click', L.DomEvent.stopPropagation)
+      //    .on(barsButton, 'click', function(e) {
+      //        // Open
+      //        this._collapse();
+      //        _this._closeNewMarker();
+      //        e.preventDefault();
+      //    }, this);
 
-      var headerDivMid = L.DomUtil.create('div', 'col-xs-8', headerDiv);
-      headerDivMid.innerHTML = '<div class="form-group"><div class="icon-addon addon-sm"><input type="text" placeholder="Ex: Oman Au Shrine" class="form-control marker-search" id="marker-search"><label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label></div></div>';
+      if(createLoginControl) {
+        var headerDivLeft = L.DomUtil.create('div', 'col-xs-2', headerDiv);
+        var loginButton = L.DomUtil.create('a', 'button icon-fa-user login-button', headerDivLeft);
+          loginButton.href="#login";
+          L.DomEvent.on(loginButton, 'click', zMap._createLoginForm, zMap);
+      }
 
-      
+      var headerDivMid = L.DomUtil.create(
+        'div',
+        ((largerSearchArea) ? 'col-xs-10': 'col-xs-8'),
+        headerDiv);
+        headerDivMid.innerHTML = '<div class="form-group search-box"><div class="icon-addon addon-sm"><input type="text" placeholder="Ex: Oman Au Shrine" class="form-control marker-search" id="marker-search"><label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label></div></div>';
+
+
       L.DomEvent.disableClickPropagation(headerDivMid);
       L.DomEvent.on(headerDivMid, 'click', L.DomEvent.stopPropagation);
 

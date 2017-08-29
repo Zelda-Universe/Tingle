@@ -77,9 +77,20 @@ function getMaps() {
 
 function getUserInfo() {
    $.getJSON("ajax.php?command=get_user_info", function(vResults) {
+    if(vResults.user) {
       zMap.setUser(vResults.user);
+      hideLoginControls();
+    }
    });
 };
+
+function hideLoginControls() {
+  var controlHeader = $(".leaflet-control-container .leaflet-control-layers-list .row-header")
+  $(".login-button", controlHeader).parent().hide();
+  var searchBoxParent = $(".search-box", controlHeader).parent();
+  searchBoxParent.removeClass("col-xs-8");
+  searchBoxParent.addClass("col-xs-10");
+}
 
 function getMakers(){
    $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults){

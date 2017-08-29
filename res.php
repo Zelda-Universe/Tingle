@@ -1,5 +1,8 @@
 <?php
     $path = DIRNAME(__FILE__);
+
+    include_once("$path/config.php");
+
     $type = strtolower($_GET['type']);
     $type = preg_replace("#[^a-z]#","",$type);
     if($type!="javascript" &&
@@ -13,6 +16,8 @@
     if($type=="javascript") {
         $ext = ".js";
     }
+
+    $skipminify = isset($_GET['skipminify']) || !$minifyResources;
 
     if(!file_exists("$path/cache")) mkdir("$path/cache");
 
@@ -47,13 +52,13 @@
             } 
             $output.="/* Source: $file */\n";
             $filedata = file_get_contents($fpath);
-            //*
-            if($type=="javascript") {
-                $filedata = minify_js($filedata);
-            } else {
-                $filedata = minify_css($filedata);
+            if(!$skipminify && $minify) {
+              if($type=="javascript") {
+                  $filedata = minify_js($filedata);
+              } else {
+                  $filedata = minify_css($filedata);
+              }
             }
-            //*/
             $output.="$filedata\n";
             if(stripos($file,"//")===false) {
                 $data[$file]=filemtime($fpath);

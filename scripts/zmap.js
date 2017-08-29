@@ -641,6 +641,10 @@ ZMap.prototype.setUser = function(vUser) {
    }
 };
 
+ZMap.prototype.getUser = function() {
+  return user;
+};
+
 
 
 //************* CATEGORY MENU *************//
@@ -1483,6 +1487,7 @@ ZMap.prototype._createLoginForm = function() {
                _this.setUser(data.user);
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
                mapControl.resetContent();
+               hideLoginControls();
             } else {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));

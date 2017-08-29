@@ -1,4 +1,6 @@
 <?php
+  date_default_timezone_set("UTC");
+
 	// LOCAL
    error_reporting((E_ALL ^ E_DEPRECATED) & ~E_NOTICE);
 	if ($_SERVER['SERVER_ADDR'] == "127.0.0.1" || $_SERVER['SERVER_ADDR'] == '::1') {
@@ -7,9 +9,9 @@
 		$dbport = '';
 		$dbname = 'zmap_v2';
 		$dbuser = 'root';
-		$dbpasswd = '';	
-		
-		$map_prefix = "";	
+		$dbpasswd = '';
+
+		$map_prefix = "";
 	// LIVE SERVER
 	} else {
 		$dbms = 'mysql';
@@ -22,6 +24,7 @@
 		$map_prefix = "";
    }
    
+   $minifyResources = true;
    $path = DIRNAME(__FILE__);
 
 	define("MAPROOT",$path);
@@ -35,6 +38,7 @@
         $dbuser = $ENV["DBUSER"];
         $dbpasswd = $ENV["DBPASSWD"];
         $map_prefix = $ENV["PREFIX"];
+        $minifyResources = $ENV["minifyResources"];
         $_ENV = array_merge($ENV,$_ENV);
     }
 	

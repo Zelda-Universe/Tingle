@@ -60,7 +60,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       if (L.Browser.touch) {
          L.DomEvent
-/*             .on(link, 'click', L.DomEvent.stopPropagation)
+            /*.on(link, 'click', L.DomEvent.stopPropagation)
              .on(link, 'click', L.DomEvent.preventDefault)*/
              .on(link, 'click', this._expand, this);
       }
@@ -79,7 +79,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       
       
       form1.style.width = '360px';
-/*      
+			/*
       var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', form1);
       shrinkButton.innerHTML = '';
       shrinkButton.href="#close";
@@ -91,7 +91,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
              _this._closeNewMarker();
              e.preventDefault();
          }, this)
-*/
+				 */
       // Currently unused, but could be effective.
       // TODO: Would be more awesome if this worked if the ordering for fetching
       // potential user info came earlier since it is depended on by more
@@ -124,9 +124,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var headerDivMid = L.DomUtil.create(
         'div',
         ((largerSearchArea) ? 'col-xs-10': 'col-xs-8'),
-        headerDiv);
-        headerDivMid.innerHTML = '<div class="form-group search-box"><div class="icon-addon addon-sm"><input type="text" placeholder="Ex: Oman Au Shrine" class="form-control marker-search" id="marker-search"><label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"></label></div></div>';
+        headerDiv
+			);
 
+			var markerSearchField = new MarkerSearchField({updateProgressTotalStepsAmount: 15});
+			$(markerSearchField.domNode).appendTo(headerDivMid);
 
       L.DomEvent.disableClickPropagation(headerDivMid);
       L.DomEvent.on(headerDivMid, 'click', L.DomEvent.stopPropagation);

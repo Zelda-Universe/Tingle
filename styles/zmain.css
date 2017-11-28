@@ -438,6 +438,18 @@ a.icon-close {
     margin-right: auto;
 }
 
+.progress-bar-container {
+  padding-top: 28px;
+  padding-left: 28px;
+}
+
+.progress-bar-filler {
+  width: 0%;
+  height: 2px;
+
+  background-color: orange;
+}
+
 .input-group .icon-addon .form-control {
     border-radius: 0;
 }

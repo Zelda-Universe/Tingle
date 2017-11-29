@@ -3,7 +3,7 @@ function MarkerSearchField(opts) {
 
   this._initDOMElements();
 
-  this.setupUserInputListener();
+  this._setupUserInputListener();
 };
 
 MarkerSearchField.prototype._initDOMElements = function() {
@@ -39,33 +39,33 @@ MarkerSearchField.prototype._initSettings = function(opts) {
   this.updateProgressIntervalFunctionId;
 };
 
-MarkerSearchField.prototype.setupUserInputListener = function() {
+MarkerSearchField.prototype._setupUserInputListener = function() {
   this.inputControl = $('#marker-search', this.domNode);
 
   if(this.incrementalSearch) {
-    this.inputControl.on("input", this.startSearchWait.bind(this));
+    this.inputControl.on("input", this._startSearchWait.bind(this));
   } else {
     this.inputControl.on("keypress", function (e) {
       if(e.key == "Enter") {
         e.preventDefault();
-        this.executeSearch();
+        this._executeSearch();
       }
     }.bind(this));
   }
 };
 
-MarkerSearchField.prototype.startSearchWait = function() {
+MarkerSearchField.prototype._startSearchWait = function() {
   if(this.searchTimerFunctionId) window.clearTimeout(this.searchTimerFunctionId);
 
   this.searchTimerFunctionId = window.setTimeout(
-    this.executeSearch,
+    this._executeSearch,
     this.searchWaitCheckTimeThreshold
   );
 
-  if(this.progressBar) this.startProgressBar();
+  if(this.progressBar) this._startProgressBar();
 };
 
-MarkerSearchField.prototype.startProgressBar = function() {
+MarkerSearchField.prototype._startProgressBar = function() {
   if(this.updateProgressIntervalFunctionId) window.clearInterval(this.updateProgressIntervalFunctionId);
   this.progressBar.reset();
 
@@ -81,6 +81,6 @@ MarkerSearchField.prototype.startProgressBar = function() {
   );
 };
 
-MarkerSearchField.prototype.executeSearch = function() {
   console.log("Search!"); // TODO: Add code to request and/or start utilizing data, or even just emit an event on this object and make another widget to listen and to this job.
+MarkerSearchField.prototype._executeSearch = function() {
 };

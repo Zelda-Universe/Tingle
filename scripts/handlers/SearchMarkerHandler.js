@@ -17,4 +17,5 @@ SearchMarkerHandler.prototype._setupInteraction = function() {
 SearchMarkerHandler.prototype._displayResults = function() {
   // TODO: fuse-filter results based on our markerSearchField's current value.
   this.markerListView.showMarkers(this.markers.slice(0, 3)); // Debug set; remove later.
+  mapControl.setContent(this.markerListView.domNode.html());
 };

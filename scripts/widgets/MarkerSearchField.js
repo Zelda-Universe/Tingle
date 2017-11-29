@@ -7,15 +7,15 @@ function MarkerSearchField(opts) {
 };
 
 MarkerSearchField.prototype._initDOMElements = function() {
-  this.domNode = $(' \
-    <div class="form-group search-box"> \
-      <div class="icon-addon addon-sm"> \
-        <input type="text" placeholder="Ex: Oman Au Shrine" class="form-control marker-search" id="marker-search"> \
-        <label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email"> \
-        </label> \
-      </div> \
-    </div> \
-  ');
+  this.domNode = $('' +
+    '<div class="form-group search-box">' +
+      '<div class="icon-addon addon-sm">' +
+        '<input type="text" placeholder="Ex: Oman Au Shrine" class="form-control marker-search" id="marker-search">' +
+        '<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email">' +
+        '</label>' +
+      '</div>' +
+    '</div>'
+  );
 
   if(this.incrementalSearch && this.showProgressBar) {
     this.progressBar = new ProgressBar();

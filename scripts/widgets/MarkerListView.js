@@ -3,20 +3,37 @@ function MarkerListView() {
 };
 
 MarkerListView.prototype._initDOMElements = function() {
-  this.domNode = $(' \
-    <div class="marker-list"> \
-    </div> \
-  ');
+  this.domNode = $('' +
+    '<div class="marker-list">' +
+    '</div>'
+  );
+};
 
-  this.markerListEntryTemplate = ' \
-    <div class="marker-list-entry"> \
-    ... \
-    </div> \
-  '; // TODO: Add property placeholders.  Check Trello for design.  Maybe have the icon left cenetered most of the area, fixed height for default desktop mode, then maybe 2 or 2 others for other devices.  Another item....  Then title and desc. text TR and BR.  But mostly look at Trello!
+MarkerListView.prototype.generateMarkerEntryView = function(marker) {
+  return $('' +
+    '<div class="marker-list-entry">' +
+      '<span class="title">' +
+        marker.title +
+      '</span>' +
+      '<span class="description">' +
+        marker.description +
+      '</span>' +
+    '</div>'
+  );
 };
 
 MarkerListView.prototype.showMarkers = function(markers) {
-  markers.forEach(function(marker) {
-    $(this.markerListEntryTemplate).appendTo(this.domNode); // TODO: Don't forget property replacing like those wonders templating libraries ;).
-  });
+  this.domNode.empty();
+
+  if(markers.length == 0) {
+    $('' +
+      '<div class="no-results">' +
+        'No results found.' +
+      '</div>'
+    ).appendTo(this.domNode);
+  } else {
+    markers.forEach(function(marker) {
+      this.generateMarkerEntryView(marker).appendTo(this.domNode); // TODO: Don't forget properly replacing like those wonders templating libraries ;).
+    }, this);
+  }
 };

@@ -133,6 +133,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
 			});
 			$(markerSearchField.domNode).appendTo(headerDivMid);
 
+			var markerListView = new MarkerListView();
+
+			var searchMarkerHandler = new SearchMarkerHandler({
+				markerSearchField: markerSearchField,
+				markerListView: markerListView,
+				markers: zMap.getMarkers()
+			});
+
       L.DomEvent.disableClickPropagation(headerDivMid);
       L.DomEvent.on(headerDivMid, 'click', L.DomEvent.stopPropagation);
 

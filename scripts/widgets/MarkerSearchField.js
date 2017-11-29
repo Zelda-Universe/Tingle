@@ -81,6 +81,6 @@ MarkerSearchField.prototype._startProgressBar = function() {
   );
 };
 
-  console.log("Search!"); // TODO: Add code to request and/or start utilizing data, or even just emit an event on this object and make another widget to listen and to this job.
 MarkerSearchField.prototype._executeSearch = function() {
+  this.domNode.trigger('search');
 };

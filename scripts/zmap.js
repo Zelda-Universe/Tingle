@@ -1576,6 +1576,10 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
    
    toastr.error(_this.langMsgs.GO_TO_MARKER_ERROR.format(vMarkerId));
 }
+
+ZMap.prototype.getMarkers = function() {
+  return markers;
+};
 //****************************************************************************************************//
 //*************                                                                          *************//
 //*************                              END - GO TO                               *************//

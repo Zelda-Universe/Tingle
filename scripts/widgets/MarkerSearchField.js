@@ -17,13 +17,15 @@ MarkerSearchField.prototype._initDOMElements = function() {
     </div> \
   ');
 
-  if(this.showProgressBar) {
+  if(this.incrementalSearch && this.showProgressBar) {
     this.progressBar = new ProgressBar();
     this.domNode.find('div.addon-sm').append(this.progressBar.domNode);
   }
 };
 
 MarkerSearchField.prototype._initSettings = function(opts) {
+  this.incrementalSearch = getSetOrDefaultValue(opts, "incrementalSearch", true); // False requires the enter key to be pressed to execute a search
+
   this.showProgressBar = getSetOrDefaultValue(opts, "showProgressBar", true);
   // this.showSearchRequestIndicator = true; // Not yet implemented, changes the icon?, maybe implement as a separate widget, or pull into this one!!
 
@@ -40,7 +42,16 @@ MarkerSearchField.prototype._initSettings = function(opts) {
 MarkerSearchField.prototype.setupUserInputListener = function() {
   this.inputControl = $('#marker-search', this.domNode);
 
-  this.inputControl.on("keyup", this.startSearchWait.bind(this));
+  if(this.incrementalSearch) {
+    this.inputControl.on("input", this.startSearchWait.bind(this));
+  } else {
+    this.inputControl.on("keypress", function (e) {
+      if(e.key == "Enter") {
+        e.preventDefault();
+        this.executeSearch();
+      }
+    }.bind(this));
+  }
 };
 
 MarkerSearchField.prototype.startSearchWait = function() {

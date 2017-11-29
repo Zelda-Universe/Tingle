@@ -127,7 +127,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
         headerDiv
 			);
 
-			var markerSearchField = new MarkerSearchField({updateProgressTotalStepsAmount: 15});
+			var markerSearchField = new MarkerSearchField({
+				incrementalSearch: false,
+				updateProgressTotalStepsAmount: 15
+			});
 			$(markerSearchField.domNode).appendTo(headerDivMid);
 
       L.DomEvent.disableClickPropagation(headerDivMid);

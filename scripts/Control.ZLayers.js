@@ -7,10 +7,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
 	},
    _category: '',
    contentType: 'category', // category, marker
-   
+
 	initialize: function (baseLayers, categoryTree, options) {
 		L.Util.setOptions(this, options);
-      
+
       this.options.width = 360;
       this.options.iconQty = 4;
       this.options.iconSize = 80;
@@ -21,18 +21,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       this.currentMap;
       this.currentSubMap;
-      
+
 	},
-	
+
 	_initLayout: function () {
 		var className = 'leaflet-control-layers';
       var container = this._container = L.DomUtil.create('div', className);
-      
+
       if (!this.options.showMapControl) {
          container.style.display = 'none';
          container.style.marginTop = '0px';
       }
-      
+
 		if (!L.Browser.touch) {
 			L.DomEvent.disableClickPropagation(container);
 		} else {
@@ -41,8 +41,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
 		var form1 = this._form = L.DomUtil.create('form', className + '-list');
 		var form2 = this._form2 = L.DomUtil.create('form', className + '-list');
-      
-      
+
+
       L.DomEvent
           .on(container, 'click', this._expand, this)
           //.on(container, 'mouseout', this._collapse, this)
@@ -75,9 +75,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       } else {
          this._expand();
       }
-      
-      
-      
+
+
+
       form1.style.width = '360px';
 			/*
       var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', form1);
@@ -150,16 +150,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
          }, this);
 
       this._separator = L.DomUtil.create('div', className + '-separator', form1);
-      
+
       var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', form1);
       logoDiv.src  = 'images/zmaps_white.png';
       logoDiv.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
       logoDiv.style.textAlign = 'center';
 
       this._separator = L.DomUtil.create('div', className + '-separator', form1);
-      
+
       this._contents = L.DomUtil.create('div', 'main-content ' + className + '-list');
-      
+
       L.DomEvent.disableClickPropagation(this._contents);
       L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
@@ -170,8 +170,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
 		container.appendChild(form1);
       container.appendChild(this._contents);
-   },	
-   
+   },
+
    setContent: function(vContent, vType) {
       this._contents.innerHTML = '';
 
@@ -193,7 +193,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.contentType = vType;
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
    },
-   
+
    resetContent() {
       //@TODO: New Marker should be from the map!
       if (newMarker != null) {
@@ -204,22 +204,22 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.contentType = 'category';
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
    },
-	
+
 	onRemove: function (map) {
 
-	},	
-	
+	},
+
 	_removeLayers: function() {
 	},
-	
-	
+
+
 	_addLayer: function (layer, name, overlay, instanceLayer) {
 	},
-	
+
 	_updateLayerControl: function(obj) {
 	},
-	
-		
+
+
 	_update: function () {
 	},
 
@@ -229,18 +229,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
   isCollapsed: function () {
     return this.options.collapsed;
   },
-	
+
    _collapse: function() {
       this._contents.innerHTML = this._category;
       this.options.collapsed = true;
       return this.collapse();
    },
-   
+
    _expand: function() {
       if (this._contents != undefined) {
          this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
       }
-      
+
       this.options.collapsed = false;
       return this.expand();
    },
@@ -282,7 +282,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 	changeMap: function(mapId, subMapId) {
 		inputs = this._form.getElementsByTagName('input'),
 		inputsLen = inputs.length;
-				
+
       for (i = 0; i < inputsLen; i++) {
 			input = inputs[i];
 			if ('mID' + mapId == input.mapId) {
@@ -290,7 +290,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 					input.checked = true;
 					this._onInputClick(subMapId);
 				}
-				
+
 				inputs = this._form2.getElementsByTagName('input'),
 				inputsLen = inputs.length;
 				for (j = 0; j < inputsLen; j++) {
@@ -303,7 +303,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 						return;
 					}
 				}
-				
+
             this.currentMap = mapId;
             this.currentSubMap = subMapId;
 				return;

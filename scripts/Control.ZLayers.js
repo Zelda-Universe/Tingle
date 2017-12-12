@@ -5,19 +5,26 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		autoZIndex: false,
       headerHeight: 80,
 	},
-   _category: '',
+	 _categoryMenu: null,
    contentType: 'category', // category, marker
 
 	initialize: function (baseLayers, categoryTree, options) {
 		L.Util.setOptions(this, options);
 
       this.options.width = 360;
-      this.options.iconQty = 4;
-      this.options.iconSize = 80;
       this.options.scrollbarWidth = 18; // IE / FF
-      this.options.iconSpace = Math.floor((this.options.width - (this.options.iconQty * this.options.iconSize)) / (this.options.iconQty + 1)
-                                                              - (this.options.scrollbarWidth / (this.options.iconQty+1)));
-      this._category = this._buildCategoryMenu(categoryTree);
+
+	 		this._categoryMenu = new CategoryMenu({
+				defaultToggledState: false,
+	 			showCompleted: mapOptions.showCompleted,
+	 			categoryTree: categoryTree,
+				onCategoryToggle: function(toggledOn, category) {
+					zMap.updateCategoryVisibility2(category, toggledOn);
+				}, // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+				onCompletedToggle: function(showCompleted) {
+					zMap.toggleCompleted(showCompleted);
+				} // Where should the cookie code come from.... some config object with an abstracted persistence layer?
+	 		});
 
       this.currentMap;
       this.currentSubMap;
@@ -171,7 +178,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       L.DomEvent.disableClickPropagation(this._contents);
       L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
-      this._contents.innerHTML = this._category;
+			$(this._contents).empty();
+			$(this._contents).append(this._categoryMenu.domNode);
       this._contents.style.clear = 'both';
       this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
       this._contents.style.width = '360px';
@@ -193,10 +201,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
              this.resetContent();
              e.preventDefault();
          }, this)
-      //this._contents.innerHTML = this._contents.innerHTML + content;
       var content = L.DomUtil.create('div', '', this._contents);
       content.innerHTML = vContent;
-      content.id = 'menu-cat-content-inner';
+      content.className = 'menu-cat-content-inner';
       this._expand();
       this.contentType = vType;
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
@@ -208,7 +215,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
          map.removeLayer(newMarker);
       }
 
-      this._contents.innerHTML = this._category;
+			$(this._contents).empty();
+			$(this._contents).append(this._categoryMenu.domNode);
       this.contentType = 'category';
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
    },
@@ -239,7 +247,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
    _collapse: function() {
-      this._contents.innerHTML = this._category;
+		  $(this._contents).empty();
+			$(this._contents).append(this._categoryMenu.domNode);
       this.options.collapsed = true;
       return this.collapse();
    },
@@ -251,23 +260,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       this.options.collapsed = false;
       return this.expand();
-   },
-
-   _buildCategoryMenu(categoryTree) {
-      var contents = "";
-      contents += '<ul class="category-selection-ul">';
-      //@TODO: improve!!!!!!
-      contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile-1" class="leaflet-bottommenu-a" href="#" onclick="_this._toogleCompleted();event.preventDefault();"><div class="circle" style="background-color: purple; border-color: purple"><span id="catCheckMark" class="icon-checkmark"' + (mapOptions.showCompleted?' style="color: gold; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;"':' style="color: white; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;"')+ '></span></div><p id="lblComplete">' + (mapOptions.showCompleted?'Hide Completed':'Show Completed') + '</p></a></li>';
-      for (var i = 0; i < categoryTree.length; i++) {
-         contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].id +  ');mapControl._category = document.getElementById(\'menu-cat-content\').innerHTML; event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].img + '"></span></div><p>' + categoryTree[i].name + '</p></a></li>';
-         if (categoryTree[i].children.length > 0) {
-            for (var j = 0; j < categoryTree[i].children.length; j++) {
-               contents += '<li style="margin-left: ' + this.options.iconSpace + 'px !important; width: ' + this.options.iconSize + 'px !important"><a id="catMenuMobile' + categoryTree[i].children[j].id + '" class="leaflet-bottommenu-a" href="#" onclick="_this._updateCategoryVisibility(' + categoryTree[i].children[j].id +  ');mapControl._category = document.getElementById(\'menu-cat-content\').innerHTML; event.preventDefault();"><div class="circle" style="background-color: ' + categoryTree[i].color + '; border-color: ' + categoryTree[i].color + '"><span class="icon-' + categoryTree[i].children[j].img + '"></span></div><p>' + categoryTree[i].children[j].name + '</p></a></li>';
-            }
-         }
-      }
-      contents += '</ul>';
-      return contents;
    },
 
    getContentType() {

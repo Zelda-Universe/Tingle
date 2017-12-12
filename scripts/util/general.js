@@ -1,7 +1,7 @@
-function getSetOrDefaultValue(opts, propertyName, defaultValue) {
-  if(!opts || opts[propertyName] === undefined) {
+function getSetOrDefaultValue(value, defaultValue) {
+  if(value === undefined) {
     return defaultValue;
   } else {
-    return opts[propertyName];
+    return value;
   }
 };

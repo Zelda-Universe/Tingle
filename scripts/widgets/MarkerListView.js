@@ -4,22 +4,11 @@ function MarkerListView() {
 
 MarkerListView.prototype._initDOMElements = function() {
   this.domNode = $('' +
-    '<div class="marker-list">' +
-    '</div>'
+    '<ul class="marker-list">' +
+    '</ul>'
   );
-};
 
-MarkerListView.prototype.generateMarkerEntryView = function(marker) {
-  return $('' +
-    '<div class="marker-list-entry">' +
-      '<span class="title">' +
-        marker.title +
-      '</span>' +
-      '<span class="description">' +
-        marker.description +
-      '</span>' +
-    '</div>'
-  );
+  this.separatorDomNodeTemplate = '<div class="leaflet-control-layers-separator"></div>';
 };
 
 MarkerListView.prototype.showMarkers = function(markers) {
@@ -33,7 +22,8 @@ MarkerListView.prototype.showMarkers = function(markers) {
     ).appendTo(this.domNode);
   } else {
     markers.forEach(function(marker) {
-      this.generateMarkerEntryView(marker).appendTo(this.domNode); // TODO: Don't forget properly replacing like those wonders templating libraries ;).
+      this.domNode.append(new MarkerListEntry({ marker: marker }).domNode);
+      this.domNode.append($(this.separatorDomNodeTemplate));
     }, this);
   }
 };

@@ -15,7 +15,7 @@ ProgressBar.prototype._initDOMElements = function() {
 };
 
 ProgressBar.prototype._initState = function(opts) {
-  this.set(getSetOrDefaultValue(opts, "progressPercentage", 0));
+  this.set(getSetOrDefaultValue(opts.progressPercentage, 0));
 };
 
 ProgressBar.prototype._updateState = function() {

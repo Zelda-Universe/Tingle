@@ -1,8 +1,6 @@
 function MarkerSearchField(opts) {
   this._initSettings(opts);
-
   this._initDOMElements();
-
   this._setupUserInputListener();
 };
 
@@ -17,6 +15,8 @@ MarkerSearchField.prototype._initDOMElements = function() {
     '</div>'
   );
 
+  this.searchInput = this.domNode.find('input.marker-search');
+
   if(this.incrementalSearch && this.showProgressBar) {
     this.progressBar = new ProgressBar();
     this.domNode.find('div.addon-sm').append(this.progressBar.domNode);
@@ -24,13 +24,13 @@ MarkerSearchField.prototype._initDOMElements = function() {
 };
 
 MarkerSearchField.prototype._initSettings = function(opts) {
-  this.incrementalSearch = getSetOrDefaultValue(opts, "incrementalSearch", true); // False requires the enter key to be pressed to execute a search
+  this.incrementalSearch = getSetOrDefaultValue(opts.incrementalSearch, true); // False requires the enter key to be pressed to execute a search
 
-  this.showProgressBar = getSetOrDefaultValue(opts, "showProgressBar", true);
+  this.showProgressBar = getSetOrDefaultValue(opts.showProgressBar, true);
   // this.showSearchRequestIndicator = true; // Not yet implemented, changes the icon?, maybe implement as a separate widget, or pull into this one!!
 
-  this.searchWaitCheckTimeThreshold = getSetOrDefaultValue(opts, "searchWaitCheckTimeThreshold", 0.5 * 1000); // 0.5s * 1000ms/s
-  this.updateProgressTotalStepsAmount = getSetOrDefaultValue(opts, "updateProgressTotalStepsAmount", 10);
+  this.searchWaitCheckTimeThreshold = getSetOrDefaultValue(opts.searchWaitCheckTimeThreshold, 0.5 * 1000); // 0.5s * 1000ms/s
+  this.updateProgressTotalStepsAmount = getSetOrDefaultValue(opts.updateProgressTotalStepsAmount, 10);
   this.updateProgressStepAmount = 100 / this.updateProgressTotalStepsAmount;
 
   this.updateProgressIntervalTime = this.searchWaitCheckTimeThreshold / this.updateProgressTotalStepsAmount;
@@ -82,5 +82,9 @@ MarkerSearchField.prototype._startProgressBar = function() {
 };
 
 MarkerSearchField.prototype._executeSearch = function() {
-  this.domNode.trigger('search');
+  this.domNode.trigger('search', { query: this._getQuery() });
 };
+
+MarkerSearchField.prototype._getQuery = function () {
+  return this.searchInput.val();
+}

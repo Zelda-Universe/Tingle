@@ -70,7 +70,7 @@ function getMaps() {
          zMap.addMap(map);
       });
    
-      getMakers();
+      getMarkers();
    });
    
 };
@@ -92,13 +92,10 @@ function hideLoginControls() {
   searchBoxParent.addClass("col-xs-10");
 }
 
-function getMakers(){
    $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults){
-      
+function getMarkers(){
       zMap.buildMap();
-      $.each(vResults,function(i, marker){
-         zMap.addMarker(marker);
-      });
+      zMap.addMarkers(vResults);
       getUserInfo();
       zMap.refreshMap();
       zMap.goTo({ map        : getUrlParamValue('map', null)

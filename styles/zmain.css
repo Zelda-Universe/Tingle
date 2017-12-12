@@ -62,6 +62,10 @@ html, body, #map {
   font-size: 10px;
 }
 
+.icon-checkmark {
+  text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
 .completeMarker {
     position: absolute !important;
     color: gold !important;
@@ -83,37 +87,79 @@ html, body, #map {
 
 
 /** Top Left Category **/
-.category-selection-ul {
+.category-selection-list {
    margin-top: 0px;
    padding-top: 12px;
 }
 
-.category-selection-ul > li > a > div.circle {
-   width: 64px; 
-   height: 64px; 
-   border-radius: 64px; 
-   line-height: 64px; 
-   display: inline-block; 
-   text-align: center;     
-   vertical-align: middle;
+.category-selection-list {
+    padding-left: 0;
+    opacity: inherit;
 }
-.category-selection-ul > li > a > div.circle span { 
-   position: relative;
-   color: white;
-   font-size: 36px;
-   position: relative;
+.category-selection-list > .category-selector {
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
 }
 
-.category-selection-ul > li > a > p {
+.category-selection-list > .category-selector > .category-button > .label {
     text-align: center;
     font-size: 14px;
     margin-top: 10px;
     line-height: 100%;
     opacity: inherit;
     color: white;
+
+    display: block; /* To override Bootstrap's .label definition. */
+    padding: inherit;
+    font-weight: inherit;
+    white-space: inherit;
 }
-.category-selection-ul > li > a {
+.category-selection-list > .category-selector > .category-button {
     text-decoration: none;
+}
+
+.category-selection-list {
+  text-align: center;
+}
+
+.category-selector {
+  width: 80px;
+}
+
+.category-button.toggledOn {
+  opacity: 1;
+}
+.category-button.toggledOff {
+  opacity: 0.35;
+}
+
+.category-icon {
+  position: relative;
+  font-size: 36px;
+}
+
+.icon-background {
+  color: white;
+}
+.category-button.toggledOn > .icon-background.icon-checkmark {
+  color: gold
+}
+.category-button.toggledOff > .icon-background.icon-checkmark {
+  color: white
+}
+
+.category-button.toggledOn > .label > .completed-label-hide {
+  display: inherit;
+}
+.category-button.toggledOff > .label > .completed-label-hide {
+  display: none;
+}
+.category-button.toggledOn > .label > .completed-label-show {
+  display: none;
+}
+.category-button.toggledOff > .label > .completed-label-show {
+  display: inherit;
 }
 
 .main-content > p {
@@ -126,19 +172,12 @@ html, body, #map {
 .leaflet-control-layers-separator {
    margin: 0;
 }
+
 .main-content {
     clear: both;
     overflow-y: scroll;
-}
 
-.category-selection-ul {
-    padding-left: 0;
-    opacity: inherit;
-}
-.category-selection-ul > li {
-    display: inline-block;
-    text-align: center;
-    vertical-align: top;
+    overflow-x: hidden;
 }
 
 .leaflet-control-layers-toggle {
@@ -149,9 +188,56 @@ html, body, #map {
 /** **/
 
 
+/*** SEARCH CONTENT ***/
+
+.menu-cat-content-inner .leaflet-control-layers-separator {
+  margin: 0px 10px;
+}
+
+.marker-list-entry {
+  display: block;
+
+  height: 84px;
+  padding: 10px 10px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+}
+
+.marker-list-entry .icon {
+  display: inline-block;
+
+  vertical-align: top;
+}
+
+.marker-list-entry .details {
+  display: inline-block;
+
+  margin-left: 10px;
+
+  white-space: normal;
+}
+
+.marker-list-entry .title {
+  display: block;
+  height: 25%;
+
+  margin-bottom: 5px;
+
+  font-size: 14px;
+}
+
+.marker-list-entry .description {
+  display: block;
+  height: 75%;
+
+  font-size: 12px;
+}
+
 /*** MARKER CONTENT ***/
 .popupTitle {
-/*    margin-bottom: 5px;
+   /* margin-bottom: 5px;
     margin-top: 0;*/
     font-family: HyliaSerif;
     font-size: 26px;
@@ -217,7 +303,7 @@ a.icon-close {
 ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-/*    background: #f2f2f2;*/
+   /* background: #f2f2f2;*/
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 2px;

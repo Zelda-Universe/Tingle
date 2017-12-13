@@ -5,6 +5,7 @@
 
 function CategoryIcon(opts) {
   opts = opts || {};
+
   this._initSettings(opts);
   this._initDOMElements(opts);
 };

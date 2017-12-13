@@ -1,3 +1,11 @@
+// MarkerSearchField
+// - opts: [Object]
+//   - minMatchCharLength: [Number] Minimum number of characters required before a search should be executed.  Too few for a lot of search material may cost heavily for performance.
+//   - incrementalSearch: [Boolean] Search on any keypress or on Enter key press.
+//   - showProgressBar: [Boolean] Whether the progress bar for the cremental search method or not.
+//   - searchWaitCheckTimeThreshold: [Number] Amount of millisseconds to wait until a search is executed automatically for the incremental search method.
+//   - updateProgressTotalStepsAmount: [Number] When showing the progess bar for the incremental search method, how granularly it should update.
+
 function MarkerSearchField(opts) {
   this._initSettings(opts);
   this._initDOMElements();
@@ -29,6 +37,8 @@ MarkerSearchField.prototype._initSettings = function(opts) {
   this.showProgressBar = getSetOrDefaultValue(opts.showProgressBar, true);
   // this.showSearchRequestIndicator = true; // Not yet implemented, changes the icon?, maybe implement as a separate widget, or pull into this one!!
 
+  this.minMatchCharLength = getSetOrDefaultValue(opts.minMatchCharLength, 3);
+
   this.searchWaitCheckTimeThreshold = getSetOrDefaultValue(opts.searchWaitCheckTimeThreshold, 0.5 * 1000); // 0.5s * 1000ms/s
   this.updateProgressTotalStepsAmount = getSetOrDefaultValue(opts.updateProgressTotalStepsAmount, 10);
   this.updateProgressStepAmount = 100 / this.updateProgressTotalStepsAmount;
@@ -43,31 +53,55 @@ MarkerSearchField.prototype._setupUserInputListener = function() {
   this.inputControl = $('#marker-search', this.domNode);
 
   if(this.incrementalSearch) {
-    this.inputControl.on("input", this._startSearchWait.bind(this));
+    this.inputControl.on("input", function (e) {
+      this._clearSearchWait();
+      this._clearProgressBar();
+      this._checkMinimumSearchCharactersSupplied(
+        this._startSearchWait.bind(this)
+      );
+    }.bind(this));
   } else {
     this.inputControl.on("keypress", function (e) {
       if(e.key == "Enter") {
         e.preventDefault();
-        this._executeSearch();
+        this._checkMinimumSearchCharactersSupplied(
+          this._executeSearch.bind(this)
+        );
       }
     }.bind(this));
   }
 };
 
-MarkerSearchField.prototype._startSearchWait = function() {
+MarkerSearchField.prototype._checkMinimumSearchCharactersSupplied = function(callback) {
+  if(this._getQuery().length >= this.minMatchCharLength) {
+    callback();
+  }
+};
+
+MarkerSearchField.prototype._clearSearchWait = function() {
   if(this.searchTimerFunctionId) window.clearTimeout(this.searchTimerFunctionId);
+};
+
+MarkerSearchField.prototype._startSearchWait = function() {
+  this._clearSearchWait();
 
   this.searchTimerFunctionId = window.setTimeout(
-    this._executeSearch,
+    this._executeSearch.bind(this),
     this.searchWaitCheckTimeThreshold
   );
 
   if(this.progressBar) this._startProgressBar();
 };
 
+MarkerSearchField.prototype._clearProgressBar = function() {
+  if(this.progressBar) {
+    if(this.updateProgressIntervalFunctionId) window.clearInterval(this.updateProgressIntervalFunctionId);
+    this.progressBar.reset();
+  }
+};
+
 MarkerSearchField.prototype._startProgressBar = function() {
-  if(this.updateProgressIntervalFunctionId) window.clearInterval(this.updateProgressIntervalFunctionId);
-  this.progressBar.reset();
+  this._clearProgressBar();
 
   this.updateProgressIntervalFunctionId = window.setInterval(
     function() {

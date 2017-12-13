@@ -1,7 +1,8 @@
 function ProgressBar(opts) {
-  this._initDOMElements();
+  opts = opts || {};
 
-  this._initState();
+  this._initDOMElements();
+  this._initState(opts);
 };
 
 ProgressBar.prototype._initDOMElements = function() {

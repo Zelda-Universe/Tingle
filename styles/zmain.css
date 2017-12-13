@@ -194,6 +194,15 @@ html, body, #map {
   margin: 0px 10px;
 }
 
+.menu-cat-content-inner .no-results {
+  text-align: center;
+  padding: 10px;
+  margin-left: 20px;
+
+  font: 16px/14px Tahoma,Verdana,sans-serif;
+  color: #c3c3c3;
+}
+
 .marker-list-entry {
   display: block;
 

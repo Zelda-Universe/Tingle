@@ -18,3 +18,8 @@ Object.pop = function(hash, propertyName, defaultValue) {
   hash[propertyName] = null;
   return value;
 };
+
+// http://www.jacklmoore.com/notes/rounding-in-javascript/
+Number.roundDecimal = function(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}

@@ -1,3 +1,7 @@
+// ProgressBar
+// - opts: [Object]
+//   - progressPercentage: [Number] Starting amonut out of 100 that the progress bar should be filled.
+
 function ProgressBar(opts) {
   opts = opts || {};
 

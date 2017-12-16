@@ -18,6 +18,14 @@ html, body, #map {
   position: fixed;
 }
 
+.relativeContainer {
+  position: relative;
+}
+
+.highlight {
+  text-decoration: coral underline dotted;
+}
+
 /* ICON */
 [class^="icon-"], [class*=" icon-"] {
    vertical-align: middle;
@@ -199,8 +207,28 @@ html, body, #map {
   padding: 10px;
   margin-left: 20px;
 
-  font: 16px/14px Tahoma,Verdana,sans-serif;
+  font: 14px/12px Tahoma,Verdana,sans-serif;
   color: #c3c3c3;
+}
+
+.marker-list {
+  margin: 0px;
+  padding: 0px;
+}
+
+.marker-list-view .results .header {
+  position: sticky;
+  top: 0px;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 2;
+
+  text-align: center;
+
+  font-style: italic;
+
+  color: #c3c3c3;
+
+  padding: 5px 0px;
 }
 
 .marker-list-entry {
@@ -210,8 +238,6 @@ html, body, #map {
   padding: 10px 10px;
 
   white-space: nowrap;
-
-  overflow: hidden;
 }
 
 .marker-list-entry .icon {
@@ -222,13 +248,50 @@ html, body, #map {
 
 .marker-list-entry .details {
   display: inline-block;
+  height: 100%;
+  /* Maybe find a better way to do this without calc?
+     Does it require the parent to have a fixed width?
+     I was tying to avoid that randomly.
+     Maybe try to propagate the larger drawer node's width,
+     if it is not already present somewhow. */
+  width: calc(100% - 74px);
 
   margin-left: 10px;
 
   white-space: normal;
+
+  overflow-y: hidden;
 }
 
-.marker-list-entry .title {
+.marker-list-entry .searchScore {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+
+.marker-list-entry .icon .searchScore {
+  left: 0px;
+}
+
+.marker-list-entry .details .searchScore {
+  font: 8px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  color: #c3c3c3;
+}
+
+.searchScore .progress-bar-container {
+  border: 1px solid white;
+
+  background-color: rgba(0, 0, 0, 1);
+}
+
+.searchScore .progress-bar-filler {
+  height: 3px;
+
+  background-color: #1fff1e;
+}
+
+
+.marker-list-entry .name {
   display: block;
   height: 25%;
 
@@ -541,16 +604,16 @@ a.icon-close2 {
     margin-right: auto;
 }
 
-.progress-bar-container {
-  padding-top: 28px;
-  padding-left: 28px;
-}
-
 .progress-bar-filler {
   width: 0%;
   height: 2px;
 
   background-color: orange;
+}
+
+.search-box .progress-bar-container {
+  padding-top: 28px;
+  padding-left: 28px;
 }
 
 .input-group .icon-addon .form-control {

@@ -38,27 +38,27 @@ MarkerListView.prototype.clear = function() {
   this.markerListDomNode.empty();
 };
 
-MarkerListView.prototype.showMarkers = function(query, entries) {
+MarkerListView.prototype.showMarkers = function(query, markers) {
   this.clear();
 
   this.currentSearchQueryDomNodes.text(query);
 
-  if(entries.length == 0) {
+  if(markers.length == 0) {
     this.noResultsDomNode.show();
   } else {
-    this.currentSearchAmountDomNode.text(entries.length);
-    this._addEntries(entries);
+    this.currentSearchAmountDomNode.text(markers.length);
+    this._addEntries(markers);
     this.resultsDomNode.show();
   }
 };
 
-MarkerListView.prototype._addEntries = function(entries) {
-  entries.forEach(function(entry) {
-    this.markerListDomNode.append(this._createEntry(entry).domNode);
+MarkerListView.prototype._addEntries = function(markers) {
+  markers.forEach(function(marker) {
+    this.markerListDomNode.append(this._createEntry(marker).domNode);
     this.markerListDomNode.append($(this.separatorDomNodeTemplate));
   }, this);
 };
 
-MarkerListView.prototype._createEntry = function(entry) {
-  return new MarkerListEntry({ marker: ((entry.item) ? entry.item : entry)});
+MarkerListView.prototype._createEntry = function(marker) {
+  return new MarkerListEntry(marker);
 };

@@ -141,6 +141,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
 			var searchMarkerHandler = new SearchMarkerHandler({
 				markerSearchField: this.markerSearchField,
+				showSearchStats: true
 			});
 			searchMarkerHandler.addHandler("markerListViewBuilt", function(markerListView) {
 				this.setContent(markerListView.domNode, 'search');

@@ -29,6 +29,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.currentMap;
       this.currentSubMap;
 
+		$(document).on('keydown', function(e) {
+			if(e.key == "Escape") {
+				if(this._contentType != 'category') {
+					this.resetContent();
+				} else {
+	        this.toggle();
+				}
+      }
+		}.bind(this));
 	},
 
 	_initLayout: function () {
@@ -261,6 +270,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.options.collapsed = false;
       return this.expand();
    },
+
+	 toggle: function() {
+		 (this.isCollapsed()) ? this._expand() : this._collapse();
+	 },
 
    getContentType() {
       return this.contentType;

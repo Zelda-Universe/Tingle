@@ -285,8 +285,16 @@ a.icon-shrink {
 
 }
 a.icon-close {
+  float: right;
+  padding: 5px 5px 0 0;
+}
+
+a.icon-close2 {
+   position: sticky;
    float: right;
-   padding: 5px 5px 0 0;
+   top: 5px;
+   right: 5px;
+   z-index: 10;
 }
 
 

@@ -6,7 +6,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       headerHeight: 80,
 	},
 	 _categoryMenu: null,
-   contentType: 'category', // category, marker
+   contentType: 'category', // category, marker, search
 
 	initialize: function (baseLayers, categoryTree, options) {
 		L.Util.setOptions(this, options);
@@ -143,18 +143,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
         headerDiv
 			);
 
-			var markerSearchField = new MarkerSearchField({
+			this.markerSearchField = new MarkerSearchField({
 				incrementalSearch: false,
 				updateProgressTotalStepsAmount: 15
 			});
-			$(markerSearchField.domNode).appendTo(headerDivMid);
-
-			var markerListView = new MarkerListView();
+			$(this.markerSearchField.domNode).appendTo(headerDivMid);
 
 			var searchMarkerHandler = new SearchMarkerHandler({
-				markerSearchField: markerSearchField,
-				markerListView: markerListView,
-				markers: zMap.getMarkers()
+				markerSearchField: this.markerSearchField,
+			});
+			searchMarkerHandler.addHandler("markerListViewBuilt", function(markerListView) {
+				this.setContent(markerListView.domNode, 'search');
+			}.bind(this));
 			});
 
       L.DomEvent.disableClickPropagation(headerDivMid);
@@ -200,7 +200,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
    setContent: function(vContent, vType) {
       this._contents.innerHTML = '';
 
-      var closeButton = L.DomUtil.create('a', 'button icon-close', this._contents);
+      var closeButton = L.DomUtil.create('a', 'button icon-close2', this._contents);
       closeButton.innerHTML = '×';
       closeButton.href="#close";
       L.DomEvent
@@ -211,13 +211,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
              e.preventDefault();
          }, this)
       var content = L.DomUtil.create('div', '', this._contents);
-      content.innerHTML = vContent;
+			$(content).append(vContent);
       content.className = 'menu-cat-content-inner';
       this._expand();
-      this.contentType = vType;
+      this._contentType = vType;
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
    },
 
+	 // Sets it to the default category selector scene.
    resetContent() {
       //@TODO: New Marker should be from the map!
       if (newMarker != null) {
@@ -226,7 +227,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
 			$(this._contents).empty();
 			$(this._contents).append(this._categoryMenu.domNode);
-      this.contentType = 'category';
+      this._contentType = 'category';
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
    },
 
@@ -276,7 +277,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 	 },
 
    getContentType() {
-      return this.contentType;
+      return this._contentType;
    },
 
    _checkDisabledLayers: function () {

@@ -145,6 +145,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
 			searchMarkerHandler.addHandler("markerListViewBuilt", function(markerListView) {
 				this.setContent(markerListView.domNode, 'search');
 			}.bind(this));
+
+			zMap.addHandler("markersAdded", function(markers) {
+				searchMarkerHandler.setMarkers(markers);
 			});
 
       L.DomEvent.disableClickPropagation(headerDivMid);

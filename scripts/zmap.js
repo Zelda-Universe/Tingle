@@ -69,6 +69,10 @@ function ZMap() {
 
       GO_TO_MARKER_ERROR : "You’ve met with a terrible fate, haven’t you? Marker %1 couldn't be found on this map.",
    }
+
+   this.handlers = {
+     markersAdded: []
+   };
 };
 
 
@@ -307,6 +311,10 @@ ZMap.prototype.addMap = function(vMap) {
 ZMap.prototype.addMarkers = function(vMarkers) {
   vMarkers.forEach(function(vMarker) {
     this.addMarker(vMarker);
+  }, this);
+
+  this.handlers["markersAdded"].forEach(function(handler) {
+    handler(vMarkers); // or markers..
   }, this);
 };
 
@@ -689,7 +697,10 @@ ZMap.prototype.getUser = function() {
   return user;
 };
 
-
+// TODO: Make this a generic mixin, probably automatically included in all widgets, or even use a JS framework that does this already!!
+ZMap.prototype.addHandler = function(eventName, handleFunction) {
+  this.handlers[eventName].push(handleFunction);
+};
 
 //************* CATEGORY MENU *************//
 ZMap.prototype.toggleCompleted = function(showCompleted) {

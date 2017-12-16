@@ -172,7 +172,7 @@ MarkerSearchField.prototype._startProgressBar = function() {
 
 
 MarkerSearchField.prototype._executeSearch = function() {
-  this.domNode.trigger('search', { query: this._getQuery() });
+  this.domNode.trigger('search', this._getQuery());
 };
 
 

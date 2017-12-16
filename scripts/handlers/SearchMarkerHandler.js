@@ -18,8 +18,8 @@ SearchMarkerHandler.prototype._setupUIInteraction = function() {
   this.markerSearchField.domNode.on('search', this._displayResults.bind(this));
 };
 
-  this.markerListView.showMarkers(this.markers.slice(0, 5)); // Debug set; remove later.
 SearchMarkerHandler.prototype._displayResults = function(e, query) {
+  this.markerListView.showMarkers(query, this.searcher.search(query));
   this.handlers["markerListViewBuilt"].forEach(function(handler) {
     handler(this.markerListView);
   }, this);

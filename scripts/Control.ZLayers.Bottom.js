@@ -279,8 +279,11 @@ L.Control.ZLayersBottom = L.Control.Layers.extend({
       if (this._contents != undefined) {
          this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
       }
+
       this.options.collapsed = false;
-      return this.expand();
+      this.expand();
+
+			this.setDefaultFocus();
    },
 
    getContentType() {

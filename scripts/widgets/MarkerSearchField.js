@@ -183,3 +183,8 @@ MarkerSearchField.prototype._getQuery = function () {
 MarkerSearchField.prototype._setQuery = function (text) {
   return this.searchInput.val(text);
 };
+
+
+MarkerSearchField.prototype.focus = function () {
+  return this.searchInput.focus();
+};

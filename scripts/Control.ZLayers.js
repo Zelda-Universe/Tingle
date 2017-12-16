@@ -84,16 +84,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
          L.DomEvent.on(link, 'focus', this._expand, this);
       }
 
-      // TODO keyboard accessibility
-      if (this.options.collapsed) {
-         //this._map.on('movestart', this._collapse, this);
-         //this._map.on('click', this._collapse, this);
-      } else {
-         this._expand();
-      }
-
-
-
       form1.style.width = '360px';
 			/*
       var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', form1);
@@ -195,7 +185,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
 		container.appendChild(form1);
       container.appendChild(this._contents);
+
+      // TODO keyboard accessibility
+      if (this.options.collapsed) {
+         //this._map.on('movestart', this._collapse, this);
+         //this._map.on('click', this._collapse, this);
+      } else {
+         this._expand();
+      }
+
+			this.setDefaultFocus();
    },
+
+	 setDefaultFocus: function() {
+		 this.markerSearchField.focus();
+	 },
 
    setContent: function(vContent, vType) {
       this._contents.innerHTML = '';
@@ -269,7 +273,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       }
 
       this.options.collapsed = false;
-      return this.expand();
+      this.expand();
+
+			this.setDefaultFocus();
    },
 
 	 toggle: function() {

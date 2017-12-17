@@ -1,17 +1,30 @@
-function getUrlParam(vParam) { 
+// This script sets OSName variable as follows:
+// "Windows"    for all versions of Windows
+// "MacOS"      for all versions of Macintosh OS
+// "Linux"      for all versions of Linux
+// "UNIX"       for all other UNIX flavors
+// "Unknown OS" indicates failure to detect the OS
+
+var OSName="Unknown OS";
+if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+
+function getUrlParam(vParam) {
 
    vParam = vParam.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
-   
+
    var regexS = "[\\?&]"+vParam+"=([^&#]*)";
    var regex = new RegExp(regexS);
    var vResults = regex.exec(window.location.href);
-   
+
    if (vResults == null) {
       return "";
    } else {
       return vResults[1];
    }
-   
+
 };
 
 function setCookie(cname, cvalue, exdays) {
@@ -46,33 +59,33 @@ function getCookie(cname) {
 }
 
 function getMapCategories() {
-   
+
    $.getJSON("ajax.php?command=get_categories&game=" + gameId, function(vResults){
       $.each(vResults, function(i,category){
          zMap.addCategory(category);
       });
    });
-   
+
 };
 
 function getMapCategoriesTree() {
-   
+
    $.getJSON("ajax.php?command=get_category_tree&game=" + gameId, function(vResults){
       zMap.buildCategoryMenu(vResults);
    });
-   
+
 };
 
 function getMaps() {
-   
+
    $.getJSON("ajax.php?command=get_map&game=" + gameId, function(vResults){
       $.each(vResults, function(i,map){
          zMap.addMap(map);
       });
-   
-      getMakers();
+
+      getMarkers();
    });
-   
+
 };
 
 function getUserInfo() {
@@ -92,13 +105,10 @@ function hideLoginControls() {
   searchBoxParent.addClass("col-xs-10");
 }
 
-function getMakers(){
-   $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults){
-      
+function getMarkers(){
+   $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults) {
       zMap.buildMap();
-      $.each(vResults,function(i, marker){
-         zMap.addMarker(marker);
-      });
+      zMap.addMarkers(vResults);
       getUserInfo();
       zMap.refreshMap();
       zMap.goTo({ map        : getUrlParamValue('map', null)
@@ -106,7 +116,7 @@ function getMakers(){
                 , marker     : getUrlParamValue('marker', null)
                 , zoom       : getUrlParamValue('zoom', 4)
       });
-      
+
    });
 };
 
@@ -116,7 +126,7 @@ var gameId = getUrlParam("game");
 // Get value of parameters
 function getUrlParamValue(vParamName, vDefaultValue) {
    var vParamName = getUrlParam(vParamName);
-   
+
    if (vParamName == undefined || vParamName == "") {
       return vDefaultValue;
    }
@@ -131,18 +141,22 @@ function getUrlParamValue(vParamName, vDefaultValue) {
 
 function KeyPress(e) {
       var evtobj = window.event? event : e
-      if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
+
+      if (evtobj.key == 'z' && (
+           ((OSName != 'MacOS') && evtobj.ctrlKey) ||
+           ((OSName == 'MacOS') && evtobj.metaKey)
+         )) {
          zMap.undoMarkerComplete();
       }
 }
 
-document.onkeydown = KeyPress;
+$(document).on('keydown', KeyPress);
 
 // Initial Load
 //  Get map that we want to load (the game ID)
 $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
-   
-   // Should only get only one map 
+
+   // Should only get only one map
    $.each(vResults, function(i, vContainer) {
 
       vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
@@ -163,11 +177,11 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
 
       vContainer.help                       = getUrlParamValue('help', true);
-      
+
       if (vContainer.bgColor[0] != '#') {
          vContainer.bgColor = '#' + vContainer.bgColor;
       }
-      
+
       var showCompleted = getCookie('showCompleted');
       if (showCompleted == '') {
          setCookie('showCompleted',"true");
@@ -175,29 +189,29 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       } else {
          vContainer.showCompleted = (showCompleted == 'true');
       }
-      
+
       zMap.constructor(vContainer);
-      
+
       gameId = vContainer.id;
-      
+
       getMapCategories();
-      
+
       if (vContainer.showCategoryControl) {
          getMapCategoriesTree();
       }
-      
-      
+
+
       var completedMarkers = getCookie('completedMarkers');
       if (completedMarkers != undefined && completedMarkers != null && completedMarkers != "") {
          zMap.addCompletedMarkers(JSON.parse(completedMarkers));
       }
-      
+
       getMaps();
 
       $("#map").css("background-color", vContainer.bgColor);
       $("body").css("background-color", vContainer.bgColor);
       $("html").css("background-color", vContainer.bgColor);
-      
+
    });
-   
+
 });

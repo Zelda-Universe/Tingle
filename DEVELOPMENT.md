@@ -21,6 +21,17 @@
 
 # Etc.
 
+## Icons
+  We use the website `https://icomoon.io/app` to choose, compile, and generate the stylesheets that contain the icon font graphics we display in our map's web page.
+  - We do not use the hosted 'Quick Usage' premium feature of icomoon, just the local browser storage to work with the set, then export it to the filesystem, and update the project with the new files.
+  - Be sure to import it as an entire project.
+    - The export file we save is `dev/icomoon Export - BotW Maps Icon Set Font.json`.
+    - Try to avoid creating a new, blank project, and then importing just the icons, as something may be missing using this method.
+    - Many of the graphics were made by Connor.  If you need more you can work with him.
+    - You will know it works, because even the title of the project should appear and indicate the project's Zelda content.
+
+
+
 ## Update Sample Database Data
 
   We will store somewhat of a snapshot of the mined, active, production data in the `dev/db/zelda_maps.sql` file so developers and others can start using the project faster, and at all.

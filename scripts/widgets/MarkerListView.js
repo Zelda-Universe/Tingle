@@ -1,5 +1,14 @@
-function MarkerListView() {
+// MarkerListView
+// - opts: [Object] Typical options object.
+//   - markerEntryClick: [Function] The function to execute when a marker entry in the list is clicked.
+
+function MarkerListView(opts) {
+  this._initSettings(opts);
   this._initDOMElements();
+};
+
+MarkerListView.prototype._initSettings = function(opts) {
+  this.markerEntryClick = opts.markerEntryClick;
 };
 
 MarkerListView.prototype._initDOMElements = function() {
@@ -54,11 +63,12 @@ MarkerListView.prototype.showMarkers = function(query, markers) {
 
 MarkerListView.prototype._addEntries = function(markers) {
   markers.forEach(function(marker) {
-    this.markerListDomNode.append(this._createEntry(marker).domNode);
+    var entry = this._createEntry(marker, { onClick: this.markerEntryClick });
+    this.markerListDomNode.append(entry.domNode);
     this.markerListDomNode.append($(this.separatorDomNodeTemplate));
   }, this);
 };
 
-MarkerListView.prototype._createEntry = function(marker) {
-  return new MarkerListEntry(marker);
+MarkerListView.prototype._createEntry = function(marker, opts) {
+  return new MarkerListEntry(marker, opts);
 };

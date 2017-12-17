@@ -238,6 +238,16 @@ html, body, #map {
   padding: 10px 10px;
 
   white-space: nowrap;
+
+  cursor: alias;
+}
+
+.marker-list-entry:hover {
+  background-color: #dbdcba4a;
+}
+
+.marker-list-entry:active {
+  background-color: #ffffff73;
 }
 
 .marker-list-entry .icon {

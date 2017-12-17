@@ -1594,37 +1594,32 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   for (var i = 0; i < markers.length; i++) {
-      if (markers[i].id == vMarkerId) {
+   var marker = this.cachedMarkersById[vMarkerId];
+   mapControl.changeMap(marker.mapId, marker.submapId);
 
-         mapControl.changeMap(markers[i].mapId, markers[i].submapId);
-
-         if (!vZoom) {
-            vZoom = map.getZoom();
-         }
-         if (vZoom > map.getMaxZoom()) {
-            vZoom = map.getMaxZoom();
-         }
-
-         /*
-          0 = 256
-          1 = 128
-          2 = 64
-          3 = 32
-          4 = 16
-          5 = 8
-          6 = 4
-         */
-         var latlng = L.latLng(markers[i].getLatLng().lat, markers[i].getLatLng().lng);
-         map.setView(latlng, vZoom);
-         _this._createMarkerPopup(markers[i]);
-         newMarker = L.marker(markers[i]._latlng).addTo(map);
-
-         //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
-         return;
-
-      }
+   if (!vZoom) {
+      vZoom = map.getZoom();
    }
+   if (vZoom > map.getMaxZoom()) {
+      vZoom = map.getMaxZoom();
+   }
+
+   /*
+    0 = 256
+    1 = 128
+    2 = 64
+    3 = 32
+    4 = 16
+    5 = 8
+    6 = 4
+   */
+   var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
+   map.setView(latlng, vZoom);
+   _this._createMarkerPopup(marker);
+   newMarker = L.marker(marker._latlng).addTo(map);
+
+   //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
+   return;
 
    toastr.error(_this.langMsgs.GO_TO_MARKER_ERROR.format(vMarkerId));
 }

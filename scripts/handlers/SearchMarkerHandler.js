@@ -1,12 +1,13 @@
-// SearchMarkerHandler
-// - opts: [Object]
-//   - markerSearchField: [Object]
-//   - markerListView: [Object]
-//   - showSearchStats: [Boolean]
+// SearchMarkerHandler - Connects the various related widgets to perform search actions, cohesively-containing logic, and provides configuration.
+// - opts: [Object] Typical options object.
+//   - markerSearchField: [Object] - The search field to use.  Creates a default instance if one is not provided.
+//   - markerListView: [Object] - The list view to use.  Creates one if not provided.  Applies configuration whether to create a plain or search stats list view.
+//   - showSearchStats: [Boolean] - Determines which list view to create, if one is not provided: a plain or search stats version.
+//   - markerSearchClick: [Function] - The function to execute when a marker search entry in the list is clicked.
 
 function SearchMarkerHandler(opts) {
   this._initSettings(opts);
-  this._initComponents();
+  this._initComponents(opts);
   this._setupUIInteraction();
 };
 
@@ -16,21 +17,23 @@ SearchMarkerHandler.prototype._initSettings = function(opts) {
 
   this.showSearchStats = getSetOrDefaultValue(opts.showSearchStats, false);
 
+  opts["markerEntryClick"] = Object.pop(opts, "markerSearchClick");
+
   this.handlers = {
     markerListViewBuilt: []
   };
 };
 
-SearchMarkerHandler.prototype._initComponents = function() {
+SearchMarkerHandler.prototype._initComponents = function(opts) {
   if(!this.markerSearchField) {
-    this.markerSearchField = new SearchMarkerHandler();
+    this.markerSearchField = new MarkerSearchField();
   }
 
   if(!this.markerListView) {
     if(this.showSearchStats) {
-      this.markerListView = new SearchMarkerListView();
+      this.markerListView = new SearchMarkerListView(opts);
     } else {
-      this.markerListView = new MarkerListView();
+      this.markerListView = new MarkerListView(opts);
     }
   }
 };

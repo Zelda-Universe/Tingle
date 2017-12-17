@@ -1,6 +1,11 @@
+// MarkerListEntry
+// - opts: [Object] Typical options object.
+//   - onClick: [Function] The function to call when clicked.  Passes in the owned marker data object this entry represents.
+
 function MarkerListEntry(marker, opts) {
   this._initSettings(marker, opts);
   this._initDOMElements(marker);
+  this._setupUIInteraction(opts);
 };
 
 MarkerListEntry.prototype._initSettings = function(marker, opts) {
@@ -26,4 +31,8 @@ MarkerListEntry.prototype._initDOMElements = function(marker) {
   this.categoryIcon = new CategoryIcon(categories[(marker.categoryId || marker.markerCategoryId)]);
   this.iconNode = this.domNode.find('.icon');
   this.iconNode.append(this.categoryIcon.domNode);
+};
+
+MarkerListEntry.prototype._setupUIInteraction = function(opts) {
+  this.domNode.on('click', opts.onClick.bind(this, this.marker));
 };

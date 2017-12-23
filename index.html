@@ -41,17 +41,6 @@
       <script type="text/javascript" src="res.php?type=javascript"></script>
       <link rel="stylesheet" type="text/css" href="res.php?type=css" />
 
-      <!-- Curse Ad Script -->
-      <script>
-		var script = document.createElement('script');
-		var tstamp = new Date();
-		script.id = 'factorem';
-		script.src = '//cdm.cursecdn.com/js/zeldamaps/cdmfactorem_min.js?sec=home&misc=' + tstamp.getTime();
-		script.async = false;
-		script.type='text/javascript';
-		document.head.appendChild(script);
-	  </script>
-
       <script>
       var urlParams;
       $(function(){
@@ -92,11 +81,19 @@
    <body>
       <div id="map"></div>
       <div id="mobileAds" align="center">
-         <!-- Curse Ad Div -->
-         <div id='cdm-zone-01'></div>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<!-- Zelda Maps -->
+		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-7269573247649351"
+		     data-ad-slot="4512666333"
+		     data-ad-format="auto"></ins>
+		<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
       </div>
       <div id="desktopAds" align="center">
-         <script>
+        <script>
             var width = $(document).width();
             var adsWidth = 0;
             var adsHeight = 0;
@@ -113,9 +110,17 @@
 
             document.getElementById('desktopAds').style.width = adsWidth + 'px';
             document.getElementById('desktopAds').style.height = adsHeight + 'px';
-         </script>
-         <!-- Curse Ad -->
-         <div id='cdm-zone-04'></div>
+        </script>
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<!-- Zelda Maps -->
+		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-7269573247649351"
+		     data-ad-slot="4512666333"
+		     data-ad-format="auto"></ins>
+		<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
       </div>
 
       <!-- Google Analytics -->
@@ -146,8 +151,5 @@
 
 	  <!-- Nielsen Online SiteCensus -->
 	  <div><img src="//secure-us.imrworldwide.com/cgi-bin/m?ci=us-603339h&amp;cg=0&amp;cc=1&amp;ts=noscript" width="1" height="1" alt="" /></div>
-
-      <!-- End Curse Ad Zone -->
-      <div id='cdm-zone-end'></div>
    </body>
 </html>

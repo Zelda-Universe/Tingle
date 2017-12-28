@@ -11,12 +11,11 @@
 	}
    
    $username = $mysqli->real_escape_string($_POST['user']);
-   $password = $mysqli->real_escape_string($_POST['password']);
+   $passwordUnescaped = $_POST['password'];
    $name = $mysqli->real_escape_string($_POST['name']);
    $email = $mysqli->real_escape_string($_POST['email']);
    $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
-   $hash = password_hash($password, PASSWORD_DEFAULT, ['cost' => 13]);
-   
+   $hash = password_hash($passwordUnescaped, PASSWORD_DEFAULT, ['cost' => 13]);
    $query = "INSERT INTO " . $map_prefix . "user " . " (username, password, name, email, created, ip, last_login, level, visible) VALUES" .
             "('" . $username . "', '" . $hash . "', '" . $name . "', '" . $email . "', now(), '" . $ip . "', now(), 1, 1)"
             ;

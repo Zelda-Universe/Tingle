@@ -12,6 +12,7 @@
    
    $username = $mysqli->real_escape_string($_POST['user']);
    $password = $mysqli->real_escape_string($_POST['password']);
+   $passwordUnescaped = $_POST['password'];
    $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
    
    
@@ -22,7 +23,12 @@
    
    if ($result) {
       $row = $result->fetch_assoc();
-      if (isset($row['password']) && password_verify($password, $row['password'])) {
+      if (isset($row['password'])
+          && (
+                 password_verify($password, $row['password'])
+              || password_verify($passwordUnescaped, $row['password'])
+             )
+         ) {
          $user['id'] = $row['id'];
          $user['username'] = $row['username'];
          $user['level'] = $row['level'];

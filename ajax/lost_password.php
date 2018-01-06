@@ -22,7 +22,7 @@
   $row = $result->fetch_assoc();
 
   if($row) {
-    $query = "UPDATE `{$map_prefix}user` " . " SET `password` = '$hash' WHERE `email` = '$email'";
+    $query = "UPDATE `{$map_prefix}user` SET `password` = '$hash' WHERE `email` = '$email'";
     //echo $query;
     $result = $mysqli->query($query);
 

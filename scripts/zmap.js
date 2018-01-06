@@ -1455,7 +1455,7 @@ ZMap.prototype._createLostPasswordForm = function() {
 
                               '<div class="modal-footer">'+
                                  '<div>'+
-                                    '<button type="submit" class="btn btn-primary btn-lg btn-block">Reset Pasword</button>'+
+                                    '<button type="submit" class="btn btn-primary btn-lg btn-block">Reset Password</button>'+
                                  '</div>'+
                                '</div>'+
                         '</form>'+

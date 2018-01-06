@@ -13,7 +13,7 @@
   $email = $mysqli->real_escape_string($_POST['email']);
 
   $factory = new RandomLib\Factory;
-  $generator = $factory->getMediumStrengthGenerator();
+  $generator = $factory->getGenerator($lostPasswordRandomGeneratorStrengthConstant);
   $randomPassword = $generator->generateString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/`~!@#$%^&*()-_=+[{]}\|;:\'",<.>/?');
   $hash = password_hash($randomPassword, PASSWORD_DEFAULT, ['cost' => 13]);
 

@@ -3,6 +3,8 @@
 
   date_default_timezone_set("UTC");
 
+  $lostPasswordRandomGeneratorStrengthStrings = array_keys((new SecurityLib\Strength)->getConstList());
+
 	// LOCAL
    error_reporting((E_ALL ^ E_DEPRECATED) & ~E_NOTICE);
 	if ($_SERVER['SERVER_ADDR'] == "127.0.0.1" || $_SERVER['SERVER_ADDR'] == '::1') {
@@ -41,6 +43,13 @@
         $dbpasswd = $ENV["DBPASSWD"];
         $map_prefix = $ENV["PREFIX"];
         $minifyResources = $ENV["minifyResources"];
+        $lostPasswordRandomGeneratorStrengthString = $ENV["LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH"];
+        if(array_search($lostPasswordRandomGeneratorStrengthString, $lostPasswordRandomGeneratorStrengthStrings) === false) {
+          error_log("Miconfigured \"LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH\" setting; using the value \"MEDIUM\" by default.");
+          $lostPasswordRandomGeneratorStrengthString = "MEDIUM";
+        }
+        $lostPasswordRandomGeneratorStrengthConstant = new SecurityLib\Strength((new SecurityLib\Strength)->getConstList()[$lostPasswordRandomGeneratorStrengthString]);
+
         $_ENV = array_merge($ENV,$_ENV);
     }
 

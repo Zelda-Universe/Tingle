@@ -1348,6 +1348,7 @@ ZMap.prototype._buildContextMenu = function() {
                      user = null;
                      _this._buildContextMenu();
                      mapControl.resetContent();
+                     showLoginControls();
                   } else {
                      toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
                   }

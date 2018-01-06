@@ -57,22 +57,26 @@ function ZMap() {
 
       MARKER_COMPLETE_WARNING : "It seems you are not logged in, so your completed markers will be stored in a cookie. If you log in, your markers will be saved on our database.",
 
-      MARKER_ADD_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be saved to our database. ERROR: %1",
-      MARKER_DEL_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be deleted from our database. ERROR: %1",
+      MARKER_ADD_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be saved to our database. ERROR: %1",
+      MARKER_DEL_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database. ERROR: %1",
       MARKER_COMPLETE_TRANSFER_ERROR : "There seems to be a problem moving your completed markers from cookie to our database. We will try again later. ERROR: %1",
       MARKER_COMPLETE_TRANSFER_SUCCESS : "All your completed markers were moved from cookies to our database and tied to your account.",
-      MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account but something didn`t went right. We try again the next time you login.",
+      MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account, but an error occurred. We try again the next time you login.",
 
-      MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be deleted from our database.",
-      MARKER_EDIT_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be edited in our database.",
-      MARKER_ADD_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn`t be added to our database. ERROR: %1",
+      MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database.",
+      MARKER_EDIT_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be edited in our database.",
+      MARKER_ADD_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be added to our database. ERROR: %1",
       MARKER_DEL_SUCCESS : "Marker %1 has been successfully deleted.",
       MARKER_EDIT_SUCCESS : "Marker %1 has been successfully edited.",
       MARKER_ADD_SUCCESS : "Marker %1 has been successfully added.",
       MARKER_ADD_SUCCESS_RESTRICTED : "Thank you for your contribution! Your marker is pending review and, if approved, it will show up shortly.",
 
-      GO_TO_MARKER_ERROR : "You’ve met with a terrible fate, haven’t you? Marker %1 couldn`t be found on this map.",
+      GO_TO_MARKER_ERROR : "You’ve met with a terrible fate, haven’t you? Marker %1 couldn't be found on this map.",
    }
+
+   this.handlers = {
+     markersAdded: []
+   };
 };
 
 
@@ -151,6 +155,8 @@ ZMap.prototype.constructor = function(vMapOptions) {
    completedMarkers = [];
    user = null;
    newMarker = null;
+   this.cachedMarkersByCategory = {};
+   this.cachedMarkersById = {};
 
    if (vMapOptions == null) {
       alert("Need to pass options to map constructor");
@@ -163,7 +169,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
    }
 
 
-//   markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
+  // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
 
 
    var icnSizeMedium = 23; // Default value to avoid traps
@@ -306,6 +312,16 @@ ZMap.prototype.addMap = function(vMap) {
    }
 }
 
+ZMap.prototype.addMarkers = function(vMarkers) {
+  vMarkers.forEach(function(vMarker) {
+    this.addMarker(vMarker);
+  }, this);
+
+  this.handlers["markersAdded"].forEach(function(handler) {
+    handler(vMarkers); // or markers..
+  }, this);
+};
+
 ZMap.prototype.addMarker = function(vMarker) {
    if (vMarker == null) {
       return;
@@ -345,6 +361,8 @@ ZMap.prototype.addMarker = function(vMarker) {
    }
 
    markers.push(marker);
+   this.addMarkerToCategoryCache(marker);
+   this.cachedMarkersById[marker.id] = marker;
    marker.pos = markers.length - 1;
 
    marker.on('click',function() {
@@ -485,27 +503,59 @@ ZMap.prototype._copyToClipboard = function(vMarkerId) {
    window.prompt("Copy to clipboard: Ctrl+C, Enter", href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom());
 }
 
-
-ZMap.prototype.refreshMap = function() {
-   var mapBounds = map.getBounds().pad(0.15);
-
-    for (var i = markers.length -1; i >= 0; i--) {
-        var m = markers[i];
-        var shouldBeVisible = markers[i].visible
-                              && mapBounds.contains(m.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
-                              && (
-                                  (hasUserCheck == false && categories[m.categoryId].visibleZoom <= map.getZoom())
-                                  || hasUserCheck == true && categories[m.categoryId].userChecked == true) // Check if we should show at this zoom level
-                              && (mapOptions.showCompleted == true || (mapOptions.showCompleted == false && markers[i].complete != true)) // Should we show completed markers?
-                              ;
-        if (!shouldBeVisible) {
-            map.removeLayer(m);
-        } else if (shouldBeVisible) {
-            m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
-            map.addLayer(m);
-        }
-    }
+ZMap.prototype.addMarkerToCategoryCache = function(marker) {
+  if(!this.cachedMarkersByCategory[marker.categoryId]) this.cachedMarkersByCategory[marker.categoryId] = [];
+  this.cachedMarkersByCategory[marker.categoryId].push(marker);
 };
+
+ZMap.prototype.refreshMapCompleted = function() {
+  this.refreshMap(null, true);
+}
+
+ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
+  if(affectedCategories) {
+    affectedCategories.forEach(function(affectedCategory) {
+      this._updateMarkersPresence(this.cachedMarkersByCategory[affectedCategory.id]);
+    }, this);
+  } else {
+    if(completedChanged) {
+      this._updateMarkersPresence(
+        completedMarkers.map(function(completedMarkerId) {
+          return this.cachedMarkersById[completedMarkerId];
+        }, this)
+      );
+    } else {
+      this._updateMarkersPresence(markers);
+    }
+  }
+};
+
+ZMap.prototype._updateMarkersPresence = function(markers) {
+  if(!markers) return;
+
+  markers.forEach(function(marker) {
+    this._updateMarkerPresence(marker);
+  }, this);
+};
+
+ZMap.prototype._updateMarkerPresence = function(marker) {
+  mapBounds = map.getBounds().pad(0.15);
+
+  if(this._shouldShowMarker(marker)) {
+    marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
+    map.addLayer(marker);
+  } else {
+    map.removeLayer(marker);
+  }
+};
+
+ZMap.prototype._shouldShowMarker = function(marker) {
+  return marker.visible
+    && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
+    && (categories[marker.categoryId].userChecked == true && categories[marker.categoryId].visibleZoom <= map.getZoom()) // Check if we should show for the category, and at this zoom level
+    && (mapOptions.showCompleted == true || (mapOptions.showCompleted == false && marker.complete != true)) // Should we show completed markers?
+    ;
+}
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
    categoryTree = vCategoryTree;
@@ -623,9 +673,11 @@ ZMap.prototype.buildMap = function() {
    }
 
    if (!mapControl.isMobile()) {
-      document.getElementById("mobileAds").style.display = 'none';
+      var mobileAds = document.getElementById("mobileAds");
+      if(mobileAds) mobileAds.style.display = 'none';
    } else {
-      document.getElementById("desktopAds").style.display = 'none';
+      var desktopAds = document.getElementById("desktopAds");
+      if(desktopAds) desktopAds.style.display = 'none';
    }
 };
 
@@ -649,13 +701,36 @@ ZMap.prototype.getUser = function() {
   return user;
 };
 
-
+// TODO: Make this a generic mixin, probably automatically included in all widgets, or even use a JS framework that does this already!!
+ZMap.prototype.addHandler = function(eventName, handleFunction) {
+  this.handlers[eventName].push(handleFunction);
+};
 
 //************* CATEGORY MENU *************//
-ZMap.prototype._updateCategoryVisibility = function(vCatId, vChecked) {
+ZMap.prototype.toggleCompleted = function(showCompleted) {
+  mapOptions.showCompleted = showCompleted;
+  setCookie('showCompleted', showCompleted);
+  zMap.refreshMapCompleted();
+};
+
+ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
+  if(!userWarnedAboutMarkerQty) {
+    if(categories.reduce(
+      function(sum, category) {
+        return sum + ((category.userChecked) ? 1 : 0);
+      },
+      0
+    ) > 5) {
+      toastr.warning('Combining a lot of categories might impact performance.');
+      userWarnedAboutMarkerQty = true;
+    }
+  }
+};
+
+ZMap.prototype.updateCategoryVisibility = function(vCatId, vChecked) {
 
    // Change the category visibility of the category parameter
-   var previousUserCheck;
+   // var previousUserCheck;
 
    function forEachCatUserChecked(element, index, array) {
       if (element.id == vCatId) {
@@ -668,12 +743,12 @@ ZMap.prototype._updateCategoryVisibility = function(vCatId, vChecked) {
          if (element.parentId != undefined) {
             return;
          } else {
-            previousUserCheck = element.userChecked;
+            // previousUserCheck = element.userChecked;
          }
       }
 
       if (element.parentId == vCatId) {
-         element.userChecked = previousUserCheck;
+         // element.userChecked = previousUserCheck;
       }
    }
    categories.forEach(forEachCatUserChecked);
@@ -694,31 +769,21 @@ ZMap.prototype._updateCategoryVisibility = function(vCatId, vChecked) {
       toastr.warning('Combining a lot of categories might impact performance.');
       userWarnedAboutMarkerQty = true;
    }
-
-
-   // Finally, just update the category menus
-   function forEachCat2(element, index, array) {
-      var catMenu = document.getElementById("catMenu" + element.id);
-      if (catMenu) {
-
-         if (categories[element.id].userChecked || !hasUserCheck) {
-            catMenu.style.opacity = 1;
-         } else {
-            catMenu.style.opacity = 0.35;
-         }
-      }
-      var catMenuMobile = document.getElementById("catMenuMobile" + element.id);
-      if (catMenuMobile) {
-         if (categories[element.id].userChecked || !hasUserCheck) {
-            catMenuMobile.style.opacity = 1;
-         } else {
-            catMenuMobile.style.opacity = 0.35;
-         }
-      }
-   }
-   categories.forEach(forEachCat2);
    _this.refreshMap();
-}
+};
+
+ZMap.prototype.updateCategoryVisibility2 = function(category, vChecked) {
+  var targetCategories = [category];
+  if(category.children) targetCategories.concat(category.children);
+
+  targetCategories.forEach(function(category) {
+    categories[category.id].userChecked = vChecked;
+  }, this);
+
+  this.checkWarnUserSeveralEnabledCategories();
+
+  _this.refreshMap(targetCategories);
+};
 
 ZMap.prototype.updateMarkerVisibility = function(vCatId, vVisible) {
 
@@ -862,12 +927,12 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
                '<div class="divTabBody">'
    ;
 
-/*
+                        /*
                            '<div class="divTableRow">' +
                            '<div class="divTableCell"><label class="control-label col-sm-5"><strong>Tab Title (1): </strong></label></div>'+
                            '<div class="divTableCell tabTitle"><input size="38" type="string" placeholder="Title of Tab Content - Optional" class="form-control" id="tabTitle[]" name="tabTitle[]"></div>'+
                         '</div>'+
-*/
+                        */
    if (vMarker!=null&&vMarker.tabText!=null) {
       for (var i = 0; i < vMarker.tabText.length; i++) {
 
@@ -906,7 +971,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
          '</div>'
    ;
 
-/*
+   /*
    popupContent = popupContent +
                         if (vMarker!=null&&vMarker.tabText!=null) {
                            for (var i = 0; i < vMarker.tabText.length; i++) {
@@ -919,7 +984,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
                            '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (1): </strong></label></p>'+
                            '<p><textarea id="tabText0" name="tabText[]" class="tabText" cols=40 rows=5></textarea></p>'
                         }
-*/
+   */
    mapControl.setContent(popupContent, 'newMarker');
 
    function initEditor() {
@@ -1246,19 +1311,6 @@ ZMap.prototype.undoMarkerComplete = function() {
    }
 }
 
-ZMap.prototype._toogleCompleted  = function() {
-   mapOptions.showCompleted = !mapOptions.showCompleted;
-   if (mapOptions.showCompleted) {
-      document.getElementById('lblComplete').innerHTML = "Hide Completed";
-      document.getElementById('catCheckMark').style.color = "gold";
-      setCookie('showCompleted',"true");
-   } else {
-      document.getElementById('lblComplete').innerHTML = "Show Completed";
-      document.getElementById('catCheckMark').style.color = "white";
-      setCookie('showCompleted',"false");
-   }
-   _this.refreshMap();
-}
 //****************************************************************************************************//
 //*************                                                                          *************//
 //*************                           END - MARKER COMPLETE                          *************//
@@ -1598,40 +1650,39 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   for (var i = 0; i < markers.length; i++) {
-      if (markers[i].id == vMarkerId) {
+   var marker = this.cachedMarkersById[vMarkerId];
+   mapControl.changeMap(marker.mapId, marker.submapId);
 
-         mapControl.changeMap(markers[i].mapId, markers[i].submapId);
-
-         if (!vZoom) {
-            vZoom = map.getZoom();
-         }
-         if (vZoom > map.getMaxZoom()) {
-            vZoom = map.getMaxZoom();
-         }
-
-         /*
-          0 = 256
-          1 = 128
-          2 = 64
-          3 = 32
-          4 = 16
-          5 = 8
-          6 = 4
-         */
-         var latlng = L.latLng(markers[i].getLatLng().lat, markers[i].getLatLng().lng);
-         map.setView(latlng, vZoom);
-         _this._createMarkerPopup(markers[i]);
-         newMarker = L.marker(markers[i]._latlng).addTo(map);
-
-         //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
-         return;
-
-      }
+   if (!vZoom) {
+      vZoom = map.getZoom();
    }
+   if (vZoom > map.getMaxZoom()) {
+      vZoom = map.getMaxZoom();
+   }
+
+   /*
+    0 = 256
+    1 = 128
+    2 = 64
+    3 = 32
+    4 = 16
+    5 = 8
+    6 = 4
+   */
+   var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
+   map.setView(latlng, vZoom);
+   _this._createMarkerPopup(marker);
+   newMarker = L.marker(marker._latlng).addTo(map);
+
+   //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
+   return;
 
    toastr.error(_this.langMsgs.GO_TO_MARKER_ERROR.format(vMarkerId));
 }
+
+ZMap.prototype.getMarkers = function() {
+  return markers;
+};
 //****************************************************************************************************//
 //*************                                                                          *************//
 //*************                              END - GO TO                               *************//

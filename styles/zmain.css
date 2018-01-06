@@ -18,6 +18,14 @@ html, body, #map {
   position: fixed;
 }
 
+.relativeContainer {
+  position: relative;
+}
+
+.highlight {
+  text-decoration: coral underline dotted;
+}
+
 /* ICON */
 [class^="icon-"], [class*=" icon-"] {
    vertical-align: middle;
@@ -62,6 +70,10 @@ html, body, #map {
   font-size: 10px;
 }
 
+.icon-checkmark {
+  text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+}
+
 .completeMarker {
     position: absolute !important;
     color: gold !important;
@@ -83,37 +95,79 @@ html, body, #map {
 
 
 /** Top Left Category **/
-.category-selection-ul {
+.category-selection-list {
    margin-top: 0px;
    padding-top: 12px;
 }
 
-.category-selection-ul > li > a > div.circle {
-   width: 64px; 
-   height: 64px; 
-   border-radius: 64px; 
-   line-height: 64px; 
-   display: inline-block; 
-   text-align: center;     
-   vertical-align: middle;
+.category-selection-list {
+    padding-left: 0;
+    opacity: inherit;
 }
-.category-selection-ul > li > a > div.circle span { 
-   position: relative;
-   color: white;
-   font-size: 36px;
-   position: relative;
+.category-selection-list > .category-selector {
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
 }
 
-.category-selection-ul > li > a > p {
+.category-selection-list > .category-selector > .category-button > .label {
     text-align: center;
     font-size: 14px;
     margin-top: 10px;
     line-height: 100%;
     opacity: inherit;
     color: white;
+
+    display: block; /* To override Bootstrap's .label definition. */
+    padding: inherit;
+    font-weight: inherit;
+    white-space: inherit;
 }
-.category-selection-ul > li > a {
+.category-selection-list > .category-selector > .category-button {
     text-decoration: none;
+}
+
+.category-selection-list {
+  text-align: center;
+}
+
+.category-selector {
+  width: 80px;
+}
+
+.category-button.toggledOn {
+  opacity: 1;
+}
+.category-button.toggledOff {
+  opacity: 0.35;
+}
+
+.category-icon {
+  position: relative;
+  font-size: 36px;
+}
+
+.icon-background {
+  color: white;
+}
+.category-button.toggledOn > .icon-background.icon-checkmark {
+  color: gold
+}
+.category-button.toggledOff > .icon-background.icon-checkmark {
+  color: white
+}
+
+.category-button.toggledOn > .label > .completed-label-hide {
+  display: inherit;
+}
+.category-button.toggledOff > .label > .completed-label-hide {
+  display: none;
+}
+.category-button.toggledOn > .label > .completed-label-show {
+  display: none;
+}
+.category-button.toggledOff > .label > .completed-label-show {
+  display: inherit;
 }
 
 .main-content > p {
@@ -126,19 +180,12 @@ html, body, #map {
 .leaflet-control-layers-separator {
    margin: 0;
 }
+
 .main-content {
     clear: both;
     overflow-y: scroll;
-}
 
-.category-selection-ul {
-    padding-left: 0;
-    opacity: inherit;
-}
-.category-selection-ul > li {
-    display: inline-block;
-    text-align: center;
-    vertical-align: top;
+    overflow-x: hidden;
 }
 
 .leaflet-control-layers-toggle {
@@ -149,9 +196,130 @@ html, body, #map {
 /** **/
 
 
+/*** SEARCH CONTENT ***/
+
+.menu-cat-content-inner .leaflet-control-layers-separator {
+  margin: 0px 10px;
+}
+
+.menu-cat-content-inner .no-results {
+  text-align: center;
+  padding: 10px;
+  margin-left: 20px;
+
+  font: 14px/12px Tahoma,Verdana,sans-serif;
+  color: #c3c3c3;
+}
+
+.marker-list {
+  margin: 0px;
+  padding: 0px;
+}
+
+.marker-list-view .results .header {
+  position: sticky;
+  top: 0px;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 2;
+
+  text-align: center;
+
+  font-style: italic;
+
+  color: #c3c3c3;
+
+  padding: 5px 0px;
+}
+
+.marker-list-entry {
+  display: block;
+
+  height: 84px;
+  padding: 10px 10px;
+
+  white-space: nowrap;
+
+  cursor: alias;
+}
+
+.marker-list-entry:hover {
+  background-color: #dbdcba4a;
+}
+
+.marker-list-entry:active {
+  background-color: #ffffff73;
+}
+
+.marker-list-entry .icon {
+  display: inline-block;
+
+  vertical-align: top;
+}
+
+.marker-list-entry .details {
+  display: inline-block;
+  height: 100%;
+  /* Maybe find a better way to do this without calc?
+     Does it require the parent to have a fixed width?
+     I was tying to avoid that randomly.
+     Maybe try to propagate the larger drawer node's width,
+     if it is not already present somewhow. */
+  width: calc(100% - 74px);
+
+  margin-left: 10px;
+
+  white-space: normal;
+
+  overflow-y: hidden;
+}
+
+.marker-list-entry .searchScore {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+
+.marker-list-entry .icon .searchScore {
+  left: 0px;
+}
+
+.marker-list-entry .details .searchScore {
+  font: 8px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  color: #c3c3c3;
+}
+
+.searchScore .progress-bar-container {
+  border: 1px solid white;
+
+  background-color: rgba(0, 0, 0, 1);
+}
+
+.searchScore .progress-bar-filler {
+  height: 3px;
+
+  background-color: #1fff1e;
+}
+
+
+.marker-list-entry .name {
+  display: block;
+  height: 25%;
+
+  margin-bottom: 5px;
+
+  font-size: 14px;
+}
+
+.marker-list-entry .description {
+  display: block;
+  height: 75%;
+
+  font-size: 12px;
+}
+
 /*** MARKER CONTENT ***/
 .popupTitle {
-/*    margin-bottom: 5px;
+   /* margin-bottom: 5px;
     margin-top: 0;*/
     font-family: HyliaSerif;
     font-size: 26px;
@@ -187,11 +355,19 @@ a.button:hover {
    color: white;
 }
 a.icon-shrink {
-   
+
 }
 a.icon-close {
+  float: right;
+  padding: 5px 5px 0 0;
+}
+
+a.icon-close2 {
+   position: sticky;
    float: right;
-   padding: 5px 5px 0 0;
+   top: 5px;
+   right: 5px;
+   z-index: 10;
 }
 
 
@@ -217,7 +393,7 @@ a.icon-close {
 ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-/*    background: #f2f2f2;*/
+   /* background: #f2f2f2;*/
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 2px;
@@ -229,7 +405,7 @@ a.icon-close {
 }
 
 .leaflet-bottom {
-   
+
 }
 
 .leaflet-control-attribution {
@@ -261,7 +437,7 @@ a.icon-close {
 }
 
 
-.bottommenu::-webkit-scrollbar { 
+.bottommenu::-webkit-scrollbar {
    background: transparent;
 }
 
@@ -384,7 +560,7 @@ a.icon-close {
   overflow: hidden;
 }
 
-  
+
 .row.vertical-divider {
   overflow: hidden;
 }
@@ -406,7 +582,7 @@ a.icon-close {
 }
 
 .row-header {
-   height: 30px; 
+   height: 30px;
    line-height: 30px;
 }
 
@@ -422,7 +598,7 @@ a.icon-close {
    color: #c3c3c3;
 }
 .glyphicon-search {
-   color: #c3c3c3;  
+   color: #c3c3c3;
    font-size: 16px/14px !important;
 }
 
@@ -436,6 +612,18 @@ a.icon-close {
     float: none;
     margin-left: auto;
     margin-right: auto;
+}
+
+.progress-bar-filler {
+  width: 0%;
+  height: 2px;
+
+  background-color: orange;
+}
+
+.search-box .progress-bar-container {
+  padding-top: 28px;
+  padding-left: 28px;
 }
 
 .input-group .icon-addon .form-control {
@@ -462,7 +650,7 @@ a.icon-close {
 }
 
 .icon-addon.addon-md .glyphicon,
-.icon-addon .glyphicon, 
+.icon-addon .glyphicon,
 .icon-addon.addon-md .fa,
 .icon-addon .fa {
     position: absolute;

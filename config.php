@@ -22,15 +22,15 @@
 		$dbname = '';
 		$dbuser = '';
 		$dbpasswd = '';
-		
+
 		$map_prefix = "";
    }
-   
+
    $minifyResources = true;
    $path = DIRNAME(__FILE__);
 
 	define("MAPROOT",$path);
-    
+
     if(file_exists(MAPROOT."/.env")) {
         $ENV = parse_ini_file(MAPROOT."/.env");
         $dbms = $ENV["DBMS"];
@@ -43,24 +43,24 @@
         $minifyResources = $ENV["minifyResources"];
         $_ENV = array_merge($ENV,$_ENV);
     }
-	
+
     $mysqli = new mysqli($dbhost, $dbuser, $dbpasswd) or die('Database connection problem.');
     $mysqli->select_db ($dbname) or die('Database connection problem.');
     $mysqli->query("SET NAMES 'utf8'");
     $mysqli->query('SET character_set_connection=utf8');
     $mysqli->query('SET character_set_client=utf8');
     $mysqli->query('SET character_set_results=utf8');
-	
+
 	function begin() {
 		global $mysqli;
 		@$mysqli->query("BEGIN");
 	}
-	
+
 	function commit() {
 		global $mysqli;
 		@$mysqli->query("COMMIT");
 	}
-	
+
 	function rollback()	{
 		global $mysqli;
 		@$mysqli->query("ROLLBACK");

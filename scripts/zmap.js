@@ -53,7 +53,11 @@ function ZMap() {
 
       LOST_PASSWORD_WELCOME: "Let's follow Saria's Song!",
       LOST_PASSWORD_SUCCESS: "North.. West.. South.. West.. You made it!",
-      LOST_PASSWORD_ERROR: "Oops, you ended up back at the beginning!",
+      LOST_PASSWORD_ERROR: "Oops, you ended up back at the beginning! %1",
+
+      CHANGE_PASSWORD_WELCOME: "Need a different key...",
+      CHANGE_PASSWORD_SUCCESS: "I wonder what dungeon you can unlock now!",
+      CHANGE_PASSWORD_ERROR: "Broke one, try again.  %1",
 
       MARKER_COMPLETE_WARNING : "It seems you are not logged in, so your completed markers will be stored in a cookie. If you log in, your markers will be saved on our database.",
 
@@ -1385,7 +1389,7 @@ ZMap.prototype._buildContextMenu = function() {
       contextMenu.push('-', {
          text: 'Change Password',
          callback: function() {
-            toastr.warning('Under construction! Check back in a few days.');
+            zMap._createChangePasswordForm();
          }
       }, {
          text: 'Log Out',
@@ -1496,17 +1500,16 @@ ZMap.prototype._createLostPasswordForm = function() {
    mapControl.setContent('<div id="lostpassword" style="padding: 10px">'+
                         '<h3 class="text-center">' + this.langMsgs.LOST_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="lostpasswordform" id="lostpasswordform" enctype="multipart/form-data">'+
-                              '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label">Your Email</label>'+
-                                 '<div class="cols-sm-10">'+
-                                    '<div class="input-group">'+
-                                       '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
-                                       '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your Email"/>'+
-                                    '</div>'+
-                                 '</div>'+
-                              '</div>'+
-
-                              '<div class="modal-footer">'+
+                          '<div class="form-group">'+
+                             '<label for="name" class="cols-sm-2 control-label">Your Email</label>'+
+                             '<div class="cols-sm-10">'+
+                                '<div class="input-group">'+
+                                   '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
+                                   '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your Email"/>'+
+                                '</div>'+
+                             '</div>'+
+                          '</div>'+
+                          '<div class="modal-footer">'+
                                  '<div>'+
                                     '<button type="submit" class="btn btn-primary btn-lg btn-block">Reset Password</button>'+
                                  '</div>'+
@@ -1530,6 +1533,60 @@ ZMap.prototype._createLostPasswordForm = function() {
             } else {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOST_PASSWORD_ERROR.format(data.msg));
+            }
+        }
+      });
+
+      e.preventDefault();
+   });
+}
+
+ZMap.prototype._createChangePasswordForm = function() {
+   mapControl.setContent('<div id="changepassword" style="padding: 10px">'+
+                        '<h3 class="text-center">' + this.langMsgs.CHANGE_PASSWORD_WELCOME + '</h3>'+
+                        '<form class="leaflet-control-layers-list" role="changepasswordform" id="changepasswordform" enctype="multipart/form-data">'+
+                          '<div class="form-group">'+
+                             '<label for="currentpassword" class="cols-sm-2 control-label">Current Password</label>'+
+                             '<div class="cols-sm-10">'+
+                                '<div class="input-group">'+
+                                   '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
+                                   '<input type="password" s="form-control" class="form-control" name="currentpassword" id="currentpassword" required="" placeholder="Enter your current password"/>'+
+                                '</div>'+
+                             '</div>'+
+                          '</div>'+
+                          '<div class="form-group">'+
+                             '<label for="newpassword" class="cols-sm-2 control-label">New Password</label>'+
+                             '<div class="cols-sm-10">'+
+                                '<div class="input-group">'+
+                                   '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
+                                   '<input type="password" s="form-control" class="form-control" name="newpassword" id="newpassword" required="" placeholder="Enter a new password"/>'+
+                                '</div>'+
+                             '</div>'+
+                          '</div>'+
+                          '<div class="modal-footer">'+
+                             '<div>'+
+                                '<button type="submit" class="btn btn-primary btn-lg btn-block">Change Password</button>'+
+                             '</div>'+
+                           '</div>'+
+                        '</form>'+
+                     '</div>'
+   , 'registerFrm');
+
+
+   $("#changepasswordform").submit(function(e) {
+      $.ajax({
+        type: "POST",
+        async: false,
+        url: "ajax.php?command=change_password",
+        data: $("#changepasswordform").serialize(), // serializes the form's elements.
+        success: function(data) {
+            //data = jQuery.parseJSON(data);
+            if (data.success) {
+               toastr.success(_this.langMsgs.CHANGE_PASSWORD_SUCCESS);
+               mapControl.resetContent();
+            } else {
+               console.log(data.msg);
+               toastr.error(_this.langMsgs.CHANGE_PASSWORD_ERROR.format(data.msg));
             }
         }
       });

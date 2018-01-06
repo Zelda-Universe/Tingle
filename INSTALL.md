@@ -6,12 +6,13 @@
       * Catch the new, randomly generated root account's password during the installation.
       * Add `/usr/local/mysql/bin` to user path variable.
       * `mysql_secure_installation`
+      * The `mysql_config_editor` to create and store local, default, client credentials may be recommended, especially when contacting different project-related servers.
       * A separate account is recommended to only read the related database schemas, so add an account for this project to use.
-        * `mysql -u root -p -e "CREATE USER 'zmaps'@'localhost' IDENTIFIED BY '<password>'"`
-      * Import the `dev/db/zelda_maps.sql` file.
-        * `mysql -u root -p zelda_maps < "dev/db/zelda_maps.sql"`
-      * Grant the new db user all schema privileges to the newly imported `zelda_maps` schema.
-        * ``mysql -u root -p -e "GRANT ALL PRIVILEGES ON `zelda_maps`.* to 'zmaps'@'localhost'"``
+        * `mysql --login-path=local -e "CREATE USER 'zmaps'@'localhost' IDENTIFIED BY '<password>'"`
+      * Import the `dev/db/zeldamaps.sql` file.
+        * `mysql --login-path=local < "dev/db/zeldamaps.sql"`
+      * Grant the new db user all schema privileges to the newly imported `zeldamaps` schema.
+        * ``mysql --login-path=local -e "GRANT ALL PRIVILEGES ON `zeldamaps`.* to 'zmaps'@'localhost'"``
       * `cp .env.example .env`
       * Edit the newly copied `.env` file to your database's parameters for connection location and account credentials.
     * Set-up web server
@@ -27,6 +28,8 @@
       * `brew install homebrew/php/php56-xdebug`
       * In `/usr/local/etc/php-fpm.conf` add this line: `listen = /usr/local/var/run/php5-fpm.sock`
       * `php-fpm --prefix /usr/local`
+    * PHP dependencies
+      - Run `composer install`.
   * Import this Git Flow configuration
     ```
     [gitflow "branch"]

@@ -205,7 +205,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
    },
 
 	 setDefaultFocus: function() {
-		 this.markerSearchField.focus();
+		 // this.markerSearchField.focus(); // Had to disable since the dialog wants to expand on every click, and having this would steal input from any forms and place it in the search box.  It's annoying so disabling this for now
 	 },
 
    setContent: function(vContent, vType) {

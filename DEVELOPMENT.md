@@ -34,20 +34,44 @@
 
 ## Update Sample Database Data
 
-  We will store somewhat of a snapshot of the mined, active, production data in the `dev/db/zelda_maps.sql` file so developers and others can start using the project faster, and at all.
+  We will store somewhat of the mined, active, production data snapshot in the `dev/db/zeldamaps.sql` file so developers and others can start using the project faster, and at all.
 
-  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/db/exportDatabaseCustom.sh`.  Then you can review any changes/updates to commit in place of that file.
+  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/db/exportDatabaseForDev.sh`.  Then you can review any changes/updates to commit in place of that file.
+  Now that this has become a decent system, here are the available configuration environmental flags you can utilize:
+    - `QUIET` (Default: `false`)
+    - `VERBOSE` (Default: `false`)
+    - `BRIEF_MESSAGES` (Default: `false`)
+    - `PAUSE` (Default: `false`)
+    - `DRY_RUN` (Default: `false`)
+    - `FAIL_FAST` (Default: `true`)
+    - `CLEAN_ON_FAILURE` (Default: `true`)
+    - `DB_NAME` (Default: `zeldamaps`)
+    - `MYSQL_OTHER_CONNECTION_OPTIONS` (Default: `""`)
+    - `MYSQL_CONNECTION_STRING` (Default: `$MYSQL_OTHER_CONNECTION_OPTIONS -u'$MYSQL_USER' -p'$MYSQL_PASS'`)
+    - `MYSQL_USER`
+    - `MYSQL_PASS`
 
-  This will export the structure, but not the content for the 'user' tables, as this may contain more sensitive information we do not want to store in the code repository.
+  This will export the structure, but not the content for the 'user' tables, as this may contain more sensitive information we do not want to store in the code repository.  Instead, we capture the useful ids with associated information, then sanitize and generate test data for the other fields.
 
   Our export format guidelines:
   - It's usually better to print one insert per line for easier diffing.
-    - This was also chosen over performance since the dataset is small.
-    - [StackOverflow - Using mysqldump to format one insert per line?](https://stackoverflow.com/questions/15750535/using-mysqldump-to-format-one-insert-per-line)
+    - This was also chosen over performance of Import/Export since the dataset is small, and our use case is also infrequent.
+      - [StackOverflow - Using mysqldump to format one insert per line?](https://stackoverflow.com/questions/15750535/using-mysqldump-to-format-one-insert-per-line)
+      - We would use extended insert, but at least on non-Windows systems, it still does not contain a line break, even though this feature has been requested:
+        - https://bugs.mysql.com/bug.php?id=4328
+        - https://bugs.mysql.com/bug.php?id=31343
+        - https://bugs.mysql.com/bug.php?id=55007
+        - https://bugs.mysql.com/bug.php?id=65465
   - We like to include the database step for completeness sake, and more easily getting the project running.
+    - It also helps spread the common database naming convention.
     - [StackOverflow - Mysqldump not creating create database syntax](https://stackoverflow.com/questions/9223130/mysqldump-not-creating-create-database-syntax)
   - Keep as few redundant statements in there are possible.
-    - A good rule for anything that doesn't require or encourage redundancy.
+    - A good rule for anything that doesn't require or encourage data redundancy.
+    - We want accurate data.
+  - Use of the MySQL login path system was useful, and may be recommended for any project-related database work, especially when contacting different servers.
+  - Refreshing the data may involve these statements:
+    - ``echo 'DROP DATABASE `zeldamaps`' | mysql --login-path=local``
+    - `mysql --login-path=local < "dev/db/zeldamaps.sql";`
 
 ## MySQL Workbench (MWB) File Handling
 

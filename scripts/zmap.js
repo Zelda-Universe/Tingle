@@ -51,6 +51,10 @@ function ZMap() {
       REGISTER_SUCCESS : "Excuuuuse me, %1! Your user was created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
+      LOST_PASSWORD_WELCOME: "Let's follow Saria's Song!",
+      LOST_PASSWORD_SUCCESS: "North.. West.. South.. West.. You made it!",
+      LOST_PASSWORD_ERROR: "Oops, you ended up back at the beginning!",
+
       MARKER_COMPLETE_WARNING : "It seems you are not logged in, so your completed markers will be stored in a cookie. If you log in, your markers will be saved on our database.",
 
       MARKER_ADD_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be saved to our database. ERROR: %1",
@@ -1396,6 +1400,7 @@ ZMap.prototype._buildContextMenu = function() {
                      user = null;
                      _this._buildContextMenu();
                      mapControl.resetContent();
+                     showLoginControls();
                   } else {
                      toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
                   }
@@ -1487,6 +1492,52 @@ ZMap.prototype._createRegisterForm = function() {
    });
 }
 
+ZMap.prototype._createLostPasswordForm = function() {
+   mapControl.setContent('<div id="lostpassword" style="padding: 10px">'+
+                        '<h3 class="text-center">' + this.langMsgs.LOST_PASSWORD_WELCOME + '</h3>'+
+                        '<form class="leaflet-control-layers-list" role="lostpasswordform" id="lostpasswordform" enctype="multipart/form-data">'+
+                              '<div class="form-group">'+
+                                 '<label for="name" class="cols-sm-2 control-label">Your Email</label>'+
+                                 '<div class="cols-sm-10">'+
+                                    '<div class="input-group">'+
+                                       '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
+                                       '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your Email"/>'+
+                                    '</div>'+
+                                 '</div>'+
+                              '</div>'+
+
+                              '<div class="modal-footer">'+
+                                 '<div>'+
+                                    '<button type="submit" class="btn btn-primary btn-lg btn-block">Reset Password</button>'+
+                                 '</div>'+
+                               '</div>'+
+                        '</form>'+
+                     '</div>'
+   , 'registerFrm');
+
+
+   $("#lostpasswordform").submit(function(e) {
+      $.ajax({
+        type: "POST",
+        async: false,
+        url: "ajax.php?command=lost_password",
+        data: $("#lostpasswordform").serialize(), // serializes the form's elements.
+        success: function(data) {
+            //data = jQuery.parseJSON(data);
+            if (data.success) {
+               toastr.success(_this.langMsgs.LOST_PASSWORD_SUCCESS);
+               mapControl.resetContent();
+            } else {
+               console.log(data.msg);
+               toastr.error(_this.langMsgs.LOST_PASSWORD_ERROR.format(data.msg));
+            }
+        }
+      });
+
+      e.preventDefault();
+   });
+}
+
 ZMap.prototype._createLoginForm = function() {
    mapControl.setContent('<div id="login" style="padding: 10px">'+
                            '<h3 class="text-center">' + this.langMsgs.LOGIN_WELCOME + '</h3>'+
@@ -1519,8 +1570,8 @@ ZMap.prototype._createLoginForm = function() {
                                  '<button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>'+
                               '</div>'+
                               '<div>'+
-                           /*'           <button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>'+*/
-                                 '<button id="login_register_btn" type="button" class="btn btn-link">Register</button>'+
+                                '<button id="login_lost_btn" type="button" class="btn btn-link">Lost Password?</button>'+
+                                '<button id="login_register_btn" type="button" class="btn btn-link">Register</button>'+
                               '</div>'+
                            '</div>'+
                            '</form>'+
@@ -1551,6 +1602,11 @@ ZMap.prototype._createLoginForm = function() {
 
    $("#login_register_btn").click(function(e) {
       _this._createRegisterForm();
+      e.preventDefault();
+   });
+
+   $("#login_lost_btn").click(function(e) {
+      _this._createLostPasswordForm();
       e.preventDefault();
    });
 

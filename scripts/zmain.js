@@ -105,6 +105,14 @@ function hideLoginControls() {
   searchBoxParent.addClass("col-xs-10");
 }
 
+function showLoginControls() {
+  var controlHeader = $(".leaflet-control-container .leaflet-control-layers-list .row-header")
+  $(".login-button", controlHeader).parent().show();
+  var searchBoxParent = $(".search-box", controlHeader).parent();
+  searchBoxParent.removeClass("col-xs-10");
+  searchBoxParent.addClass("col-xs-8");
+}
+
 function getMarkers(){
    $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults) {
       zMap.buildMap();

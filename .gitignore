@@ -1,12 +1,19 @@
-#User-specific runtime files
-#Environment File
+# User-specific runtime files
+# Environment File
 .env
 ZM_nginx.conf
 
-#Cached Files
+# Cached Files
 cache/*
 !cache/index.html
 
-#Runtime-updated Files
+# Runtime-updated Files
 css.ini
 javascript.ini
+
+# Downloaded dependencies
+vendor
+
+# Debug Files
+php_errors.log
+phpinfo.php

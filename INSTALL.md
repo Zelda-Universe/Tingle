@@ -28,6 +28,8 @@
       * `brew install homebrew/php/php56-xdebug`
       * In `/usr/local/etc/php-fpm.conf` add this line: `listen = /usr/local/var/run/php5-fpm.sock`
       * `php-fpm --prefix /usr/local`
+    * PHP dependencies
+      - Run `composer install`.
   * Import this Git Flow configuration
     ```
     [gitflow "branch"]

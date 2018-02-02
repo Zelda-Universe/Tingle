@@ -35,10 +35,10 @@ function generateHighlightedText(text, regions) {
     content += '' +
       text.substring(nextUnhighlightedRegionStartingIndex, region[0]) +
       '<span class="highlight">' +
-        text.substring(region[0], region[1]) +
+        text.substring(region[0], region[1] + 1) +
       '</span>' +
     '';
-    nextUnhighlightedRegionStartingIndex = region[1];
+    nextUnhighlightedRegionStartingIndex = region[1] + 1;
   });
 
   content += text.substring(nextUnhighlightedRegionStartingIndex);

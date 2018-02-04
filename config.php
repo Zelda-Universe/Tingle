@@ -50,6 +50,18 @@
         }
         $lostPasswordRandomGeneratorStrengthConstant = new SecurityLib\Strength((new SecurityLib\Strength)->getConstList()[$lostPasswordRandomGeneratorStrengthString]);
 
+        $mailServer = $ENV['server'];
+        $mailPort = $ENV['port'];
+        $mailUsername = $ENV['username'];
+        $mailPassword = $ENV['password'];
+        $mailReplyToAddress = $ENV['replyToAddress'];
+
+        $lostPasswordSubject = $ENV["lostPasswordSubject"];
+        if(isset($ENV["lostPasswordBodyTemplateFilePath"])) $lostPasswordBodyTemplateFilePath = $ENV["lostPasswordBodyTemplateFilePath"];
+        if(isset($lostPasswordBodyTemplateFilePath) && !empty($lostPasswordBodyTemplateFilePath)) {
+          $lostPasswordBodyTemplate = file_get_contents($lostPasswordBodyTemplateFilePath);
+        }
+
         $_ENV = array_merge($ENV,$_ENV);
     }
 
@@ -62,25 +74,25 @@
 
 	function begin() {
 		global $mysqli;
-		@$mysqli->query("BEGIN");
+		return $mysqli->query("BEGIN");
 	}
 
 	function commit() {
 		global $mysqli;
-		@$mysqli->query("COMMIT");
+		return $mysqli->query("COMMIT");
 	}
 
 	function rollback()	{
 		global $mysqli;
-		@$mysqli->query("ROLLBACK");
+		return $mysqli->query("ROLLBACK");
 	}
 
 	function start_session($name="zmap") {
 		if(!defined("PHP_MAJOR_VERSION") || PHP_MAJOR_VERSION<7) {
-			session_start($name);
+			return session_start($name);
 		} else {
 			$opts = ["name"=>$name];
-			session_start($opts);
+			return session_start($opts);
 		}
 	}
 ?>

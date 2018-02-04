@@ -22,7 +22,7 @@ function prepareMailTransport() {
 }
 
 function createResetPasswordEmail($toAddress, $toName, $newPassword) {
-  global $lostPasswordBodyTemplate, $mailReplyToAddress, $lostPasswordSubject;
+  global $lostPasswordBodyTemplate, $mailReplyToAddress, $mailReplyToName, $lostPasswordSubject;
   $body = "";
   if(isset($lostPasswordBodyTemplate)) {
     $body = $lostPasswordBodyTemplate;
@@ -42,7 +42,7 @@ function createResetPasswordEmail($toAddress, $toName, $newPassword) {
   // );
 
   return (new Swift_Message($lostPasswordSubject))
-    ->setFrom([$mailReplyToAddress])
+    ->setFrom([$mailReplyToAddress => $mailReplyToName])
     ->setTo([$toAddress => $toName])
     ->setBody($body)
   ;

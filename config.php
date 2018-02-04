@@ -55,6 +55,7 @@
         $mailUsername = $ENV['username'];
         $mailPassword = $ENV['password'];
         $mailReplyToAddress = $ENV['replyToAddress'];
+        $mailReplyToName = $ENV['replyToName'];
 
         $lostPasswordSubject = $ENV["lostPasswordSubject"];
         if(isset($ENV["lostPasswordBodyTemplateFilePath"])) $lostPasswordBodyTemplateFilePath = $ENV["lostPasswordBodyTemplateFilePath"];

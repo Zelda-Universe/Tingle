@@ -17,19 +17,28 @@
   $randomPassword = $generator->generateString(32, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/`~!@#$%^&*()-_=+[{]}\|;:\'",<.>/?');
   $hash = password_hash($randomPassword, PASSWORD_DEFAULT, ['cost' => 13]);
 
-  $query = "SELECT `id` FROM `{$map_prefix}user` WHERE `email` = '$email'";
-  $result = $mysqli->query($query);
-  $row = $result->fetch_assoc();
+  $querySelectUser = "SELECT `id`, `name` FROM `{$map_prefix}user` WHERE `email` = '$email'";
+  $resultSelectUser = $mysqli->query($querySelectUser);
+  $rowSelectUser = $resultSelectUser->fetch_assoc();
 
-  if($row) {
+  if($rowSelectUser) {
     $query = "UPDATE `{$map_prefix}user` SET `password` = '$hash' WHERE `email` = '$email'";
-    //echo $query;
     $result = $mysqli->query($query);
 
     if ($result) {
-      commit();
-      # TODO: Remove and put password in email instead!!
-      echo json_encode(array("success"=>true, "msg"=>"Password reset."));
+      $commitResult = commit();
+
+      if($commitResult) {
+        include_once("$path/lib/zmailer.php");
+        $mailResult = sendMail(createResetPasswordEmail($email, $rowSelectUser['name'], $randomPassword));
+        if($mailResult) {
+          echo json_encode(array("success"=>true, "msg"=>"Password reset. Email sent."));
+        } else {
+          echo json_encode(array("success"=>false, "msg"=>"Password reset. Email not sent."));
+        }
+      } else {
+        echo json_encode(array("success"=>false, "msg"=>"Password not reset.  Database error."));
+      }
   	} else {
       rollback();
       echo json_encode(array("success"=>false, "msg"=>"Password not reset."));

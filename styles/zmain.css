@@ -188,6 +188,10 @@ html, body, #map {
     overflow-x: hidden;
 }
 
+.main-content .icon-close2 {
+  position: sticky;
+}
+
 .leaflet-control-layers-toggle {
     background-image: url(../images/zmaps_white_small.png) !important;
     width: 36px;
@@ -363,7 +367,7 @@ a.icon-close {
 }
 
 a.icon-close2 {
-   position: sticky;
+   position: absolute;
    float: right;
    top: 5px;
    right: 5px;

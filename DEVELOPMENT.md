@@ -8,6 +8,10 @@
   4. At this point, auto deployment should push it to the staging server.  You can check that is works there.
   5. Upon review, the pull request can be merged by the reviewer, or maybe even the developer, back into `development`.
 
+# Issue-/Bug-Fixing Process
+
+  You can follow the Feature Work Process, only when making a branch, use this format instead: `issue/#-very-brief-descriptive-summary`.
+
 # Releases
 
   Done by Jason, from `development` to `production`, at the end of every 2-week sprint.

@@ -7,7 +7,7 @@
 
 var OSName="Unknown OS";
 if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
-if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+if (navigator.appVersion.indexOf("Mac")!=-1) O  SName="MacOS";
 if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
 if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
 
@@ -185,7 +185,16 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
       vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
       vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
-
+      
+      /* The fitBounds is to display/fit an area of the map on load */
+      vContainer.fitBounds                  = getUrlParamValue('fitBounds', false);
+      if (vContainer.fitBounds) {
+         vContainer.corner1X                   = getUrlParamValue('corner1X', 0);
+         vContainer.corner1Y                   = getUrlParamValue('corner1Y', 0);
+         vContainer.corner2X                   = getUrlParamValue('corner2X', 0);
+         vContainer.corner2Y                   = getUrlParamValue('corner2Y', 0);
+      }
+      
       vContainer.help                       = getUrlParamValue('help', true);
 
       if (vContainer.bgColor[0] != '#') {

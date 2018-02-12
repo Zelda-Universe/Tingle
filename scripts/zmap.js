@@ -577,6 +577,8 @@ ZMap.prototype.buildMap = function() {
 
    map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
                       , zoom:        mapOptions.zoom
+                      , zoomSnap:    mapOptions.zoomSnap
+                      , zoomDelta:   mapOptions.zoomDelta
                       , zoomControl: false
                       , crs:         L.CRS.Simple
                       , layers: [maps[0]]

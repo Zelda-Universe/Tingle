@@ -577,6 +577,8 @@ ZMap.prototype.buildMap = function() {
 
    map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
                       , zoom:        mapOptions.zoom
+                      , zoomSnap:    mapOptions.zoomSnap
+                      , zoomDelta:   mapOptions.zoomDelta
                       , zoomControl: false
                       , crs:         L.CRS.Simple
                       , layers: [maps[0]]
@@ -605,7 +607,14 @@ ZMap.prototype.buildMap = function() {
 
    //map.addLayer(markerCluster);
 
-
+   //Change visible region to that specified by the corner coords if relevant query strings are present
+   if (mapOptions.fitBounds) {
+      map.fitBounds([
+          [mapOptions.corner1X, mapOptions.corner1Y],
+          [mapOptions.corner2X, mapOptions.corner2Y]
+      ]);
+   }
+   
    map.on('moveend', function(e) {
       _this.refreshMap();
       if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {

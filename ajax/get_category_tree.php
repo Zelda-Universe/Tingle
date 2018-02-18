@@ -20,13 +20,14 @@
 	}
 
    $arr_treeview = array();
-   
+
    while ($row = $result->fetch_array()) {
       $arr_child = array();
       $node['id']   = $row['id'];
       $node['name'] = $row['name'];
       $node['img']  = $row['img'];
       $node['color']= $row['color'];
+      $node['checked'] = $row['default_checked'] == 1 ? true : false;
       $node['visible_zoom']= $row['visibleZoom'];
 
       $query = 'select *

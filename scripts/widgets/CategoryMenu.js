@@ -25,8 +25,7 @@ CategoryMenu.prototype._initDOMElements = function(opts) {
   categoryTree.forEach(function(category) {
     currentCategoryParentButton = new CategoryParentButton({
       category: category,
-      onToggle: opts.onCategoryToggle,
-      toggledOn: categories[category.id].userChecked
+      onToggle: opts.onCategoryToggle
     });
 
     this._addCategoryMenuEntry(currentCategoryParentButton);
@@ -34,8 +33,7 @@ CategoryMenu.prototype._initDOMElements = function(opts) {
     category.children.forEach(function(childCategory) {
       currentChildCategoryButton = new CategoryButton({
         category: childCategory,
-        onToggle: opts.onCategoryToggle,
-        toggledOn: categories[childCategory.id].userChecked
+        onToggle: opts.onCategoryToggle
       });
 
       this._addCategoryMenuEntry(currentChildCategoryButton);

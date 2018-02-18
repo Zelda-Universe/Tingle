@@ -1,9 +1,16 @@
-function getSetOrDefaultValue(value, defaultValue) {
-  if(value === undefined) {
-    return defaultValue;
+function getSetOrDefaultValue(valueOrArray, defaultValue) {
+  var valuesArray;
+  if(!$.isArray(valueOrArray)) {
+    valuesArray = [valueOrArray];
   } else {
-    return value;
+    valuesArray = valueOrArray;
   }
+
+  return valuesArray.some(function(value) {
+    if(value !== undefined) {
+      return value;
+    }
+  }) || defaultValue;
 };
 
 // https://stackoverflow.com/a/31689499/1091943

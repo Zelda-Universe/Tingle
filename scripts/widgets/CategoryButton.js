@@ -20,9 +20,9 @@ CategoryButton.prototype._initSettings = function(opts) {
   if(!opts.category) opts.category = {};
 
   this.category = opts.category;
-  this.onToggle = opts.onToggle;
+  this.onToggle = opts.onToggle || $.noop;
 
-  this.toggledOn = getSetOrDefaultValue(opts.toggledOn, true);
+  this.toggledOn = getSetOrDefaultValue([opts.toggledOn, this.category.userChecked], false);
 };
 
 CategoryButton.prototype._initTemplate = function() {

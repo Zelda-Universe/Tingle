@@ -1,15 +1,14 @@
-function getSetOrDefaultValue(valueOrArray, defaultValue) {
-  var valuesArray;
-  if(!$.isArray(valueOrArray)) {
-    valuesArray = [valueOrArray];
+function getSetOrDefaultValue(value, defaultValue) {
+  if(value === undefined) {
+    return defaultValue;
   } else {
-    valuesArray = valueOrArray;
+    return value;
   }
+};
 
-  return valuesArray.some(function(value) {
-    if(value !== undefined) {
-      return value;
-    }
+function getSetOrDefaultValues(arrayOfValues, defaultValue) {
+  return arrayOfValues.some(function(value) {
+    return getSetOrDefaultValue(value);
   }) || defaultValue;
 };
 

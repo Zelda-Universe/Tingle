@@ -609,10 +609,7 @@ ZMap.prototype.buildMap = function() {
 
    //Change visible region to that specified by the corner coords if relevant query strings are present
    if (mapOptions.fitBounds) {
-      map.fitBounds([
-          [mapOptions.corner1X, mapOptions.corner1Y],
-          [mapOptions.corner2X, mapOptions.corner2Y]
-      ]);
+      map.fitBounds(mapOptions.fitBounds);
    }
    
    map.on('moveend', function(e) {

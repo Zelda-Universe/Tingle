@@ -186,13 +186,20 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
       vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
       
-      /* The fitBounds is to display/fit an area of the map on load */
+      /* fitBounds entered as a csv to display/fit an area of the map on load */
       vContainer.fitBounds                  = getUrlParamValue('fitBounds', false);
+
       if (vContainer.fitBounds) {
-         vContainer.corner1X                   = parseFloat(getUrlParamValue('corner1X', 0));
-         vContainer.corner1Y                   = parseFloat(getUrlParamValue('corner1Y', 0));
-         vContainer.corner2X                   = parseFloat(getUrlParamValue('corner2X', 0));
-         vContainer.corner2Y                   = parseFloat(getUrlParamValue('corner2Y', 0));
+         var fitBoundsCoordinates = vContainer.fitBounds.split(','); // 0,0,0,0 -> [0,0,0,0]
+         for (var i=0; i<4; i++) {
+            var ordinate = parseFloat(fitBoundsCoordinates[index]);
+            if (ordinate != NaN) {
+               vContainer.fitBounds[i/2][i%2] = ordinate;
+            } else {
+               vContainer.fitBounds = false;
+               break;
+            }
+         }
       }
       
       vContainer.help                       = getUrlParamValue('help', true);

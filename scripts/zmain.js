@@ -192,9 +192,9 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       if (vContainer.fitBounds) {
          var fitBoundsCoordinates = vContainer.fitBounds.split(','); // 0,0,0,0 -> [0,0,0,0]
          for (var i=0; i<4; i++) {
-            var ordinate = parseFloat(fitBoundsCoordinates[index]);
+            var ordinate = parseFloat(fitBoundsCoordinates[i]);
             if (ordinate != NaN) {
-               vContainer.fitBounds[i/2][i%2] = ordinate;
+               vContainer.fitBounds[Math.floor(i/2)][i%2] = ordinate;
             } else {
                vContainer.fitBounds = false;
                break;

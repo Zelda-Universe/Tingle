@@ -177,8 +177,8 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
 
       vContainer.zoom                       = getUrlParamValue('zoom', 4); /*@TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
-      vContainer.zoomSnap                   = getUrlParamValue('zoomSnap', 1); /*@TODO: Check if there is a zoomSnap parameter. If not, use the one we got from the DB*/
-      vContainer.zoomDelta                  = getUrlParamValue('zoomDelta', 1); /*@TODO: Check if there is a zoomDelta parameter. If not, use the one we got from the DB*/
+      vContainer.zoomSnap                   = parseFloat(getUrlParamValue('zoomSnap', 1)); /*@TODO: Check if there is a zoomSnap parameter. If not, use the one we got from the DB*/
+      vContainer.zoomDelta                  = parseFloat(getUrlParamValue('zoomDelta', 1)); /*@TODO: Check if there is a zoomDelta parameter. If not, use the one we got from the DB*/
       if (vContainer.zoom > vContainer.maxZoom) {
          vContainer.zoom = vContainer.maxZoom;
       }

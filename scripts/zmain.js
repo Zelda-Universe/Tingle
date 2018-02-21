@@ -189,10 +189,10 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       /* The fitBounds is to display/fit an area of the map on load */
       vContainer.fitBounds                  = getUrlParamValue('fitBounds', false);
       if (vContainer.fitBounds) {
-         vContainer.corner1X                   = getUrlParamValue('corner1X', 0);
-         vContainer.corner1Y                   = getUrlParamValue('corner1Y', 0);
-         vContainer.corner2X                   = getUrlParamValue('corner2X', 0);
-         vContainer.corner2Y                   = getUrlParamValue('corner2Y', 0);
+         vContainer.corner1X                   = parseFloat(getUrlParamValue('corner1X', 0));
+         vContainer.corner1Y                   = parseFloat(getUrlParamValue('corner1Y', 0));
+         vContainer.corner2X                   = parseFloat(getUrlParamValue('corner2X', 0));
+         vContainer.corner2Y                   = parseFloat(getUrlParamValue('corner2Y', 0));
       }
       
       vContainer.help                       = getUrlParamValue('help', true);

@@ -6,6 +6,12 @@ function getSetOrDefaultValue(value, defaultValue) {
   }
 };
 
+function getSetOrDefaultValues(arrayOfValues, defaultValue) {
+  return arrayOfValues.some(function(value) {
+    return getSetOrDefaultValue(value);
+  }) || defaultValue;
+};
+
 // https://stackoverflow.com/a/31689499/1091943
 function groupObjects(arrayOfObjects, groupPopertyName, objectFormatter, groupFormatter) {
   groupFormatter = groupFormatter || function(group) { return group; };

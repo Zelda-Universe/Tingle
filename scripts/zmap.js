@@ -200,16 +200,10 @@ ZMap.prototype.constructor = function(vMapOptions) {
 
 // Add a map category
 ZMap.prototype.addCategory = function(category) {
-   categories[category.id]          = new Object();
-   categories[category.id].id       = category.id;
-   categories[category.id].parentId = category.parentId;
-   categories[category.id].checked  = (category.checked==1?true:false);
-   categories[category.id].userChecked = false;
-   categories[category.id].name     = category.name;
-   categories[category.id].img      = category.img;
-   categories[category.id].color    = category.color;
-   categories[category.id].visibleZoom          = category.visibleZoom;
-   categories[category.id].markerCategoryTypeId = category.markerCategoryTypeId;
+  category.checked = ((category.checked==1) ? true : false);
+  category.userChecked = category.checked;
+
+  categories[category.id] = category;
 };
 
 ZMap.prototype.addMap = function(vMap) {
@@ -518,6 +512,10 @@ ZMap.prototype.refreshMapCompleted = function() {
 
 ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
   if(affectedCategories) {
+    if(!$.isArray(affectedCategories)) {
+      affectedCategories = [affectedCategories];
+    }
+
     affectedCategories.forEach(function(affectedCategory) {
       this._updateMarkersPresence(this.cachedMarkersByCategory[affectedCategory.id]);
     }, this);
@@ -563,6 +561,12 @@ ZMap.prototype._shouldShowMarker = function(marker) {
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
    categoryTree = vCategoryTree;
+   $.each(categoryTree, function(parentCategoryId, parentCategory) {
+     parentCategory.userChecked = parentCategory.checked;
+     $.each(parentCategory.children, function(index, childCategory) {
+       childCategory.userChecked = childCategory.checked;
+     });
+   });
 }
 
 ZMap.prototype.buildMap = function() {
@@ -577,6 +581,8 @@ ZMap.prototype.buildMap = function() {
 
    map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
                       , zoom:        mapOptions.zoom
+                      , zoomSnap:    mapOptions.zoomSnap
+                      , zoomDelta:   mapOptions.zoomDelta
                       , zoomControl: false
                       , crs:         L.CRS.Simple
                       , layers: [maps[0]]
@@ -605,7 +611,14 @@ ZMap.prototype.buildMap = function() {
 
    //map.addLayer(markerCluster);
 
-
+   //Change visible region to that specified by the corner coords if relevant query strings are present
+   if (mapOptions.fitBounds) {
+      map.fitBounds([
+          [mapOptions.corner1X, mapOptions.corner1Y],
+          [mapOptions.corner2X, mapOptions.corner2Y]
+      ]);
+   }
+   
    map.on('moveend', function(e) {
       _this.refreshMap();
       if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {
@@ -783,6 +796,7 @@ ZMap.prototype.updateCategoryVisibility2 = function(category, vChecked) {
   targetCategories.forEach(function(category) {
     categories[category.id].userChecked = vChecked;
   }, this);
+
 
   this.checkWarnUserSeveralEnabledCategories();
 

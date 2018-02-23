@@ -5,12 +5,12 @@
   1. Branch off of `development` using the branch prefix `feature/`.
   2. While working on code changes, commit & push, early & often, so other team members are aware of current code changes to possibly integrate and/or merge with.  Also mind Development Guidelines below.
   3. When finalized, merge to `staging`, and open a pull request on GitHub.  Probably assign it to Jason.
-  4. At this point, auto deployment should push it to the staging server.  You can check that is works there.
-  5. Upon review, the pull request can be merged by the reviewer, or maybe even the developer, back into `development`.
+  4. At this point, auto deployment should push it to the staging server.  You can check that it works there.
+  5. After review, the pull request can be merged by the reviewer, or maybe even the developer, back into `development`.
 
 # Issue-/Bug-Fixing Process
 
-  You can follow the Feature Work Process, only when making a branch, use this format instead: `issue/#-very-brief-descriptive-summary`.
+  You can follow the Feature Work Process, only when making a branch, use this format instead: `issue/#-very-brief-descriptive-summary`, where `#` is the GitHub issue number, and you create your own summary specific to the issue you intend to work on.
 
 # Releases
 

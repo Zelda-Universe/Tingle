@@ -15,7 +15,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.options.scrollbarWidth = 18; // IE / FF
 
 	 		this._categoryMenu = new CategoryMenu({
-				defaultToggledState: false,
 	 			showCompleted: mapOptions.showCompleted,
 	 			categoryTree: categoryTree,
 				onCategoryToggle: function(toggledOn, category) {

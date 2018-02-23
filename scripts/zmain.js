@@ -177,13 +177,24 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
 
       vContainer.zoom                       = getUrlParamValue('zoom', 4); /*@TODO: Check if there is a zoom parameter. If not, use the one we got from the DB*/
+      vContainer.zoomSnap                   = getUrlParamValue('zoomSnap', 1); /*@TODO: Check if there is a zoomSnap parameter. If not, use the one we got from the DB*/
+      vContainer.zoomDelta                  = getUrlParamValue('zoomDelta', 1); /*@TODO: Check if there is a zoomDelta parameter. If not, use the one we got from the DB*/
       if (vContainer.zoom > vContainer.maxZoom) {
          vContainer.zoom = vContainer.maxZoom;
       }
       vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
       vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
       vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
-
+      
+      /* The fitBounds is to display/fit an area of the map on load */
+      vContainer.fitBounds                  = getUrlParamValue('fitBounds', false);
+      if (vContainer.fitBounds) {
+         vContainer.corner1X                   = getUrlParamValue('corner1X', 0);
+         vContainer.corner1Y                   = getUrlParamValue('corner1Y', 0);
+         vContainer.corner2X                   = getUrlParamValue('corner2X', 0);
+         vContainer.corner2Y                   = getUrlParamValue('corner2Y', 0);
+      }
+      
       vContainer.help                       = getUrlParamValue('help', true);
 
       if (vContainer.bgColor[0] != '#') {

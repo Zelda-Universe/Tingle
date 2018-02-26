@@ -191,6 +191,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
 
       if (vContainer.fitBounds) {
          var fitBoundsCoordinates = vContainer.fitBounds.split(','); // 0,0,0,0 -> [0,0,0,0]
+         vContainer.fitBounds = [[NaN,NaN],[NaN,NaN]]; //Re-initialise
          for (var i=0; i<4; i++) {
             var ordinate = parseFloat(fitBoundsCoordinates[i]);
             if (ordinate != NaN) {

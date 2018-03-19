@@ -599,10 +599,25 @@ ZMap.prototype.buildMap = function() {
       baseMaps[maps[i].title] = maps[i];
    }
 
+   var mapControlOptions = $.extend(
+     mapOptions, {
+     "zIndex": 0
+   });
+
    if (L.Browser.mobile && window.innerWidth < 768) {
-      mapControl = L.control.zlayersbottom(baseMaps, categoryTree, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
+      mapControl = L.control.zlayersbottom(
+        baseMaps,
+        categoryTree,
+        mapControlOptions
+      );
+      headerBar = L.control.zmobileheaderbar({ mapControl: mapControl });
+      headerBar.addTo(map);
    } else {
-      mapControl = L.control.zlayers(baseMaps, categoryTree, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
+      mapControl = L.control.zlayers(
+        baseMaps,
+        categoryTree,
+        mapControlOptions
+      );
       L.control.zoom({position:'bottomright'}).addTo(map);
    }
    //@TODO: REDO!
@@ -615,7 +630,7 @@ ZMap.prototype.buildMap = function() {
    if (mapOptions.fitBounds) {
       map.fitBounds(mapOptions.fitBounds);
    }
-   
+
    map.on('moveend', function(e) {
       _this.refreshMap();
       if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {

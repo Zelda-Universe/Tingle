@@ -382,6 +382,23 @@ a.icon-close2 {
 
 
 /** CONTROLS **/
+
+.mobile-header-bar {
+   background-color: rgba(0,0,0,.8);
+   border-radius: 10px;
+   box-shadow: 0 16px 32px rgba(0,0,0,.6) !important;
+   color: white;
+
+   float: none;
+
+   margin-right: 10px;
+}
+
+.mobile-header-bar > .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .leaflet-control-layers {
    background-color: rgba(0,0,0,.8);
    border-radius: 10px;
@@ -548,7 +565,7 @@ a.icon-close2 {
 #mobileAds {
   position: absolute;
   z-index: 999;
-  top: 12px;
+  top: 48px;
   left: 12px;
   right: 12px;
   height: 50px;

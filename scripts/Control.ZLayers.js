@@ -6,7 +6,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       headerHeight: 80,
 	},
 	 _categoryMenu: null,
-   contentType: 'category', // category, marker, search
+   _contentType: 'category', // category, marker, search
 
 	initialize: function (baseLayers, categoryTree, options) {
 		L.Util.setOptions(this, options);
@@ -24,9 +24,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
 					zMap.toggleCompleted(showCompleted);
 				} // Where should the cookie code come from.... some config object with an abstracted persistence layer?
 	 		});
-
-      this.currentMap;
-      this.currentSubMap;
 
 		$(document).on('keydown', function(e) {
 			if(e.key == "Escape") {
@@ -57,11 +54,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		var form1 = this._form = L.DomUtil.create('form', className + '-list');
 		var form2 = this._form2 = L.DomUtil.create('form', className + '-list');
 
-
-      L.DomEvent
-          .on(container, 'click', this._expand, this)
-          //.on(container, 'mouseout', this._collapse, this)
-      ;
+		// Why did we need the expand click iteraction at least?
+		// This was getting in the way of having a nice default focus
+		// into the search area.
+      // L.DomEvent
+      //     .on(container, 'click', this._expand, this)
+      //     //.on(container, 'mouseout', this._collapse, this)
+      // ;
 
       var link = this._layersLink = L.DomUtil.create('a', className + '-toggle', container);
       link.href = '#';
@@ -84,97 +83,19 @@ L.Control.ZLayers = L.Control.Layers.extend({
       }
 
       form1.style.width = '360px';
-			/*
-      var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', form1);
-      shrinkButton.innerHTML = '';
-      shrinkButton.href="#close";
-      L.DomEvent
-         .on(shrinkButton, 'click', L.DomEvent.stopPropagation)
-         .on(shrinkButton, 'click', function(e) {
-             // Open
-             this._collapse();
-             _this._closeNewMarker();
-             e.preventDefault();
-         }, this)
-				 */
-      // Currently unused, but could be effective.
-      // TODO: Would be more awesome if this worked if the ordering for fetching
-      // potential user info came earlier since it is depended on by more
-      // component code locations, rather than creating the form now and hiding
-      // it later on, but hey
-      var createLoginControl = !zMap.getUser();
-      var largerSearchArea = !createLoginControl;
 
-      var headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', form1);
-
-      // var barsButton = L.DomUtil.create('a', 'button icon-bars', headerDivLeft);
-      // barsButton.innerHTML = '';
-      // barsButton.href="#close";
-      // L.DomEvent
-      //    .on(barsButton, 'click', L.DomEvent.stopPropagation)
-      //    .on(barsButton, 'click', function(e) {
-      //        // Open
-      //        this._collapse();
-      //        _this._closeNewMarker();
-      //        e.preventDefault();
-      //    }, this);
-
-      if(createLoginControl) {
-        var headerDivLeft = L.DomUtil.create('div', 'col-xs-2', headerDiv);
-        var loginButton = L.DomUtil.create('a', 'button icon-fa-user login-button', headerDivLeft);
-          loginButton.href="#login";
-          L.DomEvent.on(loginButton, 'click', zMap._createLoginForm, zMap);
-      }
-
-      var headerDivMid = L.DomUtil.create(
-        'div',
-        ((largerSearchArea) ? 'col-xs-10': 'col-xs-8'),
-        headerDiv
-			);
-
-			this.markerSearchField = new MarkerSearchField({
-				incrementalSearch: false,
-				updateProgressTotalStepsAmount: 15
+			this.headerBar = new HeaderBar({
+				parent: form1,
+				mapControl: this,
+				shrinkButton: true
 			});
-			$(this.markerSearchField.domNode).appendTo(headerDivMid);
-
-			var searchMarkerHandler = new SearchMarkerHandler({
-				markerSearchField: this.markerSearchField,
-				showSearchStats: true,
-				markerSearchClick: function(marker, e) {
-					zMap.goTo({ marker: marker.id });
-				}
-			});
-			searchMarkerHandler.addHandler("markerListViewBuilt", function(markerListView) {
-				this.setContent(markerListView.domNode, 'search');
-			}.bind(this));
-
-			zMap.addHandler("markersAdded", function(markers) {
-				searchMarkerHandler.setMarkers(markers);
-			});
-
-      L.DomEvent.disableClickPropagation(headerDivMid);
-      L.DomEvent.on(headerDivMid, 'click', L.DomEvent.stopPropagation);
-
-      var headerDivRight = L.DomUtil.create('div', 'col-xs-2', headerDiv);
-      var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', headerDivRight);
-      shrinkButton.innerHTML = '';
-      shrinkButton.href="#close";
-      L.DomEvent
-         .on(shrinkButton, 'click', L.DomEvent.stopPropagation)
-         .on(shrinkButton, 'click', function(e) {
-             // Open
-             this._collapse();
-             _this._closeNewMarker();
-             e.preventDefault();
-         }, this);
 
       this._separator = L.DomUtil.create('div', className + '-separator', form1);
 
-      var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', form1);
-      logoDiv.src  = 'images/zmaps_white.png';
-      logoDiv.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
-      logoDiv.style.textAlign = 'center';
+			var logo = new Logo({
+				parent: form1,
+				headerHeight: this.options.headerHeight
+			});
 
       this._separator = L.DomUtil.create('div', className + '-separator', form1);
 
@@ -199,15 +120,17 @@ L.Control.ZLayers = L.Control.Layers.extend({
       } else {
          this._expand();
       }
-
-			this.setDefaultFocus();
    },
 
 	 setDefaultFocus: function() {
-		 // this.markerSearchField.focus(); // Had to disable since the dialog wants to expand on every click, and having this would steal input from any forms and place it in the search box.  It's annoying so disabling this for now
+		 this.headerBar.focus(); // Had to disable since the dialog wants to expand on every click, and having this would steal input from any forms and place it in the search box.  It's annoying so disabling this for now
 	 },
 
+	beforeSetContent: function(vContent, vType) {},
+
    setContent: function(vContent, vType) {
+		 	this.beforeSetContent(vContent, vType);
+
       this._contents.innerHTML = '';
 
       var closeButton = L.DomUtil.create('a', 'button icon-close2', this._contents);
@@ -223,13 +146,19 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var content = L.DomUtil.create('div', '', this._contents);
 			$(content).append(vContent);
       content.className = 'menu-cat-content-inner';
-      this._expand();
+
       this._contentType = vType;
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
+
+			this.afterSetContent(vContent, vType);
    },
 
+	 afterSetContent: function(vContent, vType) {
+		this._expand();
+	 },
+
 	 // Sets it to the default category selector scene.
-   resetContent() {
+   resetContent: function() {
       //@TODO: New Marker should be from the map!
       if (newMarker != null) {
          map.removeLayer(newMarker);

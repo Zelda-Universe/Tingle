@@ -1,4 +1,4 @@
-L.Control.ZLayersBottom = L.Control.Layers.extend({
+L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 	options: {
 		collapsed: true,
 		position: 'topleft',
@@ -11,7 +11,7 @@ L.Control.ZLayersBottom = L.Control.Layers.extend({
 	},
 	_categoryMenu: null,
    _open: false,
-   contentType: 'category', // category, marker
+   _contentType: 'category', // category, marker
 
 	initialize: function (baseLayers, categoryTree, options) {
 		L.Util.setOptions(this, options);
@@ -39,11 +39,6 @@ L.Control.ZLayersBottom = L.Control.Layers.extend({
       this._startPosition = (parseInt(this.options.height, 10)) - this.options.headerHeight;
       this._isLeftPosition = this.options.position == 'topleft' ||
       this.options.position == 'bottomleft' ? true : false;
-
-
-      this.currentMap;
-      this.currentSubMap;
-
 	},
 
 	_initLayout: function () {
@@ -182,50 +177,38 @@ L.Control.ZLayersBottom = L.Control.Layers.extend({
     }
     ,
 
-   setContent: function(vContent, vType) {
-      if (vType != 'newMarker' && newMarker != null) {
-         map.removeLayer(newMarker);
-      }
-      if (vType == 'newMarker') {
-        // this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-        // this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-         this._open = true;
-         this._animate(this._container, parseInt(this._container.style.top.replace('px','')), this.options.openTo, true);
-      }
-      this._contents.innerHTML = '';
+	beforeSetContent: function(vContent, vType) {
+		if (vType != 'newMarker' && newMarker != null) {
+			map.removeLayer(newMarker);
+	 	}
+		if (vType == 'newMarker') {
+			// this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
+			// this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
+			this._open = true;
+			this._animate(this._container, parseInt(this._container.style.top.replace('px','')), this.options.openTo, true);
+		}
+	},
 
-      var closeButton = L.DomUtil.create('a', 'button', this._contents);
-      closeButton.innerHTML = '×';
-      closeButton.href="#close";
-      L.DomEvent
-         .on(closeButton, 'click', L.DomEvent.stopPropagation)
-         .on(closeButton, 'click', function(e) {
-             // Open
-             //this.resetContent();
-             e.preventDefault();
-             this._animate(this._container, parseInt(this._container.style.top.replace('px','')), this._startPosition, false);
-         }, this)
-      //this._contents.innerHTML = this._contents.innerHTML + content;
-      var content = L.DomUtil.create('div', '', this._contents);
-      content.innerHTML = vContent;
-      content.className = 'menu-cat-content-inner';
-      //this._expand();
+	afterSetContent: function(vContent, vType) {
+    //this._expand();
 
-      if (parseInt(this._container.style.top.replace('px','')) >=  this.options.softOpenTo) {
+		var containerTop = parseInt(this._container.style.top.replace('px',''));
+    if (containerTop >= this.options.softOpenTo) {
+      // this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
+      // this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
 
-        // this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-        // this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
+      this._animate(
+				this._container,
+				containerTop,
+				this.options.softOpenTo,
+				true
+			);
 
-         this._animate(this._container, parseInt(this._container.style.top.replace('px','')), this.options.softOpenTo, true);
-         this._open = true;
-      }
+      this._open = true;
+    }
+	},
 
-
-      this.contentType = vType;
-      $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
-   },
-
-   resetContent() {
+   resetContent: function() {
       //@TODO: New Marker should be from the map!
       if (newMarker != null) {
          map.removeLayer(newMarker);
@@ -237,7 +220,7 @@ L.Control.ZLayersBottom = L.Control.Layers.extend({
 
 			$(this._contents).empty();
 			$(this._contents).append(this._categoryMenu.domNode);
-      this.contentType = 'category';
+      this._contentType = 'category';
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
 
 
@@ -283,11 +266,11 @@ L.Control.ZLayersBottom = L.Control.Layers.extend({
       this.options.collapsed = false;
       this.expand();
 
-			this.setDefaultFocus();
+			// this.setDefaultFocus();
    },
 
    getContentType() {
-      return this.contentType;
+      return this._contentType;
    },
 
    _checkDisabledLayers: function () {

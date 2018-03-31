@@ -77,19 +77,19 @@ HeaderBar.prototype.createLoginButton = function(parent) {
   var loginButton = L.DomUtil.create('a', 'button icon-fa-user login-button full-icon-space', parent);
   loginButton.href = "#login";
 
-  // L.DomEvent.on(
-  //   loginButton,
-  //   'click',
-  //   this.mapControl.toggleContent.bind(
-  //     this.mapControl,
-  //     "loginForm",
-  //     zMap._createLoginForm.bind(zMap)
-  //   )
-  // );
+  L.DomEvent.on(
+    loginButton,
+    'click',
+    this.mapControl.toggleContent.bind(
+      this.mapControl,
+      "loginForm",
+      zMap._createLoginForm.bind(zMap)
+    )
+  );
 
-  // this.mapControl.addHandler("afterSetContent", function(vContent, vType) {
-  //   $(parent).toggleClass("highlighted", (vType == "loginForm"));
-  // });
+  this.mapControl.addHandler("afterSetContent", function(vContent, vType) {
+    $(parent).toggleClass("highlighted", (vType == "loginForm"));
+  });
 };
 
 HeaderBar.prototype.createSearchArea = function(parent) {

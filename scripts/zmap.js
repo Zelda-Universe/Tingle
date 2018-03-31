@@ -1495,7 +1495,7 @@ ZMap.prototype._createRegisterForm = function() {
                                '</div>'+
                         '</form>'+
                      '</div>'
-   , 'registerFrm');
+   , 'registerForm');
 
 
    $("#newuserform").submit(function(e) {
@@ -1540,7 +1540,7 @@ ZMap.prototype._createLostPasswordForm = function() {
                                '</div>'+
                         '</form>'+
                      '</div>'
-   , 'registerFrm');
+   , 'lostPasswordForm');
 
 
    $("#lostpasswordform").submit(function(e) {
@@ -1594,7 +1594,7 @@ ZMap.prototype._createChangePasswordForm = function() {
                            '</div>'+
                         '</form>'+
                      '</div>'
-   , 'registerFrm');
+   , 'changePasswordForm');
 
 
    $("#changepasswordform").submit(function(e) {
@@ -1656,7 +1656,7 @@ ZMap.prototype._createLoginForm = function() {
                               '</div>'+
                            '</div>'+
                            '</form>'+
-                        '</div>', 'lgnFrm');
+                        '</div>', 'loginForm');
 
    $("#loginform").submit(function(e) {
       var result = false;

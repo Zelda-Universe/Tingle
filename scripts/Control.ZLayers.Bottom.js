@@ -9,7 +9,12 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   _open: false,
 
   initialize: function(baseLayers, categoryTree, options) {
-    L.Control.ZLayers.prototype.initialize.apply(this, arguments);
+    L.Control.ZLayers.prototype.initialize.call(
+      this,
+      baseLayers,
+      categoryTree,
+      L.Util.setOptions(this, options)
+    );
 
     this.options.width = window.innerWidth;
     this.options.height = window.innerHeight;
@@ -71,11 +76,11 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 
       this.options.softOpenTo = this.options.height - this.options.softOpenBottom;
 
-		var form1 = this._form = L.DomUtil.create('form', this.options.className1 + '-list');
-		var form2 = this._form2 = L.DomUtil.create('form', this.options.className1 + '-list');
+		var form1 = this._form = L.DomUtil.create('form', this.options.className + '-list');
+		var form2 = this._form2 = L.DomUtil.create('form', this.options.className + '-list');
 
 
-      var link = this._layersLink = L.DomUtil.create('a', this.options.className1 + '-toggle', container);
+      var link = this._layersLink = L.DomUtil.create('a', this.options.className + '-toggle', container);
       link.href = '#';
       link.title = 'Layers';
 
@@ -145,7 +150,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 
       L.DomUtil.create('div', 'grabber', headerMenu);
 
-      this._separator = L.DomUtil.create('div', this.options.className1 + '-separator', form1);
+      this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
       this._contents = L.DomUtil.create('div', 'main-content bottommenu');
       L.DomEvent.disableClickPropagation(this._contents);

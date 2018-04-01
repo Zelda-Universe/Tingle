@@ -8,6 +8,24 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   },
   _open: false,
 
+  initialize: function(baseLayers, categoryTree, options) {
+    L.Control.ZLayers.prototype.initialize.apply(this, arguments);
+
+    this.options.width = window.innerWidth;
+    this.options.height = window.innerHeight;
+    if (L.Browser.webkit) {
+      this.options.scrollbarWidth = 0; // Chrome / Safari
+    } else {
+      this.options.scrollbarWidth = 18; // IE / FF
+    }
+
+    this._startPosition = (parseInt(this.options.height, 10)) - this.options.headerHeight;
+    console.log("start position: " + this._startPosition);
+    this._isLeftPosition = this.options.position.endsWith("left");
+    console.log("is left position: " + this._isLeftPosition);
+    console.log("options after after: " + JSON.stringify(options));
+  },
+
   beforeSetContent: function(vContent, vType) {
     if (vType != 'newMarker' && newMarker != null) {
       map.removeLayer(newMarker);
@@ -155,7 +173,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
    },
 
     _animate: function(menu, from, to, isOpen) {
-      // console.log(from + ' ' + to + ' ' + isOpen);
+      console.log(from + ' ' + to + ' ' + isOpen);
 
         if ((isOpen && from < to) || (!isOpen && from > to)) {
             from = to;

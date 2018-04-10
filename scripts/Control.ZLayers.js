@@ -19,7 +19,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // - loginForm
   // - search
 
+  _setDebugNames: function() {
+    this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
+    this._debugName = this.name;
+  },
+
   initialize: function (baseLayers, categoryTree, options) {
+    this._setDebugNames();
     this.options = this.options; // Fixes `hasOwnProperty` issue in `setOptions` to be `true` now....
     L.Util.setOptions(this, options); // Same as L.setOptions in the Leaflet doc.  I like using this namespace better.  Shows intent more clearly.
 
@@ -62,8 +68,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _attachHandlers: function() {
     for(handlerClientName in this.handlers) {
-      this.addHandler(handlerClientName, this[handlerClientName]);
-      this.addHandler(handlerClientName, this.options[handlerClientName]);
+      [
+        this[handlerClientName],
+        this.options[handlerClientName]
+      ].forEach(function(handler) {
+        if(handler) this.addHandler(handlerClientName, handler);
+      }, this);
     }
   },
 
@@ -214,13 +224,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
    // Sets it to the default category selector scene.
    resetContent: function() {
+      this._triggerHandler("beforeResetContent");
       //@TODO: New Marker should be from the map!
       if (newMarker != null) {
          map.removeLayer(newMarker);
       }
 
-      this.setContent(this._categoryMenu.domNode, this.options.defaultContentType);
+      this.setContent(
+        this._categoryMenu.domNode,
+        this.options.defaultContentType
+      );
       $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
+      this._triggerHandler("afterResetContent");
    },
 
   onRemove: function (map) {},
@@ -325,8 +340,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
   }
 });
 
+L.Control.ZLayers.prototype._className = "L.Control.ZLayers";
+
 L.Control.ZLayers.addInitHook(function(){
-    this._area = this.options.width * this.options.length;
+  this._area = this.options.width * this.options.length;
 });
 
 L.control.zlayers = function (baseLayers, overlays, options) {

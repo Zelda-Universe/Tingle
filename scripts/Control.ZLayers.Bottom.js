@@ -1,6 +1,6 @@
 L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   options: {
-    position: 'bottomleft',
+    position: 'topleft',
     delay: 0,
     openTo: 78,
     softOpenBottom: 250,
@@ -178,7 +178,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
    },
 
     _animate: function(menu, from, to, isOpen) {
-      console.log(from + ' ' + to + ' ' + isOpen);
+      // console.log(from + ' ' + to + ' ' + isOpen);
 
         if ((isOpen && from < to) || (!isOpen && from > to)) {
             from = to;
@@ -234,9 +234,16 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
    },
 
    closeDrawer: function() {
-      this._animate(this._container, parseInt(this._container.style.top.replace('px','')), this._startPosition, false);
+    this._animate(
+      this._container,
+      parseInt(this._container.style.top.replace('px','')),
+      this._startPosition,
+      false
+    );
    }
 });
+
+L.Control.ZLayersBottom.prototype._className = "L.Control.ZLayersBottom";
 
 L.control.zlayersbottom = function (baseLayers, overlays, options) {
 	return new L.Control.ZLayersBottom(baseLayers, overlays, options);

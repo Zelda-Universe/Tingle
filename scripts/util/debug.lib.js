@@ -5,37 +5,65 @@ function debugPrint() {
 };
 
 
-function applyFunctionTraceToObjects() {
+function applyFunctionTraceToObjects(objectsToTrace, options) {
   objectsToTrace.forEach(function(objectToTrace) {
-    inject(objectToTrace, logFnCall);
+    inject(objectToTrace, logFnCall, options);
   });
 };
 
-// TODO: Would we want to debug instance methodsa along with the class' prototype's methods as well?
+// TODO: Would we want to debug instance methods along with the class' prototype's methods as well?
 // If so, refactor into a function doing 2 passes, 1 for each set.
 // https://stackoverflow.com/a/38581438/1091943
-function inject(object, beforeFn) {
+function inject(object, beforeFn, options) {
   let objectPrototype = object.prototype;
 
   for (let propName of Object.getOwnPropertyNames(objectPrototype)) {
     let prop = objectPrototype[propName];
-    if (Object.prototype.toString.call(prop) === '[object Function]') {
+    if(typeof prop === "function") {
       objectPrototype[propName] = (function(fnName) {
         return function() {
-          beforeFn.call(this, object.name, fnName, arguments);
+          beforeFn.call(
+            this,
+            (
+              objectPrototype._className ||
+              object._className ||
+              object._debugName ||
+              object.displayName ||
+              object.name
+            ),
+            fnName,
+            options,
+            arguments
+          );
           return prop.apply(this, arguments);
         };
       })(propName);
     }
   }
 };
-function logFnCall(objName, name, args) {
-    let s = objName + ': ' + name + '(';
-    for (let i = 0; i < args.length; i++) {
-        if (i > 0)
-            s += ', ';
-        s += String(args[i]);
-    }
-    s += ')';
-    console.log(s);
+
+function logFnCall(className, name, options, args) {
+  if(!options) options = {};
+  if(options.abbvFn === undefined) options.abbvFn = true;
+
+  let objectName = (
+    this._debugName ||
+    this.displayName ||
+    this.name
+  );
+
+  let headerString = objectName + ': ' + className + '.' + name + '(';
+
+  let argsString = Array.prototype.map.call(args, function(arg) {
+    if(typeof arg === "function" && options.abbvFn)
+      return Object.prototype.toString.call(arg);
+    else
+      return String(arg);
+  }).join(', ');
+  
+  if(argsString) argsString = '\n\t' + argsString + '\n';
+
+  let footerString = ')';
+
+  console.log(headerString + argsString + footerString);
 };

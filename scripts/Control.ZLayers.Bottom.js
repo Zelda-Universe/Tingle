@@ -25,44 +25,36 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     }
 
     this._startPosition = (parseInt(this.options.height, 10)) - this.options.headerHeight;
-    console.log("start position: " + this._startPosition);
     this._isLeftPosition = this.options.position.endsWith("left");
-    console.log("is left position: " + this._isLeftPosition);
-    console.log("options after after: " + JSON.stringify(options));
   },
 
   beforeSetContent: function(vContent, vType) {
-    if (vType != 'newMarker' && newMarker != null) {
-      map.removeLayer(newMarker);
-     }
-    if (vType == 'newMarker') {
-      // this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-      // this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-      this._open = true;
-      this._animate(this._container, parseInt(this._container.style.top.replace('px','')), this.options.openTo, true);
+    if (vType != 'newMarker') {
+      if (newMarker != null) {
+        map.removeLayer(newMarker);
+      }
+    } else {
+      // this.updateContentsHeight();
+      this.openDrawerLarge();
     }
   },
 
   afterSetContent: function(vContent, vType) {
     //this._expand();
+    if(/^m\d+$/.test(vType)) {
+      this.openDrawerSmall();
+    } else {
+      // this.updateContentsHeight();
 
-    var containerTop = parseInt(this._container.style.top.replace('px',''));
-    if (containerTop >= this.options.softOpenTo) {
-      // this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-      // this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-
-      this._animate(
-        this._container,
-        containerTop,
-        this.options.softOpenTo,
-        true
-      );
-
-      this._open = true;
+      this.openDrawerLarge();
     }
   },
 
   afterResetContent: function() {
+    this.updateContentsHeight();
+  },
+
+  updateContentsHeight: function() {
     this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
     this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
   },
@@ -87,9 +79,6 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
      // L.DomEvent
          // .on(container, 'click', L.DomEvent.stopPropagation)
           //.on(container, 'click', L.DomEvent.preventDefault)
-
-      this._expand();
-
 
       form1.style.width = this.options.width + 'px';
 
@@ -121,18 +110,14 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
             if ( Math.abs( xDiff ) < Math.abs( yDiff ) ) {/*most significant*/
                if ( yDiff > 0 ) { // swipe up
                   //console.log('swipe up');
-                  //console.log( this._open);
-                  this._animate(this._container, parseInt(this._container.style.top.replace('px','')), this.options.openTo, true);
-                  this._open = true;
+                  this.openDrawerLarge();
                   this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
                   this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
 
                } else { // swipe down
                   //console.log('swipe down');
-                  //console.log( this._open);
                   if(this._open) {
-                     this._animate(this._container, parseInt(this._container.style.top.replace('px','')), this._startPosition, false);
-                     this._open = false;
+                     this.closeDrawer();
                      //TODO reset contents
                   }
                }
@@ -168,13 +153,18 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
           zMap.toggleCompleted(showCompleted);
         } // Where should the cookie code come from.... some config object with an abstracted persistence layer?
       });
-      this.resetContent();
+      this._resetContent(false);
       this._contents.style.clear = 'both';
       this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
       this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
 
    	container.appendChild(form1);
       container.appendChild(this._contents);
+
+    // Doesn't make sense to read, but changes the logo
+    // Remove forcing true later to not need this called in all cases,
+    // and make expand match openDrawer expectations.
+    if (true || !this.options.collapsed) this._expand();
    },
 
     _animate: function(menu, from, to, isOpen) {
@@ -195,7 +185,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
            if (!isOpen) {
               //this._contents.style.display = 'none';
               //this._contentsCat.style.display = '';
-               this.resetContent();
+               // this.resetContent(); // Actually might not want this..
             } else {
                this._contents.style.maxHeight = (window.innerHeight-from-this.options.headerHeight) + 'px';
                this._contents.style.minHeight = (window.innerHeight-from-this.options.headerHeight) + 'px';
@@ -212,35 +202,55 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
         }, this.options.delay, this);
     },
 
-   _expand: function() {
-      if (this._contents != undefined) {
-         this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
-      }
+  after_expand: function() {
+    // this.setDefaultFocus();
+  },
 
-      this.options.collapsed = false;
-      this.expand();
+  toggle: function() {
+    (this._open) ? this.closeDrawer() : this.openDrawerLarge();
+  },
 
-      // this.setDefaultFocus();
-   },
-   // TODO: Implement drawer sliding open and closed logic
-   // here, possibly using animate and other mobile-specific
-   // methods and attributes.
-   toggle: function() {
-     // (this.isCollapsed()) ? this._expand() : this._collapse();
-   },
+  _setDrawerState: function(newState, newPosition) {
+    if(newState === undefined) newState = !this._open;
+
+    this._animate(
+      this._container,
+      this.drawerTop(),
+      newPosition,
+      newState
+    );
+
+    // console.log("DEBUG: this._open: " + this._open);
+    this._open = newState;
+    // console.log("DEBUG: this._open changed to: " + this._open);
+  },
 
    isMobile: function() {
       return true;
    },
 
-   closeDrawer: function() {
-    this._animate(
-      this._container,
-      parseInt(this._container.style.top.replace('px','')),
-      this._startPosition,
-      false
-    );
-   }
+  drawerTop: function() {
+    return parseInt(this._container.style.top.replace('px',''));
+  },
+
+  openDrawerSmall: function() {
+    if(this.drawerTop() >= this.options.softOpenTo)
+      this.openDrawerManual(this.options.softOpenTo);
+  },
+
+  openDrawerLarge: function() {
+    if(this.drawerTop() >= this.options.openTo)
+      this.openDrawerManual(this.options.openTo);
+  },
+
+  openDrawerManual: function(newPosition) {
+    this._setDrawerState(true, newPosition);
+  },
+
+  closeDrawer: function() {
+    if(this._open)
+      this._setDrawerState(false, this._startPosition);
+  }
 });
 
 L.Control.ZLayersBottom.prototype._className = "L.Control.ZLayersBottom";

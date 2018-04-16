@@ -1,7 +1,11 @@
 L.Control.ZLayers = L.Control.Layers.extend({
   options: {
     className: "leaflet-control-layers",
-    handlerRootNames: ["setContent", "resetContent"],
+    handlerRootNames: [
+      "setContent",
+      "resetContent",
+      "_expand"
+    ],
     collapsed: true,
     position: 'topleft',
     autoZIndex: false,
@@ -166,15 +170,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._contents.style.width = '360px';
 
 		container.appendChild(form1);
-      container.appendChild(this._contents);
-
-      // TODO keyboard accessibility
-      if (this.options.collapsed) {
-         //this._map.on('movestart', this._collapse, this);
-         //this._map.on('click', this._collapse, this);
-      } else {
-         this._expand();
-      }
+    container.appendChild(this._contents);
    },
 
    setDefaultFocus: function() {
@@ -194,9 +190,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   setContent: function(vContent, vType) {
-    // console.log("DEBUG: Setting content to type " + vType);
     this._triggerHandler("beforeSetContent", vContent, vType);
+    this._setContent(vContent, vType);
+    this._triggerHandler("afterSetContent", vContent, vType);
+  },
 
+  // To be used directly by internal functions and avoid
+  // unecessary handlers being triggered, as otherwise
+  // it may be seen as an action setting content worth
+  // opening and focusing on, when they are really only
+  // initializing or cleaning up the widget, and should
+  // be ignored.
+  _setContent: function(vContent, vType) {
     $(this._contents).empty();
 
     if(vType != this.options.defaultContentType) {
@@ -218,23 +223,30 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     this._contentType = vType;
     $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
-
-    this._triggerHandler("afterSetContent", vContent, vType);
   },
 
-   // Sets it to the default category selector scene.
+  _resetContent: function(runNestedHooks = true) {
+    //@TODO: New Marker should be from the map!
+    if (newMarker != null) {
+       map.removeLayer(newMarker);
+    }
+
+    ((runNestedHooks)
+      ? (this.setContent)
+      : (this._setContent)
+    ).call(
+      this,
+      this._categoryMenu.domNode,
+      this.options.defaultContentType
+    );
+    $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
+  },
+
+   // Sets it to the default category selector scene,
+   // or whatever is set as the intended default scene.
    resetContent: function() {
       this._triggerHandler("beforeResetContent");
-      //@TODO: New Marker should be from the map!
-      if (newMarker != null) {
-         map.removeLayer(newMarker);
-      }
-
-      this.setContent(
-        this._categoryMenu.domNode,
-        this.options.defaultContentType
-      );
-      $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
+      this._resetContent();
       this._triggerHandler("afterResetContent");
    },
 
@@ -246,7 +258,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
   _addLayer: function (layer, name, overlay, instanceLayer) {},
 
   _updateLayerControl: function(obj) {},
-
 
   _update: function () {},
 
@@ -263,15 +274,19 @@ L.Control.ZLayers = L.Control.Layers.extend({
    },
 
    _expand: function() {
+     this._triggerHandler("before_expand");
       if (this._contents != undefined) {
          this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
       }
 
       this.options.collapsed = false;
       this.expand();
-
-      this.setDefaultFocus();
+    this._triggerHandler("after_expand");
    },
+
+  after_expand: function() {
+    this.setDefaultFocus();
+  },
 
   toggle: function() {
     (this.isCollapsed()) ? this._expand() : this._collapse();

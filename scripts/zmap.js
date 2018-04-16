@@ -620,6 +620,14 @@ ZMap.prototype.buildMap = function() {
    mapControl.setCurrentMap(19, 1900);
    mapControl.addTo(map);
 
+   // TODO keyboard accessibility
+   if (mapControlOptions.collapsed) {
+      //mapControl._map.on('movestart', mapControl._collapse, mapControl);
+      //mapControl._map.on('click', mapControl._collapse, mapControl);
+   } else {
+     mapControl._expand();
+   }
+
    //map.addLayer(markerCluster);
 
    //Change visible region to that specified by the corner coords if relevant query strings are present

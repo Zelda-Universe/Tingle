@@ -168,7 +168,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
    $.each(vResults, function(i, vContainer) {
 
       vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
-      vContainer.collapsed                  = getUrlParamValue('collapsed', false);
+      vContainer.collapsed                  = getUrlParamValue('collapsed', L.Browser.mobile);
       vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
       if (getCookie('isCategoryOpen') == '') {
          setCookie('isCategoryOpen',"true");
@@ -185,7 +185,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
       vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
       vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
-      
+
       /* The fitBounds is to display/fit an area of the map on load */
       vContainer.fitBounds                  = getUrlParamValue('fitBounds', false);
       if (vContainer.fitBounds) {
@@ -194,7 +194,7 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
          vContainer.corner2X                   = getUrlParamValue('corner2X', 0);
          vContainer.corner2Y                   = getUrlParamValue('corner2Y', 0);
       }
-      
+
       vContainer.help                       = getUrlParamValue('help', true);
 
       if (vContainer.bgColor[0] != '#') {

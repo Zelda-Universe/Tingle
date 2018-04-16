@@ -33,7 +33,7 @@ HeaderBar.prototype._initDOMElements = function() {
   var headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', this.parent);
 
   if(this.loginButton) {
-    var headerDivLeft = L.DomUtil.create('div', 'col-xs-2', headerDiv);
+    var headerDivLeft = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
     this.createLoginButton(headerDivLeft);
   }
 
@@ -53,13 +53,13 @@ HeaderBar.prototype._initDOMElements = function() {
   this.createSearchArea(headerDivMid);
 
   if(this.shrinkButton) {
-    var headerDivRight = L.DomUtil.create('div', 'col-xs-2', headerDiv);
+    var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
     this.createShrinkButton(headerDivRight);
   }
 };
 
 HeaderBar.prototype.createActionsButton = function(parent) {
-  var barsButton = L.DomUtil.create('a', 'button icon-bars', parent);
+  var barsButton = L.DomUtil.create('a', 'button icon-bars full-icon-space', parent);
   barsButton.innerHTML = '';
   barsButton.href = "#close";
   L.DomEvent
@@ -74,9 +74,22 @@ HeaderBar.prototype.createActionsButton = function(parent) {
 };
 
 HeaderBar.prototype.createLoginButton = function(parent) {
-  var loginButton = L.DomUtil.create('a', 'button icon-fa-user login-button', parent);
+  var loginButton = L.DomUtil.create('a', 'button icon-fa-user login-button full-icon-space', parent);
   loginButton.href = "#login";
-  L.DomEvent.on(loginButton, 'click', zMap._createLoginForm, zMap);
+
+  L.DomEvent.on(
+    loginButton,
+    'click',
+    this.mapControl.toggleContent.bind(
+      this.mapControl,
+      "loginForm",
+      zMap._createLoginForm.bind(zMap)
+    )
+  );
+
+  this.mapControl.addHandler("afterSetContent", function(vContent, vType) {
+    $(parent).toggleClass("highlighted", (vType == "loginForm"));
+  });
 };
 
 HeaderBar.prototype.createSearchArea = function(parent) {
@@ -84,12 +97,12 @@ HeaderBar.prototype.createSearchArea = function(parent) {
     parent: parent,
     markerListViewBuiltHandler: function(markerListView) {
       this.mapControl.setContent(markerListView.domNode, 'search');
-    }
+    }.bind(this)
   });
 };
 
 HeaderBar.prototype.createShrinkButton = function(parent) {
-  var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', parent);
+  var shrinkButton = L.DomUtil.create('a', 'button icon-shrink full-icon-space', parent);
   shrinkButton.innerHTML = '';
   shrinkButton.href = "#close";
   L.DomEvent

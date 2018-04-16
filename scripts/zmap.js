@@ -624,6 +624,14 @@ ZMap.prototype.buildMap = function() {
    mapControl.setCurrentMap(19, 1900);
    mapControl.addTo(map);
 
+   // TODO keyboard accessibility
+   if (mapControlOptions.collapsed) {
+      //mapControl._map.on('movestart', mapControl._collapse, mapControl);
+      //mapControl._map.on('click', mapControl._collapse, mapControl);
+   } else {
+     mapControl._expand();
+   }
+
    //map.addLayer(markerCluster);
 
    //Change visible region to that specified by the corner coords if relevant query strings are present
@@ -1497,7 +1505,7 @@ ZMap.prototype._createRegisterForm = function() {
                                '</div>'+
                         '</form>'+
                      '</div>'
-   , 'registerFrm');
+   , 'registerForm');
 
 
    $("#newuserform").submit(function(e) {
@@ -1542,7 +1550,7 @@ ZMap.prototype._createLostPasswordForm = function() {
                                '</div>'+
                         '</form>'+
                      '</div>'
-   , 'registerFrm');
+   , 'lostPasswordForm');
 
 
    $("#lostpasswordform").submit(function(e) {
@@ -1596,7 +1604,7 @@ ZMap.prototype._createChangePasswordForm = function() {
                            '</div>'+
                         '</form>'+
                      '</div>'
-   , 'registerFrm');
+   , 'changePasswordForm');
 
 
    $("#changepasswordform").submit(function(e) {
@@ -1658,7 +1666,7 @@ ZMap.prototype._createLoginForm = function() {
                               '</div>'+
                            '</div>'+
                            '</form>'+
-                        '</div>', 'lgnFrm');
+                        '</div>', 'loginForm');
 
    $("#loginform").submit(function(e) {
       var result = false;

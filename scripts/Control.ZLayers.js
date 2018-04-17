@@ -15,6 +15,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   _categoryMenu: null,
   _contentType: null,
   // Currently existing modes/types:
+  // - category
   // - m<markerId>
   // - newMarker
   // - registerForm
@@ -41,7 +42,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     $(document).on('keydown', function(e) {
       if(e.key == "Escape") {
-        if(this._contentType != 'category') {
+        if(this._contentType != this.options.defaultContentType) {
           this.resetContent();
         } else {
           this.toggle();
@@ -202,9 +203,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // initializing or cleaning up the widget, and should
   // be ignored.
   _setContent: function(vContent, vType) {
-    $(this._contents).empty();
-
-    if(vType != this.options.defaultContentType) {
+    // Our fix for re-using the CategoryMenu not just for
+    // more efficient code style, but also to retain the event
+    // listeners set-up during intialization.
+    if(vType == 'category') {
+      $(this._contents).empty();
+    } else {
+      $(this._categoryMenu.domNode).detach();
       var closeButton = L.DomUtil.create('a', 'button icon-close2', this._contents);
       closeButton.innerHTML = '×';
       closeButton.href="#close";
@@ -242,13 +247,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
     $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
   },
 
-   // Sets it to the default category selector scene,
-   // or whatever is set as the intended default scene.
-   resetContent: function() {
-      this._triggerHandler("beforeResetContent");
-      this._resetContent();
-      this._triggerHandler("afterResetContent");
-   },
+  // Sets it to the default category selector scene,
+  // or whatever is set as the intended default scene.
+  resetContent: function() {
+    this._triggerHandler("beforeResetContent");
+    this._resetContent();
+    this._triggerHandler("afterResetContent");
+  },
 
   onRemove: function (map) {},
 

@@ -14,6 +14,11 @@ function CategoryParentButton(opts) {
 CategoryParentButton.prototype = Object.create(CategoryButton.prototype);
 CategoryParentButton.prototype.constructor = CategoryParentButton;
 
+CategoryButton.prototype._setDebugNames = function() {
+  this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
+  this._debugName = this.name;
+};
+
 CategoryParentButton.prototype._initSettings = function(opts) {
   CategoryButton.prototype._initSettings.call(this, opts);
 
@@ -33,3 +38,5 @@ CategoryParentButton.prototype.toggle = function(toggledOn) {
     childCategoryButton.toggle(this.toggledOn, this.category);
   }, this);
 };
+
+CategoryParentButton.prototype._className = "CategoryParentButton";

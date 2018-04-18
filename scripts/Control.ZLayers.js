@@ -175,7 +175,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
    },
 
    setDefaultFocus: function() {
-     this.headerBar.focus(); // Had to disable since the dialog wants to expand on every click, and having this would steal input from any forms and place it in the search box.  It's annoying so disabling this for now
+     this.headerBar.focus();
    },
 
   addHandler: function(eventName, handleFunction) {
@@ -206,10 +206,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // Our fix for re-using the CategoryMenu not just for
     // more efficient code style, but also to retain the event
     // listeners set-up during intialization.
-    if(vType == 'category') {
-      $(this._contents).empty();
-    } else {
+    if(this._contentType == 'category') // in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
       $(this._categoryMenu.domNode).detach();
+    $(this._contents).empty();
+    if(vType != 'category') {
       var closeButton = L.DomUtil.create('a', 'button icon-close2', this._contents);
       closeButton.innerHTML = '×';
       closeButton.href="#close";

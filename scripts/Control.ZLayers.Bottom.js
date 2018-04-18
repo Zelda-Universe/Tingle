@@ -55,8 +55,13 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   },
 
   updateContentsHeight: function() {
-    this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-    this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
+    this._contents.style.maxHeight = (
+      window.innerHeight -
+      this.options.openTo -
+      this.options.headerHeight -
+      40 // Paddings, margins, and things.  Mostly from '.category-selection-list'?
+    ) + 'px';
+    this._contents.style.minHeight = this._contents.style.maxHeight;
   },
 
 	_initLayout: function () {
@@ -111,8 +116,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
                if ( yDiff > 0 ) { // swipe up
                   //console.log('swipe up');
                   this.openDrawerLarge();
-                  this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-                  this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
+                  this.updateContentsHeight();
 
                } else { // swipe down
                   //console.log('swipe down');
@@ -155,8 +159,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       });
       this._resetContent(false);
       this._contents.style.clear = 'both';
-      this._contents.style.maxHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
-      this._contents.style.minHeight = (window.innerHeight-this.options.openTo - this.options.headerHeight) + 'px';
+    this.updateContentsHeight();
 
    	container.appendChild(form1);
       container.appendChild(this._contents);
@@ -187,8 +190,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
               //this._contentsCat.style.display = '';
                // this.resetContent(); // Actually might not want this..
             } else {
-               this._contents.style.maxHeight = (window.innerHeight-from-this.options.headerHeight) + 'px';
-               this._contents.style.minHeight = (window.innerHeight-from-this.options.headerHeight) + 'px';
+              this.updateContentsHeight();
             }
            return;
         }

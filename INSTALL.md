@@ -34,7 +34,7 @@
     ```
     [gitflow "branch"]
     	master = production
-    	develop = development
+    	develop = master
     [gitflow "prefix"]
     	feature = feature/
     	release = release/

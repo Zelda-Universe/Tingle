@@ -2,11 +2,11 @@
 
   Our process should be similar to the Git Flow style.
 
-  1. Branch off of `development` using the branch prefix `feature/`.
+  1. Branch off of `master` using the branch prefix `feature/`.
   2. While working on code changes, commit & push, early & often, so other team members are aware of current code changes to possibly integrate and/or merge with.  Also mind Development Guidelines below.
   3. When finalized, merge to `staging`, and open a pull request on GitHub.  Probably assign it to Jason.
   4. At this point, auto deployment should push it to the staging server.  You can check that it works there.
-  5. After review, the pull request can be merged by the reviewer, or maybe even the developer, back into `development`.
+  5. After review, the pull request can be merged by the reviewer, or maybe even the developer, back into `master`.
 
 # Issue-/Bug-Fixing Process
 
@@ -14,7 +14,7 @@
 
 # Releases
 
-  Done by Jason, from `development` to `production`, at the end of every 2-week sprint.
+  Done by Jason, from `master` to `production`, at the end of every 2-week sprint.
 
 # Development Guidelines
 

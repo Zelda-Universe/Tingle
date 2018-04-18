@@ -38,12 +38,10 @@
          if (isset($_POST['remember'])) {
             setcookie('user_id', $user['id'], strtotime( '+30 days' ), "/", "", "", TRUE);
             setcookie('username', $user['username'], strtotime( '+30 days' ), "/", "", "", TRUE);
-            setcookie('r', $hash, strtotime( '+30 days' ), "/", "", "", TRUE);
          }
 
          $_SESSION['username'] = $user['username'];
          $_SESSION['user_id'] = $user['id'];
-         $_SESSION['r'] = $hash;
          $_SESSION['level'] = $user['level'];
 
          $uquery = "update " . $map_prefix . "user set ip = '" . $ip . "', last_login=now() where id = " . $row['id'];

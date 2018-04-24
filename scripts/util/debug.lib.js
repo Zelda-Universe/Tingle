@@ -53,6 +53,8 @@ function inject(object, extraFn, options = {}) {
             options,
             arguments
           );
+
+          return returnValue;
         };
       })(propName);
     }

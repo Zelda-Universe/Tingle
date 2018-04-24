@@ -5,9 +5,9 @@
   - The Legend of Zelda: Breath of the Wild for the Nintendo Switch and Wii U (March 3, 2017)
 
 ## Help Sections
-  - [Installation Instructions](https://github.com/Zelda-Universe/Zelda-Maps/blob/development/INSTALL.md)
-  - [Development Process](https://github.com/Zelda-Universe/Zelda-Maps/blob/development/DEVELOPMENT.md)
-  - [Team Contact Information](https://github.com/Zelda-Universe/Zelda-Maps/blob/development/CONTACT.md)
+  - [Installation Instructions](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/INSTALL.md)
+  - [Development Process](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/DEVELOPMENT.md)
+  - [Team Contact Information](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/CONTACT.md)
 
 # Links
   - Content

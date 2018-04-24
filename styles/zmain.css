@@ -177,7 +177,8 @@ html, body, #map {
    padding: 0;
    overflow: hidden;
 }
-.leaflet-control-layers-separator {
+.leaflet-control-layers-separator,
+[class $= "-separator"] {
    margin: 0;
 }
 
@@ -202,7 +203,9 @@ html, body, #map {
 
 /*** SEARCH CONTENT ***/
 
-.menu-cat-content-inner .leaflet-control-layers-separator {
+.menu-cat-content-inner
+.leaflet-control-layers-separator,
+[class $= "-separator"] {
   margin: 0px 10px;
 }
 
@@ -382,16 +385,22 @@ a.icon-close2 {
 
 
 /** CONTROLS **/
-.leaflet-control-layers {
+.leaflet-control-layers,
+.leaflet-control {
    background-color: rgba(0,0,0,.8);
    border-radius: 10px;
    box-shadow: 0 16px 32px rgba(0,0,0,.6) !important;
    color: white;
 }
 
-.leaflet-control-layers-separator {
+.leaflet-control-layers-separator,
+[class $= "-separator"] {
    height: 2px;
    opacity: .2;
+}
+
+[class $= "-separator"] {
+  border-top: 2px solid #ddd;
 }
 
 ::-webkit-scrollbar {
@@ -421,6 +430,61 @@ a.icon-close2 {
 }
 
 
+
+.infobox {
+  z-index: 500;
+  clear: none;
+}
+
+.infobox .column {
+  float: left;
+}
+
+/* Clear floats after the columns */
+.infobox .column:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.infobox .row.header {
+  text-align: center;
+}
+
+.infobox .row {
+  margin: 5px 10px;
+}
+
+.infobox .row .value {
+  float: right;
+  text-align: right;
+  width: 65px;
+}
+
+.infobox.location.bounds .column:first-child {
+  border-right: 1px solid rgba(221, 221, 221, 0.2);
+}
+
+.infobox.location.bounds .column:last-child {
+  border-left: 1px solid rgba(221, 221, 221, 0.2);
+}
+
+.infobox.location.bounds .action-group {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+
+.action-group a {
+  margin-left: 5px;
+}
+
+.copy.text-area {
+  position: absolute;
+  left: -10000px;
+  top: -10000px;
+  z-index: -10000px;
+}
 
 /*** BOTTOM **/
 .grabber {

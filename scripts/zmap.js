@@ -604,7 +604,11 @@ ZMap.prototype.buildMap = function() {
       mapControl = L.control.zlayersbottom(baseMaps, categoryTree, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
    } else {
       mapControl = L.control.zlayers(baseMaps, categoryTree, {"collapsed": mapOptions.collapsed, "showMapControl": mapOptions.showMapControl, "zIndex": 0});
-      L.control.zoom({position:'bottomright'}).addTo(map);
+      L.control.zoom({ position:'bottomright' }).addTo(map);
+      if(mapOptions.showInfoControls) {
+        L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
+        L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
+      }
    }
    //@TODO: REDO!
    mapControl.setCurrentMap(19, 1900);

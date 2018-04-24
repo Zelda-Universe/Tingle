@@ -30,6 +30,27 @@
 .icon-fa-lock:before {
   content: "\f023";
 }
+.icon-go:before {
+  content: "\f08b";
+}
+.icon-leave:before {
+  content: "\f08b";
+}
+.icon-out:before {
+  content: "\f08b";
+}
+.icon-sign-out:before {
+  content: "\f08b";
+}
+.icon-export:before {
+  content: "\f08b";
+}
+.icon-copy:before {
+  content: "\f0c5";
+}
+.icon-files-o:before {
+  content: "\f0c5";
+}
 .icon-bars:before {
   content: "\f0c9";
 }

@@ -185,24 +185,15 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
       vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
       vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
-      
-      /* fitBounds entered as a csv to display/fit an area of the map on load */
-      vContainer.fitBounds                  = getUrlParamValue('fitBounds', false);
+      vContainer.showInfoControls             = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
 
-      if (vContainer.fitBounds) {
-         var fitBoundsCoordinates = vContainer.fitBounds.split(','); // 0,0,0,0 -> [0,0,0,0]
-         vContainer.fitBounds = [[NaN,NaN],[NaN,NaN]]; //Re-initialise
-         for (var i=0; i<4; i++) {
-            var ordinate = parseFloat(fitBoundsCoordinates[i]);
-            if (ordinate != NaN) {
-               vContainer.fitBounds[Math.floor(i/2)][i%2] = ordinate;
-            } else {
-               vContainer.fitBounds = false;
-               break;
-            }
-         }
+      /* startArea entered as a csv to display/fit an area of the map on load */
+      vContainer.startArea                  = getUrlParamValue('startArea', false);
+
+      if (vContainer.startArea) {
+        vContainer.startArea = parseBounds(vContainer.startArea);
       }
-      
+
       vContainer.help                       = getUrlParamValue('help', true);
 
       if (vContainer.bgColor[0] != '#') {
@@ -242,3 +233,45 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
    });
 
 });
+
+function parseBounds(input) {
+  function error() {
+    zlogger.error("Map parameter is invalid: \"" + input + "\".  Ignoring, and continuing to load the map with the default view.");
+    return false;
+  };
+
+  var bounds;
+
+  // Try loading as JSON first.
+  try {
+    bounds = JSON.parse(input);
+  } catch(e) {
+    // Ignore and try other methods.
+  }
+
+  // Try the CSV/CSL method next if it's not JSON.
+  if(!bounds) bounds = input.split(',');
+  if(!bounds) return error(); // We're fresh out of methods we're currently supporting.  Error out and be happy (with the default view)!
+
+  // Check if data is not in the format we expect, namely, 4 ordinate elements, or 2 pairs or 2 each.
+  if(bounds.length != 4 && bounds.length != 2)  return error();
+
+  if(bounds.length == 4) {
+    bounds = [
+      bounds.slice(0, 2),
+      bounds.slice(2, 4)
+    ];
+  }
+
+  bounds.forEach(function(point) {
+    point = point.map(parseFloat);
+
+    // Check if the data is not in the format we expect, namely, containing any invalid number ordinate elements.
+    if(bounds && bounds.includes(NaN)) return error();
+
+    return point;
+  });
+
+
+  return bounds;
+};

@@ -145,6 +145,7 @@ if (!Array.prototype.filter) {
 
 ZMap.prototype.constructor = function(vMapOptions) {
    toastr.options.preventDuplicates = true;
+   // toastr.options.progressBar = true;
 
    _this = this;
 
@@ -612,10 +613,10 @@ ZMap.prototype.buildMap = function() {
    //map.addLayer(markerCluster);
 
    //Change visible region to that specified by the corner coords if relevant query strings are present
-   if (mapOptions.fitBounds) {
-      map.fitBounds(mapOptions.fitBounds);
+   if (mapOptions.startArea) {
+      map.fitBounds(mapOptions.startArea);
    }
-   
+
    map.on('moveend', function(e) {
       _this.refreshMap();
       if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {

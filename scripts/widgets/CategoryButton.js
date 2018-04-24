@@ -9,11 +9,17 @@
 //   - toggledOn: [Boolean] Initial state of the button.
 
 function CategoryButton(opts) {
+  this._setDebugNames();
   this._initSettings(opts);
   this._initTemplate();
   this._initDOMElements(opts);
   this._setupUserInputListener(opts);
   this._updateState();
+};
+
+CategoryButton.prototype._setDebugNames = function() {
+  this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
+  this._debugName = this.name;
 };
 
 CategoryButton.prototype._initSettings = function(opts) {
@@ -61,3 +67,5 @@ CategoryButton.prototype.toggle = function(toggledOn) {
   this.onToggle(this.toggledOn, this.category);
   // this.domNode.trigger('toggle', this.category); // Alternative?
 };
+
+CategoryButton.prototype._className = "CategoryButton";

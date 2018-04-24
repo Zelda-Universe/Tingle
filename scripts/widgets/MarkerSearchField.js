@@ -102,15 +102,19 @@ MarkerSearchField.prototype._addClearSearchListeners = function() {
   this.inputControl.on("keydown", function(e) {
     if(e.key == "Escape") {
       if (this.clearSearchFieldFirst && this._getQuery()) e.stopPropagation();
-      this._clearSearchField();
-      this._clearIncrementalSearch();
+      this.clear();
     }
   }.bind(this));
+
   this.clearSearchButton.on("click", this._clearSearchField.bind(this));
 
   this.inputControl.on("input", this._updateClearSearchButtonVisibility.bind(this));
 };
 
+MarkerSearchField.prototype.clear = function() {
+  this._clearSearchField();
+  this._clearIncrementalSearch();
+};
 
 MarkerSearchField.prototype._clearSearchField = function() {
   this._setQuery("");
@@ -175,6 +179,10 @@ MarkerSearchField.prototype._executeSearch = function() {
   this.domNode.trigger('search', this._getQuery());
 };
 
+
+MarkerSearchField.prototype._hasQuery = function () {
+  return !!this.searchInput.val();
+};
 
 MarkerSearchField.prototype._getQuery = function () {
   return this.searchInput.val();

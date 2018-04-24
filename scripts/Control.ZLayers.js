@@ -1,47 +1,93 @@
 L.Control.ZLayers = L.Control.Layers.extend({
-	options: {
-		collapsed: true,
-		position: 'topleft',
-		autoZIndex: false,
-      headerHeight: 80,
-	},
-	 _categoryMenu: null,
-   contentType: 'category', // category, marker, search
+  options: {
+    className: "leaflet-control-layers",
+    handlerRootNames: [
+      "setContent",
+      "resetContent",
+      "_expand"
+    ],
+    collapsed: true,
+    position: 'topleft',
+    autoZIndex: false,
+    headerHeight: 80,
+    defaultContentType: 'category'
+  },
+  _categoryMenu: null,
+  _contentType: null,
+  // Currently existing modes/types:
+  // - category
+  // - m<markerId>
+  // - newMarker
+  // - registerForm
+  // - lostPasswordForm
+  // - changePasswordForm
+  // - loginForm
+  // - search
 
-	initialize: function (baseLayers, categoryTree, options) {
-		L.Util.setOptions(this, options);
+  _setDebugNames: function() {
+    this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
+    this._debugName = this.name;
+  },
 
-      this.options.width = 360;
-      this.options.scrollbarWidth = 18; // IE / FF
+  initialize: function (baseLayers, categoryTree, options) {
+    this._setDebugNames();
+    this.options = this.options; // Fixes `hasOwnProperty` issue in `setOptions` to be `true` now....
+    L.Util.setOptions(this, options); // Same as L.setOptions in the Leaflet doc.  I like using this namespace better.  Shows intent more clearly.
 
-	 		this._categoryMenu = new CategoryMenu({
-	 			showCompleted: mapOptions.showCompleted,
-	 			categoryTree: categoryTree,
-				onCategoryToggle: function(toggledOn, category) {
-					zMap.updateCategoryVisibility2(category, toggledOn);
-				}, // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
-				onCompletedToggle: function(showCompleted) {
-					zMap.toggleCompleted(showCompleted);
-				} // Where should the cookie code come from.... some config object with an abstracted persistence layer?
-	 		});
+    this._initHandlers();
+    this._attachHandlers();
 
-      this.currentMap;
-      this.currentSubMap;
+    this.options.width = 360;
+    this.options.scrollbarWidth = 18; // IE / FF
 
-		$(document).on('keydown', function(e) {
-			if(e.key == "Escape") {
-				if(this._contentType != 'category') {
-					this.resetContent();
-				} else {
-	        this.toggle();
-				}
+    $(document).on('keydown', function(e) {
+      if(e.key == "Escape") {
+        if(this._contentType != this.options.defaultContentType) {
+          this.resetContent();
+        } else {
+          this.toggle();
+        }
       }
-		}.bind(this));
-	},
+    }.bind(this));
+
+    this._initContainer();
+  },
+
+  _initHandlers: function() {
+    if(!this.handlers)
+      this.handlers = {};
+
+    Array.flatten(this.options.handlerRootNames.map(function(handlerRootName) {
+      return ['before', 'after'].map(function(handlerPrefix) {
+        return "" +
+          handlerPrefix +
+          handlerRootName[0].toUpperCase() +
+          handlerRootName.substr(1)
+        ;
+      });
+    })).forEach(function(handlerName) {
+      if(!this.handlers[handlerName])
+        this.handlers[handlerName] = [];
+    }, this);
+  },
+
+  _attachHandlers: function() {
+    for(handlerClientName in this.handlers) {
+      [
+        this[handlerClientName],
+        this.options[handlerClientName]
+      ].forEach(function(handler) {
+        if(handler) this.addHandler(handlerClientName, handler);
+      }, this);
+    }
+  },
+
+  _initContainer: function(t) {
+    this._container = L.DomUtil.create('div', this.options.className);
+  },
 
 	_initLayout: function () {
-		var className = 'leaflet-control-layers';
-      var container = this._container = L.DomUtil.create('div', className);
+    var container = this._container;
 
       if (!this.options.showMapControl) {
          container.style.display = 'none';
@@ -54,16 +100,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
 			L.DomEvent.on(container, 'click', L.DomEvent.stopPropagation);
 		}
 
-		var form1 = this._form = L.DomUtil.create('form', className + '-list');
-		var form2 = this._form2 = L.DomUtil.create('form', className + '-list');
+		var form1 = this._form = L.DomUtil.create('form', this.options.className + '-list');
+		var form2 = this._form2 = L.DomUtil.create('form', this.options.className + '-list');
 
+		// Why did we need the expand click iteraction at least?
+		// This was getting in the way of having a nice default focus
+		// into the search area.
+      // L.DomEvent
+      //     .on(container, 'click', this._expand, this)
+      //     //.on(container, 'mouseout', this._collapse, this)
+      // ;
 
-      L.DomEvent
-          .on(container, 'click', this._expand, this)
-          //.on(container, 'mouseout', this._collapse, this)
-      ;
-
-      var link = this._layersLink = L.DomUtil.create('a', className + '-toggle', container);
+      var link = this._layersLink = L.DomUtil.create('a', this.options.className + '-toggle', container);
       link.href = '#';
       link.title = 'Layers';
 
@@ -84,132 +132,84 @@ L.Control.ZLayers = L.Control.Layers.extend({
       }
 
       form1.style.width = '360px';
-			/*
-      var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', form1);
-      shrinkButton.innerHTML = '';
-      shrinkButton.href="#close";
-      L.DomEvent
-         .on(shrinkButton, 'click', L.DomEvent.stopPropagation)
-         .on(shrinkButton, 'click', function(e) {
-             // Open
-             this._collapse();
-             _this._closeNewMarker();
-             e.preventDefault();
-         }, this)
-				 */
-      // Currently unused, but could be effective.
-      // TODO: Would be more awesome if this worked if the ordering for fetching
-      // potential user info came earlier since it is depended on by more
-      // component code locations, rather than creating the form now and hiding
-      // it later on, but hey
-      var createLoginControl = !zMap.getUser();
-      var largerSearchArea = !createLoginControl;
 
-      var headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', form1);
+      this.headerBar = new HeaderBar({
+        parent: form1,
+        mapControl: this,
+        shrinkButton: true
+      });
 
-      // var barsButton = L.DomUtil.create('a', 'button icon-bars', headerDivLeft);
-      // barsButton.innerHTML = '';
-      // barsButton.href="#close";
-      // L.DomEvent
-      //    .on(barsButton, 'click', L.DomEvent.stopPropagation)
-      //    .on(barsButton, 'click', function(e) {
-      //        // Open
-      //        this._collapse();
-      //        _this._closeNewMarker();
-      //        e.preventDefault();
-      //    }, this);
+      this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
-      if(createLoginControl) {
-        var headerDivLeft = L.DomUtil.create('div', 'col-xs-2', headerDiv);
-        var loginButton = L.DomUtil.create('a', 'button icon-fa-user login-button', headerDivLeft);
-          loginButton.href="#login";
-          L.DomEvent.on(loginButton, 'click', zMap._createLoginForm, zMap);
-      }
+      var logo = new Logo({
+        parent: form1,
+        headerHeight: this.options.headerHeight
+      });
 
-      var headerDivMid = L.DomUtil.create(
-        'div',
-        ((largerSearchArea) ? 'col-xs-10': 'col-xs-8'),
-        headerDiv
-			);
+      this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
-			this.markerSearchField = new MarkerSearchField({
-				incrementalSearch: false,
-				updateProgressTotalStepsAmount: 15
-			});
-			$(this.markerSearchField.domNode).appendTo(headerDivMid);
-
-			var searchMarkerHandler = new SearchMarkerHandler({
-				markerSearchField: this.markerSearchField,
-				showSearchStats: true,
-				markerSearchClick: function(marker, e) {
-					zMap.goTo({ marker: marker.id });
-				}
-			});
-			searchMarkerHandler.addHandler("markerListViewBuilt", function(markerListView) {
-				this.setContent(markerListView.domNode, 'search');
-			}.bind(this));
-
-			zMap.addHandler("markersAdded", function(markers) {
-				searchMarkerHandler.setMarkers(markers);
-			});
-
-      L.DomEvent.disableClickPropagation(headerDivMid);
-      L.DomEvent.on(headerDivMid, 'click', L.DomEvent.stopPropagation);
-
-      var headerDivRight = L.DomUtil.create('div', 'col-xs-2', headerDiv);
-      var shrinkButton = L.DomUtil.create('a', 'button icon-shrink', headerDivRight);
-      shrinkButton.innerHTML = '';
-      shrinkButton.href="#close";
-      L.DomEvent
-         .on(shrinkButton, 'click', L.DomEvent.stopPropagation)
-         .on(shrinkButton, 'click', function(e) {
-             // Open
-             this._collapse();
-             _this._closeNewMarker();
-             e.preventDefault();
-         }, this);
-
-      this._separator = L.DomUtil.create('div', className + '-separator', form1);
-
-      var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', form1);
-      logoDiv.src  = 'images/zmaps_white.png';
-      logoDiv.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
-      logoDiv.style.textAlign = 'center';
-
-      this._separator = L.DomUtil.create('div', className + '-separator', form1);
-
-      this._contents = L.DomUtil.create('div', 'main-content ' + className + '-list');
-
+      this._contents = L.DomUtil.create('div', 'main-content ' + this.options.className + '-list');
       L.DomEvent.disableClickPropagation(this._contents);
       L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
-			$(this._contents).empty();
-			$(this._contents).append(this._categoryMenu.domNode);
+
+	    this._categoryMenu = new CategoryMenu({
+	      defaultToggledState: false,
+	       showCompleted: mapOptions.showCompleted,
+	       categoryTree: categoryTree,
+	      onCategoryToggle: function(toggledOn, category) {
+	        zMap.updateCategoryVisibility2(category, toggledOn);
+	      }, // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+	      onCompletedToggle: function(showCompleted) {
+	        zMap.toggleCompleted(showCompleted);
+	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?
+	    });
+      this.resetContent();
+
       this._contents.style.clear = 'both';
       this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
       this._contents.style.width = '360px';
 
 		container.appendChild(form1);
-      container.appendChild(this._contents);
-
-      // TODO keyboard accessibility
-      if (this.options.collapsed) {
-         //this._map.on('movestart', this._collapse, this);
-         //this._map.on('click', this._collapse, this);
-      } else {
-         this._expand();
-      }
-
-			this.setDefaultFocus();
+    container.appendChild(this._contents);
    },
 
-	 setDefaultFocus: function() {
-		 // this.markerSearchField.focus(); // Had to disable since the dialog wants to expand on every click, and having this would steal input from any forms and place it in the search box.  It's annoying so disabling this for now
-	 },
+   setDefaultFocus: function() {
+     this.headerBar.focus();
+   },
 
-   setContent: function(vContent, vType) {
-      this._contents.innerHTML = '';
+  addHandler: function(eventName, handleFunction) {
+    if(handleFunction)
+      this.handlers[eventName].push(handleFunction.bind(this));
+  },
 
+  _triggerHandler: function(handleName) {
+    var handlerArgs = Array.prototype.slice.call(arguments, 1);
+    this.handlers[handleName].forEach(function(handler) {
+      handler.apply(null, handlerArgs);
+    }, this);
+  },
+
+  setContent: function(vContent, vType) {
+    this._triggerHandler("beforeSetContent", vContent, vType);
+    this._setContent(vContent, vType);
+    this._triggerHandler("afterSetContent", vContent, vType);
+  },
+
+  // To be used directly by internal functions and avoid
+  // unecessary handlers being triggered, as otherwise
+  // it may be seen as an action setting content worth
+  // opening and focusing on, when they are really only
+  // initializing or cleaning up the widget, and should
+  // be ignored.
+  _setContent: function(vContent, vType) {
+    // Our fix for re-using the CategoryMenu not just for
+    // more efficient code style, but also to retain the event
+    // listeners set-up during intialization.
+    if(this._contentType == 'category') // in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
+      $(this._categoryMenu.domNode).detach();
+    $(this._contents).empty();
+    if(vType != 'category') {
       var closeButton = L.DomUtil.create('a', 'button icon-close2', this._contents);
       closeButton.innerHTML = '×';
       closeButton.href="#close";
@@ -220,77 +220,86 @@ L.Control.ZLayers = L.Control.Layers.extend({
              this.resetContent();
              e.preventDefault();
          }, this)
-      var content = L.DomUtil.create('div', '', this._contents);
-			$(content).append(vContent);
-      content.className = 'menu-cat-content-inner';
-      this._expand();
-      this._contentType = vType;
-      $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
-   },
+    }
 
-	 // Sets it to the default category selector scene.
-   resetContent() {
-      //@TODO: New Marker should be from the map!
-      if (newMarker != null) {
-         map.removeLayer(newMarker);
-      }
+    var content = L.DomUtil.create('div', '', this._contents);
+    $(content).append(vContent);
+    content.className = 'menu-cat-content-inner';
 
-			$(this._contents).empty();
-			$(this._contents).append(this._categoryMenu.domNode);
-      this._contentType = 'category';
-      $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
-   },
+    this._contentType = vType;
+    $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
+  },
 
-	onRemove: function (map) {
+  _resetContent: function(runNestedHooks = true) {
+    //@TODO: New Marker should be from the map!
+    if (newMarker != null) {
+       map.removeLayer(newMarker);
+    }
 
-	},
+    ((runNestedHooks)
+      ? (this.setContent)
+      : (this._setContent)
+    ).call(
+      this,
+      this._categoryMenu.domNode,
+      this.options.defaultContentType
+    );
+    $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
+  },
 
-	_removeLayers: function() {
-	},
+  // Sets it to the default category selector scene,
+  // or whatever is set as the intended default scene.
+  resetContent: function() {
+    this._triggerHandler("beforeResetContent");
+    this._resetContent();
+    this._triggerHandler("afterResetContent");
+  },
+
+  onRemove: function (map) {},
+
+  _removeLayers: function() {},
 
 
-	_addLayer: function (layer, name, overlay, instanceLayer) {
-	},
+  _addLayer: function (layer, name, overlay, instanceLayer) {},
 
-	_updateLayerControl: function(obj) {
-	},
+  _updateLayerControl: function(obj) {},
 
+  _update: function () {},
 
-	_update: function () {
-	},
-
-	_addItem: function (obj, vInputClick) {
-	},
+  _addItem: function (obj, vInputClick) {},
 
   isCollapsed: function () {
     return this.options.collapsed;
   },
 
    _collapse: function() {
-		  $(this._contents).empty();
-			$(this._contents).append(this._categoryMenu.domNode);
+      this.resetContent();
       this.options.collapsed = true;
       return this.collapse();
    },
 
    _expand: function() {
+     this._triggerHandler("before_expand");
       if (this._contents != undefined) {
          this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
       }
 
       this.options.collapsed = false;
       this.expand();
-
-			this.setDefaultFocus();
+    this._triggerHandler("after_expand");
    },
 
-	 toggle: function() {
-		 (this.isCollapsed()) ? this._expand() : this._collapse();
-	 },
+  after_expand: function() {
+    this.setDefaultFocus();
+  },
 
-   getContentType() {
-      return this._contentType;
-   },
+  toggle: function() {
+    (this.isCollapsed()) ? this._expand() : this._collapse();
+  },
+
+  getContentType() {
+    return this._contentType;
+  },
 
    _checkDisabledLayers: function () {
 
@@ -340,7 +349,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
    isMobile: function() {
       return false;
-   }
+   },
+
+  toggleContent: function(targetContentType, setContentFunction) {
+    if(this._contentType == targetContentType) {
+      this.resetContent();
+    } else {
+      setContentFunction();
+    }
+  }
+});
+
+L.Control.ZLayers.prototype._className = "L.Control.ZLayers";
+
+L.Control.ZLayers.addInitHook(function(){
+  this._area = this.options.width * this.options.length;
 });
 
 L.control.zlayers = function (baseLayers, overlays, options) {

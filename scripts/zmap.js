@@ -145,6 +145,7 @@ if (!Array.prototype.filter) {
 
 ZMap.prototype.constructor = function(vMapOptions) {
    toastr.options.preventDuplicates = true;
+   // toastr.options.progressBar = true;
 
    _this = this;
 
@@ -618,7 +619,11 @@ ZMap.prototype.buildMap = function() {
         categoryTree,
         mapControlOptions
       );
-      L.control.zoom({position:'bottomright'}).addTo(map);
+      L.control.zoom({ position:'bottomright' }).addTo(map);
+      if(mapOptions.showInfoControls) {
+        L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
+        L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
+      }
    }
    //@TODO: REDO!
    mapControl.setCurrentMap(19, 1900);
@@ -635,8 +640,8 @@ ZMap.prototype.buildMap = function() {
    //map.addLayer(markerCluster);
 
    //Change visible region to that specified by the corner coords if relevant query strings are present
-   if (mapOptions.fitBounds) {
-      map.fitBounds(mapOptions.fitBounds);
+   if (mapOptions.startArea) {
+      map.fitBounds(mapOptions.startArea);
    }
 
    map.on('moveend', function(e) {

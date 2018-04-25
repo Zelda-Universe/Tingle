@@ -4,12 +4,12 @@ SELECT
   '$2y$13$6X4RYJqepBi2Te1pY1nq5.oGtUMY7aB6SOTO2lTEOx7lUTlNwOfqS' AS `password`,
   CONCAT('test', `unique_marker_and_marker_tab_users`.`user_id`) AS `name`,
   CONCAT('test', `unique_marker_and_marker_tab_users`.`user_id`, '@test.com') AS `email`,
-  now() AS `created`,
+  '2018-01-02 02:40:51' AS `created`,
   '127.0.0.1' AS `ip`,
-  now() AS `last_login`,
+  '2018-01-02 02:40:51' AS `last_login`,
   `user`.`level`,
   `user`.`visible`
-FROM 
+FROM
   (
     SELECT `user_id`
       FROM `marker`
@@ -22,3 +22,4 @@ FROM
   ) AS `unique_marker_and_marker_tab_users`
 LEFT JOIN `user`
 ON `unique_marker_and_marker_tab_users`.`user_id` = `user`.`id`
+;

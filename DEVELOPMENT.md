@@ -22,6 +22,10 @@
 
   Done by Jason, from `master` to `production`, at the end of every 2-week sprint.
 
+  The release manager will manually set all user accounts `seen_latest_changelog` to `0` (`false`).
+    Don't want a fresh commit to do this before every release; that would be cruft.
+    Can use this script: `dev/db/resetUsersChangelogSeenPresence.sh`
+
 # Backup
 
   Not sure where to put this section for now.

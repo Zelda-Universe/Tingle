@@ -1,0 +1,14 @@
+defaults: &DEFAULTS
+  adapter: mysql
+  database: zeldamaps
+  username: zmaps
+  encoding: utf8
+
+development:
+  <<: *DEFAULTS
+  password: ...
+
+production:
+  <<: *DEFAULTS
+  password: ...
+  socket: /var/run/mysqld/mysqld.sock

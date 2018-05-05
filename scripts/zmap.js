@@ -47,6 +47,8 @@ function ZMap() {
       LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
       LOGIN_ERROR   : "I AM ERROR! %1",
 
+      ACCOUNT_TITLE  : "Account",
+
       REGISTER_WELCOME  : "It's dangerous to go alone!",
       REGISTER_SUCCESS : "Excuuuuse me, %1! Your user was created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
@@ -1686,7 +1688,6 @@ ZMap.prototype._createLoginForm = function() {
                _this.setUser(data.user);
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
                mapControl.resetContent();
-               hideLoginControls();
             } else {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));
@@ -1706,6 +1707,37 @@ ZMap.prototype._createLoginForm = function() {
       e.preventDefault();
    });
 
+}
+
+ZMap.prototype._createAccountForm = function(user) {
+  mapControl.setContent(
+     '<div id="account" style="padding: 10px">' +
+      '<h3 class="text-center">' +
+        this.langMsgs.ACCOUNT_TITLE +
+      '</h3>' +
+      '<p>' +
+        'Username: ' + user.username + '<br />' +
+        ((user.level >= 5) ? 'Level: ' + user.level + '<br />' : "") +
+      '</p>' +
+      '<div class="modal-footer">' +
+         '<div>' +
+           '<button id="account_reset_btn" type="button" class="btn btn-link">Reset Password</button>' +
+           '<button id="account_change_btn" type="button" class="btn btn-link">Change Password</button>' +
+         '</div>' +
+      '</div>' +
+    '</div>',
+    'accountPage'
+  );
+
+  $("#account_reset_btn").click(function(e) {
+     _this._createLostPasswordForm();
+     e.preventDefault();
+  });
+
+  $("#account_change_btn").click(function(e) {
+     _this._createChangePasswordForm();
+     e.preventDefault();
+  });
 }
 //****************************************************************************************************//
 //*************                                                                          *************//

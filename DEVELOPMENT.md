@@ -40,6 +40,9 @@
     - We may introduce style checking later, and if so, it will only apply to modified/created code as you work in it.
   - Comment your code so other team members can understand it.
     - We want to communicate why code is there, since the 'what' is already represented by the code statements themselves, and those are straightforward for the most part, or should try to be.
+  - When you're done, add a changelog entry for it.
+    - Add a migration for this new entry.
+    - Use the next release number as given to the development team.
 
 # Etc.
 

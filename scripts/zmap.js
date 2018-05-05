@@ -1,7 +1,7 @@
 function ZMap() {
    var _this;
 
-   this.version = '0.2';
+   this.version = '0.6';
 
    this.mapOptions = {};
 

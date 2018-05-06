@@ -2,7 +2,6 @@
    $path = DIRNAME(__FILE__);
    include("$path/../config.php");
 
-	start_session("zmap");
 	begin();
 
 	if (!isset($_POST['user']) || !isset($_POST['password']) || !isset($_POST['name']) || !isset($_POST['email'])) {

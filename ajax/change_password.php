@@ -2,7 +2,6 @@
    $path = DIRNAME(__FILE__);
    include("$path/../config.php");
 
-	start_session("zmap");
 	begin();
 
 	if (!isset($_POST['currentpassword']) || !isset($_POST['newpassword'])) {
@@ -10,7 +9,9 @@
 		return;
 	}
 
+  start_session("zmap");
   $user_id = $_SESSION['user_id'];
+  session_write_close();
 
   $currentpassword = $_POST['currentpassword'];
 

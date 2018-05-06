@@ -23,6 +23,7 @@
          $user['id'] = $_SESSION['user_id'];
          $user['username'] = $_SESSION['username'];
          $user['level'] = $_SESSION['level'];
+    session_write_close();
          $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
 
          $uquery = "update " . $map_prefix . "user set ip = '" . $ip . "', last_login=now() where id = " . $user['id'];

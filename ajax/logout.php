@@ -3,7 +3,11 @@
    include("$path/../config.php");
 
 	start_session("zmap");
-   session_destroy();
+  setcookie(session_name(), '', 0);
+  unset($_COOKIE[session_name()]);
+  session_unset();
+  session_destroy();
+  session_write_close();
 
    setcookie('user_id', '', 0);
    setcookie('username', '', 0);

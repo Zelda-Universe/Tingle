@@ -92,7 +92,6 @@ function getUserInfo() {
    $.getJSON("ajax.php?command=get_user_info", function(vResults) {
     if(vResults.user) {
       zMap.setUser(vResults.user);
-      hideLoginControls();
     }
    });
 };

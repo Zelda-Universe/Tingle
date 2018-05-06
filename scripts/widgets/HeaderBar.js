@@ -2,7 +2,7 @@
 // - opts: [Object]
 //   - parent: [DOMElement] The parent node to attach to.
 //   - mapControl: [Object] The drawer menu that will render the list of searched markers.
-//   - loginButton: [Boolean] Whether to show this control or not.
+//   - accountButton: [Boolean] Whether to show this control or not.
 //   - largerSearchArea: [Boolean] Whether to show
 //   - shrinkButton: [Boolean] Whether to show this control or not.
 
@@ -21,8 +21,8 @@ HeaderBar.prototype._initSettings = function(opts) {
   // potential user info came earlier since it is depended on by more
   // component code locations, rather than creating the form now and hiding
   // it later on, but hey
-  this.loginButton = getSetOrDefaultValue(opts.loginButton, !zMap.getUser());
-  this.largerSearchArea = getSetOrDefaultValue(opts.largerSearchArea, !this.loginButton);
+  this.accountButton = getSetOrDefaultValue(opts.accountButton, !zMap.getUser());
+  this.largerSearchArea = getSetOrDefaultValue(opts.largerSearchArea, !this.accountButton);
 
   this.shrinkButton = opts.shrinkButton;
 
@@ -32,18 +32,18 @@ HeaderBar.prototype._initSettings = function(opts) {
 HeaderBar.prototype._initDOMElements = function() {
   var headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', this.parent);
 
-  if(this.loginButton) {
+  if(this.accountButton) {
     var headerDivLeft = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
-    this.createLoginButton(headerDivLeft);
+    this.createAccountButton(headerDivLeft);
   }
 
   var headerDivMid = L.DomUtil.create(
     'div',
     (
-      (this.loginButton && this.shrinkButton)
+      (this.accountButton && this.shrinkButton)
       ? 'col-xs-8'
       : (
-          (this.loginButton || this.shrinkButton)
+          (this.accountButton || this.shrinkButton)
           ? 'col-xs-10'
           : 'col-xs-12'
         )
@@ -73,23 +73,9 @@ HeaderBar.prototype.createActionsButton = function(parent) {
   ;
 };
 
-HeaderBar.prototype.createLoginButton = function(parent) {
-  var loginButton = L.DomUtil.create('a', 'button icon-fa-user login-button full-icon-space', parent);
-  loginButton.href = "#login";
-
-  L.DomEvent.on(
-    loginButton,
-    'click',
-    this.mapControl.toggleContent.bind(
-      this.mapControl,
-      "loginForm",
-      zMap._createLoginForm.bind(zMap)
-    )
-  );
-
-  this.mapControl.addHandler("afterSetContent", function(vContent, vType) {
-    $(parent).toggleClass("highlighted", (vType == "loginForm"));
-  });
+HeaderBar.prototype.createAccountButton = function(parent) {
+  var accountButton = new AccountButton({ mapControl: mapControl });
+  $(parent).append(accountButton.domNode);
 };
 
 HeaderBar.prototype.createSearchArea = function(parent) {

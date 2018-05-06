@@ -22,6 +22,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // - lostPasswordForm
   // - changePasswordForm
   // - loginForm
+  // - accountPage
   // - search
 
   _setDebugNames: function() {

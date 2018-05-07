@@ -13,18 +13,32 @@ function getSetOrDefaultValues(arrayOfValues, defaultValue) {
 };
 
 // https://stackoverflow.com/a/31689499/1091943
-function groupObjects(arrayOfObjects, groupPopertyName, objectFormatter, groupFormatter) {
-  groupFormatter = groupFormatter || function(group) { return group; };
+// Params:
+// - [Array [Object]] arrayOfObjects
+// - [String] or [Function] groupPropertyName
+// - [Function] groupNameFormatter
+// - [Function] objectFormatter
+// - [Function] groupFormatter
+function groupObjects(opts) {
+  var groupsObject = opts.arrayOfObjects.reduce(function (groupsObj, object) {
+    var groupName = (
+      (typeof opts.groupPropertyName == "function")
+      ? opts.groupPropertyName(object)
+      : object[opts.groupPropertyName]);
 
-  var groupsObject = arrayOfObjects.reduce(function (groupsObj, object) {
-    var groupName = Object.pop(object, groupPopertyName);
     groupsObj[groupName] = groupsObj[groupName] || [];
-    groupsObj[groupName].push(((objectFormatter) ? objectFormatter(object) : object));
+    groupsObj[groupName].push((
+      (opts.objectFormatter)
+      ? opts.objectFormatter(object)
+      : object
+    ));
     return groupsObj;
   }, {});
 
-  for(var groupName in groupsObject) {
-    groupsObject[groupName] = groupFormatter(groupsObject[groupName]);
+  if(opts.groupFormatter) {
+    for(var groupName in groupsObject) {
+      groupsObject[groupName] = opts.groupFormatter(groupsObject[groupName]);
+    }
   }
 
   return groupsObject;

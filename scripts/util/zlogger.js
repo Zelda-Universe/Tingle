@@ -21,13 +21,16 @@ function ZLogger(opts) {
     {
       value: function(opts) {
         opts = opts || {};
+
+        var returnVal;
+
         if (
           this.notification && (
             opts.notification === undefined ||
             opts.notification
           )
         )
-          toastr[methodName].apply(toastr, arguments)
+          returnVal = toastr[methodName].apply(toastr, arguments)
 
         if (
           this.console && (
@@ -36,6 +39,8 @@ function ZLogger(opts) {
           )
         )
           console[methodName].apply(console, arguments)
+
+        return returnVal;
       }
     }
   );

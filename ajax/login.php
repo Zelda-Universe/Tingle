@@ -44,7 +44,7 @@
          $user['id'] = $row['id'];
          $user['username'] = $row['username'];
          $user['level'] = $row['level'];
-         $user['seen_latest_changelog'] = $row['seen_latest_changelog'];
+         $user['seen_latest_changelog'] = !!$row['seen_latest_changelog'];
          $user['seen_version'] = $row['v1'] . '.' . $row['v2'] . '.' . $row['v3'];
 
          $hash = password_hash($username . $row['password'], PASSWORD_DEFAULT, ['cost' => 13]);

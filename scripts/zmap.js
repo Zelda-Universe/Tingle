@@ -1,7 +1,7 @@
 function ZMap() {
    var _this;
 
-   this.version = '0.6';
+   this.version = '0.6.0';
 
    this.mapOptions = {};
 
@@ -671,48 +671,6 @@ ZMap.prototype.buildMap = function() {
    });
 
    _this._buildContextMenu();
-
-
-   if (!getCookie('showChangeLogV0.5')) {
-      // @TODO: USe proper HTML5 :P
-      var v0d5 = '<center><b>Zelda Maps v0.5 Released!</b></center><br>' +
-                  '- Completed markers are tied to your account!<br>' +
-                  '- You can now select multiple categories at the same type.<br>' +
-                  '- The top left box can now be collpased.<br>' +
-                  '- Marker clustering has been disabled (experimental?).<br>' +
-                  '- Markers now show up according to zoom.<br>' +
-                  '- Usability fixes and improvements all over the place.<br><br>'+
-                  '<center><a href="https://discord.gg/GUpq8" target="new_">Tell us your thoughts! Join us on Discord.</a></center>'
-         ;
-
-      if (mapControl.isMobile()) {
-         toastr.options = {
-           "closeButton": true,
-           "timeOut": 10000,
-           "extendedTimeOut": 2000,
-         }
-         toastr.info(v0d5).css("width",(window.innerWidth-24)+"px");
-         toastr.options = {
-           "closeButton": false,
-           "timeOut": 5000,
-           "extendedTimeOut": 1000,
-         }
-
-      } else {
-         toastr.options = {
-           "closeButton": true,
-           "timeOut": 10000,
-           "extendedTimeOut": 2000,
-         }
-         toastr.info(v0d5).css("width","450px");
-         toastr.options = {
-           "closeButton": false,
-           "timeOut": 5000,
-           "extendedTimeOut": 1000,
-         }
-      }
-      setCookie('showChangeLogV0.5', false);
-   }
 
    if (!mapControl.isMobile()) {
       var mobileAds = document.getElementById("mobileAds");
@@ -1683,6 +1641,7 @@ ZMap.prototype._createLoginForm = function() {
         success: function(data) {
             //data = jQuery.parseJSON(data);
             if (data.success) {
+              checkChangelog(data.user);
                _this.setUser(data.user);
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
                mapControl.resetContent();

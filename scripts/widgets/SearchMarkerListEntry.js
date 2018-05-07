@@ -36,12 +36,12 @@ SearchMarkerListEntry.prototype._initDOMElements = function(marker) {
 };
 
 SearchMarkerListEntry.prototype._addHighlighting = function() {
-  var fieldMatchGroups = groupObjects(
-    this.searchEntry.matches,
-    "key",
-    function(matchObject) { return matchObject.indices; },
-    function(groupValues) { return groupValues[0]; }
-  );
+  var fieldMatchGroups = groupObjects({
+    arrayOfObjects: this.searchEntry.matches,
+    groupPropertyName: "key",
+    objectFormatter: function(matchObject) { return matchObject.indices; },
+    groupFormatter: function(groupValues) { return groupValues[0]; }
+  });
 
   this.nameNode.html(generateHighlightedText(this.marker.name, fieldMatchGroups["name"]));
   this.descriptionNode.html(generateHighlightedText(this.marker.description, fieldMatchGroups["description"]));

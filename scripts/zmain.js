@@ -94,7 +94,16 @@ function getUserInfo() {
       zMap.setUser(vResults.user);
       hideLoginControls();
     }
+    checkChangelog(vResults.user);
    });
+};
+
+function checkChangelog(user) {
+  new ChangelogHandler({
+    user: user,
+    seenChangelogVersion: getCookie(seenChangelogVersionCookieName),
+    version: zMap.version
+  });
 };
 
 function hideLoginControls() {

@@ -797,6 +797,10 @@ a.icon-close2 {
 	height: 40px;
 }
 
+#marker-search::-webkit-input-placeholder {
+	font-style: italic;
+}
+
 .leaflet-control-layers-list .row {
 	margin-left: 0px;
 	margin-right: 0px;

@@ -646,6 +646,7 @@ a.icon-close2 {
 
 .leaflet-bar {
 	border-radius: 100px;
+	background: none;
 }
 
 .leaflet-bar a:first-child {
@@ -667,13 +668,13 @@ a.icon-close2 {
 
 .leaflet-bar a {
 	background-color: rgba(0, 0, 0, .8);
-	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
-	color: white;
+	color: rgba(255,255,255,.8);
+	border-bottom: 0;
 }
 
-.leaflet-bar a,
 .leaflet-bar a:hover {
-	border-bottom: 0;
+	color: #fff;
+	background-color: rgba(100, 100, 100, .8);
 }
 
 

@@ -174,7 +174,7 @@ body,
 
 .category-selection-list {
 	margin-top: 0px;
-	padding-top: 12px;
+	padding: 12px 32px;
 }
 
 .category-selection-list {
@@ -850,7 +850,7 @@ a.icon-close2 {
 
 .center-block {
 	float: none;
-	margin-left: 16px;
+	margin-left: 7px;
 	margin-right: auto;
 }
 

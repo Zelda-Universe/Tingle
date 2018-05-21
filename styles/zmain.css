@@ -106,6 +106,10 @@ body,
     height: 100%;
 }
 
+.button.full-icon-space::after {
+	content: " Sign In"
+}
+
 .circle {
 	width: 64px;
 	height: 64px;

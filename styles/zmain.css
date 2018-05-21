@@ -783,7 +783,7 @@ a.icon-close2 {
 .row.vertical-divider div[class^="col-"]:first-child {
 	border-left: none;
 	width: 60px;
-	border-right: 0px solid rgba(255, 255, 255, .2);
+	border-right: 1px solid rgba(255, 255, 255, .2);
 }
 
 .row.vertical-divider div[class^="col-"]:last-child {

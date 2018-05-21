@@ -280,6 +280,7 @@ body,
 	background-image: url('../images/zmaps_white_small.png') !important;
 	width: 36px;
 	height: 36px;
+	border-radius: 1000px;
 }
 
 

@@ -64,7 +64,6 @@ body {
 	padding: 0;
 	margin: 0;
 	overflow: hidden;
-    font-family: "BrandonText", sans-serif;
 }
 
 html,
@@ -74,7 +73,8 @@ body,
 	width: 100vw;
 	background-color: #565656;
 	overflow: hidden;
-	position: fixed;
+	position: fixed;	
+    font-family: "BrandonText", sans-serif;
 }
 
 .relativeContainer {

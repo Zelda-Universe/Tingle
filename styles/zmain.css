@@ -849,7 +849,9 @@ a.icon-close2 {
 }
 
 .center-block {
-	float: left;
+	float: none;
+	margin-left: 8px;
+	margin-right: auto;
 }
 
 .progress-bar-filler {

@@ -15,10 +15,6 @@ body,
 	height: 100vh;
 	width: 100vw;
 	background-color: #565656;
-	/*#DEECFD;
-    /*rgb(222, 236, 253);
-    /*#deecfd;
-    */
 	overflow: hidden;
 	position: fixed;
 }
@@ -398,7 +394,7 @@ a.icon-close2 {
 
 .mobile-header-bar {
 	background-color: rgba(0, 0, 0, .8);
-	border-radius: 100px;
+	border-radius: 100px !important;
 	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 	color: white;
 	float: none;
@@ -426,7 +422,7 @@ a.icon-close2 {
 }
 
 [class $="-separator"] {
-	border-top: 2px solid #ddd;
+	border-top: 1px solid #ddd;
 }
 
 .leaflet-control .highlighted {

@@ -128,7 +128,6 @@ html, body, #map {
     line-height: 100%;
     opacity: inherit;
     color: white;
-
     display: block; /* To override Bootstrap's .label definition. */
     padding: inherit;
     font-weight: inherit;
@@ -190,8 +189,7 @@ html, body, #map {
 }
 .leaflet-control-layers-separator,
 [class $= "-separator"] {
-   margin: 0 !important;
-   height: 1px !important;
+   margin: 0;
 }
 
 .main-content {
@@ -218,14 +216,13 @@ html, body, #map {
 .menu-cat-content-inner
 .leaflet-control-layers-separator,
 [class $= "-separator"] {
-  margin: 0px 10px;
+  margin: 0px;
 }
 
 .menu-cat-content-inner .no-results {
   text-align: center;
   padding: 10px;
   margin-left: 20px;
-
   font: 14px/12px Tahoma,Verdana,sans-serif;
   color: #c3c3c3;
 }
@@ -240,24 +237,17 @@ html, body, #map {
   top: 0px;
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 2;
-
   text-align: center;
-
   font-style: italic;
-
   color: #c3c3c3;
-
   padding: 5px 0px;
 }
 
 .marker-list-entry {
   display: block;
-
   height: 84px;
   padding: 10px 10px;
-
   white-space: nowrap;
-
   cursor: alias;
 }
 
@@ -271,7 +261,6 @@ html, body, #map {
 
 .marker-list-entry .icon {
   display: inline-block;
-
   vertical-align: top;
 }
 
@@ -284,11 +273,8 @@ html, body, #map {
      Maybe try to propagate the larger drawer node's width,
      if it is not already present somewhow. */
   width: calc(100% - 74px);
-
   margin-left: 10px;
-
   white-space: normal;
-
   overflow-y: hidden;
 }
 
@@ -400,14 +386,11 @@ a.icon-close2 {
 
 .mobile-header-bar {
    background-color: rgba(0,0,0,.8);
-   border-radius: 10px;
+   border-radius: 100px;
    box-shadow: 0 16px 32px rgba(0,0,0,.6) !important;
    color: white;
-
    float: none;
-
    margin-right: 10px;
-
    overflow: hidden;
 }
 
@@ -685,8 +668,8 @@ a.icon-close2 {
 }
 
 .row-header {
-   height: 30px;
-   line-height: 30px;
+   height: 44px;
+   line-height: 44px;
 }
 
 .leaflet-control-layers-list .row {

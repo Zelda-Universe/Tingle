@@ -13,3 +13,12 @@ Logo.prototype._initDOMElements = function(opts) {
   logoDiv.style.height = (opts.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
   logoDiv.style.textAlign = 'center';//TODO: move to CSS
 };
+
+this._addCategoryMenuEntry(
+    new CategoryButtonCompleted({
+        onToggle: opts.onCompletedToggle,
+        toggledOn: opts.showCompleted
+      }
+    )
+  );
+  // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));

@@ -232,11 +232,11 @@ body,
 }
 
 .category-button.toggledOn>.icon-background.icon-checkmark {
-	color: gold
+	color: transparent;
 }
 
 .category-button.toggledOff>.icon-background.icon-checkmark {
-	color: white
+	color: white;
 }
 
 .category-button.toggledOn>.label>.completed-label-hide {

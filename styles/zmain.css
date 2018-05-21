@@ -193,10 +193,10 @@ body,
 	font-size: 11px;
 	margin-top: 10px;
 	line-height: 100%;
+	font-weight: 200;
 	opacity: inherit;
 	color: rgba(255,255,255,.8);
 	display: block;
-	/* To override Bootstrap's .label definition. */
 	padding: inherit;
 	font-weight: inherit;
 	white-space: inherit;

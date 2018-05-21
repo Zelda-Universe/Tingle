@@ -5,7 +5,7 @@
 
 function CategoryIconCompleted(opts) {
   CategoryIcon.call(this, $.extend(true, {
-    color: "purple",
+    color: "",
     img: "checkmark"
   }, opts));
 };

@@ -426,7 +426,9 @@ a.button:hover {
 	color: white;
 }
 
-a.icon-shrink {}
+a.icon-shrink {
+	display: none;
+}
 
 a.icon-close {
 	float: right;
@@ -792,8 +794,7 @@ a.icon-close2 {
 }
 
 .row-header, #marker-search {
-	height: 44px;
-	line-height: 44px;
+	height: 40px;
 }
 
 .leaflet-control-layers-list .row {
@@ -810,6 +811,7 @@ a.icon-close2 {
 .glyphicon-search {
 	color: #c3c3c3;
 	font-size: 16px/14px !important;
+	line-height: 40px;
 }
 
 .marker-search:focus {

@@ -699,7 +699,7 @@ a.icon-close2 {
 
 .row.vertical-divider>div[class^="col-"] {
 	text-align: center;
-	height: 30px;
+	height: 44px;
 	border-left: 1px solid rgb(255, 255, 255);
 	border-right: 0px solid rgb(255, 255, 255);
 	border-left: 1px solid rgba(255, 255, 255, .2);

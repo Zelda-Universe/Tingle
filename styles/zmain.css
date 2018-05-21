@@ -229,9 +229,6 @@ body,
 }
 
 
-/** **/
-
-
 /*** SEARCH CONTENT ***/
 
 .menu-cat-content-inner .leaflet-control-layers-separator,
@@ -424,7 +421,7 @@ a.icon-close2 {
 
 .leaflet-control-layers-separator,
 [class $="-separator"] {
-	height: 2px;
+	height: 1px;
 	opacity: .2;
 }
 
@@ -721,7 +718,7 @@ a.icon-close2 {
 	border-right: none;
 }
 
-.row-header {
+.row-header, #marker-search {
 	height: 44px;
 	line-height: 44px;
 }
@@ -733,8 +730,7 @@ a.icon-close2 {
 
 .marker-search {
 	background-color: inherit;
-	border: 0px;
-	font: 16px/14px Tahoma, Verdana, sans-serif;
+	border: 0;
 	color: #c3c3c3;
 }
 

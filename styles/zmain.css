@@ -207,7 +207,7 @@ body,
 }
 
 .category-selector {
-	width: 85px;
+	width: 83px;
 }
 
 .category-button.toggledOn {
@@ -905,9 +905,7 @@ a.icon-close2 {
 
 .icon-addon.addon-sm .form-control {
 	height: 30px;
-	padding: 5px 10px 5px 28px;
-	font-size: 12px;
-	line-height: 1.5;
+	padding: 5px 10px 5px 32px;
 }
 
 .icon-addon.addon-lg .fa,

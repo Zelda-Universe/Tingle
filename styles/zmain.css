@@ -1,811 +1,835 @@
 @font-face {
-   font-family: HyliaSerif;
-   src: url("fonts/HyliaSerifBeta-Regular.otf") format("opentype");
+	font-family: HyliaSerif;
+	src: url("fonts/HyliaSerifBeta-Regular.otf") format("opentype");
 }
 
 body {
 	padding: 0;
 	margin: 0;
-   overflow: hidden;
+	overflow: hidden;
 }
 
-
-html, body, #map {
-  height: 100vh;
-  width: 100vw;
-  background-color: #565656; /*#DEECFD;/*rgb(222, 236, 253); /*#deecfd;*/
-  overflow: hidden;
-  position: fixed;
+html,
+body,
+#map {
+	height: 100vh;
+	width: 100vw;
+	background-color: #565656;
+	overflow: hidden;
+	position: fixed;
 }
 
 .relativeContainer {
-  position: relative;
+	position: relative;
 }
 
 .highlight {
-  text-decoration: coral underline dotted;
+	text-decoration: coral underline dotted;
 }
 
+
 /* ICON */
-[class^="icon-"], [class*=" icon-"] {
-   vertical-align: middle;
-   text-align:center;
+
+[class^="icon-"],
+[class*=" icon-"] {
+	vertical-align: middle;
+	text-align: center;
 }
 
 .full-icon-space-container {
-  padding: 0px;
+	padding: 0px;
 }
 
 .button.full-icon-space {
-  display: inline-block;
-  width: 100%;
-  height: 100%;
-  line-height: 28px;
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	line-height: 28px;
 }
 
 .circle {
-    width: 64px;
-    height: 64px;
-    border-radius: 64px;
-    line-height: 64px;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    color: white;
-}
-.circleMap {
-    width: 23px !important;
-    height: 23px !important;
-    line-height: 22px !important;
-}
-.icnText {
-  font-size: 16px;
+	width: 64px;
+	height: 64px;
+	border-radius: 64px;
+	line-height: 64px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	color: white;
 }
 
+.circleMap {
+	width: 23px !important;
+	height: 23px !important;
+	line-height: 22px !important;
+}
+
+.icnText {
+	font-size: 16px;
+}
 
 .circleMap-medium {
-    width: 23px !important;
-    height: 23px !important;
-    line-height: 22px !important;
+	width: 23px !important;
+	height: 23px !important;
+	line-height: 22px !important;
 }
+
 .icnText-medium {
-  font-size: 15px;
+	font-size: 15px;
 }
 
 .circleMap-small {
-    width: 16px !important;
-    height: 16px !important;
-    line-height: 14px !important;
+	width: 16px !important;
+	height: 16px !important;
+	line-height: 14px !important;
 }
+
 .icnText-small {
-  font-size: 10px;
+	font-size: 10px;
 }
 
 .icon-checkmark {
-  text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+	text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
 
 .completeMarker {
-    position: absolute !important;
-    color: gold !important;
-    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+	position: absolute !important;
+	color: gold !important;
+	text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
 }
 
 .completeMarker-Medium {
-    font-size: 18px !important;
-    left: 10px;
-    top: 10px;
+	font-size: 18px !important;
+	left: 10px;
+	top: 10px;
 }
 
 .completeMarker-Small {
-    font-size: 10px !important;
-    left: 8px;
-    top: 10px;
+	font-size: 10px !important;
+	left: 8px;
+	top: 10px;
 }
-
 
 
 /** Top Left Category **/
-.category-selection-list {
-   margin-top: 0px;
-   padding-top: 12px;
-}
 
 .category-selection-list {
-    padding-left: 0;
-    opacity: inherit;
-}
-.category-selection-list > .category-selector {
-    display: inline-block;
-    text-align: center;
-    vertical-align: top;
-}
-
-.category-selection-list > .category-selector > .category-button > .label {
-    text-align: center;
-    font-size: 14px;
-    margin-top: 10px;
-    line-height: 100%;
-    opacity: inherit;
-    color: white;
-
-    display: block; /* To override Bootstrap's .label definition. */
-    padding: inherit;
-    font-weight: inherit;
-    white-space: inherit;
-}
-.category-selection-list > .category-selector > .category-button {
-    text-decoration: none;
+	margin-top: 0px;
+	padding-top: 12px;
 }
 
 .category-selection-list {
-  text-align: center;
+	padding-left: 0;
+	opacity: inherit;
+}
+
+.category-selection-list>.category-selector {
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+}
+
+.category-selection-list>.category-selector>.category-button>.label {
+	text-align: center;
+	font-size: 14px;
+	margin-top: 10px;
+	line-height: 100%;
+	opacity: inherit;
+	color: white;
+	display: block;
+	/* To override Bootstrap's .label definition. */
+	padding: inherit;
+	font-weight: inherit;
+	white-space: inherit;
+}
+
+.category-selection-list>.category-selector>.category-button {
+	text-decoration: none;
+}
+
+.category-selection-list {
+	text-align: center;
 }
 
 .category-selector {
-  width: 80px;
+	width: 80px;
 }
 
 .category-button.toggledOn {
-  opacity: 1;
+	opacity: 1;
 }
+
 .category-button.toggledOff {
-  opacity: 0.35;
+	opacity: 0.35;
 }
 
 .category-icon {
-  position: relative;
-  font-size: 36px;
+	position: relative;
+	font-size: 36px;
 }
 
 .icon-background {
-  color: white;
-}
-.category-button.toggledOn > .icon-background.icon-checkmark {
-  color: gold
-}
-.category-button.toggledOff > .icon-background.icon-checkmark {
-  color: white
+	color: white;
 }
 
-.category-button.toggledOn > .label > .completed-label-hide {
-  display: inherit;
-}
-.category-button.toggledOff > .label > .completed-label-hide {
-  display: none;
-}
-.category-button.toggledOn > .label > .completed-label-show {
-  display: none;
-}
-.category-button.toggledOff > .label > .completed-label-show {
-  display: inherit;
+.category-button.toggledOn>.icon-background.icon-checkmark {
+	color: gold
 }
 
-.main-content > p {
+.category-button.toggledOff>.icon-background.icon-checkmark {
+	color: white
 }
+
+.category-button.toggledOn>.label>.completed-label-hide {
+	display: inherit;
+}
+
+.category-button.toggledOff>.label>.completed-label-hide {
+	display: none;
+}
+
+.category-button.toggledOn>.label>.completed-label-show {
+	display: none;
+}
+
+.category-button.toggledOff>.label>.completed-label-show {
+	display: inherit;
+}
+
+.main-content>p {}
 
 .leaflet-control-layers-expanded {
-   padding: 0;
-   overflow: hidden;
+	padding: 0;
+	overflow: hidden;
 }
+
 .leaflet-control-layers-separator,
-[class $= "-separator"] {
-   margin: 0;
+[class $="-separator"] {
+	margin: 0;
 }
 
 .main-content {
-    clear: both;
-    overflow-y: scroll;
-
-    overflow-x: hidden;
+	clear: both;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
 .main-content .icon-close2 {
-  position: sticky;
+	position: sticky;
 }
 
 .leaflet-control-layers-toggle {
-    background-image: url('../images/zmaps_white_small.png') !important;
-    width: 36px;
-    height: 36px;
+	background-image: url('../images/zmaps_white_small.png') !important;
+	width: 36px;
+	height: 36px;
 }
-/** **/
 
 
 /*** SEARCH CONTENT ***/
 
-.menu-cat-content-inner
-.leaflet-control-layers-separator,
-[class $= "-separator"] {
-  margin: 0px 10px;
+.menu-cat-content-inner .leaflet-control-layers-separator,
+[class $="-separator"] {
+	margin: 0px;
 }
 
 .menu-cat-content-inner .no-results {
-  text-align: center;
-  padding: 10px;
-  margin-left: 20px;
-
-  font: 14px/12px Tahoma,Verdana,sans-serif;
-  color: #c3c3c3;
+	text-align: center;
+	padding: 10px;
+	margin-left: 20px;
+	font: 14px/12px Tahoma, Verdana, sans-serif;
+	color: #c3c3c3;
 }
 
 .marker-list {
-  margin: 0px;
-  padding: 0px;
+	margin: 0px;
+	padding: 0px;
 }
 
 .marker-list-view .results .header {
-  position: sticky;
-  top: 0px;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 2;
-
-  text-align: center;
-
-  font-style: italic;
-
-  color: #c3c3c3;
-
-  padding: 5px 0px;
+	position: sticky;
+	top: 0px;
+	background-color: rgba(0, 0, 0, 0.8);
+	z-index: 2;
+	text-align: center;
+	font-style: italic;
+	color: #c3c3c3;
+	padding: 5px 0px;
 }
 
 .marker-list-entry {
-  display: block;
-
-  height: 84px;
-  padding: 10px 10px;
-
-  white-space: nowrap;
-
-  cursor: alias;
+	display: block;
+	height: 84px;
+	padding: 10px 10px;
+	white-space: nowrap;
+	cursor: alias;
 }
 
 .marker-list-entry:hover {
-  background-color: #dbdcba4a;
+	background-color: #dbdcba4a;
 }
 
 .marker-list-entry:active {
-  background-color: #ffffff73;
+	background-color: #ffffff73;
 }
 
 .marker-list-entry .icon {
-  display: inline-block;
-
-  vertical-align: top;
+	display: inline-block;
+	vertical-align: top;
 }
 
 .marker-list-entry .details {
-  display: inline-block;
-  height: 100%;
-  /* Maybe find a better way to do this without calc?
-     Does it require the parent to have a fixed width?
-     I was tying to avoid that randomly.
-     Maybe try to propagate the larger drawer node's width,
-     if it is not already present somewhow. */
-  width: calc(100% - 74px);
-
-  margin-left: 10px;
-
-  white-space: normal;
-
-  overflow-y: hidden;
+	display: inline-block;
+	height: 100%;
+	/* Maybe find a better way to do this without calc? Does it require the parent to have a fixed width? I was tying to avoid that randomly. Maybe try to propagate the larger drawer node's width, if it is not already present somewhow. */
+	width: calc(100% - 74px);
+	margin-left: 10px;
+	white-space: normal;
+	overflow-y: hidden;
 }
 
 .marker-list-entry .searchScore {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
 }
 
 .marker-list-entry .icon .searchScore {
-  left: 0px;
+	left: 0px;
 }
 
 .marker-list-entry .details .searchScore {
-  font: 8px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
-  color: #c3c3c3;
+	font: 8px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+	color: #c3c3c3;
 }
 
 .searchScore .progress-bar-container {
-  border: 1px solid white;
-
-  background-color: rgba(0, 0, 0, 1);
+	border: 1px solid white;
+	background-color: rgba(0, 0, 0, 1);
 }
 
 .searchScore .progress-bar-filler {
-  height: 3px;
-
-  background-color: #1fff1e;
+	height: 3px;
+	background-color: #1fff1e;
 }
 
-
 .marker-list-entry .name {
-  display: block;
-  height: 25%;
-
-  margin-bottom: 5px;
-
-  font-size: 14px;
+	display: block;
+	height: 25%;
+	margin-bottom: 5px;
+	font-size: 14px;
 }
 
 .marker-list-entry .description {
-  display: block;
-  height: 75%;
-
-  font-size: 12px;
+	display: block;
+	height: 75%;
+	font-size: 12px;
 }
+
 
 /*** MARKER CONTENT ***/
+
 .popupTitle {
-   /* margin-bottom: 5px;
-    margin-top: 0;*/
-    font-family: HyliaSerif;
-    font-size: 26px;
-    text-align: center;
-    font-weight: normal;
+	/* margin-bottom: 5px;
+     margin-top: 0;
+    */
+	font-family: HyliaSerif;
+	font-size: 26px;
+	text-align: center;
+	font-weight: normal;
 }
+
 .popupContent p {
-    margin-top: 0;
-    margin-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    color: whitesmoke;
+	margin-top: 0;
+	margin-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	color: whitesmoke;
 }
+
 .popupContent div img {
-    max-width: 400px;
-    height: auto;
+	max-width: 400px;
+	height: auto;
 }
 
 a.button {
-   padding: 0px;
-   border: none;
-   text-align: center;
-   width: 18px;
-   height: 14px;
-   font: 16px/14px Tahoma, Verdana, sans-serif;
-   color: #c3c3c3;
-   text-decoration: none;
-   font-weight: bold;
-   background: transparent;
+	padding: 0px;
+	border: none;
+	text-align: center;
+	width: 18px;
+	height: 14px;
+	font: 16px/14px Tahoma, Verdana, sans-serif;
+	color: #c3c3c3;
+	text-decoration: none;
+	font-weight: bold;
+	background: transparent;
 }
 
 a.button:hover {
-   color: white;
+	color: white;
 }
-a.icon-shrink {
 
-}
+a.icon-shrink {}
+
 a.icon-close {
-  float: right;
-  padding: 5px 5px 0 0;
+	float: right;
+	padding: 5px 5px 0 0;
 }
 
 a.icon-close2 {
-   position: absolute;
-   float: right;
-   top: 5px;
-   right: 5px;
-   z-index: 10;
+	position: absolute;
+	float: right;
+	top: 5px;
+	right: 5px;
+	z-index: 10;
 }
 
-
-.infoWindowIcn { /* DESKTOP */
-    cursor: pointer;
-    margin-left: 5px;
+.infoWindowIcn {
+	/* DESKTOP */
+	cursor: pointer;
+	margin-left: 5px;
 }
 
 
 /** CONTROLS **/
 
 .mobile-header-bar {
-   background-color: rgba(0,0,0,.8);
-   border-radius: 10px;
-   box-shadow: 0 16px 32px rgba(0,0,0,.6) !important;
-   color: white;
-
-   float: none;
-
-   margin-right: 10px;
-
-   overflow: hidden;
+	background-color: rgba(0, 0, 0, .8);
+	border-radius: 100px !important;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
+	color: white;
+	float: none;
+	margin-right: 10px;
+	overflow: hidden;
 }
 
-.mobile-header-bar > .row {
-  margin-left: 0;
-  margin-right: 0;
+.mobile-header-bar>.row {
+	margin-left: 0;
+	margin-right: 0;
 }
 
 .leaflet-control-layers,
 .leaflet-control {
-   background-color: rgba(0,0,0,.8);
-   border-radius: 10px;
-   box-shadow: 0 16px 32px rgba(0,0,0,.6) !important;
-   color: white;
+	background-color: rgba(0, 0, 0, .8);
+	border-radius: 10px;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
+	color: white;
 }
 
 .leaflet-control-layers-separator,
-[class $= "-separator"] {
-   height: 2px;
-   opacity: .2;
+[class $="-separator"] {
+	height: 1px;
+	opacity: .2;
 }
 
-[class $= "-separator"] {
-  border-top: 2px solid #ddd;
+[class $="-separator"] {
+	border-top: 1px solid #ddd;
 }
 
 .leaflet-control .highlighted {
-  background-color: #f1f1f138;
+	background-color: #f1f1f138;
 }
 
-::-webkit-scrollbar {
-    width: 7px;
-    height: 7px;
-   /* background: #f2f2f2;*/
-}
-::-webkit-scrollbar-thumb {
-    border-radius: 2px;
-    background: #777;
+ ::-webkit-scrollbar {
+	width: 7px;
+	height: 7px;
+	/* background: #f2f2f2;
+    */
 }
 
-.main-content h3 {
-
+ ::-webkit-scrollbar-thumb {
+	border-radius: 2px;
+	background: #777;
 }
 
-.leaflet-bottom {
+.main-content h3 {}
 
-}
+.leaflet-bottom {}
 
 .leaflet-control-attribution {
-   display: none;
+	display: none;
 }
 
 .leaflet-control-layers-scrollbar {
-  height: 100px !important;
+	height: 100px !important;
 }
 
-
-
 .infobox {
-  z-index: 500;
-  clear: none;
+	z-index: 500;
+	clear: none;
 }
 
 .infobox .column {
-  float: left;
+	float: left;
 }
 
+
 /* Clear floats after the columns */
+
 .infobox .column:after {
-  content: "";
-  display: table;
-  clear: both;
+	content: "";
+	display: table;
+	clear: both;
 }
 
 .infobox .row.header {
-  text-align: center;
+	text-align: center;
 }
 
 .infobox .row {
-  margin: 5px 10px;
+	margin: 5px 10px;
 }
 
 .infobox .row .value {
-  float: right;
-  text-align: right;
-  width: 65px;
+	float: right;
+	text-align: right;
+	width: 65px;
 }
 
 .infobox.location.bounds .column:first-child {
-  border-right: 1px solid rgba(221, 221, 221, 0.2);
+	border-right: 1px solid rgba(221, 221, 221, 0.2);
 }
 
 .infobox.location.bounds .column:last-child {
-  border-left: 1px solid rgba(221, 221, 221, 0.2);
+	border-left: 1px solid rgba(221, 221, 221, 0.2);
 }
 
 .infobox.location.bounds .action-group {
-  position: absolute;
-  right: 10px;
-  top: 5px;
+	position: absolute;
+	right: 10px;
+	top: 5px;
 }
 
 .action-group a {
-  margin-left: 5px;
+	margin-left: 5px;
 }
 
 .copy.text-area {
-  position: absolute;
-  left: -10000px;
-  top: -10000px;
-  z-index: -10000px;
+	position: absolute;
+	left: -10000px;
+	top: -10000px;
+	z-index: -10000px;
 }
+
 
 /*** BOTTOM **/
-.grabber {
-   width: 36px;
-   height: 5px;
-   background: rgba(255,255,255,.2);
-   position: absolute;
-   top: 5px;
-   left: 50%;
-   margin-left: -18px;
-   border-radius: 100px;
-}
 
+.grabber {
+	width: 36px;
+	height: 5px;
+	background: rgba(255, 255, 255, .2);
+	position: absolute;
+	top: 5px;
+	left: 50%;
+	margin-left: -18px;
+	border-radius: 100px;
+}
 
 .bottommenu span.infoWindowIcn {
-   font-size: 16px;
-   margin-left: 10px;
+	font-size: 16px;
+	margin-left: 10px;
 }
 
-
 .bottommenu::-webkit-scrollbar {
-   background: transparent;
+	background: transparent;
 }
 
 .bottommenu {
-   -webkit-overflow-scrolling: touch;
-   width: 100%;
+	-webkit-overflow-scrolling: touch;
+	width: 100%;
 }
 
 .bottommenu::-webkit-scrollbar {
-    background: transparent;
-    width: 0px;
-    height: 7px;
+	background: transparent;
+	width: 0px;
+	height: 7px;
 }
 
 .bottommenu::-webkit-scrollbar-thumb {
-    border-radius: 0px;
-    background: transparent;
+	border-radius: 0px;
+	background: transparent;
 }
-
 
 
 /** FADE IN **/
+
 .leaflet-marker-icon,
 .leaflet-marker-shadow {
-  -webkit-animation: fadein 0.3s; /* Safari, Chrome and Opera > 12.1 */
-  -moz-animation: fadein 0.3s; /* Firefox < 16 */
-  -ms-animation: fadein 0.3s; /* Internet Explorer */
-  -o-animation: fadein 0.3s; /* Opera < 12.1 */
-  animation: fadein 0.3s;
+	-webkit-animation: fadein 0.3s;
+	/* Safari, Chrome and Opera > 12.1 */
+	-moz-animation: fadein 0.3s;
+	/* Firefox < 16 */
+	-ms-animation: fadein 0.3s;
+	/* Internet Explorer */
+	-o-animation: fadein 0.3s;
+	/* Opera < 12.1 */
+	animation: fadein 0.3s;
 }
 
 @keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
+
 
 /* Firefox < 16 */
+
 @-moz-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
+
 
 /* Safari, Chrome and Opera > 12.1 */
+
 @-webkit-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
+
 
 /* Internet Explorer */
+
 @-ms-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
+
 
 /* Opera < 12.1 */
+
 @-o-keyframes fadein {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
 }
+
 
 /***************** CONTROL ***********************/
+
 .leaflet-touch .leaflet-bar a {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
 }
 
-
-
 .leaflet-touch .leaflet-control-zoom-in {
-    margin-bottom: 5px;
-    border-radius: 4px;
+	margin-bottom: 5px;
+	border-radius: 4px;
 }
 
 .leaflet-touch .leaflet-control-zoom-out {
-    border-radius: 4px;
+	border-radius: 4px;
 }
 
 .leaflet-bar a:first-child {
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
 }
 
 .leaflet-bar a:last-child {
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-bottom: 0;
-}
-.leaflet-control-zoom {
-   border: 0px !important;
-}
-.leaflet-bar a {
-   background-color: rgba(0,0,0,.8);
-   box-shadow: 0 16px 32px rgba(0,0,0,.6) !important;
-   color: white;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-bottom: 0;
 }
 
-.leaflet-bar a, .leaflet-bar a:hover {
-   border-bottom: 0;
+.leaflet-control-zoom {
+	border: 0px !important;
 }
+
+.leaflet-bar a {
+	background-color: rgba(0, 0, 0, .8);
+	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
+	color: white;
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+	border-bottom: 0;
+}
+
 
 /**** ADS ***/
 
 #mobileAds {
-  position: absolute;
-  z-index: 999;
-  top: 48px;
-  left: 12px;
-  right: 12px;
-  height: 50px;
-  width: auto;
-}
-#desktopAds {
-  position: absolute;
-  z-index: 999;
-  bottom: 16px;
-  height: 90px;
-  left: 50%;
-  transform: translateX(-50%);
-  overflow: hidden;
+	position: absolute;
+	z-index: 999;
+	top: 48px;
+	left: 12px;
+	right: 12px;
+	height: 50px;
+	width: auto;
 }
 
+#desktopAds {
+	position: absolute;
+	z-index: 999;
+	bottom: 16px;
+	height: 90px;
+	left: 50%;
+	transform: translateX(-50%);
+	overflow: hidden;
+}
 
 .row.vertical-divider {
-  overflow: hidden;
-}
-.row.vertical-divider > div[class^="col-"] {
-   text-align: center;
-   height: 30px;
-   border-left: 1px solid rgb(255, 255, 255);
-   border-right: 0px solid rgb(255, 255, 255);
-   border-left: 1px solid rgba(255, 255, 255, .2);
-   border-right: 0px solid rgba(255, 255, 255, .2);
-   -webkit-background-clip: padding-box; /* for Safari */
-   background-clip: padding-box; /* for IE9+, Firefox 4+, Opera, Chrome */
-}
-.row.vertical-divider div[class^="col-"]:first-child {
-  border-left: none;
-}
-.row.vertical-divider div[class^="col-"]:last-child {
-  border-right: none;
+	overflow: hidden;
 }
 
-.row-header {
-   height: 30px;
-   line-height: 30px;
+.row.vertical-divider>div[class^="col-"] {
+	text-align: center;
+	height: 44px;
+	border-left: 1px solid rgba(255, 255, 255, .2);
+	border-right: 0px solid rgba(255, 255, 255, .2);
+	-webkit-background-clip: padding-box;
+	/* for Safari */
+	background-clip: padding-box;
+	/* for IE9+, Firefox 4+, Opera, Chrome */
+}
+
+.row.vertical-divider div[class^="col-"]:first-child {
+	border-left: none;
+}
+
+.row.vertical-divider div[class^="col-"]:last-child {
+	border-right: none;
+}
+
+.row-header, #marker-search {
+	height: 44px;
+	line-height: 44px;
 }
 
 .leaflet-control-layers-list .row {
-   margin-left: 0px;
-   margin-right: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
 }
 
 .marker-search {
-   background-color: inherit;
-   border: 0px;
-   font: 16px/14px Tahoma,Verdana,sans-serif;
-   color: #c3c3c3;
+	background-color: inherit;
+	border: 0;
+	color: #c3c3c3;
 }
+
 .glyphicon-search {
-   color: #c3c3c3;
-   font-size: 16px/14px !important;
+	color: #c3c3c3;
+	font-size: 16px/14px !important;
 }
 
 .marker-search:focus {
-   -webkit-box-shadow: none;
-   box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
-
 .center-block {
-    float: none;
-    margin-left: auto;
-    margin-right: auto;
+	float: none;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .progress-bar-filler {
-  width: 0%;
-  height: 2px;
-
-  background-color: orange;
+	width: 0%;
+	height: 2px;
+	background-color: orange;
 }
 
 .search-box .progress-bar-container {
-  padding-top: 28px;
-  padding-left: 28px;
+	padding-top: 28px;
+	padding-left: 28px;
 }
 
 .input-group .icon-addon .form-control {
-    border-radius: 0;
+	border-radius: 0;
 }
 
-
-
-
 .icon-addon {
-    position: relative;
-    color: #555;
-    display: block;
+	position: relative;
+	color: #555;
+	display: block;
 }
 
 .icon-addon:after,
 .icon-addon:before {
-    display: table;
-    content: " ";
+	display: table;
+	content: " ";
 }
 
 .icon-addon:after {
-    clear: both;
+	clear: both;
 }
 
 .icon-addon.addon-md .glyphicon,
 .icon-addon .glyphicon,
 .icon-addon.addon-md .fa,
 .icon-addon .fa {
-    position: absolute;
-    z-index: 2;
-    left: 10px;
-    font-size: 14px;
-    width: 20px;
-    margin-left: -2.5px;
-    text-align: center;
-    padding: 10px 0;
-    top: 1px
+	position: absolute;
+	z-index: 2;
+	left: 10px;
+	font-size: 14px;
+	width: 20px;
+	margin-left: -2.5px;
+	text-align: center;
+	padding: 10px 0;
+	top: 1px
 }
 
 .icon-addon.addon-lg .form-control {
-    line-height: 1.33;
-    height: 46px;
-    font-size: 18px;
-    padding: 10px 16px 10px 40px;
+	line-height: 1.33;
+	height: 46px;
+	font-size: 18px;
+	padding: 10px 16px 10px 40px;
 }
 
 .icon-addon.addon-sm .form-control {
-    height: 30px;
-    padding: 5px 10px 5px 28px;
-    font-size: 12px;
-    line-height: 1.5;
+	height: 30px;
+	padding: 5px 10px 5px 28px;
+	font-size: 12px;
+	line-height: 1.5;
 }
 
 .icon-addon.addon-lg .fa,
 .icon-addon.addon-lg .glyphicon {
-    font-size: 18px;
-    margin-left: 0;
-    left: 11px;
-    top: 4px;
+	font-size: 18px;
+	margin-left: 0;
+	left: 11px;
+	top: 4px;
 }
 
 .icon-addon.addon-md .form-control,
 .icon-addon .form-control {
-    padding-left: 30px;
-    float: left;
-    font-weight: normal;
+	padding-left: 30px;
+	float: left;
+	font-weight: normal;
 }
 
 .icon-addon.addon-sm .fa,
 .icon-addon.addon-sm .glyphicon {
-    margin-left: 0;
-    font-size: 14px;
-    left: 5px;
-    top: -2px
+	margin-left: 0;
+	font-size: 14px;
+	left: 5px;
+	top: -2px
 }
 
-.icon-addon .form-control:focus + .glyphicon,
+.icon-addon .form-control:focus+.glyphicon,
 .icon-addon:hover .glyphicon,
-.icon-addon .form-control:focus + .fa,
+.icon-addon .form-control:focus+.fa,
 .icon-addon:hover .fa {
-    color: white;
+	color: white;
 }

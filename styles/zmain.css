@@ -784,6 +784,7 @@ a.icon-close2 {
 
 .row.vertical-divider div[class^="col-"]:first-child {
 	border-left: none;
+	width: 60px;
 }
 
 .row.vertical-divider div[class^="col-"]:last-child {
@@ -793,6 +794,7 @@ a.icon-close2 {
 
 .row-header, #marker-search {
 	height: 40px;
+	width: auto;
 }
 
 .leaflet-control-layers-list .row {

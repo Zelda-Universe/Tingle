@@ -799,8 +799,19 @@ a.icon-close2 {
 	height: 40px;
 }
 
-#marker-search::-webkit-input-placeholder,
+#marker-search::-webkit-input-placeholder {
+	font-style: italic;
+}
+
 #marker-search::-moz-placeholder {
+	font-style: italic;
+}
+
+#marker-search:-ms-input-placeholder {
+	font-style: italic;
+}
+
+#marker-search:-moz-placeholder {
 	font-style: italic;
 }
 

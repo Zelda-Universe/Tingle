@@ -800,8 +800,7 @@ a.icon-close2 {
 }
 
 #marker-search::-webkit-input-placeholder,
-#marker-search::-moz-placeholder,
-#marker-search:-ms-input-placeholder {
+#marker-search::-moz-placeholder {
 	font-style: italic;
 }
 

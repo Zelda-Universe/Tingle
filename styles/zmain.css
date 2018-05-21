@@ -107,7 +107,9 @@ body,
 }
 
 .button.full-icon-space::after {
-	content: " Sign In"
+	content: " Sign In";
+	font-family: "BrandonText", san-serif;
+	font-size: 12px;
 }
 
 .circle {

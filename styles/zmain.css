@@ -106,12 +106,6 @@ body,
     height: 100%;
 }
 
-.button.full-icon-space::after {
-	content: " Sign In";
-	font-family: "BrandonText", san-serif;
-	font-size: 12px;
-}
-
 .circle {
 	width: 64px;
 	height: 64px;
@@ -783,14 +777,14 @@ a.icon-close2 {
 	text-align: center;
 	height: 40px;
 	padding: 0 0 0 5px;
-	width: 295px;
+	width: 305px;
 	background-clip: padding-box;
 	-webkit-background-clip: padding-box;
 }
 
 .row.vertical-divider div[class^="col-"]:first-child {
 	border-left: none;
-	width: 60px;
+	width: 50px;
 	border-right: 1px solid rgba(255, 255, 255, .2);
 }
 

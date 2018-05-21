@@ -801,6 +801,11 @@ a.icon-close2 {
 	margin-right: 0px;
 }
 
+.full-icon-space {
+	font-size: 18px !important;
+	line-height: 38px !important;
+}
+
 .marker-search {
 	background-color: inherit;
 	border: 0;
@@ -809,7 +814,8 @@ a.icon-close2 {
 
 .glyphicon-search {
 	color: #c3c3c3;
-	font-size: 14px !important;
+	font-size: 18px !important;
+	line-height: 23px !important;
 }
 
 .marker-search:focus {

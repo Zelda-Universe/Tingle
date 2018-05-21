@@ -834,6 +834,7 @@ a.icon-close2 {
 	background-color: inherit;
 	border: 0;
 	color: #c3c3c3;
+	padding-left: 16px;
 }
 
 .glyphicon-search {

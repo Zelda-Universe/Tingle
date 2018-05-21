@@ -7,6 +7,10 @@ function Logo(opts) {
   this._initDOMElements(opts);
 };
 
+function CategoryMenu(opts) {
+  this._initDOMElements(opts);
+};
+
 Logo.prototype._initDOMElements = function(opts) {
   var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', opts.parent);
   logoDiv.src  = 'images/zmaps_white.png';
@@ -14,7 +18,16 @@ Logo.prototype._initDOMElements = function(opts) {
   logoDiv.style.textAlign = 'center';//TODO: move to CSS
 };
 
-this._addCategoryMenuEntry(
+CategoryMenu.prototype._initDOMElements = function(opts) {
+  this.domNode = $('' +
+    '<ul class="category-selection-list">' +
+    '</ul>'
+  );
+  this.menuEntryContainerTemplate = '' +
+    '<li class="category-selector">' +
+    '</li>'
+  ;
+  this._addCategoryMenuEntry(
     new CategoryButtonCompleted({
         onToggle: opts.onCompletedToggle,
         toggledOn: opts.showCompleted
@@ -22,3 +35,10 @@ this._addCategoryMenuEntry(
     )
   );
   // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+};
+ 
+CategoryMenu.prototype._addCategoryMenuEntry = function(categoryButton) {
+  var menuEntry = $(this.menuEntryContainerTemplate);
+  menuEntry.append(categoryButton.domNode);
+  this.domNode.append(menuEntry);
+};

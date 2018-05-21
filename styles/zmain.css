@@ -426,9 +426,7 @@ a.button:hover {
 	color: white;
 }
 
-a.icon-shrink {
-	display: none;
-}
+a.icon-shrink {}
 
 a.icon-close {
 	float: right;
@@ -791,6 +789,7 @@ a.icon-close2 {
 
 .row.vertical-divider div[class^="col-"]:last-child {
 	border-right: none;
+	display: none;
 }
 
 .row-header, #marker-search {

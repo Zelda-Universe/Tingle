@@ -644,6 +644,10 @@ a.icon-close2 {
 	border-bottom-right-radius: 100px;
 }
 
+.leaflet-bar {
+	border-radius: 100px;
+}
+
 .leaflet-bar a:first-child {
 	border-top-left-radius: 100px;
 	border-top-right-radius: 100px;
@@ -657,6 +661,7 @@ a.icon-close2 {
 
 .leaflet-control-zoom {
 	border: 0px !important;
+	border-radius: 100px;
 }
 
 .leaflet-bar a {

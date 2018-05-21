@@ -776,8 +776,8 @@ a.icon-close2 {
 .row.vertical-divider>div[class^="col-"] {
 	text-align: center;
 	height: 40px;
-	padding: 0;
-	width: 300px;
+	padding: 0 0 0 5px;
+	width: 295px;
 	background-clip: padding-box;
 	-webkit-background-clip: padding-box;
 }

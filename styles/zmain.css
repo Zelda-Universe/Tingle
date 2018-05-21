@@ -294,6 +294,7 @@ body,
 	text-align: center;
 	padding: 10px;
 	margin-left: 20px;
+    font-family: "BrandonText", sans-serif;
 	color: #c3c3c3;
 }
 
@@ -355,6 +356,7 @@ body,
 }
 
 .marker-list-entry .details .searchScore {
+	font-family: "BrandonText", sans-serif;
 	color: #c3c3c3;
 }
 
@@ -412,7 +414,8 @@ a.button {
 	border: none;
 	text-align: center;
 	width: 18px;
-	height: 14px;
+	height: 14px;	
+    font-family: "BrandonText", sans-serif;
 	color: #c3c3c3;
 	text-decoration: none;
 	font-weight: bold;

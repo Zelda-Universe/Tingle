@@ -23,6 +23,17 @@
   - Comment your code so other team members can understand it.
     - We want to communicate why code is there, since the 'what' is already represented by the code statements themselves.
 
+## Backend
+
+  Written in PHP.
+
+  I'm thinking to store more information in the session, rather than the client's cookies.  We would only use cookies when needed, so when the user is not authenticated.
+
+  We use the helper function we created `start_session("zmap");` with that name commonly.
+  Then we close it after all `$_SESSION` references have been passed: `session_write_close();`.
+
+  Try to issue these commands as close to the block of all session references as possible, since our framework probably does not support concurrency, and this way the lock on the session file can be released and other users requests can continue to be processed after the current.
+
 # Etc.
 
 ## Icons

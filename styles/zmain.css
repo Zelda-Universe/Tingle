@@ -233,6 +233,7 @@ body,
 
 .category-button.toggledOn>.icon-background.icon-checkmark {
 	color: transparent;
+	border: 2px dashed #fff;
 }
 
 .category-button.toggledOff>.icon-background.icon-checkmark {

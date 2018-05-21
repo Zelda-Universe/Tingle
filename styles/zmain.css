@@ -689,7 +689,7 @@ a.icon-close2 {
 }
 
 .leaflet-touch .leaflet-control-zoom-in {
-	margin-bottom: 5px;
+	margin-bottom: 0;
 	border-radius: 4px;
 	border-top-left-radius: 100px;
 	border-top-right-radius: 100px;

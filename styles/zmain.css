@@ -233,7 +233,7 @@ body,
 
 .category-button.toggledOn>.icon-background.icon-checkmark {
 	color: white;
-	border: 2px dashed rgba(255,255,255,.8);
+	box-shadow: inset 0 0 2px rgba(255,255,255,.8);
 	box-sizing: border-box;
 }
 

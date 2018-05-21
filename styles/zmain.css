@@ -174,12 +174,7 @@ body,
 
 .category-selection-list {
 	margin-top: 0px;
-	padding: 12px 32px;
-}
-
-.category-selection-list {
-	padding-left: 0;
-	opacity: inherit;
+	padding-top: 12px;
 }
 
 .category-selection-list>.category-selector {
@@ -200,6 +195,7 @@ body,
 	padding: inherit;
 	font-weight: inherit;
 	white-space: inherit;
+	padding: 0 4px;
 }
 
 .category-selection-list>.category-selector>.category-button {
@@ -850,7 +846,7 @@ a.icon-close2 {
 
 .center-block {
 	float: none;
-	margin-left: 7px;
+	margin-left: 8px;
 	margin-right: auto;
 }
 

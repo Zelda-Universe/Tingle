@@ -794,6 +794,7 @@ a.icon-close2 {
 }
 
 .row-header, #marker-search {
+	font-family: "BrandonText", sans-serif;
 	height: 40px;
 }
 

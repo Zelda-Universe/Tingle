@@ -190,11 +190,11 @@ body,
 
 .category-selection-list>.category-selector>.category-button>.label {
 	text-align: center;
-	font-size: 14px;
+	font-size: 13px;
 	margin-top: 10px;
 	line-height: 100%;
 	opacity: inherit;
-	color: white;
+	color: rgba(255,255,255,.8);
 	display: block;
 	/* To override Bootstrap's .label definition. */
 	padding: inherit;

@@ -866,6 +866,7 @@ header.ex1 {
 .center-block {
 	float: left;
 	height: 75px !important;
+	padding-bottom: env(safe-area-inset-bottom) !important;
 }
 
 .progress-bar-filler {

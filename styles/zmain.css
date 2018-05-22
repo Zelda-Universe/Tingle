@@ -859,13 +859,13 @@ a.icon-close2 {
 
 header.ex1 {
 	height: 105px !important;
-	padding: 16px !important;
 }
 
 .center-block {
 	float: none;
 	text-align: left;
 	height: 75px !important;
+	padding: 16px;
 	padding-bottom: env(safe-area-inset-bottom) !important;
 }
 

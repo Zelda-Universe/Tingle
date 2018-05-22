@@ -664,7 +664,31 @@ a.icon-close2 {
 }
 
 
-/***************** CONTROL ***********************/
+/* Controls */
+
+.mobile-header-bar {
+	background-color: rgba(0, 0, 0, .8);
+	border-radius: 100px !important;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
+	color: white;
+	float: none;
+	margin-right: 10px;
+	overflow: hidden;
+	height: 44px;
+}
+
+.mobile-header-bar .full-icon-space-container,
+.mobile-header-bar .full-icon-space,
+.mobile-header-bar .col-xs-10,
+.mobile-header-bar #marker-search {
+	height: 44px !important;
+	line-height: 44px !important;
+}
+
+.mobile-header-bar>.row {
+	margin-left: 0;
+	margin-right: 0;
+}
 
 .leaflet-touch .leaflet-bar a {
 	width: 30px;
@@ -915,33 +939,4 @@ a.icon-close2 {
 .icon-addon .form-control:focus+.fa,
 .icon-addon:hover .fa {
 	color: white;
-}
-
-
-/* Mobile */
-
-.mobile-header-bar {
-	background-color: rgba(0, 0, 0, .8);
-	border-radius: 100px !important;
-	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
-	color: white;
-	float: none;
-	margin-right: 10px;
-	overflow: hidden;
-	height: 44px;
-}
-
-.mobile-header-bar .full-icon-space {
-	line-height: 44px;
-}
-
-.mobile-header-bar .col-xs-10,
-.mobile-header-bar #marker-search {
-	height: 44px !important;
-	line-height: 44px !important;
-}
-
-.mobile-header-bar>.row {
-	margin-left: 0;
-	margin-right: 0;
 }

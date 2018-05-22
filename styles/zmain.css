@@ -863,7 +863,8 @@ header.ex1 {
 }
 
 .center-block {
-	float: left;
+	float: none;
+	text-align: left;
 	height: 75px !important;
 	padding-bottom: env(safe-area-inset-bottom) !important;
 }

@@ -859,13 +859,13 @@ a.icon-close2 {
 
 header.ex1 {
 	height: 110px !important;
-	box-sizing: border-box;
-	padding: 8px;
+	box-sizing: border-box !important;
+	padding: 8px !important;
 }
 
 .center-block {
-	float: none;
-	height: 75px;
+	float: left;
+	height: 75px !important;
 }
 
 .progress-bar-filler {

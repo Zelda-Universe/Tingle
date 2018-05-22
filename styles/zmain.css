@@ -867,6 +867,7 @@ header.ex1 {
 	text-align: left;
 	height: 75px !important;
 	padding: 16px;
+	margin-left: 0;
 	padding-bottom: env(safe-area-inset-bottom) !important;
 }
 

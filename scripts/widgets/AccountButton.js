@@ -6,11 +6,8 @@ function AccountButton(opts) {
 };
 
 AccountButton.prototype._initDOMElements = function() {
-  this.domNode = $('' +
-    '<a class="button account-button full-icon-space" href="#account">' +
-      '<i class="fas fa-user"></i>' +
-    '</a>'
-  );
+  this.domNode = L.DomUtil.create('a', 'button fas fa-user account-button full-icon-space');
+  this.domNode.href = "#account";
 };
 
 AccountButton.prototype._setupUserInputListener = function(opts) {

@@ -24,7 +24,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       this.options.scrollbarWidth = 18; // IE / FF
     }
 
-    this._startPosition = (parseInt(this.options.height, 10)) - this.options.headerHeight;
+    this._startPosition = (parseInt(this.options.height, 100)) - this.options.headerHeight;
     this._isLeftPosition = this.options.position.endsWith("left");
   },
 
@@ -59,7 +59,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       window.innerHeight -
       this.options.openTo -
       this.options.headerHeight -
-      400 // Paddings, margins, and things.  Mostly from '.category-selection-list'?
+      40 // Paddings, margins, and things.  Mostly from '.category-selection-list'?
     ) + 'px';
     this._contents.style.minHeight = this._contents.style.maxHeight;
   },

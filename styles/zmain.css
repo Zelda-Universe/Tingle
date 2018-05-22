@@ -100,10 +100,9 @@ body,
 
 .button.full-icon-space {
 	display: inline-block;
-	line-height: 40px;
-	font-size: 18px;
 	width: 100%;
-    height: 100%;
+	height: 100%;
+	padding: 12px;
 }
 
 .circle {

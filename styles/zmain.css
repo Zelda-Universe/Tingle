@@ -681,7 +681,7 @@ a.icon-close2 {
 @supports(padding: max(0px)) {
     .mobile-header-bar::before {
 	    content: " ";
-        padding-top: max(12px, env(safe-area-inset-top));
+        padding-top: max(120px, env(safe-area-inset-top));
     }
 }
 

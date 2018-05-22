@@ -8,6 +8,7 @@ function Logo(opts) {
 };
 
 Logo.prototype._initDOMElements = function(opts) {
-  var logoDiv = L.DomUtil.create('img', 'img-responsive left-block', opts.parent);
+  var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', opts.parent);
   logoDiv.src  = 'images/zmaps_white.png';
+  logoDiv.style.height = (opts.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
 };

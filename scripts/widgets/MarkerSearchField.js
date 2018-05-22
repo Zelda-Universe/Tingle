@@ -20,7 +20,7 @@ MarkerSearchField.prototype._initDOMElements = function() {
       '<div class="icon-addon addon-sm">' +
         '<input type="text" placeholder="Search Breath of the Wild" class="form-control marker-search" id="marker-search">' +
         '<a class="button icon-close2" href="javascript:;">×</a>' +
-        '<label for="email" class="fa fa-search" rel="tooltip" title="email">' +
+        '<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email">' +
         '</label>' +
       '</div>' +
     '</div>'

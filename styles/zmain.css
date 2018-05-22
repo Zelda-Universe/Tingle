@@ -771,8 +771,8 @@ a.icon-close2 {
 
 #mobileAds {
 	position: absolute;
-	z-index: 999;
-	bottom: 110px;
+	z-index: 500;
+	bottom: 130px;
 	left: 12px;
 	right: 12px;
 	height: 50px;
@@ -781,7 +781,7 @@ a.icon-close2 {
 
 #desktopAds {
 	position: absolute;
-	z-index: 999;
+	z-index: 500;
 	bottom: 16px;
 	height: 90px;
 	left: 50%;

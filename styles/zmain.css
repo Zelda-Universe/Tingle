@@ -457,6 +457,15 @@ a.icon-close2 {
 	float: none;
 	margin-right: 10px;
 	overflow: hidden;
+	height: 44px;
+}
+
+.mobile-header-bar .full-icon-space {
+	line-height: 44px;
+}
+
+.mobile-header-bar #marker-search {
+	height: 44px;
 }
 
 .mobile-header-bar>.row {

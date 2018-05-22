@@ -474,11 +474,10 @@ a.icon-close2 {
 .leaflet-control-layers-separator,
 [class $="-separator"] {
 	height: 1px;
-	opacity: .2;
 }
 
 [class $="-separator"] {
-	border-top: 1px solid #ddd;
+	border-top: 1px solid rgba(255,255,255,.2);
 }
 
 .leaflet-control .highlighted {

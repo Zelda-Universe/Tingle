@@ -686,11 +686,11 @@ a.icon-close2 {
 .mobile-header-bar .row-header,
 .mobile-header-bar .col-xs-10,
 .mobile-header-bar #marker-search {
-	height: 44px;
+	height: 44px !important;
 }
 
 .mobile-header-bar .glyphicon-search {
-	top: -0.5px;
+	top: -0.5px !important;
 }
 
 .mobile-header-bar>.row {

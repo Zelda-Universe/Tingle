@@ -52,10 +52,10 @@ HeaderBar.prototype._initDOMElements = function() {
   );
   this.createSearchArea(headerDivMid);
 
-  if(this.shrinkButton) {
-    var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
-    this.createShrinkButton(headerDivRight);
-  }
+  // if(this.shrinkButton) {
+  //  var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
+  //  this.createShrinkButton(headerDivRight);
+  // }
 };
 
 HeaderBar.prototype.createActionsButton = function(parent) {

@@ -777,20 +777,15 @@ a.icon-close2 {
 	text-align: center;
 	height: 40px;
 	padding: 0 0 0 5px;
-	width: 300px;
+	width: 85%;
 	background-clip: padding-box;
 	-webkit-background-clip: padding-box;
 }
 
 .row.vertical-divider div[class^="col-"]:first-child {
 	border-left: none;
-	width: 55px;
+	width: 15%;
 	border-right: 1px solid rgba(255, 255, 255, .2);
-}
-
-.row.vertical-divider div[class^="col-"]:last-child {
-	border-right: none;
-	display: none;
 }
 
 .row-header, #marker-search {

@@ -3,7 +3,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     position: 'topleft',
     delay: 0,
     openTo: 78,
-    softOpenBottom: 250,
+    softOpenBottom: 350,
     softOpenTo: 0 // REVERSE
   },
   _open: false,

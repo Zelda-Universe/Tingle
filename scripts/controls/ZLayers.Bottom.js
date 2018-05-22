@@ -4,7 +4,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     delay: 0,
     openTo: 78,
     softOpenBottom: 250,
-    softOpenTo: 0 // REVERSE
+    softOpenTo: 78 // REVERSE
   },
   _open: false,
 

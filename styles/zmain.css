@@ -863,6 +863,7 @@ header.ex1 {
 
 .center-block {
 	float: none;
+	box-sizing: content-box;
 	text-align: left;
 	height: 75px !important;
 	padding: 16px;

@@ -52,6 +52,8 @@ HeaderBar.prototype._initDOMElements = function() {
   );
   this.createSearchArea(headerDivMid);
 
+  // Hiding the shrink button for now due to UX conflict ~ Jason, May 22nd 2018
+  //
   // if(this.shrinkButton) {
   //  var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
   //  this.createShrinkButton(headerDivRight);

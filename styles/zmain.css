@@ -679,8 +679,8 @@ a.icon-close2 {
 
 .mobile-header-bar .full-icon-space-container,
 .mobile-header-bar .full-icon-space {
-	height: 44px;
-	line-height: 44px;
+	height: 44px !important;
+	line-height: 44px !important;
 }
 
 .mobile-header-bar .row-header,

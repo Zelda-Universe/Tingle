@@ -4,7 +4,12 @@
 //   - headerHeight: [Number]
 
 function Logo(opts) {
+    this._setDebugNames();
+  this._initSettings(opts);
+  this._initTemplate();
   this._initDOMElements(opts);
+  this._setupUserInputListener(opts);
+  this._updateState();
 };
 
 Logo.prototype._initDOMElements = function(opts) {

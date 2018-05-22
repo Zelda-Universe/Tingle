@@ -858,7 +858,7 @@ a.icon-close2 {
 }
 
 header.ex1 {
-	height: 105px !important;
+	height: auto !important;
 }
 
 .center-block {

@@ -674,9 +674,14 @@ a.icon-close2 {
 	color: white;
 	float: none;
 	margin-right: 10px;
-	margin-top: env(safe-area-inset-top);
 	overflow: hidden;
 	height: 44px;
+}
+
+@supports(padding: max(0px)) {
+    .mobile-header-bar::before {
+        padding-top: max(12px, env(safe-area-inset-top));
+    }
 }
 
 .mobile-header-bar .full-icon-space-container,

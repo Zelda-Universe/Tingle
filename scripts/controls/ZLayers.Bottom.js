@@ -24,7 +24,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       this.options.scrollbarWidth = 18; // IE / FF
     }
 
-    this._startPosition = (parseInt(this.options.height, 78)) - this.options.headerHeight;
+    this._startPosition = (parseInt(this.options.height, 0)) - this.options.headerHeight;
     this._isLeftPosition = this.options.position.endsWith("left");
   },
 

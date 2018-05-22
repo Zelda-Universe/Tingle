@@ -16,7 +16,11 @@ Logo.prototype._initDOMElements = function(opts) {
     '<li class="category-selector">' +
     '</li>'
   ;
-
+	
+  var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', opts.parent);
+  logoDiv.src  = 'images/zmaps_white.png';
+  logoDiv.style.height = (opts.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
+  
   this._addCategoryMenuEntry(
     new CategoryButtonCompleted({
         onToggle: opts.onCompletedToggle,
@@ -24,31 +28,6 @@ Logo.prototype._initDOMElements = function(opts) {
       }
     )
   );
-  // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-
-  var currentCategoryParentButton;
-  categoryTree.forEach(function(category) {
-    currentCategoryParentButton = new CategoryParentButton({
-      category: category,
-      onToggle: opts.onCategoryToggle
-    });
-
-    this._addCategoryMenuEntry(currentCategoryParentButton);
-
-    category.children.forEach(function(childCategory) {
-      currentChildCategoryButton = new CategoryButton({
-        category: childCategory,
-        onToggle: opts.onCategoryToggle
-      });
-
-      this._addCategoryMenuEntry(currentChildCategoryButton);
-      currentCategoryParentButton.addChild(currentChildCategoryButton);
-    }, this);
-  }, this);
-	
-  var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', opts.parent);
-  logoDiv.src  = 'images/zmaps_white.png';
-  logoDiv.style.height = (opts.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
 };
 
 Logo.prototype._addCategoryMenuEntry = function(categoryButton) {

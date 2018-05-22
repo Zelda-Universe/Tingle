@@ -449,27 +449,13 @@ a.icon-close2 {
 
 /** CONTROLS **/
 
-.mobile-header-bar {
-	background-color: rgba(0, 0, 0, .8);
-	border-radius: 100px !important;
-	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
-	color: white;
-	float: none;
-	margin-right: 10px;
-	overflow: hidden;
-}
-
-.mobile-header-bar>.row {
-	margin-left: 0;
-	margin-right: 0;
-}
-
 .leaflet-control-layers,
 .leaflet-control {
 	background-color: rgba(0, 0, 0, .8);
 	border-radius: 16px;
 	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 	color: white;
+	z-index: 1000;
 }
 
 .leaflet-control-layers-separator,
@@ -679,7 +665,39 @@ a.icon-close2 {
 }
 
 
-/***************** CONTROL ***********************/
+/* Controls */
+
+.mobile-header-bar {
+	background-color: rgba(0, 0, 0, .8);
+	border-radius: 100px !important;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
+	color: white;
+	float: none;
+	margin-right: 10px;
+	overflow: hidden;
+	height: 44px;
+}
+
+.mobile-header-bar .full-icon-space-container,
+.mobile-header-bar .full-icon-space {
+	height: 44px !important;
+	line-height: 44px !important;
+}
+
+.mobile-header-bar .row-header,
+.mobile-header-bar .col-xs-10,
+.mobile-header-bar #marker-search {
+	height: 44px !important;
+}
+
+.mobile-header-bar .glyphicon-search {
+	top: -0.5px !important;
+}
+
+.mobile-header-bar>.row {
+	margin-left: 0;
+	margin-right: 0;
+}
 
 .leaflet-touch .leaflet-bar a {
 	width: 30px;
@@ -753,7 +771,7 @@ a.icon-close2 {
 #mobileAds {
 	position: absolute;
 	z-index: 999;
-	top: 48px;
+	bottom: 110px;
 	left: 12px;
 	right: 12px;
 	height: 50px;

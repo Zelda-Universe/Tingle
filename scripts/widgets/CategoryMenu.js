@@ -11,14 +11,7 @@ CategoryMenu.prototype._initDOMElements = function(opts) {
     '<li class="category-selector">' +
     '</li>'
   ;
-
-  this._addCategoryMenuEntry(
-    new CategoryButtonCompleted({
-        onToggle: opts.onCompletedToggle,
-        toggledOn: opts.showCompleted
-      }
-    )
-  );
+  
   // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
 
   var currentCategoryParentButton;

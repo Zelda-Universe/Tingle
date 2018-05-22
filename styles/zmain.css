@@ -868,6 +868,7 @@ header.ex1 {
 	height: 75px !important;
 	padding: 16px;
 	margin-left: 0;
+	margin-right: 0;
 	padding-bottom: env(safe-area-inset-bottom) !important;
 }
 

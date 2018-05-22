@@ -12,3 +12,11 @@ Logo.prototype._initDOMElements = function(opts) {
   logoDiv.src  = 'images/zmaps_white.png';
   logoDiv.style.height = (opts.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
 };
+
+this._addCategoryMenuEntry(
+new CategoryButtonCompleted({
+    onToggle: opts.onCompletedToggle,
+    toggledOn: opts.showCompleted
+  }
+)
+);

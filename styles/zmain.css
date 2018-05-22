@@ -173,7 +173,8 @@ body,
 
 .category-selection-list {
 	margin-top: 0px;
-	padding: 12px 0 0 0;
+	padding: 16px 8px 0 8px;
+	text-align: left;
 }
 
 .category-selection-list>.category-selector {
@@ -674,6 +675,7 @@ a.icon-close2 {
 	color: white;
 	float: none;
 	margin-right: 10px;
+	margin-top: max(10px, env(safe-area-inset-top)) !important;
 	overflow: hidden;
 	height: 44px;
 }
@@ -770,8 +772,8 @@ a.icon-close2 {
 
 #mobileAds {
 	position: absolute;
-	z-index: 999;
-	bottom: 110px;
+	z-index: 500;
+	bottom: 130px;
 	left: 12px;
 	right: 12px;
 	height: 50px;
@@ -780,7 +782,7 @@ a.icon-close2 {
 
 #desktopAds {
 	position: absolute;
-	z-index: 999;
+	z-index: 500;
 	bottom: 16px;
 	height: 90px;
 	left: 50%;
@@ -856,10 +858,19 @@ a.icon-close2 {
 	box-shadow: none;
 }
 
+header.ex1 {
+	height: auto !important;
+}
+
 .center-block {
 	float: none;
-	margin-left: 8px;
-	margin-right: auto;
+	box-sizing: content-box;
+	text-align: left;
+	height: 75px !important;
+	padding: 12px 16px;
+	margin-left: 0;
+	margin-right: 0;
+	padding-bottom: env(safe-area-inset-bottom) !important;
 }
 
 .progress-bar-filler {

@@ -861,8 +861,7 @@ header.ex1 {
 	height: auto !important;
 }
 
-.center-block {
-	float: none;
+.left-block {
 	box-sizing: content-box;
 	text-align: left;
 	height: 75px !important;

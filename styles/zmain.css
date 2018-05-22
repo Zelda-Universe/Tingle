@@ -678,10 +678,10 @@ a.icon-close2 {
 	height: 44px;
 }
 
-@supports(padding: max(0px)) {
+@supports(padding: min(0px)) {
     .mobile-header-bar::before {
 	    content: " ";
-        padding-top: max(120px, env(safe-area-inset-top));
+        padding-top: min(120px, env(safe-area-inset-top));
     }
 }
 

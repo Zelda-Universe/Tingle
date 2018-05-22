@@ -677,12 +677,17 @@ a.icon-close2 {
 	height: 44px;
 }
 
+.mobile-header-bar .row-header,
 .mobile-header-bar .full-icon-space-container,
 .mobile-header-bar .full-icon-space,
 .mobile-header-bar .col-xs-10,
 .mobile-header-bar #marker-search {
 	height: 44px !important;
 	line-height: 44px !important;
+}
+
+.mobile-header-bar .glyphicon-search {
+	top: -0.5px;
 }
 
 .mobile-header-bar>.row {

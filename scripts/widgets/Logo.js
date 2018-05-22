@@ -8,16 +8,6 @@ function Logo(opts) {
 };
 
 Logo.prototype._initDOMElements = function(opts) {
-  var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', opts.parent);
-  logoDiv.src  = 'images/zmaps_white.png';
-  logoDiv.style.height = (opts.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
-};
-
-function CategoryMenu(opts) {
-  this._initDOMElements(opts);
-};
-
-CategoryMenu.prototype._initDOMElements = function(opts) {
   this.domNode = $('' +
     '<ul class="category-selection-list">' +
     '</ul>'
@@ -55,9 +45,13 @@ CategoryMenu.prototype._initDOMElements = function(opts) {
       currentCategoryParentButton.addChild(currentChildCategoryButton);
     }, this);
   }, this);
+	
+  var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', opts.parent);
+  logoDiv.src  = 'images/zmaps_white.png';
+  logoDiv.style.height = (opts.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
 };
 
-CategoryMenu.prototype._addCategoryMenuEntry = function(categoryButton) {
+Logo.prototype._addCategoryMenuEntry = function(categoryButton) {
   var menuEntry = $(this.menuEntryContainerTemplate);
   menuEntry.append(categoryButton.domNode);
   this.domNode.append(menuEntry);

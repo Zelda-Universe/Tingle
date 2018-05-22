@@ -3,7 +3,6 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     position: 'topleft',
     delay: 0,
     openTo: 78,
-    headerHeight: 78,
     softOpenBottom: 250,
     softOpenTo: 0 // REVERSE
   },
@@ -60,7 +59,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       window.innerHeight -
       this.options.openTo -
       this.options.headerHeight -
-      40 // Paddings, margins, and things.  Mostly from '.category-selection-list'?
+      400 // Paddings, margins, and things.  Mostly from '.category-selection-list'?
     ) + 'px';
     this._contents.style.minHeight = this._contents.style.maxHeight;
   },

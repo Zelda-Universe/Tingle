@@ -466,8 +466,8 @@ a.icon-close2 {
 
 .mobile-header-bar .col-xs-10,
 .mobile-header-bar #marker-search {
-	height: 44px;
-	line-height: 44px;
+	height: 44px !important;
+	line-height: 44px !important;
 }
 
 .mobile-header-bar>.row {

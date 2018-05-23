@@ -446,7 +446,8 @@ a.icon-close2 {
 	top: 8px;
 	left: 8px;
 	z-index: 100;
-	height: 18px;
+	height: 21px !important;
+	width: auto !important;
 }
 
 .back-button .fa-chevron-left {

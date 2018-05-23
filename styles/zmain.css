@@ -867,10 +867,10 @@ header.ex1 {
 	box-sizing: content-box;
 	text-align: left;
 	height: 75px !important;
-	padding: 12px 16px;
+	padding: 12px 16px !important;
 	margin-left: 0;
 	margin-right: 0;
-	padding-bottom: env(safe-area-inset-bottom) !important;
+	padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
 }
 
 .progress-bar-filler {

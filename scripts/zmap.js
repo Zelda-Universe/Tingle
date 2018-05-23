@@ -1779,31 +1779,33 @@ ZMap.prototype.goTo = function(vGoTo) {
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
    var marker = this.cachedMarkersById[vMarkerId];
-   mapControl.changeMap(marker.mapId, marker.submapId);
+   if(marker) {
+     mapControl.changeMap(marker.mapId, marker.submapId);
 
-   if (!vZoom) {
-      vZoom = map.getZoom();
+     if (!vZoom) {
+        vZoom = map.getZoom();
+     }
+     if (vZoom > map.getMaxZoom()) {
+        vZoom = map.getMaxZoom();
+     }
+
+     /*
+      0 = 256
+      1 = 128
+      2 = 64
+      3 = 32
+      4 = 16
+      5 = 8
+      6 = 4
+     */
+     var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
+     map.setView(latlng, vZoom);
+     _this._createMarkerPopup(marker);
+     newMarker = L.marker(marker._latlng).addTo(map);
+
+     //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
+     return;
    }
-   if (vZoom > map.getMaxZoom()) {
-      vZoom = map.getMaxZoom();
-   }
-
-   /*
-    0 = 256
-    1 = 128
-    2 = 64
-    3 = 32
-    4 = 16
-    5 = 8
-    6 = 4
-   */
-   var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
-   map.setView(latlng, vZoom);
-   _this._createMarkerPopup(marker);
-   newMarker = L.marker(marker._latlng).addTo(map);
-
-   //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
-   return;
 
    toastr.error(_this.langMsgs.GO_TO_MARKER_ERROR.format(vMarkerId));
 }

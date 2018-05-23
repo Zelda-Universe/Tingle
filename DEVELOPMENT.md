@@ -43,6 +43,7 @@
   - When you're done, add a changelog entry for it.
     - Add a migration for this new entry.
     - Use the next release number as given to the development team.
+    - If you need to use a single escape, escape it as such in the Ruby- (and to some extent, Rails-) based migration file: `\\\'`.
 
 # Etc.
 

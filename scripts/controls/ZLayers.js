@@ -211,7 +211,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       $(this._categoryMenu.domNode).detach();
     $(this._contents).empty();
     if(vType != 'category') {
-      var closeButton = L.DomUtil.create('a', 'button', this._contents);
+      var closeButton = L.DomUtil.create('a', 'button back-button', this._contents);
       closeButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
       closeButton.href="#close";
       L.DomEvent

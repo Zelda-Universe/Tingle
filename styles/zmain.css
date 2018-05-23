@@ -310,7 +310,8 @@ body,
 	text-align: center;
 	font-style: italic;
 	color: #c3c3c3;
-	padding: 5px 0px;
+	padding: 8px 0px;
+	font-size: 13px;
 }
 
 .marker-list-entry {
@@ -442,12 +443,11 @@ a.icon-close2 {
 }
 
 .back-button {
-	position: absolute;
+	position: sticky;
 	top: 8px;
 	left: 8px;
 	z-index: 100;
 	height: 21px !important;
-	width: auto !important;
 }
 
 .back-button .fa-chevron-left {

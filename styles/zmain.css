@@ -445,6 +445,7 @@ a.icon-close2 {
 	position: absolute;
 	top: 8px;
 	left: 8px;
+	z-index: 100;
 }
 
 .infoWindowIcn {

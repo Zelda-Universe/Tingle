@@ -780,13 +780,13 @@ a.icon-close2 {
 /**** ADS ***/
 
 #mobileAds {
-	position: absolute;
-	z-index: 500;
-	bottom: 130px;
-	left: 12px;
-	right: 12px;
-	height: 50px;
-	width: auto;
+	position: absolute !important;
+	z-index: 500 !important;
+	bottom: 130px !important;
+	left: 12px !important;
+	right: 12px !important;
+	height: 50px !important;
+	width: auto !important;
 }
 
 #desktopAds {

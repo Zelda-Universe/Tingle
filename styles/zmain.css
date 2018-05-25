@@ -73,7 +73,7 @@ body,
 	width: 100vw;
 	background-color: #565656;
 	overflow: hidden;
-	position: fixed;	
+	position: fixed;
     font-family: "BrandonText", sans-serif;
 }
 
@@ -177,7 +177,7 @@ body,
 	text-align: left;
 }
 
-.category-selection-list>.category-selector {
+.category-selector {
 	display: inline-block;
 	text-align: center;
 	vertical-align: top;
@@ -414,7 +414,7 @@ a.button {
 	border: none;
 	text-align: center;
 	width: 18px;
-	height: 14px;	
+	height: 14px;
     font-family: "BrandonText", sans-serif;
 	color: #c3c3c3;
 	text-decoration: none;
@@ -799,6 +799,8 @@ a.icon-close2 {
 	overflow: hidden;
 }
 
+/*** General Drawer Stuff ***/
+
 .row.vertical-divider {
 	overflow: hidden;
 }
@@ -817,6 +819,8 @@ a.icon-close2 {
 	width: 15%;
 	border-right: 1px solid rgba(255, 255, 255, .2);
 }
+
+/* Drawer Header Stuff */
 
 .row-header, #marker-search {
 	font-family: "BrandonText", sans-serif;
@@ -871,6 +875,11 @@ header.ex1 {
 	height: auto !important;
 }
 
+header.ex1 > * {
+  margin-left: 19px;
+  margin-right: 19px;
+}
+
 .center-block {
 	float: none;
 	box-sizing: content-box;
@@ -879,6 +888,17 @@ header.ex1 {
 	padding: 12px 16px !important;
 	margin-left: 0;
 	margin-right: 0;
+}
+
+img.logo {
+  height: 75px;
+}
+
+.completed-button {
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+  width: 83px;
 }
 
 .progress-bar-filler {

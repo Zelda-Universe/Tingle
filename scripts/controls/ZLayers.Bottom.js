@@ -132,12 +132,18 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
             yDown = null;
          }, this);
 
-
-      var logoDiv = L.DomUtil.create('img', 'img-responsive center-block', headerMenu);
-      logoDiv.src  = 'images/zmaps_white.png';
-      logoDiv.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
+      var logo = new Logo({ parent: headerMenu });
 
       L.DomUtil.create('div', 'grabber', headerMenu);
+
+      var completedButton = new CategoryButtonCompleted({
+        toggledOn: mapOptions.showCompleted,
+        onToggle: function(showCompleted) {
+	        zMap.toggleCompleted(showCompleted);
+	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+      });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(completedButton.domNode);
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
@@ -148,14 +154,10 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 
       this._categoryMenu = new CategoryMenu({
         defaultToggledState: false,
-         showCompleted: mapOptions.showCompleted,
-         categoryTree: categoryTree,
+        categoryTree: categoryTree,
         onCategoryToggle: function(toggledOn, category) {
           zMap.updateCategoryVisibility2(category, toggledOn);
-        }, // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
-        onCompletedToggle: function(showCompleted) {
-          zMap.toggleCompleted(showCompleted);
-        } // Where should the cookie code come from.... some config object with an abstracted persistence layer?
+        } // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
       });
       this._resetContent(false);
       this._contents.style.clear = 'both';

@@ -443,9 +443,12 @@ a.icon-close2 {
 }
 
 .back-button {
+  height: initial;
+
+  float: left;
 	position: sticky;
-	top: 8px;
-	left: 8px;
+	top: 3px;
+	left: 5px;
 	z-index: 100;
 	font-size: 21px;
 }

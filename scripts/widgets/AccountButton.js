@@ -15,7 +15,7 @@ AccountButton.prototype._initDOMElements = function() {
 
 AccountButton.prototype._setupUserInputListener = function(opts) {
   L.DomEvent.on(
-    this.domNode,
+    this.domNode[0],
     'click',
     this.click.bind(this, opts)
   );

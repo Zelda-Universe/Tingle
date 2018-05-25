@@ -1434,24 +1434,7 @@ ZMap.prototype._buildContextMenu = function() {
          }
       }, {
          text: 'Log Out',
-         callback: function() {
-            $.ajax({
-               type: "POST",
-               url: "ajax.php?command=logout",
-               success: function(data) {
-                  //data = jQuery.parseJSON(data);
-                  if (data.success) {
-                     toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
-                     user = null;
-                     _this._buildContextMenu();
-                     mapControl.resetContent();
-                     showLoginControls();
-                  } else {
-                     toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
-                  }
-               }
-            });
-         }
+         callback: this.logout.bind(this)
       });
    }
 
@@ -1461,6 +1444,25 @@ ZMap.prototype._buildContextMenu = function() {
       map.contextmenu.addItem(contextMenu[i]);
    }
 }
+
+ZMap.prototype.logout = function() {
+   $.ajax({
+      type: "POST",
+      url: "ajax.php?command=logout",
+      success: function(data) {
+         //data = jQuery.parseJSON(data);
+         if (data.success) {
+            toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
+            user = null;
+            _this._buildContextMenu();
+            mapControl.resetContent();
+            showLoginControls();
+         } else {
+            toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
+         }
+      }
+   });
+};
 
 
 ZMap.prototype._createRegisterForm = function() {
@@ -1723,6 +1725,7 @@ ZMap.prototype._createAccountForm = function(user) {
          '<div>' +
            '<button id="account_reset_btn" type="button" class="btn btn-link">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="btn btn-link">Change Password</button>' +
+           '<button id="log_out_btn" type="button" class="btn btn-link">Log out</button>' +
          '</div>' +
       '</div>' +
     '</div>',
@@ -1738,6 +1741,11 @@ ZMap.prototype._createAccountForm = function(user) {
      _this._createChangePasswordForm();
      e.preventDefault();
   });
+
+  $("#log_out_btn").click(function(e) {
+     this.logout();
+     e.preventDefault();
+  }.bind(this));
 }
 //****************************************************************************************************//
 //*************                                                                          *************//

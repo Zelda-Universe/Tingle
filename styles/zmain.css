@@ -883,7 +883,7 @@ header.ex1 > * {
   margin-right: 19px;
 }
 
-.center-block {
+.logo {
 	float: none;
 	box-sizing: content-box;
 	text-align: left;
@@ -893,15 +893,12 @@ header.ex1 > * {
 	margin-right: 0;
 }
 
-img.logo {
-  height: 75px;
-}
-
 .completed-button {
-  display: inline-block;
-  text-align: center;
-  vertical-align: top;
-  width: 83px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+	width: 83px;
+	margin: 12px 16px;
 }
 
 .progress-bar-filler {

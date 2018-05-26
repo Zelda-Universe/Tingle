@@ -878,11 +878,6 @@ header.ex1 {
 	height: auto !important;
 }
 
-header.ex1 > * {
-  margin-left: 19px;
-  margin-right: 19px;
-}
-
 .logo {
 	float: none;
 	box-sizing: content-box;

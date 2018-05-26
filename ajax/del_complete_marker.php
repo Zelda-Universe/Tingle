@@ -1,10 +1,9 @@
 <?php
    $path = DIRNAME(__FILE__);
    include_once("$path/../config.php");
-	
-	start_session("zmap");
+
 	begin();
-	
+
 	if (!isset($_POST['markerId']) && !isset($_POST['userId'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
 		return;
@@ -14,12 +13,12 @@
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
 		return;
 	}
-   
+
    //----------------------------------------------------------//
-   $query = "delete from " . $map_prefix . "user_completed_marker " . 
-            " where user_id = " . $_POST['userId'] . 
+   $query = "delete from " . $map_prefix . "user_completed_marker " .
+            " where user_id = " . $_POST['userId'] .
             "   and marker_id = " . $_POST['markerId'];
-   
+
 	//echo $query;
    $result = @$mysqli->query($query); // or die(mysql_error());
 

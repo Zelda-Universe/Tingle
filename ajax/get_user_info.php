@@ -25,6 +25,7 @@
          $user['level'] = $_SESSION['level'];
          $user['seen_latest_changelog'] = !!$_SESSION['seen_latest_changelog'];
          $user['seen_version'] = $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3'];
+         session_write_close();
          $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
 
          $uquery = "update " . $map_prefix . "user set ip = '" . $ip . "', last_login=now() where id = " . $user['id'];

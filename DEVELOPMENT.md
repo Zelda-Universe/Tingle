@@ -47,6 +47,17 @@
     - Use the next release number as given to the development team.
     - If you need to use a single escape, escape it as such in the Ruby- (and to some extent, Rails-) based migration file: `\\\'`.
 
+## Backend
+
+  Written in PHP.
+
+  I'm thinking to store more information in the session, rather than the client's cookies.  We would only use cookies when needed, so when the user is not authenticated.
+
+  We use the helper function we created `start_session("zmap");` with that name commonly.
+  Then we close it after all `$_SESSION` references have been passed: `session_write_close();`.
+
+  Try to issue these commands as close to the block of all session references as possible, since our framework probably does not support concurrency, and this way the lock on the session file can be released and other users requests can continue to be processed after the current.
+
 # Etc.
 
 ## Icons

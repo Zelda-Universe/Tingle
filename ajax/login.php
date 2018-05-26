@@ -2,7 +2,6 @@
    $path = DIRNAME(__FILE__);
    include("$path/../config.php");
 
-	start_session("zmap");
 	begin();
 
 	if (!isset($_POST['user']) || !isset($_POST['password'])) {
@@ -53,6 +52,8 @@
             setcookie('user_id', $user['id'], strtotime( '+30 days' ), "/", "", "", TRUE);
             setcookie('username', $user['username'], strtotime( '+30 days' ), "/", "", "", TRUE);
          }
+
+         start_session("zmap");
 
          $_SESSION['username'] = $user['username'];
          $_SESSION['user_id'] = $user['id'];

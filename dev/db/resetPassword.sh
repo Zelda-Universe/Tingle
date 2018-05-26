@@ -66,7 +66,7 @@ done
 
 # "$SDIR/generateRandomCharacters.sh" # I did the math and conversions myself.
 
-passwordGenerationMethod="'$SDIR/generateRandomCharacters.sh'";
+passwordGenerationMethod="'$SDIR/../generateRandomCharacters.sh'";
 newPassword="$(eval "$passwordGenerationMethod")";
 # echo "newPassword: $newPassword"; # debug
 newPasswordHash="$(php -r 'echo password_hash("$argv[1]", PASSWORD_DEFAULT, ["cost" => 13]);' "$newPassword")";

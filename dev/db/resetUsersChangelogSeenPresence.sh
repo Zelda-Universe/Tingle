@@ -19,7 +19,7 @@ RED='\033[0;31m';
 NC='\033[0m'; # No Color
 
 while [[ "$confirmation" != "y" ]]; do
-  read -p "Reset the \`seen_latest_changelog\` for all users to `false`? (y/n): " confirmation;
+  read -p "Reset the \`seen_latest_changelog\` for all users to `false` for a new release version already deployed? (y/n): " confirmation;
 
   if [[ "$confirmation" == "n" ]]; then
     echo -e "User cancel received; exiting...";
@@ -27,7 +27,12 @@ while [[ "$confirmation" != "y" ]]; do
   fi
 done
 
-resetCommand="mysql $MYSQL_CONNECTION_STRING -e 'UPDATE \`user\` SET \`seen_latest_changelog\` = 0;'";
+resetCommand="mysql $MYSQL_CONNECTION_STRING -e '
+  UPDATE \`user\`
+  SET \`seen_latest_changelog\` = 0
+  WHERE \`seen_latest_changelog\` = 1
+  ;
+'";
 
 if [[ "$DRY_RUN" == "true" ]]; then
   echo -e "\nReset Command: ${DARK_GREY}$resetCommand${NC}";

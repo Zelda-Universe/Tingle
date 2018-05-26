@@ -43,7 +43,7 @@
         	support = support/
         	versiontag =
         ```
-    * Install database migration creation framework tool
+    * Install database migration creation framework tool, and run it.
       * Install Ruby
         * I was using 2.4.1.
       * Install RubyGems
@@ -63,3 +63,9 @@
         * The automatic way
           * `gem install bundler`
           * `bundle install`
+        * `dev/db/config.yml.example dev/db/config.yml`
+          * Configure like the `.env` file.
+          * Note which environment you are configuring for and use the appropriate section.
+          * May only need to modify the password, and if not, also the database and/or username fields as well.
+          * Migrate database
+            * `rake db:migrate`

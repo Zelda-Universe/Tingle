@@ -24,7 +24,9 @@
 
   The release manager will manually set all user accounts `seen_latest_changelog` to `0` (`false`).
     Don't want a fresh commit to do this before every release; that would be cruft.
+    Do this after you deploy the code, to prevent the edge case of a user visiting the site in the small window of time with the old and/or database without the new changelog entries, and would incorrectly set the `seen_latest_changelog`, and even the `last_login` field as well, so once the new data is present, it would not be triggered and shown to them.
     Can use this script: `dev/db/resetUsersChangelogSeenPresence.sh`
+      Make sure to set the MySQL parameters appropriately.  See the script header for more deatils.
 
 # Backup
 

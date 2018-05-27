@@ -69,10 +69,10 @@ body {
 html,
 body,
 #map {
-	height: 100vh;
-	width: 100vw;
+	height: 100vh !important;
+	width: 100vw !important;
 	background-color: #565656;
-	// overflow: hidden;
+	overflow: hidden;
 	position: fixed;
     font-family: "BrandonText", sans-serif;
 }

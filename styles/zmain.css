@@ -898,6 +898,7 @@ header.ex1 {
 	box-sizing: border-box !important;
 	text-decoration: none !important;
 	transition: .2s;
+	opacity: 1 !important;
 }
 
 .completed-button .label,

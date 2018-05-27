@@ -919,14 +919,14 @@ header.ex1 {
 .completed-button.toggledOff .icon-checkmark,
 .completed-button.toggledOn:hover .icon-checkmark {
 	border-color: rgba(255,255,255,.4);
-	border-style: solid;
+	border-style: dashed;
 	transition: .2s;
 }
 
 .completed-button.toggledOn .icon-checkmark,
 .completed-button.toggledOff:hover .icon-checkmark {
 	border-color: rgba(255,255,255,.8);
-	border-style: dashed;
+	border-style: solid;
 	transition: .2s;
 }
 

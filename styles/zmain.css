@@ -468,7 +468,6 @@ a.icon-close2 {
 	color: white;
 	z-index: 1000;
 	border: none !important;
-	margin-top: -env(safe-area-inset-top) !important;
 }
 
 .leaflet-control-layers-separator,

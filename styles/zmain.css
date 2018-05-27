@@ -896,7 +896,7 @@ header.ex1 {
 	display: inline-block;
 	text-align: center;
 	vertical-align: top;
-	margin: 12px 0 0 16px;
+	margin: 10px 16px 0 0;
 	float: right;
 }
 
@@ -906,6 +906,7 @@ header.ex1 {
 	font-weight: 400 !important;
 	text-decoration: none !important;
 	display: block;
+	padding-top: 2px;
 }
 
 .progress-bar-filler {

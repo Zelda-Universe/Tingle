@@ -907,7 +907,7 @@ header.ex1 {
 	text-decoration: none !important;
 	display: block;
 	padding-top: 6px;
-	border-size: 1px solid rgba(255,255,255,.8);
+	border: 1px solid rgba(255,255,255,.8);
 	box-sizing: border-box;
 }
 

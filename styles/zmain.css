@@ -922,16 +922,14 @@ header.ex1 {
 .completed-button.toggledOff .icon-checkmark,
 .completed-button.toggledOn:hover .icon-checkmark {
 	color: rgba(255,255,255,.4);
-	border-color: rgba(255,255,255,.4);
-	border-style: dotted;
+	border: 2px dashed rgba(255,255,255,.4);
 	transition: .2s;
 }
 
 .completed-button.toggledOn .icon-checkmark,
 .completed-button.toggledOff:hover .icon-checkmark {
 	color: rgba(255,255,255,.8);
-	border-color: rgba(255,255,255,.8);
-	border-style: solid;
+	border: 2px solid rgba(255,255,255,.8);
 	transition: .2s;
 }
 

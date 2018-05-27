@@ -919,10 +919,12 @@ header.ex1 {
 	padding-top: 6px;
 	border-size: 2px solid rgba(255,255,255,.8);
 	box-sizing: border-box;
+	box-shadow: none !important;
 }
 
 .completed-button .icon-checkmark::before {
-	margin-top: -4px;
+	top: -2px;
+	position: relative;
 }
 
 .completed-button.toggledOff .icon-checkmark,

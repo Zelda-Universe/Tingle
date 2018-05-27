@@ -173,7 +173,7 @@ body,
 
 .category-selection-list {
 	margin-top: 0px;
-	padding: 8px 8px 0 8px;
+	padding: 12px 8px 0 8px;
 }
 
 .category-selector {
@@ -911,6 +911,10 @@ header.ex1 {
 	padding-top: 6px;
 	box-sizing: border-box;
 	color: rgba(255,255,255,.8)
+}
+
+.completed-button.toggledOff .label {
+	color: rgba(255,255,255,.6);
 }
 
 .completed-button .icon-checkmark {

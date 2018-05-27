@@ -917,19 +917,20 @@ header.ex1 {
 	text-decoration: none !important;
 	display: block;
 	padding-top: 6px;
+	border-size: 2px solid rgba(255,255,255,.8);
 }
 
 .completed-button.toggledOff .icon-checkmark,
 .completed-button.toggledOn:hover .icon-checkmark {
 	color: rgba(255,255,255,.4);
-	box-shadow: inset 0 0 0 2px rgba(255,255,255,.4);
+	border-color: rgba(255,255,255,.4);
 	transition: .2s;
 }
 
 .completed-button.toggledOn .icon-checkmark,
 .completed-button.toggledOff:hover .icon-checkmark {
 	color: rgba(255,255,255,.8);
-	box-shadow: inset 0 0 0 2px rgba(255,255,255,.8);
+	border-color: rgba(255,255,255,.8);
 	transition: .2s;
 }
 

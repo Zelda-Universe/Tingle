@@ -173,13 +173,11 @@ body,
 
 .category-selection-list {
 	margin-top: 0px;
-	padding: 16px 8px 0 8px;
-	text-align: left;
+	padding: 8px 8px 0 8px;
 }
 
 .category-selector {
 	display: inline-block;
-	text-align: center;
 	vertical-align: top;
 }
 
@@ -196,6 +194,7 @@ body,
 	font-weight: inherit;
 	white-space: inherit;
 	padding: 0 4px;
+	display: block;
 }
 
 .category-selection-list>.category-selector>.category-button {
@@ -902,8 +901,8 @@ header.ex1 {
 	float: right;
 	text-decoration: none !important;
 	font-size: 14px;
-	color: rgba(255,255,255,.8);
-	font-weight: 100;
+	color: rgba(255,255,255,.8) !important;
+	font-weight: 400 !important;
 }
 
 .progress-bar-filler {

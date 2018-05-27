@@ -763,6 +763,7 @@ a.icon-close2 {
 
 .leaflet-bar a:hover {
 	color: #fff !important;
+	background-color: rgba(50,50,50,.8) !important;
 }
 
 .leaflet-bar a:hover::before {
@@ -772,7 +773,6 @@ a.icon-close2 {
 	left: 0;
 	right: 0;
 	color: #fff !important;
-	background-color: rgba(255,255,255,.1);
 }
 
 .modal-footer {

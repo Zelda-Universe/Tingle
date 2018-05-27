@@ -896,13 +896,12 @@ header.ex1 {
 	display: inline-block;
 	text-align: center;
 	vertical-align: top;
-	width: 83px;
 	margin: 12px 16px;
 	float: right;
 }
 
 .completed-button .label {
-	font-size: 14px;
+	font-size: 12px;
 	color: rgba(255,255,255,.8) !important;
 	font-weight: 400 !important;
 	text-decoration: none !important;

@@ -909,6 +909,7 @@ header.ex1 {
 	display: block;
 	padding-top: 6px;
 	box-sizing: border-box;
+	color: rgba(255,255,255,.8)
 }
 
 .completed-button .icon-checkmark {
@@ -921,14 +922,14 @@ header.ex1 {
 }
 
 .completed-button.toggledOff .icon-checkmark {
-	color: rgba(255,255,255,.6);
-	border: 2px dashed rgba(255,255,255,.6);
+	color: rgba(255,255,255,.3);
+	border: 2px dashed rgba(255,255,255,.3);
 }
 
 .completed-button.toggledOn .icon-checkmark {
 	transition: .2s;
-	color: rgba(255,255,255,1);
-	border: 2px solid rgba(255,255,255,1);
+	color: rgba(255,255,255,.8);
+	border: 2px solid rgba(255,255,255,.8);
 	transition: .2s;
 }
 

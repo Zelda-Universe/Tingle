@@ -879,7 +879,7 @@ a.icon-close2 {
 }
 
 header.ex1 {
-	height: auto !important;
+	height: 99px !important;
 }
 
 .logo {
@@ -896,7 +896,7 @@ header.ex1 {
 	display: inline-block;
 	text-align: center;
 	vertical-align: top;
-	margin: 10px 16px 0 0;
+	margin: 10px 4px 0 0;
 	float: right;
 }
 
@@ -906,7 +906,7 @@ header.ex1 {
 	font-weight: 400 !important;
 	text-decoration: none !important;
 	display: block;
-	padding-top: 2px;
+	padding-top: 4px;
 }
 
 .progress-bar-filler {

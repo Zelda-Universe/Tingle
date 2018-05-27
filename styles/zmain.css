@@ -906,18 +906,12 @@ header.ex1 {
 	float: right;
 	height: 100%;
 	box-sizing: border-box !important;
+	text-decoration: none !important;
 	transition: .2s;
 }
 
-.completed-button.toggledOn {
-	color: rgba(255,255,255,.8) !important;
-}
-
-.completed-button.toggledOff {
-	color: rgba(255,255,255,.4) !important;
-}
-
-.completed-button .label {
+.completed-button .label,
+.completed-button:hover .label {
 	font-size: 12px;
 	font-weight: 400 !important;
 	text-decoration: none !important;
@@ -926,14 +920,14 @@ header.ex1 {
 }
 
 .completed-button.toggledOff .icon-checkmark,
-.completed-button.toggledOn::hover .icon-checkmark {
+.completed-button.toggledOn:hover .icon-checkmark {
 	color: rgba(255,255,255,.4);
 	box-shadow: inset 0 0 0 2px rgba(255,255,255,.4);
 	transition: .2s;
 }
 
 .completed-button.toggledOn .icon-checkmark,
-.completed-button.toggledOff::hover .icon-checkmark {
+.completed-button.toggledOff:hover .icon-checkmark {
 	color: rgba(255,255,255,.8);
 	box-shadow: inset 0 0 0 2px rgba(255,255,255,.8);
 	transition: .2s;

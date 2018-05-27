@@ -462,6 +462,10 @@ a.icon-close2 {
 
 /** CONTROLS **/
 
+.leaflet-top {
+	bottom: 0;
+}
+
 .leaflet-control-layers,
 .leaflet-control {
 	background-color: rgba(0, 0, 0, .8);
@@ -469,6 +473,7 @@ a.icon-close2 {
 	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 	color: white;
 	z-index: 1000;
+	border: none !important;
 }
 
 .leaflet-control-layers-separator,
@@ -897,6 +902,8 @@ header.ex1 {
 	float: right;
 	text-decoration: none !important;
 	font-size: 14px;
+	color: rgba(255,255,255,.8);
+	font-weight: 100;
 }
 
 .progress-bar-filler {

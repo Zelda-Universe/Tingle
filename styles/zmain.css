@@ -72,7 +72,7 @@ body,
 	height: 100vh;
 	width: 100vw;
 	background-color: #565656;
-	overflow: hidden;
+	// overflow: hidden;
 	position: fixed;
     font-family: "BrandonText", sans-serif;
 }
@@ -468,7 +468,6 @@ a.icon-close2 {
 	color: white;
 	z-index: 1000;
 	border: none !important;
-	margin-top: -env(safe-area-inset-bottom) !important;
 }
 
 .leaflet-control-layers-separator,

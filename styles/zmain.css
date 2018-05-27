@@ -907,8 +907,11 @@ header.ex1 {
 	text-decoration: none !important;
 	display: block;
 	padding-top: 6px;
-	border: 1px solid rgba(255,255,255,.8);
 	box-sizing: border-box;
+}
+
+.completed-button .icon-checkmark {
+	border-size: 1px;
 }
 
 .completed-button .icon-checkmark::before {

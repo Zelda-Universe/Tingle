@@ -202,11 +202,11 @@ body,
 }
 
 .category-selection-list {
-	text-align: left;
 }
 
 .category-selector {
 	width: 25%;
+	text-align: center;
 }
 
 .category-button.toggledOn {

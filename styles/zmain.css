@@ -232,16 +232,6 @@ body,
 	color: white;
 }
 
-.category-button.toggledOn>.icon-background.icon-checkmark {
-	color: rgba(255,255,255,.8);
-	box-shadow: inset 0 0 0 2px rgba(255,255,255,.8);
-	box-sizing: border-box;
-}
-
-.category-button.toggledOff>.icon-background.icon-checkmark {
-	color: white;
-}
-
 .category-button.toggledOn>.label>.completed-label-hide {
 	display: inherit;
 }

@@ -905,6 +905,7 @@ header.ex1 {
 	color: rgba(255,255,255,.8) !important;
 	font-weight: 400 !important;
 	text-decoration: none !important;
+	display: block;
 }
 
 .progress-bar-filler {

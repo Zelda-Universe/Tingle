@@ -908,7 +908,6 @@ header.ex1 {
 	box-sizing: border-box !important;
 	text-decoration: none !important;
 	transition: .2s;
-	border-size: 2px solid rgba(255,255,255,.8);
 }
 
 .completed-button .label,
@@ -918,6 +917,12 @@ header.ex1 {
 	text-decoration: none !important;
 	display: block;
 	padding-top: 6px;
+	border-size: 2px solid rgba(255,255,255,.8);
+	box-sizing: border-box;
+}
+
+.completed-button .icon-checkmark::before {
+	margin-top: -4px;
 }
 
 .completed-button.toggledOff .icon-checkmark,

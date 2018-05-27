@@ -907,7 +907,7 @@ header.ex1 {
 	text-decoration: none !important;
 	display: block;
 	padding-top: 6px;
-	border-size: 2px solid rgba(255,255,255,.8);
+	border-size: 1px solid rgba(255,255,255,.8);
 	box-sizing: border-box;
 }
 
@@ -919,7 +919,7 @@ header.ex1 {
 .completed-button.toggledOff .icon-checkmark,
 .completed-button.toggledOn:hover .icon-checkmark {
 	border-color: rgba(255,255,255,.4);
-	border-style: dashed;
+	border-style: dotted;
 	transition: .2s;
 }
 

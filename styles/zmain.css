@@ -209,6 +209,10 @@ body,
 	text-align: center;
 }
 
+.category-selector:nth-of-type(7) {
+	clear: right;
+}
+
 .category-button.toggledOn {
 	opacity: 1;
 }

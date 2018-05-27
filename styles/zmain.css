@@ -925,12 +925,14 @@ header.ex1 {
 	padding-top: 6px;
 }
 
+.completed-button.toggledOff .icon-checkmark,
 .completed-button.toggledOn::hover .icon-checkmark {
 	color: rgba(255,255,255,.4);
 	box-shadow: inset 0 0 0 2px rgba(255,255,255,.4);
 	transition: .2s;
 }
 
+.completed-button.toggledOn .icon-checkmark,
 .completed-button.toggledOff::hover .icon-checkmark {
 	color: rgba(255,255,255,.8);
 	box-shadow: inset 0 0 0 2px rgba(255,255,255,.8);

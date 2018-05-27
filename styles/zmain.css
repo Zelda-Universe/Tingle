@@ -186,7 +186,7 @@ body,
 	font-size: 12px;
 	margin-top: 10px;
 	line-height: 100%;
-	font-weight: 200;
+	font-weight: 400;
 	opacity: inherit;
 	color: rgba(255,255,255,.8);
 	display: block;
@@ -899,10 +899,13 @@ header.ex1 {
 	width: 83px;
 	margin: 12px 16px;
 	float: right;
-	text-decoration: none !important;
+}
+
+.completed-button .label {
 	font-size: 14px;
 	color: rgba(255,255,255,.8) !important;
 	font-weight: 400 !important;
+	text-decoration: none !important;
 }
 
 .progress-bar-filler {

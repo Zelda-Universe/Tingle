@@ -69,8 +69,8 @@ body {
 html,
 body,
 #map {
-	height: 100vh !important;
-	width: 100vw !important;
+	height: 100vh;
+	width: 100vw;
 	background-color: #565656;
 	overflow: hidden;
 	position: fixed;

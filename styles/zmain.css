@@ -202,11 +202,11 @@ body,
 }
 
 .category-selection-list {
-	text-align: center;
+	text-align: left;
 }
 
 .category-selector {
-	width: 83px;
+	width: 25%;
 }
 
 .category-button.toggledOn {
@@ -896,8 +896,10 @@ header.ex1 {
 	display: inline-block;
 	text-align: center;
 	vertical-align: top;
-	margin: 10px 4px 0 0;
+	padding: 10px 4px 0 0;
 	float: right;
+	height: 100%;
+	box-sizing: border-box !important;
 }
 
 .completed-button .label {
@@ -906,7 +908,7 @@ header.ex1 {
 	font-weight: 400 !important;
 	text-decoration: none !important;
 	display: block;
-	padding-top: 4px;
+	padding-top: 6px;
 }
 
 .progress-bar-filler {

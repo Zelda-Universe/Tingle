@@ -924,6 +924,7 @@ header.ex1 {
 .completed-button.toggledOn:hover .icon-checkmark {
 	color: rgba(255,255,255,.4);
 	border-color: rgba(255,255,255,.4);
+	border-style: solid;
 	transition: .2s;
 }
 
@@ -931,6 +932,7 @@ header.ex1 {
 .completed-button.toggledOff:hover .icon-checkmark {
 	color: rgba(255,255,255,.8);
 	border-color: rgba(255,255,255,.8);
+	border-style: dashed;
 	transition: .2s;
 }
 

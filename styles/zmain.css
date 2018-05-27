@@ -920,14 +920,14 @@ header.ex1 {
 }
 
 .completed-button.toggledOff .icon-checkmark {
-	color: rgba(255,255,255,.8);
-	border: 2px solid rgba(255,255,255,.8);
+	color: rgba(255,255,255,1);
+	border: 2px solid rgba(255,255,255,1);
 	transition: .2s;
 }
 
 .completed-button.toggledOn .icon-checkmark {
-	color: rgba(255,255,255,1);
-	border: 2px dashed rgba(255,255,255,1);
+	color: rgba(255,255,255,.6);
+	border: 2px dashed rgba(255,255,255,.6);
 	transition: .2s;
 }
 

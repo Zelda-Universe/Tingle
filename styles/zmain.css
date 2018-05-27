@@ -914,7 +914,7 @@ header.ex1 {
 }
 
 .completed-button.toggledOff .label {
-	color: rgba(255,255,255,.6);
+	color: rgba(255,255,255,.4);
 }
 
 .completed-button .icon-checkmark {

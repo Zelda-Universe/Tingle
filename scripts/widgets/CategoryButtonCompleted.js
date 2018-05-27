@@ -19,7 +19,7 @@ CategoryButtonCompleted.prototype._initDOMElements = function(opts) {
   this.domNode.addClass('completed-button');
 
   this.labelNode.append($(' \
-    <span class="completed-label-hide">Hide Completed</span> \
-    <span class="completed-label-show">Show Completed</span> \
+    <span class="completed-label-hide">Completed: On</span> \
+    <span class="completed-label-show">Completed: Off</span> \
   '));
 };

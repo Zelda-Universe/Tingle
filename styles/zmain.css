@@ -209,8 +209,10 @@ body,
 	text-align: center;
 }
 
-.category-selector:nth-of-type(7) {
-	clear: right;
+.category-selector:nth-of-type(7)::after {
+	display: block;
+	content: " ";
+	height: 8px;
 }
 
 .category-button.toggledOn {

@@ -909,7 +909,6 @@ header.ex1 {
 	padding-top: 6px;
 	border-size: 2px solid rgba(255,255,255,.8);
 	box-sizing: border-box;
-	box-shadow: none !important;
 }
 
 .completed-button .icon-checkmark::before {
@@ -919,7 +918,6 @@ header.ex1 {
 
 .completed-button.toggledOff .icon-checkmark,
 .completed-button.toggledOn:hover .icon-checkmark {
-	color: rgba(255,255,255,.4);
 	border-color: rgba(255,255,255,.4);
 	border-style: solid;
 	transition: .2s;
@@ -927,7 +925,6 @@ header.ex1 {
 
 .completed-button.toggledOn .icon-checkmark,
 .completed-button.toggledOff:hover .icon-checkmark {
-	color: rgba(255,255,255,.8);
 	border-color: rgba(255,255,255,.8);
 	border-style: dashed;
 	transition: .2s;

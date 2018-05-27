@@ -438,9 +438,8 @@ a.icon-close2 {
 }
 
 .back-button {
-  height: initial;
-
-  float: left;
+	height: initial;
+	float: left;
 	position: sticky;
 	top: 3px;
 	left: 5px;
@@ -469,6 +468,7 @@ a.icon-close2 {
 	color: white;
 	z-index: 1000;
 	border: none !important;
+	margin-top: min(0px, -(env(safe-area-inset-bottom)));
 }
 
 .leaflet-control-layers-separator,
@@ -481,7 +481,7 @@ a.icon-close2 {
 }
 
 .leaflet-control .highlighted {
-	background-color: #f1f1f138;
+	background-color: #f1f1f1;
 }
 
  ::-webkit-scrollbar {

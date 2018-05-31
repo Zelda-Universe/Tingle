@@ -381,6 +381,10 @@ body,
 
 /*** MARKER CONTENT ***/
 
+.menu-cat-content-inner {
+	width: 360px;
+}
+
 .popupTitle {
 	/* margin-bottom: 5px;
      margin-top: 0;
@@ -422,7 +426,7 @@ body,
 .popupContent .icon-checkbox-checked,
 .popupContent .icon-checkbox-unchecked,
 .popupContent .fa-link  {
-	margin-right: 8px !important;
+	margin-right: 6px !important;
 }
 
 .popupContent .icon-checkbox-checked,

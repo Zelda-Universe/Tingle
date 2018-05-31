@@ -404,13 +404,23 @@ body,
 	height: auto;
 }
 
-.popupContent .icon-checkbox-unchecked:before {
-	font-size: 16px;
-	content: "\ea11 Mark as Complete"
+.popupContent .infoWindowIcn {
+	text-align: center;
+	font-size: 17px;
+	font-family: "BrandonText" !important;
+	display: block;
+	padding: 8px;
+	background: rgba(255,255,255,.2);
+	border-radius: 10px;
 }
 
-.popupContent .icon-link {
-	font-size: 16px;
+.popupContent .infoWindowIcn:hover {
+	background: rgba(255,255,255,.3);
+}
+
+.popupContent .fas {
+	margin-right: 4px;
+	font-family: "FontAwesome" !important;
 }
 
 a.button {

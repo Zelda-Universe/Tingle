@@ -421,13 +421,14 @@ body,
 
 .popupContent .icon-checkbox-checked,
 .popupContent .icon-checkbox-unchecked,
-.popupContent .icon-link  {
-	margin-right: 4px !important;
+.popupContent .fa-link  {
+	margin-right: 8px !important;
 }
 
 .popupContent .icon-checkbox-checked,
 .popupContent .icon-checkbox-unchecked {
-	margin-top: -4px !important;
+	position: relative;
+	top: -3px;
 }
 
 a.button {

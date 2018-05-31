@@ -381,6 +381,10 @@ body,
 
 /*** MARKER CONTENT ***/
 
+.menu-cat-content-inner {
+	min-width: 360px;
+}
+
 .popupTitle {
 	/* margin-bottom: 5px;
      margin-top: 0;
@@ -391,26 +395,44 @@ body,
 	font-weight: normal;
 }
 
-.popupContent p {
-	margin-top: 0;
-	margin-bottom: 5px;
-	padding-left: 5px;
-	padding-right: 5px;
-	color: whitesmoke;
-}
-
 .popupContent div img {
 	max-width: 400px;
 	height: auto;
 }
 
-.popupContent .icon-checkbox-unchecked:before {
-	font-size: 16px;
-	content: "\ea11 Mark as Complete"
+.popupContent .infoWindowIcn {
+	text-align: center;
+	font-size: 17px;
+	font-family: "BrandonText" !important;
+	display: block;
+	padding: 8px;
+	margin: 0 16px 8px 16px;
+	background: rgba(255,255,255,.2);
+	border-radius: 10px;
 }
 
-.popupContent .icon-link {
-	font-size: 16px;
+.popupContent .infoWindowIcn:first-of-type {
+	margin-top: 32px;
+}
+
+.popupContent .infoWindowIcn:last-of-type {
+	margin-bottom: 16px;
+}
+
+.popupContent .infoWindowIcn:hover {
+	background: rgba(255,255,255,.3);
+}
+
+.popupContent .icon-checkbox-checked,
+.popupContent .icon-checkbox-unchecked,
+.popupContent .fa-link  {
+	margin-right: 6px !important;
+}
+
+.popupContent .icon-checkbox-checked,
+.popupContent .icon-checkbox-unchecked {
+	position: relative;
+	top: -3px;
 }
 
 a.button {
@@ -489,7 +511,7 @@ a.icon-close2 {
 }
 
 .leaflet-control .highlighted {
-	background-color: #f1f1f1;
+	background-color: rgba(255,255,255,.2);
 }
 
  ::-webkit-scrollbar {
@@ -774,7 +796,7 @@ a.icon-close2 {
 	background-color: rgba(50,50,50,.8) !important;
 }
 
-.leaflet-bar a:hover::before {
+.leaflet-bar a:hover:before {
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -929,7 +951,7 @@ header.ex1 {
 	border-size: 1px;
 }
 
-.completed-button .icon-checkmark::before {
+.completed-button .icon-checkmark:before {
 	top: -2px;
 	position: relative;
 }

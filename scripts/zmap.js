@@ -46,18 +46,18 @@ function ZMap() {
       LOGOUT_SUCCESS : "May the Goddess smile upon you, %1!",
       LOGOUT_ERROR   : "I AM ERROR! Please, try to clean your cache and restart your browser to safely logoff.",
 
-      LOGIN_WELCOME  : "Hey, listen!",
+      LOGIN_WELCOME  : "Hey, listen! Welcome back!",
       LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
       LOGIN_ERROR   : "I AM ERROR! %1",
 
       ACCOUNT_TITLE  : "Account",
 
-      REGISTER_WELCOME  : "It's dangerous to go alone!",
-      REGISTER_SUCCESS : "Excuuuuse me, %1! Your user was created!",
+      REGISTER_WELCOME  : "It's dangerous to go alone! We're glad you're here.",
+      REGISTER_SUCCESS : "Excuuuuse me, %1! Your account has been successfully created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
       LOST_PASSWORD_WELCOME: "Let's follow Saria's Song!",
-      LOST_PASSWORD_SUCCESS: "North.. West.. South.. West.. You made it!",
+      LOST_PASSWORD_SUCCESS: "North... West... South... West... You made it!",
       LOST_PASSWORD_ERROR: "Oops, you ended up back at the beginning! %1",
 
       CHANGE_PASSWORD_WELCOME: "Need a different key...",
@@ -438,19 +438,19 @@ ZMap.prototype._createMarkerPopup = function(marker) {
          content +=  "<p style='text-align: left; float:left; margin-right: 10px;'>Marker ID no. " + marker.id + "</p>"
                    + "<p style='text-align: right; float: right'>Added by " + marker.userName + "</p>"
                    + "<br style='height:0pt; clear:both;'>"
-                   + "<span id='check" + marker.id + "' class=\"infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\">" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
-                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"> Copy Link</span>"
+                   + "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
+                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
                      + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
                      + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
                 + "</div>";
       } else {
-         content += "<span id='check" + marker.id + "' class=\"infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
-                     + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"> Copy Link</span>"
+         content += "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
+                     + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
                 + "</div>";
       }
    } else {
-      content += "<span id='check" + marker.id + "' class=\"infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\">" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
-                  + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"> Copy Link</span>"
+      content += "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
+                  + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
              + "</div>";
    }
 
@@ -1425,39 +1425,35 @@ ZMap.prototype._createRegisterForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label">Your Username</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
-                                       '<span class="input-group-addon"><i class="icon-fa-user fa" aria-hidden="true"></i></span>'+
-                                       '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Enter your Username"/>'+
+                                       '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
+                                       '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Create a username"/>'+
                                     '</div>'+
                                  '</div>'+
                               '</div>'+
                               '<div class="form-group">'+
-                                 '<label for="password" class="cols-sm-2 control-label">Password</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
-                                       '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Enter your Password"/>'+
+                                       '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Create a password"/>'+
                                     '</div>'+
                                  '</div>'+
                               '</div>'+
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label">Your Name</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
-                                       '<span class="input-group-addon"><i class="icon-fa-user fa" aria-hidden="true"></i></span>'+
-                                       '<input type="text" class="form-control" name="name" id="name" required="" placeholder="Enter your Name"/>'+
+                                       '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
+                                       '<input type="text" class="form-control" name="name" id="name" required="" placeholder="Your full name"/>'+
                                     '</div>'+
                                  '</div>'+
                               '</div>'+
 
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label">Your Email</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
-                                       '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your Email"/>'+
+                                       '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Your email address"/>'+
                                     '</div>'+
                                  '</div>'+
                               '</div>'+
@@ -1499,11 +1495,10 @@ ZMap.prototype._createLostPasswordForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.LOST_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="lostpasswordform" id="lostpasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
-                             '<label for="name" class="cols-sm-2 control-label">Your Email</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
-                                   '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your Email"/>'+
+                                   '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your email address"/>'+
                                 '</div>'+
                              '</div>'+
                           '</div>'+
@@ -1544,7 +1539,6 @@ ZMap.prototype._createChangePasswordForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.CHANGE_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="changepasswordform" id="changepasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
-                             '<label for="currentpassword" class="cols-sm-2 control-label">Current Password</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
@@ -1553,7 +1547,6 @@ ZMap.prototype._createChangePasswordForm = function() {
                              '</div>'+
                           '</div>'+
                           '<div class="form-group">'+
-                             '<label for="newpassword" class="cols-sm-2 control-label">New Password</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
@@ -1598,20 +1591,18 @@ ZMap.prototype._createLoginForm = function() {
                            '<h3 class="text-center">' + this.langMsgs.LOGIN_WELCOME + '</h3>'+
                            '<form class="leaflet-control-layers-list" role="loginform" id="loginform" enctype="multipart/form-data">'+
                            '<div class="form-group">'+
-                              '<label for="name" class="cols-sm-2 control-label">Your Name</label>'+
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
-                                    '<span class="input-group-addon"><i class="icon-fa-user fa" aria-hidden="true"></i></span>'+
-                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Enter your Username"/>'+
+                                    '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
+                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Username"/>'+
                                  '</div>'+
                               '</div>'+
                            '</div>'+
                            '<div class="form-group">'+
-                              '<label for="password" class="cols-sm-2 control-label">Password</label>'+
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
                                     '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
-                                    '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Enter your Password"/>'+
+                                    '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Password"/>'+
                                  '</div>'+
                               '</div>'+
                            '</div>'+

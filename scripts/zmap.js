@@ -1601,7 +1601,7 @@ ZMap.prototype._createLoginForm = function() {
                               '<label for="name" class="cols-sm-2 control-label">Your Name</label>'+
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
-                                    '<span class="input-group-addon"><i class="icon-fa-user fa" aria-hidden="true"></i></span>'+
+                                    '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
                                     '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Enter your Username"/>'+
                                  '</div>'+
                               '</div>'+

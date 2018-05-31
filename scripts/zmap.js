@@ -1425,39 +1425,39 @@ ZMap.prototype._createRegisterForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label">Your Username</label>'+
+                                 '<label for="name" class="cols-sm-2 control-label" hidden>Your Username</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
-                                       '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Enter your Username"/>'+
+                                       '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Create a username"/>'+
                                     '</div>'+
                                  '</div>'+
                               '</div>'+
                               '<div class="form-group">'+
-                                 '<label for="password" class="cols-sm-2 control-label">Password</label>'+
+                                 '<label for="password" class="cols-sm-2 control-label" hidden>Password</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
-                                       '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Enter your Password"/>'+
+                                       '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Create a password"/>'+
                                     '</div>'+
                                  '</div>'+
                               '</div>'+
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label">Your Name</label>'+
+                                 '<label for="name" class="cols-sm-2 control-label" hidden>Your Name</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
-                                       '<input type="text" class="form-control" name="name" id="name" required="" placeholder="Enter your Name"/>'+
+                                       '<input type="text" class="form-control" name="name" id="name" required="" placeholder="Your full name"/>'+
                                     '</div>'+
                                  '</div>'+
                               '</div>'+
 
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label">Your Email</label>'+
+                                 '<label for="name" class="cols-sm-2 control-label" hidden>Your Email</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
-                                       '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your Email"/>'+
+                                       '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Your email address"/>'+
                                     '</div>'+
                                  '</div>'+
                               '</div>'+
@@ -1499,11 +1499,11 @@ ZMap.prototype._createLostPasswordForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.LOST_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="lostpasswordform" id="lostpasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
-                             '<label for="name" class="cols-sm-2 control-label">Your Email</label>'+
+                             '<label for="name" class="cols-sm-2 control-label" hidden>Your Email</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
-                                   '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your Email"/>'+
+                                   '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your email address"/>'+
                                 '</div>'+
                              '</div>'+
                           '</div>'+
@@ -1544,7 +1544,7 @@ ZMap.prototype._createChangePasswordForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.CHANGE_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="changepasswordform" id="changepasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
-                             '<label for="currentpassword" class="cols-sm-2 control-label">Current Password</label>'+
+                             '<label for="currentpassword" class="cols-sm-2 control-label" hidden>Current Password</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
@@ -1553,7 +1553,7 @@ ZMap.prototype._createChangePasswordForm = function() {
                              '</div>'+
                           '</div>'+
                           '<div class="form-group">'+
-                             '<label for="newpassword" class="cols-sm-2 control-label">New Password</label>'+
+                             '<label for="newpassword" class="cols-sm-2 control-label" hidden>New Password</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
@@ -1598,20 +1598,20 @@ ZMap.prototype._createLoginForm = function() {
                            '<h3 class="text-center">' + this.langMsgs.LOGIN_WELCOME + '</h3>'+
                            '<form class="leaflet-control-layers-list" role="loginform" id="loginform" enctype="multipart/form-data">'+
                            '<div class="form-group">'+
-                              '<label for="name" class="cols-sm-2 control-label">Your Name</label>'+
+                              '<label for="name" class="cols-sm-2 control-label" hidden>Your Name</label>'+
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
                                     '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
-                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Enter your Username"/>'+
+                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Username"/>'+
                                  '</div>'+
                               '</div>'+
                            '</div>'+
                            '<div class="form-group">'+
-                              '<label for="password" class="cols-sm-2 control-label">Password</label>'+
+                              '<label for="password" class="cols-sm-2 control-label" hidden>Password</label>'+
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
                                     '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
-                                    '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Enter your Password"/>'+
+                                    '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Password"/>'+
                                  '</div>'+
                               '</div>'+
                            '</div>'+

@@ -1,7 +1,10 @@
 function ZMap() {
    var _this;
 
-   this.version = '0.2';
+  // Now that we have the changelog system using the database
+  // with a field for each number, let's use 3 numbers and no
+  // letters in the version.
+  this.version = '0.6.0';
 
    this.mapOptions = {};
 
@@ -436,7 +439,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
                    + "<p style='text-align: right; float: right'><b>Sent By:</b> " + marker.userName + "</p>"
                    + "<br style='height:0pt; clear:both;'>"
                    + "<p style=\"float: right;\">"
-                   + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"></span>"
+                   + "<span id='check" + marker.id + "' class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'icon-checkbox-unchecked infoWindowIcn') { span.className = 'icon-checkbox-checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'icon-checkbox-unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\">" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                    + "<span class=\"icon-link infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"></span>"
                      + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
                      + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
@@ -673,48 +676,6 @@ ZMap.prototype.buildMap = function() {
    });
 
    _this._buildContextMenu();
-
-
-   if (!getCookie('showChangeLogV0.5')) {
-      // @TODO: USe proper HTML5 :P
-      var v0d5 = '<center><b>Zelda Maps v0.5 Released!</b></center><br>' +
-                  '- Completed markers are tied to your account!<br>' +
-                  '- You can now select multiple categories at the same type.<br>' +
-                  '- The top left box can now be collpased.<br>' +
-                  '- Marker clustering has been disabled (experimental?).<br>' +
-                  '- Markers now show up according to zoom.<br>' +
-                  '- Usability fixes and improvements all over the place.<br><br>'+
-                  '<center><a href="https://discord.gg/GUpq8" target="new_">Tell us your thoughts! Join us on Discord.</a></center>'
-         ;
-
-      if (mapControl.isMobile()) {
-         toastr.options = {
-           "closeButton": true,
-           "timeOut": 10000,
-           "extendedTimeOut": 2000,
-         }
-         toastr.info(v0d5).css("width",(window.innerWidth-24)+"px");
-         toastr.options = {
-           "closeButton": false,
-           "timeOut": 5000,
-           "extendedTimeOut": 1000,
-         }
-
-      } else {
-         toastr.options = {
-           "closeButton": true,
-           "timeOut": 10000,
-           "extendedTimeOut": 2000,
-         }
-         toastr.info(v0d5).css("width","450px");
-         toastr.options = {
-           "closeButton": false,
-           "timeOut": 5000,
-           "extendedTimeOut": 1000,
-         }
-      }
-      setCookie('showChangeLogV0.5', false);
-   }
 
    if (!mapControl.isMobile()) {
       var mobileAds = document.getElementById("mobileAds");
@@ -1434,24 +1395,7 @@ ZMap.prototype._buildContextMenu = function() {
          }
       }, {
          text: 'Log Out',
-         callback: function() {
-            $.ajax({
-               type: "POST",
-               url: "ajax.php?command=logout",
-               success: function(data) {
-                  //data = jQuery.parseJSON(data);
-                  if (data.success) {
-                     toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
-                     user = null;
-                     _this._buildContextMenu();
-                     mapControl.resetContent();
-                     showLoginControls();
-                  } else {
-                     toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
-                  }
-               }
-            });
-         }
+         callback: this.logout.bind(this)
       });
    }
 
@@ -1461,6 +1405,25 @@ ZMap.prototype._buildContextMenu = function() {
       map.contextmenu.addItem(contextMenu[i]);
    }
 }
+
+ZMap.prototype.logout = function() {
+   $.ajax({
+      type: "POST",
+      url: "ajax.php?command=logout",
+      success: function(data) {
+         //data = jQuery.parseJSON(data);
+         if (data.success) {
+            toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
+            user = null;
+            _this._buildContextMenu();
+            mapControl.resetContent();
+            showLoginControls();
+         } else {
+            toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
+         }
+      }
+   });
+};
 
 
 ZMap.prototype._createRegisterForm = function() {
@@ -1685,6 +1648,7 @@ ZMap.prototype._createLoginForm = function() {
         success: function(data) {
             //data = jQuery.parseJSON(data);
             if (data.success) {
+              checkChangelog(data.user);
                _this.setUser(data.user);
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
                mapControl.resetContent();
@@ -1723,6 +1687,7 @@ ZMap.prototype._createAccountForm = function(user) {
          '<div>' +
            '<button id="account_reset_btn" type="button" class="btn btn-link">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="btn btn-link">Change Password</button>' +
+           '<button id="log_out_btn" type="button" class="btn btn-link">Log out</button>' +
          '</div>' +
       '</div>' +
     '</div>',
@@ -1738,6 +1703,11 @@ ZMap.prototype._createAccountForm = function(user) {
      _this._createChangePasswordForm();
      e.preventDefault();
   });
+
+  $("#log_out_btn").click(function(e) {
+     this.logout();
+     e.preventDefault();
+  }.bind(this));
 }
 //****************************************************************************************************//
 //*************                                                                          *************//
@@ -1779,31 +1749,33 @@ ZMap.prototype.goTo = function(vGoTo) {
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
    var marker = this.cachedMarkersById[vMarkerId];
-   mapControl.changeMap(marker.mapId, marker.submapId);
+   if(marker) {
+     mapControl.changeMap(marker.mapId, marker.submapId);
 
-   if (!vZoom) {
-      vZoom = map.getZoom();
+     if (!vZoom) {
+        vZoom = map.getZoom();
+     }
+     if (vZoom > map.getMaxZoom()) {
+        vZoom = map.getMaxZoom();
+     }
+
+     /*
+      0 = 256
+      1 = 128
+      2 = 64
+      3 = 32
+      4 = 16
+      5 = 8
+      6 = 4
+     */
+     var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
+     map.setView(latlng, vZoom);
+     _this._createMarkerPopup(marker);
+     newMarker = L.marker(marker._latlng).addTo(map);
+
+     //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
+     return;
    }
-   if (vZoom > map.getMaxZoom()) {
-      vZoom = map.getMaxZoom();
-   }
-
-   /*
-    0 = 256
-    1 = 128
-    2 = 64
-    3 = 32
-    4 = 16
-    5 = 8
-    6 = 4
-   */
-   var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
-   map.setView(latlng, vZoom);
-   _this._createMarkerPopup(marker);
-   newMarker = L.marker(marker._latlng).addTo(map);
-
-   //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
-   return;
 
    toastr.error(_this.langMsgs.GO_TO_MARKER_ERROR.format(vMarkerId));
 }

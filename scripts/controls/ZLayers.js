@@ -142,10 +142,19 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
-      var logo = new Logo({
-        parent: form1,
-        headerHeight: this.options.headerHeight
+      var headerMenu = L.DomUtil.create('header', 'ex1', form1);
+      headerMenu.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
+
+      var logo = new Logo({ parent: headerMenu });
+
+      var completedButton = new CategoryButtonCompleted({
+        toggledOn: mapOptions.showCompleted,
+        onToggle: function(showCompleted) {
+	        zMap.toggleCompleted(showCompleted);
+	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(completedButton.domNode);
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
@@ -156,14 +165,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
 	    this._categoryMenu = new CategoryMenu({
 	      defaultToggledState: false,
-	       showCompleted: mapOptions.showCompleted,
-	       categoryTree: categoryTree,
+	      categoryTree: categoryTree,
 	      onCategoryToggle: function(toggledOn, category) {
 	        zMap.updateCategoryVisibility2(category, toggledOn);
-	      }, // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
-	      onCompletedToggle: function(showCompleted) {
-	        zMap.toggleCompleted(showCompleted);
-	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?
+	      } // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
 	    });
       this.resetContent();
 
@@ -211,8 +216,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       $(this._categoryMenu.domNode).detach();
     $(this._contents).empty();
     if(vType != 'category') {
-      var closeButton = L.DomUtil.create('a', 'button icon-close2', this._contents);
-      closeButton.innerHTML = '×';
+      var closeButton = L.DomUtil.create('a', 'button back-button', this._contents);
+      closeButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
       closeButton.href="#close";
       L.DomEvent
          .on(closeButton, 'click', L.DomEvent.stopPropagation)

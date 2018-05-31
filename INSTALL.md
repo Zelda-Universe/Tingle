@@ -30,15 +30,42 @@
       * `php-fpm --prefix /usr/local`
     * PHP dependencies
       - Run `composer install`.
-  * Import this Git Flow configuration
-    ```
-    [gitflow "branch"]
-    	master = production
-    	develop = master
-    [gitflow "prefix"]
-    	feature = feature/
-    	release = release/
-    	hotfix = hotfix/
-    	support = support/
-    	versiontag =
-    ```
+  * Coding Workflow
+    * Import this Git Flow configuration:
+      * ```
+        [gitflow "branch"]
+        	master = production
+        	develop = master
+        [gitflow "prefix"]
+        	feature = feature/
+        	release = release/
+        	hotfix = hotfix/
+        	support = support/
+        	versiontag =
+        ```
+    * Install database migration creation framework tool, and run it.
+      * Install Ruby
+        * I was using 2.4.1.
+      * Install RubyGems
+        * https://rubygems.org/pages/download
+        * Used 2.6.11
+      * Install the migration tool, and its dependencies
+        * The individual way
+          * `gem install mysql2`
+            * 0.5.1
+          * `gem install standalone_migrations`
+            * 5.2.5
+            * You might need my edited version of the repository instead.
+          * https://github.com/Pysis868/standalone-migrations
+          * As of commit `685d343752a1b42ff844b5a75677db7e4acf8a36`.
+          * It fixes a particular issue when running several of the commands, but doesn't pass several tests O_o.
+          * Some commands might not work, but the main ones I have used so far only print a stack trace for the error, but still work.
+        * The automatic way
+          * `gem install bundler`
+          * `bundle install`
+        * `dev/db/config.yml.example dev/db/config.yml`
+          * Configure like the `.env` file.
+          * Note which environment you are configuring for and use the appropriate section.
+          * May only need to modify the password, and if not, also the database and/or username fields as well.
+          * Migrate database
+            * `rake db:migrate`

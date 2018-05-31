@@ -16,6 +16,8 @@ CategoryButtonCompleted.prototype.constructor = CategoryButtonCompleted;
 CategoryButtonCompleted.prototype._initDOMElements = function(opts) {
   CategoryButton.prototype._initDOMElements.call(this, opts);
 
+  this.domNode.addClass('completed-button');
+
   this.labelNode.append($(' \
     <span class="completed-label-hide">Hide Completed</span> \
     <span class="completed-label-show">Show Completed</span> \

@@ -11,7 +11,7 @@ function SearchArea(opts) {
 
 SearchArea.prototype._initState = function(opts) {
   this.markerSearchField = new MarkerSearchField({
-    incrementalSearch: false,
+    incrementalSearch: true,
     updateProgressTotalStepsAmount: 15
   });
   $(this.markerSearchField.domNode).appendTo(opts.parent);

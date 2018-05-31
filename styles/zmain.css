@@ -386,7 +386,7 @@ body,
      margin-top: 0;
     */
 	font-family: HyliaSerif;
-	font-size: 26px;
+	font-size: 32px;
 	text-align: center;
 	font-weight: normal;
 }
@@ -402,6 +402,15 @@ body,
 .popupContent div img {
 	max-width: 400px;
 	height: auto;
+}
+
+.popupContent .icon-checkbox-unchecked:before {
+	font-size: 16px;
+	content: "\ea11 Mark as Complete"
+}
+
+.popupContent .icon-link {
+	font-size: 16px;
 }
 
 a.button {

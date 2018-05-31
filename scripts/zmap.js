@@ -46,18 +46,18 @@ function ZMap() {
       LOGOUT_SUCCESS : "May the Goddess smile upon you, %1!",
       LOGOUT_ERROR   : "I AM ERROR! Please, try to clean your cache and restart your browser to safely logoff.",
 
-      LOGIN_WELCOME  : "Hey, listen!",
+      LOGIN_WELCOME  : "Hey, listen! Welcome back!",
       LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
       LOGIN_ERROR   : "I AM ERROR! %1",
 
       ACCOUNT_TITLE  : "Account",
 
-      REGISTER_WELCOME  : "It's dangerous to go alone!",
-      REGISTER_SUCCESS : "Excuuuuse me, %1! Your user was created!",
+      REGISTER_WELCOME  : "It's dangerous to go alone! We're glad you're here.",
+      REGISTER_SUCCESS : "Excuuuuse me, %1! Your account has been successfully created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
       LOST_PASSWORD_WELCOME: "Let's follow Saria's Song!",
-      LOST_PASSWORD_SUCCESS: "North.. West.. South.. West.. You made it!",
+      LOST_PASSWORD_SUCCESS: "North... West... South... West... You made it!",
       LOST_PASSWORD_ERROR: "Oops, you ended up back at the beginning! %1",
 
       CHANGE_PASSWORD_WELCOME: "Need a different key...",

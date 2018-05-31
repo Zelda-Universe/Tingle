@@ -419,9 +419,15 @@ body,
 	background: rgba(255,255,255,.3);
 }
 
-.popupContent .fa, .popupContent  {
-	margin-right: 4px;
-	font-family: "FontAwesome" !important;
+.popupContent .icon-checkbox-checked,
+.popupContent .icon-checkbox-unchecked,
+.popupContent .icon-link  {
+	margin-right: 4px !important;
+}
+
+.popupContent .icon-checkbox-checked,
+.popupContent .icon-checkbox-unchecked {
+	margin-top: -4px !important;
 }
 
 a.button {

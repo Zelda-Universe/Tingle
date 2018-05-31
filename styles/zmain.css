@@ -382,7 +382,7 @@ body,
 /*** MARKER CONTENT ***/
 
 .menu-cat-content-inner {
-	width: 360px;
+	min-width: 360px;
 }
 
 .popupTitle {

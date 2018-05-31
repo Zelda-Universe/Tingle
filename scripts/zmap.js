@@ -1425,7 +1425,6 @@ ZMap.prototype._createRegisterForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label" hidden>Your Username</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
@@ -1434,7 +1433,6 @@ ZMap.prototype._createRegisterForm = function() {
                                  '</div>'+
                               '</div>'+
                               '<div class="form-group">'+
-                                 '<label for="password" class="cols-sm-2 control-label" hidden>Password</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
@@ -1443,7 +1441,6 @@ ZMap.prototype._createRegisterForm = function() {
                                  '</div>'+
                               '</div>'+
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label" hidden>Your Name</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
@@ -1453,7 +1450,6 @@ ZMap.prototype._createRegisterForm = function() {
                               '</div>'+
 
                               '<div class="form-group">'+
-                                 '<label for="name" class="cols-sm-2 control-label" hidden>Your Email</label>'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
@@ -1499,7 +1495,6 @@ ZMap.prototype._createLostPasswordForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.LOST_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="lostpasswordform" id="lostpasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
-                             '<label for="name" class="cols-sm-2 control-label" hidden>Your Email</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
@@ -1544,7 +1539,6 @@ ZMap.prototype._createChangePasswordForm = function() {
                         '<h3 class="text-center">' + this.langMsgs.CHANGE_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="changepasswordform" id="changepasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
-                             '<label for="currentpassword" class="cols-sm-2 control-label" hidden>Current Password</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
@@ -1553,7 +1547,6 @@ ZMap.prototype._createChangePasswordForm = function() {
                              '</div>'+
                           '</div>'+
                           '<div class="form-group">'+
-                             '<label for="newpassword" class="cols-sm-2 control-label" hidden>New Password</label>'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
@@ -1598,7 +1591,6 @@ ZMap.prototype._createLoginForm = function() {
                            '<h3 class="text-center">' + this.langMsgs.LOGIN_WELCOME + '</h3>'+
                            '<form class="leaflet-control-layers-list" role="loginform" id="loginform" enctype="multipart/form-data">'+
                            '<div class="form-group">'+
-                              '<label for="name" class="cols-sm-2 control-label" hidden>Your Name</label>'+
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
                                     '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
@@ -1607,7 +1599,6 @@ ZMap.prototype._createLoginForm = function() {
                               '</div>'+
                            '</div>'+
                            '<div class="form-group">'+
-                              '<label for="password" class="cols-sm-2 control-label" hidden>Password</label>'+
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
                                     '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+

@@ -511,7 +511,7 @@ a.icon-close2 {
 }
 
 .leaflet-control .highlighted {
-	background-color: #f1f1f1;
+	background-color: rgba(255,255,255,.2);
 }
 
  ::-webkit-scrollbar {

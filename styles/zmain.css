@@ -391,14 +391,6 @@ body,
 	font-weight: normal;
 }
 
-.popupContent p {
-	margin-top: 0;
-	margin-bottom: 5px;
-	padding-left: 5px;
-	padding-right: 5px;
-	color: whitesmoke;
-}
-
 .popupContent div img {
 	max-width: 400px;
 	height: auto;
@@ -416,14 +408,18 @@ body,
 }
 
 .popupContent .infoWindowIcn:first-of-type {
-	margin-top: 24px;
+	margin-top: 32px;
+}
+
+.popupContent .infoWindowIcn:last-of-type {
+	margin-bottom: 16px;
 }
 
 .popupContent .infoWindowIcn:hover {
 	background: rgba(255,255,255,.3);
 }
 
-.popupContent .fas {
+.popupContent .fa, .popupContent  {
 	margin-right: 4px;
 	font-family: "FontAwesome" !important;
 }

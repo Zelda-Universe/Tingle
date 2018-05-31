@@ -796,7 +796,7 @@ a.icon-close2 {
 	background-color: rgba(50,50,50,.8) !important;
 }
 
-.leaflet-bar a:hover::before {
+.leaflet-bar a:hover:before {
 	position: absolute;
 	top: 0;
 	bottom: 0;
@@ -951,7 +951,7 @@ header.ex1 {
 	border-size: 1px;
 }
 
-.completed-button .icon-checkmark::before {
+.completed-button .icon-checkmark:before {
 	top: -2px;
 	position: relative;
 }

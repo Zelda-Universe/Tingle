@@ -410,8 +410,13 @@ body,
 	font-family: "BrandonText" !important;
 	display: block;
 	padding: 8px;
+	margin: 0 16px 8px 16px;
 	background: rgba(255,255,255,.2);
 	border-radius: 10px;
+}
+
+.popupContent .infoWindowIcn:first-of-type {
+	margin-top: 24px;
 }
 
 .popupContent .infoWindowIcn:hover {

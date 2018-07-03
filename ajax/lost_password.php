@@ -28,12 +28,17 @@
       $commitResult = commit();
 
       if($commitResult) {
-        include_once("$path/lib/zmailer.php");
-        $mailResult = sendMail(createResetPasswordEmail($email, $rowSelectUser['name'], $randomPassword));
-        if($mailResult) {
-          echo json_encode(array("success"=>true, "msg"=>"Password reset. Email sent."));
+        if($mailEnabled) {
+          include_once("$path/lib/zmailer.php");
+          $mailResult = sendMail(createResetPasswordEmail($email, $rowSelectUser['name'], $randomPassword));
+          if($mailResult) {
+            echo json_encode(array("success"=>true, "msg"=>"Password reset. Email sent."));
+          } else {
+            echo json_encode(array("success"=>false, "msg"=>"Password reset. Email not sent."));
+          }
         } else {
-          echo json_encode(array("success"=>false, "msg"=>"Password reset. Email not sent."));
+          error_log("Reset password to: $randomPassword");
+          echo json_encode(array("success"=>true, "msg"=>"Password reset.  Mail disabled."));
         }
       } else {
         echo json_encode(array("success"=>false, "msg"=>"Password not reset.  Database error."));

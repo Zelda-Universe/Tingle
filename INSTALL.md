@@ -34,8 +34,8 @@
     * Import this Git Flow configuration:
       * ```
         [gitflow "branch"]
-        	master = production
-        	develop = master
+        	master = master
+        	develop = development
         [gitflow "prefix"]
         	feature = feature/
         	release = release/

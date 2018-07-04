@@ -32,7 +32,7 @@
 
   Not sure where to put this section for now.
 
-  Live data, probably both the data and schema layout, are already being backed up somehow to somewhere by someone.
+  Live data, probably both the data and schema layout, are already being backed up somehow to somewhere by someone (Matthew?).
 
   To add to this, we may also want to backup the `dev/db/schema.rb` file so the system knows which migrations are needed to be run, if any.
 

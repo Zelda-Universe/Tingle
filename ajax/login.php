@@ -1,50 +1,75 @@
 <?php
    $path = DIRNAME(__FILE__);
    include("$path/../config.php");
-	
-	start_session("zmap");
+
 	begin();
-	
+
 	if (!isset($_POST['user']) || !isset($_POST['password'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Ops, something went wrong..."));
-		return;		
+		return;
 	}
-   
+
    $username = $mysqli->real_escape_string($_POST['user']);
    $password = $mysqli->real_escape_string($_POST['password']);
+   $passwordUnescaped = $_POST['password'];
    $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
-   
-   
-   $query = "select id, username, password, level from " . $map_prefix . "user " .
-            " where username = '" . $username . "'"
-            ;
+
+  $query = "
+    SELECT
+      `id`,
+      `username`,
+      `password`,
+      `level`,
+      `seen_latest_changelog`,
+      `seen_version_major` AS v1,
+      `seen_version_minor` AS v2,
+      `seen_version_patch` AS v3
+    FROM
+      `{$map_prefix}user`
+    WHERE
+      `username` = '{$username}'
+    ;
+  ";
 	$result = $mysqli->query($query);
-   
+
    if ($result) {
       $row = $result->fetch_assoc();
-      if (isset($row['password']) && password_verify($password, $row['password'])) {
+      if (isset($row['password'])
+          && (
+                 password_verify($password, $row['password'])
+              || password_verify($passwordUnescaped, $row['password'])
+             )
+         ) {
          $user['id'] = $row['id'];
          $user['username'] = $row['username'];
          $user['level'] = $row['level'];
+         $user['seen_latest_changelog'] = !!$row['seen_latest_changelog'];
+         $user['seen_version'] = $row['v1'] . '.' . $row['v2'] . '.' . $row['v3'];
 
          $hash = password_hash($username . $row['password'], PASSWORD_DEFAULT, ['cost' => 13]);
-         
+
          if (isset($_POST['remember'])) {
             setcookie('user_id', $user['id'], strtotime( '+30 days' ), "/", "", "", TRUE);
             setcookie('username', $user['username'], strtotime( '+30 days' ), "/", "", "", TRUE);
-            setcookie('r', $hash, strtotime( '+30 days' ), "/", "", "", TRUE);
          }
+
+         start_session("zmap");
 
          $_SESSION['username'] = $user['username'];
          $_SESSION['user_id'] = $user['id'];
-         $_SESSION['r'] = $hash;
          $_SESSION['level'] = $user['level'];
-         
+         $_SESSION['seen_latest_changelog'] = $user['seen_latest_changelog'];
+         $_SESSION['v1'] = $row['v1'];
+         $_SESSION['v2'] = $row['v2'];
+         $_SESSION['v3'] = $row['v3'];
+
+         session_write_close();
+
          $uquery = "update " . $map_prefix . "user set ip = '" . $ip . "', last_login=now() where id = " . $row['id'];
          //echo $uquery;
          $mysqli->query($uquery);
          commit();
-         
+
          echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));
 
       } else {

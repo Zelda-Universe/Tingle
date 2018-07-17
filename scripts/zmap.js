@@ -4,9 +4,11 @@ function ZMap() {
   // Now that we have the changelog system using the database
   // with a field for each number, let's use 3 numbers and no
   // letters in the version.
-  this.version = '0.6.0';
+  this.version = '0.6.1';
 
-   this.mapOptions = {};
+   this.mapOptions = {
+        startArea : "-168,102,-148,122",
+   };
 
    this.maps = [];
    this._overlayMap = [];
@@ -41,35 +43,35 @@ function ZMap() {
    this.currentIcon;
 
    this.langMsgs = {
-      GENERAL_ERROR   : "I AM ERROR! %1",
+      GENERAL_ERROR   : "I AM ERROR. %1",
 
       LOGOUT_SUCCESS : "May the Goddess smile upon you, %1!",
-      LOGOUT_ERROR   : "I AM ERROR! Please, try to clean your cache and restart your browser to safely logoff.",
+      LOGOUT_ERROR   : "I AM ERROR! Could not log out. Please try clearing your cache and restarting your browser to safely log out.",
 
       LOGIN_WELCOME  : "Hey, listen! Welcome back!",
       LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
-      LOGIN_ERROR   : "I AM ERROR! %1",
+      LOGIN_ERROR   : "I AM ERROR. %1",
 
       ACCOUNT_TITLE  : "Account",
 
-      REGISTER_WELCOME  : "It's dangerous to go alone! We're glad you're here.",
+      REGISTER_WELCOME  : "It's dangerous to go alone! We're glad you're here with us.",
       REGISTER_SUCCESS : "Excuuuuse me, %1! Your account has been successfully created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
-      LOST_PASSWORD_WELCOME: "Let's follow Saria's Song!",
-      LOST_PASSWORD_SUCCESS: "North... West... South... West... You made it!",
-      LOST_PASSWORD_ERROR: "Oops, you ended up back at the beginning! %1",
+      LOST_PASSWORD_WELCOME: "Let's fill out Saria's<br />password recovery form!",
+      LOST_PASSWORD_SUCCESS: "Saria sent a new password to your email!",
+      LOST_PASSWORD_ERROR: "I AM ERROR. You ended up back at the beginning! %1",
 
-      CHANGE_PASSWORD_WELCOME: "Need a different key...",
-      CHANGE_PASSWORD_SUCCESS: "I wonder what dungeon you can unlock now!",
-      CHANGE_PASSWORD_ERROR: "Broke one, try again.  %1",
+      CHANGE_PASSWORD_WELCOME: "Change Your Password",
+      CHANGE_PASSWORD_SUCCESS: "Excuuuuse me, %1! Your password has been successfully updated!",
+      CHANGE_PASSWORD_ERROR: "I AM ERROR. Could not update password. Try again.  %1",
 
-      MARKER_COMPLETE_WARNING : "It seems you are not logged in, so your completed markers will be stored in a cookie. If you log in, your markers will be saved on our database.",
+      MARKER_COMPLETE_WARNING : "You're not logged in, so your completed markers will be stored in a cookie. Log in or create an account to save your markers in our database.",
 
-      MARKER_ADD_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be saved to our database. ERROR: %1",
-      MARKER_DEL_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database. ERROR: %1",
-      MARKER_COMPLETE_TRANSFER_ERROR : "There seems to be a problem moving your completed markers from cookie to our database. We will try again later. ERROR: %1",
-      MARKER_COMPLETE_TRANSFER_SUCCESS : "All your completed markers were moved from cookies to our database and tied to your account.",
+      MARKER_ADD_COMPLETE_ERROR : "I AM ERROR. This marker couldn’t be saved to our database. %1",
+      MARKER_DEL_COMPLETE_ERROR : "I AM ERROR. This marker couldn’t be deleted from our database. %1",
+      MARKER_COMPLETE_TRANSFER_ERROR : "I AM ERROR. There seems to be a problem moving your completed markers from cookies to our database. We'll automatically try again later. %1",
+      MARKER_COMPLETE_TRANSFER_SUCCESS : "All of your completed markers were moved from cookies to our database and tied to your account.",
       MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account, but an error occurred. We try again the next time you login.",
 
       MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database.",
@@ -80,7 +82,7 @@ function ZMap() {
       MARKER_ADD_SUCCESS : "Marker %1 has been successfully added.",
       MARKER_ADD_SUCCESS_RESTRICTED : "Thank you for your contribution! Your marker is pending review and, if approved, it will show up shortly.",
 
-      GO_TO_MARKER_ERROR : "You’ve met with a terrible fate, haven’t you? Marker %1 couldn't be found on this map.",
+      GO_TO_MARKER_ERROR : "I AM ERROR. Marker %1 couldn't be found on this map.",
    }
 
    this.handlers = {
@@ -893,7 +895,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
    }
 
    popupContent = popupContent +
-         '<div id="markerForm" style="padding: 10px">'+
+         '<div id="markerForm">'+
             '<form class="leaflet-control-layers-list" role="newMarkerForm" id="newMarkerForm" enctype="multipart/form-data">'
    ;
 
@@ -1431,7 +1433,7 @@ ZMap.prototype.logout = function() {
 
 
 ZMap.prototype._createRegisterForm = function() {
-   mapControl.setContent('<div id="newuser" style="padding: 10px">'+
+   mapControl.setContent('<div id="newuser">'+
                         '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
                               '<div class="form-group">'+
@@ -1501,7 +1503,7 @@ ZMap.prototype._createRegisterForm = function() {
 }
 
 ZMap.prototype._createLostPasswordForm = function() {
-   mapControl.setContent('<div id="lostpassword" style="padding: 10px">'+
+   mapControl.setContent('<div id="lostpassword">'+
                         '<h3 class="text-center">' + this.langMsgs.LOST_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="lostpasswordform" id="lostpasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
@@ -1545,7 +1547,7 @@ ZMap.prototype._createLostPasswordForm = function() {
 }
 
 ZMap.prototype._createChangePasswordForm = function() {
-   mapControl.setContent('<div id="changepassword" style="padding: 10px">'+
+   mapControl.setContent('<div id="changepassword">'+
                         '<h3 class="text-center">' + this.langMsgs.CHANGE_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="changepasswordform" id="changepasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
@@ -1597,7 +1599,7 @@ ZMap.prototype._createChangePasswordForm = function() {
 }
 
 ZMap.prototype._createLoginForm = function() {
-   mapControl.setContent('<div id="login" style="padding: 10px">'+
+   mapControl.setContent('<div id="login">'+
                            '<h3 class="text-center">' + this.langMsgs.LOGIN_WELCOME + '</h3>'+
                            '<form class="leaflet-control-layers-list" role="loginform" id="loginform" enctype="multipart/form-data">'+
                            '<div class="form-group">'+
@@ -1670,7 +1672,7 @@ ZMap.prototype._createLoginForm = function() {
 
 ZMap.prototype._createAccountForm = function(user) {
   mapControl.setContent(
-     '<div id="account" style="padding: 10px">' +
+     '<div id="account">' +
       '<h3 class="text-center">' +
         this.langMsgs.ACCOUNT_TITLE +
       '</h3>' +
@@ -1680,9 +1682,9 @@ ZMap.prototype._createAccountForm = function(user) {
       '</p>' +
       '<div class="modal-footer">' +
          '<div>' +
-           '<button id="account_reset_btn" type="button" class="btn btn-link">Reset Password</button>' +
-           '<button id="account_change_btn" type="button" class="btn btn-link">Change Password</button>' +
-           '<button id="log_out_btn" type="button" class="btn btn-link">Log out</button>' +
+           '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
+           '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
+           '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
          '</div>' +
       '</div>' +
     '</div>',

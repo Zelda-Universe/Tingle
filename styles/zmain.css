@@ -390,6 +390,10 @@ body,
 	font-size: 14px;
 }
 
+.menu-cat-content-inner form {
+	padding: 16px;
+}
+
 .popupTitle {
 	font-family: HyliaSerif;
 	font-size: 32px;

@@ -395,6 +395,10 @@ body,
 	font-weight: normal;
 }
 
+.popupContent p {
+	padding: 0 16px;
+}
+
 .popupContent div img {
 	max-width: 400px;
 	height: auto;

@@ -848,10 +848,6 @@ a.icon-close2 {
 	text-align: center;
 }
 
-.modal-footer div {
-	margin: -8px;
-}
-
 .modal-footer .infoWindowIcn {
 	width: calc(100% - 32px);
 }

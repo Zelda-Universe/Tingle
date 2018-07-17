@@ -507,9 +507,12 @@ a.icon-close2 {
 	border: none !important;
 }
 
-[if Webkit] .leaflet-control-layers,
-[if Webkit] .leaflet-control {
-	background-color: rgba(0, 0, 0, .7);
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	/* Webkit enhancements */
+	.leaflet-control-layers,
+	.leaflet-control {
+		background-color: rgba(0, 0, 0, .7);
+	}
 }
 
 .leaflet-control-layers-separator,
@@ -735,8 +738,11 @@ a.icon-close2 {
 	height: 44px;
 }
 
-[if Webkit] .mobile-header-bar {
-	background-color: rgba(0, 0, 0, .7);
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	/* Webkit enhancements */
+	.mobile-header-bar {
+		background-color: rgba(0, 0, 0, .7);
+	}
 }
 
 .mobile-header-bar .full-icon-space-container,

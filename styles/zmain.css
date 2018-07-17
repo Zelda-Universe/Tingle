@@ -75,8 +75,6 @@ body,
 	overflow: hidden;
 	position: fixed;
     font-family: "BrandonText", sans-serif;
-    background-image: url(images/zmaps-bg-tile.png);
-    background-size: 256px;
 }
 
 .relativeContainer {

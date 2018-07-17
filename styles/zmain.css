@@ -385,18 +385,16 @@ body,
 	min-width: 360px;
 }
 
+.menu-cat-content-inner p {
+	padding: 0 16px;
+	font-size: 14px;
+}
+
 .popupTitle {
-	/* margin-bottom: 5px;
-     margin-top: 0;
-    */
 	font-family: HyliaSerif;
 	font-size: 32px;
 	text-align: center;
 	font-weight: normal;
-}
-
-.popupContent p {
-	padding: 0 16px;
 }
 
 .popupContent div img {
@@ -460,12 +458,8 @@ a.icon-close2 {
 }
 
 .infoWindowIcn {
-	/* DESKTOP */
 	cursor: pointer;
 	margin-left: 5px;
-}
-
-.infoWindowIcn {
 	text-align: center;
 	font-size: 17px;
 	font-family: "BrandonText" !important;
@@ -474,6 +468,7 @@ a.icon-close2 {
 	margin: 0 16px 8px 16px;
 	background: rgba(255,255,255,.2);
 	border-radius: 10px;
+	border: 0;
 }
 
 .infoWindowIcn:first-of-type {
@@ -839,6 +834,16 @@ a.icon-close2 {
 
 .modal-footer {
 	border: 0;
+	padding: 0;
+	text-align: center;
+}
+
+.modal-footer div {
+	margin: -8px;
+}
+
+.modal-footer .infoWindowIcn {
+	width: calc(100% - 32px);
 }
 
 

@@ -38,10 +38,10 @@
           }
         } else {
           error_log("Reset password to: $randomPassword");
-          echo json_encode(array("success"=>true, "msg"=>"Password reset.  Mail disabled."));
+          echo json_encode(array("success"=>true, "msg"=>"Password reset. Mail disabled."));
         }
       } else {
-        echo json_encode(array("success"=>false, "msg"=>"Password not reset.  Database error."));
+        echo json_encode(array("success"=>false, "msg"=>"Password not reset. Database error."));
       }
   	} else {
       rollback();

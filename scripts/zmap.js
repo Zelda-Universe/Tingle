@@ -1680,9 +1680,9 @@ ZMap.prototype._createAccountForm = function(user) {
       '</p>' +
       '<div class="modal-footer">' +
          '<div>' +
-           '<button id="account_reset_btn" type="button" class="btn btn-link">Reset Password</button>' +
-           '<button id="account_change_btn" type="button" class="btn btn-link">Change Password</button>' +
-           '<button id="log_out_btn" type="button" class="btn btn-link">Log out</button>' +
+           '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
+           '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
+           '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
          '</div>' +
       '</div>' +
     '</div>',

@@ -404,29 +404,6 @@ body,
 	height: auto;
 }
 
-.popupContent .infoWindowIcn {
-	text-align: center;
-	font-size: 17px;
-	font-family: "BrandonText" !important;
-	display: block;
-	padding: 8px;
-	margin: 0 16px 8px 16px;
-	background: rgba(255,255,255,.2);
-	border-radius: 10px;
-}
-
-.popupContent .infoWindowIcn:first-of-type {
-	margin-top: 32px;
-}
-
-.popupContent .infoWindowIcn:last-of-type {
-	margin-bottom: 16px;
-}
-
-.popupContent .infoWindowIcn:hover {
-	background: rgba(255,255,255,.3);
-}
-
 .popupContent .icon-checkbox-checked,
 .popupContent .icon-checkbox-unchecked,
 .popupContent .fa-link  {
@@ -486,6 +463,29 @@ a.icon-close2 {
 	/* DESKTOP */
 	cursor: pointer;
 	margin-left: 5px;
+}
+
+.infoWindowIcn {
+	text-align: center;
+	font-size: 17px;
+	font-family: "BrandonText" !important;
+	display: block;
+	padding: 8px;
+	margin: 0 16px 8px 16px;
+	background: rgba(255,255,255,.2);
+	border-radius: 10px;
+}
+
+.infoWindowIcn:first-of-type {
+	margin-top: 32px;
+}
+
+.infoWindowIcn:last-of-type {
+	margin-bottom: 16px;
+}
+
+.infoWindowIcn:hover {
+	background: rgba(255,255,255,.3);
 }
 
 

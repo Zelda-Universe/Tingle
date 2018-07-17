@@ -390,6 +390,10 @@ body,
 	font-size: 14px;
 }
 
+.menu-cat-content-inner form {
+	padding: 16px;
+}
+
 .popupTitle {
 	font-family: HyliaSerif;
 	font-size: 32px;
@@ -502,11 +506,13 @@ a.icon-close2 {
 	border: none !important;
 }
 
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	/* Webkit enhancements */
-	.leaflet-control-layers,
-	.leaflet-control {
-		background-color: rgba(0, 0, 0, .7);
+@media not all and (min-resolution:.001dpcm) {
+	@supports (-webkit-appearance:none) and (stroke-color:transparent) {
+		/* Safari enhancements */
+		.leaflet-control-layers,
+		.leaflet-control {
+			background-color: rgba(0, 0, 0, .7);
+		}
 	}
 }
 
@@ -733,10 +739,12 @@ a.icon-close2 {
 	height: 44px;
 }
 
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	/* Webkit enhancements */
-	.mobile-header-bar {
-		background-color: rgba(0, 0, 0, .7);
+@media not all and (min-resolution:.001dpcm) {
+	@supports (-webkit-appearance:none) and (stroke-color:transparent) {
+		/* Safari enhancements */
+		.mobile-header-bar {
+			background-color: rgba(0, 0, 0, .7);
+		}
 	}
 }
 
@@ -811,10 +819,12 @@ a.icon-close2 {
 	position: relative;
 }
 
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	/* Webkit enhancements */
-	.leaflet-bar a {
-		background-color: rgba(0, 0, 0, .7);
+@media not all and (min-resolution:.001dpcm) {
+	@supports (-webkit-appearance:none) and (stroke-color:transparent) {
+		/* Safari enhancements */
+		.leaflet-bar a {
+			background-color: rgba(0, 0, 0, .7);
+		}
 	}
 }
 

@@ -56,7 +56,7 @@ function ZMap() {
       REGISTER_SUCCESS : "Excuuuuse me, %1! Your account has been successfully created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
-      LOST_PASSWORD_WELCOME: "Let's fill out Saria's password recovery form!",
+      LOST_PASSWORD_WELCOME: "Let's fill out Saria's<br />password recovery form!",
       LOST_PASSWORD_SUCCESS: "Saria sent a new password to your email!",
       LOST_PASSWORD_ERROR: "I AM ERROR. You ended up back at the beginning! %1",
 
@@ -893,7 +893,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
    }
 
    popupContent = popupContent +
-         '<div id="markerForm" style="padding: 10px">'+
+         '<div id="markerForm">'+
             '<form class="leaflet-control-layers-list" role="newMarkerForm" id="newMarkerForm" enctype="multipart/form-data">'
    ;
 
@@ -1431,7 +1431,7 @@ ZMap.prototype.logout = function() {
 
 
 ZMap.prototype._createRegisterForm = function() {
-   mapControl.setContent('<div id="newuser" style="padding: 10px">'+
+   mapControl.setContent('<div id="newuser">'+
                         '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
                               '<div class="form-group">'+
@@ -1501,7 +1501,7 @@ ZMap.prototype._createRegisterForm = function() {
 }
 
 ZMap.prototype._createLostPasswordForm = function() {
-   mapControl.setContent('<div id="lostpassword" style="padding: 10px">'+
+   mapControl.setContent('<div id="lostpassword">'+
                         '<h3 class="text-center">' + this.langMsgs.LOST_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="lostpasswordform" id="lostpasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
@@ -1545,7 +1545,7 @@ ZMap.prototype._createLostPasswordForm = function() {
 }
 
 ZMap.prototype._createChangePasswordForm = function() {
-   mapControl.setContent('<div id="changepassword" style="padding: 10px">'+
+   mapControl.setContent('<div id="changepassword">'+
                         '<h3 class="text-center">' + this.langMsgs.CHANGE_PASSWORD_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="changepasswordform" id="changepasswordform" enctype="multipart/form-data">'+
                           '<div class="form-group">'+
@@ -1597,7 +1597,7 @@ ZMap.prototype._createChangePasswordForm = function() {
 }
 
 ZMap.prototype._createLoginForm = function() {
-   mapControl.setContent('<div id="login" style="padding: 10px">'+
+   mapControl.setContent('<div id="login">'+
                            '<h3 class="text-center">' + this.langMsgs.LOGIN_WELCOME + '</h3>'+
                            '<form class="leaflet-control-layers-list" role="loginform" id="loginform" enctype="multipart/form-data">'+
                            '<div class="form-group">'+
@@ -1670,7 +1670,7 @@ ZMap.prototype._createLoginForm = function() {
 
 ZMap.prototype._createAccountForm = function(user) {
   mapControl.setContent(
-     '<div id="account" style="padding: 10px">' +
+     '<div id="account">' +
       '<h3 class="text-center">' +
         this.langMsgs.ACCOUNT_TITLE +
       '</h3>' +

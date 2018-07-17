@@ -385,18 +385,16 @@ body,
 	min-width: 360px;
 }
 
+.menu-cat-content-inner p {
+	padding: 0 16px;
+	font-size: 14px;
+}
+
 .popupTitle {
-	/* margin-bottom: 5px;
-     margin-top: 0;
-    */
 	font-family: HyliaSerif;
 	font-size: 32px;
 	text-align: center;
 	font-weight: normal;
-}
-
-.popupContent p {
-	padding: 0 16px;
 }
 
 .popupContent div img {
@@ -460,12 +458,8 @@ a.icon-close2 {
 }
 
 .infoWindowIcn {
-	/* DESKTOP */
 	cursor: pointer;
 	margin-left: 5px;
-}
-
-.infoWindowIcn {
 	text-align: center;
 	font-size: 17px;
 	font-family: "BrandonText" !important;
@@ -474,6 +468,7 @@ a.icon-close2 {
 	margin: 0 16px 8px 16px;
 	background: rgba(255,255,255,.2);
 	border-radius: 10px;
+	border: 0;
 }
 
 .infoWindowIcn:first-of-type {
@@ -507,9 +502,12 @@ a.icon-close2 {
 	border: none !important;
 }
 
-[if Webkit] .leaflet-control-layers,
-[if Webkit] .leaflet-control {
-	background-color: rgba(0, 0, 0, .7);
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	/* Webkit enhancements */
+	.leaflet-control-layers,
+	.leaflet-control {
+		background-color: rgba(0, 0, 0, .7);
+	}
 }
 
 .leaflet-control-layers-separator,
@@ -735,8 +733,11 @@ a.icon-close2 {
 	height: 44px;
 }
 
-[if Webkit] .mobile-header-bar {
-	background-color: rgba(0, 0, 0, .7);
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	/* Webkit enhancements */
+	.mobile-header-bar {
+		background-color: rgba(0, 0, 0, .7);
+	}
 }
 
 .mobile-header-bar .full-icon-space-container,
@@ -803,9 +804,18 @@ a.icon-close2 {
 
 .leaflet-bar a {
 	background-color: rgba(0, 0, 0, .8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 	color: rgba(255,255,255,.8) !important;
 	border-bottom: 0;
 	position: relative;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	/* Webkit enhancements */
+	.leaflet-bar a {
+		background-color: rgba(0, 0, 0, .7);
+	}
 }
 
 .leaflet-bar a:hover {
@@ -824,6 +834,16 @@ a.icon-close2 {
 
 .modal-footer {
 	border: 0;
+	padding: 0;
+	text-align: center;
+}
+
+.modal-footer div {
+	margin: -8px;
+}
+
+.modal-footer .infoWindowIcn {
+	width: calc(100% - 32px);
 }
 
 

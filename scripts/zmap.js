@@ -41,35 +41,35 @@ function ZMap() {
    this.currentIcon;
 
    this.langMsgs = {
-      GENERAL_ERROR   : "I AM ERROR! %1",
+      GENERAL_ERROR   : "I AM ERROR. %1",
 
       LOGOUT_SUCCESS : "May the Goddess smile upon you, %1!",
-      LOGOUT_ERROR   : "I AM ERROR! Please, try to clean your cache and restart your browser to safely logoff.",
+      LOGOUT_ERROR   : "I AM ERROR! Could not log out. Please try clearing your cache and restarting your browser to safely log out.",
 
       LOGIN_WELCOME  : "Hey, listen! Welcome back!",
       LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
-      LOGIN_ERROR   : "I AM ERROR! %1",
+      LOGIN_ERROR   : "I AM ERROR. %1",
 
       ACCOUNT_TITLE  : "Account",
 
-      REGISTER_WELCOME  : "It's dangerous to go alone! We're glad you're here.",
+      REGISTER_WELCOME  : "It's dangerous to go alone! We're glad you're here with us.",
       REGISTER_SUCCESS : "Excuuuuse me, %1! Your account has been successfully created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
-      LOST_PASSWORD_WELCOME: "Let's follow Saria's Song!",
-      LOST_PASSWORD_SUCCESS: "North... West... South... West... You made it!",
-      LOST_PASSWORD_ERROR: "Oops, you ended up back at the beginning! %1",
+      LOST_PASSWORD_WELCOME: "Let's fill out Saria's password recovery form!",
+      LOST_PASSWORD_SUCCESS: "Saria sent a new password to your email!",
+      LOST_PASSWORD_ERROR: "I AM ERROR. You ended up back at the beginning! %1",
 
-      CHANGE_PASSWORD_WELCOME: "Need a different key...",
-      CHANGE_PASSWORD_SUCCESS: "I wonder what dungeon you can unlock now!",
-      CHANGE_PASSWORD_ERROR: "Broke one, try again.  %1",
+      CHANGE_PASSWORD_WELCOME: "Change Your Password",
+      CHANGE_PASSWORD_SUCCESS: "Excuuuuse me, %1! Your password has been successfully updated!",
+      CHANGE_PASSWORD_ERROR: "I AM ERROR. Could not update password. Try again.  %1",
 
-      MARKER_COMPLETE_WARNING : "It seems you are not logged in, so your completed markers will be stored in a cookie. If you log in, your markers will be saved on our database.",
+      MARKER_COMPLETE_WARNING : "You're not logged in, so your completed markers will be stored in a cookie. Log in or create an account to save your markers in our database.",
 
-      MARKER_ADD_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be saved to our database. ERROR: %1",
-      MARKER_DEL_COMPLETE_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database. ERROR: %1",
-      MARKER_COMPLETE_TRANSFER_ERROR : "There seems to be a problem moving your completed markers from cookie to our database. We will try again later. ERROR: %1",
-      MARKER_COMPLETE_TRANSFER_SUCCESS : "All your completed markers were moved from cookies to our database and tied to your account.",
+      MARKER_ADD_COMPLETE_ERROR : "I AM ERROR. This marker couldn’t be saved to our database. %1",
+      MARKER_DEL_COMPLETE_ERROR : "I AM ERROR. This marker couldn’t be deleted from our database. %1",
+      MARKER_COMPLETE_TRANSFER_ERROR : "I AM ERROR. There seems to be a problem moving your completed markers from cookies to our database. We'll automatically try again later. %1",
+      MARKER_COMPLETE_TRANSFER_SUCCESS : "All of your completed markers were moved from cookies to our database and tied to your account.",
       MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account, but an error occurred. We try again the next time you login.",
 
       MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database.",
@@ -80,7 +80,7 @@ function ZMap() {
       MARKER_ADD_SUCCESS : "Marker %1 has been successfully added.",
       MARKER_ADD_SUCCESS_RESTRICTED : "Thank you for your contribution! Your marker is pending review and, if approved, it will show up shortly.",
 
-      GO_TO_MARKER_ERROR : "You’ve met with a terrible fate, haven’t you? Marker %1 couldn't be found on this map.",
+      GO_TO_MARKER_ERROR : "I AM ERROR. Marker %1 couldn't be found on this map.",
    }
 
    this.handlers = {

@@ -73,9 +73,9 @@
          echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));
 
       } else {
-         echo json_encode(array("success"=>false, "msg"=>"Email or password invalid!"));
+         echo json_encode(array("success"=>false, "msg"=>"Username or password invalid!"));
       }
 	} else {
-      echo json_encode(array("success"=>false, "msg"=>"Email or password invalid!"));
+      echo json_encode(array("success"=>false, "msg"=>"Username or password invalid!"));
    }
 ?>

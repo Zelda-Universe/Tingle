@@ -476,8 +476,8 @@ a.icon-close2 {
 	height: initial;
 	float: left;
 	position: sticky;
-	top: 3px;
-	left: 5px;
+	margin-top: 3px;
+	margin-left: 5px;
 	z-index: 100;
 	font-size: 21px;
 }

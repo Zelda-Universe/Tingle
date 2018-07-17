@@ -395,32 +395,13 @@ body,
 	font-weight: normal;
 }
 
+.popupContent p {
+	padding: 0 16px;
+}
+
 .popupContent div img {
 	max-width: 400px;
 	height: auto;
-}
-
-.popupContent .infoWindowIcn {
-	text-align: center;
-	font-size: 17px;
-	font-family: "BrandonText" !important;
-	display: block;
-	padding: 8px;
-	margin: 0 16px 8px 16px;
-	background: rgba(255,255,255,.2);
-	border-radius: 10px;
-}
-
-.popupContent .infoWindowIcn:first-of-type {
-	margin-top: 32px;
-}
-
-.popupContent .infoWindowIcn:last-of-type {
-	margin-bottom: 16px;
-}
-
-.popupContent .infoWindowIcn:hover {
-	background: rgba(255,255,255,.3);
 }
 
 .popupContent .icon-checkbox-checked,
@@ -472,8 +453,8 @@ a.icon-close2 {
 	height: initial;
 	float: left;
 	position: sticky;
-	top: 3px;
-	left: 5px;
+	margin-top: 3px;
+	margin-left: 5px;
 	z-index: 100;
 	font-size: 21px;
 }
@@ -482,6 +463,29 @@ a.icon-close2 {
 	/* DESKTOP */
 	cursor: pointer;
 	margin-left: 5px;
+}
+
+.infoWindowIcn {
+	text-align: center;
+	font-size: 17px;
+	font-family: "BrandonText" !important;
+	display: block;
+	padding: 8px;
+	margin: 0 16px 8px 16px;
+	background: rgba(255,255,255,.2);
+	border-radius: 10px;
+}
+
+.infoWindowIcn:first-of-type {
+	margin-top: 32px;
+}
+
+.infoWindowIcn:last-of-type {
+	margin-bottom: 16px;
+}
+
+.infoWindowIcn:hover {
+	background: rgba(255,255,255,.3);
 }
 
 
@@ -494,11 +498,18 @@ a.icon-close2 {
 .leaflet-control-layers,
 .leaflet-control {
 	background-color: rgba(0, 0, 0, .8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 	border-radius: 16px;
 	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 	color: white;
 	z-index: 1000;
 	border: none !important;
+}
+
+[if Webkit] .leaflet-control-layers,
+[if Webkit] .leaflet-control {
+	background-color: rgba(0, 0, 0, .7);
 }
 
 .leaflet-control-layers-separator,
@@ -712,6 +723,8 @@ a.icon-close2 {
 
 .mobile-header-bar {
 	background-color: rgba(0, 0, 0, .8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 	border-radius: 100px !important;
 	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 	color: white;
@@ -720,6 +733,10 @@ a.icon-close2 {
 	margin-top: max(10px, env(safe-area-inset-top)) !important;
 	overflow: hidden;
 	height: 44px;
+}
+
+[if Webkit] .mobile-header-bar {
+	background-color: rgba(0, 0, 0, .7);
 }
 
 .mobile-header-bar .full-icon-space-container,

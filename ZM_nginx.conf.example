@@ -1,0 +1,31 @@
+server {
+
+  set $project_location /path/to/Zelda-Maps;
+
+  listen       8443 ssl;
+  server_name  localhost;
+
+  ssl_certificate      nginx.crt;
+  ssl_certificate_key  nginx.key;
+
+  ssl_session_cache    shared:SSL:1m;
+  ssl_session_timeout  5m;
+
+  ssl_ciphers  HIGH:!aNULL:!MD5;
+  ssl_prefer_server_ciphers  on;
+
+  root    $project_location;
+
+  location / {
+    index   index.html index.htm;
+  }
+
+  location ~ \.php$ {
+    fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+    fastcgi_pass   unix:/usr/local/var/run/php5-fpm.sock;
+    fastcgi_index  index.php;
+    fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+    include        fastcgi_params;
+  }
+}

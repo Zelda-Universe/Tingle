@@ -1,6 +1,25 @@
-#Environment File
+# User-specific runtime files
+# Environment Files
 .env
+ZM_nginx.conf
+dev/db/config.yml
 
-#Cached Files
+# Cached Files
 cache/*
 !cache/index.html
+
+# Runtime-updated Files
+css.ini
+javascript.ini
+
+# Downloaded dependencies
+vendor
+
+# Debug Files
+php_errors.log
+phpinfo.php
+
+# Erroneous Files
+
+# Part of the database migration framework we're using that could be useful, just not right now.
+dev/db/schema.rb

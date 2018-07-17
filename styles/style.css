@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?2zh994');
-  src:  url('fonts/icomoon.eot?2zh994#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?2zh994') format('truetype'),
-    url('fonts/icomoon.woff?2zh994') format('woff'),
-    url('fonts/icomoon.svg?2zh994#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?n6bx38');
+  src:  url('fonts/icomoon.eot?n6bx38#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?n6bx38') format('truetype'),
+    url('fonts/icomoon.woff?n6bx38') format('woff'),
+    url('fonts/icomoon.svg?n6bx38#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,20 +24,44 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-fa-minus:before {
-  content: "\f068";
-}
 .icon-fa-user:before {
   content: "\f007";
 }
 .icon-fa-lock:before {
   content: "\f023";
 }
+.icon-go:before {
+  content: "\f08b";
+}
+.icon-leave:before {
+  content: "\f08b";
+}
+.icon-out:before {
+  content: "\f08b";
+}
+.icon-sign-out:before {
+  content: "\f08b";
+}
+.icon-export:before {
+  content: "\f08b";
+}
+.icon-copy:before {
+  content: "\f0c5";
+}
+.icon-files-o:before {
+  content: "\f0c5";
+}
+.icon-bars:before {
+  content: "\f0c9";
+}
+.icon-navicon:before {
+  content: "\f0c9";
+}
+.icon-reorder:before {
+  content: "\f0c9";
+}
 .icon-fa-envelope:before {
   content: "\f0e0";
-}
-.icon-fa-minimize:before {
-  content: "\f2d1";
 }
 .icon-BotW_Bomb:before {
   content: "\e91d";
@@ -47,105 +71,137 @@
 }
 .icon-BotW_Goddess_Statue:before {
   content: "\e922";
+  color: #fff;
 }
 .icon-BotW_Hinox:before {
   content: "\e923";
+  color: #fff;
 }
 .icon-BotW_Lynel:before {
   content: "\e924";
+  color: #fff;
 }
 .icon-BotW_Wizzrobe:before {
   content: "\e925";
+  color: #fff;
 }
 .icon-BotW_Armor:before {
   content: "\e900";
+  color: #fff;
 }
 .icon-BotW_Beef:before {
   content: "\e901";
+  color: #fff;
 }
 .icon-BotW_Blupee:before {
   content: "\e902";
 }
 .icon-BotW_Boss:before {
   content: "\e903";
+  color: #fff;
 }
 .icon-BotW_Bow-n-Arrows:before {
   content: "\e904";
+  color: #fff;
 }
 .icon-BotW_Dungeon:before {
   content: "\e905";
+  color: #fff;
 }
 .icon-BotW_Enemies:before {
   content: "\e906";
+  color: #fff;
 }
 .icon-BotW_Enemy-Camp:before {
   content: "\e907";
+  color: #fff;
 }
 .icon-BotW_Equipment:before {
   content: "\e908";
+  color: #fff;
 }
 .icon-BotW_Fish:before {
   content: "\e909";
+  color: #fff;
 }
 .icon-BotW_Food-n-Materials:before {
   content: "\e90a";
+  color: #fff;
 }
 .icon-BotW_Great-Fairy:before {
   content: "\e90b";
+  color: #fff;
 }
 .icon-BotW_Guardian:before {
   content: "\e90c";
+  color: #fff;
 }
 .icon-BotW_Herbs:before {
   content: "\e90d";
+  color: #fff;
 }
 .icon-BotW_Items:before {
   content: "\e90e";
+  color: #fff;
 }
 .icon-BotW_Korok-Seeds:before {
   content: "\e90f";
+  color: #fff;
 }
 .icon-BotW_Locations:before {
   content: "\e910";
+  color: #fff;
 }
 .icon-BotW_Memories:before {
   content: "\e911";
+  color: #fff;
 }
 .icon-BotW_Mini-Game:before {
   content: "\e912";
+  color: #fff;
 }
 .icon-BotW_Mushrooms:before {
   content: "\e913";
+  color: #fff;
 }
 .icon-BotW_Points-of-Interest:before {
   content: "\e914";
 }
 .icon-BotW_Sheikah-Tower:before {
   content: "\e915";
+  color: #fff;
 }
 .icon-BotW_Shields:before {
   content: "\e916";
+  color: #fff;
 }
 .icon-BotW_Shrine-Quest:before {
   content: "\e917";
+  color: #fff;
 }
 .icon-BotW_Shrines-of-Trials:before {
   content: "\e918";
+  color: #fff;
 }
 .icon-BotW_Side-Quest:before {
   content: "\e919";
+  color: #fff;
 }
 .icon-BotW_Stables:before {
   content: "\e91a";
+  color: #fff;
 }
 .icon-BotW_Treasure-Chest:before {
   content: "\e91b";
+  color: #fff;
 }
 .icon-BotW_Village:before {
   content: "\e91c";
+  color: #fff;
 }
 .icon-BotW_Weapons:before {
   content: "\e91e";
+  color: #fff;
 }
 .icon-pencil:before {
   content: "\e91f";
@@ -180,4 +236,3 @@
 .icon-checkbox-unchecked2:before {
   content: "\ea53";
 }
-

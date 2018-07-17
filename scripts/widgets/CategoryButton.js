@@ -29,6 +29,7 @@ CategoryButton.prototype._initSettings = function(opts) {
   this.onToggle = opts.onToggle || $.noop;
 
   this.toggledOn = getSetOrDefaultValues([opts.toggledOn, this.category.userChecked], false);
+  this.automaticToggle = getSetOrDefaultValue(opts.automaticToggle, true);
 };
 
 CategoryButton.prototype._initTemplate = function() {
@@ -52,7 +53,8 @@ CategoryButton.prototype._initDOMElements = function(opts) {
 CategoryButton.prototype._setupUserInputListener = function(opts) {
   this.domNode.on('click', function(e) {
     e.preventDefault();
-    this.toggle();
+    if(this.automaticToggle) this.toggle();
+    else if(opts.customToggle) opts.customToggle.call(this);
   }.bind(this));
 };
 

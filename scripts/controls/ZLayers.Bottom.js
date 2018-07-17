@@ -152,13 +152,8 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
 
-      this._categoryMenu = new CategoryMenu({
-        defaultToggledState: false,
-        categoryTree: categoryTree,
-        onCategoryToggle: function(toggledOn, category) {
-          zMap.updateCategoryVisibility2(category, toggledOn);
-        } // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
-      });
+      this._categoryMenu = this.createCategoryMenu();
+
       this._resetContent(false);
       this._contents.style.clear = 'both';
     this.updateContentsHeight();

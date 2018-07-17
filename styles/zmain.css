@@ -85,6 +85,11 @@ body,
 	background-color: rgba(255, 173, 71, .5)
 }
 
+.leaflet-tile {
+	background-color: #565656;
+	background-image: url(images/zmaps-bg-tile.png);
+	background-size: 256px;
+}
 
 /* Icon Styles */
 

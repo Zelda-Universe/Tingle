@@ -508,8 +508,7 @@ a.icon-close2 {
 }
 
 [if Webkit] .leaflet-control-layers,
-[if Webkit] .leaflet-control
-{
+[if Webkit] .leaflet-control {
 	background-color: rgba(0, 0, 0, .7);
 }
 
@@ -724,6 +723,8 @@ a.icon-close2 {
 
 .mobile-header-bar {
 	background-color: rgba(0, 0, 0, .8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 	border-radius: 100px !important;
 	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 	color: white;
@@ -732,6 +733,10 @@ a.icon-close2 {
 	margin-top: max(10px, env(safe-area-inset-top)) !important;
 	overflow: hidden;
 	height: 44px;
+}
+
+[if Webkit] .mobile-header-bar {
+	background-color: rgba(0, 0, 0, .7);
 }
 
 .mobile-header-bar .full-icon-space-container,

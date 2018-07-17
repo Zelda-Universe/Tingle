@@ -75,6 +75,8 @@ body,
 	overflow: hidden;
 	position: fixed;
     font-family: "BrandonText", sans-serif;
+    background-image: url(images/zmaps-bg-tile.png);
+    background-size: 256px;
 }
 
 .relativeContainer {
@@ -846,10 +848,6 @@ a.icon-close2 {
 	border: 0;
 	padding: 0;
 	text-align: center;
-}
-
-.modal-footer div {
-	margin: -8px;
 }
 
 .modal-footer .infoWindowIcn {

@@ -498,11 +498,19 @@ a.icon-close2 {
 .leaflet-control-layers,
 .leaflet-control {
 	background-color: rgba(0, 0, 0, .8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
 	border-radius: 16px;
 	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 	color: white;
 	z-index: 1000;
 	border: none !important;
+}
+
+[if Webkit] .leaflet-control-layers,
+[if Webkit] .leaflet-control
+{
+	background-color: rgba(0, 0, 0, .7);
 }
 
 .leaflet-control-layers-separator,

@@ -178,6 +178,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
       mapOptions = vMapOptions;
    }
 
+   if(!mapOptions.categorySelectionMethod) mapOptions.categorySelectionMethod = ZConfig.getConfig("categorySelectionMethod");
 
   // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
 
@@ -207,7 +208,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
 // Add a map category
 ZMap.prototype.addCategory = function(category) {
   category.checked = ((category.checked==1) ? true : false);
-  category.userChecked = category.checked;
+  category.userChecked = false;
 
   categories[category.id] = category;
 };
@@ -554,13 +555,26 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
 ZMap.prototype._shouldShowMarker = function(marker) {
   return marker.visible
     && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
-    && (categories[marker.categoryId].userChecked == true && categories[marker.categoryId].visibleZoom <= map.getZoom()) // Check if we should show for the category, and at this zoom level
-    && (mapOptions.showCompleted == true || (mapOptions.showCompleted == false && marker.complete != true)) // Should we show completed markers?
-    ;
+    && (
+      (
+        mapOptions.categorySelectionMethod == "focus"
+        && !hasUserCheck
+        && categories[marker.categoryId].visibleZoom <= map.getZoom()
+      )
+      || categories[marker.categoryId].userChecked
+    ) // Check if we should show for the category, and at this zoom level
+    && (
+      mapOptions.showCompleted == true || (
+        mapOptions.showCompleted == false
+        && marker.complete != true
+      )
+    ) // Should we show completed markers?
+  ;
 }
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
    categoryTree = vCategoryTree;
+   return; // disabling for refactored category button UI, focus selection style, or both?
    $.each(categoryTree, function(parentCategoryId, parentCategory) {
      parentCategory.userChecked = parentCategory.checked;
      $.each(parentCategory.children, function(index, childCategory) {
@@ -726,28 +740,24 @@ ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
   }
 };
 
-ZMap.prototype.updateCategoryVisibility = function(vCatId, vChecked) {
-
+ZMap.prototype.updateCategoryVisibility = function(category, vChecked) {
+  vCatId = category.id;
    // Change the category visibility of the category parameter
    // var previousUserCheck;
 
-   function forEachCatUserChecked(element, index, array) {
-      if (element.id == vCatId) {
-         if (element.userChecked == true) {
-            element.userChecked = false;
-         } else {
-            element.userChecked = true;
-         }
+   function forEachCatUserChecked(category, index, array) {
+      if (category.id == vCatId) {
+         category.userChecked = !category.userChecked;
 
-         if (element.parentId != undefined) {
+         if (category.parentId != undefined) {
             return;
          } else {
-            // previousUserCheck = element.userChecked;
+            previousUserCheck = category.userChecked;
          }
       }
 
-      if (element.parentId == vCatId) {
-         // element.userChecked = previousUserCheck;
+      if (category.parentId == vCatId) {
+         category.userChecked = previousUserCheck;
       }
    }
    categories.forEach(forEachCatUserChecked);
@@ -768,7 +778,7 @@ ZMap.prototype.updateCategoryVisibility = function(vCatId, vChecked) {
       toastr.warning('Combining a lot of categories might impact performance.');
       userWarnedAboutMarkerQty = true;
    }
-   _this.refreshMap();
+   // _this.refreshMap(category); // Doing in CategoryMenu for now since that has the knowledge of all category changes for now, we'll try to be efficient there.
 };
 
 ZMap.prototype.updateCategoryVisibility2 = function(category, vChecked) {

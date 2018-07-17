@@ -32,7 +32,9 @@
    $path = DIRNAME(__FILE__);
 
 	define("MAPROOT",$path);
-
+    // We want production to run smoothly,
+    // and still requires a mail server as checked below.
+    $mailEnabled = true;
     if(file_exists(MAPROOT."/.env")) {
         $ENV = parse_ini_file(MAPROOT."/.env");
         $dbms = $ENV["DBMS"];
@@ -50,7 +52,9 @@
         }
         $lostPasswordRandomGeneratorStrengthConstant = new SecurityLib\Strength((new SecurityLib\Strength)->getConstList()[$lostPasswordRandomGeneratorStrengthString]);
 
+        $mailEnabled = $ENV['mailEnabled'];
         $mailServer = $ENV['server'];
+        if(!$mailServer) $mailEnabled = false;
         $mailPort = $ENV['port'];
         $mailUsername = $ENV['username'];
         $mailPassword = $ENV['password'];

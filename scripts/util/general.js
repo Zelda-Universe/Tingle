@@ -6,9 +6,10 @@ function getSetOrDefaultValue(value, defaultValue) {
   }
 };
 
-function getSetOrDefaultValues(arrayOfValues, defaultValue) {
-  return arrayOfValues.some(function(value) {
-    return getSetOrDefaultValue(value);
+function getSetOrDefaultValues(arrayOfValues, defaultValue, addlCondition) {
+  return arrayOfValues.find(function(value) {
+    return getSetOrDefaultValue(value)
+      && ((addlCondition) ? addlCondition(value) : true)
   }) || defaultValue;
 };
 

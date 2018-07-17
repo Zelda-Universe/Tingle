@@ -10,7 +10,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     position: 'topleft',
     autoZIndex: false,
     headerHeight: 80,
-    defaultContentType: 'category'
+    defaultContentType: 'category',
+    categorySelectionMethod: ZConfig.getConfig("categorySelectionMethod")
   },
   _categoryMenu: null,
   _contentType: null,
@@ -163,13 +164,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
 
-	    this._categoryMenu = new CategoryMenu({
-	      defaultToggledState: false,
-	      categoryTree: categoryTree,
-	      onCategoryToggle: function(toggledOn, category) {
-	        zMap.updateCategoryVisibility2(category, toggledOn);
-	      } // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
-	    });
+      this._categoryMenu = this.createCategoryMenu();
+
       this.resetContent();
 
       this._contents.style.clear = 'both';
@@ -179,6 +175,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		container.appendChild(form1);
     container.appendChild(this._contents);
    },
+
+  createCategoryMenu: function() {
+    return new CategoryMenu({
+     categoryTree: categoryTree,
+     onCategoryToggle: function(toggledOn, category) {
+       (
+         (this.options.categorySelectionMethod == "focus")
+         ? zMap.updateCategoryVisibility
+         : zMap.updateCategoryVisibility2
+       ).call(zMap, category, toggledOn)
+     }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+     categorySelectionMethod: this.options.categorySelectionMethod,
+     defaultToggledState: (this.options.categorySelectionMethod == "focus")
+   });
+  },
 
    setDefaultFocus: function() {
      this.headerBar.focus();

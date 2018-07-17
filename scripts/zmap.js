@@ -6,7 +6,9 @@ function ZMap() {
   // letters in the version.
   this.version = '0.6.0';
 
-   this.mapOptions = {};
+   this.mapOptions = {
+        startArea : "-168,102,-148,122"
+   };
 
    this.maps = [];
    this._overlayMap = [];

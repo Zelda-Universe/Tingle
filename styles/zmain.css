@@ -94,6 +94,32 @@ body,
 }
 */
 
+/* Toast Notification Styling */
+
+.toast-top-full-width {
+	width: 400px;
+	padding: 16px;
+}
+
+.toast-info {
+	width: 100%;
+	padding: 16px !important;
+	border-radius: 4px;
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
+
+.toast-info:hover {
+	opacity: 0.9;
+	box-shadow: 0 0 12px #999;
+}
+
+.toast-title {
+	font-size: 18px;
+	margin-bottom: 8px;
+	font-weight: 500;
+}
+
 /* Icon Styles */
 
 [class^="icon-"],

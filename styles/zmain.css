@@ -85,6 +85,56 @@ body,
 	background-color: rgba(255, 173, 71, .5)
 }
 
+/* Bad attempt at applying the new bg tile, reenable later
+
+.leaflet-tile-container {
+	background-color: #565656;
+	background-image: url(images/zmaps-bg-tile.png);
+	background-size: 256px;
+}
+*/
+
+/* Toast Notification Styling */
+
+#toast-container {
+	width: 450px !important;
+	padding: 16px !important;
+}
+
+@media only screen and (max-width: 600px) {
+	/* Mobile sizing */
+	#toast-container {
+		width: 100vw !important;
+		padding: 72px 10px 10px 10px !important;
+	}
+}
+
+#toast-container.toast-bottom-full-width>div,
+#toast-container.toast-top-full-width>div {
+	width: 100% !important;
+}
+
+#toast-container>.toast-info {
+	width: 100% !important;
+	padding: 16px !important;
+	border-radius: 4px;
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	background-image: none !important;
+	opacity: 0.9 !important;
+	text-shadow: rgba(0,0,0,.5) 0 0 24px;
+}
+
+#toast-container>.toast-info:hover {
+	opacity: 1 !important;
+	box-shadow: 0 0 12px #999 !important;
+}
+
+.toast-title {
+	font-size: 18px;
+	margin-bottom: 8px;
+	font-weight: 500;
+}
 
 /* Icon Styles */
 
@@ -846,6 +896,10 @@ a.icon-close2 {
 	border: 0;
 	padding: 0;
 	text-align: center;
+}
+
+.modal-footer div {
+	margin: -8px;
 }
 
 .modal-footer .infoWindowIcn {

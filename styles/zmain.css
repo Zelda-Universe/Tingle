@@ -105,7 +105,7 @@ body,
 	/* Mobile sizing */
 	#toast-container {
 		width: 100vw !important;
-		padding: 64px 10px 10px 10px !important;
+		padding: 72px 10px 10px 10px !important;
 	}
 }
 
@@ -1003,16 +1003,6 @@ a.icon-close2 {
 
 header.ex1 {
 	height: 99px !important;
-}
-
-@media only screen 
-    and (device-width : 375px) 
-    and (device-height : 812px) 
-    and (-webkit-device-pixel-ratio : 3) {
-    /* iPhone X only sizing fix */
-    header.ex1 {
-		padding-bottom: env(safe-area-inset-bottom) !important;
-	}
 }
 
 .logo {

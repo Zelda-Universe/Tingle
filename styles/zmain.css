@@ -97,8 +97,8 @@ body,
 /* Toast Notification Styling */
 
 .toast-top-full-width {
-	width: 400px;
-	padding: 16px;
+	width: 400px !important;
+	padding: 16px !important;
 }
 
 .toast-info {
@@ -107,11 +107,12 @@ body,
 	border-radius: 4px;
 	-webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
+	background-image: none !important;
 }
 
 .toast-info:hover {
-	opacity: 0.9;
-	box-shadow: 0 0 12px #999;
+	opacity: 0.9 !important;
+	box-shadow: 0 0 12px #999 !important;
 }
 
 .toast-title {

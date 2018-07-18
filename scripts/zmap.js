@@ -640,6 +640,7 @@ ZMap.prototype.buildMap = function() {
         L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
       }
    }
+
    //@TODO: REDO!
    mapControl.setCurrentMap(19, 1900);
    mapControl.addTo(map);
@@ -687,13 +688,7 @@ ZMap.prototype.buildMap = function() {
 
    _this._buildContextMenu();
 
-   if (!mapControl.isMobile()) {
-      var mobileAds = document.getElementById("mobileAds");
-      if(mobileAds) mobileAds.style.display = 'none';
-   } else {
-      var desktopAds = document.getElementById("desktopAds");
-      if(desktopAds) desktopAds.style.display = 'none';
-   }
+   updateAdState();
 };
 
 ZMap.prototype.setUser = function(vUser) {
@@ -1421,6 +1416,7 @@ ZMap.prototype.logout = function() {
          if (data.success) {
             toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
             user = null;
+            updateAdState();
             _this._buildContextMenu();
             mapControl.resetContent();
             showLoginControls();
@@ -1647,6 +1643,7 @@ ZMap.prototype._createLoginForm = function() {
             if (data.success) {
               checkChangelog(data.user);
                _this.setUser(data.user);
+               updateAdState();
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
                mapControl.resetContent();
             } else {

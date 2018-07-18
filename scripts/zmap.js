@@ -687,8 +687,6 @@ ZMap.prototype.buildMap = function() {
    });
 
    _this._buildContextMenu();
-
-   updateAdState();
 };
 
 ZMap.prototype.setUser = function(vUser) {

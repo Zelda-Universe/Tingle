@@ -30,6 +30,8 @@
       * `php-fpm --prefix /usr/local`
     * PHP dependencies
       - Run `composer install`.
+    * Configure project
+      - Make any other necessary changes in the `.env` file, say, configuring mail system parameters.
   * Coding Workflow
     * Import this Git Flow configuration:
       * ```

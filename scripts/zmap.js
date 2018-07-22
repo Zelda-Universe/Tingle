@@ -178,10 +178,6 @@ ZMap.prototype.constructor = function(vMapOptions) {
       mapOptions = vMapOptions;
    }
 
-   this.mapOptions = { 
-      startArea : "-168,102,-148,122" 
-   }; 
-
    if(!mapOptions.categorySelectionMethod) mapOptions.categorySelectionMethod = ZConfig.getConfig("categorySelectionMethod");
 
   // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});

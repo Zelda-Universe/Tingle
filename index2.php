@@ -20,10 +20,10 @@
 
       <meta property="og:title" content="Zelda Maps" />
       <meta property="og:description" content="Zelda Maps provides rich interactive maps of Hyrule from the The Legend of Zelda with detailed descriptions for each location, character, easter egg and more."/>
-
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-      <meta http-equiv="Content-Language" content="en-us" />
-      <meta name="description" content="Zelda Maps provides rich interactive maps of Hyrule from the The Legend of Zelda with detailed descriptions for each location, character, easter egg and more." />
+      
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta http-equiv="Content-Language" content="en-us">
+      <meta name="description" content="Zelda Maps provides rich interactive maps of Hyrule from the The Legend of Zelda with detailed descriptions for each single location, characters, easter egg and more." />
 
       <!-- Third-Party LIBs -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>

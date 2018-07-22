@@ -927,6 +927,14 @@ a.icon-close2 {
 	left: 50%;
 	transform: translateX(-50%);
 	overflow: hidden;
+	width: 728px;
+}
+
+@media only screen and (max-width: 728px) {
+  #desktopAds { width: 468px; height: 60px; }
+}
+@media only screen and (max-width: 468px) {
+  #desktopAds { width: 234px; height: 60px; }
 }
 
 /*** General Drawer Stuff ***/

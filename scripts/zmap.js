@@ -165,7 +165,6 @@ ZMap.prototype.constructor = function(vMapOptions) {
    completedMarkers = [];
    user = null;
    newMarker = null;
-   startArea = ["-168,102,-148,122"];
    this.cachedMarkersByCategory = {};
    this.cachedMarkersById = {};
 
@@ -178,6 +177,10 @@ ZMap.prototype.constructor = function(vMapOptions) {
       }
       mapOptions = vMapOptions;
    }
+
+   this.mapOptions = { 
+      startArea : "-168,102,-148,122" 
+   }; 
 
    if(!mapOptions.categorySelectionMethod) mapOptions.categorySelectionMethod = ZConfig.getConfig("categorySelectionMethod");
 

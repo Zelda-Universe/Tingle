@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
    <head>
-		<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
-		<link rel="apple-touch-icon" href="apple-touch-icon-precomposed.png" />
-		<title>Breath of the Wild Map | ZeldaMaps.com</title>
-		<meta charset="utf-8" />
-		<meta name="robots" content="index, follow">
-		<meta name="keywords" content="Zelda, map, botw, BotW, Breath of the Wild, Zelda Maps, breath of the wild map, botw map, Hyrule, hyrule map, botw guide"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		
-		<meta name='owner' content='Zelda Universe (https://zeldauniverse.net/) & Hyrule Legends (https://zelda.com.br)'>
-		
-		<meta property="og:locale:alternate" content="en_US" />
-		<meta property="og:type" content="activity" />
-		<meta property="og:url" content="https://zeldamaps.com" />
-		<meta property="og:site_name" content="Zelda Maps" />
-		<meta property="og:locale" content="en_US" />
-				
-		<meta property="og:title" content="Zelda Maps" />
-		<meta property="og:description" content="Zelda Maps provides rich interactive maps of Hyrule from the The Legend of Zelda with detailed descriptions for each single location, characters, easter egg and more."/>	
+      <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+      <link rel="apple-touch-icon" href="apple-touch-icon-precomposed.png" />
+      <title>Breath of the Wild Interactive Map - Zelda Maps</title>
+      <meta charset="utf-8" />
+      <meta name="robots" content="index, follow">
+      <meta name="keywords" content="Zelda, botw interactive map, breath of the wild interactive map, interactive map, map, botw, BotW, Breath of the Wild, Zelda Maps, breath of the wild map, botw map, Hyrule, hyrule map, botw guide" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+      <meta name='owner' content='Zelda Universe (zeldauniverse.net) &amp; Hyrule Legends (zelda.com.br)'>
+      <meta property="og:locale:alternate" content="en_US" />
+      <meta property="og:type" content="activity" />
+      <meta property="og:url" content="https://zeldamaps.com" />
+      <meta property="og:site_name" content="Zelda Maps" />
+      <meta property="og:locale" content="en_US" />
+
+      <meta property="og:title" content="Zelda Maps" />
+      <meta property="og:description" content="Zelda Maps provides rich interactive maps of Hyrule from the The Legend of Zelda with detailed descriptions for each location, character, easter egg and more."/>
       
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
       <meta http-equiv="Content-Language" content="en-us">
@@ -81,10 +81,10 @@
           }
           $.getJSON("ajax.php?command=get_container_name&game="+game,function(data){
               if(!data.success) {
-                document.title="Zelda Map | ZeldaMaps.com";
+                document.title="Zelda Maps";
                 return;
               }
-              document.title=data.name+" Map | ZeldaMaps.com";
+              document.title=data.name+" Interactive Map - Zelda Maps";
           });
       });
       </script>

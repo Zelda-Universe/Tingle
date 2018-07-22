@@ -90,8 +90,9 @@ function getMaps() {
 
 function getUserInfo() {
    $.getJSON("ajax.php?command=get_user_info", function(vResults) {
-    if(vResults.user) zMap.setUser(vResults.user);
-    updateAdState();
+    if(vResults.user) {
+      zMap.setUser(vResults.user);
+    }
     checkChangelog(vResults.user);
    });
 };
@@ -281,12 +282,4 @@ function parseBounds(input) {
 
 
   return bounds;
-};
-
-function updateAdState() {
-  var authenticated = !!user;
-  var mobileAds = document.getElementById("mobileAds");
-  if(mobileAds) $(mobileAds).toggleClass("hidden", (!mapControl.isMobile() || authenticated));
-  var desktopAds = document.getElementById("desktopAds");
-  if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
 };

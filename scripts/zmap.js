@@ -155,9 +155,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
    hasUserCheck = false;
    userWarnedAboutMarkerQty = false;
    userWarnedAboutLogin = false;
-   mapOptions = {
-      startArea : "-168,102,-148,122"
-   };
+   mapOptions = {};
    maps = [];
    markers = [];
    categoryTree = [];
@@ -170,6 +168,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
 
    if (vMapOptions == null) {
       alert("Need to pass options to map constructor");
+      mapOptions = { startArea : "-168,102,-148,122" };
       return false;
    } else {
       if (vMapOptions.showCompleted == undefined) {

@@ -4,7 +4,7 @@ function ZMap() {
    // Now that we have the changelog system using the database
    // with a field for each number, let's use 3 numbers and no
    // letters in the version.
-   this.version = '0.6.2';
+   this.version = '0.6.3';
 
    this.maps = [];
    this._overlayMap = [];
@@ -155,7 +155,9 @@ ZMap.prototype.constructor = function(vMapOptions) {
    hasUserCheck = false;
    userWarnedAboutMarkerQty = false;
    userWarnedAboutLogin = false;
-   mapOptions = {};
+   mapOptions = {
+
+   };
    maps = [];
    markers = [];
    categoryTree = [];
@@ -163,12 +165,12 @@ ZMap.prototype.constructor = function(vMapOptions) {
    completedMarkers = [];
    user = null;
    newMarker = null;
+   startArea = ["-168,102,-148,122"];
    this.cachedMarkersByCategory = {};
    this.cachedMarkersById = {};
 
    if (vMapOptions == null) {
       alert("Need to pass options to map constructor");
-      mapOptions = { startArea : "-168,102,-148,122" };
       return false;
    } else {
       if (vMapOptions.showCompleted == undefined) {

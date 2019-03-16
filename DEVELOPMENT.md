@@ -43,8 +43,8 @@
   - Comment your code so other team members can understand it.
     - We want to communicate why code is there, since the 'what' is already represented by the code statements themselves, and those are straightforward for the most part, or should try to be.
   - When you're done, add a changelog entry for it.
-    - Add a migration for this new entry.
-    - Use the next release number as given to the development team.
+    - Add a migration to add this new changelog entry into the db, details in its own section below.
+    - Use the next release number as given to the development team or self-determined for smaller or self-initiated features.
     - If you need to use a single escape, escape it as such in the Ruby- (and to some extent, Rails-) based migration file: `\\\'`.
 
 ## Backend

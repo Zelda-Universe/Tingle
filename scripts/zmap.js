@@ -7,6 +7,7 @@ function ZMap() {
    this.version = '0.6.3';
 
    this.maps = [];
+   this.games = [];
    this._overlayMap = [];
    this.map;
    this.mapControl;
@@ -158,6 +159,8 @@ ZMap.prototype.constructor = function(vMapOptions) {
    mapOptions = {
 
    };
+
+   games = [];
    maps = [];
    markers = [];
    categoryTree = [];
@@ -213,6 +216,15 @@ ZMap.prototype.addCategory = function(category) {
   categories[category.id] = category;
 };
 
+ZMap.prototype.addGame = function(vGame) {
+   // @TODO: consume color / img from DB (depends on how we do in the mockup
+   vGame.img = "BotW_Points-of-Interest";
+   vGame.color = "#8e72b9";
+   vGame.checked = true;
+   vGame.name = vGame.name;
+   games[vGame.id] = vGame;
+};
+
 ZMap.prototype.addMap = function(vMap) {
    // If there is no subMap, we can't add to the map
    if (vMap.subMap.length == 0) {
@@ -231,6 +243,8 @@ ZMap.prototype.addMap = function(vMap) {
                                              , tileSize:          mapOptions.tileSize
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
+                                             , label:             vMap.name
+                                             , iconURL:           this.defaultTilesURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
                                              }
       );
 
@@ -238,6 +252,7 @@ ZMap.prototype.addMap = function(vMap) {
       tLayer.originalId  = vMap.id;
       tLayer.title       = vMap.name;
       tLayer._overlayMap = [];
+      tLayer.defaultSubMapId = vMap.subMap[0].id;
 
       maps.push(tLayer);
    } else {
@@ -251,6 +266,8 @@ ZMap.prototype.addMap = function(vMap) {
                                              , tileSize:          mapOptions.tileSize
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
+                                             , label:             vMap.name
+                                             , iconURL:           this.defaultTilesURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                              }
       );
 
@@ -258,17 +275,20 @@ ZMap.prototype.addMap = function(vMap) {
       tLayer.originalId  = vMap.id;
       tLayer.title       = vMap.name;
       tLayer._overlayMap = [];
+      tLayer.defaultSubMapId = vMap.subMap[0].id;
 
       // Add all the submaps to the overlay array (including the first submap for control purposes)
       for (var i = 0; i < vMap.subMap.length; i++) {
          var overlay = L.tileLayer(this.defaultTilesURL + vMap.subMap[i].tileURL + '{z}_{x}_{y}.' + vMap.subMap[i].tileExt
-                                            , { maxZoom:  vMap.maxZoom
-                                              , attribution:     vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
-                                              , opacity:         vMap.subMap[i].opacity
-                                              , noWrap:   true
-                                              , tileSize: mapOptions.tileSize
-                                              , updateWhenIdle: true
+                                            , { maxZoom:           vMap.maxZoom
+                                              , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
+                                              , opacity:           vMap.subMap[i].opacity
+                                              , noWrap:            true
+                                              , tileSize:          mapOptions.tileSize
+                                              , updateWhenIdle:    true
                                               , updateWhenZooming: false
+                                              , label:             vMap.name
+                                              , iconURL:           this.defaultTilesURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                             }
          );
 
@@ -288,14 +308,16 @@ ZMap.prototype.addMap = function(vMap) {
                var submap = vMap.subMap[i].submapLayer[j];
 
                var overlay2 = L.tileLayer(this.defaultTilesURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
-                                                                       , { maxZoom:  submap.maxZoom
-                                                                         , noWrap:   true
-                                                                         , attribution: submap.mapMapper
-                                                                         , zIndex:   (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
-                                                                         , tileSize: mapOptions.tileSize
-                                                                         , opacity: submap.opacity
-                                                       , updateWhenIdle:  false
-                                                       , updateWhenZooming: false
+                                                                       , { maxZoom:           submap.maxZoom
+                                                                         , noWrap:            true
+                                                                         , attribution:       submap.mapMapper
+                                                                         , zIndex:            (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
+                                                                         , tileSize:          mapOptions.tileSize
+                                                                         , opacity:           submap.opacity
+                                                                         , updateWhenIdle:    false
+                                                                         , updateWhenZooming: false
+                                                                         , label:             vMap.name
+                                                                         , iconURL:           this.defaultTilesURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
                                                                          });
                overlay2.id             = 'mID' + submap.id;
                overlay2.originalId     = submap.id;
@@ -544,6 +566,13 @@ ZMap.prototype._updateMarkersPresence = function(markers) {
 ZMap.prototype._updateMarkerPresence = function(marker) {
   mapBounds = map.getBounds().pad(0.15);
 
+  if (mapControl.getCurrentMap().mapId != marker.mapId 
+         || mapControl.getCurrentMap().subMapId != marker.submapId
+     )
+   {
+     map.removeLayer(marker);
+     return;
+  }
   if(this._shouldShowMarker(marker)) {
     marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
     map.addLayer(marker);
@@ -594,18 +623,18 @@ ZMap.prototype.buildMap = function() {
    }
 
    map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
-                      , zoom:        mapOptions.zoom
+                      , zoom:        0
                       , zoomSnap:    mapOptions.zoomSnap
                       , zoomDelta:   mapOptions.zoomDelta
                       , zoomControl: false
                       , crs:         L.CRS.Simple
-                      , layers: [maps[0]]
-                      , maxBounds: new L.LatLngBounds(new L.LatLng(-49.875, 34.25), new L.LatLng(-206, 221))
+                      , layers:      [maps[0]]
+                     // @TODO: Add bounds to Database, so everygame has different bounds
+                      , maxBounds:   new L.LatLngBounds(new L.LatLng(-49.875, 34.25), new L.LatLng(-206, 221))
                       , maxBoundsViscosity: 1.0
                       , contextmenu: true
                       , contextmenuWidth: 140
          });
-
 
    // Get all the base maps
    var baseMaps = {};
@@ -639,8 +668,19 @@ ZMap.prototype.buildMap = function() {
       }
    }
 
+   map.addControl(
+       L.control.basemaps({
+           basemaps: maps,
+           tileX: 0,
+           tileY: 0,
+           tileZ: 1,
+           position: 'topright'
+       })
+   );
+  
    //@TODO: REDO!
-   mapControl.setCurrentMap(19, 1900);
+   mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
+   //console.log(mapControl.getCurrentMap());
    mapControl.addTo(map);
 
    // TODO keyboard accessibility
@@ -684,8 +724,34 @@ ZMap.prototype.buildMap = function() {
       }
    });
 
+   map.on('baselayerchange', function(e) {
+      //@TODO: Fix this null value - (for light / dark) - this is when a layer updates
+      //       Defaulting to the first layer for now - workaround!!!!!
+      var defaultSubMapId;
+      var i;
+      for (i = 0; i < maps.length; i++) {
+         if (maps[i].originalId == e.originalId) {
+            defaultSubMapId = maps[i].defaultSubMapId;
+            break;
+         }
+      }
+      // END OF WORKAROUND!!!
+      
+      mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
+      _this.refreshMap();
+      _this._closeNewMarker();
+      mapControl.resetContent();
+      
+      map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
+
+   });
+   
    _this._buildContextMenu();
 };
+
+ZMap.prototype.goToStart = function() {
+   map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), mapOptions.zoom);
+}
 
 ZMap.prototype.setUser = function(vUser) {
    user = vUser;

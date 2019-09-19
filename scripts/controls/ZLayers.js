@@ -163,6 +163,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
       L.DomEvent.disableClickPropagation(this._contents);
       L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
+      
+      /*
+      @TODO: Mock-up shows a "block" of text to hide complete. Still true?
+      this._hideComplete = L.DomUtil.create('span', 'infoWindowIcn', form1);
+      this._hideComplete.innerHTML = "Hide Completed";
+      L.DomEvent.disableClickPropagation(this._hideComplete);
+      L.DomEvent.on(this._hideComplete, 'click', L.DomEvent.stopPropagation);      
+      */
 
       this._categoryMenu = this.createCategoryMenu();
 

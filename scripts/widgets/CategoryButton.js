@@ -24,7 +24,10 @@ CategoryButton.prototype._setDebugNames = function() {
 
 CategoryButton.prototype._initSettings = function(opts) {
   if(!opts.category) opts.category = {};
-
+  if(opts.showIcon == undefined) opts.showIcon = true;
+   
+  this.showIcon = opts.showIcon;
+   
   this.category = opts.category;
   this.onToggle = opts.onToggle || $.noop;
 
@@ -44,7 +47,9 @@ CategoryButton.prototype._initDOMElements = function(opts) {
   this.domNode = $(this.domNodeTemplate);
 
   this.categoryIcon = ((opts.icon) ? opts.icon : new CategoryIcon(opts.category));
-  this.domNode.prepend(this.categoryIcon.domNode);
+  if (this.showIcon) {
+     this.domNode.prepend(this.categoryIcon.domNode);
+  }
 
   this.labelNode = this.domNode.find('.label');
   if(opts.category.name) this.labelNode.text(opts.category.label || opts.category.name);

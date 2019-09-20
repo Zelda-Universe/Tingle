@@ -148,10 +148,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       var logo = new Logo({ parent: headerMenu });
 
-      var completedButton = new CategoryButtonCompleted({
-        toggledOn: mapOptions.showCompleted,
-        onToggle: function(showCompleted) {
-	        zMap.toggleCompleted(showCompleted);
+      _thisLayer = this;
+      this._gameMenu = this.createGameMenu();
+      
+      var completedButton = new GameButton({
+        toggledOn: true,
+        onToggle: function() {
+           _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
@@ -163,16 +166,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       L.DomEvent.disableClickPropagation(this._contents);
       L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
-      
-      /*
-      @TODO: Mock-up shows a "block" of text to hide complete. Still true?
-      this._hideComplete = L.DomUtil.create('span', 'infoWindowIcn', form1);
-      this._hideComplete.innerHTML = "Hide Completed";
-      L.DomEvent.disableClickPropagation(this._hideComplete);
-      L.DomEvent.on(this._hideComplete, 'click', L.DomEvent.stopPropagation);      
-      */
 
       this._categoryMenu = this.createCategoryMenu();
+      
 
       this.resetContent();
 
@@ -199,6 +195,19 @@ L.Control.ZLayers = L.Control.Layers.extend({
    });
   },
 
+  createGameMenu: function() {
+    return new GameMenu({
+     categoryTree: games,
+     onCategoryToggle: function(toggledOn, category) {
+       (
+         window.location.replace(location.protocol + '//' + location.host + location.pathname + "?game=" + category.shortName)
+       ).call(zMap, category, toggledOn)
+     }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+     categorySelectionMethod: this.options.categorySelectionMethod,
+     defaultToggledState: (this.options.categorySelectionMethod == "focus")
+   });
+  },
+  
    setDefaultFocus: function() {
      this.headerBar.focus();
    },
@@ -231,8 +240,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // Our fix for re-using the CategoryMenu not just for
     // more efficient code style, but also to retain the event
     // listeners set-up during intialization.
-    if(this._contentType == 'category') // in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
+    if(this._contentType == 'category') {// in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
       $(this._categoryMenu.domNode).detach();
+    }
+    if(this._contentType == 'game') {// in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
+      $(this._gameMenu.domNode).detach();
+    }
     $(this._contents).empty();
     if(vType != 'category') {
       var closeButton = L.DomUtil.create('a', 'button back-button', this._contents);

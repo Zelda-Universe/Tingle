@@ -1179,3 +1179,12 @@ header.ex1 {
 .basemap p {
    text-shadow: 0px 0px 10px #000000;
 }
+
+.category-selection-list .infoWindowIcn {
+   margin-top: 0px;
+}
+
+.category-selection-list .infoWindowIcn {
+   margin-top: 0px;
+   text-decoration: none !important;
+}

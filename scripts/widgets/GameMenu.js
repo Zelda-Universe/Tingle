@@ -8,7 +8,7 @@ GameMenu.prototype._initSettings = function(opts) {
 
   this.categorySelectionMethod = getSetOrDefaultValue(opts.categorySelectionMethod, ZConfig.getConfig("categorySelectionMethod"));
   this.automaticToggle = getSetOrDefaultValue(opts.automaticToggle, !(this.categorySelectionMethod == "focus"));
-  this._categoryTree = opts.gameTree;
+  this._categoryTree = opts.categoryTree;
 };
 
 GameMenu.prototype._initDOMElements = function(opts) {
@@ -25,16 +25,16 @@ GameMenu.prototype._initDOMElements = function(opts) {
   this._categoryTree.forEach(function(category) {
     currentCategoryParentButton = new CategoryParentButton({
       category: category,
-      onToggle: opts.onGameToggle,
+      onToggle: opts.onCategoryToggle,
       toggledOn: getSetOrDefaultValue(this.defaultToggledState, category.checked),
       automaticToggle: this.automaticToggle,
       customToggle: this.customToggle
     });
     category._button = currentCategoryParentButton;
-    games[category.id]._button = currentCategoryParentButton;
+//    categories[category.id]._button = currentCategoryParentButton;
+
     this._addGameMenuEntry(currentCategoryParentButton);
 
-    
   }, this);
 };
 
@@ -46,9 +46,9 @@ GameMenu.prototype._addGameMenuEntry = function(categoryButton) {
 
 GameMenu.prototype.customToggle = function() {
   this.onToggle(this.toggledOn, this.category);
-  games.forEach(function(category) {
+  categories.forEach(function(category) {
     category._button.toggledOn = ((hasUserCheck) ? category.userChecked : category.checked);
     category._button._updateState();
   });
-  zMap.refreshMap(games);
+  zMap.refreshMap(categories);
 };

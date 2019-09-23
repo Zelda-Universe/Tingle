@@ -20,11 +20,11 @@
 #   - popd
 #   - env
 # - ./generateMapTiles.fish
-# - ../markers/<game>/<map>/<first_file>.png
+# - ../tiles/<game>/<map>/<first_file>.png
 
 set SDIR "$PWD/"(dirname (status filename));
 
-pushd "$SDIR/../markers" > /dev/null;
+pushd "$SDIR/../tiles" > /dev/null;
 
 find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read game
   echo "Processing game \"$game\"";

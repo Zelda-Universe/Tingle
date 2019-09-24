@@ -18,7 +18,8 @@ MarkerSearchField.prototype._initDOMElements = function() {
   this.domNode = $('' +
     '<div class="form-group search-box">' +
       '<div class="icon-addon addon-sm">' +
-        '<input type="text" placeholder="Search Breath of the Wild" class="form-control marker-search" id="marker-search">' +
+        //@TODO: Name should be a parameter and not obtained from a global variable
+        '<input type="text" placeholder="Search ' + mapOptions.name +'" class="form-control marker-search" id="marker-search">' +
         '<a class="button icon-close2" href="javascript:;">×</a>' +
         '<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email">' +
         '</label>' +

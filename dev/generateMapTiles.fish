@@ -20,6 +20,8 @@
 #   - seq
 #   - pushd
 #   - popd
+#   - exit
+#   - continue
 #   - function
 #   - functions
 # - bc

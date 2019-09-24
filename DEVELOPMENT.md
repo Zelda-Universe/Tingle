@@ -81,6 +81,14 @@
 
   Trying to use cross-platform tools from my Mac here.
 
+  Some good file format references and links to tools:
+   - mk8.tockdom.com
+   - wiki.tockdom.com
+   - https://github.com/handsomematt/botw-modding/blob/master/docs/file_formats
+   - https://botw-modding-database.fandom.com/wiki/File_types
+   - https://wiki.oatmealdome.me
+   - https://gist.github.com/zephenryus/b4dbea17de438a1f9f06779657eb4148
+
 #### Switch titles  
 
 ##### BotW
@@ -97,12 +105,25 @@
   1. Use `hactool` to decrypt extract the romfs from the ncas: `./hactool.exe -k keys.dat -x --plaintext="$outputdir" "$ncafile"`.
   1. Use `nstool` to extract the contents of the romfs: `./nstool.exe -v -x --type romfs -f "$romfsfile"`.
 
-##### LARM
+##### LAfS
   1. Use `SARCTool` to extract the game data from the primary game archive files: `python3 "SARCTool.py" "$file"`
     - Requires `pip3 install SarcLib libyaz0` first.
     - Namely the `Game.arc` and `DgnTex.arc` files in the `romfs/region_common/ui` directory.
   1. Use `bntx_extract` to extract the texture archives: `./bntx_extract.exe "$file"`.
   1. Use astcenc (preferably in a loop/batch) to convert all astc image data to tga: `getclip | while read file; eval "'$astcenc' -d '$astcfile' '$file.tga'"; end`.
+
+###### Field Map
+
+  1. Don't forget to flip the images first, if necessary!
+    - find "$srcDir" -type f -exec mogrify -flip '{}' \;
+  1. So far, this was a set of irregular tiles that were hand stitched together..
+
+###### Dungeon Maps
+
+  1. Don't forget to flip the images first, if necessary!
+    - find "$srcDir" -type f -exec mogrify -flip '{}' \;
+  1. Assemble themmm: `dev/games/lafs/assembleDgnTiles.fish "$srcDir"`
+    - Does not support layered dungeon maps yet..
 
 ## Map Tiles
 

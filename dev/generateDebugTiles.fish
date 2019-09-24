@@ -10,11 +10,14 @@
 #   - variables
 #   - subshell
 #   - test
+#   - eval
 #   - seq
 #   - set
 #   - printf
 #   - pushd
 #   - popd
+#   - exit
+#   - break
 # - ImageMagick (convert, identify)
 
 set SDIR "$PWD/"(dirname (status filename));

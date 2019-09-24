@@ -75,7 +75,92 @@
         - Remove the first change that sets a new random query parameter for each font file link.
         - I don't think this is necessary yet.  Client caches should hopefully be invalidated by normal web server file timestamp comparison.
 
+## Game Source Information
 
+### Map Images
+
+  Trying to use cross-platform tools from my Mac here.
+
+  Some good file format references and links to tools:
+   - mk8.tockdom.com
+   - wiki.tockdom.com
+   - https://github.com/handsomematt/botw-modding/blob/master/docs/file_formats
+   - https://botw-modding-database.fandom.com/wiki/File_types
+   - https://wiki.oatmealdome.me
+   - https://gist.github.com/zephenryus/b4dbea17de438a1f9f06779657eb4148
+
+#### Switch titles  
+
+##### BotW
+
+  1. You can find the files installed on the internal storage, or you can `wudecrypt` the game disc: `wudecrypt path/to/image.wud /path/to/output /path/to/commonkey.bin /path/to/disckey.bin`
+  1. Unyaz the sbmaptex files found in `game/00050000101C9500/content/UI/MapTex/MainField`.
+  1. Somehow convert the resultant BFRES files to a common image format.
+    - I didn't find a tool that worked on the Switch's little endian format, was cross-platform, confidently virus-free, I felt like compiling, worked, or ran in batch.
+    - I looked at BFRES-Tool, BFRES-Extractor, BFRES-Viewer, Wexos Toolbox, ModelThingy, NintenTools, Switch-Toolbox.
+
+#### Switch titles
+
+  1. Extract the ncas from the nsp: `python3 nspx.py -x -f "$nspfile" -o "$outputdir"`.
+  1. Use `hactool` to decrypt extract the romfs from the ncas: `./hactool.exe -k keys.dat -x --plaintext="$outputdir" "$ncafile"`.
+  1. Use `nstool` to extract the contents of the romfs: `./nstool.exe -v -x --type romfs -f "$romfsfile"`.
+
+##### LAfS
+  1. Use `SARCTool` to extract the game data from the primary game archive files: `python3 "SARCTool.py" "$file"`
+    - Requires `pip3 install SarcLib libyaz0` first.
+    - Namely the `Game.arc` and `DgnTex.arc` files in the `romfs/region_common/ui` directory.
+  1. Use `bntx_extract` to extract the texture archives: `./bntx_extract.exe "$file"`.
+  1. Use astcenc (preferably in a loop/batch) to convert all astc image data to tga: `getclip | while read file; eval "'$astcenc' -d '$astcfile' '$file.tga'"; end`.
+
+###### Field Map
+
+  1. Don't forget to flip the images first, if necessary!
+    - find "$srcDir" -type f -exec mogrify -flip '{}' \;
+  1. So far, this was a set of irregular tiles that were hand stitched together..
+
+###### Dungeon Maps
+
+  1. Don't forget to flip the images first, if necessary!
+    - find "$srcDir" -type f -exec mogrify -flip '{}' \;
+  1. Assemble themmm: `dev/games/lafs/assembleDgnTiles.fish "$srcDir"`
+    - Does not support layered dungeon maps yet..
+
+## Map Tiles
+
+Danilo says he used a [modified version of a] script called `tileCreator.js` (14.4 KB).
+I assume it's modified because the original tries to fetch data from a database which we do not use for our map tiles, directly at least.
+I may have found that original here: [tileCreator.js](https://github.com/AnderPijoan/vectorosm/blob/master/tileCreator/tileCreator.js).
+
+I would like a simpler and less proprietary process, also considering I cannot readily access the file.
+* https://gis.stackexchange.com/questions/285483/how-can-i-convert-an-image-into-map-tiles-for-leafletjs
+* https://wiki.openstreetmap.org/wiki/Creating_your_own_tiles
+So I have found tools like:
+* [geopython/mapslicer](https://github.com/geopython/mapslicer)
+  * For my Mac had to do:
+    * `brew install wxpython`
+    * `brew install gdal`
+  * Without experience, couldn't quite get it to work.
+    * With or without a specified georeference I thought I found in our JS code, I believe the wizard would not proceed without a valid SRS.
+    * Originally I thought I tried one and it was still looking for valid a SRS/XML file beside the input picture file, and would not proceed because it did not find one.
+      * Probably I was trying preview and stopped.
+      * Even doing this didn't help: https://trac.osgeo.org/gdal/wiki/FAQInstallationAndBuilding#HowtosetGDAL_DATAvariable
+        * https://stackoverflow.com/questions/14444310/how-to-set-the-gdal-data-environment-variable-to-point-to-the-directory-containi
+    * I tried geodetic and that didn't go too badly, but certainly did not return the results I wanted.  Looks like the origin being bottom left may be the biggest problem, and otherwise maybe specifying the offset, which may be in the SRS definition or rather the georeference properties at the beginning.
+    * I set the tile profile to presentation.  I wish that would be enough, and it was have an appropriate SRS in the later list.
+  * https://wiki.osgeo.org/wiki/MapSlicer
+* [gdal2tiles.py](https://gdal.org/gdal2tiles.html)
+  * For my Mac had to do:
+    * `brew install gdal`
+  * Interesting leaflet fork, we may be using the top-left non-standard mapping origin.
+    * [commenthol/gdal2tiles-leaflet](https://github.com/commenthol/gdal2tiles-leaflet)
+      * Good invocation: `./gdal2tiles-leaflet-master/gdal2tiles.py -w none --resume -l -p raster -z '0-8' "$file" tiles`
+  * https://wiki.openstreetmap.org/wiki/GDAL2Tiles
+  * Without experience, couldn't quite get it to work.
+    * Created some weird tiles that were blank and made multiple grided copies with lots of negative space in between, so actually tiles in each single image..
+    * Thought a good invocation would be: `gdal2tiles.py -w none --resume -p raster -z '0-8' "$file" tiles`
+* [MapTiler](https://www.maptiler.com/)
+  * Seems like too much of a proprietary app and not a configurable script.
+  * Haven't tried it.  Feel like gdal2tiles should work..
 
 
 ## Update Sample Database Data

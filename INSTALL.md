@@ -32,6 +32,17 @@
       - Run `composer install`.
     * Configure project
       - Make any other necessary changes in the `.env` file, say, configuring mail system parameters.
+    * (Optional) Create map tile images locally
+      - In case you want to host them locally, either for wanting to work offline, or at least just easing the load on the public server, you can finally do so with some scripts I've included now.
+        - Mainly you can run this other script to generate the tile images for all configured games' maps.
+          + All you need to do is include a single source image in that double-nested directory structure.  You can most likely grab these from our content repository.
+          + and then run this command: `dev/generateAllMapTiles.fish`
+          + This runs the individual script `dev/generateMapTiles.fish` with that setting, a source file argument, and an output directory argument.  You can call this individually if you need to for any reason, local to the project or not.
+        - This debug script was first since I didn't know how to generate the tile images correctly from a master and being cropped, so this generates each individually based on predetermined quadrant and zoom input parameters.
+          + `mkdir -p markers/debug/test`
+          + `env outputZoomFolders=true dev/generateDebugTiles.fish markers/debug/test`
+          + This script can serve as a nice template for any potential future use.
+        - Note I've been including an additional, non-default parameter for these sample script invocations.  Right now, We keep all tiles in one directory, but it may be helpful to transition to using nested zoom folders.
   * Coding Workflow
     * Import this Git Flow configuration:
       * ```

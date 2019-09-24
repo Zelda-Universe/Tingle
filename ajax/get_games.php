@@ -7,6 +7,7 @@
    $query = "select c.id
                   , c.short_name as shortName
                   , c.name
+                  , c.icon
                from " . $map_prefix . "container c
               where c.visible = 1
              order by c.id

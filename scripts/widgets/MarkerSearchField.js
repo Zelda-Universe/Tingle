@@ -15,7 +15,6 @@ function MarkerSearchField(opts) {
 
 
 MarkerSearchField.prototype._initDOMElements = function() {
-   console.log();
   this.domNode = $('' +
     '<div class="form-group search-box">' +
       '<div class="icon-addon addon-sm">' +

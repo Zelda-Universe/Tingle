@@ -5,7 +5,7 @@
 
 function GameButton(opts) {
   CategoryButton.call(this, $.extend(true, {
-    icon: new CategoryIconCompleted(),
+    icon: new CategoryIcon({img: mapOptions.icon, color: "#4a92e4"}),
     toggledOn: true
   }, opts));
 };

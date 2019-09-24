@@ -217,7 +217,7 @@ ZMap.prototype.addCategory = function(category) {
 
 ZMap.prototype.addGame = function(vGame) {
    // @TODO: consume color / img from DB (depends on how we do in the mockup
-   vGame.img = "BotW_Points-of-Interest";
+   vGame.img = vGame.icon;
    vGame.color = "#8e72b9";
    vGame.checked = true;
    vGame.name = vGame.name;

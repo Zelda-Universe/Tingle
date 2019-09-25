@@ -674,7 +674,7 @@ ZMap.prototype.buildMap = function() {
            tileX: 0,
            tileY: 0,
            tileZ: 1,
-           position: 'topright'
+           position: 'topright',
        })
    );
   
@@ -705,7 +705,7 @@ ZMap.prototype.buildMap = function() {
          mapControl.resetContent();
       }
    });
-
+   
    map.on('zoomend', function() {
       if (map.getZoom() > 5 && currentIcon == 'Small') {
          currentIcon = 'Medium';
@@ -740,7 +740,7 @@ ZMap.prototype.buildMap = function() {
       mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
       _this.refreshMap();
       _this._closeNewMarker();
-      mapControl.resetContent();
+      //mapControl.resetContent();
       
       map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
 

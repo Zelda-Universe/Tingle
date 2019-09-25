@@ -2,7 +2,8 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   options: {
     position: 'topleft',
     delay: 0,
-    openTo: 78,
+    //openTo: 78,
+    openTo: 150,
     softOpenBottom: 250,
     softOpenTo: 0 // REVERSE
   },
@@ -133,9 +134,13 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
          }, this);
 
       var logo = new Logo({ parent: headerMenu });
+      
+      _thisLayer = this;
+      this._gameMenu = this.createGameMenu();
 
       L.DomUtil.create('div', 'grabber', headerMenu);
 
+      /*
       var completedButton = new CategoryButtonCompleted({
         toggledOn: mapOptions.showCompleted,
         onToggle: function(showCompleted) {
@@ -143,7 +148,16 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(completedButton.domNode);
+      $(headerMenu).append(completedButton.domNode);*/
+      
+      var gameMenuButton = new GameButton({
+        toggledOn: true,
+        onToggle: function() {
+           _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
+	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+      });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(gameMenuButton.domNode);
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
@@ -156,7 +170,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 
       this._resetContent(false);
       this._contents.style.clear = 'both';
-    this.updateContentsHeight();
+      this.updateContentsHeight();
 
    	container.appendChild(form1);
       container.appendChild(this._contents);
@@ -166,6 +180,20 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     // and make expand match openDrawer expectations.
     if (true || !this.options.collapsed) this._expand();
    },
+   
+   createGameMenu: function() {
+     return new GameMenu({
+      categoryTree: games,
+      onCategoryToggle: function(toggledOn, category) {
+        (
+          window.location.replace(location.protocol + '//' + location.host + location.pathname + "?game=" + category.shortName)
+        ).call(zMap, category, toggledOn)
+      }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+      categorySelectionMethod: this.options.categorySelectionMethod,
+      defaultToggledState: (this.options.categorySelectionMethod == "focus")
+    });
+   },
+  
 
     _animate: function(menu, from, to, isOpen) {
       // console.log(from + ' ' + to + ' ' + isOpen);

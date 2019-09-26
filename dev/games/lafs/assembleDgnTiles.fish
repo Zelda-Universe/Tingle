@@ -33,13 +33,20 @@ set SDIR "$PWD/"(dirname (status filename));
 # Direct (Required) Input
 test -z "$srcDir"; and set srcDir "$argv[1]";
 
+# Flags
+test -z "$force"; and set force "false";
+
+# Other Settings
+test -z "$gameTilesDir"; and set gameTilesDir "tiles/lafs";
+test -z "$processLayers"; and set processLayers "LvNorm LvMask PanLvNorm PanLvMask";
+
 # Required settings validation
 if test -z "$srcDir" -o ! -e "$srcDir"
   echo "Error: Source directory must be provided as the first argument and exist.";
   exit;
 end
 
-pushd "$SDIR/../../../tiles/lafs" > /dev/null;
+pushd "$SDIR/../../../$gameTilesDir" > /dev/null;
 
 
 ## First, source file hierarchy set-up for easier script writing..
@@ -82,15 +89,31 @@ popd > /dev/null;
 # All the images need a v.flip first..
 # find "$srcDir" -type f -exec mogrify -flip '{}' \;
 
-function assembleDgnLayer --argument-names srcDir dgnName outFile
-  convert -size 1280x1024 canvas:black "$outFile";
+find -maxdepth 1 -iname 'DgnMapGrid*' | read dgnMapGrid;
 
+function assembleDgnLayer --argument-names srcDir dgnName outFile
+  if test -e "$outFile" -a "$force" != "true"
+    echo "\"$outFile\" already exists, and force has not been specified; exiting...";
+    return;
+  end
+
+  echo -n "Processing layer file \"$outFile\" with files numbered ";
+
+  test -n "$dgnMapGrid";
+  and convert -size 1308x1040 "../$dgnMapGrid" "$outFile"; 
+  or convert -size 1308x1040 "canvas:black" "$outFile";
+
+  set fileNum "0";
   find "$srcDir" -maxdepth 1 -type f -iname "*$dgnName*" -printf '%f\n' | while read file
+    set fileNum (echo "$fileNum + 1" | bc);
+    echo -n "$fileNum, ";
+    # TODO: could add switch for dot display instead too..
+
     set coords (echo "$file" | cut -d'_' -f2 | cut -d'.' -f 1);
-    set coordY (echo '('(echo "$coords" | sed 's|[A-Z]||g')' - 1) * 128' | bc);
+    set coordY (echo '(('(echo "$coords" | sed 's|[A-Z]||g')' - 1) * 128) + 8' | bc);
     set coordXLetters (echo "$coords" | sed 's|[0-9]||g');
     set coordXLettersCount (echo -n "$coordXLetters" | wc -c);
-    set coordX (echo '('(echo 'ibase=16; '(echo -n "$coordXLetters" | xxd -p) | bc)' - 65) * 160' | bc)
+    set coordX (echo '(('(echo 'ibase=16; '(echo -n "$coordXLetters" | xxd -p) | bc)' - 65) * 160) + 14' | bc)
     
     # echo;
     # echo "coords: $coords";
@@ -107,24 +130,38 @@ function assembleDgnLayer --argument-names srcDir dgnName outFile
       composite -geometry '+'{$coordX}'+'{$coordY} "$srcDir/$file" "$outFile" "$outFile";
     end
   end
+  echo "done!";
 end
 
-find "$srcDir/Lv/Norm" -maxdepth 1 -type f -printf '%f\n' | \
+test -z "$dgnNames"; and set dgnNames (
+  find "$srcDir/Lv/Norm" -maxdepth 1 -type f -printf '%f\n' | \
   cut -d'_' -f1 | \
   sort | \
-  uniq | while read dgnName
+  uniq
+);
+# echo dgnNames: $dgnNames;
 
+echo "$processLayers" | grep -qE "\bLvNorm\b"; and set processLvNorm "true";
+echo "$processLayers" | grep -qE "\bLvMask\b"; and set processLvMask "true";
+echo "$processLayers" | grep -qE "\bPanLvNorm\b"; and set processPanLvNorm "true";
+echo "$processLayers" | grep -qE "\bPanLvMask\b"; and set processPanLvMask "true";
+
+for dgnName in $dgnNames
+  echo;
   echo "Processing $dgnName...";
+
   if test -d "$dgnName"
     echo "\"$dgnName\" dungeon directory already exists; skipping...";
     continue;
   else
     mkdir "$dgnName";
     pushd "$dgnName" > /dev/null;
-    assembleDgnLayer "$srcDir/Lv/Norm" "$dgnName" {$dgnName}".png";
-    assembleDgnLayer "$srcDir/Lv/Mask" "$dgnName" {$dgnName}"Mask.png";
-    assembleDgnLayer "$srcDir/PanLv/Norm" "$dgnName" "Panel"{$dgnName}".png";
-    assembleDgnLayer "$srcDir/PanLv/Mask" "$dgnName" "Panel"{$dgnName}"Mask.png";
+    
+    test "$processLvNorm" = "true"; and assembleDgnLayer "$srcDir/Lv/Norm" "$dgnName" {$dgnName}".png";
+    test "$processLvMask" = "true"; and assembleDgnLayer "$srcDir/Lv/Mask" "$dgnName" {$dgnName}"Mask.png";
+    test "$processPanLvNorm" = "true"; and assembleDgnLayer "$srcDir/PanLv/Norm" "$dgnName" "Panel"{$dgnName}".png";
+    test "$processPanLvMask" = "true"; and assembleDgnLayer "$srcDir/PanLv/Mask" "$dgnName" "Panel"{$dgnName}"Mask.png";
+    
     popd > /dev/null;
   end
 end
@@ -144,6 +181,8 @@ functions -e assembleDgnLayer;
 # And manually checked, each tile size is 160x128
 # 8x8 squares!!
 # so that's 1280x1024
+# DgnMapGrid is 1308x1040
+# so that's 28 wider, and 16 taller, so +14 and +8 offets??
 
 
 

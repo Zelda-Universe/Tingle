@@ -17,6 +17,7 @@ Map Viewer URL-only Query Parameters:
 - collapsed `boolean`
 - showCategoryControlOpened `boolean`
 - showZoomControl `boolean`
+- showInfoControls `boolean`
 
 - bgColor `CSS color`
 - help `boolean`

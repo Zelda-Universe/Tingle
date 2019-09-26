@@ -11,8 +11,6 @@
 
 # Links
   - [Main hosted site](http://zeldamaps.com)
-  - [Wiki](https://app.tettra.co/teams/zelda/categories/125586)
-  - [Content Storage](https://drive.google.com/drive/u/0/folders/1-PoGVRN3zRpyiMMzmYmSYhpZHq9doMXb)
   - [Sponsor "Zelda Universe" site](https://zeldauniverse.net)
   - [Original "Hyrule Legends" site](https://www.zelda.com.br/)
   - [ZU Announcement Forum Thread](https://zeldauniverse.net/forums/Thread/183322-Zelda-Maps-A-site-with-a-map/)
@@ -22,7 +20,7 @@
       * [Relevant game mod - Fully Marked Map](https://gamebanana.com/gamefiles/8774)
       * [Some mined game data](https://github.com/MrCheeze/botw-tools)
     + LA
-      * https://github.com/zladx/LADX-Disassembly
+      * [Reverse engineered ROM file](https://github.com/zladx/LADX-Disassembly)
 
   - Chat
     - [ZU Discord Server link](http://discord.gg/zelda)
@@ -32,6 +30,8 @@
       - Channels: `#maps-team`, `#git`, `#tracker`, & `#dev-team`, (`#dev-corner` too?).
 
   - Work
+    + [Wiki](https://app.tettra.co/teams/zelda/categories/125586)
+    + [Content Storage](https://drive.google.com/drive/u/0/folders/1-PoGVRN3zRpyiMMzmYmSYhpZHq9doMXb)
     - [Code Repository & New Job Board](https://github.com/Zelda-Universe/Zelda-Maps)
     - [Old Job Board / Work Item Tracker](https://trello.com/b/lYtrBKpy/maps)
     - [Code Staging and Test Server](https://stage.zeldamaps.com/)

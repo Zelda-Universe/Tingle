@@ -61,6 +61,8 @@
 # Etc.
 
 ## Icons
+  For existing icon reference: https://app.tettra.co/teams/zelda/pages/icon-index
+  
   We use the website `https://icomoon.io/app` to choose, compile, and generate the stylesheets that contain the icon font graphics we display in our map's web page.
   - We do not use the hosted 'Quick Usage' premium feature of icomoon, just the local browser storage to work with the set, then export it to the filesystem, and update the project with the new files.
   - Import into website / review
@@ -122,6 +124,8 @@
 
   1. Don't forget to flip the images first, if necessary!
     - find "$srcDir" -type f -exec mogrify -flip '{}' \;
+  1. (Optional) Add a `DgnMapGrid` file to use that as the dungeon map background.
+    1.  Assumes 1308x1040 with or without this file being provided which is 1280x1024 for the map tile grid plus offsets allowing for grid lines in between tiles.
   1. Assemble themmm: `dev/games/lafs/assembleDgnTiles.fish "$srcDir"`
     - Does not support layered dungeon maps yet..
 

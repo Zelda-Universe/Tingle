@@ -1208,4 +1208,19 @@ header.ex1 {
   .basemaps.leaflet-control { margin-left: 10px !important; }
 }
 
- 
+
+.game-selection-list {
+   margin-top: 20px;
+}   
+.maps-selector {
+   width: 50% !important;
+   border-radius: 10px;
+}
+
+.maps-selector>a>img {
+   border-radius: 10px;
+}
+
+.menu-header-button {
+    width:86px;    
+}

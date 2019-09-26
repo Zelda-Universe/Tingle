@@ -131,41 +131,40 @@
 
 ## Map Tiles
 
-Danilo says he used a [modified version of a] script called `tileCreator.js` (14.4 KB).
-I assume it's modified because the original tries to fetch data from a database which we do not use for our map tiles, directly at least.
-I may have found that original here: [tileCreator.js](https://github.com/AnderPijoan/vectorosm/blob/master/tileCreator/tileCreator.js).
+  Danilo says he used a [modified version of a] script called `tileCreator.js` (14.4 KB).
+  I assume it's modified because the original tries to fetch data from a database which we do not use for our map tiles, directly at least.
+  I may have found that original here: [tileCreator.js](https://github.com/AnderPijoan/vectorosm/blob/master/tileCreator/tileCreator.js).
 
-I would like a simpler and less proprietary process, also considering I cannot readily access the file.
-* https://gis.stackexchange.com/questions/285483/how-can-i-convert-an-image-into-map-tiles-for-leafletjs
-* https://wiki.openstreetmap.org/wiki/Creating_your_own_tiles
-So I have found tools like:
-* [geopython/mapslicer](https://github.com/geopython/mapslicer)
-  * For my Mac had to do:
-    * `brew install wxpython`
-    * `brew install gdal`
-  * Without experience, couldn't quite get it to work.
-    * With or without a specified georeference I thought I found in our JS code, I believe the wizard would not proceed without a valid SRS.
-    * Originally I thought I tried one and it was still looking for valid a SRS/XML file beside the input picture file, and would not proceed because it did not find one.
-      * Probably I was trying preview and stopped.
-      * Even doing this didn't help: https://trac.osgeo.org/gdal/wiki/FAQInstallationAndBuilding#HowtosetGDAL_DATAvariable
-        * https://stackoverflow.com/questions/14444310/how-to-set-the-gdal-data-environment-variable-to-point-to-the-directory-containi
-    * I tried geodetic and that didn't go too badly, but certainly did not return the results I wanted.  Looks like the origin being bottom left may be the biggest problem, and otherwise maybe specifying the offset, which may be in the SRS definition or rather the georeference properties at the beginning.
-    * I set the tile profile to presentation.  I wish that would be enough, and it was have an appropriate SRS in the later list.
-  * https://wiki.osgeo.org/wiki/MapSlicer
-* [gdal2tiles.py](https://gdal.org/gdal2tiles.html)
-  * For my Mac had to do:
-    * `brew install gdal`
-  * Interesting leaflet fork, we may be using the top-left non-standard mapping origin.
-    * [commenthol/gdal2tiles-leaflet](https://github.com/commenthol/gdal2tiles-leaflet)
-      * Good invocation: `./gdal2tiles-leaflet-master/gdal2tiles.py -w none --resume -l -p raster -z '0-8' "$file" tiles`
-  * https://wiki.openstreetmap.org/wiki/GDAL2Tiles
-  * Without experience, couldn't quite get it to work.
-    * Created some weird tiles that were blank and made multiple grided copies with lots of negative space in between, so actually tiles in each single image..
-    * Thought a good invocation would be: `gdal2tiles.py -w none --resume -p raster -z '0-8' "$file" tiles`
-* [MapTiler](https://www.maptiler.com/)
+  I would like a simpler and less proprietary process, also considering I cannot readily access the file.
+  * https://gis.stackexchange.com/questions/285483/how-can-i-convert-an-image-into-map-tiles-for-leafletjs
+  * https://wiki.openstreetmap.org/wiki/Creating_your_own_tiles
+  So I have found tools like:
+  * [geopython/mapslicer](https://github.com/geopython/mapslicer)
+    * For my Mac had to do:
+      * `brew install wxpython`
+      * `brew install gdal`
+    * Without experience, couldn't quite get it to work.
+      * With or without a specified georeference I thought I found in our JS code, I believe the wizard would not proceed without a valid SRS.
+      * Originally I thought I tried one and it was still looking for valid a SRS/XML file beside the input picture file, and would not proceed because it did not find one.
+        * Probably I was trying preview and stopped.
+        * Even doing this didn't help: https://trac.osgeo.org/gdal/wiki/FAQInstallationAndBuilding#HowtosetGDAL_DATAvariable
+          * https://stackoverflow.com/questions/14444310/how-to-set-the-gdal-data-environment-variable-to-point-to-the-directory-containi
+      * I tried geodetic and that didn't go too badly, but certainly did not return the results I wanted.  Looks like the origin being bottom left may be the biggest problem, and otherwise maybe specifying the offset, which may be in the SRS definition or rather the georeference properties at the beginning.
+      * I set the tile profile to presentation.  I wish that would be enough, and it was have an appropriate SRS in the later list.
+    * https://wiki.osgeo.org/wiki/MapSlicer
+  * [gdal2tiles.py](https://gdal.org/gdal2tiles.html)
+    * For my Mac had to do:
+      * `brew install gdal`
+    * Interesting leaflet fork, we may be using the top-left non-standard mapping origin.
+      * [commenthol/gdal2tiles-leaflet](https://github.com/commenthol/gdal2tiles-leaflet)
+        * Good invocation: `./gdal2tiles-leaflet-master/gdal2tiles.py -w none --resume -l -p raster -z '0-8' "$file" tiles`
+    * https://wiki.openstreetmap.org/wiki/GDAL2Tiles
+    * Without experience, couldn't quite get it to work.
+      * Created some weird tiles that were blank and made multiple grided copies with lots of negative space in between, so actually tiles in each single image..
+      * Thought a good invocation would be: `gdal2tiles.py -w none --resume -p raster -z '0-8' "$file" tiles`
+  * [MapTiler](https://www.maptiler.com/)
   * Seems like too much of a proprietary app and not a configurable script.
   * Haven't tried it.  Feel like gdal2tiles should work..
-
 
 ## Update Sample Database Data
 
@@ -214,10 +213,12 @@ So I have found tools like:
 
   Tracking database changes to use in the future for features and bug fixes is important, and we will create migration files that can be easily issued in any environment.
 
-  Thought it would be easy that we use what existing projects use to accomplish this, and I have been using Ruby on Rails lately that seems to do a good job of it.
+  Thought it would be easy to utilize other projects' existing mechanisms, and I have been using Ruby on Rails lately that seems to do a good job of it.
   https://github.com/thuss/standalone-migrations
 
   Now that only accomplishes half of the responsibility.  In order to operate on that actual database content data, we don't have ActiveRecord objects to use as an API, so we just implement raw SQL for these, and make sure that both of the `up` and `down` methods are made as appropriate as possible, if both methods possible for that certain situation.
+
+  It seems we must only pass a single SQL statement per block to avoid a security risk, otherwise it keeps receiving a syntax error only when sent through the migration framework.. https://stackoverflow.com/questions/14856856/how-to-write-sql-in-a-migration-in-rails#comment86794302_42991237
 
   Important Note:
     Do not edit a migration that has been pushed (to others).

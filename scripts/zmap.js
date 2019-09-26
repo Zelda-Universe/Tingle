@@ -336,6 +336,9 @@ ZMap.prototype.addMap = function(vMap) {
 
       maps.push(tLayer);
    }
+   if (this.mapControl) {
+      this.mapControl.rebuildMap();
+   }
 }
 
 ZMap.prototype.addMarkers = function(vMarkers) {
@@ -667,6 +670,7 @@ ZMap.prototype.buildMap = function() {
       }
    }
 
+   /*
    map.addControl(
        L.control.basemaps({
            basemaps: maps,
@@ -676,10 +680,11 @@ ZMap.prototype.buildMap = function() {
            position: 'topright',
        })
    );
-
+   */
 
    //@TODO: REDO!
    mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
+   mapControl.setCurrentMapLayer(maps[0]);
    //console.log(mapControl.getCurrentMap());
    mapControl.addTo(map);
 
@@ -737,7 +742,7 @@ ZMap.prototype.buildMap = function() {
          }
       }
       // END OF WORKAROUND!!!
-      
+      //console.log(e.originalId + " " + defaultSubMapId);
       mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
       _this.refreshMap();
       _this._closeNewMarker();

@@ -1799,8 +1799,9 @@ ZMap.prototype.goTo = function(vGoTo) {
    }
 
    if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true);
       // Open Marker already does a change map, so it takes precedence
+      
       return;
    }
 
@@ -1815,10 +1816,10 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   _openMarker(vMarkerId, vZoom, true);
+   _openMarker(vMarkerId, vZoom, true, false);
 }
 
-ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin) {
+ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin, vPanTo) {
    var marker = this.cachedMarkersById[vMarkerId];
    if(marker) {
      mapControl.changeMap(marker.mapId, marker.submapId);
@@ -1848,6 +1849,9 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin) {
      }
 
      //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
+     if (vPanTo) {
+        map.panTo(marker.getLatLng());
+     }
      return;
    }
 

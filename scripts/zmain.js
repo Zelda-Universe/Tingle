@@ -137,6 +137,7 @@ function getMarkers(){
       zMap.addMarkers(vResults);
       getUserInfo();
       zMap.refreshMap();
+      zMap.goToStart();
       zMap.goTo({ map        : getUrlParamValue('map', null)
                 , subMap     : getUrlParamValue('subMap', null)
                 , marker     : getUrlParamValue('marker', null)
@@ -144,7 +145,6 @@ function getMarkers(){
                 , hideOthers : getUrlParamValue('hideOthers', false)
                 , hidePin    : getUrlParamValue('hidePin', false)
       });
-      zMap.goToStart();
 
    });
 };

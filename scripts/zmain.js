@@ -141,6 +141,8 @@ function getMarkers(){
                 , subMap     : getUrlParamValue('subMap', null)
                 , marker     : getUrlParamValue('marker', null)
                 , zoom       : getUrlParamValue('zoom', 4)
+                , hideOthers : getUrlParamValue('hideOthers', false)
+                , hidePin    : getUrlParamValue('hidePin', false)
       });
       zMap.goToStart();
 

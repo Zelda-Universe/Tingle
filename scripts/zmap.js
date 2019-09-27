@@ -466,17 +466,20 @@ ZMap.prototype._createMarkerPopup = function(marker) {
                    + "<br style='height:0pt; clear:both;'>"
                    + "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                    + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
                      + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
                      + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
                 + "</div>";
       } else {
          content += "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                      + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                     + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
                 + "</div>";
       }
    } else {
       content += "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                  + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
              + "</div>";
    }
 
@@ -504,9 +507,7 @@ ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
    }
 }
 
-ZMap.prototype._copyToClipboard = function(vMarkerId) {
-   var href = window.location.href.split("?");
-
+ZMap.prototype._getClipboardParams = function(href) {
    var params = href[1].split("&");
 
    var clipboardParams = "";
@@ -523,7 +524,17 @@ ZMap.prototype._copyToClipboard = function(vMarkerId) {
          clipboardParams = clipboardParams + params[i] + "&";
       }
    }
-
+   return clipboardParams;
+}
+ZMap.prototype._copyToClipboardEmbed = function(vMarkerId) {
+   var href = window.location.href.split("?");
+   var clipboardParams = this._getClipboardParams(href);
+   
+   window.prompt("Copy to clipboard: Ctrl+C, Enter", "<iframe src=\"" + href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>");
+}
+ZMap.prototype._copyToClipboard = function(vMarkerId) {
+   var href = window.location.href.split("?");
+   var clipboardParams = this._getClipboardParams(href);
    window.prompt("Copy to clipboard: Ctrl+C, Enter", href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom());
 }
 
@@ -1780,9 +1791,15 @@ ZMap.prototype._createAccountForm = function(user) {
  * @param vGoTo.marker          - Marker to be opened (Takes precedence over subMap and Layer)
  **/
 ZMap.prototype.goTo = function(vGoTo) {
+   if (vGoTo.hideOthers) {
+      for (var i = 0; i < markers.length; i++) {
+         markers[i].visible = false;
+      }
+      _this.refreshMap();
+   }
 
    if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin);
       // Open Marker already does a change map, so it takes precedence
       return;
    }
@@ -1798,9 +1815,14 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
+   _openMarker(vMarkerId, vZoom, true);
+}
+
+ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin) {
    var marker = this.cachedMarkersById[vMarkerId];
    if(marker) {
      mapControl.changeMap(marker.mapId, marker.submapId);
+     marker.visible = true;
 
      if (!vZoom) {
         vZoom = map.getZoom();
@@ -1821,7 +1843,9 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
      var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
      map.setView(latlng, vZoom);
      _this._createMarkerPopup(marker);
-     newMarker = L.marker(marker._latlng).addTo(map);
+     if (vPin) {
+         newMarker = L.marker(marker._latlng).addTo(map);
+     }
 
      //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
      return;

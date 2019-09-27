@@ -159,6 +159,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
    mapOptions = {
 
    };
+
    games = [];
    maps = [];
    markers = [];
@@ -681,18 +682,6 @@ ZMap.prototype.buildMap = function() {
       }
    }
 
-   /*
-   map.addControl(
-       L.control.basemaps({
-           basemaps: maps,
-           tileX: 0,
-           tileY: 0,
-           tileZ: 1,
-           position: 'topright',
-       })
-   );
-   */
-
    //@TODO: REDO!
    mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
    mapControl.setCurrentMapLayer(maps[0]);
@@ -739,7 +728,6 @@ ZMap.prototype.buildMap = function() {
          }
       }
    });
-
 
    map.on('baselayerchange', function(e) {
       //@TODO: Fix this null value - (for light / dark) - this is when a layer updates

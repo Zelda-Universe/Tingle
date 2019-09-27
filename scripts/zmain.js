@@ -217,10 +217,6 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
 
       vContainer.help                       = getUrlParamValue('help', true);
 
-      if (vContainer.bgColor[0] != '#') {
-         vContainer.bgColor = '#' + vContainer.bgColor;
-      }
-
       var showCompleted = getCookie('showCompleted');
       if (showCompleted == '') {
          setCookie('showCompleted',"true");

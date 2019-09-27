@@ -16,5 +16,5 @@ ZConfig = {
 
 // Main config set-up with defaults
 
-// "exact", "focus" (Jason's deafult)
+// "exact", "focus" (Jason's default)
 ZConfig.setConfig("categorySelectionMethod", "focus");

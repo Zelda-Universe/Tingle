@@ -28,7 +28,6 @@ function ZMap() {
    this.zoomDirectories = ZConfig.getConfig("zoomDirectories");
    this.tileNameFormat = ZConfig.getConfig("tileNameFormat");
    
-   // @TODO: This is a WORKAROUND. Icon sho   
    // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself. 
    //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
    //        In the future, we need to move the icon.png of every map to the tiledmap and change defaultIconURL to defaultTilesURL
@@ -249,6 +248,9 @@ ZMap.prototype.addMap = function(vMap) {
                                              , noWrap:            true
                                              , tileSize:          mapOptions.tileSize
                                              , updateWhenIdle:    true
+                                             , updateWhenZooming: false
+                                             , label:             vMap.name
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
                                                  }
       );
 

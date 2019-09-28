@@ -34,6 +34,10 @@ Map Viewer Cookie-only Settings:
 Map Viewer General Settings:
 - categorySelectionMethod: `[exact, focus]`, default: `focus`
 
+- tilesBaseURL: `string`, default: `https://zeldamaps.com/tiles/`
+- zoomDirectories: `boolean`, default: `false`
+- tileNameFormat: `boolean`, default: `{z}_{x}_{y}`/`{z}/{x}_{y}`
+
 These can be configured via:
 - URL-only Query Parameters
 - Local Storage

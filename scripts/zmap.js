@@ -24,8 +24,9 @@ function ZMap() {
    this.markerIconSmall;
    this.markerIconMedium;
 
-   //this.defaultTilesURL = 'tiles/'; // Local
-   this.defaultTilesURL = 'https://zeldamaps.com/tiles/';
+   this.tilesBaseURL = ZConfig.getConfig("tilesBaseURL");
+   this.zoomDirectories = ZConfig.getConfig("zoomDirectories");
+   this.tileNameFormat = ZConfig.getConfig("tileNameFormat");
 
    this.newMarker;
 
@@ -235,7 +236,7 @@ ZMap.prototype.addMap = function(vMap) {
    // If only one submap exists, we just add it without any overlay
    if (vMap.subMap.length == 1
          && vMap.subMap[0].submapLayer.length == 0) {
-      var tLayer = L.tileLayer(this.defaultTilesURL + vMap.subMap[0].tileURL + '{z}_{x}_{y}.' + vMap.subMap[0].tileExt
+      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + this.tileNameFormat + '.' + vMap.subMap[0].tileExt
                                            , { maxZoom:           vMap.maxZoom
                                              , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[0].mapMapper
                                              , opacity:           vMap.subMap[0].opacity
@@ -244,7 +245,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              , label:             vMap.name
-                                             , iconURL:           this.defaultTilesURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
+                                             , iconURL:           this.tilesBaseURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
                                              }
       );
 
@@ -260,14 +261,14 @@ ZMap.prototype.addMap = function(vMap) {
       //  We create it as an empty map, so different sized overlay maps won't show on top
       //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
       /* TODO: Improve this to use no tile at all (remove tile border)*/
-      var tLayer = L.tileLayer(this.defaultTilesURL + vMap.subMap[0].tileURL + 'blank.png'
+      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
                                            , { maxZoom:           vMap.maxZoom
                                              , noWrap:            true
                                              , tileSize:          mapOptions.tileSize
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              , label:             vMap.name
-                                             , iconURL:           this.defaultTilesURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                             , iconURL:           this.tilesBaseURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                              }
       );
 
@@ -279,7 +280,7 @@ ZMap.prototype.addMap = function(vMap) {
 
       // Add all the submaps to the overlay array (including the first submap for control purposes)
       for (var i = 0; i < vMap.subMap.length; i++) {
-         var overlay = L.tileLayer(this.defaultTilesURL + vMap.subMap[i].tileURL + '{z}_{x}_{y}.' + vMap.subMap[i].tileExt
+         var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
                                             , { maxZoom:           vMap.maxZoom
                                               , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
                                               , opacity:           vMap.subMap[i].opacity
@@ -288,7 +289,7 @@ ZMap.prototype.addMap = function(vMap) {
                                               , updateWhenIdle:    true
                                               , updateWhenZooming: false
                                               , label:             vMap.name
-                                              , iconURL:           this.defaultTilesURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                              , iconURL:           this.tilesBaseURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                             }
          );
 
@@ -307,7 +308,7 @@ ZMap.prototype.addMap = function(vMap) {
 
                var submap = vMap.subMap[i].submapLayer[j];
 
-               var overlay2 = L.tileLayer(this.defaultTilesURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
+               var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
                                                                        , { maxZoom:           submap.maxZoom
                                                                          , noWrap:            true
                                                                          , attribution:       submap.mapMapper
@@ -317,7 +318,7 @@ ZMap.prototype.addMap = function(vMap) {
                                                                          , updateWhenIdle:    false
                                                                          , updateWhenZooming: false
                                                                          , label:             vMap.name
-                                                                         , iconURL:           this.defaultTilesURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
+                                                                         , iconURL:           this.tilesBaseURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
                                                                          });
                overlay2.id             = 'mID' + submap.id;
                overlay2.originalId     = submap.id;
@@ -566,7 +567,7 @@ ZMap.prototype._updateMarkersPresence = function(markers) {
 ZMap.prototype._updateMarkerPresence = function(marker) {
   mapBounds = map.getBounds().pad(0.15);
 
-  if (mapControl.getCurrentMap().mapId != marker.mapId 
+  if (mapControl.getCurrentMap().mapId != marker.mapId
          || mapControl.getCurrentMap().subMapId != marker.submapId
      )
    {
@@ -677,7 +678,7 @@ ZMap.prototype.buildMap = function() {
            position: 'topright'
        })
    );
-  
+
    //@TODO: REDO!
    mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
    //console.log(mapControl.getCurrentMap());
@@ -736,16 +737,16 @@ ZMap.prototype.buildMap = function() {
          }
       }
       // END OF WORKAROUND!!!
-      
+
       mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
       _this.refreshMap();
       _this._closeNewMarker();
       mapControl.resetContent();
-      
+
       map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
 
    });
-   
+
    _this._buildContextMenu();
 };
 

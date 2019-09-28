@@ -18,3 +18,10 @@ ZConfig = {
 
 // "exact", "focus" (Jason's default)
 ZConfig.setConfig("categorySelectionMethod", "focus");
+ZConfig.setConfig("tilesBaseURL", "https://zeldamaps.com/tiles/");
+ZConfig.setConfig("zoomDirectories", 'false');
+ZConfig.setConfig("tileNameFormat", (
+  (ZConfig.getConfig("zoomDirectories") == 'true')
+  ? '{z}/{x}_{y}'
+  : '{z}_{x}_{y}'
+));

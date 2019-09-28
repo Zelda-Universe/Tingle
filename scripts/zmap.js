@@ -26,6 +26,11 @@ function ZMap() {
 
    //this.defaultTilesURL = 'tiles/'; // Local
    this.defaultTilesURL = 'https://zeldamaps.com/tiles/';
+   
+   // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself. 
+   //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
+   //        In the future, we need to move the icon.png of every map to the tiledmap and change defaultIconURL to defaultTilesURL
+   this.defaultIconURL = 'images/icons/';
 
    this.newMarker;
 
@@ -244,7 +249,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              , label:             vMap.name
-                                             , iconURL:           this.defaultTilesURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
                                              }
       );
 
@@ -267,7 +272,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              , label:             vMap.name
-                                             , iconURL:           this.defaultTilesURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                              }
       );
 
@@ -288,7 +293,7 @@ ZMap.prototype.addMap = function(vMap) {
                                               , updateWhenIdle:    true
                                               , updateWhenZooming: false
                                               , label:             vMap.name
-                                              , iconURL:           this.defaultTilesURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                              , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                             }
          );
 
@@ -317,7 +322,7 @@ ZMap.prototype.addMap = function(vMap) {
                                                                          , updateWhenIdle:    false
                                                                          , updateWhenZooming: false
                                                                          , label:             vMap.name
-                                                                         , iconURL:           this.defaultTilesURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
+                                                                         , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
                                                                          });
                overlay2.id             = 'mID' + submap.id;
                overlay2.originalId     = submap.id;

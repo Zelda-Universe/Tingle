@@ -137,6 +137,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       
       _thisLayer = this;
       this._gameMenu = this.createGameMenu();
+      this._mapsMenu = this.createMapsMenu();
 
       L.DomUtil.create('div', 'grabber', headerMenu);
 
@@ -150,14 +151,23 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(completedButton.domNode);*/
       
-      var gameMenuButton = new GameButton({
+      var mapsButton = new MapButton({
+        toggledOn: true,
+        onToggle: function() {
+           _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
+	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+      });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(mapsButton.domNode);
+      
+      var gamesButton = new GameButton({
         toggledOn: true,
         onToggle: function() {
            _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(gameMenuButton.domNode);
+      $(headerMenu).append(gamesButton.domNode);
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
@@ -181,6 +191,10 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     if (true || !this.options.collapsed) this._expand();
    },
    
+   rebuildMapsMenu: function () {
+      this._mapsMenu = this.createMapsMenu();
+   },
+   
    createGameMenu: function() {
      return new GameMenu({
       categoryTree: games,
@@ -193,6 +207,23 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       defaultToggledState: (this.options.categorySelectionMethod == "focus")
     });
    },
+   
+  createMapsMenu: function() {
+    return new MapsMenu({
+     categoryTree: maps,
+     onCategoryToggle: function(toggledOn, category) {
+         if (this.currentMapLayer.id != category.id) {
+               map.removeLayer(this.currentMapLayer);
+               map.addLayer(category);
+               this.currentMapLayer = category;        
+               this.currentMapLayer.bringToBack();
+               map.fire("baselayerchange", this.currentMapLayer);
+         }
+     }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+     categorySelectionMethod: this.options.categorySelectionMethod,
+     defaultToggledState: (this.options.categorySelectionMethod == "focus")
+   });
+  },
   
 
     _animate: function(menu, from, to, isOpen) {

@@ -137,12 +137,14 @@ function getMarkers(){
       zMap.addMarkers(vResults);
       getUserInfo();
       zMap.refreshMap();
+      zMap.goToStart();
       zMap.goTo({ map        : getUrlParamValue('map', null)
                 , subMap     : getUrlParamValue('subMap', null)
                 , marker     : getUrlParamValue('marker', null)
                 , zoom       : getUrlParamValue('zoom', 4)
+                , hideOthers : getUrlParamValue('hideOthers', false)
+                , hidePin    : getUrlParamValue('hidePin', false)
       });
-      zMap.goToStart();
 
    });
 };

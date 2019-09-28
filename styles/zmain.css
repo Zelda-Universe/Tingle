@@ -1188,3 +1188,39 @@ header.ex1 {
    margin-top: 0px;
    text-decoration: none !important;
 }
+
+
+@media screen and (max-width: 300px) {
+  body {
+     background-color: lightblue;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  body {
+     background-color: lightblue;
+  }
+}
+
+
+@media only screen and (max-width: 728px) {
+  .basemaps { top: 60px !important; }
+  .basemaps.leaflet-control { margin-left: 10px !important; }
+}
+
+
+.game-selection-list {
+   margin-top: 20px;
+}   
+.maps-selector {
+   width: 50% !important;
+   border-radius: 10px;
+}
+
+.maps-selector>a>img {
+   border-radius: 10px;
+}
+
+.menu-header-button {
+    width:86px;    
+}

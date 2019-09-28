@@ -27,6 +27,12 @@ function ZMap() {
    this.tilesBaseURL = ZConfig.getConfig("tilesBaseURL");
    this.zoomDirectories = ZConfig.getConfig("zoomDirectories");
    this.tileNameFormat = ZConfig.getConfig("tileNameFormat");
+   
+   // @TODO: This is a WORKAROUND. Icon sho   
+   // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself. 
+   //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
+   //        In the future, we need to move the icon.png of every map to the tiledmap and change defaultIconURL to defaultTilesURL
+   this.defaultIconURL = 'images/icons/';
 
    this.newMarker;
 
@@ -243,10 +249,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , noWrap:            true
                                              , tileSize:          mapOptions.tileSize
                                              , updateWhenIdle:    true
-                                             , updateWhenZooming: false
-                                             , label:             vMap.name
-                                             , iconURL:           this.tilesBaseURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
-                                             }
+                                                 }
       );
 
       tLayer.id          = 'mID' + vMap.id;
@@ -268,7 +271,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              , label:             vMap.name
-                                             , iconURL:           this.tilesBaseURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                              }
       );
 
@@ -289,7 +292,7 @@ ZMap.prototype.addMap = function(vMap) {
                                               , updateWhenIdle:    true
                                               , updateWhenZooming: false
                                               , label:             vMap.name
-                                              , iconURL:           this.tilesBaseURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                              , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                             }
          );
 
@@ -318,7 +321,7 @@ ZMap.prototype.addMap = function(vMap) {
                                                                          , updateWhenIdle:    false
                                                                          , updateWhenZooming: false
                                                                          , label:             vMap.name
-                                                                         , iconURL:           this.tilesBaseURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
+                                                                         , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
                                                                          });
                overlay2.id             = 'mID' + submap.id;
                overlay2.originalId     = submap.id;
@@ -337,6 +340,9 @@ ZMap.prototype.addMap = function(vMap) {
       }
 
       maps.push(tLayer);
+   }
+   if (this.mapControl) {
+      this.mapControl.rebuildMap();
    }
 }
 
@@ -464,17 +470,20 @@ ZMap.prototype._createMarkerPopup = function(marker) {
                    + "<br style='height:0pt; clear:both;'>"
                    + "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                    + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
                      + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
                      + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
                 + "</div>";
       } else {
          content += "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                      + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                     + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
                 + "</div>";
       }
    } else {
       content += "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                  + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
              + "</div>";
    }
 
@@ -502,9 +511,7 @@ ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
    }
 }
 
-ZMap.prototype._copyToClipboard = function(vMarkerId) {
-   var href = window.location.href.split("?");
-
+ZMap.prototype._getClipboardParams = function(href) {
    var params = href[1].split("&");
 
    var clipboardParams = "";
@@ -521,7 +528,17 @@ ZMap.prototype._copyToClipboard = function(vMarkerId) {
          clipboardParams = clipboardParams + params[i] + "&";
       }
    }
-
+   return clipboardParams;
+}
+ZMap.prototype._copyToClipboardEmbed = function(vMarkerId) {
+   var href = window.location.href.split("?");
+   var clipboardParams = this._getClipboardParams(href);
+   
+   window.prompt("Copy to clipboard: Ctrl+C, Enter", "<iframe src=\"" + href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>");
+}
+ZMap.prototype._copyToClipboard = function(vMarkerId) {
+   var href = window.location.href.split("?");
+   var clipboardParams = this._getClipboardParams(href);
    window.prompt("Copy to clipboard: Ctrl+C, Enter", href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom());
 }
 
@@ -669,18 +686,9 @@ ZMap.prototype.buildMap = function() {
       }
    }
 
-   map.addControl(
-       L.control.basemaps({
-           basemaps: maps,
-           tileX: 0,
-           tileY: 0,
-           tileZ: 1,
-           position: 'topright'
-       })
-   );
-
    //@TODO: REDO!
    mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
+   mapControl.setCurrentMapLayer(maps[0]);
    //console.log(mapControl.getCurrentMap());
    mapControl.addTo(map);
 
@@ -706,7 +714,7 @@ ZMap.prototype.buildMap = function() {
          mapControl.resetContent();
       }
    });
-
+   
    map.on('zoomend', function() {
       if (map.getZoom() > 5 && currentIcon == 'Small') {
          currentIcon = 'Medium';
@@ -737,11 +745,11 @@ ZMap.prototype.buildMap = function() {
          }
       }
       // END OF WORKAROUND!!!
-
+      //console.log(e.originalId + " " + defaultSubMapId);
       mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
       _this.refreshMap();
       _this._closeNewMarker();
-      mapControl.resetContent();
+      //mapControl.resetContent();
 
       map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
 
@@ -1787,10 +1795,17 @@ ZMap.prototype._createAccountForm = function(user) {
  * @param vGoTo.marker          - Marker to be opened (Takes precedence over subMap and Layer)
  **/
 ZMap.prototype.goTo = function(vGoTo) {
+   if (vGoTo.hideOthers) {
+      for (var i = 0; i < markers.length; i++) {
+         markers[i].visible = false;
+      }
+      _this.refreshMap();
+   }
 
    if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true);
       // Open Marker already does a change map, so it takes precedence
+      
       return;
    }
 
@@ -1805,9 +1820,14 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
+   _openMarker(vMarkerId, vZoom, true, false);
+}
+
+ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin, vPanTo) {
    var marker = this.cachedMarkersById[vMarkerId];
    if(marker) {
      mapControl.changeMap(marker.mapId, marker.submapId);
+     marker.visible = true;
 
      if (!vZoom) {
         vZoom = map.getZoom();
@@ -1828,9 +1848,14 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
      var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
      map.setView(latlng, vZoom);
      _this._createMarkerPopup(marker);
-     newMarker = L.marker(marker._latlng).addTo(map);
+     if (vPin) {
+         newMarker = L.marker(marker._latlng).addTo(map);
+     }
 
      //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
+     if (vPanTo) {
+        map.panTo(marker.getLatLng());
+     }
      return;
    }
 

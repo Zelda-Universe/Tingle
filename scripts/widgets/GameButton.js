@@ -31,3 +31,8 @@ GameButton.prototype.toggle = function(toggledOn) {
   // this.domNode.trigger('toggle', this.category); // Alternative?
 };
 
+GameButton.prototype.clear = function() {
+  this.toggledOn = false;
+  this._updateState();
+};
+

@@ -15,7 +15,7 @@ MapButton.prototype.constructor = MapButton;
 
 MapButton.prototype._initDOMElements = function(opts) {
   CategoryButton.prototype._initDOMElements.call(this, opts);
-
+  
   this.domNode.addClass('completed-button');
   this.domNode.addClass('menu-header-button');
 
@@ -29,5 +29,11 @@ MapButton.prototype.toggle = function(toggledOn) {
   this._updateState();
   this.onToggle(this.toggledOn, this.category);
   // this.domNode.trigger('toggle', this.category); // Alternative?
+  this.categoryIcon.domNode.addClass("toggledOff");
+};
+
+MapButton.prototype.clear = function() {
+  this.toggledOn = false;
+  this._updateState();
 };
 

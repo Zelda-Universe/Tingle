@@ -1234,11 +1234,12 @@ header.ex1 {
 .completed-button.toggledOff:hover {
    opacity: .8;
 }
+
 .completed-button.toggledOff:hover .category-icon {
     background-color: rgba(74, 146, 228, .7);
     border-color: rgba(74, 146, 228, .7);
     color: rgb(255,255,255);
-    border: 0px;
+    border: 2px !important;
 }
 
 .completed-button.toggledOn .category-icon {
@@ -1252,7 +1253,7 @@ header.ex1 {
     background-color: rgba(255, 0, 0, .7);
     border-color: rgba(255, 0, 0, .7);
     color: rgb(255,255,255);
-    border: 0px !important;
+    border: 2px !important;
 }
 
 .completed-button.toggledOff .icon-General_Map {

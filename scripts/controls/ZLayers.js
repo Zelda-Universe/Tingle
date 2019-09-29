@@ -155,8 +155,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._mapsButton = new MapButton({
         toggledOn: false,
         onToggle: function(toggledOn) {
-           _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
-           _thisLayer._gamesButton.clear();
+           if (toggledOn) {
+               _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
+               _thisLayer._gamesButton.clear();
+           } else {
+               _thisLayer.resetContent();
+               _thisLayer._gamesButton.clear();
+               _thisLayer._mapsButton.clear();
+           }
 	      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
@@ -164,9 +170,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
       
       this._gamesButton = new GameButton({
         toggledOn: false,
-        onToggle: function() {
-           _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
-           _thisLayer._mapsButton.clear();
+        onToggle: function(toggledOn) {
+           if (toggledOn) {
+               _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
+               _thisLayer._mapsButton.clear();
+           } else {
+               _thisLayer.resetContent();
+               _thisLayer._gamesButton.clear();
+               _thisLayer._mapsButton.clear();
+           }
+
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));

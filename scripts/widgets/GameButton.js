@@ -5,7 +5,7 @@
 
 function GameButton(opts) {
   CategoryButton.call(this, $.extend(true, {
-    icon: new CategoryIcon({img: mapOptions.icon, color: "#4a92e4"}),
+    icon: new CategoryIcon({img: mapOptions.icon}),
     toggledOn: true
   }, opts));
 };
@@ -25,7 +25,7 @@ GameButton.prototype._initDOMElements = function(opts) {
 };
 
 GameButton.prototype.toggle = function(toggledOn) {
-  this.toggledOn = true;
+  this.toggledOn = !this.toggledOn;
   this._updateState();
   this.onToggle(this.toggledOn, this.category);
   // this.domNode.trigger('toggle', this.category); // Alternative?

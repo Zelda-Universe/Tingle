@@ -1224,3 +1224,45 @@ header.ex1 {
 .menu-header-button {
     width:86px;    
 }
+
+.completed-button.toggledOff .category-icon {
+    color: rgba(255,255,255,.3);
+    border: 2px dashed rgba(255,255,255,.3);
+    transition: .2s;
+}
+
+.completed-button.toggledOff:hover {
+   opacity: .8;
+}
+.completed-button.toggledOff:hover .category-icon {
+    background-color: rgba(74, 146, 228, .7);
+    border-color: rgba(74, 146, 228, .7);
+    color: rgb(255,255,255);
+    border: 0px;
+}
+
+.completed-button.toggledOn .category-icon {
+    background-color: rgb(74, 146, 228);
+    border-color: rgb(74, 146, 228);
+    transition: .2s;
+}
+
+
+.completed-button.toggledOff:hover .icon-General_Map {
+    background-color: rgba(255, 0, 0, .7);
+    border-color: rgba(255, 0, 0, .7);
+    color: rgb(255,255,255);
+    border: 0px !important;
+}
+
+.completed-button.toggledOff .icon-General_Map {
+    color: rgba(255,255,255,.3) !important;
+    border: 2px dashed rgba(255,255,255,.3) !important;
+    transition: .2s;
+}
+
+.completed-button.toggledOn .icon-General_Map {
+    background-color: red !important;
+    border-color: red !important;
+    transition: .2s;
+}

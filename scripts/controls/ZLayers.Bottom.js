@@ -151,23 +151,38 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(completedButton.domNode);*/
       
-      var mapsButton = new MapButton({
-        toggledOn: true,
-        onToggle: function() {
-           _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
+      this._mapsButton = new MapButton({
+        toggledOn: false,
+        onToggle: function(toggledOn) {
+           if (toggledOn) {
+               _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
+               _thisLayer._gamesButton.clear();
+           } else {
+               _thisLayer.resetContent();
+               _thisLayer._gamesButton.clear();
+               _thisLayer._mapsButton.clear();
+           }
+	      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+      });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(this._mapsButton.domNode);
+
+      this._gamesButton = new GameButton({
+        toggledOn: false,
+        onToggle: function(toggledOn) {
+           if (toggledOn) {
+               _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
+               _thisLayer._mapsButton.clear();
+           } else {
+               _thisLayer.resetContent();
+               _thisLayer._gamesButton.clear();
+               _thisLayer._mapsButton.clear();
+           }
+
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(mapsButton.domNode);
-      
-      var gamesButton = new GameButton({
-        toggledOn: true,
-        onToggle: function() {
-           _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
-	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
-      });
-      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(gamesButton.domNode);
+      $(headerMenu).append(this._gamesButton.domNode);
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 

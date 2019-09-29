@@ -158,9 +158,10 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
                _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
                _thisLayer._gamesButton.clear();
            } else {
-               _thisLayer.resetContent();
-               _thisLayer._gamesButton.clear();
-               _thisLayer._mapsButton.clear();
+               //_thisLayer.resetContent();
+               //_thisLayer._gamesButton.clear();
+               //_thisLayer._mapsButton.clear();
+               _thisLayer.closeDrawer();
            }
 	      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
@@ -174,9 +175,10 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
                _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
                _thisLayer._mapsButton.clear();
            } else {
-               _thisLayer.resetContent();
-               _thisLayer._gamesButton.clear();
-               _thisLayer._mapsButton.clear();
+               //_thisLayer.resetContent();
+               //_thisLayer._gamesButton.clear();
+               //_thisLayer._mapsButton.clear();
+               _thisLayer.closeDrawer();
            }
 
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
@@ -321,8 +323,12 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   },
 
   closeDrawer: function() {
-    if(this._open)
+    if(this._open) {
       this._setDrawerState(false, this._startPosition);
+      this._gamesButton.clear();
+      this._mapsButton.clear();
+      this.resetContent();
+    }
   }
 });
 

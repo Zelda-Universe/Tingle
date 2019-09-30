@@ -650,7 +650,7 @@ ZMap.prototype.buildMap = function() {
                       , crs:         L.CRS.Simple
                       , layers:      [maps[0]]
                      // @TODO: Add bounds to Database, so everygame has different bounds
-                      , maxBounds:   new L.LatLngBounds(new L.LatLng(-49.875, 34.25), new L.LatLng(-206, 221))
+                      , maxBounds:   new L.LatLngBounds(new L.LatLng(mapOptions.boundTopX, mapOptions.boundTopY), new L.LatLng(mapOptions.boundBottomX, mapOptions.boundBottomY))
                       , maxBoundsViscosity: 1.0
                       , contextmenu: true
                       , contextmenuWidth: 140

@@ -322,6 +322,7 @@ body,
 
 .leaflet-control-layers-toggle {
 	background-image: url('images/zmaps_white_small.png') !important;
+   background-size: 26px 26px;
 	width: 36px;
 	height: 36px;
 }
@@ -1225,6 +1226,9 @@ header.ex1 {
     width:86px;    
 }
 
+.completed-button.toggledOff {
+   opacity: 1;
+}
 .completed-button.toggledOff .category-icon {
     color: rgba(255,255,255,.3);
     border: 2px dashed rgba(255,255,255,.3);
@@ -1233,7 +1237,7 @@ header.ex1 {
 
 @media only screen and (min-width: 769px) {
    .completed-button.toggledOff:hover {
-      opacity: .8;
+      /*opacity: .8;*/
    }
 
    .completed-button.toggledOff:hover .category-icon {
@@ -1259,9 +1263,11 @@ header.ex1 {
    }
 }
 .completed-button.toggledOff .icon-General_Map {
+   /*
     color: rgba(255,255,255,.3) !important;
     border: 2px dashed rgba(255,255,255,.3) !important;
-    transition: .2s;
+    color: rgb(255,255,255);
+    transition: .2s;*/
 }
 
 .completed-button.toggledOn .icon-General_Map {

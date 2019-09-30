@@ -321,7 +321,7 @@ body,
 }
 
 .leaflet-control-layers-toggle {
-	background-image: url('../images/zmaps_white_small.png') !important;
+	background-image: url('images/zmaps_white_small.png') !important;
 	width: 36px;
 	height: 36px;
 }

@@ -15,6 +15,10 @@
                   , show_zoom_control as showZoomControl
                   , default_pos_x as centerX
                   , default_pos_y as centerY
+                  , bound_top_pos_x as boundTopX
+                  , bound_top_pos_y  as boundTopY
+                  , bound_bottom_pos_x as boundBottomX
+                  , bound_bottom_pos_y as boundBottomY
                   , cluster_max_zoom as clusterMaxZoom
                   , cluster_grid_size as clusterGridSize
                   , default_zoom as defaultZoom

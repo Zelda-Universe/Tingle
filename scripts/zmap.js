@@ -682,9 +682,12 @@ ZMap.prototype.buildMap = function() {
         mapControlOptions
       );
       L.control.zoom({ position:'bottomright' }).addTo(map);
-      if(mapOptions.showInfoControls) {
-        L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
-        L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
+      if (mapOptions.showInfoControls) {
+         $('.leaflet-container').css('cursor','crosshair');
+         L.control.infoBox.mouse.clickhist({ position: 'bottomleft' }).addTo(map);
+         L.control.infoBox.mouse.move({ position: 'bottomleft' }).addTo(map);
+         L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
+         L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
       }
    }
 

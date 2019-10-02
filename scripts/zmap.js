@@ -75,6 +75,8 @@ function ZMap() {
       MARKER_COMPLETE_TRANSFER_ERROR : "I AM ERROR. There seems to be a problem moving your completed markers from cookies to our database. We'll automatically try again later. %1",
       MARKER_COMPLETE_TRANSFER_SUCCESS : "All of your completed markers were moved from cookies to our database and tied to your account.",
       MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account, but an error occurred. We try again the next time you login.",
+      MARKER_DEL_ALL_COMPLETE_SUCCESS : "You have an amazing wisdom and power! All completed markers have been successfully deleted.",
+      MARKER_DEL_ALL_COMPLETE_QUESTION : "Are you sure want to start a new quest? All completed markers for %1 will be deleted.",
 
       MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database.",
       MARKER_EDIT_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be edited in our database.",
@@ -1179,6 +1181,32 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
 //*************                          BEGIN - MARKER COMPLETE                         *************//
 //*************                                                                          *************//
 //****************************************************************************************************//
+ZMap.prototype.clearCompletedMarkers = function() {
+   if (completedMarkers.length > 0) {
+      $.ajax({
+              type: "POST",
+              url: "ajax.php?command=del_completed_marker_all",
+              async: false,
+              data: {gameId: gameId, userId: user.id},
+              success: function(data) {
+                  //data = jQuery.parseJSON(data);
+                  if (data.success) {
+                     completedMarkers = [];
+                     toastr.success(_this.langMsgs.MARKER_DEL_ALL_COMPLETE_SUCCESS);
+                  } else {
+                     toastr.error(_this.langMsgs.MARKER_DEL_ERROR.format(data.msg));
+                     //alert(data.msg);
+                  }
+              }
+            });
+   }
+   
+   for (var i = 0; i < markers.length; i++) {
+      _this._doSetMarkerDoneIcon(markers[i], false);
+   }
+   _this.refreshMap();
+};
+
 ZMap.prototype.transferCompletedMarkersToDB = function() {
    var tempCompletedMarkers = completedMarkers;
    for (var i = 0; i < tempCompletedMarkers.length; i++) {
@@ -1572,6 +1600,13 @@ ZMap.prototype._createRegisterForm = function() {
       e.preventDefault();
    });
 }
+ZMap.prototype._createDialogDeleteAllMarkers = function() {
+   if (confirm(_this.langMsgs.MARKER_DEL_ALL_COMPLETE_QUESTION.format(games[gameId].name))) {
+       this.clearCompletedMarkers();
+   } else {
+      // Do nothing!
+   }  
+}
 
 ZMap.prototype._createLostPasswordForm = function() {
    mapControl.setContent('<div id="lostpassword">'+
@@ -1754,6 +1789,7 @@ ZMap.prototype._createAccountForm = function(user) {
       '</p>' +
       '<div class="modal-footer">' +
          '<div>' +
+           '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn">Reset Completed Markers</button>' +
            '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
@@ -1762,6 +1798,11 @@ ZMap.prototype._createAccountForm = function(user) {
     '</div>',
     'accountPage'
   );
+  
+  $("#account_clear_completed_btn").click(function(e) {
+     _this._createDialogDeleteAllMarkers();
+     e.preventDefault();
+  });
 
   $("#account_reset_btn").click(function(e) {
      _this._createLostPasswordForm();

@@ -669,7 +669,7 @@ ZMap.prototype.buildMap = function() {
 
    var mapControlOptions = $.extend(
      mapOptions, {
-     "zIndex": 0
+     "zIndex": 0, "collapsed": false
    });
 
    if (L.Browser.mobile && window.innerWidth < 768) {

@@ -26,6 +26,9 @@
                   , tile_size as tileSize
                   , icon_width as iconWidth
                   , icon_height as iconHeight
+                  , icon_small_width as iconSmallWidth
+                  , icon_height as iconSmallHeight
+                  , switch_icons_at_zoom as switchIconsAtZoom
                from ' . $map_prefix . 'container c
               where (c.id = \'' . $map . '\'
                      or c.short_name = \'' . $map . '\')

@@ -193,23 +193,18 @@ ZMap.prototype.constructor = function(vMapOptions) {
 
   // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
 
-
-   var icnSizeMedium = 23; // Default value to avoid traps
-   var icnSizeSmall = 16; // Default value to avoid traps
-
-   markerIconMedium = L.DivIcon.extend({options:{ iconSize:    [icnSizeMedium,icnSizeMedium]
-                                          , iconAnchor:  [Math.floor(icnSizeMedium/2),Math.floor(icnSizeMedium/2)]
+   markerIconMedium = L.DivIcon.extend({options:{ iconSize:    [mapOptions.iconWidth,mapOptions.iconHeight]
+                                          , iconAnchor:  [Math.floor(mapOptions.iconWidth/2),Math.floor(mapOptions.iconHeight/2)]
                                           , popupAnchor: [0,0]
                                           }
                           });
-   markerIconSmall = L.DivIcon.extend({options:{ iconSize:    [icnSizeSmall,icnSizeSmall]
-                                          , iconAnchor:  [Math.floor(icnSizeSmall/2),Math.floor(icnSizeSmall/2)]
+   markerIconSmall = L.DivIcon.extend({options:{ iconSize:    [mapOptions.iconSmallWidth,mapOptions.iconSmallHeight]
+                                          , iconAnchor:  [Math.floor(mapOptions.iconSmallWidth/2),Math.floor(mapOptions.iconSmallHeight/2)]
                                           , popupAnchor: [0,0]
                                           }
                           });
 
-
-   if (map.getZoom > 5) {
+   if (mapOptions.defaultZoom > mapOptions.switchIconsAtZoom) {
       currentIcon = 'Medium';
    } else {
       currentIcon = 'Small';
@@ -500,7 +495,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
 }
 
 ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
-   if (map.getZoom() > 5) {
+   if (map.getZoom() > mapOptions.switchIconsAtZoom) {
       return new markerIconMedium({className: 'map-icon-svg'
                             ,html: "<div class='circle circleMap-medium ' style='background-color: " + categories[vCatId].color + "; "
                                                                       + "border-color: " + categories[vCatId].color + "'>"

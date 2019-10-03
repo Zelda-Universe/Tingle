@@ -180,6 +180,7 @@ body,
 	width: 23px !important;
 	height: 23px !important;
 	line-height: 22px !important;
+   box-shadow: rgba(0,0,0,.25) 0 2px 6px !important;
 }
 
 .icnText-medium {
@@ -190,6 +191,7 @@ body,
 	width: 16px !important;
 	height: 16px !important;
 	line-height: 14px !important;
+   box-shadow: rgba(0,0,0,.25) 0 2px 6px !important;
 }
 
 .icnText-small {
@@ -321,7 +323,8 @@ body,
 }
 
 .leaflet-control-layers-toggle {
-	background-image: url('../images/zmaps_white_small.png') !important;
+	background-image: url('images/zmaps_white_small.png') !important;
+   background-size: 26px 26px;
 	width: 36px;
 	height: 36px;
 }
@@ -927,6 +930,14 @@ a.icon-close2 {
 	left: 50%;
 	transform: translateX(-50%);
 	overflow: hidden;
+	width: 728px;
+}
+
+@media only screen and (max-width: 728px) {
+  #desktopAds { width: 468px; height: 60px; }
+}
+@media only screen and (max-width: 468px) {
+  #desktopAds { width: 234px; height: 60px; }
 }
 
 /*** General Drawer Stuff ***/
@@ -1026,7 +1037,7 @@ header.ex1 {
 	box-sizing: border-box !important;
 	text-decoration: none !important;
 	transition: .2s;
-	opacity: 1 !important;
+	/*opacity: 1 !important;*/
 }
 
 .completed-button .label,
@@ -1151,4 +1162,125 @@ header.ex1 {
 .icon-addon .form-control:focus+.fa,
 .icon-addon:hover .fa {
 	color: white;
+}
+
+
+.basemaps {
+    background-color: transparent !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none !important;
+    border-radius: none !important;
+    box-shadow: none !important;
+}
+
+.basemap img {
+   border: 2px solid rgba(255,255,255,.8);
+}
+.basemap {
+   vertical-align: top;
+}
+.basemap p {
+   text-shadow: 0px 0px 10px #000000;
+}
+
+.category-selection-list .infoWindowIcn {
+   margin-top: 0px;
+}
+
+.category-selection-list .infoWindowIcn {
+   margin-top: 0px;
+   text-decoration: none !important;
+}
+
+
+@media screen and (max-width: 300px) {
+  body {
+     background-color: lightblue;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  body {
+     background-color: lightblue;
+  }
+}
+
+
+@media only screen and (max-width: 728px) {
+  .basemaps { top: 60px !important; }
+  .basemaps.leaflet-control { margin-left: 10px !important; }
+}
+
+
+.game-selection-list {
+   margin-top: 20px;
+}   
+.maps-selector {
+   width: 50% !important;
+   border-radius: 10px;
+}
+
+.maps-selector>a>img {
+   border-radius: 10px;
+}
+
+.menu-header-button {
+    width:86px;    
+}
+
+.completed-button.toggledOff {
+   opacity: 1;
+}
+.completed-button.toggledOff .category-icon {
+    color: rgba(255,255,255,.3);
+    border: 2px dashed rgba(255,255,255,.3);
+    transition: .2s;
+}
+
+@media only screen and (min-width: 769px) {
+   .completed-button.toggledOff:hover {
+      /*opacity: .8;*/
+   }
+
+   .completed-button.toggledOff:hover .category-icon {
+       background-color: rgba(74, 146, 228, .7);
+       border-color: rgba(74, 146, 228, .7);
+       color: rgb(255,255,255);
+       border: 2px !important;
+   }
+}
+
+.completed-button.toggledOn .category-icon {
+    background-color: rgb(74, 146, 228);
+    border-color: rgb(74, 146, 228);
+    transition: .2s;
+}
+
+@media only screen and (min-width: 769px) {
+   .completed-button.toggledOff:hover .icon-General_Map {
+       background-color: rgba(255, 0, 0, .7);
+       border-color: rgba(255, 0, 0, .7);
+       color: rgb(255,255,255);
+       border: 2px !important;
+   }
+}
+.completed-button.toggledOff .icon-General_Map {
+   /*
+    color: rgba(255,255,255,.3) !important;
+    border: 2px dashed rgba(255,255,255,.3) !important;
+    color: rgb(255,255,255);
+    transition: .2s;*/
+}
+
+.completed-button.toggledOn .icon-General_Map {
+    background-color: red !important;
+    border-color: red !important;
+    transition: .2s;
+}
+
+
+.infobox.clickhist .row .value {
+   width: auto;
+   margin-left: 5px;
+   margin-right: 5px;
 }

@@ -1,16 +1,13 @@
 function ZMap() {
    var _this;
 
-  // Now that we have the changelog system using the database
-  // with a field for each number, let's use 3 numbers and no
-  // letters in the version.
-  this.version = '0.6.2';
-
-   this.mapOptions = {
-        startArea : "-168,102,-148,122"
-   };
+   // Now that we have the changelog system using the database
+   // with a field for each number, let's use 3 numbers and no
+   // letters in the version.
+   this.version = '0.7.0';
 
    this.maps = [];
+   this.games = [];
    this._overlayMap = [];
    this.map;
    this.mapControl;
@@ -27,8 +24,14 @@ function ZMap() {
    this.markerIconSmall;
    this.markerIconMedium;
 
-   //this.defaultTilesURL = 'tiles/'; // Local
-   this.defaultTilesURL = 'https://zeldamaps.com/tiles/';
+   this.tilesBaseURL = ZConfig.getConfig("tilesBaseURL");
+   this.zoomDirectories = ZConfig.getConfig("zoomDirectories");
+   this.tileNameFormat = ZConfig.getConfig("tileNameFormat");
+   
+   // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself. 
+   //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
+   //        In the future, we need to move the icon.png of every map to the tiledmap and change defaultIconURL to defaultTilesURL
+   this.defaultIconURL = 'images/icons/';
 
    this.newMarker;
 
@@ -73,6 +76,8 @@ function ZMap() {
       MARKER_COMPLETE_TRANSFER_ERROR : "I AM ERROR. There seems to be a problem moving your completed markers from cookies to our database. We'll automatically try again later. %1",
       MARKER_COMPLETE_TRANSFER_SUCCESS : "All of your completed markers were moved from cookies to our database and tied to your account.",
       MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account, but an error occurred. We try again the next time you login.",
+      MARKER_DEL_ALL_COMPLETE_SUCCESS : "You have an amazing wisdom and power! All completed markers have been successfully reset.",
+      MARKER_DEL_ALL_COMPLETE_QUESTION : "Are you sure want to start a new quest? All completed markers for %1 will be reset.",
 
       MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database.",
       MARKER_EDIT_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be edited in our database.",
@@ -159,7 +164,11 @@ ZMap.prototype.constructor = function(vMapOptions) {
    hasUserCheck = false;
    userWarnedAboutMarkerQty = false;
    userWarnedAboutLogin = false;
-   mapOptions = {};
+   mapOptions = {
+
+   };
+
+   games = [];
    maps = [];
    markers = [];
    categoryTree = [];
@@ -184,23 +193,18 @@ ZMap.prototype.constructor = function(vMapOptions) {
 
   // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
 
-
-   var icnSizeMedium = 23; // Default value to avoid traps
-   var icnSizeSmall = 16; // Default value to avoid traps
-
-   markerIconMedium = L.DivIcon.extend({options:{ iconSize:    [icnSizeMedium,icnSizeMedium]
-                                          , iconAnchor:  [Math.floor(icnSizeMedium/2),Math.floor(icnSizeMedium/2)]
+   markerIconMedium = L.DivIcon.extend({options:{ iconSize:    [mapOptions.iconWidth,mapOptions.iconHeight]
+                                          , iconAnchor:  [Math.floor(mapOptions.iconWidth/2),Math.floor(mapOptions.iconHeight/2)]
                                           , popupAnchor: [0,0]
                                           }
                           });
-   markerIconSmall = L.DivIcon.extend({options:{ iconSize:    [icnSizeSmall,icnSizeSmall]
-                                          , iconAnchor:  [Math.floor(icnSizeSmall/2),Math.floor(icnSizeSmall/2)]
+   markerIconSmall = L.DivIcon.extend({options:{ iconSize:    [mapOptions.iconSmallWidth,mapOptions.iconSmallHeight]
+                                          , iconAnchor:  [Math.floor(mapOptions.iconSmallWidth/2),Math.floor(mapOptions.iconSmallHeight/2)]
                                           , popupAnchor: [0,0]
                                           }
                           });
 
-
-   if (map.getZoom > 5) {
+   if (mapOptions.defaultZoom > mapOptions.switchIconsAtZoom) {
       currentIcon = 'Medium';
    } else {
       currentIcon = 'Small';
@@ -215,6 +219,15 @@ ZMap.prototype.addCategory = function(category) {
   categories[category.id] = category;
 };
 
+ZMap.prototype.addGame = function(vGame) {
+   // @TODO: consume color / img from DB (depends on how we do in the mockup
+   vGame.img = vGame.icon;
+   vGame.color = "#8e72b9";
+   vGame.checked = true;
+   vGame.name = vGame.name;
+   games[vGame.id] = vGame;
+};
+
 ZMap.prototype.addMap = function(vMap) {
    // If there is no subMap, we can't add to the map
    if (vMap.subMap.length == 0) {
@@ -225,7 +238,7 @@ ZMap.prototype.addMap = function(vMap) {
    // If only one submap exists, we just add it without any overlay
    if (vMap.subMap.length == 1
          && vMap.subMap[0].submapLayer.length == 0) {
-      var tLayer = L.tileLayer(this.defaultTilesURL + vMap.subMap[0].tileURL + '{z}_{x}_{y}.' + vMap.subMap[0].tileExt
+      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + this.tileNameFormat + '.' + vMap.subMap[0].tileExt
                                            , { maxZoom:           vMap.maxZoom
                                              , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[0].mapMapper
                                              , opacity:           vMap.subMap[0].opacity
@@ -233,13 +246,16 @@ ZMap.prototype.addMap = function(vMap) {
                                              , tileSize:          mapOptions.tileSize
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
-                                             }
+                                             , label:             vMap.name
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
+                                                 }
       );
 
       tLayer.id          = 'mID' + vMap.id;
       tLayer.originalId  = vMap.id;
       tLayer.title       = vMap.name;
       tLayer._overlayMap = [];
+      tLayer.defaultSubMapId = vMap.subMap[0].id;
 
       maps.push(tLayer);
    } else {
@@ -247,12 +263,14 @@ ZMap.prototype.addMap = function(vMap) {
       //  We create it as an empty map, so different sized overlay maps won't show on top
       //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
       /* TODO: Improve this to use no tile at all (remove tile border)*/
-      var tLayer = L.tileLayer(this.defaultTilesURL + vMap.subMap[0].tileURL + 'blank.png'
+      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
                                            , { maxZoom:           vMap.maxZoom
                                              , noWrap:            true
                                              , tileSize:          mapOptions.tileSize
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
+                                             , label:             vMap.name
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                              }
       );
 
@@ -260,17 +278,20 @@ ZMap.prototype.addMap = function(vMap) {
       tLayer.originalId  = vMap.id;
       tLayer.title       = vMap.name;
       tLayer._overlayMap = [];
+      tLayer.defaultSubMapId = vMap.subMap[0].id;
 
       // Add all the submaps to the overlay array (including the first submap for control purposes)
       for (var i = 0; i < vMap.subMap.length; i++) {
-         var overlay = L.tileLayer(this.defaultTilesURL + vMap.subMap[i].tileURL + '{z}_{x}_{y}.' + vMap.subMap[i].tileExt
-                                            , { maxZoom:  vMap.maxZoom
-                                              , attribution:     vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
-                                              , opacity:         vMap.subMap[i].opacity
-                                              , noWrap:   true
-                                              , tileSize: mapOptions.tileSize
-                                              , updateWhenIdle: true
+         var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
+                                            , { maxZoom:           vMap.maxZoom
+                                              , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
+                                              , opacity:           vMap.subMap[i].opacity
+                                              , noWrap:            true
+                                              , tileSize:          mapOptions.tileSize
+                                              , updateWhenIdle:    true
                                               , updateWhenZooming: false
+                                              , label:             vMap.name
+                                              , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                             }
          );
 
@@ -289,15 +310,17 @@ ZMap.prototype.addMap = function(vMap) {
 
                var submap = vMap.subMap[i].submapLayer[j];
 
-               var overlay2 = L.tileLayer(this.defaultTilesURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
-                                                                       , { maxZoom:  submap.maxZoom
-                                                                         , noWrap:   true
-                                                                         , attribution: submap.mapMapper
-                                                                         , zIndex:   (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
-                                                                         , tileSize: mapOptions.tileSize
-                                                                         , opacity: submap.opacity
-                                                       , updateWhenIdle:  false
-                                                       , updateWhenZooming: false
+               var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
+                                                                       , { maxZoom:           submap.maxZoom
+                                                                         , noWrap:            true
+                                                                         , attribution:       submap.mapMapper
+                                                                         , zIndex:            (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
+                                                                         , tileSize:          mapOptions.tileSize
+                                                                         , opacity:           submap.opacity
+                                                                         , updateWhenIdle:    false
+                                                                         , updateWhenZooming: false
+                                                                         , label:             vMap.name
+                                                                         , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
                                                                          });
                overlay2.id             = 'mID' + submap.id;
                overlay2.originalId     = submap.id;
@@ -316,6 +339,9 @@ ZMap.prototype.addMap = function(vMap) {
       }
 
       maps.push(tLayer);
+   }
+   if (this.mapControl) {
+      this.mapControl.rebuildMap();
    }
 }
 
@@ -373,6 +399,10 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.pos = markers.length - 1;
 
    marker.on('click',function() {
+      if (mapControl.isCollapsed()) {
+         mapControl.toggle();
+      }
+   
       if (newMarker == null || (newMarker.markerId != marker.id)) {
          _this._createMarkerPopup(marker);
 
@@ -443,17 +473,20 @@ ZMap.prototype._createMarkerPopup = function(marker) {
                    + "<br style='height:0pt; clear:both;'>"
                    + "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                    + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
                      + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
                      + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
                 + "</div>";
       } else {
          content += "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                      + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                     + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
                 + "</div>";
       }
    } else {
       content += "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><i class=\"icon-checkbox-" + (!marker.complete?"un":"") + "checked\"></i>" + (!marker.complete?"Mark as Complete":"Completed") + "</span>"
                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><i class=\"fas fa-link\"></i> Copy Link</span>"
+                  + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><i class=\"icon-embed2\"></i> Copy Embed Link</span>"
              + "</div>";
    }
 
@@ -462,7 +495,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
 }
 
 ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
-   if (map.getZoom() > 5) {
+   if (map.getZoom() > mapOptions.switchIconsAtZoom) {
       return new markerIconMedium({className: 'map-icon-svg'
                             ,html: "<div class='circle circleMap-medium ' style='background-color: " + categories[vCatId].color + "; "
                                                                       + "border-color: " + categories[vCatId].color + "'>"
@@ -481,9 +514,7 @@ ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
    }
 }
 
-ZMap.prototype._copyToClipboard = function(vMarkerId) {
-   var href = window.location.href.split("?");
-
+ZMap.prototype._getClipboardParams = function(href) {
    var params = href[1].split("&");
 
    var clipboardParams = "";
@@ -500,7 +531,17 @@ ZMap.prototype._copyToClipboard = function(vMarkerId) {
          clipboardParams = clipboardParams + params[i] + "&";
       }
    }
-
+   return clipboardParams;
+}
+ZMap.prototype._copyToClipboardEmbed = function(vMarkerId) {
+   var href = window.location.href.split("?");
+   var clipboardParams = this._getClipboardParams(href);
+   
+   window.prompt("Copy to clipboard: Ctrl+C, Enter", "<iframe src=\"" + href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>");
+}
+ZMap.prototype._copyToClipboard = function(vMarkerId) {
+   var href = window.location.href.split("?");
+   var clipboardParams = this._getClipboardParams(href);
    window.prompt("Copy to clipboard: Ctrl+C, Enter", href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom());
 }
 
@@ -546,6 +587,13 @@ ZMap.prototype._updateMarkersPresence = function(markers) {
 ZMap.prototype._updateMarkerPresence = function(marker) {
   mapBounds = map.getBounds().pad(0.15);
 
+  if (mapControl.getCurrentMap().mapId != marker.mapId
+         || mapControl.getCurrentMap().subMapId != marker.submapId
+     )
+   {
+     map.removeLayer(marker);
+     return;
+  }
   if(this._shouldShowMarker(marker)) {
     marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
     map.addLayer(marker);
@@ -596,18 +644,18 @@ ZMap.prototype.buildMap = function() {
    }
 
    map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
-                      , zoom:        mapOptions.zoom
+                      , zoom:        0
                       , zoomSnap:    mapOptions.zoomSnap
                       , zoomDelta:   mapOptions.zoomDelta
                       , zoomControl: false
                       , crs:         L.CRS.Simple
-                      , layers: [maps[0]]
-                      , maxBounds: new L.LatLngBounds(new L.LatLng(-49.875, 34.25), new L.LatLng(-206, 221))
+                      , layers:      [maps[0]]
+                     // @TODO: Add bounds to Database, so everygame has different bounds
+                      , maxBounds:   new L.LatLngBounds(new L.LatLng(mapOptions.boundTopX, mapOptions.boundTopY), new L.LatLng(mapOptions.boundBottomX, mapOptions.boundBottomY))
                       , maxBoundsViscosity: 1.0
                       , contextmenu: true
                       , contextmenuWidth: 140
          });
-
 
    // Get all the base maps
    var baseMaps = {};
@@ -617,7 +665,7 @@ ZMap.prototype.buildMap = function() {
 
    var mapControlOptions = $.extend(
      mapOptions, {
-     "zIndex": 0
+     "zIndex": 0, "collapsed": false
    });
 
    if (L.Browser.mobile && window.innerWidth < 768) {
@@ -635,13 +683,19 @@ ZMap.prototype.buildMap = function() {
         mapControlOptions
       );
       L.control.zoom({ position:'bottomright' }).addTo(map);
-      if(mapOptions.showInfoControls) {
-        L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
-        L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
+      if (mapOptions.showInfoControls) {
+         $('.leaflet-container').css('cursor','crosshair');
+         L.control.infoBox.mouse.clickhist({ position: 'bottomleft' }).addTo(map);
+         L.control.infoBox.mouse.move({ position: 'bottomleft' }).addTo(map);
+         L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
+         L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
       }
    }
+
    //@TODO: REDO!
-   mapControl.setCurrentMap(19, 1900);
+   mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
+   mapControl.setCurrentMapLayer(maps[0]);
+   //console.log(mapControl.getCurrentMap());
    mapControl.addTo(map);
 
    // TODO keyboard accessibility
@@ -666,7 +720,7 @@ ZMap.prototype.buildMap = function() {
          mapControl.resetContent();
       }
    });
-
+   
    map.on('zoomend', function() {
       if (map.getZoom() > 5 && currentIcon == 'Small') {
          currentIcon = 'Medium';
@@ -685,16 +739,45 @@ ZMap.prototype.buildMap = function() {
       }
    });
 
-   _this._buildContextMenu();
+   map.on('baselayerchange', function(e) {
+      //@TODO: Fix this null value - (for light / dark) - this is when a layer updates
+      //       Defaulting to the first layer for now - workaround!!!!!
+      var defaultSubMapId;
+      var i;
+      for (i = 0; i < maps.length; i++) {
+         if (maps[i].originalId == e.originalId) {
+            defaultSubMapId = maps[i].defaultSubMapId;
+            break;
+         }
+      }
+      // END OF WORKAROUND!!!
+      //console.log(e.originalId + " " + defaultSubMapId);
+      mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
+      _this.refreshMap();
+      _this._closeNewMarker();
+      //mapControl.resetContent();
 
-   if (!mapControl.isMobile()) {
-      var mobileAds = document.getElementById("mobileAds");
-      if(mobileAds) mobileAds.style.display = 'none';
-   } else {
-      var desktopAds = document.getElementById("desktopAds");
-      if(desktopAds) desktopAds.style.display = 'none';
-   }
+      map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
+
+   });
+   
+   $(document).on('keydown', function(e) {
+      if(e.key == "Escape") {
+        if(mapControl._contentType != mapControl.options.defaultContentType) {
+          mapControl.resetContent();
+          _this._closeNewMarker()
+        } else {
+          mapControl.toggle();
+        }
+      }
+    }.bind(mapControl));
+   
+   _this._buildContextMenu();
 };
+
+ZMap.prototype.goToStart = function() {
+   map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), mapOptions.zoom);
+}
 
 ZMap.prototype.setUser = function(vUser) {
    user = vUser;
@@ -1109,6 +1192,32 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
 //*************                          BEGIN - MARKER COMPLETE                         *************//
 //*************                                                                          *************//
 //****************************************************************************************************//
+ZMap.prototype.clearCompletedMarkers = function() {
+   if (completedMarkers.length > 0) {
+      $.ajax({
+              type: "POST",
+              url: "ajax.php?command=del_completed_marker_all",
+              async: false,
+              data: {gameId: gameId, userId: user.id},
+              success: function(data) {
+                  //data = jQuery.parseJSON(data);
+                  if (data.success) {
+                     completedMarkers = [];
+                     toastr.success(_this.langMsgs.MARKER_DEL_ALL_COMPLETE_SUCCESS);
+                  } else {
+                     toastr.error(_this.langMsgs.MARKER_DEL_ERROR.format(data.msg));
+                     //alert(data.msg);
+                  }
+              }
+            });
+   }
+   
+   for (var i = 0; i < markers.length; i++) {
+      _this._doSetMarkerDoneIcon(markers[i], false);
+   }
+   _this.refreshMap();
+};
+
 ZMap.prototype.transferCompletedMarkersToDB = function() {
    var tempCompletedMarkers = completedMarkers;
    for (var i = 0; i < tempCompletedMarkers.length; i++) {
@@ -1421,6 +1530,7 @@ ZMap.prototype.logout = function() {
          if (data.success) {
             toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
             user = null;
+            updateAdState();
             _this._buildContextMenu();
             mapControl.resetContent();
             showLoginControls();
@@ -1500,6 +1610,13 @@ ZMap.prototype._createRegisterForm = function() {
 
       e.preventDefault();
    });
+}
+ZMap.prototype._createDialogDeleteAllMarkers = function() {
+   if (confirm(_this.langMsgs.MARKER_DEL_ALL_COMPLETE_QUESTION.format(games[gameId].name))) {
+       this.clearCompletedMarkers();
+   } else {
+      // Do nothing!
+   }  
 }
 
 ZMap.prototype._createLostPasswordForm = function() {
@@ -1647,6 +1764,7 @@ ZMap.prototype._createLoginForm = function() {
             if (data.success) {
               checkChangelog(data.user);
                _this.setUser(data.user);
+               updateAdState();
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
                mapControl.resetContent();
             } else {
@@ -1682,6 +1800,7 @@ ZMap.prototype._createAccountForm = function(user) {
       '</p>' +
       '<div class="modal-footer">' +
          '<div>' +
+           '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn">Reset Completed Markers</button>' +
            '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
@@ -1690,6 +1809,11 @@ ZMap.prototype._createAccountForm = function(user) {
     '</div>',
     'accountPage'
   );
+  
+  $("#account_clear_completed_btn").click(function(e) {
+     _this._createDialogDeleteAllMarkers();
+     e.preventDefault();
+  });
 
   $("#account_reset_btn").click(function(e) {
      _this._createLostPasswordForm();
@@ -1727,10 +1851,17 @@ ZMap.prototype._createAccountForm = function(user) {
  * @param vGoTo.marker          - Marker to be opened (Takes precedence over subMap and Layer)
  **/
 ZMap.prototype.goTo = function(vGoTo) {
+   if (vGoTo.hideOthers) {
+      for (var i = 0; i < markers.length; i++) {
+         markers[i].visible = false;
+      }
+      _this.refreshMap();
+   }
 
    if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true);
       // Open Marker already does a change map, so it takes precedence
+      
       return;
    }
 
@@ -1745,9 +1876,14 @@ ZMap.prototype.goTo = function(vGoTo) {
  * @param vMarkerID             - Marker ID to be opened
  **/
 ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
+   _openMarker(vMarkerId, vZoom, true, false);
+}
+
+ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin, vPanTo) {
    var marker = this.cachedMarkersById[vMarkerId];
    if(marker) {
      mapControl.changeMap(marker.mapId, marker.submapId);
+     marker.visible = true;
 
      if (!vZoom) {
         vZoom = map.getZoom();
@@ -1768,9 +1904,14 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
      var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
      map.setView(latlng, vZoom);
      _this._createMarkerPopup(marker);
-     newMarker = L.marker(marker._latlng).addTo(map);
+     if (vPin) {
+         newMarker = L.marker(marker._latlng).addTo(map);
+     }
 
      //$('#mkrDiv'+vMarkerId).unslider({arrows:false});
+     if (vPanTo) {
+        map.panTo(marker.getLatLng());
+     }
      return;
    }
 

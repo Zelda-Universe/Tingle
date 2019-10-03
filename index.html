@@ -31,7 +31,7 @@
       <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
-      <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.16/tinymce.min.js"></script>
       <script>tinymce.init({ selector:'textarea' });</script>
 
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
@@ -81,47 +81,29 @@
    </head>
    <body>
       <div id="map">
-	      <div id="mobileAds" align="center">
+	      <div id="mobileAds" class="hidden">
 	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<!-- Zelda Maps -->
-			<ins class="adsbygoogle"
-			     style="display:block"
-			     data-ad-client="ca-pub-7269573247649351"
-			     data-ad-slot="4512666333"
-			     data-ad-format="auto"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>
+    			<!-- Zelda Maps -->
+    			<ins class="adsbygoogle"
+    			     style="display:block"
+    			     data-ad-client="ca-pub-7269573247649351"
+    			     data-ad-slot="4512666333"
+    			     data-ad-format="auto"></ins>
+    			<script>
+    			   (adsbygoogle = window.adsbygoogle || []).push({});
+    			</script>
 	      </div>
-	      <div id="desktopAds" align="center">
-	        <script>
-	            var width = $(document).width();
-	            var adsWidth = 0;
-	            var adsHeight = 0;
-	            if (width > 728) {
-	               adsWidth = 728;
-	               adsHeight = 90;
-	            } else if (width > 468) {
-	               adsWidth = 468;
-	               adsHeight = 60;
-	            } else {
-	               adsWidth = 234;
-	               adsHeight = 60;
-	            }
-	
-	            document.getElementById('desktopAds').style.width = adsWidth + 'px';
-	            document.getElementById('desktopAds').style.height = adsHeight + 'px';
-	        </script>
-	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<!-- Zelda Maps -->
-			<ins class="adsbygoogle"
-			     style="display:block"
-			     data-ad-client="ca-pub-7269573247649351"
-			     data-ad-slot="4512666333"
-			     data-ad-format="auto"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>
+	      <div id="desktopAds" class="hidden">
+  	      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    			<!-- Zelda Maps -->
+    			<ins class="adsbygoogle"
+    			     style="display:block"
+    			     data-ad-client="ca-pub-7269573247649351"
+    			     data-ad-slot="4512666333"
+    			     data-ad-format="auto"></ins>
+    			<script>
+    			   (adsbygoogle = window.adsbygoogle || []).push({});
+    			</script>
 	      </div>
       </div>
 

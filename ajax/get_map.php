@@ -7,7 +7,7 @@
    $query = "select m.id
                   , m.name 
 
-                  , default_zoom                       as defaultZoom
+                  , m.default_zoom                     as defaultZoom
                   , coalesce(m.max_zoom, c.max_zoom)   as maxZoom
                   , map_copyright                      as mapCopyright
 

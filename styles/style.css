@@ -1,12 +1,13 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?n6bx38');
-  src:  url('fonts/icomoon.eot?n6bx38#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?n6bx38') format('truetype'),
-    url('fonts/icomoon.woff?n6bx38') format('woff'),
-    url('fonts/icomoon.svg?n6bx38#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?3m8qpl');
+  src:  url('fonts/icomoon.eot?3m8qpl#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?3m8qpl') format('truetype'),
+    url('fonts/icomoon.woff?3m8qpl') format('woff'),
+    url('fonts/icomoon.svg?3m8qpl#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
+  font-display: block;
 }
 
 [class^="icon-"], [class*=" icon-"] {
@@ -24,190 +25,143 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-fa-user:before {
-  content: "\f007";
+.icon-General_Store:before {
+  content: "\e900";
 }
-.icon-fa-lock:before {
-  content: "\f023";
+.icon-General_Heart:before {
+  content: "\f004";
 }
-.icon-go:before {
-  content: "\f08b";
+.icon-General_Map:before {
+  content: "\e928";
 }
-.icon-leave:before {
-  content: "\f08b";
+.icon-Links-Awakening:before {
+  content: "\e927";
 }
-.icon-out:before {
-  content: "\f08b";
+.icon-Breath-of-the-Wild:before {
+  content: "\e92e";
 }
-.icon-sign-out:before {
-  content: "\f08b";
+.icon-General_Bottle:before {
+  content: "\e92f";
 }
-.icon-export:before {
-  content: "\f08b";
+.icon-LA_Secret-Seashell:before {
+  content: "\e930";
 }
-.icon-copy:before {
-  content: "\f0c5";
-}
-.icon-files-o:before {
-  content: "\f0c5";
-}
-.icon-bars:before {
-  content: "\f0c9";
-}
-.icon-navicon:before {
-  content: "\f0c9";
-}
-.icon-reorder:before {
-  content: "\f0c9";
-}
-.icon-fa-envelope:before {
-  content: "\f0e0";
-}
-.icon-BotW_Bomb:before {
-  content: "\e91d";
-}
-.icon-BotW_Cooking_Pot:before {
-  content: "\e921";
-}
-.icon-BotW_Goddess_Statue:before {
-  content: "\e922";
-  color: #fff;
-}
-.icon-BotW_Hinox:before {
-  content: "\e923";
-  color: #fff;
-}
-.icon-BotW_Lynel:before {
-  content: "\e924";
-  color: #fff;
-}
-.icon-BotW_Wizzrobe:before {
-  content: "\e925";
-  color: #fff;
+.icon-General_Key:before {
+  content: "\e931";
 }
 .icon-BotW_Armor:before {
-  content: "\e900";
-  color: #fff;
+  content: "\e901";
 }
 .icon-BotW_Beef:before {
-  content: "\e901";
-  color: #fff;
-}
-.icon-BotW_Blupee:before {
   content: "\e902";
 }
-.icon-BotW_Boss:before {
+.icon-BotW_Blupee:before {
   content: "\e903";
-  color: #fff;
+}
+.icon-BotW_Boss:before {
+  content: "\e904";
 }
 .icon-BotW_Bow-n-Arrows:before {
-  content: "\e904";
-  color: #fff;
+  content: "\e905";
 }
 .icon-BotW_Dungeon:before {
-  content: "\e905";
-  color: #fff;
+  content: "\e906";
 }
 .icon-BotW_Enemies:before {
-  content: "\e906";
-  color: #fff;
+  content: "\e907";
 }
 .icon-BotW_Enemy-Camp:before {
-  content: "\e907";
-  color: #fff;
+  content: "\e908";
 }
 .icon-BotW_Equipment:before {
-  content: "\e908";
-  color: #fff;
+  content: "\e909";
 }
 .icon-BotW_Fish:before {
-  content: "\e909";
-  color: #fff;
+  content: "\e90a";
 }
 .icon-BotW_Food-n-Materials:before {
-  content: "\e90a";
-  color: #fff;
+  content: "\e90b";
 }
 .icon-BotW_Great-Fairy:before {
-  content: "\e90b";
-  color: #fff;
+  content: "\e90c";
 }
 .icon-BotW_Guardian:before {
-  content: "\e90c";
-  color: #fff;
+  content: "\e90d";
 }
 .icon-BotW_Herbs:before {
-  content: "\e90d";
-  color: #fff;
+  content: "\e90e";
 }
 .icon-BotW_Items:before {
-  content: "\e90e";
-  color: #fff;
+  content: "\e90f";
 }
 .icon-BotW_Korok-Seeds:before {
-  content: "\e90f";
-  color: #fff;
+  content: "\e910";
 }
 .icon-BotW_Locations:before {
-  content: "\e910";
-  color: #fff;
+  content: "\e911";
 }
 .icon-BotW_Memories:before {
-  content: "\e911";
-  color: #fff;
+  content: "\e912";
 }
 .icon-BotW_Mini-Game:before {
-  content: "\e912";
-  color: #fff;
+  content: "\e913";
 }
 .icon-BotW_Mushrooms:before {
-  content: "\e913";
-  color: #fff;
-}
-.icon-BotW_Points-of-Interest:before {
   content: "\e914";
 }
-.icon-BotW_Sheikah-Tower:before {
+.icon-BotW_Points-of-Interest:before {
   content: "\e915";
-  color: #fff;
+}
+.icon-BotW_Sheikah-Tower:before {
+  content: "\e916";
 }
 .icon-BotW_Shields:before {
-  content: "\e916";
-  color: #fff;
+  content: "\e917";
 }
 .icon-BotW_Shrine-Quest:before {
-  content: "\e917";
-  color: #fff;
+  content: "\e918";
 }
 .icon-BotW_Shrines-of-Trials:before {
-  content: "\e918";
-  color: #fff;
+  content: "\e919";
 }
 .icon-BotW_Side-Quest:before {
-  content: "\e919";
-  color: #fff;
+  content: "\e91a";
 }
 .icon-BotW_Stables:before {
-  content: "\e91a";
-  color: #fff;
+  content: "\e91b";
 }
 .icon-BotW_Treasure-Chest:before {
-  content: "\e91b";
-  color: #fff;
+  content: "\e91c";
 }
 .icon-BotW_Village:before {
-  content: "\e91c";
-  color: #fff;
+  content: "\e91d";
+}
+.icon-BotW_Bomb:before {
+  content: "\e91e";
 }
 .icon-BotW_Weapons:before {
-  content: "\e91e";
-  color: #fff;
-}
-.icon-pencil:before {
   content: "\e91f";
 }
-.icon-BotW_Book:before {
+.icon-pencil:before {
   content: "\e920";
+}
+.icon-BotW_Book:before {
+  content: "\e921";
+}
+.icon-BotW_Cooking_Pot:before {
+  content: "\e922";
+}
+.icon-BotW_Goddess_Statue:before {
+  content: "\e923";
+}
+.icon-BotW_Hinox:before {
+  content: "\e924";
+}
+.icon-BotW_Lynel:before {
+  content: "\e925";
+}
+.icon-BotW_Wizzrobe:before {
+  content: "\e926";
 }
 .icon-search:before {
   content: "\e986";
@@ -224,9 +178,6 @@
 .icon-checkmark:before {
   content: "\ea10";
 }
-.icon-checkbox-checked:before {
-  content: "\ea10";
-}
 .icon-checkbox-unchecked:before {
   content: "\ea11";
 }
@@ -235,4 +186,34 @@
 }
 .icon-checkbox-unchecked2:before {
   content: "\ea53";
+}
+.icon-fa-user:before {
+  content: "\f007";
+}
+.icon-fa-lock:before {
+  content: "\f023";
+}
+.icon-go:before {
+  content: "\f08b";
+}
+.icon-copy:before {
+  content: "\f0c5";
+}
+.icon-bars:before {
+  content: "\f0c9";
+}
+.icon-fa-envelope:before {
+  content: "\f0e0";
+}
+.icon-General_House:before {
+  content: "\e92d";
+}
+.icon-General_Compass:before {
+  content: "\e94a";
+}
+.icon-General_Info:before {
+  content: "\ea0c";
+}
+.icon-embed2:before {
+  content: "\ea80";
 }

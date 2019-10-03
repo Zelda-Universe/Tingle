@@ -75,8 +75,8 @@ function ZMap() {
       MARKER_COMPLETE_TRANSFER_ERROR : "I AM ERROR. There seems to be a problem moving your completed markers from cookies to our database. We'll automatically try again later. %1",
       MARKER_COMPLETE_TRANSFER_SUCCESS : "All of your completed markers were moved from cookies to our database and tied to your account.",
       MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account, but an error occurred. We try again the next time you login.",
-      MARKER_DEL_ALL_COMPLETE_SUCCESS : "You have an amazing wisdom and power! All completed markers have been successfully deleted.",
-      MARKER_DEL_ALL_COMPLETE_QUESTION : "Are you sure want to start a new quest? All completed markers for %1 will be deleted.",
+      MARKER_DEL_ALL_COMPLETE_SUCCESS : "You have an amazing wisdom and power! All completed markers have been successfully reset.",
+      MARKER_DEL_ALL_COMPLETE_QUESTION : "Are you sure want to start a new quest? All completed markers for %1 will be reset.",
 
       MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database.",
       MARKER_EDIT_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be edited in our database.",
@@ -403,6 +403,10 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.pos = markers.length - 1;
 
    marker.on('click',function() {
+      if (mapControl.isCollapsed()) {
+         mapControl.toggle();
+      }
+   
       if (newMarker == null || (newMarker.markerId != marker.id)) {
          _this._createMarkerPopup(marker);
 
@@ -665,7 +669,7 @@ ZMap.prototype.buildMap = function() {
 
    var mapControlOptions = $.extend(
      mapOptions, {
-     "zIndex": 0
+     "zIndex": 0, "collapsed": false
    });
 
    if (L.Browser.mobile && window.innerWidth < 768) {
@@ -760,6 +764,17 @@ ZMap.prototype.buildMap = function() {
       map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
 
    });
+   
+   $(document).on('keydown', function(e) {
+      if(e.key == "Escape") {
+        if(mapControl._contentType != mapControl.options.defaultContentType) {
+          mapControl.resetContent();
+          _this._closeNewMarker()
+        } else {
+          mapControl.toggle();
+        }
+      }
+    }.bind(mapControl));
    
    _this._buildContextMenu();
 };

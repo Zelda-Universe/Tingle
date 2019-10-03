@@ -42,16 +42,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.options.width = 360;
     this.options.scrollbarWidth = 18; // IE / FF
 
-    $(document).on('keydown', function(e) {
-      if(e.key == "Escape") {
-        if(this._contentType != this.options.defaultContentType) {
-          this.resetContent();
-        } else {
-          this.toggle();
-        }
-      }
-    }.bind(this));
-
     this._initContainer();
   },
 

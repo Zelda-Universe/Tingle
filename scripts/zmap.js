@@ -403,6 +403,10 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.pos = markers.length - 1;
 
    marker.on('click',function() {
+      if (mapControl.isCollapsed()) {
+         mapControl.toggle();
+      }
+   
       if (newMarker == null || (newMarker.markerId != marker.id)) {
          _this._createMarkerPopup(marker);
 
@@ -760,6 +764,17 @@ ZMap.prototype.buildMap = function() {
       map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
 
    });
+   
+   $(document).on('keydown', function(e) {
+      if(e.key == "Escape") {
+        if(mapControl._contentType != mapControl.options.defaultContentType) {
+          mapControl.resetContent();
+          _this._closeNewMarker()
+        } else {
+          mapControl.toggle();
+        }
+      }
+    }.bind(mapControl));
    
    _this._buildContextMenu();
 };

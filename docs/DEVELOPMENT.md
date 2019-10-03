@@ -61,6 +61,8 @@
 # Etc.
 
 ## Icons
+  For existing icon reference: https://app.tettra.co/teams/zelda/pages/icon-index
+  
   We use the website `https://icomoon.io/app` to choose, compile, and generate the stylesheets that contain the icon font graphics we display in our map's web page.
   - We do not use the hosted 'Quick Usage' premium feature of icomoon, just the local browser storage to work with the set, then export it to the filesystem, and update the project with the new files.
   - Import into website / review
@@ -75,8 +77,94 @@
         - Remove the first change that sets a new random query parameter for each font file link.
         - I don't think this is necessary yet.  Client caches should hopefully be invalidated by normal web server file timestamp comparison.
 
+## Game Source Information
 
+### Map Images
 
+  Trying to use cross-platform tools from my Mac here.
+
+  Some good file format references and links to tools:
+   - mk8.tockdom.com
+   - wiki.tockdom.com
+   - https://github.com/handsomematt/botw-modding/blob/master/docs/file_formats
+   - https://botw-modding-database.fandom.com/wiki/File_types
+   - https://wiki.oatmealdome.me
+   - https://gist.github.com/zephenryus/b4dbea17de438a1f9f06779657eb4148
+
+#### Switch titles  
+
+##### BotW
+
+  1. You can find the files installed on the internal storage, or you can `wudecrypt` the game disc: `wudecrypt path/to/image.wud /path/to/output /path/to/commonkey.bin /path/to/disckey.bin`
+  1. Unyaz the sbmaptex files found in `game/00050000101C9500/content/UI/MapTex/MainField`.
+  1. Somehow convert the resultant BFRES files to a common image format.
+    - I didn't find a tool that worked on the Switch's little endian format, was cross-platform, confidently virus-free, I felt like compiling, worked, or ran in batch.
+    - I looked at BFRES-Tool, BFRES-Extractor, BFRES-Viewer, Wexos Toolbox, ModelThingy, NintenTools, Switch-Toolbox.
+
+#### Switch titles
+
+  1. Extract the ncas from the nsp: `python3 nspx.py -x -f "$nspfile" -o "$outputdir"`.
+  1. Use `hactool` to decrypt extract the romfs from the ncas: `./hactool.exe -k keys.dat -x --plaintext="$outputdir" "$ncafile"`.
+  1. Use `nstool` to extract the contents of the romfs: `./nstool.exe -v -x --type romfs -f "$romfsfile"`.
+
+##### LAfS
+  1. Use `SARCTool` to extract the game data from the primary game archive files: `python3 "SARCTool.py" "$file"`
+    - Requires `pip3 install SarcLib libyaz0` first.
+    - Namely the `Game.arc` and `DgnTex.arc` files in the `romfs/region_common/ui` directory.
+  1. Use `bntx_extract` to extract the texture archives: `./bntx_extract.exe "$file"`.
+  1. Use astcenc (preferably in a loop/batch) to convert all astc image data to tga: `getclip | while read file; eval "'$astcenc' -d '$astcfile' '$file.tga'"; end`.
+
+###### Field Map
+
+  1. Don't forget to flip the images first, if necessary!
+    - find "$srcDir" -type f -exec mogrify -flip '{}' \;
+  1. So far, this was a set of irregular tiles that were hand stitched together..
+
+###### Dungeon Maps
+
+  1. Don't forget to flip the images first, if necessary!
+    - find "$srcDir" -type f -exec mogrify -flip '{}' \;
+  1. (Optional) Add a `DgnMapGrid` file to use that as the dungeon map background.
+    1.  Assumes 1308x1040 with or without this file being provided which is 1280x1024 for the map tile grid plus offsets allowing for grid lines in between tiles.
+  1. Assemble themmm: `dev/games/lafs/assembleDgnTiles.fish "$srcDir"`
+    - Does not support layered dungeon maps yet..
+
+## Map Tiles
+
+  Danilo says he used a [modified version of a] script called `tileCreator.js` (14.4 KB).
+  I assume it's modified because the original tries to fetch data from a database which we do not use for our map tiles, directly at least.
+  I may have found that original here: [tileCreator.js](https://github.com/AnderPijoan/vectorosm/blob/master/tileCreator/tileCreator.js).
+
+  I would like a simpler and less proprietary process, also considering I cannot readily access the file.
+  * https://gis.stackexchange.com/questions/285483/how-can-i-convert-an-image-into-map-tiles-for-leafletjs
+  * https://wiki.openstreetmap.org/wiki/Creating_your_own_tiles
+  So I have found tools like:
+  * [geopython/mapslicer](https://github.com/geopython/mapslicer)
+    * For my Mac had to do:
+      * `brew install wxpython`
+      * `brew install gdal`
+    * Without experience, couldn't quite get it to work.
+      * With or without a specified georeference I thought I found in our JS code, I believe the wizard would not proceed without a valid SRS.
+      * Originally I thought I tried one and it was still looking for valid a SRS/XML file beside the input picture file, and would not proceed because it did not find one.
+        * Probably I was trying preview and stopped.
+        * Even doing this didn't help: https://trac.osgeo.org/gdal/wiki/FAQInstallationAndBuilding#HowtosetGDAL_DATAvariable
+          * https://stackoverflow.com/questions/14444310/how-to-set-the-gdal-data-environment-variable-to-point-to-the-directory-containi
+      * I tried geodetic and that didn't go too badly, but certainly did not return the results I wanted.  Looks like the origin being bottom left may be the biggest problem, and otherwise maybe specifying the offset, which may be in the SRS definition or rather the georeference properties at the beginning.
+      * I set the tile profile to presentation.  I wish that would be enough, and it was have an appropriate SRS in the later list.
+    * https://wiki.osgeo.org/wiki/MapSlicer
+  * [gdal2tiles.py](https://gdal.org/gdal2tiles.html)
+    * For my Mac had to do:
+      * `brew install gdal`
+    * Interesting leaflet fork, we may be using the top-left non-standard mapping origin.
+      * [commenthol/gdal2tiles-leaflet](https://github.com/commenthol/gdal2tiles-leaflet)
+        * Good invocation: `./gdal2tiles-leaflet-master/gdal2tiles.py -w none --resume -l -p raster -z '0-8' "$file" tiles`
+    * https://wiki.openstreetmap.org/wiki/GDAL2Tiles
+    * Without experience, couldn't quite get it to work.
+      * Created some weird tiles that were blank and made multiple grided copies with lots of negative space in between, so actually tiles in each single image..
+      * Thought a good invocation would be: `gdal2tiles.py -w none --resume -p raster -z '0-8' "$file" tiles`
+  * [MapTiler](https://www.maptiler.com/)
+  * Seems like too much of a proprietary app and not a configurable script.
+  * Haven't tried it.  Feel like gdal2tiles should work..
 
 ## Update Sample Database Data
 
@@ -125,10 +213,12 @@
 
   Tracking database changes to use in the future for features and bug fixes is important, and we will create migration files that can be easily issued in any environment.
 
-  Thought it would be easy that we use what existing projects use to accomplish this, and I have been using Ruby on Rails lately that seems to do a good job of it.
+  Thought it would be easy to utilize other projects' existing mechanisms, and I have been using Ruby on Rails lately that seems to do a good job of it.
   https://github.com/thuss/standalone-migrations
 
   Now that only accomplishes half of the responsibility.  In order to operate on that actual database content data, we don't have ActiveRecord objects to use as an API, so we just implement raw SQL for these, and make sure that both of the `up` and `down` methods are made as appropriate as possible, if both methods possible for that certain situation.
+
+  It seems we must only pass a single SQL statement per block to avoid a security risk, otherwise it keeps receiving a syntax error only when sent through the migration framework.. https://stackoverflow.com/questions/14856856/how-to-write-sql-in-a-migration-in-rails#comment86794302_42991237
 
   Important Note:
     Do not edit a migration that has been pushed (to others).

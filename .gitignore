@@ -4,15 +4,16 @@
 ZM_nginx.conf
 dev/db/config.yml
 
-# Cached Files
+# Cached Files / Runtime-updated Files
 cache/*
 !cache/index.html
 
-# Runtime-updated Files
 css.ini
 javascript.ini
 
 # Downloaded dependencies
+node_modules
+tiles
 vendor
 
 # Debug Files

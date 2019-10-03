@@ -2,7 +2,8 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   options: {
     position: 'topleft',
     delay: 0,
-    openTo: 78,
+    //openTo: 78,
+    openTo: 150,
     softOpenBottom: 250,
     softOpenTo: 0 // REVERSE
   },
@@ -133,9 +134,14 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
          }, this);
 
       var logo = new Logo({ parent: headerMenu });
+      
+      _thisLayer = this;
+      this._gameMenu = this.createGameMenu();
+      this._mapsMenu = this.createMapsMenu();
 
       L.DomUtil.create('div', 'grabber', headerMenu);
 
+      /*
       var completedButton = new CategoryButtonCompleted({
         toggledOn: mapOptions.showCompleted,
         onToggle: function(showCompleted) {
@@ -143,7 +149,42 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(completedButton.domNode);
+      $(headerMenu).append(completedButton.domNode);*/
+      
+      this._mapsButton = new MapButton({
+        toggledOn: false,
+        onToggle: function(toggledOn) {
+           if (toggledOn) {
+               _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
+               _thisLayer._gamesButton.clear();
+           } else {
+               //_thisLayer.resetContent();
+               //_thisLayer._gamesButton.clear();
+               //_thisLayer._mapsButton.clear();
+               _thisLayer.closeDrawer();
+           }
+	      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+      });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(this._mapsButton.domNode);
+
+      this._gamesButton = new GameButton({
+        toggledOn: false,
+        onToggle: function(toggledOn) {
+           if (toggledOn) {
+               _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
+               _thisLayer._mapsButton.clear();
+           } else {
+               //_thisLayer.resetContent();
+               //_thisLayer._gamesButton.clear();
+               //_thisLayer._mapsButton.clear();
+               _thisLayer.closeDrawer();
+           }
+
+	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+      });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(this._gamesButton.domNode);
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
@@ -156,7 +197,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 
       this._resetContent(false);
       this._contents.style.clear = 'both';
-    this.updateContentsHeight();
+      this.updateContentsHeight();
 
    	container.appendChild(form1);
       container.appendChild(this._contents);
@@ -166,6 +207,41 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     // and make expand match openDrawer expectations.
     if (true || !this.options.collapsed) this._expand();
    },
+   
+   rebuildMapsMenu: function () {
+      this._mapsMenu = this.createMapsMenu();
+   },
+   
+   createGameMenu: function() {
+     return new GameMenu({
+      categoryTree: games,
+      onCategoryToggle: function(toggledOn, category) {
+        (
+          window.location.replace(location.protocol + '//' + location.host + location.pathname + "?game=" + category.shortName)
+        ).call(zMap, category, toggledOn)
+      }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+      categorySelectionMethod: this.options.categorySelectionMethod,
+      defaultToggledState: (this.options.categorySelectionMethod == "focus")
+    });
+   },
+   
+  createMapsMenu: function() {
+    return new MapsMenu({
+     categoryTree: maps,
+     onCategoryToggle: function(toggledOn, category) {
+         if (this.currentMapLayer.id != category.id) {
+               map.removeLayer(this.currentMapLayer);
+               map.addLayer(category);
+               this.currentMapLayer = category;        
+               this.currentMapLayer.bringToBack();
+               map.fire("baselayerchange", this.currentMapLayer);
+         }
+     }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
+     categorySelectionMethod: this.options.categorySelectionMethod,
+     defaultToggledState: (this.options.categorySelectionMethod == "focus")
+   });
+  },
+  
 
     _animate: function(menu, from, to, isOpen) {
       // console.log(from + ' ' + to + ' ' + isOpen);
@@ -247,8 +323,12 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   },
 
   closeDrawer: function() {
-    if(this._open)
+    if(this._open) {
       this._setDrawerState(false, this._startPosition);
+      this._gamesButton.clear();
+      this._mapsButton.clear();
+      this.resetContent();
+    }
   }
 });
 

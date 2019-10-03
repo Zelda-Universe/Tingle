@@ -8,20 +8,30 @@ CategoryMenu.prototype._initSettings = function(opts) {
 
   this.categorySelectionMethod = getSetOrDefaultValue(opts.categorySelectionMethod, ZConfig.getConfig("categorySelectionMethod"));
   this.automaticToggle = getSetOrDefaultValue(opts.automaticToggle, !(this.categorySelectionMethod == "focus"));
+  this._categoryTree = opts.categoryTree;
 };
 
 CategoryMenu.prototype._initDOMElements = function(opts) {
+   var completedButtonBlock = new CategoryButtonCompletedBlock({
+      toggledOn: mapOptions.showCompleted,
+      onToggle: function(showCompleted) {
+         zMap.toggleCompleted(showCompleted);
+      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+   });
+   //$(form1).append(completedButtonBlock.domNode);
+
   this.domNode = $('' +
     '<ul class="category-selection-list">' +
     '</ul>'
   );
+  this.domNode.prepend(completedButtonBlock.domNode);
   this.menuEntryContainerTemplate = '' +
     '<li class="category-selector">' +
     '</li>'
   ;
 
   var currentCategoryParentButton;
-  categoryTree.forEach(function(category) {
+  this._categoryTree.forEach(function(category) {
     currentCategoryParentButton = new CategoryParentButton({
       category: category,
       onToggle: opts.onCategoryToggle,

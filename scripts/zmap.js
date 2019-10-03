@@ -4,7 +4,7 @@ function ZMap() {
    // Now that we have the changelog system using the database
    // with a field for each number, let's use 3 numbers and no
    // letters in the version.
-   this.version = '0.6.3';
+   this.version = '0.7.0';
 
    this.maps = [];
    this.games = [];

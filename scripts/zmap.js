@@ -678,8 +678,8 @@ ZMap.prototype.buildMap = function() {
    } else {
       mapControl = L.control.zlayers(
         baseMaps,
-        categoryTree,
-        mapControlOptions
+        {},
+        mapControlOptions,
       );
       L.control.zoom({ position:'bottomright' }).addTo(map);
       if (mapOptions.showInfoControls) {

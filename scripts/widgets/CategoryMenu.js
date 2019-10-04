@@ -69,8 +69,10 @@ CategoryMenu.prototype._addCategoryMenuEntry = function(categoryButton) {
 CategoryMenu.prototype.customToggle = function() {
   this.onToggle(this.toggledOn, this.category);
   categories.forEach(function(category) {
-    category._button.toggledOn = ((hasUserCheck) ? category.userChecked : category.checked);
-    category._button._updateState();
+     if (category._button) {
+         category._button.toggledOn = ((hasUserCheck) ? category.userChecked : category.checked);
+         category._button._updateState();
+     }
   });
   zMap.refreshMap(categories);
 };

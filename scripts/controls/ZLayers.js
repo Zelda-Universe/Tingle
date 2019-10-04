@@ -31,7 +31,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._debugName = this.name;
   },
 
-  initialize: function (baseLayers, categoryTree, options) {
+  initialize: function (baseLayers, overlays, options) {
+    this._layers = [];
     this._setDebugNames();
     this.options = this.options; // Fixes `hasOwnProperty` issue in `setOptions` to be `true` now....
     L.Util.setOptions(this, options); // Same as L.setOptions in the Leaflet doc.  I like using this namespace better.  Shows intent more clearly.
@@ -170,7 +171,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
                _thisLayer._mapsButton.clear();
            }
 
-	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+	      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(this._gamesButton.domNode);
@@ -194,7 +195,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._contents.style.width = '360px';
 
 		container.appendChild(form1);
-    container.appendChild(this._contents);
+		container.appendChild(this._contents);
    },
    
    rebuildMapsMenu: function () {
@@ -222,7 +223,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
      onCategoryToggle: function(toggledOn, category) {
        (
          window.location.replace(location.protocol + '//' + location.host + location.pathname + "?game=" + category.shortName)
-       ).call(zMap, category, toggledOn)
+       )
      }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
      categorySelectionMethod: this.options.categorySelectionMethod,
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
@@ -445,7 +446,25 @@ L.Control.ZLayers = L.Control.Layers.extend({
     } else {
       setContentFunction();
     }
-  }
+  },
+  
+	// @method expand(): this
+	// Expand the control container if collapsed.
+	expand: function () {
+		L.DomUtil.addClass(this._container, 'leaflet-control-layers-expanded');
+      if (this._section) {
+         this._section.style.height = null;
+         var acceptableHeight = this._map.getSize().y - (this._container.offsetTop + 50);
+         if (acceptableHeight < this._section.clientHeight) {
+            DomUtil.addClass(this._section, 'leaflet-control-layers-scrollbar');
+            this._section.style.height = acceptableHeight + 'px';
+         } else {
+            DomUtil.removeClass(this._section, 'leaflet-control-layers-scrollbar');
+         }
+      }
+		this._checkDisabledLayers();
+		return this;
+	},
 });
 
 L.Control.ZLayers.prototype._className = "L.Control.ZLayers";

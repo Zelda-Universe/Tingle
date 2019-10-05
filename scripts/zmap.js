@@ -1429,7 +1429,7 @@ ZMap.prototype.undoMarkerComplete = function() {
                      });
 
             } else {
-               categories[vMarker.categoryId].complete--;
+               categories[markers[i].categoryId].complete--;
                setCookie('completedMarkers', JSON.stringify(completedMarkers));
             }
             //_this.refreshMap();

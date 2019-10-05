@@ -1321,6 +1321,7 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
               }
             });
    } else {
+      categories[vMarker.categoryId].complete++;
       setCookie('completedMarkers', JSON.stringify(completedMarkers));
       if (!userWarnedAboutLogin) {
          toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
@@ -1391,6 +1392,7 @@ ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
             });
    } else {
       setCookie('completedMarkers', JSON.stringify(completedMarkers));
+      categories[vMarker.categoryId].complete--;
       if (!userWarnedAboutLogin) {
          toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
          userWarnedAboutLogin = true;
@@ -1418,7 +1420,7 @@ ZMap.prototype.undoMarkerComplete = function() {
                        success: function(data) {
                            //data = jQuery.parseJSON(data);
                            if (data.success) {
-
+                              categories[vMarker.categoryId].complete--;
                            } else {
                               toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
                               //alert(data.msg);
@@ -1427,6 +1429,7 @@ ZMap.prototype.undoMarkerComplete = function() {
                      });
 
             } else {
+               categories[vMarker.categoryId].complete--;
                setCookie('completedMarkers', JSON.stringify(completedMarkers));
             }
             //_this.refreshMap();

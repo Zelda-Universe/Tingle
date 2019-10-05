@@ -1819,6 +1819,10 @@ ZMap.prototype._createAccountForm = function(user) {
   
   $("#account_clear_completed_btn").click(function(e) {
      _this._createDialogDeleteAllMarkers();
+     categories.forEach(function(category) {
+       category.complete = 0;
+     }, this);
+     mapControl.resetContent();
      e.preventDefault();
   });
 

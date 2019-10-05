@@ -50,7 +50,8 @@ CategoryMenu.prototype._initDOMElements = function(opts) {
         onToggle: opts.onCategoryToggle,
         toggledOn: getSetOrDefaultValue(this.defaultToggledState, childCategory.checked),
         automaticToggle: this.automaticToggle,
-        customToggle: this.customToggle
+        customToggle: this.customToggle,
+        showProgress: true,
       });
       category._button = currentChildCategoryButton;
       categories[childCategory.id]._button = currentChildCategoryButton;

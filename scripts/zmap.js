@@ -214,7 +214,8 @@ ZMap.prototype.constructor = function(vMapOptions) {
 ZMap.prototype.addCategory = function(category) {
   category.checked = ((category.checked==1) ? true : false);
   category.userChecked = false;
-
+  category.complete = 0;
+  category.total = 0;
   categories[category.id] = category;
 };
 
@@ -385,10 +386,12 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    marker.complete        = false;
+   categories[marker.categoryId].total++;
    for (var i = 0; i < completedMarkers.length; i++) {
       if (marker.id == completedMarkers[i]) {
-      _this._doSetMarkerDoneIcon(marker, true);
-      break;
+         categories[marker.categoryId].complete++;
+         _this._doSetMarkerDoneIcon(marker, true);
+         break;
       }
    }
 
@@ -1261,6 +1264,8 @@ ZMap.prototype.getUserCompletedMarkers = function(vMarker, vComplete) {
          for (var i = 0; i < markers.length; i++) {
             if (markers[i].id == marker.markerId) {
                completedMarkers.push(marker.markerId);
+               
+               categories[markers[i].categoryId].complete++;
                _this._doSetMarkerDoneIcon(markers[i], true);
                break;
             }
@@ -1308,7 +1313,7 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
               success: function(data) {
                   //data = jQuery.parseJSON(data);
                   if (data.success) {
-
+                     categories[vMarker.categoryId].complete++;
                   } else {
                      toastr.error(_this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg));
                      //alert(data.msg);
@@ -1377,7 +1382,7 @@ ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
               success: function(data) {
                   //data = jQuery.parseJSON(data);
                   if (data.success) {
-
+                     categories[vMarker.categoryId].complete--;
                   } else {
                      toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
                      //alert(data.msg);

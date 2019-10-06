@@ -1233,7 +1233,7 @@ header.ex1 {
 }
 .completed-button.toggledOff .category-icon {
     color: rgba(255,255,255,.3);
-    border: 2px dashed rgba(255,255,255,.3);
+    border: 2px solid rgba(255,255,255,.3);
     transition: .2s;
 }
 

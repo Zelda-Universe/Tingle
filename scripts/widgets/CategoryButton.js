@@ -86,14 +86,12 @@ CategoryButton.prototype.toggle = function(toggledOn) {
 
 
 CategoryButton.prototype.mouseEnter = function() {
-  console.log(1);
-  progress = $('<div class="category-progress">'+categories[this.category.id].complete+'/'+categories[this.category.id].total+'</div>');
-  this.domNode.prepend(progress);
-  
+  this.labelNode.text(categories[this.category.id].complete+'/'+categories[this.category.id].total);
+ 
 };
 
 CategoryButton.prototype.mouseLeave = function() {
-  progress.remove();
+  this.labelNode.text(categories[this.category.id].name);
 };
 
 CategoryButton.prototype._className = "CategoryButton";

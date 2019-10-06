@@ -25,6 +25,7 @@ CategoryButton.prototype._setDebugNames = function() {
 CategoryButton.prototype._initSettings = function(opts) {
   if(!opts.category) opts.category = {};
   if(opts.showIcon == undefined) opts.showIcon = true;
+  if(opts.showProgress == undefined) opts.showProgress = false;
    
   this.showIcon = opts.showIcon;
    
@@ -61,6 +62,14 @@ CategoryButton.prototype._setupUserInputListener = function(opts) {
     if(this.automaticToggle) this.toggle();
     else if(opts.customToggle) opts.customToggle.call(this);
   }.bind(this));
+  this.domNode.on('mouseenter', function(e) {
+    e.preventDefault();
+    if(opts.showProgress) this.mouseEnter.call(this);
+  }.bind(this));
+  this.domNode.on('mouseleave', function(e) {
+    e.preventDefault();
+    if(opts.showProgress) this.mouseLeave.call(this);
+  }.bind(this));
 };
 
 CategoryButton.prototype._updateState = function() {
@@ -73,6 +82,16 @@ CategoryButton.prototype.toggle = function(toggledOn) {
   this._updateState();
   this.onToggle(this.toggledOn, this.category);
   // this.domNode.trigger('toggle', this.category); // Alternative?
+};
+
+
+CategoryButton.prototype.mouseEnter = function() {
+  this.labelNode.text(categories[this.category.id].complete+'/'+categories[this.category.id].total);
+ 
+};
+
+CategoryButton.prototype.mouseLeave = function() {
+  this.labelNode.text(categories[this.category.id].name);
 };
 
 CategoryButton.prototype._className = "CategoryButton";

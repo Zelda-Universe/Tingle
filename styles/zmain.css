@@ -847,14 +847,14 @@ a.icon-close2 {
 }
 
 .leaflet-bar a:first-child {
-	border-top-left-radius: 100px;
-	border-top-right-radius: 100px;
+	border-top-left-radius: 100px !important;
+	border-top-right-radius: 100px !important;
 	border-bottom: 1px solid rgba(255,255,255,.2);
 }
 
 .leaflet-bar a:last-child {
-	border-bottom-left-radius: 100px;
-	border-bottom-right-radius: 100px;
+	border-bottom-left-radius: 100px !important;
+	border-bottom-right-radius: 100px !important;
 	border-bottom: 0;
 }
 
@@ -1233,7 +1233,7 @@ header.ex1 {
 }
 .completed-button.toggledOff .category-icon {
     color: rgba(255,255,255,.3);
-    border: 2px dashed rgba(255,255,255,.3);
+    border: 2px solid rgba(255,255,255,.3);
     transition: .2s;
 }
 
@@ -1283,4 +1283,20 @@ header.ex1 {
    width: auto;
    margin-left: 5px;
    margin-right: 5px;
+}
+
+.category-progress {
+    position: absolute;
+    z-index: 100;
+    margin-top: 20px;
+    font-size: 15px;
+    width: 86px;
+    color: white;
+    text-shadow: 1px 0 0 #000, -1px 0 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+    height: inherit;
+    text-align: center;
+    opacity: 1;
+    margin-left:auto;
+    margin-right:auto;
+    pointer-events: none;
 }

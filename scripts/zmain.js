@@ -39,7 +39,9 @@ function setCookie(cname, cvalue, exdays) {
 
    }
    //console.log(expires);
-   document.cookie = cname + "=" + cvalue + ";" + expires;
+   
+   // Added explicity tag SameSite -> https://www.chromestatus.com/feature/5633521622188032.
+   document.cookie = cname + "=" + cvalue + ";" + expires + "; SameSite=Lax";
 }
 
 function getCookie(cname) {

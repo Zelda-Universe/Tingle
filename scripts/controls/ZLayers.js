@@ -223,7 +223,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
      onCategoryToggle: function(toggledOn, category) {
        (
          window.location.replace(location.protocol + '//' + location.host + location.pathname + "?game=" + category.shortName)
-       )
+       ).call(zMap, category, toggledOn)
      }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
      categorySelectionMethod: this.options.categorySelectionMethod,
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
@@ -303,6 +303,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
              // Open
              this.resetContent();
              e.preventDefault();
+             // Issue 232 https://github.com/Zelda-Universe/Zelda-Maps/issues/232
+             // Need to reset the current marker open
+             zMap._closeNewMarker();
              this._mapsButton.clear();
              this._gamesButton.clear();
          }, this)

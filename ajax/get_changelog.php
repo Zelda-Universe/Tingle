@@ -5,8 +5,9 @@
   if(isset($_GET["sinceVersion"]))
     $sinceVersion = $mysqli->real_escape_string($_GET["sinceVersion"]);
 
+
   if(isset($sinceVersion)) {
-    $sinceVersionParts = split('\.', $sinceVersion, 3);
+    $sinceVersionParts = explode('.', $sinceVersion, 3);
   } else {
     start_session("zmap");
 
@@ -40,22 +41,17 @@
   }
 
   $query = "
-    SELECT
-      *
-    FROM (
-      SELECT
-        `id`,
-        `version_major` AS v1,
-        `version_minor` AS v2,
-        `version_patch` AS v3,
-        `content` AS content
-      FROM
-        `{$map_prefix}changelog`
-    ) AS innerTable
-    WHERE
-      `v1` > {$sinceVersionParts[0]} OR
-      `v2` > {$sinceVersionParts[1]} OR
-      `v3` > {$sinceVersionParts[2]}
+     SELECT `id`
+          , `version_major` as v1
+          , `version_minor` as v2
+          , `version_patch` as v3
+          , `content` AS content
+     FROM `{$map_prefix}changelog`
+        , (select max(concat(`version_major`, '.', `version_minor`, '.', `version_patch`)) latestVersion
+             from changelog
+            WHERE concat(`version_major`, '.', `version_minor`, '.', `version_patch`) > '{$sinceVersion}'
+          ) t    
+    where t.latestVersion = concat(`version_major`, '.', `version_minor`, '.', `version_patch`)
     ;
   ";
   //echo $query;

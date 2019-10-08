@@ -1330,6 +1330,10 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
       }
    }
    if (!mapOptions.showCompleted) {
+      // If we need to hide completed markers, remove the pin on top of the marker and reset the content of the map control
+      // Issue: https://github.com/Zelda-Universe/Zelda-Maps/issues/231
+      _this._closeNewMarker();
+      mapControl.resetContent();
       _this.refreshMap();
    }
 }
@@ -1739,7 +1743,8 @@ ZMap.prototype._createLoginForm = function() {
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
                                     '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
-                                    '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Password"/>'+
+                                    /* Added autocomplete as per suggestion -> https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands */
+                                    '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Password" autocomplete="current-password" />'+
                                  '</div>'+
                               '</div>'+
                            '</div>'+
@@ -1770,7 +1775,7 @@ ZMap.prototype._createLoginForm = function() {
         success: function(data) {
             //data = jQuery.parseJSON(data);
             if (data.success) {
-              checkChangelog(data.user);
+               checkChangelog(data.user);
                _this.setUser(data.user);
                updateAdState();
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));

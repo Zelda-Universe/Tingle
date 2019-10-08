@@ -33,22 +33,22 @@ ChangelogHandler.prototype._fetchChangelogEntries = function(opts) {
 
 ChangelogHandler.prototype._fetchChangelogEntriesByUser = function(user) {
   $.getJSON("ajax.php?command=get_changelog", function(entries) {
-    this._notifyChangelogVersionUpdates(entries);
+    this._notifyChangelogVersionUpdates(entries, user);
     // $.ajax("ajax.php?command=set_changelog_seen_latest");
   }.bind(this));
 };
 
 ChangelogHandler.prototype._fetchChangelogEntriesByCookie = function(seenChangelogVersion, version) {
   $.getJSON("ajax.php?command=get_changelog&sinceVersion=" + seenChangelogVersion, function(entries) {
-    this._notifyChangelogVersionUpdates(entries);
+    this._notifyChangelogVersionUpdates(entries, null);
     setCookie(seenChangelogVersionCookieName, version);
   }.bind(this));
 };
 
-ChangelogHandler.prototype._notifyChangelogVersionUpdates = function(entries) {
+ChangelogHandler.prototype._notifyChangelogVersionUpdates = function(entries, user) {
   var entriesByVersion = this._groupChangelogEntriesByVersion(entries);
   for (version in entriesByVersion) {
-    this._notifyChangelogVersionUpdate(version, entriesByVersion[version]);
+    this._notifyChangelogVersionUpdate(version, entriesByVersion[version], user);
   }
 };
 
@@ -60,8 +60,26 @@ ChangelogHandler.prototype._groupChangelogEntriesByVersion = function(entries) {
   });
 };
 
-ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, versionEntry) {
+ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, versionEntry, user) {
   toastr.remove();
+  
+  if (user != undefined) {
+      $.ajax({
+           type: "POST",
+           url: "ajax.php?command=update_user_version",
+           data: {userId: user.id, version: version},
+           success: function(data) {
+               data = jQuery.parseJSON(data);
+               if (data.success) {
+                  
+               } else {
+                  toastr.error("Unable to update user version");
+                  //alert(data.msg);
+               }
+           }
+         })
+  };
+  
   return zlogger.info(
     '<ul>' +
       versionEntry.join('') +

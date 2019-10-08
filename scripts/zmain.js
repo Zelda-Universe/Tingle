@@ -108,11 +108,17 @@ function getUserInfo() {
 };
 
 function checkChangelog(user) {
-  new ChangelogHandler({
+   var lastSeemVersion = getCookie(seenChangelogVersionCookieName);
+   if (lastSeemVersion == null || lastSeemVersion == "") {
+      lastSeemVersion = '0.0.0';
+   }
+   
+   new ChangelogHandler({
     user: user,
-    seenChangelogVersion: getCookie(seenChangelogVersionCookieName),
+    seenChangelogVersion: lastSeemVersion,
     version: zMap.version
   });
+  
 };
 
 function hideLoginControls() {

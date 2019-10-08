@@ -1284,19 +1284,3 @@ header.ex1 {
    margin-left: 5px;
    margin-right: 5px;
 }
-
-.category-progress {
-    position: absolute;
-    z-index: 100;
-    margin-top: 20px;
-    font-size: 15px;
-    width: 86px;
-    color: white;
-    text-shadow: 1px 0 0 #000, -1px 0 0 #000, 0 1px 0 #000, 0 -1px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-    height: inherit;
-    text-align: center;
-    opacity: 1;
-    margin-left:auto;
-    margin-right:auto;
-    pointer-events: none;
-}

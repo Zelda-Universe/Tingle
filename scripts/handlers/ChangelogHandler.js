@@ -69,7 +69,6 @@ ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, ver
            url: "ajax.php?command=update_user_version",
            data: {userId: user.id, version: version},
            success: function(data) {
-               data = jQuery.parseJSON(data);
                if (data.success) {
                   
                } else {

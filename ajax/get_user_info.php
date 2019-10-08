@@ -20,11 +20,39 @@
    if ($_SESSION['user_id'] == $_COOKIE['user_id']
          && $_SESSION['username'] == $_COOKIE['username'])
    {
+         $query = "
+            SELECT MAX(CONCAT(`VERSION_MAJOR`, '.', `VERSION_MINOR`, '.', `VERSION_PATCH`)) LATESTVERSION
+              FROM CHANGELOG
+         ";
+         //echo $query;
+
+         $result = @$mysqli->query($query);
+
+         if(!$result) {
+           print($mysqli->error);
+           return;
+         }
+
+         $lastestVersion = '0.0.0';
+         while($row = $result->fetch_assoc()) {
+            $lastestVersion = $row['LATESTVERSION'];
+         }
+//         echo $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3'];
+         if ($lastestVersion > $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3']) {
+            $user['seen_latest_changelog'] = false;
+            $user['seen_version'] = '0.0.0';
+            $_SESSION['seen_latest_changelog'] = false;
+            $_SESSION['v1'] = 0;
+            $_SESSION['v2'] = 0;
+            $_SESSION['v3'] = 0;
+         } else {
+            $user['seen_latest_changelog'] = !!$_SESSION['seen_latest_changelog'];
+            $user['seen_version'] = $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3'];
+         }
+         
          $user['id'] = $_SESSION['user_id'];
          $user['username'] = $_SESSION['username'];
          $user['level'] = $_SESSION['level'];
-         $user['seen_latest_changelog'] = !!$_SESSION['seen_latest_changelog'];
-         $user['seen_version'] = $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3'];
          session_write_close();
          $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
 
@@ -37,3 +65,4 @@
 	} else {
       echo json_encode(array("success"=>false, "msg"=>"Oops, something went wrong..."));
    }
+?>

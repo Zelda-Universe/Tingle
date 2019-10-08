@@ -21,8 +21,8 @@
          && $_SESSION['username'] == $_COOKIE['username'])
    {
          $query = "
-            SELECT MAX(CONCAT(`VERSION_MAJOR`, '.', `VERSION_MINOR`, '.', `VERSION_PATCH`)) LATESTVERSION
-              FROM CHANGELOG
+            select max(concat(`version_major`, '.', `version_minor`, '.', `version_patch`)) latestversion
+              from `changelog`
          ";
          //echo $query;
 

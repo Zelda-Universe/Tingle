@@ -11,17 +11,7 @@
   } else {
     start_session("zmap");
 
-    if(isset($_SESSION['seen_latest_changelog'])) {
-      if($_SESSION['seen_latest_changelog']) {
-        echo json_encode(
-          array(
-            "success"=>true,
-            "msg"=>"User has already seen the latest changelog entries."
-          )
-        );
-        return;
-      }
-
+    if(isset($_SESSION['v1']) & isset($_SESSION['v2']) & isset($_SESSION['v3'])) {
       $sinceVersionParts = array(
         $_SESSION['v1'],
         $_SESSION['v2'],

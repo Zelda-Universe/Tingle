@@ -39,14 +39,11 @@
          }
 //         echo $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3'];
          if ($lastestVersion > $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3']) {
-            $user['seen_latest_changelog'] = false;
             $user['seen_version'] = '0.0.0';
-            $_SESSION['seen_latest_changelog'] = false;
             $_SESSION['v1'] = 0;
             $_SESSION['v2'] = 0;
             $_SESSION['v3'] = 0;
          } else {
-            $user['seen_latest_changelog'] = !!$_SESSION['seen_latest_changelog'];
             $user['seen_version'] = $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3'];
          }
          

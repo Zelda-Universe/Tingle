@@ -20,15 +20,17 @@ ChangelogHandler.prototype._initSettings = function() {
 };
 
 ChangelogHandler.prototype._fetchChangelogEntries = function(opts) {
-  if(opts.user) {
-    if(!opts.user.seen_latest_changelog)
-      this._fetchChangelogEntriesByUser(opts.user);
-  } else if(opts.seenChangelogVersion) {
-    if(opts.seenChangelogVersion != opts.version)
+   if (opts.user) {
+      if (opts.user.seen_version < opts.version) {
+         this._fetchChangelogEntriesByUser(opts.user);
+      }
+   } else if (opts.seenChangelogVersion && opts.seenChangelogVersion < opts.version) {  
       this._fetchChangelogEntriesByCookie(opts.seenChangelogVersion, opts.version);
-  } else setCookie(seenChangelogVersionCookieName, opts.version);
+   } else {
+      setCookie(seenChangelogVersionCookieName, opts.version);
+   }
 
-  if(this.fetchFunction) this.fetchFunction();
+   if(this.fetchFunction) this.fetchFunction();
 };
 
 ChangelogHandler.prototype._fetchChangelogEntriesByUser = function(user) {

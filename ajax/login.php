@@ -20,7 +20,6 @@
       `username`,
       `password`,
       `level`,
-      `seen_latest_changelog`,
       `seen_version_major` AS v1,
       `seen_version_minor` AS v2,
       `seen_version_patch` AS v3
@@ -43,7 +42,6 @@
          $user['id'] = $row['id'];
          $user['username'] = $row['username'];
          $user['level'] = $row['level'];
-         $user['seen_latest_changelog'] = !!$row['seen_latest_changelog'];
          $user['seen_version'] = $row['v1'] . '.' . $row['v2'] . '.' . $row['v3'];
 
          $hash = password_hash($username . $row['password'], PASSWORD_DEFAULT, ['cost' => 13]);
@@ -58,7 +56,6 @@
          $_SESSION['username'] = $user['username'];
          $_SESSION['user_id'] = $user['id'];
          $_SESSION['level'] = $user['level'];
-         $_SESSION['seen_latest_changelog'] = $user['seen_latest_changelog'];
          $_SESSION['v1'] = $row['v1'];
          $_SESSION['v2'] = $row['v2'];
          $_SESSION['v3'] = $row['v3'];

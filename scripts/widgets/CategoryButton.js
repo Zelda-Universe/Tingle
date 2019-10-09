@@ -86,7 +86,7 @@ CategoryButton.prototype.toggle = function(toggledOn) {
 
 
 CategoryButton.prototype.mouseEnter = function() {
-  this.labelNode.text(categories[this.category.id].complete+'/'+categories[this.category.id].total);
+  this.labelNode.html(categories[this.category.id].complete+'/'+categories[this.category.id].total + (this.labelNode[0].clientHeight == 24 ? "<BR><BR>" : ""));
  
 };
 

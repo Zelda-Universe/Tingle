@@ -1222,42 +1222,32 @@ ZMap.prototype.clearCompletedMarkers = function() {
 };
 
 ZMap.prototype.transferCompletedMarkersToDB = function() {
-   var tempCompletedMarkers = completedMarkers;
-   for (var i = 0; i < tempCompletedMarkers.length; i++) {
-      $.ajax({
-              type: "POST",
-              url: "ajax.php?command=add_complete_marker",
-              async: false,
-              data: {markerId: tempCompletedMarkers[i], userId: user.id},
-              success: function(data) {
-                  //data = jQuery.parseJSON(data);
-                  if (data.success) {
-                     completedMarkers = completedMarkers.filter(function(item) {
-                        return item !== tempCompletedMarkers[i];
-                     });
-                  } else {
-                     toastr.error(_this.langMsgs.MARKER_COMPLETE_TRANSFER_ERROR.format(data.msg));
-                     //alert(data.msg);
-                  }
-              }
-            });
-   }
-
-   // If there was any completed marker left on the cookie (for whatever reason), keep it on the cookie for next refresh
-   if (completedMarkers.length > 0) {
-      setCookie('completedMarkers', JSON.stringify(completedMarkers));
-      toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS);
-   // Else, just delete the cookie all together
-   } else {
-      document.cookie = 'completedMarkers=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-      toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);
-   }
-
-   // Finally, reload completed markers from database (sanity check)
-   _this.getUserCompletedMarkers();
+   // Speeding up transfer of completed markers from singles to bulk
+   $.ajax({
+           type: "POST",
+           url: "ajax.php?command=add_bulk_complete_marker",
+           async: false,
+           data: {markerList: JSON.stringify(completedMarkers), userId: user.id},
+           success: function(data) {
+                        if (data.success) {
+                           completedMarkers = [];
+                           document.cookie = 'completedMarkers=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+                           _this.getUserCompletedMarkers();
+                           toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);                           
+                        } else {
+                           toastr.error(_this.langMsgs.MARKER_COMPLETE_TRANSFER_ERROR.format(data.msg));
+                           //alert(data.msg);
+                        }
+                    }
+         });
 };
 
-ZMap.prototype.getUserCompletedMarkers = function(vMarker, vComplete) {
+ZMap.prototype.getUserCompletedMarkers = function() {
+   // clean the categories complete count
+   categories.forEach(function(category) {
+      categories[category.id].complete = 0;
+   }, this);
+
    //@TODO: Use gameID from zmap, not zmain
    $.getJSON("ajax.php?command=get_user_completed_markers&game=" + gameId + "&userId=" + user.id, function(vResults) {
       $.each(vResults, function(i,marker){

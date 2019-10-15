@@ -925,7 +925,7 @@ a.icon-close2 {
 #desktopAds {
 	position: absolute;
 	z-index: 500;
-	bottom: 16px;
+	bottom: 10px;
 	height: 90px;
 	left: 50%;
 	transform: translateX(-50%);
@@ -940,6 +940,31 @@ a.icon-close2 {
   #desktopAds { width: 234px; height: 60px; }
 }
 
+@media (min-width: 3840px) {
+   .infeed {
+      height: 90px;
+      width: 720px;
+   }
+}
+@media (min-width: 728px) {
+   .infeed {
+      height: 90px;
+      width: 720px;
+   }
+}
+@media (min-width: 468px) {
+   .infeed {
+      height: 130px;
+      width: 468px;
+   }
+}
+@media (min-width: 234px) {
+   .infeed {
+      height: 60px;
+      width: 234px;
+   }
+}
+
 /*** General Drawer Stuff ***/
 
 .row.vertical-divider {
@@ -950,15 +975,18 @@ a.icon-close2 {
 	text-align: center;
 	height: 40px;
 	padding: 0 0 0 5px;
-	width: 85%;
 	background-clip: padding-box;
 	-webkit-background-clip: padding-box;
 }
 
 .row.vertical-divider div[class^="col-"]:first-child {
 	border-left: none;
-	width: 15%;
 	border-right: 1px solid rgba(255, 255, 255, .2);
+}
+
+.row.vertical-divider div[class^="col-"]:last-child {
+	border-right: none;
+	border-left: 1px solid rgba(255, 255, 255, .2);
 }
 
 /* Drawer Header Stuff */
@@ -1284,3 +1312,40 @@ header.ex1 {
    margin-left: 5px;
    margin-right: 5px;
 }
+
+
+#help>#accordion {
+   margin-left: 15px;
+   margin-right: 15px;
+}
+
+#help a {
+    color: #ffffff !important;
+}
+
+#help a:hover, #help a:visited, #help a:link, #help a:active {
+    text-decoration: none;
+}
+
+
+#help .panel-heading {
+   background: rgba(255,255,255,.2);
+}
+    
+#help .panel-body {
+    background: rgba(255,255,255,.4);
+}
+
+#help .panel-default {
+   background: rgba(0,0,0,1);
+   border-color: #000;
+}
+
+#help .panel-default>.panel-heading+.panel-collapse>.panel-body {
+    border-top-color: #000;
+}
+
+.leaflet-disabled {
+    background-color: rgba(50,50,50,.8) !important;
+}
+

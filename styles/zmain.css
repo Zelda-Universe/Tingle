@@ -943,25 +943,21 @@ a.icon-close2 {
 @media (min-width: 3840px) {
    .infeed {
       height: 90px;
-      width: 720px;
    }
 }
 @media (min-width: 728px) {
    .infeed {
       height: 90px;
-      width: 720px;
    }
 }
 @media (min-width: 468px) {
    .infeed {
-      height: 130px;
-      width: 468px;
+      height: 60px;
    }
 }
 @media (min-width: 234px) {
    .infeed {
       height: 60px;
-      width: 234px;
    }
 }
 

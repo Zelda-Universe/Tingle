@@ -80,30 +80,51 @@
 
    </head>
    <body>
+   <body>
       <div id="map">
-	      <div id="mobileAds" class="hidden">
+	      <div id="mobileAds" align="center">
 	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    			<!-- Zelda Maps -->
-    			<ins class="adsbygoogle"
-    			     style="display:block"
-    			     data-ad-client="ca-pub-7269573247649351"
-    			     data-ad-slot="4512666333"
-    			     data-ad-format="auto"></ins>
-    			<script>
-    			   (adsbygoogle = window.adsbygoogle || []).push({});
-    			</script>
+			<!-- Zelda Maps -->
+			<ins class="adsbygoogle"
+			     style="display:block"
+			     data-ad-client="ca-pub-7269573247649351"
+			     data-ad-slot="4512666333"
+			     data-ad-format="auto"></ins>
+			<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
 	      </div>
-	      <div id="desktopAds" class="hidden">
-  	      <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    			<!-- Zelda Maps -->
-    			<ins class="adsbygoogle"
-    			     style="display:block"
-    			     data-ad-client="ca-pub-7269573247649351"
-    			     data-ad-slot="4512666333"
-    			     data-ad-format="auto"></ins>
-    			<script>
-    			   (adsbygoogle = window.adsbygoogle || []).push({});
-    			</script>
+	      <div id="desktopAds" align="center">
+	        <script>
+	            var width = $(document).width();
+	            var adsWidth = 0;
+	            var adsHeight = 0;
+	            if (width > 728) {
+	               adsWidth = 728;
+	               adsHeight = 90;
+	            } else if (width > 468) {
+	               adsWidth = 468;
+	               adsHeight = 60;
+	            } else {
+	               adsWidth = 234;
+	               adsHeight = 60;
+	            }
+	
+	            document.getElementById('desktopAds').style.width = adsWidth + 'px';
+	            document.getElementById('desktopAds').style.height = adsHeight + 'px';
+	        </script>
+	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+			<!-- Zelda Maps -->
+			<ins class="adsbygoogle infeed"
+			     style="display:block;"
+              data-ad-format="fluid"
+              data-ad-layout="image-top"
+			     data-ad-client="ca-pub-7269573247649351"
+			     data-ad-slot="4512666333"
+			     data-ad-format="horizontal"></ins>
+			<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
 	      </div>
       </div>
 
@@ -113,10 +134,8 @@
        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
        ga('create', 'UA-317947-14', 'auto');
        ga('send', 'pageview');
-
       </script>
 
       <!-- comScore -->

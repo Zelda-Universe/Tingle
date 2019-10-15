@@ -940,6 +940,12 @@ a.icon-close2 {
   #desktopAds { width: 234px; height: 60px; }
 }
 
+@media (min-width: 3840px) {
+   .infeed {
+      height: 90px;
+      width: 720px;
+   }
+}
 @media (min-width: 728px) {
    .infeed {
       height: 90px;

@@ -26,3 +26,4 @@ phpinfo.php
 dev/db/schema.rb
 *.sublime-workspace
 .DS_Store
+ 

@@ -25,4 +25,4 @@ phpinfo.php
 # Part of the database migration framework we're using that could be useful, just not right now.
 dev/db/schema.rb
 *.sublime-workspace
-.DS_Store
+.DS_Store 

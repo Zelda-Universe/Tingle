@@ -43,6 +43,6 @@
 
     $out = json_encode($data,$flags);
 
-    header("Content-Type: application/json");
+    header("Content-Type: ".(isset($_GET['forcedMode'])?$_GET['forcedMode']:"application/json"));
     header("Content-Length: ".strlen($out));
     echo $out;

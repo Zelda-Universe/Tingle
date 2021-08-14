@@ -1,28 +1,31 @@
 # User-specific runtime files
-# Environment Files
-.env
-ZM_nginx.conf
-dev/db/config.yml
+## Environment Files
+/.env
+/dev/server/nginx/site.conf
+/dev/db/config.yml
 
 # Cached Files / Runtime-updated Files
-cache/*
-!cache/index.html
+/cache/*
+!/cache/index.html
 
-css.ini
-javascript.ini
+/css.ini
+/javascript.ini
+
+## OS Files
+.DS_Store
+Thumbs.db
 
 # Downloaded dependencies
 node_modules
-tiles
-vendor
+/tiles
+/vendor
 
 # Debug Files
-php_errors.log
-phpinfo.php
+/php_errors.log
+/phpinfo.php
 
-# Erroneous Files
-
-# Part of the database migration framework we're using that could be useful, just not right now.
-dev/db/schema.rb
+# Extra Files
+## Part of the database migration framework we're using that could be useful, just not right now.
+/dev/db/schema.rb
+/dev/db/samples/tingle-*
 *.sublime-workspace
-.DS_Store

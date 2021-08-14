@@ -20,13 +20,25 @@
 
 # Releases
 
-  Done by Jason, from `master` to `production`, at the end of every 2-week sprint.
+  Done by Jason, from `master` to `production`.
 
-  The release manager will manually set all user accounts `seen_latest_changelog` to `0` (`false`).
+  The release manager must manually set all user accounts `seen_latest_changelog` to `0` (`false`).
     Don't want a fresh commit to do this before every release; that would be cruft.
     Do this after you deploy the code, to prevent the edge case of a user visiting the site in the small window of time with the old and/or database without the new changelog entries, and would incorrectly set the `seen_latest_changelog`, and even the `last_login` field as well, so once the new data is present, it would not be triggered and shown to them.
     Can use this script: `dev/db/resetUsersChangelogSeenPresence.sh`
-      Make sure to set the MySQL parameters appropriately.  See the script header for more deatils.
+      Make sure to set the MySQL parameters appropriately.  See the script header for more details.
+
+## Version Info
+
+  The project uses the file `dev\info\versionsInfo.json` to, at least once in an early migration file when the changelog table was first introduced, appropriately mark users the release level that users had seen / were already comfortable with / knowledgeable about as inferred by their last login time.
+  It's also useful for satisfying curiosity quickly using CLI commands, and is in a machine-parseable format ready for any other sort of task, so I try to make it the authority of this task.
+  
+  In order to add new versions to it, I find the latest commit related to that day. I start from `HEAD` following parent commits until I find the day or so after it was released, then I browse forward until the end of any potential 0-day bugfixes and run this command `git log -1 --format='%at' (getclip) | putclip` when I have the commit SHA hash copied to my system clipboard.
+  The human-readable output version of this command is this: `git log -1 --format='%aD' (getclip)`.
+  
+  I used this command to reverse the timestamps: `date -d @(getclip) | head -c -1 | putclip`.
+  
+  You can see if a version already exists by using this command `git show-ref refs/tags/<version_name>` and seeing if you have a line output with a hash or not.
 
 # Backup
 
@@ -42,7 +54,7 @@
     - We may introduce style checking later, and if so, it will only apply to modified/created code as you work in it.
   - Comment your code so other team members can understand it.
     - We want to communicate why code is there, since the 'what' is already represented by the code statements themselves, and those are straightforward for the most part, or should try to be.
-  - When you're done, add a changelog entry for it.
+  - When you're done, add a changelog entry for it, or probably just wait for it from the release team since they will make one anyway.  The ones development makes are in the commit messages at least.
     - Add a migration to add this new changelog entry into the db, details in its own section below.
     - Use the next release number as given to the development team or self-determined for smaller or self-initiated features.
     - If you need to use a single escape, escape it as such in the Ruby- (and to some extent, Rails-) based migration file: `\\\'`.
@@ -168,24 +180,22 @@
 
 ## Update Sample Database Data
 
-  We will store somewhat of the mined, active, production data snapshot in the `dev/db/zeldamaps.sql` file so developers and others can start using the project faster, and at all.
+  We will store somewhat of the mined, active, production data snapshot in the `dev/db/tingle.sql` file so developers and others can start using the project faster, and at all.
 
   We have a separate method below about migrations for modifying data, including production's, to include new fixes and feature data.
 
-  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/db/exportDatabaseForDev.sh`.  Then you can review any changes/updates to commit in place of that file.
-  Now that this has become a decent system, here are the available configuration environmental flags you can utilize:
-    - `QUIET` (Default: `false`)
-    - `VERBOSE` (Default: `false`)
-    - `BRIEF_MESSAGES` (Default: `false`)
-    - `PAUSE` (Default: `false`)
-    - `DRY_RUN` (Default: `false`)
-    - `FAIL_FAST` (Default: `true`)
-    - `CLEAN_ON_FAILURE` (Default: `true`)
-    - `DB_NAME` (Default: `zeldamaps`)
-    - `MYSQL_OTHER_CONNECTION_OPTIONS` (Default: `""`)
-    - `MYSQL_CONNECTION_STRING` (Default: `$MYSQL_OTHER_CONNECTION_OPTIONS -u'$MYSQL_USER' -p'$MYSQL_PASS'`)
-    - `MYSQL_USER`
-    - `MYSQL_PASS`
+  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/db/createSampleDatabaseExport.sh`.  Then you can review any changes/updates to commit in place of that file.
+  - Use of the MySQL login path system is recommended, for any project-related database work, especially when contacting different servers.
+  - If a connection requires an SSH tunnel, the login path can bet set to a localhost with matching ports, and a command like this can be used:
+    - `ssh -nNTL <local_port_or_socket>:/var/run/mysqld/mysqld.sock <username>@zm-p-db`
+      - https://www.howtogeek.com/howto/ubuntu/access-your-mysql-server-remotely-over-ssh/
+  - Production: `env MYSQL_USER="<username>" MYSQL_CONNECTION_STRING="--login-path=tingle-prod-db '-p(read -s)"'" CONVERGE_SQL="true" ./dev/db/createSampleDatabaseExport.sh`.
+  - Development: `env DB_NAME="tingle" MYSQL_USER="root" CONVERGE_SQL="true" ./dev/db/createSampleDatabaseExport.sh`.
+    - Then enter the password for the script prompt, or else you will have to do so for every MySQL(Dump) prompt step thereafter.
+    - Not using the manage role made for database migrations since it doesn't have the `PROCESS` privilege and I think this type of action should be kept separate since it relates to the entire database.
+  - Refreshing the data may involve these statements:
+    - ``echo 'DROP DATABASE `zeldamaps`' | mysql --login-path=local``
+    - `mysql --login-path=local < "dev/db/zeldamaps.sql";`
 
   This will export the structure, but not the content for the 'user' tables, as this may contain more sensitive information we do not want to store in the code repository.  Instead, we capture the useful ids with associated information, then sanitize and generate test data for the other fields.
 
@@ -204,10 +214,6 @@
   - Keep as few redundant statements in there are possible.
     - A good rule for anything that doesn't require or encourage data redundancy.
     - We want accurate data.
-  - Use of the MySQL login path system was useful, and may be recommended for any project-related database work, especially when contacting different servers.
-  - Refreshing the data may involve these statements:
-    - ``echo 'DROP DATABASE `zeldamaps`' | mysql --login-path=local``
-    - `mysql --login-path=local < "dev/db/zeldamaps.sql";`
 
 ## Migrations
 
@@ -219,6 +225,7 @@
   Now that only accomplishes half of the responsibility.  In order to operate on that actual database content data, we don't have ActiveRecord objects to use as an API, so we just implement raw SQL for these, and make sure that both of the `up` and `down` methods are made as appropriate as possible, if both methods possible for that certain situation.
 
   It seems we must only pass a single SQL statement per block to avoid a security risk, otherwise it keeps receiving a syntax error only when sent through the migration framework.. https://stackoverflow.com/questions/14856856/how-to-write-sql-in-a-migration-in-rails#comment86794302_42991237
+  `Mysql2::Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UPDATE....'`
 
   Important Note:
     Do not edit a migration that has been pushed (to others).
@@ -237,10 +244,15 @@
       `rake db:migrate:up VERSION=20081220234130`
     To revert your last migration
       `rake db:rollback`
-    To revert your last 3 migrations
+    To revert your last 3 , and migrations
       `rake db:rollback STEP=3`
     Check which version of the tool you are currently using
       `rake db:version`
+      
+    If you want to make a timestamp yourself, you can use this command:
+    `date -u "+%Y%m%d%H%M%S" | putclip`
+    This tool does also help with naming and the content for the class at least, and I create new files with this customized command:
+    `rake db:new_migration name=(read | tr ' ' '_')`
 
   More Info:
     http://edgeguides.rubyonrails.org/active_record_migrations.html

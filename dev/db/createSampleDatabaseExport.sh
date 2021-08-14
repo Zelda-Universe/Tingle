@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+# Users the `mysqldump` command with provided SQL statements and shell commands
+# to create a customized backup and sample database data file to use to operate
+# the project.
+
 ## Function Library
 {
   statusPrint() {
-    [[ "$QUIET" != "true" ]] && echo -en $*;
+    [[ "$QUIET" != "true" ]] && echo -en $* 1>&2;
   }
 
   pauseWhenEnabled() {
@@ -19,13 +23,13 @@
     fi
 
     if [[ "$VERBOSE" == "true" ]]; then
-      statusPrint "\n${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$commandString${NC}";
+      statusPrint "\n${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$commandString${NC}\n";
     fi
 
     issueCommand "$commandString";
 
     if [[ -n "$description" ]]; then
-      statusPrint "${BLUE} >${NC} $(echo -n "$description" | $messageRedirectionString)";
+      statusPrint "${BLUE} >${NC} $(echo -n "$description" | $messageRedirectionString)\n";
       [[ "$BRIEF_MESSAGES" == "true" && "${#description}" -gt "$availableMessageCharacters" ]] && statusPrint "...";
     fi
 
@@ -37,7 +41,7 @@
 
     if [[ "$DRY_RUN" == "false" ]]; then
       if eval "$commandString"; then
-        statusPrint "\n[${GREEN}Success${NC}] ";
+        statusPrint "[${GREEN}Success${NC}] ";
       else
         lastCommandStatus="$?";
 
@@ -52,7 +56,7 @@
         fi
       fi
     else
-      statusPrint "\n[${DARK_GREY}Not Run${NC}] ";
+      statusPrint "[${DARK_GREY}Not Run${NC}] ";
     fi
   }
 
@@ -84,25 +88,45 @@
   NC='\033[0m'; # No Color
 
   SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+  SAMPLES_DIR="$SDIR/samples";
 }
 
 ## Main Environment Configuration
 {
-  [[ -z "$QUIET" ]] && QUIET="false";
-  [[ -z "$VERBOSE" ]] && VERBOSE="false";
-  [[ -z "$BRIEF_MESSAGES" ]] && BRIEF_MESSAGES="false";
-  [[ -z "$PAUSE" ]] && PAUSE="false";
-  [[ -z "$DRY_RUN" ]] && DRY_RUN="false";
-  [[ -z "$FAIL_FAST" ]] && FAIL_FAST="true";
+  [[ -z "$QUIET" ]] &&                       QUIET="false";
+  [[ -z "$VERBOSE" ]] &&                   VERBOSE="false";
+  [[ -z "$BRIEF_MESSAGES" ]]     && BRIEF_MESSAGES="false";
+  [[ -z "$PAUSE" ]] &&                       PAUSE="false";
+  [[ -z "$DRY_RUN" ]] &&                   DRY_RUN="false";
+  [[ -z "$FAIL_FAST" ]] &&               FAIL_FAST="true";
   [[ -z "$CLEAN_ON_FAILURE" ]] && CLEAN_ON_FAILURE="true";
+  [[ -z "$CONVERGE_SQL" ]] &&         CONVERGE_SQL="false";
+  
+  [[ -z "$DB_NAME" ]] &&                   DB_NAME="zeldamaps";
 
-  [[ -z "$DB_NAME" ]] && DB_NAME="zeldamaps";
+  # Loops as requirement.
+  while [[ -z "$MYSQL_USER" ]]; do
+    read -p "Database Username: " MYSQL_USER;
+  done
+  # Only asks once as optional if no other connection information is provided first.
+  if [[ -z "$MYSQL_PASS" ]]; then
+    if [[ -z "$MYSQL_CONNECTION_STRING" ]]; then
+      # echo "$MYSQL_CONNECTION_STRING" | grep -vq " -p" && \
+      # echo "$MYSQL_CONNECTION_STRING" | grep -vq " --password"; then
+      read -s -p "Database Password: " MYSQL_PASS;
+      echo;
+    fi
+  # else
+    #MYSQL_PASS="$(echo "$MYSQL_PASS" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
+  fi
+    
   [[ -z "$MYSQL_OTHER_CONNECTION_OPTIONS" ]] && MYSQL_OTHER_CONNECTION_OPTIONS="";
   [[ -z "$MYSQL_CONNECTION_STRING" ]] && MYSQL_CONNECTION_STRING="$MYSQL_OTHER_CONNECTION_OPTIONS -u'$MYSQL_USER' -p'$MYSQL_PASS'";
 }
 
 ## Derived Configuration & Internal Variables
 {
+  mysqlDumpOtherOptions="--column-statistics=0";
   # `marker_tab` looked like user data that could be skipped, but apparently not, as no markers appeared using the current query 'monster' :X
   noAITables="user user_completed_marker";
   ignoreTablesOptions='';
@@ -123,22 +147,26 @@
     messageRedirectionString="cat";
   fi
   # Additional SQL query function files to use but not modify.
-  generateDevUsersQueryFilePath="$SDIR/exportDatabaseForDev-generateDevUsers.sql";
-  sqlizeSedFilePath="$SDIR/exportDatabaseForDev-sqlize.sed";
+  generateDevUsersQueryFilePath="$SDIR/createSampleDatabaseExport-generateDevUsers.sql";
+  sqlizeSedFilePath="$SDIR/createSampleDatabaseExport-sqlize.sed";
+  convergeSedFilePath="$SDIR/createSampleDatabaseExport-converge.sed"
 
   # Intermediate, temporary, working files to be deleted at the end of the process.
-  keepAIFilePath="$SDIR/zeldamaps-structure_with-AI.sql";
-  toRemoveAIFilePath="$SDIR/zeldamaps-structure_to-remove-AI.sql";
-  aiRemovedFilePath="$SDIR/zeldamaps-structure_AI-removed.sql";
-  dataFilePath="$SDIR/zeldamaps-data.sql";
-  sanitizedPartialUserDataFilePath="$SDIR/zeldamaps-sanitizedPartialUserData.txt";
-  generatedDevUserDataFilePath="$SDIR/zeldamaps-devUserData.sql";
+  keepAIFilePath="$SAMPLES_DIR/01-structure_with-AI.sql";
+  toRemoveAIFilePath="$SAMPLES_DIR/02-structure_to-remove-AI.sql";
+  aiRemovedFilePath="$SAMPLES_DIR/03-structure_AI-removed.sql";
+  dataFilePath="$SAMPLES_DIR/04-data.sql";
+  sanitizedPartialUserDataFilePath="$SAMPLES_DIR/05-sanitizedPartialUserData.txt";
+  generatedDevUserDataFilePath="$SAMPLES_DIR/06-devUserData.sql";
 
   allIntermediateFilePaths="'$keepAIFilePath' '$toRemoveAIFilePath' '$aiRemovedFilePath' '$dataFilePath' '$sanitizedPartialUserDataFilePath' '$generatedDevUserDataFilePath'";
+  
+  [[ "$CONVERGE_SQL" == "true" ]] && convergeSuffix="-converged";
 
   # Resultant, generated file to keep at the end of the process.
   # completeFilePath="$SDIR/zeldamaps-complete.sql";
-  completeFilePath="$SDIR/zeldamaps.sql"; # Since the it is already version-tracked, we can just overwrite the main file now.
+  completeFilePath="$SAMPLES_DIR/tingle.sql"; # Since the it is already version-tracked, we can just overwrite the main file now.
+  completeConvergedFilePath="$SAMPLES_DIR/tingle$convergeSuffix.sql";
 }
 
 ## Main Program Flow
@@ -147,17 +175,17 @@
 
   issueStep \
     "Exporting majority of the database structure, keeping the auto increment values to match the data later on." \
-    "mysqldump $MYSQL_CONNECTION_STRING $mysqlVerboseString $structureOptions $ignoreTablesOptions --add-drop-database --databases $DB_NAME > '$keepAIFilePath' $errorRedirectionString" \
+    "mysqldump $MYSQL_CONNECTION_STRING $mysqlDumpOtherOptions $mysqlVerboseString $structureOptions $ignoreTablesOptions --add-drop-database --databases $DB_NAME > '$keepAIFilePath' $errorRedirectionString" \
   ;
 
   issueStep \
     "Exporting the rest of the database structure, with no way to immediately remove the auto increment values to match not having data later on." \
-    "mysqldump $MYSQL_CONNECTION_STRING $mysqlVerboseString $structureOptions $DB_NAME $noAITables > '$toRemoveAIFilePath' $errorRedirectionString" \
+    "mysqldump $MYSQL_CONNECTION_STRING $mysqlDumpOtherOptions $mysqlVerboseString $structureOptions $DB_NAME $noAITables > '$toRemoveAIFilePath' $errorRedirectionString" \
   ;
 
   issueStep \
     "Exporting majority of the database data, ignoring certain tables with more sensitive user or otherwise less useful data for development." \
-    "mysqldump $MYSQL_CONNECTION_STRING $mysqlVerboseString $dataOptions $ignoreTablesOptions $DB_NAME > '$dataFilePath' $errorRedirectionString" \
+    "mysqldump $MYSQL_CONNECTION_STRING $mysqlDumpOtherOptions $mysqlVerboseString $dataOptions $ignoreTablesOptions $DB_NAME > '$dataFilePath' $errorRedirectionString" \
   ;
 
 
@@ -211,5 +239,21 @@
     "Combining intermediate SQL files into a single convenient script for later import and version control." \
     "cat '$keepAIFilePath' '$aiRemovedFilePath' '$dataFilePath' '$generatedDevUserDataFilePath' > '$completeFilePath'" \
   ; # "cat '$keepAIFilePath' '$aiRemovedFilePath' '$dataFilePath' > '$completeFilePath'" \
+  
+  issueStep \
+    "Converting result to Unix-style LF-only line endings." \
+    "dos2unix '$completeFilePath'" \
+  ;
+  
   clean;
+  
+  if [[ "$CONVERGE_SQL" == "true" ]]; then
+    issueStep \
+      "Converging database SQL formats by eliminating less important details." \
+      "sed -r -f '$convergeSedFilePath' '$completeFilePath' > '$completeConvergedFilePath'" \
+    ;
+    
+    echo;
+    echo "Important Note: The 'CONVERGE_SQL' option is enabled.  Do NOT store these exported SQL files permanently in source control OR import them into any database.  They are for comparing important differences more easily and quickly by removing any less important differences that may be defaults or other details.  The data differences are ONLY to be manually and carefully reviewed and ported through migrations using the more exact, unique, and explicit details to converge the databases more properly.";
+  fi
 }

@@ -1,5 +1,6 @@
 <?php
   require __DIR__ . '/vendor/autoload.php';
+  $path = DIRNAME(__FILE__).'/';
 
   date_default_timezone_set("UTC");
 
@@ -28,9 +29,6 @@
 		$map_prefix = "";
    }
 
-   $minifyResources = true;
-   $path = DIRNAME(__FILE__);
-
 	define("MAPROOT",$path);
     // We want production to run smoothly,
     // and still requires a mail server as checked below.
@@ -44,7 +42,8 @@
         $dbuser = $ENV["DBUSER"];
         $dbpasswd = $ENV["DBPASSWD"];
         $map_prefix = $ENV["PREFIX"];
-        $minifyResources = $ENV["minifyResources"];
+        $minify = strtolower($ENV["minify"]) == true;
+        $enableTests = strtolower($ENV["enableTests"]) == true;
         $lostPasswordRandomGeneratorStrengthString = $ENV["LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH"];
         if(array_search($lostPasswordRandomGeneratorStrengthString, $lostPasswordRandomGeneratorStrengthStrings) === false) {
           error_log("Miconfigured \"LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH\" setting; using the value \"MEDIUM\" by default.");
@@ -62,7 +61,7 @@
         $mailReplyToName = $ENV['replyToName'];
 
         $lostPasswordSubject = $ENV["lostPasswordSubject"];
-        if(isset($ENV["lostPasswordBodyTemplateFilePath"])) $lostPasswordBodyTemplateFilePath = $ENV["lostPasswordBodyTemplateFilePath"];
+        if(isset($ENV["lostPasswordBodyTemplateFilePath"])) $lostPasswordBodyTemplateFilePath = $path.$ENV["lostPasswordBodyTemplateFilePath"];
         if(isset($lostPasswordBodyTemplateFilePath) && !empty($lostPasswordBodyTemplateFilePath)) {
           $lostPasswordBodyTemplate = file_get_contents($lostPasswordBodyTemplateFilePath);
         }

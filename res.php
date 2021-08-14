@@ -1,6 +1,11 @@
 <?php
     $path = DIRNAME(__FILE__);
 
+    if(!isset($_GET["type"])) {
+      print("A type must be provided! javascript or css.");
+      exit;
+    }
+
     include_once("$path/config.php");
 
     $type = strtolower($_GET['type']);
@@ -16,8 +21,6 @@
     if($type=="javascript") {
         $ext = ".js";
     }
-
-    $skipminify = isset($_GET['skipminify']) || !$minifyResources;
 
     if(!file_exists("$path/cache")) mkdir("$path/cache");
 
@@ -39,23 +42,26 @@
         $update=true;
     }
     if($update) {
+        // print('DEBUG: Updating cached file...<br>');
         include "$path/lib/minify.php";
         $output = "/* cache/index$ext */\n";
         foreach($data as $file=>$time) {
+          // print('DEBUG: Processing file entry'.$file.'...<br>');
             $fpath = $file;
-            if(stripos($file,"//")===false) {
-                $fpath = "$path/$file";
-                if(!file_exists($fpath)) {
-                    $output.="/* $file doesn't exist */\n";
-                    continue;
-                }
-            } 
+            if(stripos($file,"//")===true) continue;
+            $fpath = "$path/$file";
+            if(!file_exists($fpath)) {
+                $output.="/* $file doesn't exist */\n";
+                continue;
+            }
             $output.="/* Source: $file */\n";
             $filedata = file_get_contents($fpath);
-            if(!$skipminify && $minify) {
+            if($minify) {
               if($type=="javascript") {
+                // print('DEBUG: Minifying javascript...<br>');
                   $filedata = minify_js($filedata);
               } else {
+                // print('DEBUG: Minifying css...<br>');
                   $filedata = minify_css($filedata);
               }
             }

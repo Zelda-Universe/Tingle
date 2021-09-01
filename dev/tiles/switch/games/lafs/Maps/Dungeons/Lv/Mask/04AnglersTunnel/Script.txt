@@ -1,0 +1,34 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"Lv04AnglersTunnel_02D_Mask.png" -geometry +494+136 -composite
+"Lv04AnglersTunnel_02E_Mask.png" -geometry +654+136 -composite
+"Lv04AnglersTunnel_03B_Mask.png" -geometry +174+264 -composite
+"Lv04AnglersTunnel_03D_Mask.png" -geometry +494+264 -composite
+"Lv04AnglersTunnel_03E_Mask.png" -geometry +654+264 -composite
+"Lv04AnglersTunnel_03F_Mask.png" -geometry +814+264 -composite
+"Lv04AnglersTunnel_03G_Mask.png" -geometry +974+264 -composite
+"Lv04AnglersTunnel_04B_Mask.png" -geometry +174+392 -composite
+"Lv04AnglersTunnel_04C_Mask.png" -geometry +334+392 -composite
+"Lv04AnglersTunnel_04D_Mask.png" -geometry +494+392 -composite
+"Lv04AnglersTunnel_04E_Mask.png" -geometry +654+392 -composite
+"Lv04AnglersTunnel_04F_Mask.png" -geometry +814+392 -composite
+"Lv04AnglersTunnel_04G_Mask.png" -geometry +974+392 -composite
+"Lv04AnglersTunnel_05B_Mask.png" -geometry +174+520 -composite
+"Lv04AnglersTunnel_05C_Mask.png" -geometry +334+520 -composite
+"Lv04AnglersTunnel_05D_Mask.png" -geometry +494+520 -composite
+"Lv04AnglersTunnel_05E_Mask.png" -geometry +654+520 -composite
+"Lv04AnglersTunnel_05F_Mask.png" -geometry +814+520 -composite
+"Lv04AnglersTunnel_05G_Mask.png" -geometry +974+520 -composite
+"Lv04AnglersTunnel_06C_Mask.png" -geometry +334+648 -composite
+"Lv04AnglersTunnel_06D_Mask.png" -geometry +494+648 -composite
+"Lv04AnglersTunnel_06E_Mask.png" -geometry +654+648 -composite
+"Lv04AnglersTunnel_06F_Mask.png" -geometry +814+648 -composite
+"Lv04AnglersTunnel_07C_Mask.png" -geometry +334+776 -composite
+"Lv04AnglersTunnel_07D_Mask.png" -geometry +494+776 -composite
+"Lv04AnglersTunnel_07E_Mask.png" -geometry +654+776 -composite
+"Lv04AnglersTunnel_07F_Mask.png" -geometry +814+776 -composite
+"Lv04AnglersTunnel_08D_Mask.png" -geometry +494+904 -composite
+"Lv04AnglersTunnel_08E_Mask.png" -geometry +654+904 -composite

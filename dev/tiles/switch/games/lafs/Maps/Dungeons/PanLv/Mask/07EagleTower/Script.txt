@@ -1,0 +1,21 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"PanelLv07EagleTower_01B_Mask.png" -geometry +174+8 -composite
+"PanelLv07EagleTower_01C_Mask.png" -geometry +334+8 -composite
+"PanelLv07EagleTower_01E_Mask.png" -geometry +654+8 -composite
+"PanelLv07EagleTower_02A_Mask.png" -geometry +14+136 -composite
+"PanelLv07EagleTower_02D_Mask.png" -geometry +494+136 -composite
+"PanelLv07EagleTower_03A_Mask.png" -geometry +14+264 -composite
+"PanelLv07EagleTower_03G_Mask.png" -geometry +974+264 -composite
+"PanelLv07EagleTower_04A_Mask.png" -geometry +14+392 -composite
+"PanelLv07EagleTower_04C_Mask.png" -geometry +334+392 -composite
+"PanelLv07EagleTower_05F_Mask.png" -geometry +814+520 -composite
+"PanelLv07EagleTower_05G_Mask.png" -geometry +974+520 -composite
+"PanelLv07EagleTower_06H_Mask.png" -geometry +1134+648 -composite
+"PanelLv07EagleTower_07G_Mask.png" -geometry +974+776 -composite
+"PanelLv07EagleTower_07H_Mask.png" -geometry +1134+776 -composite
+"PanelLv07EagleTower_08B_Mask.png" -geometry +174+904 -composite
+"PanelLv07EagleTower_08G_Mask.png" -geometry +974+904 -composite

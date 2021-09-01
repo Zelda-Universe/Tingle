@@ -1,0 +1,28 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"PanelLv10ClothesDungeon_04B.png" -geometry +174+392 -composite
+"PanelLv10ClothesDungeon_04C.png" -geometry +334+392 -composite
+"PanelLv10ClothesDungeon_04D.png" -geometry +494+392 -composite
+"PanelLv10ClothesDungeon_04F.png" -geometry +814+392 -composite
+"PanelLv10ClothesDungeon_04G.png" -geometry +974+392 -composite
+"PanelLv10ClothesDungeon_05B.png" -geometry +174+520 -composite
+"PanelLv10ClothesDungeon_05C.png" -geometry +334+520 -composite
+"PanelLv10ClothesDungeon_05D.png" -geometry +494+520 -composite
+"PanelLv10ClothesDungeon_05E.png" -geometry +654+520 -composite
+"PanelLv10ClothesDungeon_05F.png" -geometry +814+520 -composite
+"PanelLv10ClothesDungeon_05G.png" -geometry +974+520 -composite
+"PanelLv10ClothesDungeon_06C.png" -geometry +334+648 -composite
+"PanelLv10ClothesDungeon_06D.png" -geometry +494+648 -composite
+"PanelLv10ClothesDungeon_06E.png" -geometry +654+648 -composite
+"PanelLv10ClothesDungeon_06F.png" -geometry +814+648 -composite
+"PanelLv10ClothesDungeon_07C.png" -geometry +334+776 -composite
+"PanelLv10ClothesDungeon_07D.png" -geometry +494+776 -composite
+"PanelLv10ClothesDungeon_07E.png" -geometry +654+776 -composite
+"PanelLv10ClothesDungeon_07F.png" -geometry +814+776 -composite
+"PanelLv10ClothesDungeon_08C.png" -geometry +334+904 -composite
+"PanelLv10ClothesDungeon_08D.png" -geometry +494+904 -composite
+"PanelLv10ClothesDungeon_08E.png" -geometry +654+904 -composite
+"PanelLv10ClothesDungeon_08F.png" -geometry +814+904 -composite

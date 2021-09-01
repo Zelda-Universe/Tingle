@@ -1,0 +1,53 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"Lv08TurtleRock_01D_Mask.png" -geometry +494+8 -composite
+"Lv08TurtleRock_01E_Mask.png" -geometry +654+8 -composite
+"Lv08TurtleRock_02A_Mask.png" -geometry +14+136 -composite
+"Lv08TurtleRock_02D_Mask.png" -geometry +494+136 -composite
+"Lv08TurtleRock_02E_Mask.png" -geometry +654+136 -composite
+"Lv08TurtleRock_02H_Mask.png" -geometry +1134+136 -composite
+"Lv08TurtleRock_03A_Mask.png" -geometry +14+264 -composite
+"Lv08TurtleRock_03B_Mask.png" -geometry +174+264 -composite
+"Lv08TurtleRock_03C_Mask.png" -geometry +334+264 -composite
+"Lv08TurtleRock_03D_Mask.png" -geometry +494+264 -composite
+"Lv08TurtleRock_03E_Mask.png" -geometry +654+264 -composite
+"Lv08TurtleRock_03F_Mask.png" -geometry +814+264 -composite
+"Lv08TurtleRock_03G_Mask.png" -geometry +974+264 -composite
+"Lv08TurtleRock_03H_Mask.png" -geometry +1134+264 -composite
+"Lv08TurtleRock_04B_Mask.png" -geometry +174+392 -composite
+"Lv08TurtleRock_04C_Mask.png" -geometry +334+392 -composite
+"Lv08TurtleRock_04D_Mask.png" -geometry +494+392 -composite
+"Lv08TurtleRock_04E_Mask.png" -geometry +654+392 -composite
+"Lv08TurtleRock_04F_Mask.png" -geometry +814+392 -composite
+"Lv08TurtleRock_04G_Mask.png" -geometry +974+392 -composite
+"Lv08TurtleRock_05A_Mask.png" -geometry +14+520 -composite
+"Lv08TurtleRock_05B_Mask.png" -geometry +174+520 -composite
+"Lv08TurtleRock_05C_Mask.png" -geometry +334+520 -composite
+"Lv08TurtleRock_05D_Mask.png" -geometry +494+520 -composite
+"Lv08TurtleRock_05E_Mask.png" -geometry +654+520 -composite
+"Lv08TurtleRock_05F_Mask.png" -geometry +814+520 -composite
+"Lv08TurtleRock_05G_Mask.png" -geometry +974+520 -composite
+"Lv08TurtleRock_05H_Mask.png" -geometry +1134+520 -composite
+"Lv08TurtleRock_06A_Mask.png" -geometry +14+648 -composite
+"Lv08TurtleRock_06B_Mask.png" -geometry +174+648 -composite
+"Lv08TurtleRock_06C_Mask.png" -geometry +334+648 -composite
+"Lv08TurtleRock_06D_Mask.png" -geometry +494+648 -composite
+"Lv08TurtleRock_06E_Mask.png" -geometry +654+648 -composite
+"Lv08TurtleRock_06F_Mask.png" -geometry +814+648 -composite
+"Lv08TurtleRock_06G_Mask.png" -geometry +974+648 -composite
+"Lv08TurtleRock_06H_Mask.png" -geometry +1134+648 -composite
+"Lv08TurtleRock_07A_Mask.png" -geometry +14+776 -composite
+"Lv08TurtleRock_07B_Mask.png" -geometry +174+776 -composite
+"Lv08TurtleRock_07C_Mask.png" -geometry +334+776 -composite
+"Lv08TurtleRock_07D_Mask.png" -geometry +494+776 -composite
+"Lv08TurtleRock_07E_Mask.png" -geometry +654+776 -composite
+"Lv08TurtleRock_07F_Mask.png" -geometry +814+776 -composite
+"Lv08TurtleRock_07G_Mask.png" -geometry +974+776 -composite
+"Lv08TurtleRock_07H_Mask.png" -geometry +1134+776 -composite
+"Lv08TurtleRock_08A_Mask.png" -geometry +14+904 -composite
+"Lv08TurtleRock_08D_Mask.png" -geometry +494+904 -composite
+"Lv08TurtleRock_08E_Mask.png" -geometry +654+904 -composite
+"Lv08TurtleRock_08H_Mask.png" -geometry +1134+904 -composite

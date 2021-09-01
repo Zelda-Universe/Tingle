@@ -3,6 +3,11 @@
 /.env
 /dev/server/nginx/site.conf
 /dev/db/config.yml
+/dev/tiles/**/Maps/**/*.png
+
+## Team Files
+images/favicon.ico
+images/apple-touch-icon-precomposed.png
 
 # Cached Files / Runtime-updated Files
 /cache/*

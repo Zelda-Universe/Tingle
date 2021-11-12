@@ -10,8 +10,8 @@
         * The `mysql_config_editor` to create and store local, default, client credentials may be recommended, especially when contacting different project-related servers.
         * A separate account is recommended to only read the related database schemas, so add a less privileged database account for only this project to use:
           * `mysql --login-path=local -e "CREATE USER 'tingle'@'localhost' IDENTIFIED BY '<password>'"`
-      * Import the `dev/db/tingle.sql` file.
-        * `mysql --login-path=local < "dev/db/tingle.sql"`
+      * Import the `dev/db/samples/tingle.sql` file.
+        * `mysql --login-path=local < "dev/db/samples/tingle.sql"`
       * Grant the new db user all or some schema privileges to the newly imported `tingle` schema.
         * All: ``mysql --login-path=local -e "GRANT ALL PRIVILEGES ON `tingle`.* to 'tingle'@'localhost'"``
         * Specific Schema Privileges: `SELECT, INSERT, UPDATE, DELETE`.

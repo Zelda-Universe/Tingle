@@ -1,4 +1,4 @@
-class MarkerCategoryAddLAfS < ActiveRecord::Migration[6.0]
+class MarkerCategoryAddLAfSEntries < ActiveRecord::Migration[6.0]
   def up
     execute <<-SQL
       INSERT INTO `marker_category` VALUES

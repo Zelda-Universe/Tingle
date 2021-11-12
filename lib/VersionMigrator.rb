@@ -13,7 +13,7 @@ class VersionMigrator
   require 'json'
   require 'active_support/core_ext/hash/indifferent_access'
   @@versionsInfo = JSON.parse(
-    File.read('./dev/info/versionsInfo.json').gsub(/\n/,'')
+    File.read('./dev/info/versionsInfo.json')
   ).map { |versionInfo| versionInfo.with_indifferent_access }
   # This step is essential for properly creating the ranges through the contiguous timeline in the correct order.
   @@versionsInfo.sort_by { |versionDatePair| versionDatePair[:timestamp] }

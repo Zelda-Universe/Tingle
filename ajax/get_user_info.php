@@ -1,5 +1,5 @@
 <?php
-   $path = DIRNAME(__FILE__);
+   $path = __DIR__;
    include("$path/../config.php");
 
 	start_session("zmap");

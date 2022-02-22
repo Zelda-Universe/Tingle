@@ -1,6 +1,6 @@
 <?php
    if (!isset($_GET['newMarkerId'])) {
-     $path = DIRNAME(__FILE__);
+     $path = __DIR__;
    	 include_once("$path/../config.php");
    }
    /*

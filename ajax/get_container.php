@@ -1,9 +1,10 @@
 <?php
-   $path = DIRNAME(__FILE__);
+
+   $path = __DIR__;
    include("$path/../config.php");
-   
+
    $map = $_GET["game"];
-    
+
    $query = 'select id
                   , name
                   , short_name as shortName
@@ -41,7 +42,7 @@
       print($mysqli->error);
       return;
    }
-   
+
    $res = array();
    while($row = $result->fetch_assoc()) {
         $res[] = $row;

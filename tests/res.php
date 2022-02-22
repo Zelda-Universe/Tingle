@@ -1,10 +1,10 @@
 <?php
-  $path = DIRNAME(__FILE__);
+  $path = __DIR__;
 
   include_once("$path/../config.php");
   if(!$enableTests) exit;
   
-  $path = DIRNAME(__FILE__);
+  $path = __DIR__;
   
   include "$path/../lib/minify.php";
   

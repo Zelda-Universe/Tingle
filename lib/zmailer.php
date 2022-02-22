@@ -1,6 +1,6 @@
 <?php
 
-$path = DIRNAME(__FILE__);
+$path = __DIR__;
 include_once("$path/../config.php");
 
 function prepareMailTransport() {

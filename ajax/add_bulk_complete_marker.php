@@ -1,5 +1,5 @@
 <?php
-   $path = DIRNAME(__FILE__);
+   $path = __DIR__;
    include_once("$path/../config.php");
 
 	begin();
@@ -25,11 +25,11 @@
                        , marker_id
                        , complete_date
                        , visible
-                ) values ";   
-                
+                ) values ";
+
       // @TODO: Move to a Config in the DB?
       $commitEvery = 10;
-      
+
       for ($i = 0; $i < count($markerList); $i++) {
          $query = $query . "(" .$_POST['userId'] . ", " . $markerList[$i] . ", now(), 1)";
          if ($i == count($markerList) - 1) {
@@ -38,23 +38,23 @@
             $query = $query . ",";
          } else {
             $query = $query . " ON DUPLICATE KEY UPDATE user_id=user_id;";
-            
+
             $result = @$mysqli->query($query); // or die(mysql_error());
             if ($result) {
-               
+
             } else {
                echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
                rollback();
                exit(0);
             }
-            
+
             if ($i != count($markerList) - 1) {
                $query = "insert into " . $map_prefix . "user_completed_marker (
                                   user_id
                                 , marker_id
                                 , complete_date
                                 , visible
-                         ) values ";   
+                         ) values ";
             }
          }
       }

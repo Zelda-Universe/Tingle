@@ -4,7 +4,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> 
 <?php
-   $path = DIRNAME(__FILE__);
+   $path = __DIR__;
    include_once("$path/../config.php");
 
    $query = 'select c.short_name

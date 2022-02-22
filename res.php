@@ -1,5 +1,5 @@
 <?php
-    $path = DIRNAME(__FILE__);
+  $path=__DIR__;
 
     if(!isset($_GET["type"])) {
       print("A type must be provided! javascript or css.");

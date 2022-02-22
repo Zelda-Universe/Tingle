@@ -4,7 +4,7 @@
     }
     $cmd = $_GET["command"];
     $cmd = preg_replace("#[^a-zA-Z_]#","",$cmd);
-    $path = DIRNAME(__FILE__);
+    $path = __DIR__;
     $cmdpath = "$path/ajax/$cmd.php";
     if(!file_exists($cmdpath)) {
         die(json_encode(array("success"=>false,"code"=>-1,"msg"=>"Invalid command!")));

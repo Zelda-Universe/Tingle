@@ -1,3 +1,5 @@
+-- Password is 'test'.
+
 SELECT
   `unique_marker_and_marker_tab_users`.`user_id` AS `id`,
   CONCAT('test', `unique_marker_and_marker_tab_users`.`user_id`) AS `username`,

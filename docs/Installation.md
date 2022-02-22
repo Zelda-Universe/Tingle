@@ -3,30 +3,64 @@
   * Set-up Dependencies
     * Set-up database
       * Install and configure a database connection for this project.
+        * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/
+          * Linux
+            * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/linux-installation-native.html
+            * `sudo dnf install community-mysql-server`
+            * `sudo systemctl start mysqld`
+      * Install recommended GUI editor/IDE
+        * https://dev.mysql.com/downloads/workbench/
       * Perform the usual and secure database set-up steps:
         * Catch the new, randomly generated root account's password during the installation.
-        * Add `/usr/local/mysql/bin` to user path variable.
+        * Windows/Cygwin?: Add `/usr/local/mysql/bin` to user path variable.
         * `mysql_secure_installation`
+          * Recommended settings
+            * Password validation: `y`, `2` (strong)
+            * Remove anonymous users: `y`
+            * Force root local only: `y`
+            * Remove test database: `y`
+            * Reload privs: `y`
+      * A dedicated account is recommended to only read the related database schemas, so add a less privileged database account for this project to use:
+        * `CREATE USER 'tingle'@'localhost' IDENTIFIED BY '<password>';`
         * The `mysql_config_editor` to create and store local, default, client credentials may be recommended, especially when contacting different project-related servers.
-        * A separate account is recommended to only read the related database schemas, so add a less privileged database account for only this project to use:
-          * `mysql --login-path=local -e "CREATE USER 'tingle'@'localhost' IDENTIFIED BY '<password>'"`
-      * Import the `dev/db/samples/tingle.sql` file.
-        * `mysql --login-path=local < "dev/db/samples/tingle.sql"`
+      * Import the sample database file.
+        * `dev/db/samples/tingle.sql`
       * Grant the new db user all or some schema privileges to the newly imported `tingle` schema.
-        * All: ``mysql --login-path=local -e "GRANT ALL PRIVILEGES ON `tingle`.* to 'tingle'@'localhost'"``
-        * Specific Schema Privileges: `SELECT, INSERT, UPDATE, DELETE`.
+        * All: ``GRANT ALL PRIVILEGES ON `tingle`.* to 'tingle'@'localhost'``
+        * Specific Schema Privileges: ``GRANT SELECT, INSERT, UPDATE, DELETE ON `tingle`.* to 'tingle'@'localhost';``
       * Setup project local backend PHP config parameters:
         * `cp .env.example .env`
         * Edit the newly copied `.env` file to your database's parameters for connection location and account credentials.
     * Set-up web server
+      * Linux:
+        * `sudo dnf install nginx php-fpm php-mysqlnd`
+          * https://www.php.net/manual/en/mysqli.installation.php
+        * `sudo mkdir -p /etc/nginx`
+        * `sudo openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout /etc/nginx/nginx.key -out /etc/nginx/nginx.crt`
+        * `cp dev/server/nginx/site.conf.example dev/server/nginx/site.conf`
+        * `sed -i -r 's|(\s+set \$project_location ).+$|\1'(readlink -f .)';|' dev/server/nginx/site.conf`
+        * Could use `unix:/` socket instead of network pass.
+        * `sudo ln -s (readlink -f dev/server/nginx/site.conf) /etc/nginx/conf.d/Tingle.conf`
+        * `sudo systemctl start php-fpm nginx`
+        * Check for failures due to SELinux
+          * `sudo systemctl status nginx`
+            * open failed for site conf file
+              * Copy relevant error line.
+              * `xclip -out | audit2why`
+              * `xclip -out | audit2allow`
+              * `sudo semodule -i dev/server/nginx/selinux/httpd-dosfs_read-open.pp/`
+          * `sudo systemctl status php-fpm`
+            * May require additional permissions to connect to network address and port for database communication.
+              * Using the local Linux socket route works with additional configuration.
       * Mac:
         * nginx or [MAMP](https://www.mamp.info)
-        * Install through homebrew: `brew install nginx`.
+        * Install through Homebrew: `brew install nginx`.
         * Generate SSL certificates: `openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout /usr/local/etc/nginx/nginx.key -out /usr/local/etc/nginx/nginx.crt`
-        * `cp site.conf.example site.conf`
+        * `cp dev/server/nginx/site.conf.example dev/server/nginx/site.conf`
         * Edit the newly copied `site.conf` file to modify the `$project_location` line appropriately to the root of this project's source tree, and the `fastcgi_pass` directive according to your platform.
+          * See if this works: `sed -i -r 's|(\s+set \$project_location ).+$|\1'(readlink -f .)';|' dev/server/nginx/site.conf`
           * `unix:/` for *nix/bsd platforms, IP and port for Windows or in general.
-        * `ln -s (readlink -f ZM_nginx.conf) /usr/local/etc/nginx/servers/Zelda-Maps.conf`
+        * `ln -s (readlink -f dev/server/nginx/site.conf) /usr/local/etc/nginx/servers/Tingle.conf`
         * `nginx -p /usr/local/var`
         * Enable PHP FPM (Similar to FastCGI?)
           * `brew install homebrew/php/php56-xdebug`
@@ -51,7 +85,8 @@
         * Tell the Windows OS to "Allow network connections" when the dialog automatically appears.
     * PHP dependencies
       * Mysqli
-        * Make sure it is enabled in `php.ini`.  Just uncomment the extension line most likely.
+        * Now the mysqlnd package.
+        * (Old?) Make sure it is enabled in `php.ini`.  Just uncomment the extension line most likely.
       * Optional: Install php zend extension xdebug
         * https://stackify.com/php-debugging-guide/
           * Download

@@ -12,3 +12,4 @@
 ( MapTex1_Z-7.png MapTex1_A-7.png MapTex1_B-7.png MapTex1_C-7.png MapTex1_D-7.png MapTex1_E-7.png MapTex1_F-7.png MapTex1_G-7.png MapTex1_H-7.png MapTex1_I-7.png MapTex1_J-7.png MapTex1_K-7.png +append ) -append
 ( MapTex1_Z-8.png MapTex1_A-8.png MapTex1_B-8.png MapTex1_C-8.png MapTex1_D-8.png MapTex1_E-8.png MapTex1_F-8.png MapTex1_G-8.png MapTex1_H-8.png MapTex1_I-8.png MapTex1_J-8.png MapTex1_K-8.png +append ) -append
 ( MapTex1_Z-9.png MapTex1_A-9.png MapTex1_B-9.png MapTex1_C-9.png MapTex1_D-9.png MapTex1_E-9.png MapTex1_F-9.png MapTex1_G-9.png MapTex1_H-9.png MapTex1_I-9.png MapTex1_J-9.png MapTex1_K-9.png +append ) -append
++repage

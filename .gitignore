@@ -4,6 +4,7 @@
 /dev/server/nginx/site.conf
 /dev/db/config.yml
 /dev/assets/tiles/**/Maps/**/*.png
+/dev/assets/tiles/**/Maps/**/Trials
 
 ## Team Files
 images/favicon.ico

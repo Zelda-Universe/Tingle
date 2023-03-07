@@ -15,6 +15,23 @@
 
 ## General Function Library
 
+set timeStart -1;
+set timeEnd -1;
+function timerStart
+  set timeStart (date "+%s");
+end
+function timerStop
+  set timeEnd (date "+%s");
+end
+function timerDuration
+  if test "$timeStart" -lt 0 -o "$timeEnd" -lt 0
+    echo 'Error: Time start or stop was not set yet; returning...' 1>&2;
+    return;
+  end
+
+  echo "$timeEnd" - "$timeStart" | bc;
+end
+
 function setupTemplateFiles --argument-names outDir fileName numXTiles numYTiles tileWidth tileHeight
   set totalDimensions (expr "$tileWidth" '*' "$numXTiles")x(expr "$tileHeight" '*' "$numYTiles");
   set blankFile "$outDir/$fileName-Blank.png";
@@ -75,7 +92,7 @@ end
 # Could maybe be combined but a lot of extra work if the other
 # less flexible methods like montage tiling are enough anyway
 # that I am learning now.
-function assembleMapIndividually --argument-names outDir fileName numXTiles numYTiles tileWidth tileHeight
+function assembleMapIndividually --argument-names outDir fileName numXTiles numYTiles tileWidth tileHeight trialsDir
   set completedFile "$outDir/$resLevel/$fileName.png";
   if test -e "$completedFile" -a "$force" != "true"
     echo "\"$completedFile\" already exists, and force has not been specified; exiting...";
@@ -92,6 +109,7 @@ function assembleMapIndividually --argument-names outDir fileName numXTiles numY
   );
 
   set fileNum "0";
+  timerStart;
   find -maxdepth 1 -type f -iname "MapTex*_?1-?.*" | while read tileFile
     set fileNum (echo "$fileNum + 1" | bc);
     echo -n "$fileNum, ";
@@ -99,14 +117,17 @@ function assembleMapIndividually --argument-names outDir fileName numXTiles numY
 
     placeTile "$tileFile" "$workingFile" "$tileWidth" "$tileHeight";
   end
+  timerStop;
+  echo timerDuration > "$trialsDir/2a - Assembling.txt";
 
   mv "$workingFile" "$completedFile";
   echo "done!";
 end
 
-function createMagickScript --argument-names tilePrefix tileSuffix folderPathAndName
+function createMagickScript --argument-names tilePrefix tileSuffix folderPathAndName trialsDir
   set srcGenericScript "$folderPathAndName/Script.txt";
   if test ! -e "$srcGenericScript" -o "$force" = "true"
+    timerStart;
     echo '#!/usr/bin/env magick-script' > "$srcGenericScript";
     echo >> "$srcGenericScript";
     echo '-define png:color-type=6' >> "$srcGenericScript";
@@ -119,6 +140,9 @@ function createMagickScript --argument-names tilePrefix tileSuffix folderPathAnd
         end
       )'+append ) -append' >> "$srcGenericScript";
     end
+    echo '+repage' >> "$srcGenericScript";
+    timerStop;
+    echo (timerDuration) > "$trialsDir/1 - Scripting.txt";
   end
 
   echo "$srcGenericScript";
@@ -130,10 +154,10 @@ end
 # Known as montage using the tile option.
 # I could have also used +/-append with arrays, but
 # that is more manual, and we don't need that level of flexibility.
-function assembleMapAtOnce --argument-names tilePrefix tileSuffix outDir folderName
+function assembleMapAtOnce --argument-names tilePrefix tileSuffix outDir folderName trialsDir
   set completeFolderPath "$outDir/$folderName";
   set completedFile "$completeFolderPath/Map.png";
-  set srcGenericScript (createMagickScript "$tilePrefix" "$tileSuffix" "$completeFolderPath");
+  set srcGenericScript (createMagickScript "$tilePrefix" "$tileSuffix" "$completeFolderPath" "$trialsDir");
 
   test ! -e "$completeFolderPath"; and mkdir "$completeFolderPath";
 
@@ -152,7 +176,10 @@ function assembleMapAtOnce --argument-names tilePrefix tileSuffix outDir folderN
   echo "-write \"$workingFile\"" >> "$tempUniqueScript";
 
   echo "Generating result file \"$completedFile\"...";
+  timerStart;
   if time magick -script "$tempUniqueScript" "$workingFile"
+    timerStop;
+    echo (timerDuration) > "$trialsDir/2b - Assembling.txt";
     mv "$workingFile" "$completedFile";
     echo "done!";
   else
@@ -180,7 +207,15 @@ function step1
     end
 
     mkdir "$folderName";
+    set resultOutputPath "$outputPath/$resLevel";
+    mkdir -p "$resultOutputPath";
+    set outTrialsDir "$outTrialsBaseDir/$resLevel/Trials/1 - Sorting";
+    mkdir -p "$outTrialsDir";
+
+    timerStart;
     find -maxdepth 1 -type f -name "$folderName""_*" -exec mv -t "$folderName/" '{}' +;
+    timerStop;
+    echo (timerDuration) > "$trialsDir/1 - By Res Level.txt";
   end
 end
 
@@ -224,7 +259,13 @@ function step2
       end
       mkdir "$category";
       test "$category" = "Default"; and set filter '*_?-?.*'; or set filter "*_?-?_$category.*";
+      set outTrialsDir "$outTrialsBaseDir/$resLevel/$category/Trials/1 - Sorting";
+      mkdir -p "$outTrialsDir";
+
+      timerStart;
       find -mindepth 1 -maxdepth 1 -type f -name "$filter" -exec mv -t "$category/" '{}' +;
+      timerStop;
+      echo (timerDuration) > "$trialsDir/2 - Scripting.txt";
     end
 
     popd;
@@ -243,6 +284,8 @@ function step3 --argument-names outputPath
     for category in $processCategories
       echo "Processing category \"$category\"...";
       pushd "$category";
+      set outTrialsDir "$outTrialsBaseDir/$resLevel/$category/Trials/2 - Assembling";
+      mkdir -p "$outTrialsDir";
 
       test $category = "Default"; and set tileSuffix ''; or set tileSuffix "_$category";
       set resultOutputPath "$outputPath/$resLevel";
@@ -256,7 +299,9 @@ function step3 --argument-names outputPath
       # ;
       assembleMapAtOnce \
         "$filePrefix$resName""_" "$tileSuffix" \
-        "$resultOutputPath" "$category";
+        "$resultOutputPath" "$category" \
+        "$outTrialsDir" \
+      ;
 
       popd;
     end
@@ -286,6 +331,7 @@ test -z "$processSteps"; and set processResLevels       $defaultSteps;
 test -z "$processResLevels"; and set processResLevels   $defaultResLevels;
 test -z "$processCategories"; and set processCategories $defaultCategories;
 test -z "$outputPath"; and set outputPath               "$SDIR/Maps";
+test -z "$outTrialsBaseDir"; and set outTrialsBaseDir   "$outputPath";
 
 # Required input validation
 if test -z "$srcDir" -o ! -e "$srcDir"

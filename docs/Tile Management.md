@@ -118,6 +118,11 @@ Some good file format references and links to tools:
 
 # Tile Cutting
 
+  Now more of a history section since I finally researched and made scripts to do process the asset files such as cutting and organizing them as preparation.
+  - `dev/assets/tiles/generateAllMapTiles.fish`
+  - `dev/assets/tiles/generateAllMapTilesAuto.fish`
+    - No good way to program this, so disabled for now.
+
   Danilo says he used a [modified version of a] script called `tileCreator.js` (14.4 KB).
   I assume it's modified because the original tries to fetch data from a database which we do not use for our map tiles, directly at least.
   I may have found that original here: [tileCreator.js](https://github.com/AnderPijoan/vectorosm/blob/master/tileCreator/tileCreator.js).
@@ -150,5 +155,12 @@ Some good file format references and links to tools:
       * Created some weird tiles that were blank and made multiple grided copies with lots of negative space in between, so actually tiles in each single image..
       * Thought a good invocation would be: `gdal2tiles.py -w none --resume -p raster -z '0-8' "$file" tiles`
   * [MapTiler](https://www.maptiler.com/)
-  * Seems like too much of a proprietary app and not a configurable script.
-  * Haven't tried it.  Feel like gdal2tiles should work..
+    * Seems like too much of a proprietary app and not a configurable script.
+    * Haven't tried it.  Feel like gdal2tiles should work..
+  Others tried:
+  * Mapeditor(?)
+  * GenerateSlippyMapTiles.py
+    * https://gist.github.com/jeffThompson/a08e5b8146352f3974bfa4100d0317f6
+  Others not tried:
+  * Tiled(?) (Editor)
+  * MapTiler

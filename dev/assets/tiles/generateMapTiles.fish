@@ -4,12 +4,20 @@
 
 ## General Function Library
 
-function debugPrint
-	test "$__DEBUG_MODE__" = "true"; and echo -e "DEBUG: $argv";
+not type -q 'altPrint'; and function altPrint
+  echo $argv 1>&2;
 end
 
-function userWait
-	test "$manualStep" = "true"; and read -P 'Press any key to continue...';
+not type -q 'debugPrint'; and function debugPrint
+  if test "$__DEBUG__" = "true"
+    altPrint -n "DEBUG: ";
+    altPrint $argv;
+  end
+end
+
+not type -q 'userWait'; and function userWait
+	test "$manualStep" = "true";
+  and read -P 'Press enter to continue...' 1>&2 < /dev/tty;
 end
 
 ## Step Function Library

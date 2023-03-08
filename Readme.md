@@ -3,6 +3,7 @@
 
   Currently supports:
   - The Legend of Zelda: Breath of the Wild for the Nintendo Switch and Wii U (March 3, 2017)
+  - The Legend of Zelda: Link's Awakening for the Nintendo Switch (September 20, 2019)
 
 ## Help Sections
   - [Installation Instructions](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/Installation.md)

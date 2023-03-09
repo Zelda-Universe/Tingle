@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // ChangelogHandler - Connects the various related widgets to perform search actions, cohesively-containing logic, and provides configuration.
 // - opts: [Object] Typical options object.
 //   - user: [Object] - User data to use for version checking.
@@ -24,7 +28,7 @@ ChangelogHandler.prototype._fetchChangelogEntries = function(opts) {
       if (opts.user.seen_version < opts.version) {
          this._fetchChangelogEntriesByUser(opts.user);
       }
-   } else if (opts.seenChangelogVersion && opts.seenChangelogVersion < opts.version) {  
+   } else if (opts.seenChangelogVersion && opts.seenChangelogVersion < opts.version) {
       this._fetchChangelogEntriesByCookie(opts.seenChangelogVersion, opts.version);
    } else {
       setCookie(seenChangelogVersionCookieName, opts.version);
@@ -64,7 +68,7 @@ ChangelogHandler.prototype._groupChangelogEntriesByVersion = function(entries) {
 
 ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, versionEntry, user) {
   toastr.remove();
-  
+
   if (user != undefined) {
       $.ajax({
            type: "POST",
@@ -72,7 +76,7 @@ ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, ver
            data: {userId: user.id, version: version},
            success: function(data) {
                if (data.success) {
-                  
+
                } else {
                   toastr.error("Unable to update user version");
                   //alert(data.msg);
@@ -80,7 +84,7 @@ ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, ver
            }
          })
   };
-  
+
   return zlogger.info(
     '<ul>' +
       versionEntry.join('') +

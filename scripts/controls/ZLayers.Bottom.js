@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   options: {
     position: 'topleft',
@@ -134,7 +138,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
          }, this);
 
       var logo = new Logo({ parent: headerMenu });
-      
+
       _thisLayer = this;
       this._gameMenu = this.createGameMenu();
       this._mapsMenu = this.createMapsMenu();
@@ -150,7 +154,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(completedButton.domNode);*/
-      
+
       this._mapsButton = new MapButton({
         toggledOn: false,
         onToggle: function(toggledOn) {
@@ -207,11 +211,11 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     // and make expand match openDrawer expectations.
     if (true || !this.options.collapsed) this._expand();
    },
-   
+
    rebuildMapsMenu: function () {
       this._mapsMenu = this.createMapsMenu();
    },
-   
+
    createGameMenu: function() {
      return new GameMenu({
       categoryTree: games,
@@ -224,7 +228,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       defaultToggledState: (this.options.categorySelectionMethod == "focus")
     });
    },
-   
+
   createMapsMenu: function() {
     return new MapsMenu({
      categoryTree: maps,
@@ -232,7 +236,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
          if (this.currentMapLayer.id != category.id) {
                map.removeLayer(this.currentMapLayer);
                map.addLayer(category);
-               this.currentMapLayer = category;        
+               this.currentMapLayer = category;
                this.currentMapLayer.bringToBack();
                map.fire("baselayerchange", this.currentMapLayer);
          }
@@ -241,7 +245,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
    });
   },
-  
+
 
     _animate: function(menu, from, to, isOpen) {
       // console.log(from + ' ' + to + ' ' + isOpen);

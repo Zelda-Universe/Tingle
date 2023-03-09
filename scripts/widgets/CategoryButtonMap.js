@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // CategoryButtonMap
 // - opts: [Object]
 //   - category: [Object] - A single category from the database API.
@@ -25,9 +29,9 @@ CategoryButtonMap.prototype._setDebugNames = function() {
 CategoryButtonMap.prototype._initSettings = function(opts) {
   if(!opts.category) opts.category = {};
   if(opts.showIcon == undefined) opts.showIcon = true;
-   
+
   this.showIcon = opts.showIcon;
-   
+
   this.category = opts.category;
   this.onToggle = opts.onToggle || $.noop;
 

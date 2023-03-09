@@ -1,5 +1,9 @@
 #!/usr/bin/env fish
 
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
+
 echo "Not updated or able to be generalized properly; exiting...";
 exit;
 

@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // Header
 // - options: [Object]
 //   - mapControl: [Object] The drawer menu that will render the list of searched markers.

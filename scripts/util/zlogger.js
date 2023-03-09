@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 function ZLogger(opts) {
   opts = opts || {};
   if(opts.notification === undefined) opts.notification = true;

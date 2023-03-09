@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
+
 # Users the `mysqldump` command with provided SQL statements and shell commands
 # to create a customized backup and sample database data file to use to operate
 # the project.
@@ -101,7 +105,7 @@
   [[ -z "$FAIL_FAST" ]] &&               FAIL_FAST="true";
   [[ -z "$CLEAN_ON_FAILURE" ]] && CLEAN_ON_FAILURE="true";
   [[ -z "$CONVERGE_SQL" ]] &&         CONVERGE_SQL="false";
-  
+
   [[ -z "$DB_NAME" ]] &&                   DB_NAME="zeldamaps";
 
   # Loops as requirement.
@@ -119,7 +123,7 @@
   # else
     #MYSQL_PASS="$(echo "$MYSQL_PASS" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
   fi
-    
+
   [[ -z "$MYSQL_OTHER_CONNECTION_OPTIONS" ]] && MYSQL_OTHER_CONNECTION_OPTIONS="";
   [[ -z "$MYSQL_CONNECTION_STRING" ]] && MYSQL_CONNECTION_STRING="$MYSQL_OTHER_CONNECTION_OPTIONS -u'$MYSQL_USER' -p'$MYSQL_PASS'";
 }
@@ -160,7 +164,7 @@
   generatedDevUserDataFilePath="$SAMPLES_DIR/06-devUserData.sql";
 
   allIntermediateFilePaths="'$keepAIFilePath' '$toRemoveAIFilePath' '$aiRemovedFilePath' '$dataFilePath' '$sanitizedPartialUserDataFilePath' '$generatedDevUserDataFilePath'";
-  
+
   [[ "$CONVERGE_SQL" == "true" ]] && convergeSuffix="-converged";
 
   # Resultant, generated file to keep at the end of the process.
@@ -239,20 +243,20 @@
     "Combining intermediate SQL files into a single convenient script for later import and version control." \
     "cat '$keepAIFilePath' '$aiRemovedFilePath' '$dataFilePath' '$generatedDevUserDataFilePath' > '$completeFilePath'" \
   ; # "cat '$keepAIFilePath' '$aiRemovedFilePath' '$dataFilePath' > '$completeFilePath'" \
-  
+
   issueStep \
     "Converting result to Unix-style LF-only line endings." \
     "dos2unix '$completeFilePath'" \
   ;
-  
+
   clean;
-  
+
   if [[ "$CONVERGE_SQL" == "true" ]]; then
     issueStep \
       "Converging database SQL formats by eliminating less important details." \
       "sed -r -f '$convergeSedFilePath' '$completeFilePath' > '$completeConvergedFilePath'" \
     ;
-    
+
     echo;
     echo "Important Note: The 'CONVERGE_SQL' option is enabled.  Do NOT store these exported SQL files permanently in source control OR import them into any database.  They are for comparing important differences more easily and quickly by removing any less important differences that may be defaults or other details.  The data differences are ONLY to be manually and carefully reviewed and ported through migrations using the more exact, unique, and explicit details to converge the databases more properly.";
   fi

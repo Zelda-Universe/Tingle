@@ -1,24 +1,8 @@
 #!/usr/bin/env fish
 
-## Info
-
-# Author: Pysis
-
-# Dependencies:
-# - fish shell
-# - Basic shell utilities:
-#   - variables
-#   - subshell
-#   - test
-#   - eval
-#   - seq
-#   - set
-#   - printf
-#   - pushd
-#   - popd
-#   - exit
-#   - break
-# - ImageMagick (convert, identify)
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
 
 set SDIR "$PWD/"(dirname (status filename));
 

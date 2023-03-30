@@ -4,67 +4,134 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-# Users the `mysqldump` command with provided SQL statements and shell commands
-# to create a customized backup and sample database data file to use to operate
-# the project.
+# Uses the database client and dump executables with provided SQL
+# statements and shell commands to create a customized backup and sample
+# database data file to use to operate the project.
+
+SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
 ## Function Library
 {
+  source "$SDIR/../../scripts/common/altPrint.bash";
+  source "$SDIR/../../scripts/common/debugPrint.bash";
+  source "$SDIR/../../scripts/common/errorPrint.bash";
+
+  includes() {
+    pattern="$1";
+    text="$2";
+
+    echo "$pattern" \
+    | grep -q "\b$text\b";
+  }
+
+  pTWSC() {
+    printTextWithSentimentColoring "$@";
+  }
+
+  printTextWithSentimentColoring() {
+    text="$1";
+    text="$(echo "$text" | tr '[A-Z]' '[a-z]')";
+    if [[ \
+          "$text" == 'true' \
+      ||  "$text" == 'success' \
+    ]]; then
+      echo -n "${GREEN}";
+    elif [[ \
+          "$text" == 'false' \
+      ||  "$text" == 'failure' \
+    ]]; then
+      echo -n "${RED}";
+    fi
+    echo "$text${NC}";
+  }
+
   statusPrint() {
-    [[ "$QUIET" != "true" ]] && echo -en $* 1>&2;
+    [[ "$quiet" != "true" ]] && echo -en $* 1>&2;
   }
 
   pauseWhenEnabled() {
-    [[ "$PAUSE" == "true" ]] && read -s -n 1;
+    [[ "$pause" == "true" ]] && read -s -n 1;
   }
 
   issueStep() {
+    # debugPrint 'issueStep Start';
     if [[ "$#" -eq "1" ]]; then
       commandString="$1";
     elif [[ "$#" -eq "2" ]]; then
       description="$1";
       commandString="$2";
     fi
+    # debugPrint "issueStep commandString: $commandString";
 
-    if [[ "$VERBOSE" == "true" ]]; then
-      statusPrint "\n${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$commandString${NC}\n";
+    if [[ "$verbose" == "true" ]]; then
+      # statusPrint "\n${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$(
+      #   echo "$commandString" \
+      #   | sed -r "s|(-p(assword=)?)['\"]?[^ \t\n]+['\"]? |\1...|g"
+      # )${NC}\n";
+      # debugPrint "issueStep commandString: $commandString";
+      statusPrint "${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$(
+        echo "$commandString"
+      )${NC}\n";
     fi
 
     issueCommand "$commandString";
+    commandStatus="$?";
+    # debugPrint "commandStatus: $commandStatus";
 
     if [[ -n "$description" ]]; then
-      statusPrint "${BLUE} >${NC} $(echo -n "$description" | $messageRedirectionString)\n";
-      [[ "$BRIEF_MESSAGES" == "true" && "${#description}" -gt "$availableMessageCharacters" ]] && statusPrint "...";
+      statusPrint "${BLUE} >${NC} $(echo -n "$description" | $messageRedirectionString)";
+      [[ "$briefMessages" == "true" && "${#description}" -gt "$availableMessageCharacters" ]] && statusPrint "...";
+      statusPrint '\n';
     fi
 
     pauseWhenEnabled;
+
+    if [[ "$commandStatus" -gt '0' ]]; then
+      # debugPrint 'issueStep cleanAndExit';
+      cleanAndExit;
+    fi
+    # debugPrint 'issueStep End';
   }
 
   issueCommand() {
+    # debugPrint 'issueCommand Start';
     commandString="$1";
+    commandString="$(echo "$commandString" | sed 's|"|\\"|g')";
 
-    if [[ "$DRY_RUN" == "false" ]]; then
-      if eval "$commandString"; then
+    if [[ "$dryRun" == "false" ]]; then
+      eval "$commandString";
+      commandStatus="$?";
+      # debugPrint "issueCommand commandStatus: $commandStatus";
+      if [[ "$commandStatus" -eq '0' ]]; then
+        # debugPrint 'issueCommand Success';
         statusPrint "[${GREEN}Success${NC}] ";
       else
-        lastCommandStatus="$?";
+        # debugPrint 'issueCommand Failed';
 
-        statusPrint "\n[${RED}Failed ${NC}] ";
+        statusPrint "[${RED}Failure${NC}] ";
 
-        if [[ "$CLEAN_ON_FAILURE" == "true" ]]; then
-          clean;
+        if [[ "$cleanOnFailure" == "true" ]]; then
+          issueStepClean;
         fi
 
-        if [[ "$FAIL_FAST" == "true" ]]; then
-          exit "$lastCommandStatus";
+        if [[ "$failFast" == "true" ]]; then
+          # debugPrint "issueCommand return commandStatus: $commandStatus";
+          return "$commandStatus";
         fi
       fi
     else
       statusPrint "[${DARK_GREY}Not Run${NC}] ";
     fi
+    # debugPrint 'issueCommand End';
   }
 
-  clean() {
+  issueStepClean() {
+    # [[ -n "$allIntermediateDirPaths" ]] && \
+    # issueStep \
+    #   "Cleaning the no longer needed intermediate directories for SQL files." \
+    #   "rmdir $allIntermediateDirPaths" \
+    # ;
+    [[ -n "$allIntermediateFilePaths" ]] && \
     issueStep \
       "Cleaning the no longer needed intermediate SQL files." \
       "rm -f $allIntermediateFilePaths" \
@@ -73,10 +140,150 @@
 
   cleanAndExit() {
     exitStatusToApply="${1:-2}";
-    statusPrint "\n";
-    clean;
+    # statusPrint "\n";
+    issueStepClean;
     statusPrint "Exiting...";
     exit "$exitStatusToApply";
+  }
+
+  issueStepD2UConditional() {
+    file="$1";
+
+    detectedOS="$(uname)";
+    if [[ \
+          "$detectedOS" == 'Windows' \
+      ||  "$detectedOS" == 'Cygwin' \
+    ]]; then
+      issueStep \
+        "Converting result to Unix-style LF-only line endings." \
+        "dos2unix '$file' 2> /dev/null" \
+      ;
+    fi
+  }
+
+  issueStepsRemoveAIValue() {
+    # Other variables are common/global between any route.
+    # Also even if the variable naming is consistent, the values won't be.
+    # Might not matter in the code, but wanted to make this explicitly obvious at least, when understanding the statements for any future coding.
+    toRemoveAIFilePath="$1";
+    aiRemovedFilePath="$2";
+    tableNames="$3";
+    if [[ -z "$tableNames" ]]; then
+      tableNames="$removeAITables";
+      descPrefixToRemoveAI='Exporting the rest of the database structure';
+      descPrefixAIRemove='Removing auto increment values in sensitive data tables';
+    else
+      descPrefixToRemoveAI="Exporting structure for table \"$tableName\"";
+      descPrefixAIRemove='Removing auto increment value in this sensitive data table';
+    fi
+
+    issueStep \
+      "$descPrefixToRemoveAI, with no way to immediately remove the auto increment values to match not having the same data later on." \
+      "'$dbDumpExe'             \
+        $dbDumpCommonOptions    \
+        $structureOnlyOptions   \
+        $tableNames             \
+        > '$toRemoveAIFilePath' \
+        $errorRedirectionString \
+      " \
+    ;
+
+    issueStep \
+      "$descPrefixAIRemove, since it will be auto-generated later when data is inserted." \
+      "sed -r \
+        's| AUTO_INCREMENT=[[:digit:]]+||g' \
+        '$toRemoveAIFilePath'   \
+        > '$aiRemovedFilePath'  \
+      " \
+    ;
+  }
+
+  issueStepsUserSanAndGen() {
+    # debugPrint 'issueStepsUserSanAndGen Start';
+    # Other variables are common/global between any route.
+    # Also even if the variable naming is consistent, the values won't be.
+    # Might not matter in the code, but wanted to make this explicitly obvious at least, when understanding the statements for any future coding.
+    sanitizedPartialUserDataFilePath="$1";
+    generatedDevUserDataFilePath="$2";
+
+    issueStep \
+      "Exporting and sanitizing only the required user records by id, with their visiblity and level data for later use in development so that all markers can be displayed." \
+      "'$dbClientExe'                         \
+        $dbClientCommonOptions                \
+        > '$sanitizedPartialUserDataFilePath' \
+        $errorRedirectionString               \
+        < '$generateDevUsersQueryFilePath'    \
+      " \
+    ;
+
+    # Only for MySQL, all versions, or just old ones?
+    if \
+      echo "$dbClientExe" | grep -Pq '^mysql' \
+      && [[ "$verbose" == "true" ]] \
+    ; then
+      issueStep \
+        "Removing embedded verbose query." \
+        "sed -i '1,27d' \
+          '$sanitizedPartialUserDataFilePath' \
+        ;" \
+      ;
+    fi
+
+    issueStep \
+      "Preparing the generated user data into a SQL format." \
+      "sed -i -r -f \
+        '$sqlizeSedFilePath'                \
+        '$sanitizedPartialUserDataFilePath' \
+      " \
+    ;
+
+    issueStep \
+      "Writing SQL INSERT header." \
+      "echo 'INSERT INTO \`user\`' > '$generatedDevUserDataFilePath'" \
+    ;
+
+    issueStep \
+      "Writing header data fields." \
+      "head -n 1                            \
+        '$sanitizedPartialUserDataFilePath' \
+        >> '$generatedDevUserDataFilePath'  \
+      " \
+    ;
+    issueStep \
+      "Writing intermediate VALUES term." \
+      "echo 'VALUES' >> '$generatedDevUserDataFilePath'" \
+    ;
+    issueStep \
+      "Writing data fields." \
+      "tail -n +2                           \
+        '$sanitizedPartialUserDataFilePath' \
+        >> '$generatedDevUserDataFilePath'  \
+      " \
+    ;
+
+    #   "tail -n +2 dev/db/userLevels.txt | sed -r 's|([[:digit:]]+)\s+([[:digit:]]+)\s+([[:digit:]]+)|\(\1, \'test\1\', \'test\1\', \2, \3\)|g'";
+    issueStep \
+      "Writing terminating colon." \
+      "echo ';' >> '$generatedDevUserDataFilePath'" \
+    ;
+
+    # debugPrint 'issueStepsUserSanAndGen End';
+  }
+
+  issueStepConverge() {
+    filePath="$1";
+    convergedFilePath="$2";
+    if [[ "$converge" == "true" ]]; then
+      convergedFilePath="";
+      issueStep \
+        "Converging database SQL formats by eliminating less important details." \
+        "sed -r -f \
+          '$convergeSedFilePath' \
+          '$filePath' \
+          > '$convergedFilePath' \
+        " \
+      ;
+    fi
   }
 }
 
@@ -90,174 +297,430 @@
   GREEN='\033[0;32m';
   RED='\033[0;31m';
   NC='\033[0m'; # No Color
-
-  SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
-  SAMPLES_DIR="$SDIR/samples";
 }
 
 ## Main Environment Configuration
 {
-  [[ -z "$QUIET" ]] &&                       QUIET="false";
-  [[ -z "$VERBOSE" ]] &&                   VERBOSE="false";
-  [[ -z "$BRIEF_MESSAGES" ]]     && BRIEF_MESSAGES="false";
-  [[ -z "$PAUSE" ]] &&                       PAUSE="false";
-  [[ -z "$DRY_RUN" ]] &&                   DRY_RUN="false";
-  [[ -z "$FAIL_FAST" ]] &&               FAIL_FAST="true";
-  [[ -z "$CLEAN_ON_FAILURE" ]] && CLEAN_ON_FAILURE="true";
-  [[ -z "$CONVERGE_SQL" ]] &&         CONVERGE_SQL="false";
+  [[ -z "$quiet" ]]            &&               quiet="false" ;
+  [[ -z "$verbose" ]]          &&             verbose="false" ;
+  [[ -z "$briefMessages" ]]    &&       briefMessages="false" ;
+  [[ -z "$pause" ]]            &&               pause="false" ;
+  [[ -z "$dryRun" ]]           &&              dryRun="false" ;
+  [[ -z "$failFast" ]]         &&            failFast="true"  ;
+  [[ -z "$cleanOnFailure" ]]   &&      cleanOnFailure="true"  ;
+  [[ -z "$converge" ]]      &&         converge="false" ;
+  [[ -z "$oneFile" ]]          &&             oneFile="false" ;
+  [[ -z "$dbName" ]]           &&              dbName="tingle";
+  [[ -z "$outputName" ]]       &&          outputName="tingle";
+  [[ -z "$dbDumpExe" ]]        &&           dbDumpExe="mariadb-dump";
+  [[ -z "$dbClientExe" ]]      &&         dbClientExe="mariadb";
 
-  [[ -z "$DB_NAME" ]] &&                   DB_NAME="zeldamaps";
+  # debugPrint "databaseUser: $databaseUser";
+  # debugPrint "databasePassword: $([[ -n "$databasePassword" ]] && echo 'Set' || echo 'Not Set').";
+  # debugPrint "quiet: $quiet";
+  # debugPrint "verbose: $verbose";
+  # debugPrint "briefMessages: $briefMessages";
+  # debugPrint "pause: $pause";
+  # debugPrint "dryRun: $dryRun";
+  # debugPrint "failFast: $failFast";
+  # debugPrint "cleanOnFailure: $cleanOnFailure";
+  # debugPrint "converge: $converge";
+  # debugPrint "oneFile: $oneFile";
+  # debugPrint "dbName: $dbName";
+  # debugPrint "outputName: $outputName";
+  # debugPrint "dbDumpExe: $dbDumpExe";
+  # debugPrint "dbClientExe: $dbClientExe";
+}
 
-  # Loops as requirement.
-  while [[ -z "$MYSQL_USER" ]]; do
-    read -p "Database Username: " MYSQL_USER;
-  done
-  # Only asks once as optional if no other connection information is provided first.
-  if [[ -z "$MYSQL_PASS" ]]; then
-    if [[ -z "$MYSQL_CONNECTION_STRING" ]]; then
-      # echo "$MYSQL_CONNECTION_STRING" | grep -vq " -p" && \
-      # echo "$MYSQL_CONNECTION_STRING" | grep -vq " --password"; then
-      read -s -p "Database Password: " MYSQL_PASS;
-      echo;
-    fi
-  # else
-    #MYSQL_PASS="$(echo "$MYSQL_PASS" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
+## Usage message
+{
+  if [[ "$1" == '-h' || "$1" == '--help' ]]; then
+    echo 'Usage: $0 [-h|--help]';
+    echo;
+    echo 'Configuration:';
+    echo -e "\tbriefMessages  - Condenses verbose step command description messages to fit withing a single line of terminal width (hopefully..). (Current: $briefMessages)";
+    echo -e "\tcleanOnFailure - Removes result files when an error occurs with a step command. (Current: $cleanOnFailure)";
+    echo -e "\tconverge    - Enables mode to further process resultant SQL data so that it can be more efficiently compared. (Current: $converge)";
+    echo -e "\tdbClientExe    - The executable to use when issuing certain custom commands to the database server. (Current: $dbClientExe)";
+    echo -e "\tdbDumpExe      - The executable to use when exporting data from the database server. (Current: $dbDumpExe)";
+    echo -e "\tdbName         - The name of the database schema to work with. (Current: $dbName)";
+    echo -e "\tdryRun         - Output step commands, but do not execute them. (Current: $dryRun)";
+    echo -e "\tfailFast       - Stop when a single step encounters a problem. (Current: $failFast)";
+    echo -e "\toneFile        - Enables the mode to output result data in a single file in the root directory, versus separate ones in a respective subdirectory. (Current: $oneFile)";
+    echo -e "\toutputName     - Customizable name for the result directory or single file. (Current: $outputName)";
+    echo -e "\tpause          - Wait for the user to press the enter key to execute each step. (Current: $pause)";
+    echo -e "\tquiet          - Do not output anything. (Current: $quiet)";
+    echo -e "\tverbose        - Output more messages, such as the step commands being executed. (Current: $verbose)";
+    exit;
   fi
+}
 
-  [[ -z "$MYSQL_OTHER_CONNECTION_OPTIONS" ]] && MYSQL_OTHER_CONNECTION_OPTIONS="";
-  [[ -z "$MYSQL_CONNECTION_STRING" ]] && MYSQL_CONNECTION_STRING="$MYSQL_OTHER_CONNECTION_OPTIONS -u'$MYSQL_USER' -p'$MYSQL_PASS'";
+## Config message (condensed)
+{
+  if [[ "$1" == '-c' || "$1" == '--config' ]]; then
+    echo 'Configuration:';
+    echo -e "\tbriefMessages :  $(pTWSC "$briefMessages"  )";
+    echo -e "\tcleanOnFailure:  $(pTWSC "$cleanOnFailure" )";
+    echo -e "\tconverge      :  $(pTWSC "$converge"       )";
+    echo -e "\tdbClientExe   :  $dbClientExe"               ;
+    echo -e "\tdbDumpExe     :  $dbDumpExe"                 ;
+    echo -e "\tdbName        :  $dbName"                    ;
+    echo -e "\tdryRun        :  $(pTWSC "$dryRun"         )";
+    echo -e "\tfailFast      :  $(pTWSC "$failFast"       )";
+    echo -e "\toneFile       :  $(pTWSC "$oneFile"        )";
+    echo -e "\toutputName    :  $outputName"                ;
+    echo -e "\tpause         :  $(pTWSC "$pause"          )";
+    echo -e "\tquiet         :  $(pTWSC "$quiet"          )";
+    echo -e "\tverbose       :  $(pTWSC "$verbose"        )";
+    exit;
+  fi
 }
 
 ## Derived Configuration & Internal Variables
 {
-  mysqlDumpOtherOptions="--column-statistics=0";
-  # `marker_tab` looked like user data that could be skipped, but apparently not, as no markers appeared using the current query 'monster' :X
-  noAITables="user user_completed_marker";
+  samplesDir="$SDIR/../samples";
+
+  ## Database connection Details
+  {
+    # Loops as required.
+    while [[ -z "$databaseUser" ]]; do
+      read -p "Database Username: " databaseUser;
+    done
+
+    # Only asks once as optional if no other connection information is provided first.
+    if [[ -z "$databasePassword" ]]; then
+      if [[ -z "$DATABASE_CONNECTION_STRING" ]]; then
+        # echo "$DATABASE_CONNECTION_STRING" | grep -vq " -p" && \
+        # echo "$DATABASE_CONNECTION_STRING" | grep -vq " --password"; then
+        read -s -p "Database Password: " databasePassword;
+        echo;
+      fi
+    # else
+      #databasePassword="$(echo "$databasePassword" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
+    fi
+
+    # debugPrint "databasePassword: $databasePassword";
+    # echo "$databasePassword"
+    # echo "$databasePassword" | sed -r "s|([\`'\"\$])|\\\\\1|g";
+    # databasePassword="$(echo "$databasePassword" | sed -r "s|([\`'\"\$\\])|\\\\\1|g")";
+    # exit
+
+    # [[ -z "$otherConnectionOptions" ]] && otherConnectionOptions="";
+    [[ -z "$databaseConnectionString" ]] && databaseConnectionString="$otherConnectionOptions -u'$databaseUser' -p"$databasePassword"";
+  }
+
+  [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]] && dbDumpCommonOptions="--column-statistics=0"; # Is this a fix for using plain or also the dump mysql exes to connect to a Maria Server?
+  dbDumpCommonOptions="$dbDumpCommonOptions $databaseConnectionString";
+  dbDumpCommonOptions="$dbDumpCommonOptions $dbName";
+
+  if [[ -z "$dbClientCommonOptions" ]]; then
+    dbClientCommonOptions="$dbClientCommonOptions $databaseConnectionString";
+    dbClientCommonOptions="$dbClientCommonOptions --database=$dbName";
+    dbClientCommonOptions="$dbClientCommonOptions $verboseString";
+  fi
+
+  # `marker_tab` looked like user data that could be skipped, but apparently not, as no markers appeared using the current query 'monster' :X # Which monster specifically?  In the server code??
+  removeAITables='user user_completed_marker'; # With transformed data.
+  noDataTables='user_completed_marker';
+
   ignoreTablesOptions='';
-  for table in $noAITables; do ignoreTablesOptions+="--ignore-table='$DB_NAME.$table' "; done;
-  structureOptions="--no-data";
-  dataOptions="--no-create-info --skip-add-drop-table --skip-extended-insert";
-  if [[ "$VERBOSE" == "true" ]]; then
+  for table in $removeAITables; do
+    ignoreTablesOptions+="--ignore-table='$dbName.$table' ";
+  done
+
+  structureOnlyOptions="--no-data";
+  dataOnlyOptions="$dataOnlyOptions --no-create-info";
+  dataOnlyOptions="$dataOnlyOptions --skip-add-drop-table";
+  dataOnlyOptions="$dataOnlyOptions --skip-extended-insert";
+
+  if [[ "$verbose" == 'true' ]]; then
     errorRedirectionString="";
-    mysqlVerboseString="-v";
+    verboseString="-v";
   else
     errorRedirectionString="2>/dev/null";
-    mysqlVerboseString="";
+    verboseString="";
   fi
-  if [[ "$BRIEF_MESSAGES" == "true" ]]; then
+
+  if [[ "$briefMessages" == "true" ]]; then
     availableMessageCharacters="$(expr "$(tput cols)" - 12 - 3)"; # For the result messages, their wrapping characters, the message prefix, and then the ellipsis.
     messageRedirectionString="head --bytes=$availableMessageCharacters";
   else
     messageRedirectionString="cat";
   fi
-  # Additional SQL query function files to use but not modify.
-  generateDevUsersQueryFilePath="$SDIR/createSampleDatabaseExport-generateDevUsers.sql";
-  sqlizeSedFilePath="$SDIR/createSampleDatabaseExport-sqlize.sed";
-  convergeSedFilePath="$SDIR/createSampleDatabaseExport-converge.sed"
 
-  # Intermediate, temporary, working files to be deleted at the end of the process.
-  keepAIFilePath="$SAMPLES_DIR/01-structure_with-AI.sql";
-  toRemoveAIFilePath="$SAMPLES_DIR/02-structure_to-remove-AI.sql";
-  aiRemovedFilePath="$SAMPLES_DIR/03-structure_AI-removed.sql";
-  dataFilePath="$SAMPLES_DIR/04-data.sql";
-  sanitizedPartialUserDataFilePath="$SAMPLES_DIR/05-sanitizedPartialUserData.txt";
-  generatedDevUserDataFilePath="$SAMPLES_DIR/06-devUserData.sql";
+  generateDevUsersQueryFilePath="$SDIR/generateDevUsers.sql";
+              sqlizeSedFilePath="$SDIR/sqlize.sed";
+            convergeSedFilePath="$SDIR/converge.sed"
 
-  allIntermediateFilePaths="'$keepAIFilePath' '$toRemoveAIFilePath' '$aiRemovedFilePath' '$dataFilePath' '$sanitizedPartialUserDataFilePath' '$generatedDevUserDataFilePath'";
+  # Intermediate, temporary, working directories and files to be deleted at the end of the process, and a few other variables.
+  if [[ "$oneFile" = 'true' ]]; then
+        keepAIFilePath="$samplesDir/01-structure_keep-AI.sql";
+    toRemoveAIFilePath="$samplesDir/02-structure_to-remove-AI.sql";
+     aiRemovedFilePath="$samplesDir/03-structure_AI-removed.sql";
+          dataFilePath="$samplesDir/04-data.sql";
+    sanitizedPartialUserDataFilePath="$samplesDir/05-sanitizedPartialUserData.txt";
+    generatedDevUserDataFilePath="$samplesDir/06-devUserData.sql";
 
-  [[ "$CONVERGE_SQL" == "true" ]] && convergeSuffix="-converged";
+    allIntermediateFilePaths="            \
+      '$keepAIFilePath'                   \
+      '$toRemoveAIFilePath'               \
+      '$aiRemovedFilePath'                \
+      '$dataFilePath'                     \
+      '$sanitizedPartialUserDataFilePath' \
+      '$generatedDevUserDataFilePath'     \
+    ";
 
-  # Resultant, generated file to keep at the end of the process.
-  # completeFilePath="$SDIR/zeldamaps-complete.sql";
-  completeFilePath="$SAMPLES_DIR/tingle.sql"; # Since the it is already version-tracked, we can just overwrite the main file now.
-  completeConvergedFilePath="$SAMPLES_DIR/tingle$convergeSuffix.sql";
+    # Resultant, generated file to keep at the end of the process.
+    # completeFilePath="$SDIR/zeldamaps-complete.sql";
+    completeFilePath="$samplesDir/$outputName.sql"; # Since the DB is already internally version-tracked, we can just overwrite the main file now.
+    completeConvergedFilePath="$samplesDir/$outputName$convergeSuffix.sql";
+  else
+    completeDirPath="$samplesDir/$outputName";
+    [[ ! -d "$completeDirPath" && "$dryRun" != 'true' ]] && mkdir "$completeDirPath";
+  fi
+
+  [[ "$converge" == "true" ]] && convergeSuffix="-converged";
+
+  # debugPrint "samplesDir: $samplesDir";
+  # debugPrint "removeAITables: $removeAITables";
+  # debugPrint "dbDumpCommonOptions: $dbDumpCommonOptions";
+  # debugPrint "ignoreTablesOptions: $ignoreTablesOptions";
+  # debugPrint "structureOnlyOptions: $structureOnlyOptions";
+  # debugPrint "dataOnlyOptions: $dataOnlyOptions";
+  # debugPrint "errorRedirectionString: $errorRedirectionString";
+  # debugPrint "availableMessageCharacters: $availableMessageCharacters";
+  # debugPrint "messageRedirectionString: $messageRedirectionString";
+  # debugPrint "convergeSuffix: $convergeSuffix";
+  # debugPrint "tableNames: $tableNames";
 }
 
 ## Main Program Flow
 {
-  trap 'statusPrint "\n${RED}User cancels process.${NC}"; cleanAndExit 2;' INT KILL TERM STOP;
+  trap ' \
+    statusPrint "${RED}User cancels process; checking to clean now...${NC}"; \
+    cleanAndExit 1; \
+  ' INT KILL TERM STOP;
 
-  issueStep \
-    "Exporting majority of the database structure, keeping the auto increment values to match the data later on." \
-    "mysqldump $MYSQL_CONNECTION_STRING $mysqlDumpOtherOptions $mysqlVerboseString $structureOptions $ignoreTablesOptions --add-drop-database --databases $DB_NAME > '$keepAIFilePath' $errorRedirectionString" \
-  ;
+  # debugPrint "Script Start";
 
-  issueStep \
-    "Exporting the rest of the database structure, with no way to immediately remove the auto increment values to match not having data later on." \
-    "mysqldump $MYSQL_CONNECTION_STRING $mysqlDumpOtherOptions $mysqlVerboseString $structureOptions $DB_NAME $noAITables > '$toRemoveAIFilePath' $errorRedirectionString" \
-  ;
-
-  issueStep \
-    "Exporting majority of the database data, ignoring certain tables with more sensitive user or otherwise less useful data for development." \
-    "mysqldump $MYSQL_CONNECTION_STRING $mysqlDumpOtherOptions $mysqlVerboseString $dataOptions $ignoreTablesOptions $DB_NAME > '$dataFilePath' $errorRedirectionString" \
-  ;
-
-
-  issueStep \
-    "Exporting and sanitizing only the required user records by id, with their visiblity and level data for later use in development so that all markers can be displayed." \
-    "mysql $MYSQL_CONNECTION_STRING $mysqlVerboseString $DB_NAME > '$sanitizedPartialUserDataFilePath' $errorRedirectionString < '$generateDevUsersQueryFilePath'" \
-  ;
-
-  if [[ "$VERBOSE" == "true" ]]; then
+  ## Basic Preliminary Tests
+  {
     issueStep \
-      "Removing embedded verbose query." \
-      "sed -i '1,27d' '$sanitizedPartialUserDataFilePath'" \
+      'Test executing database client.' \
+      "type -t "$dbClientExe" > /dev/null";
+    issueStep \
+      'Test executing database dump.' \
+      "type -t "$dbDumpExe" > /dev/null";
+    issueStep \
+      'Test client connection to database.' \
+      "echo \
+      | '$dbClientExe' \
+        $dbClientCommonOptions \
+        $errorRedirectionString \
+      " \
     ;
+    issueStep \
+      'Test dump connection to database.' \
+      "'$dbDumpExe' \
+        $dbDumpCommonOptions \
+        > /dev/null \
+        $errorRedirectionString \
+      " \
+    ;
+  }
+
+  # debugPrint "oneFile: $oneFile";
+  if [[ "$oneFile" = 'true' ]]; then
+    ## Export to a single, ultimate combined file.
+    # debugPrint "oneFile Start";
+    issueStep \
+      "Exporting majority of the database structure, keeping the auto increment values to match the data later on." \
+      "'$dbDumpExe'             \
+        $dbDumpCommonOptions    \
+        $structureOnlyOptions   \
+        $ignoreTablesOptions    \
+        --add-drop-database     \
+        > '$keepAIFilePath'     \
+        $errorRedirectionString \
+      " \
+    ;
+
+    issueStepsRemoveAIValue \
+      "$toRemoveAIFilePath" \
+      "$aiRemovedFilePath"  \
+    ;
+
+    issueStep \
+      "Exporting majority of the database data, ignoring certain tables with more sensitive user or otherwise less useful data for development." \
+      "'$dbDumpExe'             \
+        $dbDumpCommonOptions    \
+        $dataOnlyOptions        \
+        $ignoreTablesOptions    \
+        > '$dataFilePath'       \
+        $errorRedirectionString \
+      " \
+    ;
+
+    issueStepsUserSanAndGen \
+      "$sanitizedPartialUserDataFilePath" \
+      "$generatedDevUserDataFilePath" \
+    ;
+
+    issueStep \
+      "Combining intermediate SQL files into a single convenient script for later import and version control." \
+      "cat \
+        '$keepAIFilePath' \
+        '$aiRemovedFilePath' \
+        '$dataFilePath' \
+        '$generatedDevUserDataFilePath' \
+        > '$completeFilePath' \
+      " \
+    ;
+
+    issueStepD2UConditional "$completeFilePath";
+
+    ## Converge Action
+    issueStepConverge               \
+      "$completeFilePath"           \
+      "$completeConvergedFilePath"  \
+    ;
+
+    # debugPrint "oneFile End";
+  else
+    # debugPrint "Not oneFile Start";
+    ## Export to multiple, individual files.
+    defaultTableNames="$(            \
+      "$dbClientExe"          \
+      $dbClientCommonOptions  \
+      -e 'SHOW TABLES'        \
+      --batch                 \
+      --skip-column-names     \
+    ;)";
+    [[ -z "$tableNames" ]] && tableNames="$defaultTableNames";
+    # debugPrint "defaultTableNames: $defaultTableNames";
+    # debugPrint "tableNames: $tableNames";
+
+    for tableName in $tableNames; do
+      # debugPrint "Table Start";
+      # debugPrint "tableName: $tableName";
+
+      if ! includes \
+        "$defaultTableNames" \
+        "$tableName" \
+      ; then
+        errorPrint "Table \"$tableName\" not found; exiting...";
+        exit 2;
+      fi
+
+      resultFile="$completeDirPath/$tableName.sql";
+      resultConvergedFilePath="$samplesDir/$completeDirPath/$tableName$convergeSuffix.sql";
+      # debugPrint "resultFile: $resultFile";
+
+      if includes \
+        "$removeAITables" \
+        "$tableName" \
+      ; then
+        # debugPrint "removeAITable Start";
+        ## Handle tables that require transforming data with an updated AI value.
+
+        toRemoveAIFilePath="$samplesDir/$tableName-01-structure_to-remove-AI.sql";
+        aiRemovedFilePath="$samplesDir/$tableName-02-structure_AI-removed.sql";
+
+        allIntermediateFilePaths=" \
+          '$toRemoveAIFilePath'    \
+          '$aiRemovedFilePath'     \
+        ";
+
+        issueStepsRemoveAIValue \
+          "$toRemoveAIFilePath" \
+          "$aiRemovedFilePath"  \
+          "$tableName"          \
+        ;
+
+        if includes \
+          "$noDataTables" \
+          "$tableName" \
+        ; then
+          # debugPrint "No Data Table Start";
+
+          issueStep \
+            "Simply using the only intermediate SQL file as the individual table script for later, more specific and efficient, import and version control." \
+            "mv \
+              '$aiRemovedFilePath'  \
+              '$resultFile'         \
+            " \
+          ;
+
+          # debugPrint "No Data Table End";
+        else
+          # debugPrint "Data Table Start";
+          sanitizedPartialUserDataFilePath="$samplesDir/$tableName-03-sanitizedPartialUserData.txt";
+          generatedDevUserDataFilePath="$samplesDir/$tableName-04-devUserData.sql";
+
+          allIntermediateFilePaths="            \
+            $allIntermediateFilePaths           \
+            '$sanitizedPartialUserDataFilePath' \
+            '$generatedDevUserDataFilePath'     \
+          ";
+
+          issueStepsUserSanAndGen               \
+            "$sanitizedPartialUserDataFilePath" \
+            "$generatedDevUserDataFilePath"     \
+          ;
+
+          issueStep \
+            "Combining intermediate SQL files into the individual table script for later, more specific and efficient, import and version control." \
+            "cat \
+              '$aiRemovedFilePath'            \
+              '$generatedDevUserDataFilePath' \
+              > '$resultFile'                 \
+            " \
+          ;
+
+          # debugPrint "Data Table End";
+        fi
+
+        issueStepClean;
+
+        # debugPrint "removeAITable End";
+      else
+        # debugPrint "Not removeAITable Start";
+
+        ## Handle tables that don't require transforming data with the same AI value.
+        issueStep \
+          "Exporting complete table \"$tableName\" to an individual completed result file, keeping the auto increment values to match the data later on." \
+          "'$dbDumpExe' \
+            $dbDumpCommonOptions    \
+            --skip-extended-insert  \
+            $tableName              \
+            > '$resultFile'         \
+            $errorRedirectionString \
+          " \
+        ;
+
+        # debugPrint "Not removeAITable End";
+      fi
+
+      issueStepD2UConditional "$resultFile";
+
+      ## Converge Action
+      issueStepConverge             \
+        "$resultFile"               \
+        "$resultConvergedFilePath"  \
+      ;
+
+      # debugPrint "Table End";
+    done
+
+    # debugPrint "Not oneFile End";
   fi
 
-  issueStep \
-    "Preparing the generated user data into a SQL format." \
-    "sed -i -r -f '$sqlizeSedFilePath' '$sanitizedPartialUserDataFilePath'" \
-  ;
-
-  issueStep \
-    "Writing SQL INSERT header." \
-    "echo 'INSERT INTO \`user\`' > '$generatedDevUserDataFilePath'" \
-  ;
-
-  issueStep \
-    "Writing header data fields." \
-    "head -n 1 '$sanitizedPartialUserDataFilePath' >> '$generatedDevUserDataFilePath'" \
-  ;
-  issueStep \
-    "Writing intermediate VALUES term." \
-    "echo 'VALUES' >> '$generatedDevUserDataFilePath'" \
-  ;
-  issueStep \
-    "Writing data fields." \
-    "tail -n +2 '$sanitizedPartialUserDataFilePath' >> '$generatedDevUserDataFilePath'" \
-  ;
-  #   "tail -n +2 dev/db/userLevels.txt | sed -r 's|([[:digit:]]+)\s+([[:digit:]]+)\s+([[:digit:]]+)|\(\1, \'test\1\', \'test\1\', \2, \3\)|g'";
-  issueStep \
-    "Writing terminating colon." \
-    "echo ';' >> '$generatedDevUserDataFilePath'" \
-  ;
-
-
-  issueStep \
-    "Removing auto increment values in sensitive data table schemas." \
-    "sed -r 's| AUTO_INCREMENT=[[:digit:]]+||g' '$toRemoveAIFilePath' > '$aiRemovedFilePath'" \
-  ;
-
-  issueStep \
-    "Combining intermediate SQL files into a single convenient script for later import and version control." \
-    "cat '$keepAIFilePath' '$aiRemovedFilePath' '$dataFilePath' '$generatedDevUserDataFilePath' > '$completeFilePath'" \
-  ; # "cat '$keepAIFilePath' '$aiRemovedFilePath' '$dataFilePath' > '$completeFilePath'" \
-
-  issueStep \
-    "Converting result to Unix-style LF-only line endings." \
-    "dos2unix '$completeFilePath'" \
-  ;
-
-  clean;
-
-  if [[ "$CONVERGE_SQL" == "true" ]]; then
-    issueStep \
-      "Converging database SQL formats by eliminating less important details." \
-      "sed -r -f '$convergeSedFilePath' '$completeFilePath' > '$completeConvergedFilePath'" \
-    ;
-
+  ## Converge Warning Message
+  if [[ "$converge" == "true" ]]; then
     echo;
-    echo "Important Note: The 'CONVERGE_SQL' option is enabled.  Do NOT store these exported SQL files permanently in source control OR import them into any database.  They are for comparing important differences more easily and quickly by removing any less important differences that may be defaults or other details.  The data differences are ONLY to be manually and carefully reviewed and ported through migrations using the more exact, unique, and explicit details to converge the databases more properly.";
+    echo "Important Note: The 'converge' option is enabled.  Do NOT store these exported SQL files permanently in source control OR import them into any database!
+    They are for comparing important differences more easily and quickly by removing any less important or always differing information such as defaults and other details *to the content*, but are still important for proper function for the data in its respective sources.
+    The data differences are ONLY to be manually and carefully reviewed, ported through migrations using the more exact, unique, and explicit details to converge the databases more properly, then deleted after committing those migration code files.";
   fi
+  # debugPrint "Script End";
 }

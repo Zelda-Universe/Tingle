@@ -8,21 +8,9 @@
 
 ## General Function Library
 
-not type -q 'altPrint'; and function altPrint
-  echo $argv 1>&2;
-end
-
-not type -q 'debugPrint'; and function debugPrint
-  if test "$__DEBUG__" = "true"
-    altPrint -n "DEBUG: ";
-    altPrint $argv;
-  end
-end
-
-not type -q 'userWait'; and function userWait
-	test "$manualStep" = "true";
-  and read -P 'Press enter to continue...' 1>&2 < /dev/tty;
-end
+source "$SDIR/../../scripts/common/altPrint.fish";
+source "$SDIR/../../scripts/common/debugPrint.fish";
+source "$SDIR/../../scripts/common/userWaitConditional.fish";
 
 ## Step Function Library
 
@@ -163,7 +151,7 @@ function step3 --argument-names outDir
 
     echo "$CMD_DURATION" > "$outTrialsDir/$zoomLevel/2 - Cutting.txt";
 
-  	userWait;
+  	userWaitConditional;
   end
 
   popd;
@@ -267,7 +255,7 @@ if test "$cleanFirst" = "true"
 	echo "Cleaning the output (not work sub-) directory and exiting...";
 	find "$outDir" -maxdepth 1 -type f -iname "*.png" -delete;
 	find "$outDir" -regextype posix-extended -maxdepth 1 -type d -iregex '.*?/[0-9]+$' -exec rm -rf '{}' \;;
-	userWait;
+	userWaitConditional;
 end
 
 # Required settings validation
@@ -298,8 +286,8 @@ mkdir -p "$outTrialsDir";
 # Maybe make step 1 optional only if the user provided a custom argument for it,
 # but it's several....
 step1;
-userWait;
+userWaitConditional;
 echo "$processSteps" | grep -qE "\b2\b"; and step2 "$srcFile";
-userWait;
+userWaitConditional;
 echo "$processSteps" | grep -qE "\b3\b"; and step3 "$outDir";
-userWait;
+userWaitConditional;

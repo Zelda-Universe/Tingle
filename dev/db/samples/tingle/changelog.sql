@@ -48,9 +48,9 @@ INSERT INTO `changelog` VALUES (7,0,3,0,'Don\'t show this again has been fixed. 
 INSERT INTO `changelog` VALUES (8,0,3,0,'(Admins only) Ability to draw lines and polygons. Soon, we will have paths for Koroks, side-quests, etc.');
 INSERT INTO `changelog` VALUES (9,0,3,0,'The following markers were extracted from the game files and their position are considered final: Koroks, Shrines, Towers, Villages, Stables, Great Fairies! More to come...');
 INSERT INTO `changelog` VALUES (10,0,4,0,'Remember to right-click (Desktop) or long press (Mobile) to set a marker as complete!');
-INSERT INTO `changelog` VALUES (11,0,4,0,'1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books and Cooking Pots. These markers were extracted from the game files and their position are considered final, along with Koroks, Shrines, Towers, Villages, Stables, Great Fairies!');
+INSERT INTO `changelog` VALUES (11,0,4,0,'1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books, and Cooking Pots. These markers were extracted from the game files and their position are considered final, along with Koroks, Shrines, Towers, Villages, Stables, Great Fairies!');
 INSERT INTO `changelog` VALUES (12,0,5,0,'Completed markers are tied to your account!');
-INSERT INTO `changelog` VALUES (13,0,5,0,'You can now select multiple categories at the same type.');
+INSERT INTO `changelog` VALUES (13,0,5,0,'You can now select multiple categories at the same time.');
 INSERT INTO `changelog` VALUES (14,0,5,0,'The top left box can now be collapsed.');
 INSERT INTO `changelog` VALUES (15,0,5,0,'Marker clustering has been disabled (experimental?).');
 INSERT INTO `changelog` VALUES (16,0,5,0,'Markers now show up according to zoom.');
@@ -88,4 +88,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-30 14:31:35
+-- Dump completed on 2023-03-31 21:35:08

@@ -129,11 +129,12 @@
         	versiontag =
         ```
     * Install database migration creation framework tool, and run it.
-      * Install Ruby
-        * I used 2.4.1/.
-      * Install RubyGems
+      * Install Ruby and its development header files too.
+        * I used 2.4.1/3.1.3.
+      * Install/Update RubyGems
         * https://rubygems.org/pages/download
-        * I used 2.6.11/.
+        * I used 2.6.11/3.3.26/3.4.10.
+          * `gem update --system`
       * Install the migration tool, and its dependencies
         * Note: If you use Cygwin or other Linux-like environments like msys2 or mingw, be careful that they don't interfere with gems that require native installation at least like nokogiri, but also possibly mysql2 as well.
           * I removed the Cygwin ruby package and installed the native Windows one using the installer that bundles the devkit to help.  Then I had some stray `gem`, `rake`, and `*mingw*` commands in my Cygwin environment possibly without a proper package, so I just removed them, and also made fish functions to call them by their Windows-style paths.  I stopped getting install errors after that like configure with an `*-ar` executable, failed to apply a patch by not finding a file that is actually there, etc.
@@ -151,12 +152,13 @@
           * It fixes a particular issue when running several of the commands, but doesn't pass several tests O_o.
           * Some commands might not work, but the main ones I have used so far only print a stack trace for the error, but still work.
         * The automatic way
-          * Install the 2 troublesome gems above in the note manually first.
-          * `gem install bundler`
+          * Install/Update the 2 troublesome gems above in the note manually first.
+          * `gem install bundler` (2.4.10)
+            * `bundle update standalone_migrations`
           * `bundle install`
         * `dev/db/config.yml.example dev/db/config.yml`
           * Configure like the `.env` file, but use a different account that is more privileged for managing the database.
-            * Hopefully never using the `root` in a script, so just make another similar to the first one made for the project, use a different password, and add these additional permissions: `ALTER, CREATE, CREATE TEMPORARY TABLES, DELETE, DROP, LOCK TABLES, REFERENCES, INDEX`.
+            * Hopefully never using the `root` in a script, so just make another similar to the first one made for the project, use a different password, and add these additional permissions: `ALTER, CREATE, CREATE TEMPORARY TABLES, DELETE, DROP, INSERT, LOCK TABLES, REFERENCES, INDEX`.
               * `PROCESS` is also needed for the export script, and is a global privilege.
             * This set could be reduced, but it's what I chose for now..
           * Note which environment you are configuring for and use the appropriate section.

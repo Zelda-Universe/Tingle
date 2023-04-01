@@ -143,8 +143,8 @@
 
   Common Commands:
     Create a new migration:
-      `rake db:new_migration name=foo_bar_migration`
-      Then edit it with your features's details.
+      `rake db:new_migration name=(read)`
+      Then edit it with your features' details.
     To apply your newest migration:
       `rake db:migrate`
     To migrate to a specific version (for example to rollback)
@@ -165,6 +165,21 @@
     This tool does also help with naming and the content for the class at least, and I create new files with this customized command:
     `rake db:new_migration name=(read | tr ' ' '_')`
 
+  Samples:
+    - Execute Raw SQL:
+      - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
+      - Inline statement:
+        - ```
+          execute <<-SQL
+            UPDATE `user` SET `seen_latest_changelog` = 0;
+          SQL
+          ```
+      - External file:
+        - ```
+          execute File.open('dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql').read
+          ```
+      - Multiple Queries:
+        - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
   More Info:
     http://edgeguides.rubyonrails.org/active_record_migrations.html
     https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/

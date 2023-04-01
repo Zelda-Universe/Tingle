@@ -96,12 +96,14 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   issueCommand() {
     # debugPrint 'issueCommand Start';
     commandString="$1";
-    commandString="$(echo "$commandString" | sed 's|"|\\"|g')";
+    # debugPrint "commandString: $commandString";
+    # commandString="$(echo "$commandString" | sed 's|"|\\"|g')";
+    # debugPrint "commandString: $commandString";
 
     if [[ "$dryRun" == "false" ]]; then
       eval "$commandString";
       commandStatus="$?";
-      # debugPrint "issueCommand commandStatus: $commandStatus";
+      # debugPrint "commandStatus: $commandStatus";
       if [[ "$commandStatus" -eq '0' ]]; then
         # debugPrint 'issueCommand Success';
         statusPrint "[${GREEN}Success${NC}] ";
@@ -125,6 +127,14 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint 'issueCommand End';
   }
 
+  cleanAndExit() {
+    exitStatusToApply="${1:-2}";
+    # statusPrint "\n";
+    issueStepClean;
+    statusPrint "Exiting...";
+    exit "$exitStatusToApply";
+  }
+
   issueStepClean() {
     # [[ -n "$allIntermediateDirPaths" ]] && \
     # issueStep \
@@ -136,14 +146,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       "Cleaning the no longer needed intermediate SQL files." \
       "rm -f $allIntermediateFilePaths" \
     ;
-  }
-
-  cleanAndExit() {
-    exitStatusToApply="${1:-2}";
-    # statusPrint "\n";
-    issueStepClean;
-    statusPrint "Exiting...";
-    exit "$exitStatusToApply";
   }
 
   issueStepD2UConditional() {
@@ -270,19 +272,41 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint 'issueStepsUserSanAndGen End';
   }
 
-  issueStepConverge() {
+  issueStepConvergePrepareConditional() {
+    filePath="$1";
+
+    if [[                             \
+        "$converge" == "true"         \
+    &&  "$convergeInPlace" == "true"  \
+    ]]; then
+      issueStep \
+        "Preparing existing data for later converging replacement." \
+        "bakStr=\"\$(grep -P '^-- Dump completed on (.+)?\$' '$filePath')\"" \
+      ;
+    fi
+  }
+
+  issueStepConvergeConditional() {
     filePath="$1";
     convergedFilePath="$2";
+
     if [[ "$converge" == "true" ]]; then
-      convergedFilePath="";
-      issueStep \
-        "Converging database SQL formats by eliminating less important details." \
-        "sed -r -f \
-          '$convergeSedFilePath' \
-          '$filePath' \
-          > '$convergedFilePath' \
-        " \
-      ;
+      if [[ "$convergeInPlace" == "true" ]]; then
+        issueStep \
+          "Converging database SQL formats by replacing less important details with those from the previous file." \
+          "sed -r -i 's|^-- Dump completed on (.+)?\$|$bakStr|' '$filePath';
+          " \
+        ;
+      else
+        issueStep \
+          "Converging database SQL formats by eliminating less important details." \
+          "sed -r -f                \
+            '$convergeSedFilePath'  \
+            '$filePath'             \
+            > "$convergedFilePath";
+          " \
+        ;
+      fi
     fi
   }
 }
@@ -308,7 +332,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   [[ -z "$dryRun" ]]           &&              dryRun="false" ;
   [[ -z "$failFast" ]]         &&            failFast="true"  ;
   [[ -z "$cleanOnFailure" ]]   &&      cleanOnFailure="true"  ;
-  [[ -z "$converge" ]]      &&         converge="false" ;
+  [[ -z "$converge" ]]         &&            converge="false" ;
+  [[ -z "$convergeInPlace" ]]  &&     convergeInPlace="false" ;
   [[ -z "$oneFile" ]]          &&             oneFile="false" ;
   [[ -z "$dbName" ]]           &&              dbName="tingle";
   [[ -z "$outputName" ]]       &&          outputName="tingle";
@@ -325,55 +350,12 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   # debugPrint "failFast: $failFast";
   # debugPrint "cleanOnFailure: $cleanOnFailure";
   # debugPrint "converge: $converge";
+  # debugPrint "convergeInPlace: $convergeInPlace";
   # debugPrint "oneFile: $oneFile";
   # debugPrint "dbName: $dbName";
   # debugPrint "outputName: $outputName";
   # debugPrint "dbDumpExe: $dbDumpExe";
   # debugPrint "dbClientExe: $dbClientExe";
-}
-
-## Usage message
-{
-  if [[ "$1" == '-h' || "$1" == '--help' ]]; then
-    echo 'Usage: $0 [-h|--help]';
-    echo;
-    echo 'Configuration:';
-    echo -e "\tbriefMessages  - Condenses verbose step command description messages to fit withing a single line of terminal width (hopefully..). (Current: $briefMessages)";
-    echo -e "\tcleanOnFailure - Removes result files when an error occurs with a step command. (Current: $cleanOnFailure)";
-    echo -e "\tconverge    - Enables mode to further process resultant SQL data so that it can be more efficiently compared. (Current: $converge)";
-    echo -e "\tdbClientExe    - The executable to use when issuing certain custom commands to the database server. (Current: $dbClientExe)";
-    echo -e "\tdbDumpExe      - The executable to use when exporting data from the database server. (Current: $dbDumpExe)";
-    echo -e "\tdbName         - The name of the database schema to work with. (Current: $dbName)";
-    echo -e "\tdryRun         - Output step commands, but do not execute them. (Current: $dryRun)";
-    echo -e "\tfailFast       - Stop when a single step encounters a problem. (Current: $failFast)";
-    echo -e "\toneFile        - Enables the mode to output result data in a single file in the root directory, versus separate ones in a respective subdirectory. (Current: $oneFile)";
-    echo -e "\toutputName     - Customizable name for the result directory or single file. (Current: $outputName)";
-    echo -e "\tpause          - Wait for the user to press the enter key to execute each step. (Current: $pause)";
-    echo -e "\tquiet          - Do not output anything. (Current: $quiet)";
-    echo -e "\tverbose        - Output more messages, such as the step commands being executed. (Current: $verbose)";
-    exit;
-  fi
-}
-
-## Config message (condensed)
-{
-  if [[ "$1" == '-c' || "$1" == '--config' ]]; then
-    echo 'Configuration:';
-    echo -e "\tbriefMessages :  $(pTWSC "$briefMessages"  )";
-    echo -e "\tcleanOnFailure:  $(pTWSC "$cleanOnFailure" )";
-    echo -e "\tconverge      :  $(pTWSC "$converge"       )";
-    echo -e "\tdbClientExe   :  $dbClientExe"               ;
-    echo -e "\tdbDumpExe     :  $dbDumpExe"                 ;
-    echo -e "\tdbName        :  $dbName"                    ;
-    echo -e "\tdryRun        :  $(pTWSC "$dryRun"         )";
-    echo -e "\tfailFast      :  $(pTWSC "$failFast"       )";
-    echo -e "\toneFile       :  $(pTWSC "$oneFile"        )";
-    echo -e "\toutputName    :  $outputName"                ;
-    echo -e "\tpause         :  $(pTWSC "$pause"          )";
-    echo -e "\tquiet         :  $(pTWSC "$quiet"          )";
-    echo -e "\tverbose       :  $(pTWSC "$verbose"        )";
-    exit;
-  fi
 }
 
 ## Derived Configuration & Internal Variables
@@ -449,8 +431,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   fi
 
   generateDevUsersQueryFilePath="$SDIR/generateDevUsers.sql";
-              sqlizeSedFilePath="$SDIR/sqlize.sed";
-            convergeSedFilePath="$SDIR/converge.sed"
+              sqlizeSedFilePath="$SDIR/sqlize.sed"          ;
+            convergeSedFilePath="$SDIR/converge.sed"        ;
 
   # Intermediate, temporary, working directories and files to be deleted at the end of the process, and a few other variables.
   if [[ "$oneFile" = 'true' ]]; then
@@ -479,7 +461,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     [[ ! -d "$completeDirPath" && "$dryRun" != 'true' ]] && mkdir "$completeDirPath";
   fi
 
-  [[ "$converge" == "true" ]] && convergeSuffix="-converged";
+  [[ "$convergeInPlace" == 'true' && "$converge" != 'true' ]] \
+  && converge='true';
+  [[ "$converge" == 'true' && "$convergeInPlace" != 'true' ]] \
+  && convergeSuffix="-converged";
 
   # debugPrint "samplesDir: $samplesDir";
   # debugPrint "removeAITables: $removeAITables";
@@ -492,6 +477,52 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   # debugPrint "messageRedirectionString: $messageRedirectionString";
   # debugPrint "convergeSuffix: $convergeSuffix";
   # debugPrint "tableNames: $tableNames";
+}
+
+## Usage message
+{
+  if [[ "$1" == '-h' || "$1" == '--help' ]]; then
+    echo 'Usage: $0 [-h|--help]';
+    echo;
+    echo 'Configuration:';
+    echo -e "\tbriefMessages  - Condenses verbose step command description messages to fit withing a single line of terminal width (hopefully..). (Current: $briefMessages)";
+    echo -e "\tcleanOnFailure - Removes result files when an error occurs with a step command. (Current: $cleanOnFailure)";
+    echo -e "\tconverge    - Enables mode to further process resultant SQL data so that it can be more efficiently compared. (Current: $converge)";
+    echo -e "\tconvergeInPlace - Like converge, but does not alter the result file name, and runs an alternate, more limited, set of pattern replacements to better show only content changes with the primary samples. Do not store this!! (Current: $convergeInPlace)";
+    echo -e "\tdbClientExe    - The executable to use when issuing certain custom commands to the database server. (Current: $dbClientExe)";
+    echo -e "\tdbDumpExe      - The executable to use when exporting data from the database server. (Current: $dbDumpExe)";
+    echo -e "\tdbName         - The name of the database schema to work with. (Current: $dbName)";
+    echo -e "\tdryRun         - Output step commands, but do not execute them. (Current: $dryRun)";
+    echo -e "\tfailFast       - Stop when a single step encounters a problem. (Current: $failFast)";
+    echo -e "\toneFile        - Enables the mode to output result data in a single file in the root directory, versus separate ones in a respective subdirectory. (Current: $oneFile)";
+    echo -e "\toutputName     - Customizable name for the result directory or single file. (Current: $outputName)";
+    echo -e "\tpause          - Wait for the user to press the enter key to execute each step. (Current: $pause)";
+    echo -e "\tquiet          - Do not output anything. (Current: $quiet)";
+    echo -e "\tverbose        - Output more messages, such as the step commands being executed. (Current: $verbose)";
+    exit;
+  fi
+}
+
+## Config message (condensed)
+{
+  if [[ "$1" == '-c' || "$1" == '--config' ]]; then
+    echo 'Configuration:'                                     ;
+    echo -e "\tbriefMessages  :  $(pTWSC "$briefMessages"   )";
+    echo -e "\tcleanOnFailure :  $(pTWSC "$cleanOnFailure"  )";
+    echo -e "\tconverge       :  $(pTWSC "$converge"        )";
+    echo -e "\tconvergeInPlace:  $(pTWSC "$convergeInPlace" )";
+    echo -e "\tdbClientExe    :  $dbClientExe"                ;
+    echo -e "\tdbDumpExe      :  $dbDumpExe"                  ;
+    echo -e "\tdbName         :  $dbName"                     ;
+    echo -e "\tdryRun         :  $(pTWSC "$dryRun"          )";
+    echo -e "\tfailFast       :  $(pTWSC "$failFast"        )";
+    echo -e "\toneFile        :  $(pTWSC "$oneFile"         )";
+    echo -e "\toutputName     :  $outputName"                 ;
+    echo -e "\tpause          :  $(pTWSC "$pause"           )";
+    echo -e "\tquiet          :  $(pTWSC "$quiet"           )";
+    echo -e "\tverbose        :  $(pTWSC "$verbose"         )";
+    exit;
+  fi
 }
 
 ## Main Program Flow
@@ -533,6 +564,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   if [[ "$oneFile" = 'true' ]]; then
     ## Export to a single, ultimate combined file.
     # debugPrint "oneFile Start";
+
+    issueStepConvergePrepareConditional "$completeFilePath";
+
     issueStep \
       "Exporting majority of the database structure, keeping the auto increment values to match the data later on." \
       "'$dbDumpExe'             \
@@ -580,7 +614,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     issueStepD2UConditional "$completeFilePath";
 
     ## Converge Action
-    issueStepConverge               \
+    issueStepConvergeConditional    \
       "$completeFilePath"           \
       "$completeConvergedFilePath"  \
     ;
@@ -603,7 +637,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     for tableName in $tableNames; do
       # debugPrint "Table Start";
       # debugPrint "tableName: $tableName";
-
       if ! includes \
         "$defaultTableNames" \
         "$tableName" \
@@ -613,8 +646,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       fi
 
       resultFile="$completeDirPath/$tableName.sql";
-      resultConvergedFilePath="$samplesDir/$completeDirPath/$tableName$convergeSuffix.sql";
+      resultConvergedFilePath="$completeDirPath/$tableName$convergeSuffix.sql";
       # debugPrint "resultFile: $resultFile";
+
+      issueStepConvergePrepareConditional "$resultFile";
 
       if includes \
         "$removeAITables" \
@@ -704,7 +739,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       issueStepD2UConditional "$resultFile";
 
       ## Converge Action
-      issueStepConverge             \
+      issueStepConvergeConditional  \
         "$resultFile"               \
         "$resultConvergedFilePath"  \
       ;
@@ -718,7 +753,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   ## Converge Warning Message
   if [[ "$converge" == "true" ]]; then
     echo;
-    echo "Important Note: The 'converge' option is enabled.  Do NOT store these exported SQL files permanently in source control OR import them into any database!
+    echo "Important Note: The 'converge' option is enabled.  Do NOT store these exported SQL files permanently in source control OR import them into any database, ESPECIALLY if they are overwritten in place!
     They are for comparing important differences more easily and quickly by removing any less important or always differing information such as defaults and other details *to the content*, but are still important for proper function for the data in its respective sources.
     The data differences are ONLY to be manually and carefully reviewed, ported through migrations using the more exact, unique, and explicit details to converge the databases more properly, then deleted after committing those migration code files.";
   fi

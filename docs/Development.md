@@ -166,6 +166,14 @@
     `rake db:new_migration name=(read | tr ' ' '_')`
 
   Samples:
+    - ActiveRecord Ruby Code
+      - Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
+      - Add column:
+        - `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
+        - dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb
+      - Change column null property:
+        - `t.change_null :content, false`
+        - dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb
     - Execute Raw SQL:
       - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
       - Inline statement:
@@ -181,7 +189,7 @@
       - Multiple Queries:
         - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
   More Info:
-    http://edgeguides.rubyonrails.org/active_record_migrations.html
+    http://guides.rubyonrails.org/active_record_migrations.html
     https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
 
 ## MySQL Workbench (MWB) File Handling

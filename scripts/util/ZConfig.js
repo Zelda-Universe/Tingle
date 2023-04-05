@@ -20,7 +20,7 @@ ZConfig = {
 
 // Main config set-up with defaults
 
-// "exact", "focus" (Jason's default)
+// "exact", "focus" (ZU default)
 ZConfig.setConfig("categorySelectionMethod", "focus");
 ZConfig.setConfig("tilesBaseURL", "https://zeldamaps.com/tiles/");
 ZConfig.setConfig("zoomDirectories", 'false');

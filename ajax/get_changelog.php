@@ -53,6 +53,7 @@
     $sqlGroup               = "GROUP BY `version`";
   } else {
     $sqlSelectUnseenVersion = "SELECT MAX($sqlVersionFieldsConcat) `version`";
+    $sqlGroup               = "";
   }
   // $resDebug['_GET["allSince"]'] = $_GET["allSince"];
   if(!$settingIncludeHidden) {

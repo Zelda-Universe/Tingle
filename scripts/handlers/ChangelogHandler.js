@@ -51,13 +51,6 @@ ChangelogHandler.prototype._fetchChangelogEntriesByCookie = function(seenChangel
   }.bind(this));
 };
 
-ChangelogHandler.prototype._notifyChangelogVersionUpdates = function(entries, user) {
-  var entriesByVersion = this._groupChangelogEntriesByVersion(entries);
-  for (version in entriesByVersion) {
-    this._notifyChangelogVersionUpdate(version, entriesByVersion[version], user);
-  }
-};
-
 ChangelogHandler.prototype._groupChangelogEntriesByVersion = function(entries) {
   return groupObjects({
     arrayOfObjects: entries,
@@ -98,4 +91,11 @@ ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, ver
   })
   .css(this.notificationWidth);
   // Width-setting from the old code, in case we decide to not use the full top placement.
+};
+
+ChangelogHandler.prototype._notifyChangelogVersionUpdates = function(entries, user) {
+  var entriesByVersion = this._groupChangelogEntriesByVersion(entries);
+  for (version in entriesByVersion) {
+    this._notifyChangelogVersionUpdate(version, entriesByVersion[version], user);
+  }
 };

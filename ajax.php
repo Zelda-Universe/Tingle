@@ -1,6 +1,7 @@
 <?php
     include_once(__DIR__.'/config.php');
     include_once(__DIR__.'/lib/common/database.php');
+    include_once(__DIR__.'/lib/common/session.php');
     open();
 
     if(!isset($_GET["command"])) {

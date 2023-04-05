@@ -138,42 +138,39 @@
   It seems we must only pass a single SQL statement per block to avoid a security risk, otherwise it keeps receiving a syntax error only when sent through the migration framework.. https://stackoverflow.com/questions/14856856/how-to-write-sql-in-a-migration-in-rails#comment86794302_42991237
   `Mysql2::Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UPDATE....'`
 
-  Important Note:
-    Do not edit a migration that has been pushed (to others).
+  Important Note: Do not edit a migration that has been pushed (to others).
 
-  Common Commands:
-    Create a new migration:
-      `rake db:new_migration name=(read)`
-      Then edit it with your features' details.
-    To apply your newest migration:
-      `rake db:migrate`
-    To migrate to a specific version (for example to rollback)
-      `rake db:migrate VERSION=20081220234130`
-    To migrate a specific database (for example your "testing" database)
-      `rake db:migrate RAILS_ENV=test`
-    To execute a specific up/down of one single migration
-      `rake db:migrate:up VERSION=20081220234130`
-    To revert your last migration
-      `rake db:rollback`
-    To revert your last 3 , and migrations
-      `rake db:rollback STEP=3`
-    Check which version of the tool you are currently using
-      `rake db:version`
+  - Common Commands:
+    - Create a new migration:
+      - `rake db:new_migration name=(read)`
+        - Change name subshell to read `read | tr ' ' '_'` on Windows to prevent carriage return characters causing problems.
+      - Then edit content with your features' details.
+    - To apply your newest migration:
+      - `rake db:migrate`
+    - To migrate to a specific version (for example to rollback)
+      - `rake db:migrate VERSION=20081220234130`
+    - To migrate a specific database (for example your "testing" database)
+      - `rake db:migrate RAILS_ENV=test`
+    - To execute a specific up/down of one single migration
+      - `rake db:migrate:up VERSION=20081220234130`
+    - To revert your last migration
+      - `rake db:rollback`
+    - To revert your last 3 , and migrations
+      - `rake db:rollback STEP=3`
+    - Check which version of the tool you are currently using
+      - `rake db:version`
+    - Manually generate a timestamp:
+      - `date -u "+%Y%m%d%H%M%S" | putclip`
 
-    If you want to make a timestamp yourself, you can use this command:
-    `date -u "+%Y%m%d%H%M%S" | putclip`
-    This tool does also help with naming and the content for the class at least, and I create new files with this customized command:
-    `rake db:new_migration name=(read | tr ' ' '_')`
-
-  Samples:
+  - Samples:
     - ActiveRecord Ruby Code
       - Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
       - Add column:
         - `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
-        - dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb
+        - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
       - Change column null property:
         - `t.change_null :content, false`
-        - dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb
+        - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
     - Execute Raw SQL:
       - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
       - Inline statement:
@@ -184,13 +181,15 @@
           ```
       - External file:
         - ```
-          execute File.open('dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql').read
+          execute File.open(
+            'dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql'
+          ).read
           ```
       - Multiple Queries:
         - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
-  More Info:
-    http://guides.rubyonrails.org/active_record_migrations.html
-    https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
+  - More Info:
+    - http://guides.rubyonrails.org/active_record_migrations.html
+    - https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
 
 ## MySQL Workbench (MWB) File Handling
 

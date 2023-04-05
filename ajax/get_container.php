@@ -1,7 +1,10 @@
 <?php
+  // debug_log("get_container START");
+
    $path = __DIR__;
 
    $map = $_GET["game"];
+   // debug_log("map: $map");
 
    $query = 'select id
                   , name
@@ -46,4 +49,6 @@
         $res[] = $row;
    }
    echo json_encode($res);
+
+  // debug_log("get_container END");
 ?>

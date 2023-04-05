@@ -176,18 +176,18 @@ function getUrlParamValue(vParamName, vDefaultValue) {
    return vParamName;
 };
 
-function KeyPress(e) {
-      var evtobj = window.event? event : e
+function globalKeyPressHandler(e) {
+  var evtobj = window.event? event : e
 
-      if (evtobj.key == 'z' && (
-           ((OSName != 'MacOS') && evtobj.ctrlKey) ||
-           ((OSName == 'MacOS') && evtobj.metaKey)
-         )) {
-         zMap.undoMarkerComplete();
-      }
+  if (evtobj.key == 'z' && (
+    ((OSName != 'MacOS') && evtobj.ctrlKey) ||
+    ((OSName == 'MacOS') && evtobj.metaKey)
+    )) {
+    zMap.undoMarkerComplete();
+  }
 }
 
-$(document).on('keydown', KeyPress);
+$(document).on('keydown', globalKeyPressHandler);
 
 // Initial Load
 //  Get map that we want to load (the game ID)

@@ -1,7 +1,10 @@
 <?php
+  // debug_log("get_container_name START");
+
    $path = __DIR__;
 
    $game = $_GET["game"];
+   // debug_log("game: $game");
 
    $query = "select name
                from " . $map_prefix . "container c
@@ -18,4 +21,6 @@
 
    $row = $result->fetch_array();
    echo json_encode(array("success"=>true,"name"=>$row['name']));
+
+  // debug_log("get_container_name END");
 ?>

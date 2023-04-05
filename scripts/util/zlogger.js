@@ -11,6 +11,7 @@ function ZLogger(opts) {
   this.console = opts.console;
 };
 
+
 [
   "info",
   "warning",
@@ -19,35 +20,41 @@ function ZLogger(opts) {
   "exception",
   "debug"
 ].forEach(function(methodName) {
-  Object.defineProperty(
-    ZLogger.prototype,
-    methodName,
-    {
-      value: function(opts) {
-        opts = opts || {};
+  // Why are there double definitions sometimes.
+  // All unloaded with page refresh, so updating res js minified file should not be a trigger, right?
+  if(ZLogger.prototype[methodName]) {
+    console.error("ZLogger.prototype's \""+methodName+"\" already defined.");
+  } else {
+    Object.defineProperty(
+      ZLogger.prototype,
+      methodName,
+      {
+        value: function(opts) {
+          opts = opts || {};
 
-        var returnVal;
+          var returnVal;
 
-        if (
-          this.notification && (
-            opts.notification === undefined ||
-            opts.notification
+          if (
+            this.notification && (
+              opts.notification === undefined ||
+              opts.notification
+            )
           )
-        )
-          returnVal = toastr[methodName].apply(toastr, arguments)
+            returnVal = toastr[methodName].apply(toastr, arguments)
 
-        if (
-          this.console && (
-            opts.console === undefined ||
-            opts.console
+          if (
+            this.console && (
+              opts.console === undefined ||
+              opts.console
+            )
           )
-        )
-          console[methodName].apply(console, arguments)
+            console[methodName].apply(console, arguments)
 
-        return returnVal;
+          return returnVal;
+        }
       }
-    }
-  );
+    );
+  }
 });
 // Alias to add in order to prevent missing function errors
 // and complicated logic within the custom logging methods.

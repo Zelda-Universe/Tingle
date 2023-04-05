@@ -1,4 +1,8 @@
 <?php
+    include_once(__DIR__.'/config.php');
+    include_once(__DIR__.'/lib/common/database.php');
+    open();
+
     if(!isset($_GET["command"])) {
         die(json_encode(array("success"=>false,"msg"=>"No command defined!")));
     }
@@ -16,6 +20,8 @@
     } catch(Exception $ex) {
         print_r($ex);
         $error=$ex;
+        // Source: https://stackoverflow.com/questions/3258634/php-how-to-send-http-response-code
+        // http_response_code(503); // Service Unavailable
     }
     $output = ob_get_clean();
     $res = "$output";
@@ -30,7 +36,7 @@
             $error=$ex;
         }
     }
-    
+
     if($error!==false) {
         $data = array("success"=>false,"code"=>$error->getCode(),"msg"=>$error->getMessage(),"output"=>$res);
     }

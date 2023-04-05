@@ -27,8 +27,8 @@
       }
 
       if($time != filemtime($resFile)) {
-        $update = true;
-        break;
+        // $debugOutput .= debug_log('checkIfUpdateNecessaryBySourceFiles return');
+        return true;
       }
     }
     // $debugOutput .= debug_log('checkIfUpdateNecessaryBySourceFiles END');

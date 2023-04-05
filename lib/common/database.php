@@ -1,5 +1,6 @@
 <?php
   function open() {
+    global $mysqli, $dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket;
     # mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     # TODO: Prepend hostname with "p:"? # https://www.php.net/manual/en/mysqli.construct.php
     $mysqli = new mysqli($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket) or die('Database connection problem.');

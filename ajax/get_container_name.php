@@ -1,9 +1,8 @@
 <?php
    $path = __DIR__;
-   include("$path/../config.php");
 
    $game = $_GET["game"];
-    
+
    $query = "select name
                from " . $map_prefix . "container c
               where (c.id = '" . $game . "'
@@ -16,7 +15,7 @@
 		print($mysqli->error);
 		return;
 	}
-   
+
    $row = $result->fetch_array();
    echo json_encode(array("success"=>true,"name"=>$row['name']));
 ?>

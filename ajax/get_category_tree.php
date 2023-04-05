@@ -1,6 +1,5 @@
 <?php
    $path = __DIR__;
-   include("$path/../config.php");
 
    $map = $_GET["game"];
 
@@ -35,12 +34,12 @@
                  where parent_id = ' . $row['id'] . '
                    and container_id = ' . $map . '
                    and visible = 1
-                   and id in (SELECT mc.id 
-                                FROM ' . $map_prefix . 'marker m 
-                                   , ' . $map_prefix . 'marker_category mc 
-                               where m.marker_category_id = mc.id 
-                                 and m.visible = 1 
-                                 and mc.visible = 1 
+                   and id in (SELECT mc.id
+                                FROM ' . $map_prefix . 'marker m
+                                   , ' . $map_prefix . 'marker_category mc
+                               where m.marker_category_id = mc.id
+                                 and m.visible = 1
+                                 and mc.visible = 1
                                  and mc.container_id = ' . $map . '
                                group by mc.id
                               )

@@ -1,7 +1,5 @@
 <?php
-
    $path = __DIR__;
-   include("$path/../config.php");
 
    $map = $_GET["game"];
 

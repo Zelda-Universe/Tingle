@@ -40,7 +40,6 @@ CategoryButtonMap.prototype._initSettings = function(opts) {
 };
 
 CategoryButtonMap.prototype._initTemplate = function() {
-   console.log();
    this.domNodeTemplate = '' +
     '<a class="category-button leaflet-bottommenu-a" href="#">' +
       '<img class="" src="' + this.category.options.iconURL + '" title="' + this.category.name + '">' +

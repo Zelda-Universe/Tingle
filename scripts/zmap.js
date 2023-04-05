@@ -27,8 +27,8 @@ function ZMap() {
    this.tilesBaseURL = ZConfig.getConfig("tilesBaseURL");
    this.zoomDirectories = ZConfig.getConfig("zoomDirectories");
    this.tileNameFormat = ZConfig.getConfig("tileNameFormat");
-   
-   // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself. 
+
+   // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself.
    //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
    //        In the future, we need to move the icon.png of every map to the tiledmap and change defaultIconURL to defaultTilesURL
    this.defaultIconURL = 'images/icons/';
@@ -405,7 +405,7 @@ ZMap.prototype.addMarker = function(vMarker) {
       if (mapControl.isCollapsed()) {
          mapControl.toggle();
       }
-   
+
       if (newMarker == null || (newMarker.markerId != marker.id)) {
          _this._createMarkerPopup(marker);
 
@@ -539,7 +539,7 @@ ZMap.prototype._getClipboardParams = function(href) {
 ZMap.prototype._copyToClipboardEmbed = function(vMarkerId) {
    var href = window.location.href.split("?");
    var clipboardParams = this._getClipboardParams(href);
-   
+
    window.prompt("Copy to clipboard: Ctrl+C, Enter", "<iframe src=\"" + href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>");
 }
 ZMap.prototype._copyToClipboard = function(vMarkerId) {
@@ -627,18 +627,18 @@ ZMap.prototype._shouldShowMarker = function(marker) {
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
    categoryTree = vCategoryTree;
-   return; // disabling for refactored category button UI, focus selection style, or both?
-   $.each(categoryTree, function(parentCategoryId, parentCategory) {
-     parentCategory.userChecked = parentCategory.checked;
-     $.each(parentCategory.children, function(index, childCategory) {
-       childCategory.userChecked = childCategory.checked;
-     });
-   });
+   // disabling for refactored category button UI, focus selection style, or both?
+   // $.each(categoryTree, function(parentCategoryId, parentCategory) {
+   //   parentCategory.userChecked = parentCategory.checked;
+   //   $.each(parentCategory.children, function(index, childCategory) {
+   //     childCategory.userChecked = childCategory.checked;
+   //   });
+   // });
 }
 
 ZMap.prototype.buildMap = function() {
-   console.log("Leaflet Version: " + L.version);
-   console.log("Zelda Maps Version: " + _this.version);
+   // console.log("Leaflet Version: " + L.version);
+   // console.log("Zelda Maps Version: " + _this.version);
 
    if (!L.CRS.Simple) {
       L.CRS.Simple = L.Util.extend({}, L.CRS, { projection:     L.Projection.LonLat
@@ -723,7 +723,7 @@ ZMap.prototype.buildMap = function() {
          mapControl.resetContent();
       }
    });
-   
+
    map.on('zoomend', function() {
       if (map.getZoom() > 5 && currentIcon == 'Small') {
          currentIcon = 'Medium';
@@ -763,7 +763,7 @@ ZMap.prototype.buildMap = function() {
       map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
 
    });
-   
+
    $(document).on('keydown', function(e) {
       if(e.key == "Escape") {
         if(mapControl._contentType != mapControl.options.defaultContentType) {
@@ -774,7 +774,7 @@ ZMap.prototype.buildMap = function() {
         }
       }
     }.bind(mapControl));
-   
+
    _this._buildContextMenu();
 };
 
@@ -1214,7 +1214,7 @@ ZMap.prototype.clearCompletedMarkers = function() {
               }
             });
    }
-   
+
    for (var i = 0; i < markers.length; i++) {
       _this._doSetMarkerDoneIcon(markers[i], false);
    }
@@ -1233,7 +1233,7 @@ ZMap.prototype.transferCompletedMarkersToDB = function() {
                            completedMarkers = [];
                            document.cookie = 'completedMarkers=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
                            _this.getUserCompletedMarkers();
-                           toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);                           
+                           toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);
                         } else {
                            toastr.error(_this.langMsgs.MARKER_COMPLETE_TRANSFER_ERROR.format(data.msg));
                            //alert(data.msg);
@@ -1255,7 +1255,7 @@ ZMap.prototype.getUserCompletedMarkers = function() {
          for (var i = 0; i < markers.length; i++) {
             if (markers[i].id == marker.markerId) {
                completedMarkers.push(marker.markerId);
-               
+
                categories[markers[i].categoryId].complete++;
                _this._doSetMarkerDoneIcon(markers[i], true);
                break;
@@ -1618,7 +1618,7 @@ ZMap.prototype._createDialogDeleteAllMarkers = function() {
        this.clearCompletedMarkers();
    } else {
       // Do nothing!
-   }  
+   }
 }
 
 ZMap.prototype._createLostPasswordForm = function() {
@@ -1812,7 +1812,7 @@ ZMap.prototype._createAccountForm = function(user) {
     '</div>',
     'accountPage'
   );
-  
+
   $("#account_clear_completed_btn").click(function(e) {
      _this._createDialogDeleteAllMarkers();
      categories.forEach(function(category) {
@@ -1868,7 +1868,7 @@ ZMap.prototype.goTo = function(vGoTo) {
    if (vGoTo.marker) {
       _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true);
       // Open Marker already does a change map, so it takes precedence
-      
+
       return;
    }
 

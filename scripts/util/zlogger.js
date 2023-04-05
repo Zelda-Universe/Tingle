@@ -5,7 +5,7 @@
 function ZLogger(opts) {
   opts = opts || {};
   if(opts.notification === undefined) opts.notification = true;
-  if(opts.console === undefined) opts.console = true;
+  if(opts.console === undefined) opts.console = false;
 
   this.notification = opts.notification;
   this.console = opts.console;

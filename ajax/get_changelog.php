@@ -1,6 +1,5 @@
 <?php
   $path = __DIR__;
-  include("$path/../config.php");
 
   $settingIncludeHidden = (
     isset($_GET["includeHidden"])

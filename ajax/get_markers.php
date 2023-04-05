@@ -1,7 +1,6 @@
 <?php
    if (!isset($_GET['newMarkerId'])) {
      $path = __DIR__;
-   	 include_once("$path/../config.php");
    }
    /*
 	session_start("zmap");

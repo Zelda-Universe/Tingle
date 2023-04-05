@@ -1,9 +1,11 @@
 <?php
+  include_once(__DIR__."/lib/common/log.php");
+
   function load_config() {
     global $config;
     $config = parse_ini_file(CONFIGFILE);
   }
-  function get_config($key, $default = null, $type="string") {
+  function get_config($key, $default = null, $type = "string") {
     global $config;
     if(!isset($config)) die("Error: Config not loaded; exiting...");
 
@@ -26,10 +28,7 @@
     return $value;
   }
 
-  date_default_timezone_set("UTC");
-
-  define("SDIR", DIRNAME(__FILE__));
-  define("MAPROOT", SDIR);
+  define("MAPROOT", __DIR__);
   define("CONFIGFILE", MAPROOT."/.env");
 
   require __DIR__ . '/vendor/autoload.php';
@@ -82,7 +81,7 @@
   $lostPasswordSubject = get_config("lostPasswordSubject");
   $lostPasswordBodyTemplateFilePath = get_config("lostPasswordBodyTemplateFilePath");
   if(!empty($lostPasswordBodyTemplateFilePath)) {
-    $lostPasswordBodyTemplateFilePath = SDIR."/$lostPasswordBodyTemplateFilePath";
+    $lostPasswordBodyTemplateFilePath = __DIR__."/$lostPasswordBodyTemplateFilePath";
     $lostPasswordBodyTemplate = file_get_contents($lostPasswordBodyTemplateFilePath);
   }
 
@@ -101,48 +100,20 @@
     $mailEnabled = false;
   }
 
-  if(!file_exists($cacheFolderRootPath)) {
+  $debugLoggingMode = get_config('debugLoggingMode', default: 'errorLog');
+  // debug_log("debugLoggingMode: $debugLoggingMode");
+  $cFRPFileExists = file_exists($cacheFolderRootPath);
+  $cFFileExists = file_exists($cacheFolder);
+  // debug_log("cacheFolderRootPath: $cacheFolderRootPath");
+  // debug_log("cacheFolder        : $cacheFolder");
+  // debug_log("cFRPFileExists     : $cFRPFileExists");
+  // debug_log("cFFileExists       : $cFFileExists");
+  if(!$cFRPFileExists) {
     mkdir($cacheFolderRootPath) or
     die("Cache root directory error at: ".$cacheFolderRootPath);
   }
-  if(!file_exists($cacheFolder)) {
+  if(!$cFFileExists) {
     mkdir($cacheFolder) or
     die("Cache directory error at: ".$cacheFolder);
   }
-
-  # mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-  # TODO: Prepend hostname with "p:"? # https://www.php.net/manual/en/mysqli.construct.php
-  $mysqli = new mysqli($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket) or die('Database connection problem.');
-  $mysqli->query("SET NAMES 'utf8'");
-  $mysqli->query('SET character_set_connection=utf8');
-  $mysqli->query('SET character_set_client=utf8');
-  $mysqli->query('SET character_set_results=utf8');
-  # $mysqli->set_charset('utf8mb4');
-  // if ($mysqli->errno) {
-  //   throw new RuntimeException('mysqli error: ' . $mysqli->error);
-  // }
-
-	function begin() {
-		global $mysqli;
-		return $mysqli->query("BEGIN");
-	}
-
-	function commit() {
-		global $mysqli;
-		return $mysqli->query("COMMIT");
-	}
-
-	function rollback()	{
-		global $mysqli;
-		return $mysqli->query("ROLLBACK");
-	}
-
-	function start_session($name="zmap") {
-		if(!defined("PHP_MAJOR_VERSION") || PHP_MAJOR_VERSION<7) {
-			return session_start($name);
-		} else {
-			$opts = ["name"=>$name];
-			return session_start($opts);
-		}
-	}
 ?>

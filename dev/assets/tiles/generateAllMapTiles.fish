@@ -8,6 +8,8 @@ set SDIR "$PWD/"(dirname (status filename));
 
 pushd "$SDIR/../../../tiles";
 
+# set -x processZoomLevels '*';
+
 ## BotW
 mkdir -p "botw/hyrule";
 "$SDIR/generateMapTiles.fish" \

@@ -6,59 +6,38 @@
 
 set SDIR "$PWD/"(dirname (status filename));
 
-test -z "$outDir"; and set outDir "$argv[1]";
+source "$SDIR/1-config.fish";
 
-test -z "$numTilesFromCenter"; and set numTilesFromCenter "1";
-test -z "$outputZoomFolders"; and set outputZoomFolders "false";
-
-if test -z "$nameMask"
-  if test "$outputZoomFolders" = "true"
-    set nameMask '{$z}/{$x}_{$y}';
-  else
-    set nameMask '{$z}_{$x}_{$y}';
-  end
-end
-
-test -z "$fileNameMask"; and set fileNameMask "%s";
-test -z "$background"; and set background "#333344";
-test -z "$font"; and set font "$SDIR/../fonts/HyliaSerifBeta-Regular.otf";
-test -z "$fill"; and set fill "white";
-test -z "$tileSize"; and set tileSize "256";
-test -z "$pointsize"; and set pointsize "48";
-test -z "$gravity"; and set gravity "center";
-test -z "$bordercolor"; and set bordercolor '#999999';
-test -z "$bordersize"; and set bordersize "5";
-
-# I intentionally check this instead of creating it for the user in case
-# they provide the wrong argument by accident.  Don't want to create a mess
-# for them somewhere in some unintentional place.
-if test -z "$outDir" -o ! -e "$outDir" -o ! -d "$outDir"
-  echo "Error: Output directory must be provided as the first argument, exist, and be a directory.";
-  exit;
-end
+# For better accuracy, use the more dynamic per zoom level script in `generateMapTiles/run.fish` using any of the valid '<placeholder>' alternative source file names or `generatePHTiles` flag.
+# This is for a more focused approach when you know more of the parameters per zoom level, and use a different approach than the current map software configuration.
+test -z "$numTilesFromCenter"; and set numTilesFromCenter '1';
 
 pushd "$outDir" > /dev/null;
 
 for z in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
-  test ! -d "$z"; and mkdir -- "$z";
-  for x in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
-    for y in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
-      eval set name $nameMask;
-      set -l fileName "$name.png"
+  test "$outputZoomFolders" = 'true' -a ! -d "$z";
+  and mkdir -- "$z";
+
+  for y in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
+    for x in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
+      eval set -l pathName "$pathNameMask";
+      # debugPrint "pathName: $pathName";
+      set -l filePath "$pathName.$fileExt";
+      # debugPrint "filePath: $filePath";
       convert \
-        -background $background \
-        -font "$font" \
-        -fill $fill \
-        -size {$tileSize}x{$tileSize} \
-        -pointsize $pointsize \
-        -gravity $gravity \
-        -bordercolor $bordercolor \
-        -border $bordersize \
-        "label:$name" \
-        "$fileName" \
+        -background   "$background"   \
+        -font         "$font"         \
+        -fill         "$fill"         \
+        -size         {$tileSize}x{$tileSize} \
+        -pointsize    "$pointsize"    \
+        -gravity      "$gravity"      \
+        -bordercolor  "$bordercolor"  \
+        -border       "$bordersize"   \
+        "label:$pathName"             \
+        "$filePath"                   \
       ;
     end
-    break;
+    # break;
   end
 end
 

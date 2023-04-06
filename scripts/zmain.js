@@ -88,17 +88,14 @@ function getGames() {
 
 };
 
-
 function getMaps() {
+  $.getJSON("ajax.php?command=get_map&game=" + gameId, function(vResults) {
+    $.each(vResults, function(i, map) {
+      zMap.addMap(map);
+    });
 
-   $.getJSON("ajax.php?command=get_map&game=" + gameId, function(vResults){
-      $.each(vResults, function(i,map){
-         zMap.addMap(map);
-      });
-
-      getMarkers();
-   });
-
+    if (maps.length > 0) getMarkers();
+  });
 };
 
 function getUserInfo() {
@@ -139,22 +136,22 @@ function showLoginControls() {
   searchBoxParent.addClass("col-xs-8");
 }
 
-function getMarkers(){
-   $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults) {
-      zMap.buildMap();
-      zMap.addMarkers(vResults);
-      getUserInfo();
-      zMap.refreshMap();
-      zMap.goToStart();
-      zMap.goTo({ map        : getUrlParamValue('map', null)
-                , subMap     : getUrlParamValue('subMap', null)
-                , marker     : getUrlParamValue('marker', null)
-                , zoom       : getUrlParamValue('zoom', 4)
-                , hideOthers : getUrlParamValue('hideOthers', false)
-                , hidePin    : getUrlParamValue('hidePin', false)
-      });
-
-   });
+function getMarkers() {
+  $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults) {
+    zMap.buildMap();
+    getUserInfo();
+    zMap.addMarkers(vResults);
+    zMap.refreshMap();
+    zMap.goToStart();
+    zMap.goTo({
+      map        : getUrlParamValue('map'       , null  )
+    , subMap     : getUrlParamValue('subMap'    , null  )
+    , marker     : getUrlParamValue('marker'    , null  )
+    , zoom       : getUrlParamValue('zoom'      , 4     )
+    , hideOthers : getUrlParamValue('hideOthers', false )
+    , hidePin    : getUrlParamValue('hidePin'   , false )
+    });
+  });
 };
 
 zMap = new ZMap();

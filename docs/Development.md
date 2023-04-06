@@ -31,11 +31,17 @@
 
 # Add new game support
 
-  - Add new database migration to add container entry.
-    - Source: `dev/db/migrate/20230405204517_container_add_basic_tot_k_support.rb`
+  - Add new database migrations to add:
+    - `container`:
+      - Example: `dev/db/migrate/20230405204517_container_add_basic_tot_k_support.rb`
+    - `map`:
+      - Example: `/srv/ZU/Tingle/dev/db/migrate/20230405222955_map_add_tot_k_overworld_maps.rb`
+    - `submap`:
+      - Example: `dev/db/migrate/20230406031615_submap_add_tot_k_overworld_submaps.rb`
   - Update sample SQL data files in a focused style.
     - `set -x tableNames (read)`
     - `./dev/db/createSampleDatabaseExport/run.sh`
+  - Update game support list in readme file.
   - Optional:
     - Change default game parameter for container in index page script block, and any other specific SEO data in the head section.
   - Test, commit, push, and create a PR!
@@ -213,6 +219,18 @@
           ```
       - Multiple Queries:
         - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
+    - Names:
+      - Note: Try to keep migration files focused on specific tables.
+      - Format:
+        - Database table,
+        - action,
+        - object,
+        - and repeat.
+      - `ChangelogAddHiddenField`
+      - `ChangelogHideOldEntries`
+      - `ContainerUpdateAndAddDefaults`
+      - `ContainerAddTotKSupport`
+      - `MapAddTotKOverworldMaps`
 
 ## MySQL Workbench (MWB) File Handling
 

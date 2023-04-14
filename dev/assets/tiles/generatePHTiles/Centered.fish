@@ -12,33 +12,18 @@ source "$SDIR/1-config.fish";
 # This is for a more focused approach when you know more of the parameters per zoom level, and use a different approach than the current map software configuration.
 test -z "$numTilesFromCenter"; and set numTilesFromCenter '1';
 
+set outDir "$SDIR/../../../../tiles/_placeholder";
+test ! -e "$outDir"; and mkdir "$outDir";
+
 pushd "$outDir" > /dev/null;
 
-for z in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
-  test "$outputZoomFolders" = 'true' -a ! -d "$z";
-  and mkdir -- "$z";
+echo 'Generating placeholder tiles from the center as the origin...';
 
-  for y in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
-    for x in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
-      eval set -l pathName "$pathNameMask";
-      # debugPrint "pathName: $pathName";
-      set -l filePath "$pathName.$fileExt";
-      # debugPrint "filePath: $filePath";
-      convert \
-        -background   "$background"   \
-        -font         "$font"         \
-        -fill         "$fill"         \
-        -size         {$tileSize}x{$tileSize} \
-        -pointsize    "$pointsize"    \
-        -gravity      "$gravity"      \
-        -bordercolor  "$bordercolor"  \
-        -border       "$bordersize"   \
-        "label:$pathName"             \
-        "$filePath"                   \
-      ;
-    end
-    # break;
-  end
-end
+set zStart  "-$numTilesFromCenter";
+set zEnd    "$numTilesFromCenter" ;
+set xStart  "-$numTilesFromCenter";
+set xEnd    "$numTilesFromCenter" ;
+set yStart  "-$numTilesFromCenter";
+set yEnd    "$numTilesFromCenter" ;
 
 popd > /dev/null;

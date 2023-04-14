@@ -24,9 +24,8 @@ function ZMap() {
    this.markerIconSmall;
    this.markerIconMedium;
 
-   this.tilesBaseURL = ZConfig.getConfig("tilesBaseURL");
-   this.zoomDirectories = ZConfig.getConfig("zoomDirectories");
-   this.tileNameFormat = ZConfig.getConfig("tileNameFormat");
+   this.tilesBaseURL    = ZConfig.getConfig("tilesBaseURL"  );
+   this.tileNameFormat  = ZConfig.getConfig("tileNameFormat");
 
    // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself.
    //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
@@ -156,59 +155,80 @@ if (!Array.prototype.filter) {
 
 
 ZMap.prototype.constructor = function(vMapOptions) {
-   toastr.options.preventDuplicates = true;
-   // toastr.options.progressBar = true;
+  toastr.options.preventDuplicates = true;
+  // toastr.options.progressBar = true;
 
-   _this = this;
+  _this = this;
 
-   hasUserCheck = false;
-   userWarnedAboutMarkerQty = false;
-   userWarnedAboutLogin = false;
-   mapOptions = {
+  hasUserCheck = false;
+  userWarnedAboutMarkerQty = false;
+  userWarnedAboutLogin = false;
+  mapOptions = {};
 
-   };
+  games = [];
+  maps = [];
+  markers = [];
+  categoryTree = [];
+  categories = [];
+  completedMarkers = [];
+  user = null;
+  newMarker = null;
+  this.cachedMarkersByCategory = {};
+  this.cachedMarkersById = {};
 
-   games = [];
-   maps = [];
-   markers = [];
-   categoryTree = [];
-   categories = [];
-   completedMarkers = [];
-   user = null;
-   newMarker = null;
-   this.cachedMarkersByCategory = {};
-   this.cachedMarkersById = {};
+  if (vMapOptions == null) {
+    alert("Need to pass options to map constructor");
+    return false;
+  } else {
+    if (vMapOptions.showCompleted == undefined) {
+      vMapOptions.showCompleted = true;
+    }
+    mapOptions = vMapOptions;
+  }
 
-   if (vMapOptions == null) {
-      alert("Need to pass options to map constructor");
-      return false;
-   } else {
-      if (vMapOptions.showCompleted == undefined) {
-         vMapOptions.showCompleted = true;
-      }
-      mapOptions = vMapOptions;
-   }
+  if(!mapOptions.categorySelectionMethod)
+  mapOptions.categorySelectionMethod =
+  ZConfig.getConfig("categorySelectionMethod");
 
-   if(!mapOptions.categorySelectionMethod) mapOptions.categorySelectionMethod = ZConfig.getConfig("categorySelectionMethod");
+  if(ZConfig.getConfig("markerClusters") == 'true') {
+    markerCluster = new L.MarkerClusterGroup({
+      maxClusterRadius: mapOptions.clusterGridSize,
+      disableClusteringAtZoom: mapOptions.clusterMaxZoom
+    });
+  }
 
-  // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
+  markerIconMedium = L.DivIcon.extend({
+    options: {
+      iconSize: [
+        mapOptions.iconWidth,
+        mapOptions.iconHeight
+      ]
+      , iconAnchor: [
+        Math.floor(mapOptions.iconWidth   / 2),
+        Math.floor(mapOptions.iconHeight  / 2)
+      ]
+      , popupAnchor: [0,0]
+    }
+  });
+  markerIconSmall = L.DivIcon.extend({
+    options: {
+      iconSize: [
+        mapOptions.iconSmallWidth,
+        mapOptions.iconSmallHeight
+      ]
+      , iconAnchor: [
+        Math.floor(mapOptions.iconSmallWidth  / 2),
+        Math.floor(mapOptions.iconSmallHeight / 2)
+      ]
+      , popupAnchor: [0,0]
+    }
+  });
 
-   markerIconMedium = L.DivIcon.extend({options:{ iconSize:    [mapOptions.iconWidth,mapOptions.iconHeight]
-                                          , iconAnchor:  [Math.floor(mapOptions.iconWidth/2),Math.floor(mapOptions.iconHeight/2)]
-                                          , popupAnchor: [0,0]
-                                          }
-                          });
-   markerIconSmall = L.DivIcon.extend({options:{ iconSize:    [mapOptions.iconSmallWidth,mapOptions.iconSmallHeight]
-                                          , iconAnchor:  [Math.floor(mapOptions.iconSmallWidth/2),Math.floor(mapOptions.iconSmallHeight/2)]
-                                          , popupAnchor: [0,0]
-                                          }
-                          });
-
-   if (mapOptions.defaultZoom > mapOptions.switchIconsAtZoom) {
-      currentIcon = 'Medium';
-   } else {
-      currentIcon = 'Small';
-   }
+  if (mapOptions.defaultZoom > mapOptions.switchIconsAtZoom) {
+    currentIcon = 'Medium';
+  } else {
+    currentIcon = 'Small';
+  }
 };
 
 // Add a map category
@@ -637,145 +657,173 @@ ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
 }
 
 ZMap.prototype.buildMap = function() {
-   // console.log("Leaflet Version: " + L.version);
-   // console.log("Zelda Maps Version: " + _this.version);
+  // console.log("Leaflet Version: "    + L.version     );
+  // console.log("Zelda Maps Version: " + _this.version );
 
-   if (!L.CRS.Simple) {
-      L.CRS.Simple = L.Util.extend({}, L.CRS, { projection:     L.Projection.LonLat
-                                              , transformation: new L.Transformation(1,0,1,0)
-                                              });
-   }
+  if (!L.CRS.Simple) {
+    L.CRS.Simple = L.Util.extend({}, L.CRS, {
+        projection:     L.Projection.LonLat
+      , transformation: new L.Transformation(1,0,1,0)
+    });
+  }
 
-   map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
-                      , zoom:        0
-                      , zoomSnap:    mapOptions.zoomSnap
-                      , zoomDelta:   mapOptions.zoomDelta
-                      , zoomControl: false
-                      , crs:         L.CRS.Simple
-                      , layers:      [maps[0]]
-                     // @TODO: Add bounds to Database, so everygame has different bounds
-                      , maxBounds:   new L.LatLngBounds(new L.LatLng(mapOptions.boundTopX, mapOptions.boundTopY), new L.LatLng(mapOptions.boundBottomX, mapOptions.boundBottomY))
-                      , maxBoundsViscosity: 1.0
-                      , contextmenu: true
-                      , contextmenuWidth: 140
-         });
+  if(maps[0]) {
+    map = L.map('map', {
+        center:             new L.LatLng(
+          mapOptions.centerY,
+          mapOptions.centerX
+        )
+      , zoom:               0
+      , zoomSnap:           mapOptions.zoomSnap
+      , zoomDelta:          mapOptions.zoomDelta
+      , zoomControl:        false
+      , crs:                L.CRS.Simple
+      , layers:             [maps[0]]
+      , maxBounds:          new L.LatLngBounds(
+        new L.LatLng(
+          mapOptions.boundTopX,
+          mapOptions.boundTopY
+        ),
+        new L.LatLng(
+          mapOptions.boundBottomX,
+          mapOptions.boundBottomY
+        )
+      )
+      , maxBoundsViscosity: 1.0
+      , contextmenu:        true
+      , contextmenuWidth:   140
+    });
+  }
 
-   // Get all the base maps
-   var baseMaps = {};
-   for (var i = 0; i < maps.length; i++) {
-      baseMaps[maps[i].title] = maps[i];
-   }
+  // Get all the base maps
+  var baseMaps = {};
+  for (var i = 0; i < maps.length; i++) {
+    baseMaps[maps[i].title] = maps[i];
+  }
 
-   var mapControlOptions = $.extend(
-     mapOptions, {
-     "zIndex": 0, "collapsed": false
-   });
+  var mapControlOptions = $.extend(
+    mapOptions, {
+    "zIndex": 0,
+    "collapsed": false
+  });
 
-   if (L.Browser.mobile && window.innerWidth < 768) {
-      mapControl = L.control.zlayersbottom(
-        baseMaps,
-        categoryTree,
-        mapControlOptions
-      );
-      headerBar = L.control.zmobileheaderbar({ mapControl: mapControl });
-      headerBar.addTo(map);
-   } else {
-      mapControl = L.control.zlayers(
-        baseMaps,
-        {},
-        mapControlOptions,
-      );
-      L.control.zoom({ position:'bottomright' }).addTo(map);
-      if (mapOptions.showInfoControls) {
-         $('.leaflet-container').css('cursor','crosshair');
-         L.control.infoBox.mouse.clickhist({ position: 'bottomleft' }).addTo(map);
-         L.control.infoBox.mouse.move({ position: 'bottomleft' }).addTo(map);
-         L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
-         L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
-      }
-   }
+  if (L.Browser.mobile && window.innerWidth < 768) {
+    mapControl =  L.control.zlayersbottom(
+      baseMaps,
+      categoryTree,
+      mapControlOptions
+    );
+    headerBar =   L.control.zmobileheaderbar({
+      mapControl: mapControl
+    });
+    headerBar.addTo(map);
+  } else {
+    mapControl =  L.control.zlayers(
+      baseMaps,
+      {},
+      mapControlOptions
+    );
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    if (
+          mapOptions.showInfoControls
+      ||  ZConfig.getConfig("showInfoControls") == 'true'
+    ) {
+      $('.leaflet-container').css('cursor','crosshair');
+      var posBL = { position: 'bottomleft' };
+      L.control.infoBox.mouse.clickhist (posBL).addTo(map);
+      L.control.infoBox.mouse.move      (posBL).addTo(map);
+      L.control.infoBox.location.center (posBL).addTo(map);
+      L.control.infoBox.location.bounds (posBL).addTo(map);
+    }
+  }
 
-   //@TODO: REDO!
-   mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
-   mapControl.setCurrentMapLayer(maps[0]);
-   //console.log(mapControl.getCurrentMap());
-   mapControl.addTo(map);
+  //@TODO: REDO!
+  mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
+  mapControl.setCurrentMapLayer(maps[0]);
+  //console.log(mapControl.getCurrentMap());
+  mapControl.addTo(map);
 
-   // TODO keyboard accessibility
-   if (mapControlOptions.collapsed) {
-      //mapControl._map.on('movestart', mapControl._collapse, mapControl);
-      //mapControl._map.on('click', mapControl._collapse, mapControl);
-   } else {
-     mapControl._expand();
-   }
+  // TODO keyboard accessibility
+  if (
+        mapControlOptions.collapsed
+    ||  ZConfig.getConfig("collapsed") == 'true'
+  ) {
+    //mapControl._map.on('movestart', mapControl._collapse, mapControl);
+    //mapControl._map.on('click', mapControl._collapse, mapControl);
+  } else {
+    mapControl._expand();
+  }
 
-   //map.addLayer(markerCluster);
+  //map.addLayer(markerCluster);
 
-   //Change visible region to that specified by the corner coords if relevant query strings are present
-   if (mapOptions.startArea) {
-      map.fitBounds(mapOptions.startArea);
-   }
+  //Change visible region to that specified by the corner coords if relevant query strings are present
+  if (mapOptions.startArea) {
+    map.fitBounds(mapOptions.startArea);
+  }
 
-   map.on('moveend', function(e) {
-      _this.refreshMap();
-      if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {
+  map.on('moveend', function(e) {
+    _this.refreshMap();
+    if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {
          _this._closeNewMarker();
          mapControl.resetContent();
       }
-   });
+  });
 
-   map.on('zoomend', function() {
-      if (map.getZoom() > 5 && currentIcon == 'Small') {
-         currentIcon = 'Medium';
-      } else if (map.getZoom() > 5 && currentIcon == 'Small') {
-         currentIcon = 'Small';
-      } else {
-         return;
+  map.on('zoomend', function() {
+    if (map.getZoom() > 5 && currentIcon == 'Small') {
+      currentIcon = 'Medium';
+    } else if (map.getZoom() > 5 && currentIcon == 'Small') {
+      currentIcon = 'Small';
+    } else {
+      return;
+    }
+
+    var mapBounds = map.getBounds().pad(0.15);
+
+    for (var i = markers.length -1; i >= 0; i--) {
+      var m = markers[i];
+      if (mapBounds.contains(m.getLatLng())) {
+        m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
       }
-      var mapBounds = map.getBounds().pad(0.15);
+    }
+  });
 
-      for (var i = markers.length -1; i >= 0; i--) {
-         var m = markers[i];
-         if (mapBounds.contains(m.getLatLng())) {
-            m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
-         }
-      }
-   });
-
-   map.on('baselayerchange', function(e) {
-      //@TODO: Fix this null value - (for light / dark) - this is when a layer updates
-      //       Defaulting to the first layer for now - workaround!!!!!
-      var defaultSubMapId;
-      var i;
-      for (i = 0; i < maps.length; i++) {
-         if (maps[i].originalId == e.originalId) {
+  map.on('baselayerchange', function(e) {
+    //@TODO: Fix this null value - (for light / dark) - this is when a layer updates
+    //       Defaulting to the first layer for now - workaround!!!!!
+    var defaultSubMapId;
+    var i;
+    for (i = 0; i < maps.length; i++) {
+      if (maps[i].originalId == e.originalId) {
             defaultSubMapId = maps[i].defaultSubMapId;
             break;
          }
+    }
+    // END OF WORKAROUND!!!
+    //console.log(e.originalId + " " + defaultSubMapId);
+    mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
+    _this.refreshMap();
+    _this._closeNewMarker();
+    //mapControl.resetContent();
+
+    map.setView(new L.LatLng(
+      mapOptions.centerY,
+      mapOptions.centerX
+    ), map.getZoom());
+  });
+
+ $(document).on('keydown', function(e) {
+    if(e.key == "Escape") {
+      if(mapControl._contentType != mapControl.options.defaultContentType) {
+        mapControl.resetContent();
+        _this._closeNewMarker()
+      } else {
+        mapControl.toggle();
       }
-      // END OF WORKAROUND!!!
-      //console.log(e.originalId + " " + defaultSubMapId);
-      mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
-      _this.refreshMap();
-      _this._closeNewMarker();
-      //mapControl.resetContent();
+    }
+  }.bind(mapControl));
 
-      map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
-
-   });
-
-   $(document).on('keydown', function(e) {
-      if(e.key == "Escape") {
-        if(mapControl._contentType != mapControl.options.defaultContentType) {
-          mapControl.resetContent();
-          _this._closeNewMarker()
-        } else {
-          mapControl.toggle();
-        }
-      }
-    }.bind(mapControl));
-
-   _this._buildContextMenu();
+  _this._buildContextMenu();
 };
 
 ZMap.prototype.goToStart = function() {

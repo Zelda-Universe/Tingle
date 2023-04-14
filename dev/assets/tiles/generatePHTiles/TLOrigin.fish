@@ -7,14 +7,14 @@
 # set SDIR "$PWD/"(dirname (status filename));
 set SDIR (dirname (status filename));
 # TODO add mode, have centered, really need TL origin 2^(zoom*2) images only incrementing, no negative values, don't know where i got that idea...., so basically all even amounts except for ZL = 0
-source "$SDIR/../0-detect.fish";
+
 source "$SDIR/1-config.fish";
 
 # This is for a more focused approach when you know the exact zoom level to support.
 
 if test -z "$zoomLevels"
   if test -n "$zoomLevel"
-    debugPrint "zoomLevel: $zoomLevel";
+    # debugPrint "zoomLevel: $zoomLevel";
     # set zoomLevels "$zoomLevel";
   end
   if test -n "$zoomLevelMax"
@@ -35,43 +35,16 @@ end
 
 set outDir "$SDIR/../../../../tiles/_placeholder";
 test ! -e "$outDir"; and mkdir "$outDir";
+
 pushd "$outDir";
 
-echo 'Generating placeholder tiles...';
+echo 'Generating placeholder tiles from the top-left corner as the origin...';
 
-# for z in (seq "-$numTilesFromCenter" "$numTilesFromCenter")
-for zoomLevel in $zoomLevels
-  set z "$zoomLevel";
-  test "$outputZoomFolders" = 'true' -a ! -d "$z";
-  and mkdir -- "$z";
-
-  set numAxisTiles (echo "2 ^ $zoomLevel" | bc);
-
-  for y in (seq 0 "$numAxisTiles")
-    for x in (seq 0 "$numAxisTiles")
-      eval set -l pathName  "$pathNameMask";
-      eval set -l label     "$labelMask";
-      # debugPrint "pathName: $pathName";
-      set -l filePath "$pathName.$fileExt";
-      # debugPrint "filePath: $filePath";
-
-      test -e "$filePath" -a "$force" != 'true'; and continue;
-
-      convert \
-        -background   "$background"           \
-        -font         "$font"                 \
-        -fill         "$fill"                 \
-        -size         {$tileSize}x{$tileSize} \
-        -pointsize    "$pointsize"            \
-        -gravity      "$gravity"              \
-        -bordercolor  "$bordercolor"          \
-        -border       "$bordersize"           \
-        "label:$label"                        \
-        "$filePath"                           \
-      ;
-    end
-    # break;
-  end
-end
+set zStart  "0"             ;
+set zEnd    "$numAxisTiles" ;
+set xStart  "0"             ;
+set xEnd    "$numAxisTiles" ;
+set yStart  "0"             ;
+set yEnd    "$numAxisTiles" ;
 
 popd;

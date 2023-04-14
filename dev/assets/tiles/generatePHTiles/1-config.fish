@@ -10,15 +10,26 @@ set SDIR (dirname (status filename));
 # debugPrint "SDIR: $SDIR/../../../..";
 # debugPrint "rl -f SDIR ..x4: "(readlink -f "$SDIR/../../../..");
 
+# debugPrint "included1Config: $included1Config";
+if test "$included1Config" = 'true'
+  exit;
+end
+set included1Config 'true';
+# debugPrint "included1Config: $included1Config";
+
 test -z "$outDir"             ; and set outDir            "$argv[1]";
 test -z "$outputZoomFolders"  ; and set outputZoomFolders 'false'   ;
 test -z "$fileExt"            ; and set fileExt           'png'     ;
 
 if test -z "$pathNameMask"
-  if test "$outputZoomFolders" = 'true'
-    set pathNameMask '{$z}/{$x}_{$y}';
+  if test "$outputAxisFolders" = 'true'
+    set pathNameMask '{$z}/{$x}/{$y}';
   else
-    set pathNameMask '{$z}_{$x}_{$y}';
+    if test "$outputZoomFolders" = 'true'
+      set pathNameMask '{$z}/{$x}_{$y}';
+    else
+      set pathNameMask '{$z}_{$x}_{$y}';
+    end
   end
 end
 if test -n "$labelMaskChoice"
@@ -55,7 +66,9 @@ test -z "$gravity"      ; and set gravity       'center'  ; # or north =/
 test -z "$bordercolor"  ; and set bordercolor   '#999999' ;
 test -z "$bordersize"   ; and set bordersize    '5'       ;
 
-test "$isPHType" != 'true' -a -z "$outDir"; and read -P 'Output Directory: ' outDir;
+test "$isPHType" != 'true' -a -z "$outDir";
+and read -P 'Output Directory: ' outDir;
+
 # I intentionally check this instead of creating it for the user in case
 # they provide the wrong argument by accident.  Don't want to create a mess
 # for them somewhere in some unintentional place.

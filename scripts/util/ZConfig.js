@@ -22,10 +22,16 @@ ZConfig = {
 
 // "exact", "focus" (ZU default)
 ZConfig.setConfig("categorySelectionMethod", "focus");
-ZConfig.setConfig("tilesBaseURL", "https://zeldamaps.com/tiles/");
-ZConfig.setConfig("zoomDirectories", 'false');
-ZConfig.setConfig("tileNameFormat", (
-  (ZConfig.getConfig("zoomDirectories") == 'true')
-  ? '{z}/{x}_{y}'
-  : '{z}_{x}_{y}'
+ZConfig.setConfig("tilesBaseURL"    , "https://zeldamaps.com/tiles/");
+ZConfig.setConfig("tileAxisDirectories" , 'false');
+ZConfig.setConfig("tileZoomDirectories" , 'false');
+ZConfig.setConfig("tileNameFormat"  , (
+  (ZConfig.getConfig("tileAxisDirectories") == 'true')
+  ? '{z}/{x}/{y}'
+  : (ZConfig.getConfig("tileZoomDirectories") == 'true')
+    ? '{z}/{x}_{y}'
+    : '{z}_{x}_{y}'
 ));
+ZConfig.setConfig("markerClusters"  , 'false');
+ZConfig.setConfig("showInfoControls", 'false');
+ZConfig.setConfig("collapsed", 'false');

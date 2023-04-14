@@ -8,7 +8,7 @@
 if test "$included0Detect" = 'true'
   exit;
 end
-# set included0Detect 'true';
+set included0Detect 'true';
 # debugPrint "included0Detect: $included0Detect";
 
 # debugPrint "srcFile: $srcFile";

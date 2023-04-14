@@ -1,3 +1,7 @@
+Reference:
+- https://en.wikipedia.org/wiki/Tiled_web_map
+- https://en.wikipedia.org/wiki/Tile_Map_Service
+
 Trying to use cross-platform tools with available source code and batch / command line (CLI) / scriptable interfaces.
 
 Some good file format references and links to tools:
@@ -67,22 +71,22 @@ Some good file format references and links to tools:
 
 ### Link's Awakening for Switch
 
-  1. Use `Switch Toolbox` to:
-    1. Load the `Game.arc` and `DgnTex.arc` files in the `romfs/region_common/ui` directory.
-    1. Double-click to load the `Game/timg/__Combined.bntx` and `DgnTex/timg/__Combined.bntx` files.
-    1. Right-click each of those file nodes in the tree view.
-    1. Select Extract All Textures.
-    1. Make a new folder with the same name as the arc file, and the path as the bntx archive.
-    1. Go inside there.
-    1. Select the PNG image format.
-    1. Uncheck all options.
-    1. Click Ok.
-  1. For the overworld map, it would use the `FldChip_##^H.png` files.
+  - Use `Switch Toolbox` to:
+    - Load the `Game.arc` and `DgnTex.arc` files in the `romfs/region_common/ui` directory.
+    - Double-click to load the `Game/timg/__Combined.bntx` and `DgnTex/timg/__Combined.bntx` files.
+    - Right-click each of those file nodes in the tree view.
+    - Select Extract All Textures.
+    - Make a new folder with the same name as the arc file, and the path as the bntx archive.
+    - Go inside there.
+    - Select the PNG image format.
+    - Uncheck all options.
+    - Click Ok.
+  - For the overworld map, it would use the `FldChip_##^H.png` files.
     - `dev/tiles/switch/games/lafs/assembleOverworldTiles.fish <FldChip_files_folder_path>`
     - Added manual scripts since most are not simple tiles.
     - Chose normal tiles that covered the most area and then filled in the uncompleted holes.  All seem to be the same resolution.
     - Only tested simply overlaying the `OpenMask` tiles.
-  1. For the dungeon maps:
+  - For the dungeon maps:
     - There are the `Lv<dungeon_index><dungeon_name>_##G.png` files that the `dev/tiles/switch/games/lafs/assembleDgnTiles.fish <DgnTex_files_folder_path> <DgnMapGrid_file_path>` script would use.
     - These are be placed on the `DgnMapGrid_00^A.png` file by default in the `Game` folder where the `FldChip_*` files also are for nice effect that the script handles.
     - Assumes 1308x1040 with or without this file being provided, which is 1280x1024 for the map tile grid, plus offsets for padding.

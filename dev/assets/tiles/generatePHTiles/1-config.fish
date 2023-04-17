@@ -32,6 +32,8 @@ if test -z "$pathNameMask"
     end
   end
 end
+# debugPrint "pathNameMask: $pathNameMask";
+
 if test -n "$labelMaskChoice"
   if test "$labelMaskChoice" = 'pathName'
     test -z "$labelMask"; and set labelMask "$pathNameMask";

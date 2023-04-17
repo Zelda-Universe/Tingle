@@ -4,42 +4,88 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
+# debugPrint '2-generateTiles START';
+
+set SDIR (dirname (status filename));
+
 if test \
-  -z "$xStart" \
-  -z "$xEnd" \
-  -z "$yStart" \
-  -z "$yEnd" \
-  -z "$zStart" \
-  -z "$zEnd"
+      -z "$zStart" \
+  -o  -z "$zEnd"
   errorPrint 'Missing required parameter; exiting...';
-  errorPrint "xStart: $xStart";
-  errorPrint "xEnd: $xEnd";
-  errorPrint "yStart: $yStart";
-  errorPrint "yEnd: $yEnd";
   errorPrint "zStart: $zStart";
   errorPrint "zEnd: $zEnd";
 
   exit 1;
 end
+# debugPrint "pathNameMask: $pathNameMask";
+
+set scriptGT (readlink -f "$SDIR/3-generateTile.fish");
+
+pushd "$outDir";
 
 for z in (seq "$zStart" "$zEnd")
-  test "$outputZoomFolders" = 'true' -a ! -d "$z";
-  and mkdir -- "$z";
+  # debugPrint "z: $z";
 
-  for x in (seq "-$xStart" "$xEnd")
-    test "$outputAxisFolders" = 'true' -a ! -d "$z/$x";
-    and mkdir -- "$z/$x";
+  if test \( \
+          "$outputZoomFolders" = 'true' \
+      -o  "$outputAxisFolders" = 'true' \
+    \) \
+    -a ! -d "$z"
+    mkdir -- "$z";
+  else
+    # debugPrint 'no mkdir z';
+  end
 
-    for y in (seq "-$yStart" "$yEnd")
+  if test \
+        -z "$xStart"  \
+    -o  -z "$xEnd"    \
+    -o  -z "$yStart"  \
+    -o  -z "$yEnd"
+    set numAxisTiles (echo "2 ^ $z" | bc);
+    # debugPrint "numAxisTiles: $numAxisTiles";
+
+    set xStart  '0';
+    set xEnd    "$numAxisTiles";
+    set yStart  '0';
+    set yEnd    "$numAxisTiles";
+  end
+
+  for x in (seq "$xStart" "$xEnd")
+    # debugPrint "x: $x";
+
+    if test \
+      "$outputAxisFolders" = 'true' \
+      -a ! -d "$z/$x";
+      mkdir -- "$z/$x";
+    else
+      # debugPrint 'no mkdir z/x';
+    end
+
+    for y in (seq "$yStart" "$yEnd")
+      # debugPrint "y: $y";
+
       eval set -l pathName "$pathNameMask";
       # debugPrint "pathName: $pathName";
-      set -l filePath "$pathName.$fileExt";
+      set -xl filePath "$pathName.$fileExt";
       # debugPrint "filePath: $filePath";
+      eval set -xl label "$labelMask";
+      # debugPrint "label: $label";
 
-      test -e "$filePath" -a "$force" != 'true'; and continue;
+      # debugPrint '2-generateTiles before continue';
+      test \
+        -e "$filePath" \
+        -a "$force" != 'true';
+      and continue;
+      # debugPrint '2-generateTiles after continue';
 
-      "$SDIR/3-generateTile.fish";
+      "$scriptGT";
+
+      # break;
     end
     # break;
   end
 end
+
+popd;
+
+# debugPrint '2-generateTiles END';

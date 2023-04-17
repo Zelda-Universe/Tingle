@@ -4,7 +4,7 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-debugPrint '3-generateTile START';
+# debugPrint '3-generateTile START';
 
 set SDIR (dirname (status filename));
 
@@ -34,31 +34,69 @@ if test \
   exit 1;
 end
 
+# pwd;
+
+# debugPrint "filePath: $filePath";
+
 if test -z "$label"
   set labelOpts '';
 else
   set labelOpts "label:$label";
 end
-debugPrint "label: $label";
-debugPrint "labelOpts: $labelOpts";
-debugPrint "count labelOpts: "(count $labelOpts);
+# debugPrint "label: $label";
+# debugPrint "labelOpts: $labelOpts";
+# debugPrint "count labelOpts: "(count $labelOpts);
 
-# Since fish shell is ot preserving array variables........
+if test -n "$tileSize" -a -n "$bordersize"
+  set tileSize (
+    echo "$tileSize - ($bordersize * 2)" | bc
+  );
+end
+
+# Since fish shell is not preserving array variables........
 if test -n "$inputOptsJSON"
-  set $inputOpts (
+  set inputOpts (
     echo "$inputOptsJSON" \
     | jq -r '.[]'
   );
-end
-set inputOpts $inputOpts $labelOpts;
 
-debugPrint "inputOpts: $inputOpts";
-debugPrint "count inputOpts: "(count $inputOpts);
+  # echo "$inputOptsJSON" \
+  # | jq -r '.[]'
+end
+
 for inputOpt in $inputOpts
-  debugPrint "inputOpt: $inputOpt";
+  test -n "$inputOpt";
+  and set -a trailingOpts "$inputOpt";
 end
 
-convert \
+for labelOpt in $labelOpts
+  test -n "$labelOpt";
+  and set -a trailingOpts "$labelOpt";
+end
+
+# debugPrint "inputOpts: $inputOpts";
+# debugPrint "inputOpts[-2]: $inputOpts[-2]";
+# debugPrint "inputOpts[-1]: $inputOpts[-1]";
+# debugPrint "count inputOpts: "(count $inputOpts);
+# for inputOpt in $inputOpts
+#   debugPrint "inputOpt: $inputOpt";
+# end
+# pwd
+
+set -a trailingOpts "$filePath";
+
+# debugPrint convert                      \
+#   -background   "$background"           \
+#   -font         "$font"                 \
+#   -fill         "$fill"                 \
+#   -size         {$tileSize}x{$tileSize} \
+#   -pointsize    "$pointsize"            \
+#   -gravity      "$gravity"              \
+#   -bordercolor  "$bordercolor"          \
+#   -border       "$bordersize"           \
+#   $trailingOpts                         \
+# ;
+convert                                 \
   -background   "$background"           \
   -font         "$font"                 \
   -fill         "$fill"                 \
@@ -67,8 +105,7 @@ convert \
   -gravity      "$gravity"              \
   -bordercolor  "$bordercolor"          \
   -border       "$bordersize"           \
-  $inputOpts                            \
-  "$filePath"                           \
+  $trailingOpts                         \
 ;
 
-debugPrint '3-generateTile END';
+# debugPrint '3-generateTile END';

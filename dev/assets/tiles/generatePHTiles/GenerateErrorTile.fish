@@ -4,7 +4,7 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-debugPrint 'GenerateErrorTile START';
+# debugPrint 'GenerateErrorTile START';
 
 set SDIR (readlink -f (dirname (status filename)));
 # debugPrint "SDIR: $SDIR";
@@ -34,13 +34,13 @@ set -x inputOptsJSON '["'(
   string join '","' -- $inputOpts;
 )'"]';
 
-debugPrint "inputOpts: $inputOpts";
-debugPrint "count inputOpts: "(count $inputOpts);
+# debugPrint "inputOpts: $inputOpts";
+# debugPrint "count inputOpts: "(count $inputOpts);
 # for inputOpt in $inputOpts
 #   debugPrint "inputOpt: $inputOpt";
 # end
-debugPrint "inputOptsJSON: $inputOptsJSON";
+# debugPrint "inputOptsJSON: $inputOptsJSON";
 
 "$SDIR/3-generateTile.fish";
 
-debugPrint 'GenerateErrorTile END';
+# debugPrint 'GenerateErrorTile END';

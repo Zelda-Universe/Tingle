@@ -6,7 +6,7 @@
 
 # debugPrint '2-generateTiles START';
 
-set SDIR (dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 
 if test \
       -z "$zStart" \

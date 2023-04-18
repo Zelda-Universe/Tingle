@@ -7,7 +7,7 @@
 echo "Not updated or able to be generalized properly; exiting...";
 exit;
 
-set SDIR "$PWD/"(dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 
 pushd "$SDIR";
 

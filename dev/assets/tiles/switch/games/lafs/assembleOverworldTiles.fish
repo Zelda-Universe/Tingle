@@ -87,7 +87,7 @@ function step2 --argument-names outDir
   end
 end
 
-set SDIR "$PWD/"(dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 
 # Direct (Required) Input
 

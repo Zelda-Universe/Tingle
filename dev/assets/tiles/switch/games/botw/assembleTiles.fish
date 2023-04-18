@@ -313,7 +313,7 @@ function step3 --argument-names outputPath
   end;
 end
 
-set SDIR "$PWD/"(dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 
 set indiciesHorizontal  "Z" "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K"
 set tileDims            "3000"   "840"  "300"  "135";

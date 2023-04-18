@@ -5,7 +5,7 @@
 # https://choosealicense.com/licenses/mit/
 
 # set SDIR "$PWD/"(dirname (status filename));
-set SDIR (dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 # debugPrint "SDIR: $SDIR";
 # debugPrint "SDIR: $SDIR/../../../..";
 # debugPrint "rl -f SDIR ..x4: "(readlink -f "$SDIR/../../../..");

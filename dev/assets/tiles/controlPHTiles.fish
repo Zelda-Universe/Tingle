@@ -4,7 +4,7 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-set SDIR (dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 
 test -z "$container"; and set container "$argv[1]";
 test -z "$container"; and begin

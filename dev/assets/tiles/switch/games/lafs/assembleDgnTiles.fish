@@ -242,7 +242,7 @@ function step2 --argument-names background outDir
   echo;
 end
 
-set SDIR "$PWD/"(dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 
 # Direct (Required) Input
 

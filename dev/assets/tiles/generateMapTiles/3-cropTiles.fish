@@ -4,6 +4,8 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
+set SDIR (readlink -f (dirname (status filename)));
+
 echo 'Cropping tiles...';
 
 pushd "$outDir";

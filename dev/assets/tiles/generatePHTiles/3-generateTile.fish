@@ -6,7 +6,7 @@
 
 # debugPrint '3-generateTile START';
 
-set SDIR (dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/1-config.fish";
 

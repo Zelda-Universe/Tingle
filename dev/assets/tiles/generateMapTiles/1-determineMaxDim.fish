@@ -5,7 +5,7 @@
 # https://choosealicense.com/licenses/mit/
 # debugPrint 'status filename: '(status filename);
 # set SDIR "$PWD/"(dirname (status filename));
-set SDIR (dirname (status filename));
+set SDIR (readlink -f (dirname (status filename)));
 # debugPrint "SDIR: $SDIR";
 # Step 1 - Determine Maximum Dimensions
 # Always required / internal step.

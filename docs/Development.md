@@ -20,13 +20,25 @@
 
 # Releases
 
-  Done by Jason, from `master` to `production`.
+  - From `master` to `production` by the owner / release manager.
 
-  The release manager must manually set all user accounts `seen_latest_changelog` to `0` (`false`).
-    Don't want a fresh commit to do this before every release; that would be cruft.
-    Do this after you deploy the code, to prevent the edge case of a user visiting the site in the small window of time with the old and/or database without the new changelog entries, and would incorrectly set the `seen_latest_changelog`, and even the `last_login` field as well, so once the new data is present, it would not be triggered and shown to them.
-    Can use this script: `dev/db/resetUsersChangelogSeenPresence.sh`
-      Make sure to set the MySQL parameters appropriately.  See the script header for more details.
+  - When changelog notifications are enabled:
+    - They must manually set all user accounts `seen_latest_changelog` to `0` (`false`).
+      - Don't want a fresh commit to do this before every release; that would be cruft.
+      - Do this after you deploy the code, with database changes.
+        - This is to prevent the edge case of a user visiting the site in the small window of time with the old database without the new changelog entries, which would incorrectly set the `seen_latest_changelog` flag again, so when the new data is present, it would not be triggered and shown to them.
+      - Can use this script: `dev/db/resetUsersChangelogSeenPresence.sh`
+
+# Add new game support
+
+  - Add new database migration to add container entry.
+    - Source: `dev/db/migrate/20230405204517_container_add_basic_tot_k_support.rb`
+  - Update sample SQL data files in a focused style.
+    - `set -x tableNames (read)`
+    - `./dev/db/createSampleDatabaseExport/run.sh`
+  - Optional:
+    - Change default game parameter for container in index page script block, and any other specific SEO data in the head section.
+  - Test, commit, push, and create a PR!
 
 ## Version Info
 
@@ -164,13 +176,27 @@
 
   - Samples:
     - ActiveRecord Ruby Code
-      - Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
+      - Source: http://guides.rubyonrails.org/active_record_migrations.html
+      - Source: https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
+      - Note: Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
       - Add column:
         - `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
         - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
-      - Change column null property:
-        - `t.change_null :content, false`
-        - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
+      - Changing Columns:
+        - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-columns
+        - Change table common code:
+            - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-tables
+            - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
+            - `change_table :table_name do |t|`
+            - Then refer to the specific section goal below with the reduced  column variants.
+        - Change column null property:
+          - `t.change_null :content, false`
+          - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
+        - Change column default value:
+          - `t.change_default :marker_url, from: '/markers/', to: 'markers/'`
+          - `change_column_default(:table_name, :column_name, '<defaultValue>')`
+          - Source: `dev/db/migrate/20230405195637_container_update_and_add_defaults.rb`
+          - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_column_default
     - Execute Raw SQL:
       - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
       - Inline statement:
@@ -187,9 +213,6 @@
           ```
       - Multiple Queries:
         - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
-  - More Info:
-    - http://guides.rubyonrails.org/active_record_migrations.html
-    - https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
 
 ## MySQL Workbench (MWB) File Handling
 

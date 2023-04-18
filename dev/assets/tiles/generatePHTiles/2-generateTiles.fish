@@ -21,8 +21,22 @@ end
 
 set scriptGT (readlink -f "$SDIR/3-generateTile.fish");
 
+if test \
+      -n "$xStart"  \
+  -a  -n "$xEnd"    \
+  -a  -n "$yStart"  \
+  -a  -n "$yEnd"
+  set xStartOrig  "$xStart" ;
+  set xEndOrig    "$xEnd"   ;
+  set yStartOrig  "$yStart" ;
+  set yEndOrig    "$yEnd"   ;
+end
+set -e xStart xEnd yStart yEnd;
+
 pushd "$outDir";
 
+# debugPrint "zStart: $zStart";
+# debugPrint "zEnd: $zEnd";
 for z in (seq "$zStart" "$zEnd")
   # debugPrint "z: $z";
 
@@ -37,17 +51,28 @@ for z in (seq "$zStart" "$zEnd")
   end
 
   if test \
-        -z "$xStart"  \
-    -o  -z "$xEnd"    \
-    -o  -z "$yStart"  \
-    -o  -z "$yEnd"
+        -n "$xStartOrig"  \
+    -a  -n "$xEndOrig"    \
+    -a  -n "$yStartOrig"  \
+    -a  -n "$yEndOrig"
+    set xStart  "$xStartOrig" ;
+    set xEnd    "$xEndOrig"   ;
+    set yStart  "$yStartOrig" ;
+    set yEnd    "$yEndOrig"   ;
+  else
     set numAxisTiles (echo "2 ^ $z" | bc);
     # debugPrint "numAxisTiles: $numAxisTiles";
+    set axisEndIndex (echo "$numAxisTiles" - 1 | bc);
+    # debugPrint "axisEndIndex: $axisEndIndex";
 
     set xStart  '0';
-    set xEnd    "$numAxisTiles";
+    set xEnd    "$axisEndIndex";
     set yStart  '0';
-    set yEnd    "$numAxisTiles";
+    set yEnd    "$axisEndIndex";
+    # debugPrint "xStart: $xStart";
+    # debugPrint "xEnd: $xEnd";
+    # debugPrint "yStart: $yStart";
+    # debugPrint "yEnd: $yEnd";
   end
 
   for x in (seq "$xStart" "$xEnd")
@@ -84,6 +109,8 @@ for z in (seq "$zStart" "$zEnd")
     end
     # break;
   end
+
+  set -e xStart xEnd yStart yEnd;
 end
 
 popd;

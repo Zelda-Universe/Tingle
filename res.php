@@ -8,7 +8,6 @@
   ## Library Functions
 
   function checkIfUpdateNecessaryBySourceFiles($cacheRegistryData) {
-    global $debugOutput;
     global $commentRegex;
 
     // debug_log('checkIfUpdateNecessaryBySourceFiles START');
@@ -252,6 +251,6 @@
   $output .= file_get_contents("$cacheDestFile");
   $output .= "\n";
   header("X-Updated: ".(($update) ? 'true' : 'false'));
-  if(strlen($debugOutput) === 0) header("Content-Length: ".strlen($output));
+  header("Content-Length: ".strlen($output));
   print($output);
 ?>

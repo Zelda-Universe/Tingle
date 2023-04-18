@@ -24,8 +24,9 @@ function ZMap() {
    this.markerIconSmall;
    this.markerIconMedium;
 
-   this.tilesBaseURL    = ZConfig.getConfig("tilesBaseURL"  );
+   this.errorTileUrl    = ZConfig.getConfig("errorTileUrl");
    this.tileNameFormat  = ZConfig.getConfig("tileNameFormat");
+   this.tilesBaseURL    = ZConfig.getConfig("tilesBaseURL"  );
 
    // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself.
    //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
@@ -257,113 +258,127 @@ ZMap.prototype.addMap = function(vMap) {
    }
 
    // If only one submap exists, we just add it without any overlay
-   if (vMap.subMap.length == 1
-         && vMap.subMap[0].submapLayer.length == 0) {
-      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + this.tileNameFormat + '.' + vMap.subMap[0].tileExt
-                                           , { maxZoom:           vMap.maxZoom
-                                             , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[0].mapMapper
-                                             , opacity:           vMap.subMap[0].opacity
-                                             , noWrap:            true
-                                             , tileSize:          mapOptions.tileSize
-                                             , updateWhenIdle:    true
-                                             , updateWhenZooming: false
-                                             , label:             vMap.name
-                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
-                                                 }
-      );
-
-      tLayer.id          = 'mID' + vMap.id;
-      tLayer.originalId  = vMap.id;
-      tLayer.title       = vMap.name;
-      tLayer._overlayMap = [];
-      tLayer.defaultSubMapId = vMap.subMap[0].id;
-
-      maps.push(tLayer);
-   } else {
-      // Create the base map
-      //  We create it as an empty map, so different sized overlay maps won't show on top
-      //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
-      /* TODO: Improve this to use no tile at all (remove tile border)*/
-      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
-                                           , { maxZoom:           vMap.maxZoom
-                                             , noWrap:            true
-                                             , tileSize:          mapOptions.tileSize
-                                             , updateWhenIdle:    true
-                                             , updateWhenZooming: false
-                                             , label:             vMap.name
-                                             , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
-                                             }
-      );
-
-      tLayer.id          = 'mID' + vMap.id;
-      tLayer.originalId  = vMap.id;
-      tLayer.title       = vMap.name;
-      tLayer._overlayMap = [];
-      tLayer.defaultSubMapId = vMap.subMap[0].id;
-
-      // Add all the submaps to the overlay array (including the first submap for control purposes)
-      for (var i = 0; i < vMap.subMap.length; i++) {
-         var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
-                                            , { maxZoom:           vMap.maxZoom
-                                              , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
-                                              , opacity:           vMap.subMap[i].opacity
-                                              , noWrap:            true
-                                              , tileSize:          mapOptions.tileSize
-                                              , updateWhenIdle:    true
-                                              , updateWhenZooming: false
-                                              , label:             vMap.name
-                                              , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
-                                            }
-         );
-
-         overlay.id          = 'mID' + vMap.subMap[i].id;
-         overlay.originalId  = vMap.subMap[i].id;
-         overlay.title       = vMap.subMap[i].name;
-         overlay.isDefault   = vMap.subMap[i].isDefault;
-
-         if (vMap.subMap[i].submapLayer.length > 0) {
-
-            overlay.layers = [];
-            var bgZIdx = _this.backgroundZIndex;
-            var fgZIdx = _this.foregroundZIndex;
-
-            for (var j = 0; j < vMap.subMap[i].submapLayer.length; j++) {
-
-               var submap = vMap.subMap[i].submapLayer[j];
-
-               var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
-                                                                       , { maxZoom:           submap.maxZoom
-                                                                         , noWrap:            true
-                                                                         , attribution:       submap.mapMapper
-                                                                         , zIndex:            (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
-                                                                         , tileSize:          mapOptions.tileSize
-                                                                         , opacity:           submap.opacity
-                                                                         , updateWhenIdle:    false
-                                                                         , updateWhenZooming: false
-                                                                         , label:             vMap.name
-                                                                         , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
-                                                                         });
-               overlay2.id             = 'mID' + submap.id;
-               overlay2.originalId     = submap.id;
-               overlay2.title          = submap.name;
-               overlay2.controlChecked = submap.controlChecked;
-               overlay2.type           = submap.type;
-
-               //console.debug(overlay2);
-               overlay.layers.push(overlay2);
-
-            }
-
-         }
-
-         tLayer._overlayMap.push(overlay);
+  if (
+        vMap.subMap.length == 1
+    &&  vMap.subMap[0].submapLayer.length == 0
+  ) {
+    var tLayer = L.tileLayer(
+      this.tilesBaseURL
+      + vMap.subMap[0].tileURL
+      + this.tileNameFormat
+      + '.'
+      + vMap.subMap[0].tileExt
+      , {
+          maxZoom           : vMap.maxZoom
+        , attribution       : vMap.mapCopyright
+          + ', '
+          + vMap.subMap[0].mapMapper
+        , opacity           : vMap.subMap[0].opacity
+        , noWrap            : true
+        , tileSize          : mapOptions.tileSize
+        , updateWhenIdle    : true
+        , updateWhenZooming : false
+        , label             : vMap.name
+        , iconURL           : this.defaultIconURL
+          + vMap.subMap[0].tileURL
+          + 'icon.'
+          + vMap.subMap[0].tileExt
+        , errorTileUrl      : this.errorTileUrl
       }
+    );
 
-      maps.push(tLayer);
+    tLayer.id               = 'mID' + vMap.id   ;
+    tLayer.originalId       = vMap.id           ;
+    tLayer.title            = vMap.name         ;
+    tLayer._overlayMap      = []                ;
+    tLayer.defaultSubMapId  = vMap.subMap[0].id ;
+
+    maps.push(tLayer);
+  } else {
+    // Create the base map
+    //  We create it as an empty map, so different sized overlay maps won't show on top
+    //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
+    /* TODO: Improve this to use no tile at all (remove tile border)*/
+    var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
+                                         , { maxZoom:           vMap.maxZoom
+                                           , noWrap:            true
+                                           , tileSize:          mapOptions.tileSize
+                                           , updateWhenIdle:    true
+                                           , updateWhenZooming: false
+                                           , label:             vMap.name
+                                           , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                           }
+    );
+
+    tLayer.id          = 'mID' + vMap.id;
+    tLayer.originalId  = vMap.id;
+    tLayer.title       = vMap.name;
+    tLayer._overlayMap = [];
+    tLayer.defaultSubMapId = vMap.subMap[0].id;
+
+    // Add all the submaps to the overlay array (including the first submap for control purposes)
+    for (var i = 0; i < vMap.subMap.length; i++) {
+       var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
+                                          , { maxZoom:           vMap.maxZoom
+                                            , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
+                                            , opacity:           vMap.subMap[i].opacity
+                                            , noWrap:            true
+                                            , tileSize:          mapOptions.tileSize
+                                            , updateWhenIdle:    true
+                                            , updateWhenZooming: false
+                                            , label:             vMap.name
+                                            , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                          }
+       );
+
+       overlay.id          = 'mID' + vMap.subMap[i].id;
+       overlay.originalId  = vMap.subMap[i].id;
+       overlay.title       = vMap.subMap[i].name;
+       overlay.isDefault   = vMap.subMap[i].isDefault;
+
+       if (vMap.subMap[i].submapLayer.length > 0) {
+
+          overlay.layers = [];
+          var bgZIdx = _this.backgroundZIndex;
+          var fgZIdx = _this.foregroundZIndex;
+
+          for (var j = 0; j < vMap.subMap[i].submapLayer.length; j++) {
+
+             var submap = vMap.subMap[i].submapLayer[j];
+
+             var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
+                                                                     , { maxZoom:           submap.maxZoom
+                                                                       , noWrap:            true
+                                                                       , attribution:       submap.mapMapper
+                                                                       , zIndex:            (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
+                                                                       , tileSize:          mapOptions.tileSize
+                                                                       , opacity:           submap.opacity
+                                                                       , updateWhenIdle:    false
+                                                                       , updateWhenZooming: false
+                                                                       , label:             vMap.name
+                                                                       , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
+                                                                       });
+             overlay2.id             = 'mID' + submap.id;
+             overlay2.originalId     = submap.id;
+             overlay2.title          = submap.name;
+             overlay2.controlChecked = submap.controlChecked;
+             overlay2.type           = submap.type;
+
+             //console.debug(overlay2);
+             overlay.layers.push(overlay2);
+
+          }
+
+       }
+
+       tLayer._overlayMap.push(overlay);
+    }
+
+    maps.push(tLayer);
    }
-   if (this.mapControl) {
-      this.mapControl.rebuildMap();
-   }
+  if (this.mapControl) {
+    this.mapControl.rebuildMap();
+  }
 }
 
 ZMap.prototype.addMarkers = function(vMarkers) {
@@ -443,8 +458,12 @@ ZMap.prototype.addMarker = function(vMarker) {
       } else {
         _this._doSetMarkerUndoneAndCookie(marker);
       }
-      if (mapControl.isCollapsed() == false) {
-         if (mapControl.getContentType() == 'm'+marker.id && mapOptions.showCompleted == true) {
+      if (!mapControl.isCollapsed()) {
+         if (
+              mapControl.getContentType() == 'm'
+           +  marker.id
+           && mapOptions.showCompleted    == true
+         ) {
             //@TODO: Improve to not show marker content if this was not being displayed
             _this._createMarkerPopup(marker);
          } else {
@@ -704,7 +723,7 @@ ZMap.prototype.buildMap = function() {
   var mapControlOptions = $.extend(
     mapOptions, {
     "zIndex": 0,
-    "collapsed": false
+    "collapsed": ZConfig.getConfig("collapsed")
   });
 
   if (L.Browser.mobile && window.innerWidth < 768) {

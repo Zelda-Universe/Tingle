@@ -24,9 +24,9 @@ scripts/widgets/AccountButton.js
 scripts/widgets/HeaderBar.js
 scripts/widgets/Logo.js
 scripts/controls/InfoBox.js
-scripts/controls/infoBox/Location.js
-scripts/controls/infoBox/location/Center.js
-scripts/controls/infoBox/location/Bounds.js
+scripts/controls/InfoBox/Location.js
+scripts/controls/InfoBox/Location/Center.js
+scripts/controls/InfoBox/Location/Bounds.js
 scripts/services/SearcherFuse.js
 scripts/handlers/SearchMarkerHandler.js
 scripts/handlers/ChangelogHandler.js
@@ -42,6 +42,6 @@ scripts/widgets/GameButton.js
 scripts/widgets/MapButton.js
 scripts/widgets/MapsMenu.js
 scripts/widgets/CategoryButtonMap.js
-scripts/controls/infoBox/Mouse.js
-scripts/controls/infoBox/mouse/Move.js
-scripts/controls/infoBox/mouse/ClickHist.js
+scripts/controls/InfoBox/Mouse.js
+scripts/controls/InfoBox/Mouse/Move.js
+scripts/controls/InfoBox/Mouse/ClickHist.js

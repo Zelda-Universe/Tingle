@@ -1,41 +1,68 @@
 <?php
   include_once(__DIR__.'/config.php');
+  include_once(__DIR__.'/lib/common/data.php');
   include_once(__DIR__.'/lib/common/log.php');
 
-  $commentRegex = '/^\s*\/\//';
 
-  $output = '';
-  $debugOutput = '';
+
+  ## Library Functions
 
   function checkIfUpdateNecessaryBySourceFiles($cacheRegistryData) {
     global $debugOutput;
     global $commentRegex;
 
-    // $debugOutput .= debug_log('checkIfUpdateNecessaryBySourceFiles START');
-    // $debugOutput .= debug_log('count(cacheRegistryData): '.count($cacheRegistryData));
+    // debug_log('checkIfUpdateNecessaryBySourceFiles START');
+    $cacheRegistryDataCount = count($cacheRegistryData);
+    // debug_log("cacheRegistryDataCount: $cacheRegistryDataCount");
+    // // debug_log("cacheRegistryData      : ".var_export($cacheRegistryData, true)); // Big
+    if($cacheRegistryDataCount = 0) {
+      // debug_log('Cache registry file empty, or could not be parsed as INI data; returning...');
+      return false;
+    }
+
     foreach($cacheRegistryData as $resFile => $time) {
-      // $debugOutput .= debug_log("resfile: $resFile");
+      // debug_log("resfile: $resFile");
 
       $isCommented  = preg_match($commentRegex, $resFile);
       $fileExists   = file_exists($resFile);
       if($isCommented || !$fileExists) {
-        // $debugOutput .= debug_log("isCommented: " .var_export($isCommented, true));
-        // $debugOutput .= debug_log("fileExists: "  .var_export($fileExists, true));
+        // debug_log("isCommented: " .var_export($isCommented, true));
+        // debug_log("fileExists: "  .var_export($fileExists, true));
 
-        // $debugOutput .= debug_log('checkIfUpdateNecessaryBySourceFiles continue');
+        // debug_log('checkIfUpdateNecessaryBySourceFiles continue');
         continue;
       }
 
       if($time != filemtime($resFile)) {
-        // $debugOutput .= debug_log('checkIfUpdateNecessaryBySourceFiles return');
+        // debug_log('checkIfUpdateNecessaryBySourceFiles return');
         return true;
       }
     }
-    // $debugOutput .= debug_log('checkIfUpdateNecessaryBySourceFiles END');
+    // debug_log('checkIfUpdateNecessaryBySourceFiles END');
   }
 
-  // $debugOutput .= debug_log("__FILE__         : ".__FILE__);
-  // $debugOutput .= debug_log("__DIR__          : ".__DIR__ );
+  function inifyFileToFile($fromFile, $toFile) {
+    $fromFileData = file_get_contents($fromFile);
+    $fromFileDataInified = preg_replace('/\n/', "=\n", $fromFileData);
+    file_put_contents("$toFile", $fromFileDataInified);
+  }
+
+
+
+  ## Initialization
+
+  $commentRegex = '/^\s*\/\//';
+
+  if(!isset($_GET["type"])) {
+
+  }
+
+  // debug_log("__FILE__               : ".__FILE__);
+  // debug_log("__DIR__                : ".__DIR__ );
+
+
+
+  ## Validation and more init
 
   if(!isset($_GET["type"])) {
     print("A type must be provided! javascript or css.");
@@ -48,7 +75,7 @@
         $type != "javascript"
     &&  $type != "css"
   ) {
-    $output .= "Invalid type! ($type)";
+    $output = "Invalid type! ($type)";
     return;
   }
   $mtype = "text/$type";
@@ -58,91 +85,138 @@
     $ext = ".js";
   }
 
-  // $debugOutput .= debug_log("type                   : $type " );
-  // $debugOutput .= debug_log("mtype                  : $mtype" );
-  // $debugOutput .= debug_log("ext                    : $ext"   );
+  // debug_log("type                   : $type " );
+  // debug_log("mtype                  : $mtype" );
+  // debug_log("ext                    : $ext"   );
 
   header("Content-Type: $mtype");
 
         $localRegistryFile = "$type.txt";
-  $localRegistryFileExists =  file_exists("$localRegistryFile");
-   $localRegistryFileMTime =    filemtime("$localRegistryFile");
-        $cacheRegistryFile = "$cacheFolder/$localRegistryFile";
-  $cacheRegistryFileExists =  file_exists("$cacheRegistryFile");
-   $cacheRegistryFileMTime =    filemtime("$cacheRegistryFile");
-            $cacheDestFile = "$cacheFolder/index$ext";
-      $cacheDestFileExists =  file_exists("$cacheDestFile");
-       $cacheDestFileMTime =    filemtime("$cacheDestFile");
+  $localRegistryFileExists  = file_exists("$localRegistryFile");
+  if($localRegistryFileExists) {
+    $localRegistryFileMTime = filemtime("$localRegistryFile");
+    $localRegistryFileLC    = getLineCount("$localRegistryFile");
+  } else {
+    $localRegistryFileMTime = false;
+    $localRegistryFileLC    = false;
+  }
+  $cacheRegistryFile        = "$cacheFolder/$localRegistryFile";
+  $cacheRegistryFileExists  = file_exists("$cacheRegistryFile");
+  if($cacheRegistryFileExists) {
+    $cacheRegistryFileMTime = filemtime("$cacheRegistryFile");
+    $cacheRegistryFileLC    = getLineCount("$cacheRegistryFile");
+  } else {
+    $cacheRegistryFileMTime = false;
+    $cacheRegistryFileLC    = false;
+  }
+  $cacheDestFile            = "$cacheFolder/index$ext";
+  $cacheDestFileExists      = file_exists("$cacheDestFile");
+  if($cacheDestFileExists) {
+    $cacheDestFileMTime     = filemtime("$cacheDestFile");
+    $cacheDestFileLC        = getLineCount("$cacheDestFile");
+  } else {
+    $cacheDestFileMTime = false;
+    $cacheDestFileLC    = false;
+  }
 
-  // $debugOutput .= debug_log("localRegistryFile      : $localRegistryFile"       );
-  // $debugOutput .= debug_log("localRegistryFileExists: $localRegistryFileExists" );
-  // $debugOutput .= debug_log("localRegistryFileMTime : $localRegistryFileMTime"  );
-  // $debugOutput .= debug_log("cacheRegistryFile      : $cacheRegistryFile"       );
-  // $debugOutput .= debug_log("cacheRegistryFileExists: $cacheRegistryFileExists" );
-  // $debugOutput .= debug_log("cacheRegistryFileMTime : $cacheRegistryFileMTime"  );
-  // $debugOutput .= debug_log("cacheDestFile          : $cacheDestFile"           );
-  // $debugOutput .= debug_log("cacheDestFileExists    : $cacheDestFileExists"     );
-  // $debugOutput .= debug_log("cacheDestFileMTime     : $cacheDestFileMTime"      );
+  // debug_log("localRegistryFile      : $localRegistryFile"       );
+  // debug_log("localRegistryFileExists: $localRegistryFileExists" );
+  // debug_log("localRegistryFileMTime : $localRegistryFileMTime"  );
+  // debug_log("localRegistryFileLC    : $localRegistryFileLC"     );
+  // debug_log("cacheRegistryFile      : $cacheRegistryFile"       );
+  // debug_log("cacheRegistryFileExists: $cacheRegistryFileExists" );
+  // debug_log("cacheRegistryFileMTime : $cacheRegistryFileMTime"  );
+  // debug_log("cacheRegistryFileLC    : $cacheRegistryFileLC"     );
+  // debug_log("cacheDestFile          : $cacheDestFile"           );
+  // debug_log("cacheDestFileExists    : $cacheDestFileExists"     );
+  // debug_log("cacheDestFileMTime     : $cacheDestFileMTime"      );
+  // debug_log("cacheDestFileLC        : $cacheDestFileLC"         );
+
+  // exit('Debug forced stop: '."\n".$debugLog); // Debug
+
+
+
+  ## Update category checks
 
   $update = false;
-  // $debugOutput .= debug_log("update           : ".var_export($update, true));
+  // debug_log("update                 : ".var_export($update, true));
   if(!$cacheRegistryFileExists) {
-    // $debugOutput .= debug_log('Source files are prompting an update.');
+    // debug_log('Registry file not currectly cached; copying over, inifying, and prompting an update...');
     $update = true;
     copy("$localRegistryFile", "$cacheRegistryFile")
     or die("Error: Cache file problem with: $cacheRegistryFile");
+
+    inifyFileToFile(
+      $localRegistryFile,
+      $cacheRegistryFile
+    );
   }
+
+  // exit('Debug forced stop: '."\n".$debugLog); // Debug
 
   if(
         !$update
     &&  isset($_GET['update'])
     &&  (strtolower($_GET['update']) === "true")
   ) {
-    // $debugOutput .= debug_log('Resource request is explicitly prompting an update.');
+    // debug_log('Resource request is explicitly prompting an update.');
     $update = true;
   }
-  if(!$update && $localRegistryFileMTime > $cacheRegistryFileMTime) {
-    // $debugOutput .= debug_log('Local registry file having changes being more recent are prompting an update.');
+
+  if(
+        !$update
+    &&  $localRegistryFileMTime > $cacheRegistryFileMTime
+  ) {
+    // debug_log('Local registry file having changes being more recent are prompting an update.');
     $update = true;
 
-    $localRegistryFileData = file_get_contents($localRegistryFile);
-    $localRegistryFileDataInified = preg_replace('/\n/', "=\n", $localRegistryFileData);
-    file_put_contents("$cacheRegistryFile", $localRegistryFileDataInified);
+    inifyFileToFile(
+      $localRegistryFile,
+      $cacheRegistryFile
+    );
 
-    // $debugOutput .= debug_log("copy(\"$localRegistryFile\", \"$cacheRegistryFile\")");
+    // debug_log("copy(\"$localRegistryFile\", \"$cacheRegistryFile\")");
     // copy("$localRegistryFile", "$cacheRegistryFile")
     // or die("Error: Cache file problem with: $cacheRegistryFile");
   }
 
-  $cacheRegistryData = parse_ini_file("$cacheRegistryFile");
-  $cacheRegistryDataLinesCount = count($cacheRegistryData);
-  // $debugOutput .= debug_log("cacheRegistryDataLinesCount: $cacheRegistryDataLinesCount");
-  // $debugOutput .= debug_log("cacheRegistryData: ".var_export($cacheRegistryData, true)); // Big
+  $cacheRegistryData      = parse_ini_file("$cacheRegistryFile" );
+  $cacheRegistryDataCount = count         ( $cacheRegistryData  );
+  // debug_log("cacheRegistryDataCount : $cacheRegistryDataCount");
+  if($cacheRegistryDataCount == 0) {
+    // debug_log('Cache registry file still empty, or could not be parsed as INI data; removing...');
+    unlink($cacheRegistryFile);
+  }
 
   if(!$update) {
     if(checkIfUpdateNecessaryBySourceFiles($cacheRegistryData)) {
-      // $debugOutput .= debug_log('Source files are prompting an update.');
+      // debug_log('Source files are prompting an update.');
       $update = true;
     }
   }
-  // $debugOutput .= debug_log("update           : ".var_export($update, true));
+  // debug_log("update                 : ".var_export($update, true));
 
-  # Update the minified cache file.
+  // exit('Debug forced stop: '."\n\n".$debugLog); // Debug
+
+
+
+  ## Update the minified cache file.
   if($update) {
-    // $debugOutput .= debug_log('Updating cached file...');
-    // $debugOutput .= debug_log('getcwd: '.getcwd());
+    // debug_log('Updating cached file...');
+    // debug_log('getcwd: '.getcwd());
+
     include __DIR__."/lib/minify.php";
 
     $output = "/* index$ext */\n";
     foreach($cacheRegistryData as $resFile => $time) {
-      // $debugOutput .= debug_log("resFile: $resFile");
+      // debug_log("resFile: $resFile");
       $isCommented = preg_match($commentRegex, $resFile);
       if($isCommented) {
-        // $debugOutput .= debug_log('Commented file; skipping...');
+        // debug_log('Commented file; skipping...');
         continue;
       }
       $resFilePath = __DIR__."/$resFile";
-      // $debugOutput .= debug_log("resFilePath: $resFilePath");
+      // debug_log("resFilePath: $resFilePath");
       if(!file_exists($resFilePath)) {
           $output .= "/* $resFile doesn't exist */\n";
 
@@ -152,10 +226,10 @@
       $resFileData = file_get_contents($resFilePath);
       if($minify) {
         if($type == "javascript") {
-          // $debugOutput .= debug_log('Minifying javascript...');
+          // debug_log('Minifying javascript...');
           $resFileData = minify_js($resFileData);
         } else {
-          // $debugOutput .= debug_log('Minifying css...');
+          // debug_log('Minifying css...');
           $resFileData = minify_css($resFileData);
         }
       }
@@ -166,7 +240,7 @@
     # Save and send the minified file.
     file_put_contents("$cacheDestFile", $output);
 
-    # Store timestamps for freshly-chached resource files in the registry file.
+    # Store timestamps for freshly-cached resource files in the registry file.
     $regData = "";
     foreach($cacheRegistryData as $resFile=>$time) {
       $regData .= "$resFile=$time\n";
@@ -174,7 +248,7 @@
     file_put_contents("$cacheRegistryFile", $regData);
   }
 
-  $output .= $debugOutput;
+  $output = $debugLog;
   $output .= file_get_contents("$cacheDestFile");
   $output .= "\n";
   header("X-Updated: ".(($update) ? 'true' : 'false'));

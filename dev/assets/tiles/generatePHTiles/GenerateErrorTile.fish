@@ -6,7 +6,7 @@
 
 # debugPrint 'GenerateErrorTile START';
 
-set SDIR (readlink -f (dirname (status filename)));
+set -l SDIR (readlink -f (dirname (status filename)));
 # debugPrint "SDIR: $SDIR";
 # debugPrint "SDIR: $SDIR/../../../..";
 # debugPrint "rl -f SDIR: "(readlink -f "$SDIR");

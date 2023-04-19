@@ -3,9 +3,9 @@
 # MIT Licensed
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
-# debugPrint 'status filename: '(status filename);
-# set SDIR "$PWD/"(dirname (status filename));
-set SDIR (readlink -f (dirname (status filename)));
+
+set -l SDIR (readlink -f (dirname (status filename)));
+
 # debugPrint "SDIR: $SDIR";
 # Step 1 - Determine Maximum Dimensions
 # Always required / internal step.

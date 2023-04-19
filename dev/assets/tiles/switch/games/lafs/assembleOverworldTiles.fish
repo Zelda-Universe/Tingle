@@ -87,7 +87,7 @@ function step2 --argument-names outDir
   end
 end
 
-set SDIR (readlink -f (dirname (status filename)));
+set -l SDIR (readlink -f (dirname (status filename)));
 
 # Direct (Required) Input
 

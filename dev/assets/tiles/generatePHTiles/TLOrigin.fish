@@ -6,8 +6,7 @@
 
 # debugPrint 'TLOrigin START';
 
-# set SDIR "$PWD/"(dirname (status filename));
-set SDIR (dirname (status filename));
+set -l SDIR (dirname (status filename));
 # TODO add mode, have centered, really need TL origin 2^(zoom*2) images only incrementing, no negative values, don't know where i got that idea...., so basically all even amounts except for ZL = 0
 
 # This is for a more focused approach when you know the exact zoom level to support.

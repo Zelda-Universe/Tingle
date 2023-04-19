@@ -6,10 +6,7 @@
 
 # Dependencies: magick/ImageMagick, bc, ...
 
-# debugPrint 'status filename: '(status filename);
-# set SDIR "$PWD/"(dirname (status filename));
-set SDIR (readlink -f (dirname (status filename)));
-# debugPrint "SDIR: $SDIR";
+set -l SDIR (readlink -f (dirname (status filename)));
 
 
 

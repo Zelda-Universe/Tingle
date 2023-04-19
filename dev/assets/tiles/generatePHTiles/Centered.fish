@@ -4,7 +4,7 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-set SDIR (readlink -f (dirname (status filename)));
+set -l SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/1-config.fish";
 

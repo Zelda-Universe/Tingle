@@ -6,7 +6,7 @@
 
 # debugPrint '2-generateTiles START';
 
-set SDIR (readlink -f (dirname (status filename)));
+set -l SDIR (readlink -f (dirname (status filename)));
 
 if test -n "$zoomLevelsJSON"
   set zoomLevels (echo "$zoomLevelsJSON" | jq -r '.[]');

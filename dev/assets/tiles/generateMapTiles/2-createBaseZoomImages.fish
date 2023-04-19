@@ -13,7 +13,7 @@
 # Using the first generated source image once, later it will resized down by
 # half for each stage until it is the size of a single tile for the last stage.
 
-
+set -l SDIR (readlink -f (dirname (status filename)));
 
 ## Header
 

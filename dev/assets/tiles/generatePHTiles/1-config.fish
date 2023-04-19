@@ -4,11 +4,7 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-# set SDIR "$PWD/"(dirname (status filename));
-set SDIR (readlink -f (dirname (status filename)));
-# debugPrint "SDIR: $SDIR";
-# debugPrint "SDIR: $SDIR/../../../..";
-# debugPrint "rl -f SDIR ..x4: "(readlink -f "$SDIR/../../../..");
+set -l SDIR (readlink -f (dirname (status filename)));
 
 # debugPrint "included1Config: $included1Config";
 if test "$included1Config" = 'true'

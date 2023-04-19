@@ -8,16 +8,25 @@
 
 set SDIR (readlink -f (dirname (status filename)));
 
-if test \
-      -z "$zStart" \
-  -o  -z "$zEnd"
-  errorPrint 'Missing required parameter; exiting...';
-  errorPrint "zStart: $zStart";
-  errorPrint "zEnd: $zEnd";
-
-  exit 1;
+if test -n "$zoomLevelsJSON"
+  set zoomLevels (echo "$zoomLevelsJSON" | jq -r '.[]');
+  # debugPrint "zoomLevels: $zoomLevels";
+  # debugPrint -n "count zoomLevels: "; and debugPrint (count $zoomLevels);
 end
-# debugPrint "pathNameMask: $pathNameMask";
+
+if test -z "$zoomLevels"
+  if test \
+        -z "$zStart" \
+    -o  -z "$zEnd"
+    errorPrint 'Missing required parameter; exiting...';
+    errorPrint "zStart: $zStart";
+    errorPrint "zEnd: $zEnd";
+
+    exit 1;
+  end
+
+  set zoomLevels (seq "$zStart" "$zEnd");
+end
 
 set scriptGT (readlink -f "$SDIR/3-generateTile.fish");
 
@@ -37,7 +46,7 @@ pushd "$outDir";
 
 # debugPrint "zStart: $zStart";
 # debugPrint "zEnd: $zEnd";
-for z in (seq "$zStart" "$zEnd")
+for z in $zoomLevels
   # debugPrint "z: $z";
 
   if test \( \

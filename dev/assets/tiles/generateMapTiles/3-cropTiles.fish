@@ -6,6 +6,8 @@
 
 set SDIR (readlink -f (dirname (status filename)));
 
+source "$SDIR/../../../scripts/common/userWaitConditional.fish";
+
 echo 'Cropping tiles...';
 
 pushd "$outDir";
@@ -17,7 +19,7 @@ if test -z "$processZoomLevels"
   end
 end
 
-if test -z "$processZoomLevels" = '*' -o -n "$processZoomLevelsMax"
+if test "$processZoomLevels" = '*' -o -n "$processZoomLevelsMax"
   set processZoomLevels (seq 0 1 "$processZoomLevelsMax");
 end
 
@@ -29,43 +31,81 @@ if test -z "$processZoomLevels"
 end
 
 for zoomLevel in $processZoomLevels
+  debugPrint "zoomLevel: $zoomLevel";
+
   test ! -d "$outTrialsDir/$zoomLevel";
   and mkdir "$outTrialsDir/$zoomLevel";
 
+  set numAxisTiles (echo "2 ^ $zoomLevel" | bc);
+  set axisEndIndex (echo "$numAxisTiles" - 1 | bc);
   set currentExtFile (printf "$tmpFitFileMask" "$zoomLevel");
-  set workFile "$currentExtFile";
-  # debugPrint "currentExtFile: $currentExtFile";
-  # debugPrint "workFile: $workFile";
+  debugPrint "numAxisTiles: $numAxisTiles";
+  debugPrint "axisEndIndex: $axisEndIndex";
+  debugPrint "currentExtFile: $currentExtFile";
 
-	if test "$outputZoomFolders" = "true";
-		if test -d "$zoomLevel" -a "$force" != "true" # TODO: add first file here too
-			echo "Current zoom level folder already exists, and force has not been specified; skipping...";
-			continue;
+  if test \
+        "$outputAxisFolders" = "true" \
+  	-o  "$outputZoomFolders" = "true"
+		if test -d "$zoomLevel"
+			# echo "Current zoom level folder already exists, and force has not been specified; skipping...";
+			# continue;
 		else
 			mkdir "$zoomLevel";
 		end
-	else
-		find -maxdepth 1 -type f -iname "$zoomLevel*.png" \
-    | head -n 1       \
-    | read firstFile  \
+  end
+
+  if test "$outputAxisFolders" = "true"
+    for x in (seq 0 1 $axisEndIndex)
+      debugPrint "x: $x";
+
+      set indexDir "$zoomLevel/$x";
+      # debugPrint "indexDir: $indexDir";
+      if test -d "$indexDir";
+        find                        \
+          "$indexDir"               \
+          -maxdepth 1               \
+          -type f                   \
+          -iname "*.png"            \
+        | head -n 1                 \
+        | read firstFile            \
+        ;
+      else
+        mkdir "$indexDir";
+      end
+    end
+  else
+    if test "$outputZoomFolders" = "true"
+      set dir "$zoomLevel";
+    else
+      set dir ".";
+    end
+
+    find                        \
+      "$dir"                    \
+      -maxdepth 1               \
+      -type f                   \
+      -iname "*.png"            \
+    | head -n 1                 \
+    | read firstFile            \
     ;
-		if test -n "$firstFile" -a "$force" != "true"
-			echo "Current zoom level already contains at least 1 file, and force has not been specified; skipping...";
-			continue;
-		end
+  end
+
+	if test -n "$firstFile" -a "$force" != "true"
+		echo "Current zoom level already contains at least 1 file, and force has not been specified; skipping...";
+		continue;
 	end
 
 	set tileFileNamePattern (
     printf "$tileFileNamePatternMask" "$zoomLevel"
   );
 	# debugPrint "tileFileNamePattern: $tileFileNamePattern";
-
-	time magick \
-		"$workFile"                                     \
-		-crop {$tileSize}x{$tileSize}                   \
+  pwd
+	echo time magick \
+		"$currentExtFile"                                 \
+		-crop {$tileSize}x{$tileSize}                     \
 		-set 'filename:tile' "$tileFileNamePatternCoords" \
-		+adjoin                                         \
-		"$tileFileNamePattern"                          \
+		+adjoin                                           \
+		"$tileFileNamePattern"                            \
   ;
 
   echo "$CMD_DURATION" > "$outTrialsDir/$zoomLevel/2 - Cutting.txt";

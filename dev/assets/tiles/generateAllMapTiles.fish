@@ -6,13 +6,28 @@
 
 set SDIR (readlink -f (dirname (status filename)));
 
+source "$SDIR/../../scripts/common/errorPrint.fish";
+
 pushd "$SDIR/../../../tiles";
 
-# set -x processZoomLevels '*';
+test -z "$processZoomLevels"; and set -x processZoomLevels '*';
+# debugPrint "processZoomLevels: $processZoomLevels";
+
 
 ## BotW
-mkdir -p "botw/hyrule";
-"$SDIR/generateMapTiles.fish" \
-  "$SDIR/switch/games/botw/Maps/3/Default/Map.png" \
+set subMapDir "botw/hyrule";
+if test -e "$subMapDir"
+  if test -L "$subMapDir"
+    errorPrint 'Sub map directory already exists, and is a link; unlink before executing this script; exiting...';
+    exit 1;
+  end
+else
+  mkdir -p "$subMapDir";
+end
+
+test -z "$resLevelChoice"; and set resLevelChoice '0';
+
+"$SDIR/generateMapTiles/run.fish" \
+  "$SDIR/switch/games/botw/Maps/$resLevelChoice/Default/Map.png" \
   "botw/hyrule" \
 ;

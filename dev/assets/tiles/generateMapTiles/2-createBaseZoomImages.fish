@@ -14,9 +14,10 @@
 # half for each stage until it is the size of a single tile for the last stage.
 
 ## Header
+# debugPrint "zoomLevels: $zoomLevels";
 begin
   ## Input Validation
-  test -z "$zoomLevels"; read -P 'Zoom Levels: ';
+  test -z "$zoomLevels"; and read -P 'Zoom Levels: ';
   if test -z "$zoomLevels"
     errorPrint 'zoomLevels (#) not provided; exiting...';
     return 1;
@@ -50,6 +51,11 @@ begin
   end
 end
 
+# Root debug information
+# debugPrint "srcFile: $srcFile";
+# debugPrint "outTrialsDir: $outTrialsDir";
+# debugPrint "force: $force";
+
 echo 'Creating base zoom images...';
 
 ## Main execution
@@ -62,14 +68,16 @@ for zoomLevel in $processZoomLevels
 	set zoomDims       "$zoomDim"x"$zoomDim"                   ;
 	set currentExtFile (printf "$tmpFitFileMask" "$zoomLevel") ;
 
-  test ! -d "$outTrialsDir/$zoomLevel"; and mkdir "$outTrialsDir/$zoomLevel";
+  test ! -d "$outTrialsDir/$zoomLevel";
+  and mkdir "$outTrialsDir/$zoomLevel";
 
 	# Iteration debug information
+  # debugPrint "numAxisTiles: $numAxisTiles";
+  # debugPrint "tileSize: $tileSize";
 	# debugPrint "zoomLevel: $zoomLevel";
-	# debugPrint "numAxisTiles: $numAxisTiles";
 	# debugPrint "zoomDim: $zoomDim";
 	# debugPrint "zoomDims: $zoomDims";
-	# debugPrint "currentExtFile: $currentExtFile";
+	debugPrint "currentExtFile: $currentExtFile";
 
 	# Create base square image to cut.
   # https://legacy.imagemagick.org/Usage/thumbnails/#fit_summery

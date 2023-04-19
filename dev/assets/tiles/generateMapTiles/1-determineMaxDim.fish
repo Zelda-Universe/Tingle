@@ -14,21 +14,32 @@ source "$SDIR/../0-detect.fish";
 
 echo 'Determining image\'s maximum zoom level values...';
 
+# debugPrint "srcFile: $srcFile";
+
+# https://imagemagick.org/script/escape.php
 test -z "$srcFileDims";
-and set srcFileDims (magick identify -format "%wx%h\n" "$srcFile");
+and set srcFileDims (
+  # magick identify -format "%wx%h\n" "$srcFile"
+  file -b "$srcFile" | cut -d',' -f2 | string trim
+);
 # debugPrint "Source file dimensions: $srcFileDims";
 # debugPrint "srcFileDims: $srcFileDims";
+
+if test -z "$srcFileDims"
+  errorPrint 'srcFileDims still empty; unknown error using image magick; exiting...';
+  exit 1;
+end
 
 set maxDim (
   echo "$srcFileDims" \
   | tr 'x' '\n'       \
   | sort -rn          \
   | head -n 1         \
-  );
+);
 # debugPrint "Source file maximum detected dimension: $maxDim";
 # debugPrint "maxDim: $maxDim";
 
-set zoomLevels '0';
+set -x zoomLevels '0';
 
 while true
 	set zoomLevels   (expr $zoomLevels + 1);
@@ -39,6 +50,7 @@ while true
   # debugPrint "zoomDim: $zoomDim";
 
 	test "$zoomDim" -gt "$maxDim"; and break;
+  break
 end
 
 # debugPrint "Max zoom level matched: $zoomLevels";

@@ -14,6 +14,34 @@ Some good file format references and links to tools:
 
 # Tile Mining
 
+
+## Placeholder images
+
+### Generating
+
+  - Error:
+    - Command: `dev/assets/tiles/generatePHTiles/GenerateErrorTile.fish`
+    - Result: `tiles/_placeholder/error.png`
+
+  - Map Fill-In:
+    - Standard/Common Choice:
+      - Command: `dev/assets/tiles/generatePHTiles/BasicTLOrigin.fish`
+      - Config:
+        - `zoomLevel`
+        - `zoomLevels`
+        - `zoomLevelMax`
+    - Manual Choice:
+      - Command: `dev/assets/tiles/generatePHTiles/Centered.fish`
+    - Results: `tiles/_placeholder/[**/]*.png`
+
+### Linking
+
+  - Command: `dev/assets/tiles/controlPHTiles.fish`
+  - Parameters:
+    - `<container/game name>`
+    - `<submap name>`
+    - `action [link|unlink]`
+
 ## Switch titles
 
   1. Get SARC for certain game data files.
@@ -92,6 +120,7 @@ Some good file format references and links to tools:
     - Assumes 1308x1040 with or without this file being provided, which is 1280x1024 for the map tile grid, plus offsets for padding.
     - Does not support layered dungeon maps yet that I think the other letter suffix format is for.
 
+
 ## Wii U titles
 
   1. Optionally copy/image entire game disc as a wud file, and then extract that.
@@ -120,12 +149,26 @@ Some good file format references and links to tools:
 
   1. See similar entry under the Switch titles section with the sbmaptex files found inside `game/00050000101C9500/content/UI/MapTex/MainField`.
 
+
+
 # Tile Cutting
 
+## Main
+
+  - Command: `dev/assets/tiles/generateAllMapTiles.fish`
+  - Config:
+    - `resLevelChoice`:
+      - Modes: `botw`
+      - Possible Values: (0|1|2|3)
+    - `outputAxisFolders`
+      - Default: `false`
+      - My Default: `true`
+
+## History
+
   Now more of a history section since I finally researched and made scripts to do process the asset files such as cutting and organizing them as preparation.
-  - `dev/assets/tiles/generateAllMapTiles.fish`
   - `dev/assets/tiles/generateAllMapTilesAuto.fish`
-    - No good way to program this, so disabled for now.
+    - No great way to program this, so disabled for now.
 
   Danilo says he used a [modified version of a] script called `tileCreator.js` (14.4 KB).
   I assume it's modified because the original tries to fetch data from a database which we do not use for our map tiles, directly at least.

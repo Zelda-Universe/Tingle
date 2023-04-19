@@ -11,6 +11,8 @@
 set SDIR (readlink -f (dirname (status filename)));
 # debugPrint "SDIR: $SDIR";
 
+
+
 ## General Function Library
 source "$SDIR/../../../scripts/common/altPrint.fish";
 source "$SDIR/../../../scripts/common/debugPrint.fish";
@@ -19,33 +21,62 @@ source "$SDIR/../../../scripts/common/userWaitConditional.fish";
 ## Set-up
 begin
   # Flags
-  test -z "$force"; and set force                         "false";
-  test -z "$manualStep"; and set manualStep               "false";
+  test -z "$force";             and set force             "false";
+  test -z "$manualStep";        and set manualStep        "false";
   test -z "$outputZoomFolders"; and set outputZoomFolders "false";
 
   # Direct (Required) Input
-  test -z "$srcFile"    ; and set srcFile     "$argv[1]";
-  test -z "$outDir"     ; and set outDir      "$argv[2]";
-  test -z "$cleanFirst" ; and set cleanFirst  "$argv[3]";
+  test -z "$srcFile"    ;       and set -x srcFile     "$argv[1]";
+  test -z "$outDir"     ;       and set -x outDir      "$argv[2]";
+  test -z "$cleanFirst" ;       and set cleanFirst  "$argv[3]";
   # debugPrint "cleanFirst: $cleanFirst";
-  test -z "$cleanFirst" ; and set cleanFirst  "false"   ;
+  test -z "$cleanFirst" ;       and set cleanFirst  "false"   ;
 
   # Derived and Static Intermediate Settings
-  test -z "$outWorkDir"; and set outWorkDir (dirname "$srcFile")"/Work";
-  test -z "$outTrialsDir"; and set outTrialsDir (dirname "$srcFile")"/Trials/2 - Cutting";
-  set srcFileNameSuffix (basename "$srcFile" | sed -r 's|(\.[^.]*?)$| - Extented - Zoom %s\1|g');
-  test -z "$tmpFitFileMask"; and set tmpFitFileMask "$outWorkDir/$srcFileNameSuffix";
-  test -z "$tileSize"; and set tileSize "256";
-  test -z "$tileFileNamePatternCoords"; and set tileFileNamePatternCoords "%[fx:page.x/$tileSize]_%[fx:page.y/$tileSize]";
+
+  source "$SDIR/../0-detect.fish";
+
+  set srcFileDir (dirname "$srcFile");
+
+  test -z "$outWorkDir";
+  and set -x outWorkDir      "$srcFileDir/Work";
+  test -z "$outTrialsDir";
+  and set -x outTrialsDir    "$srcFileDir/Trials/2 - Cutting";
+  set srcFileNameSuffix   (
+    basename "$srcFile" \
+    | sed -r 's|(\.[^.]*?)$| - Extented - Zoom %s\1|g'
+  );
+  test -z "$tmpFitFileMask";
+  and set -x tmpFitFileMask  "$outWorkDir/$srcFileNameSuffix";
+  test -z "$tileSize";          and set -x tileSize "256";
+  if test -z "$tileFileNamePatternCoords"
+    if test "$outputAxisFolders" = "true"
+      set tFNPCXYDelim '/';
+    else
+      set tFNPCXYDelim '_';
+    end
+
+    set -x tileFileNamePatternCoords \
+      "%[fx:page.x/$tileSize]$tFNPCXYDelim%[fx:page.y/$tileSize]" \
+    ;
+  end
   if test -z "$tileFileNamePatternMask"
-  	if test "$outputZoomFolders" = "true"
-  		set tileFileNamePatternMask "%s/%%[filename:tile].png";
+    if test \
+          "$outputAxisFolders" = "true" \
+    	-o  "$outputZoomFolders" = "true"
+  		set -x tileFileNamePatternMask "%s/%%[filename:tile].png";
   	else
-  		set tileFileNamePatternMask "%s_%%[filename:tile].png";
+  		set -x tileFileNamePatternMask "%s_%%[filename:tile].png";
   	end
   end
 
-  set availableSteps "2" "3" "listFinishedGames";
+  if test "$isPHType" = 'true'
+    set availableSteps "2" "generateTiles";
+  else
+    set availableSteps "2" "3" "createBaseZoomImages" "cropTiles";
+    # "listFinishedGames" # ?
+  end
+
   test -z "$processSteps"; and set processSteps $availableSteps;
   if begin;
     test (count $processSteps) -eq 1;
@@ -66,6 +97,7 @@ begin
   set processZoomLevels (
     string split ' ' (echo "$processZoomLevels" | tr ',' ' ')
   );
+  # debugPrint "processZoomLevels: $processZoomLevels";
   for zoomLevel in $processZoomLevels
     if echo "$zoomLevel" | grep -v '[-0-9*]'
       echo "Error: Zoom level \"$zoomLevel\" is invalid; only enter integers with optional hyphens; exiting...";
@@ -91,6 +123,7 @@ begin
     end
   end
   set processZoomLevels $newProcessZoomLevels;
+  # debugPrint "newProcessZoomLevels: $newProcessZoomLevels";
 
   # Settings debug information
   # debugPrint "force: $force";
@@ -118,7 +151,13 @@ begin
   if test "$cleanFirst" = "true"
   	echo "Cleaning the output (not work sub-) directory and exiting...";
   	find "$outDir" -maxdepth 1 -type f -iname "*.png" -delete;
-  	find "$outDir" -regextype posix-extended -maxdepth 1 -type d -iregex '.*?/[0-9]+$' -exec rm -rf '{}' \; ;
+  	find "$outDir" \
+      -regextype posix-extended \
+      -maxdepth 1 \
+      -type d \
+      -iregex '.*?/[0-9]+$' \
+      -exec rm -rf '{}' \; \
+    ;
   	userWaitConditional;
   end
 
@@ -133,6 +172,8 @@ begin
   end
 end
 
+
+
 ## Main program execution
 # Fit the image into the first highest zoom level it is smaller than by both dimensions.
 # Extend the canvas to the power of 2.
@@ -145,23 +186,24 @@ mkdir -p "$outTrialsDir";
 # Maybe make step 1 optional only if the user provided a custom argument for it,
 # but it's several....
 source "$SDIR/1-determineMaxDim.fish";
+# debugPrint "zoomLevels: $zoomLevels";
 userWaitConditional;
-
-if \
-  test "$isPHType" != 'true';
-  and echo "$processSteps" | grep -qP "((2)|(createBaseZoomImages))";
-  "$SDIR/2-createBaseZoomImages.fish";
-  userWaitConditional;
-end
 
 if test "$isPHType" = 'true'
   if echo "$processSteps" | grep -qP "((2)|(generateTiles))";
-    "$SDIR/../generatePHTiles/BasicTLOrigin.fish";
+    export zoomLevels;
+    "$SDIR/../generatePHTiles/TLOrigin.fish";
     userWaitConditional;
   end
 else
+  if echo "$processSteps" | grep -qP "((2)|(createBaseZoomImages))";
+    "$SDIR/2-createBaseZoomImages.fish";
+    userWaitConditional;
+  end
+
   if echo "$processSteps" | grep -qP "((3)|(cropTiles))";
-    "$SDIR/2-cropTiles.fish";
+    "$SDIR/3-cropTiles.fish";
+    export tileFileNamePatternMask;
     userWaitConditional;
   end
 end

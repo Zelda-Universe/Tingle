@@ -15,11 +15,11 @@ set SDIR (dirname (status filename));
 if test -z "$zoomLevels"
   if test -n "$zoomLevel"
     # debugPrint "zoomLevel: $zoomLevel";
-    # set zoomLevels "$zoomLevel";
+    set -x zoomLevels "$zoomLevel";
   end
   if test -n "$zoomLevelMax"
     # debugPrint "zoomLevelMax: $zoomLevelMax";
-    set zoomLevels (seq 0 1 "$zoomLevelMax");
+    set -x zoomLevels (seq 0 1 "$zoomLevelMax");
   end
 
   if test \
@@ -36,6 +36,11 @@ if test -z "$zoomLevels"
   end
 end
 
+if test -n "$zoomLevels"
+  set -x zoomLevelsJSON (echo "$zoomLevels" | jq -s);
+  # debugPrint "zoomLevelsJSON: $zoomLevelsJSON";
+end
+
 set -x outDir (readlink -f "$SDIR/../../../../tiles/_placeholder");
 test ! -e "$outDir"; and mkdir "$outDir";
 # debugPrint "pathNameMask: $pathNameMask";
@@ -46,9 +51,6 @@ export fileExt labelMask outputZoomFolders outputAxisFolders pathNameMask;
 # debugPrint -n "export | grep -i pNM: "; and export | grep -i 'pathNameMask';
 
 echo 'Generating placeholder tiles from the top-left corner as the origin...';
-
-set -x zStart  "0"            ;
-set -x zEnd    "$zoomLevelMax";
 
 "$SDIR/2-generateTiles.fish";
 

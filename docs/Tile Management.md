@@ -12,6 +12,9 @@ Some good file format references and links to tools:
  - https://wiki.oatmealdome.me
  - https://gist.github.com/zephenryus/b4dbea17de438a1f9f06779657eb4148
 
+Note: Any scripts that run Image Magick commands, or if you use them yourself, that operate on large files, possibly 200+MiB, will be OOM killed on Linux, but just take a lot of memory and some time on Windows.
+https://github.com/ImageMagick/ImageMagick/issues/6264
+
 # Tile Mining
 
 
@@ -25,7 +28,7 @@ Some good file format references and links to tools:
 
   - Map Fill-In:
     - Standard/Common Choice:
-      - Command: `dev/assets/tiles/generatePHTiles/BasicTLOrigin.fish`
+      - Command: `dev/assets/tiles/generatePHTiles/TLOrigin.fish`
       - Config:
         - `zoomLevel`
         - `zoomLevels`
@@ -157,12 +160,30 @@ Some good file format references and links to tools:
 
   - Command: `dev/assets/tiles/generateAllMapTiles.fish`
   - Config:
-    - `resLevelChoice`:
-      - Modes: `botw`
-      - Possible Values: (0|1|2|3)
-    - `outputAxisFolders`
+    - `processZoomLevels`:
+      - Type: `SSL int`
+      - Possible Values: `0-<maxZoomLevelForImage> ...`
+    - `processZoomLevelsMax`:
+      - Type: `int`
+      - Possible Values: `0-<maxZoomLevelForImage>`
+    - `processSteps`
+      - Type: `SSL int|string`
+      - Possible Values:
+        - Mode `Placeholder`:
+          - `2`
+          - `generateTiles`
+        - Mode `Real`:
+          - `2|3`
+          - `createBaseZoomImages`
+          - `cropTiles`
+    - `outputAxisFolders`:
+      - Type: `boolean`
       - Default: `false`
       - My Default: `true`
+    - `resLevelChoice`:
+      - Modes: `botw`
+      - Type: `int`
+      - Possible Values: `(0|1|2|3)`
 
 ## History
 

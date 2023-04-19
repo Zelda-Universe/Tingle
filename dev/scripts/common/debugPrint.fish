@@ -5,6 +5,8 @@
 # https://choosealicense.com/licenses/mit/
 
 set -l SDIR (readlink -f (dirname (status filename)));
+source "$SDIR/altPrint.fish";
+
 not type -q 'debugPrint';
 function debugPrint
   # echo "DEBUG __DEBUG__: $__DEBUG__";

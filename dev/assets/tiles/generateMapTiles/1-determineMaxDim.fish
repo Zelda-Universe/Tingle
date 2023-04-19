@@ -6,7 +6,9 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-# debugPrint "SDIR: $SDIR";
+source "$SDIR/../../../scripts/common/debugPrint.fish";
+source "$SDIR/../../../scripts/common/errorPrint.fish";
+
 # Step 1 - Determine Maximum Dimensions
 # Always required / internal step.
 # Determines the max zoom level dimensions that fit around the source image.

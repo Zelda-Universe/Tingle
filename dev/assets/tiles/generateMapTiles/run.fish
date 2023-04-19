@@ -11,9 +11,10 @@ set -l SDIR (readlink -f (dirname (status filename)));
 
 
 ## General Function Library
-source "$SDIR/../../../scripts/common/altPrint.fish";
 source "$SDIR/../../../scripts/common/debugPrint.fish";
 source "$SDIR/../../../scripts/common/userWaitConditional.fish";
+
+
 
 ## Set-up
 begin
@@ -38,7 +39,7 @@ begin
   test -z "$outWorkDir";
   and set -x outWorkDir      "$srcFileDir/Work";
   test -z "$outTrialsDir";
-  and set -x outTrialsDir    "$srcFileDir/Trials/2 - Cutting";
+  and set -x outTrialsDir    "$srcFileDir/Trials";
   set srcFileNameSuffix   (
     basename "$srcFile" \
     | sed -r 's|(\.[^.]*?)$| - Extented - Zoom %s\1|g'
@@ -46,26 +47,6 @@ begin
   test -z "$tmpFitFileMask";
   and set -x tmpFitFileMask  "$outWorkDir/$srcFileNameSuffix";
   test -z "$tileSize";          and set -x tileSize "256";
-  if test -z "$tileFileNamePatternCoords"
-    if test "$outputAxisFolders" = "true"
-      set tFNPCXYDelim '/';
-    else
-      set tFNPCXYDelim '_';
-    end
-
-    set -x tileFileNamePatternCoords \
-      "%[fx:page.x/$tileSize]$tFNPCXYDelim%[fx:page.y/$tileSize]" \
-    ;
-  end
-  if test -z "$tileFileNamePatternMask"
-    if test \
-          "$outputAxisFolders" = "true" \
-    	-o  "$outputZoomFolders" = "true"
-  		set -x tileFileNamePatternMask "%s/%%[filename:tile].png";
-  	else
-  		set -x tileFileNamePatternMask "%s_%%[filename:tile].png";
-  	end
-  end
 
   if test "$isPHType" = 'true'
     set availableSteps "2" "generateTiles";
@@ -95,6 +76,7 @@ begin
     string split ' ' (echo "$processZoomLevels" | tr ',' ' ')
   );
   # debugPrint "processZoomLevels: $processZoomLevels";
+  # debugPrint "count processZoomLevels: "(count $processZoomLevels);
   for zoomLevel in $processZoomLevels
     if echo "$zoomLevel" | grep -v '[-0-9*]'
       echo "Error: Zoom level \"$zoomLevel\" is invalid; only enter integers with optional hyphens; exiting...";
@@ -136,8 +118,6 @@ begin
   # debugPrint "srcFileNameSuffix: $srcFileNameSuffix";
   # debugPrint "tmpFitFileMask: $tmpFitFileMask";
   # debugPrint "tileSize: $tileSize";
-  # debugPrint "tileFileNamePatternCoords: $tileFileNamePatternCoords";
-  # debugPrint "tileFileNamePatternMask: $tileFileNamePatternMask";
 
   # debugPrint "availableSteps: $availableSteps";
   # debugPrint "processSteps: $processSteps";
@@ -200,7 +180,6 @@ else
 
   if echo "$processSteps" | grep -qP "((3)|(cropTiles))";
     "$SDIR/3-cropTiles.fish";
-    export tileFileNamePatternMask;
     userWaitConditional;
   end
 end

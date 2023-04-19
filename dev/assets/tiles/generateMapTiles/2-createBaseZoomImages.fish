@@ -19,6 +19,11 @@ set -l SDIR (readlink -f (dirname (status filename)));
 
 begin
 
+  source "$SDIR/../../../scripts/common/debugPrint.fish";
+  source "$SDIR/../../../scripts/common/errorPrint.fish";
+  source "$SDIR/../../../scripts/common/timing.fish"    ;
+
+  set timeFilePattern "$outTrialsDir/%s/%s";
 
   ## Input Validation
 
@@ -36,8 +41,17 @@ begin
   ## Input cleaning?
   # Eliminates a mostly empty processZoomLevels value?
   # How would that happen though?..  Bad input array parsing/transforming?
+  
+  if test -n "$processZoomLevelsMax"
+    set processZoomLevels (seq 0 1 "$processZoomLevelsMax");
+  end
+  
   test -z "$processZoomLevels" -o "$processZoomLevels" = '*';
   and set processZoomLevels $availableZoomLevels;
+  set processZoomLevels (
+    string split ' ' (echo "$processZoomLevels" | tr ',' ' ')
+  );
+  
   if begin
     test (count $processZoomLevels) -eq 1;
     and echo "$processZoomLevels" | grep -q " "
@@ -96,14 +110,18 @@ for zoomLevel in $processZoomLevels
 		if test "$zoomLevel" -lt "$zoomLevels"
       echo "Not the max zoom level; resizing and padding...";
 			set srcFileOpts  \( "$srcFile" -resize "$zoomDims>" \);
-      set timeFileName "1 - Resizing.txt"                   ;
+      set timeFileName "3 - Resizing & Padding.txt"       ;
 		else if test "$zoomLevel" -eq "$zoomLevels"
-      echo "Max zoom level; padding...";
+      echo "Max zoom level; padding..."   ;
       set srcFileOpts  "$srcFile"         ;
-			set timeFileName "1 - Extenting.txt";
+			set timeFileName "3 - Padding.txt";
 		end
-
-    time magick \
+    set timeFilePath (printf "$timeFilePattern" "$zoomLevel" "$timeFileName");
+    # debugPrint "timeFilePath: $timeFilePath";
+    
+    timerStart;
+    # time
+    magick                      \
       -background "transparent" \
       $srcFileOpts              \
       -gravity    "center"      \
@@ -113,7 +131,16 @@ for zoomLevel in $processZoomLevels
     ;
     # Why is it always zero, even without a wrapping time command invocation for the entire script....
     # debugPrint "CMD_DURATION: $CMD_DURATION";
-    echo "$CMD_DURATION" > "$outTrialsDir/$zoomLevel/$timeFileName";
+    # echo "$CMD_DURATION" > "$timeFilePath";
+    timerStop;
+    # debugPrint "timerDuration: "(timerDuration);
+    echo 'Took '(timerDuration)' seconds to process.';
+    timerDuration > "$timeFilePath";
+    
+    if test ! -e "$currentExtFile"
+      errorPrint 'Could not create base image; unknown Image Magick error.';
+      errorPrint "currentExtFile: $currentExtFile";
+    end
 	else
 		echo "Current working file already exists; skipping generation...";
 	end

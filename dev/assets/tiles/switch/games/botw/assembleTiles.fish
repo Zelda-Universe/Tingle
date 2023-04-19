@@ -6,7 +6,7 @@
 
 ## Info
 
-# MapTex#      - resolution levels (4)
+# MapTex#       - resolution levels (4)
 # Categories    - ?                 (108 + 5?)
 # ZABCDEFGHIJK  - horizontal index  (12)
 # 0123456789    - vertical index    (10)
@@ -19,22 +19,9 @@
 
 ## General Function Library
 
-set timeStart -1;
-set timeEnd -1;
-function timerStart
-  set timeStart (date "+%s");
-end
-function timerStop
-  set timeEnd (date "+%s");
-end
-function timerDuration
-  if test "$timeStart" -lt 0 -o "$timeEnd" -lt 0
-    echo 'Error: Time start or stop was not set yet; returning...' 1>&2;
-    return;
-  end
+set -l SDIR (readlink -f (dirname (status filename)));
 
-  echo "$timeEnd" - "$timeStart" | bc;
-end
+source "$SDIR/../../../../../scripts/common/timing.fish";
 
 function setupTemplateFiles --argument-names outDir fileName numXTiles numYTiles tileWidth tileHeight
   set totalDimensions (expr "$tileWidth" '*' "$numXTiles")x(expr "$tileHeight" '*' "$numYTiles");
@@ -122,7 +109,9 @@ function assembleMapIndividually --argument-names outDir fileName numXTiles numY
     placeTile "$tileFile" "$workingFile" "$tileWidth" "$tileHeight";
   end
   timerStop;
-  echo timerDuration > "$trialsDir/2a - Assembling.txt";
+  # debugPrint "timerDuration: "(timerDuration);
+  echo 'Took '(timerDuration)' seconds to process.';
+  timerDuration > "$trialsDir/2a - Assembling.txt";
 
   mv "$workingFile" "$completedFile";
   echo "done!";
@@ -146,7 +135,9 @@ function createMagickScript --argument-names tilePrefix tileSuffix folderPathAnd
     end
     echo '+repage' >> "$srcGenericScript";
     timerStop;
-    echo (timerDuration) > "$trialsDir/1 - Scripting.txt";
+    # debugPrint "timerDuration: "(timerDuration);
+    echo 'Took '(timerDuration)' seconds to process.';
+    timerDuration > "$trialsDir/1 - Scripting.txt";
   end
 
   echo "$srcGenericScript";
@@ -183,7 +174,8 @@ function assembleMapAtOnce --argument-names tilePrefix tileSuffix outDir folderN
   timerStart;
   if time magick -script "$tempUniqueScript" "$workingFile"
     timerStop;
-    echo (timerDuration) > "$trialsDir/2b - Assembling.txt";
+    echo 'Took '(timerDuration)' seconds to process.';
+    timerDuration > "$trialsDir/2b - Assembling.txt";
     mv "$workingFile" "$completedFile";
     echo "done!";
   else
@@ -212,14 +204,15 @@ function step1
 
     mkdir "$folderName";
     set resultOutputPath "$outputPath/$resLevel";
-    mkdir -p "$resultOutputPath";
-    set outTrialsDir "$outTrialsBaseDir/$resLevel/Trials/1 - Sorting";
+    mkdir -p "$resultoutputBaseDir";
+    set outTrialsDir "$outputBaseDir/$resLevel/Trials/1 - Sorting";
     mkdir -p "$outTrialsDir";
 
     timerStart;
     find -maxdepth 1 -type f -name "$folderName""_*" -exec mv -t "$folderName/" '{}' +;
     timerStop;
-    echo (timerDuration) > "$trialsDir/1 - By Res Level.txt";
+    echo 'Took '(timerDuration)' seconds to process.';
+    timerDuration > "$trialsDir/1 - By Res Level.txt";
   end
 end
 
@@ -263,20 +256,21 @@ function step2
       end
       mkdir "$category";
       test "$category" = "Default"; and set filter '*_?-?.*'; or set filter "*_?-?_$category.*";
-      set outTrialsDir "$outTrialsBaseDir/$resLevel/$category/Trials/1 - Sorting";
+      set outTrialsDir "$outputBaseDir/$resLevel/$category/Trials/1 - Sorting";
       mkdir -p "$outTrialsDir";
 
       timerStart;
       find -mindepth 1 -maxdepth 1 -type f -name "$filter" -exec mv -t "$category/" '{}' +;
       timerStop;
-      echo (timerDuration) > "$trialsDir/2 - Scripting.txt";
+      echo 'Took '(timerDuration)' seconds to process.';
+      timerDuration > "$trialsDir/2 - Scripting.txt";
     end
 
     popd;
   end
 end
 
-function step3 --argument-names outputPath
+function step3 --argument-names outputBaseDir
   echo;
   echo 'Step 3 - Create single large images in each complete category'
   for resLevel in $processResLevels
@@ -288,12 +282,12 @@ function step3 --argument-names outputPath
     for category in $processCategories
       echo "Processing category \"$category\"...";
       pushd "$category";
-      set outTrialsDir "$outTrialsBaseDir/$resLevel/$category/Trials/2 - Assembling";
+      set outTrialsDir "$outputBaseDir/$resLevel/$category/Trials/2 - Assembling";
       mkdir -p "$outTrialsDir";
 
       test $category = "Default"; and set tileSuffix ''; or set tileSuffix "_$category";
       set resultOutputPath "$outputPath/$resLevel";
-      mkdir -p "$resultOutputPath";
+      mkdir -p "$resultoutputBaseDir";
 
       # set nextIndex (expr "$resLevel" + 1);
       # time assembleMapIndividually \
@@ -313,7 +307,7 @@ function step3 --argument-names outputPath
   end;
 end
 
-set SDIR (readlink -f (dirname (status filename)));
+set -l SDIR (readlink -f (dirname (status filename)));
 
 set indiciesHorizontal  "Z" "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K"
 set tileDims            "3000"   "840"  "300"  "135";
@@ -331,11 +325,10 @@ test -z "$force"; and set force "false";
 set defaultSteps      "1" "2" "3";
 set defaultResLevels  "0" "1" "2" "3";
 set defaultCategories "Default" "0";
-test -z "$processSteps"; and set processResLevels       $defaultSteps;
-test -z "$processResLevels"; and set processResLevels   $defaultResLevels;
+test -z "$processSteps"     ; and set processResLevels  $defaultSteps     ;
+test -z "$processResLevels" ; and set processResLevels  $defaultResLevels ;
 test -z "$processCategories"; and set processCategories $defaultCategories;
-test -z "$outputPath"; and set outputPath               "$SDIR/Maps";
-test -z "$outTrialsBaseDir"; and set outTrialsBaseDir   "$outputPath";
+test -z "$outputBaseDir"    ; and set outputBaseDir     "$SDIR/Maps"      ;
 
 # Required input validation
 if test -z "$srcDir" -o ! -e "$srcDir"
@@ -343,14 +336,14 @@ if test -z "$srcDir" -o ! -e "$srcDir"
   exit;
 end
 
-if test ! -e "$outputPath"
-  mkdir "$outputPath";
+if test ! -e "$outputBaseDir"
+  mkdir "$outputBaseDir";
 else
-  if ! test -d "$outputPath"
-    echo "Output path \"$outputPath\" exists and is unusble not being a directory; exiting...";
+  if ! test -d "$outputBaseDir"
+    echo "Output path \"$outputBaseDir\" exists and is unusble not being a directory; exiting...";
     exit;
   else
-    set outputPath (realpath "$outputPath");
+    set outputBaseDir (realpath "$outputBaseDir");
   end
 end
 
@@ -372,6 +365,6 @@ pushd "$srcDir";
 
 echo "$processSteps" | grep -qE "\b1\b"; and step1;
 echo "$processSteps" | grep -qE "\b2\b"; and step2;
-echo "$processSteps" | grep -qE "\b3\b"; and step3 "$outputPath";
+echo "$processSteps" | grep -qE "\b3\b"; and step3 "$outputBaseDir";
 
 popd;

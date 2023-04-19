@@ -13,10 +13,16 @@
 # Using the first generated source image once, later it will resized down by
 # half for each stage until it is the size of a single tile for the last stage.
 
+
+
 ## Header
-# debugPrint "zoomLevels: $zoomLevels";
+
 begin
+
+
   ## Input Validation
+
+  # debugPrint "zoomLevels: $zoomLevels";
   test -z "$zoomLevels"; and read -P 'Zoom Levels: ';
   if test -z "$zoomLevels"
     errorPrint 'zoomLevels (#) not provided; exiting...';
@@ -72,12 +78,12 @@ for zoomLevel in $processZoomLevels
   and mkdir "$outTrialsDir/$zoomLevel";
 
 	# Iteration debug information
+  # debugPrint "zoomLevel: $zoomLevel";
   # debugPrint "numAxisTiles: $numAxisTiles";
   # debugPrint "tileSize: $tileSize";
-	# debugPrint "zoomLevel: $zoomLevel";
-	# debugPrint "zoomDim: $zoomDim";
-	# debugPrint "zoomDims: $zoomDims";
-	debugPrint "currentExtFile: $currentExtFile";
+  # debugPrint "zoomDim: $zoomDim";
+  # debugPrint "zoomDims: $zoomDims";
+  # debugPrint "currentExtFile: $currentExtFile";
 
 	# Create base square image to cut.
   # https://legacy.imagemagick.org/Usage/thumbnails/#fit_summery
@@ -102,6 +108,7 @@ for zoomLevel in $processZoomLevels
       $srcFileOpts              \
       -gravity    "center"      \
       -extent     "$zoomDims"   \
+      +repage                   \
       "$currentExtFile"         \
     ;
     # Why is it always zero, even without a wrapping time command invocation for the entire script....

@@ -50,7 +50,6 @@ while true
   # debugPrint "zoomDim: $zoomDim";
 
 	test "$zoomDim" -gt "$maxDim"; and break;
-  break
 end
 
 # debugPrint "Max zoom level matched: $zoomLevels";

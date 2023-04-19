@@ -31,7 +31,7 @@ if test -z "$processZoomLevels"
 end
 
 for zoomLevel in $processZoomLevels
-  debugPrint "zoomLevel: $zoomLevel";
+  # debugPrint "zoomLevel: $zoomLevel";
 
   test ! -d "$outTrialsDir/$zoomLevel";
   and mkdir "$outTrialsDir/$zoomLevel";
@@ -39,9 +39,9 @@ for zoomLevel in $processZoomLevels
   set numAxisTiles (echo "2 ^ $zoomLevel" | bc);
   set axisEndIndex (echo "$numAxisTiles" - 1 | bc);
   set currentExtFile (printf "$tmpFitFileMask" "$zoomLevel");
-  debugPrint "numAxisTiles: $numAxisTiles";
-  debugPrint "axisEndIndex: $axisEndIndex";
-  debugPrint "currentExtFile: $currentExtFile";
+  # debugPrint "numAxisTiles: $numAxisTiles";
+  # debugPrint "axisEndIndex: $axisEndIndex";
+  # debugPrint "currentExtFile: $currentExtFile";
 
   if test \
         "$outputAxisFolders" = "true" \
@@ -56,7 +56,7 @@ for zoomLevel in $processZoomLevels
 
   if test "$outputAxisFolders" = "true"
     for x in (seq 0 1 $axisEndIndex)
-      debugPrint "x: $x";
+      # debugPrint "x: $x";
 
       set indexDir "$zoomLevel/$x";
       # debugPrint "indexDir: $indexDir";
@@ -98,9 +98,9 @@ for zoomLevel in $processZoomLevels
 	set tileFileNamePattern (
     printf "$tileFileNamePatternMask" "$zoomLevel"
   );
-	# debugPrint "tileFileNamePattern: $tileFileNamePattern";
-  pwd
-	echo time magick \
+  # debugPrint "tileFileNamePattern: $tileFileNamePattern";
+  # pwd
+	time magick \
 		"$currentExtFile"                                 \
 		-crop {$tileSize}x{$tileSize}                     \
 		-set 'filename:tile' "$tileFileNamePatternCoords" \

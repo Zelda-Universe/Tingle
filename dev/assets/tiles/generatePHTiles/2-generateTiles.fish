@@ -8,6 +8,10 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
+source "$SDIR/../../../scripts/common/altPushd.fish"  ;
+source "$SDIR/../../../scripts/common/debugPrint.fish";
+source "$SDIR/../../../scripts/common/errorPrint.fish";
+
 if test -n "$zoomLevelsJSON"
   set zoomLevels (echo "$zoomLevelsJSON" | jq -r '.[]');
   # debugPrint "zoomLevels: $zoomLevels";
@@ -42,7 +46,7 @@ if test \
 end
 set -e xStart xEnd yStart yEnd;
 
-pushd "$outDir";
+altPushd "$outDir";
 
 # debugPrint "zStart: $zStart";
 # debugPrint "zEnd: $zEnd";

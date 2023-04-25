@@ -7,17 +7,16 @@
 # debugPrint 'GenerateErrorTile START';
 
 set -l SDIR (readlink -f (dirname (status filename)));
-# debugPrint "SDIR: $SDIR";
-# debugPrint "SDIR: $SDIR/../../../..";
-# debugPrint "rl -f SDIR: "(readlink -f "$SDIR");
-# debugPrint "rl -f SDIR ..x4: "(readlink -f "$SDIR/../../../..");
+
+source "$SDIR/../../../scripts/common/altPushd.fish"          ;
+source "$SDIR/../../../scripts/common/debugPrint.fish"          ;
 
 set -x isPHType 'true';
 
 set outDir "$SDIR/../../../../tiles/_placeholder";
 test ! -e "$outDir"; and mkdir "$outDir";
 
-pushd "$outDir";
+altPushd "$outDir";
 
 echo 'Generating placeholder error tile...';
 

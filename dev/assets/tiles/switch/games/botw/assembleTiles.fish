@@ -21,6 +21,8 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
+source "$SDIR/../../../../../scripts/common/altPushd.fish"    ;
+source "$SDIR/../../../../../scripts/common/debugPrint.fish"  ;
 source "$SDIR/../../../../../scripts/common/timing.fish";
 
 function setupTemplateFiles --argument-names outDir fileName numXTiles numYTiles tileWidth tileHeight
@@ -361,7 +363,7 @@ for category in $processCategories
   end
 end
 
-pushd "$srcDir";
+altPushd "$srcDir";
 
 echo "$processSteps" | grep -qE "\b1\b"; and step1;
 echo "$processSteps" | grep -qE "\b2\b"; and step2;

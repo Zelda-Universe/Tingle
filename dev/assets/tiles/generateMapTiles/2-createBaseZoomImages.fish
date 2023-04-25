@@ -22,6 +22,8 @@ begin
   source "$SDIR/../../../scripts/common/debugPrint.fish";
   source "$SDIR/../../../scripts/common/errorPrint.fish";
   source "$SDIR/../../../scripts/common/timing.fish"    ;
+  
+  source "$SDIR/0-config.fish";
 
   set timeFilePattern "$outTrialsDir/%s/%s";
 

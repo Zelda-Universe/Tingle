@@ -6,16 +6,25 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
+source "$SDIR/../../../scripts/common/altPushd.fish"          ;
 source "$SDIR/../../../scripts/common/debugPrint.fish"          ;
 source "$SDIR/../../../scripts/common/errorPrint.fish"          ;
 source "$SDIR/../../../scripts/common/timing.fish"              ;
 source "$SDIR/../../../scripts/common/userWaitConditional.fish" ;
 
+source "$SDIR/0-config.fish";
+
+test -z "$cEFDimLimit"      ;
+and set cEFDimLimit '16384' ;
+test -z "$zLLimit"          ;
+and set zLLimit     '7'     ; # 128 axis tile amount
+
 set timeFilePattern "$outTrialsDir/%s/4 - Cutting.txt";
+# debugPrint "timeFilePattern: $timeFilePattern";
 
 echo 'Cropping tiles...';
 
-pushd "$outDir";
+altPushd "$outDir";
 
 set processZoomLevels (
   string split ' ' (echo "$processZoomLevels" | tr ',' ' ')
@@ -66,19 +75,35 @@ end
 # debugPrint "tileFileNamePattern: $tileFileNamePattern";
 
 for zoomLevel in $processZoomLevels
-  echo;
-	echo "Processing zoom level \"$zoomLevel\"...";
-  # debugPrint "zoomLevel: $zoomLevel";
-
-  test ! -d "$outTrialsDir/$zoomLevel";
-  and mkdir "$outTrialsDir/$zoomLevel";
-
   set numAxisTiles    (echo   "2 ^ $zoomLevel"     | bc     );
   set axisEndIndex    (echo   "$numAxisTiles" - 1  | bc     );
   set currentExtFile  (printf "$tmpFitFileMask" "$zoomLevel");
   # debugPrint "numAxisTiles: $numAxisTiles";
   # debugPrint "axisEndIndex: $axisEndIndex";
   # debugPrint "currentExtFile: $currentExtFile";
+
+  echo;
+  set cEFDim (
+    magick identify -ping -format "%wx%h\n" "$currentExtFile" \
+    | cut -d'x' -f1
+  );
+  # debugPrint "cEFDim: $cEFDim";
+  if test -z "$cEFDim"
+    errorPrint 'Empty cEFDim; exiting...';
+    exit;
+  end
+  if test \
+        "$zoomLevel"  -gt "$zLLimit"      \
+    -a  "$cEFDim"     -gt "$cEFDimLimit"  \
+    -a  "$forceBigJob" != 'true'
+    echo "Skipping zoom level \"$zoomLevel\" since it is greater than the recommended limit of \"$zLLimit\", and the images axis dimension \"$cEFDim\" is greater than the recommended limit of \"$cEFDimLimit\"...";
+    continue;
+  end
+	echo "Processing zoom level \"$zoomLevel\"...";
+  # debugPrint "zoomLevel: $zoomLevel";
+
+  test ! -d "$outTrialsDir/$zoomLevel";
+  and mkdir "$outTrialsDir/$zoomLevel";
 
   ## Make root zoom (Z) dir, if does not exist and setting is enabled.
   if test \
@@ -150,34 +175,41 @@ for zoomLevel in $processZoomLevels
   set timeFilePath (printf "$timeFilePattern" "$zoomLevel");
   # debugPrint "timeFilePath: $timeFilePath";
   
-  timerStart;
-  # time
-  magick \
-		"$currentExtFile"                                 \
-		-crop {$tileSize}x{$tileSize}                     \
-		-set 'filename:tile' "$tileFileNamePatternCoords" \
-		+adjoin                                           \
-		"$tileFileName"                                   \
-  ;
-  # echo "$CMD_DURATION" > "$timeFile";
-  timerStop;
-  # debugPrint "timerDuration: "(timerDuration);
-  echo 'Took '(timerDuration)' seconds to process.';
-  timerDuration > "$timeFilePath";
+  if test "$dryRun" != 'true'
+    echo;
+    echo 'Cutting padded image into tile sections...';
+    
+    timerStart;
+    # time
+    magick \
+  		"$currentExtFile"                                 \
+  		-crop {$tileSize}x{$tileSize}                     \
+  		-set 'filename:tile' "$tileFileNamePatternCoords" \
+  		+adjoin                                           \
+  		"$tileFileName"                                   \
+    ;
+    # echo "$CMD_DURATION" > "$timeFile";
+    timerStop;
+    # debugPrint "timerDuration: "(timerDuration);
+    echo 'Took '(timerDuration)' seconds to process.';
+    timerDuration > "$timeFilePath";
   
-  set createdFilesCount (
-    find                        \
-      "$indexDir"               \
-      -maxdepth 1               \
-      -type f                   \
-      -iname "*.png"            \
-    | wc -l
-  );
-  # debugPrint "createdFilesCount: $createdFilesCount";
-  
-  if test -z "$createdFilesCount" -o "$createdFilesCount" -lt '1'
-    errorPrint 'Could not create cropped images; unknown Image Magick error.';
-    errorPrint "createdFilesCount: $createdFilesCount";
+    set createdFilesCount (
+      find                        \
+        "$indexDir"               \
+        -maxdepth 1               \
+        -type f                   \
+        -iname "*.png"            \
+      | wc -l
+    );
+    # debugPrint "createdFilesCount: $createdFilesCount";
+    
+    if test -z "$createdFilesCount" -o "$createdFilesCount" -lt '1'
+      errorPrint 'Could not create cropped images; unknown Image Magick error.';
+      errorPrint "createdFilesCount: $createdFilesCount";
+    end
+  else
+    echo 'Skipping execution and timing due to dry run setting being enabled...';
   end
 
 	userWaitConditional;

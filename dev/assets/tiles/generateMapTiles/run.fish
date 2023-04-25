@@ -19,33 +19,23 @@ source "$SDIR/../../../scripts/common/userWaitConditional.fish";
 ## Set-up
 begin
   # Flags
-  test -z "$force";             and set force             "false";
-  test -z "$manualStep";        and set manualStep        "false";
-  test -z "$outputZoomFolders"; and set outputZoomFolders "false";
+  test -z "$force";             and set force             "false"   ;
+  test -z "$manualStep";        and set manualStep        "false"   ;
+  test -z "$outputZoomFolders"; and set outputZoomFolders "false"   ;
+  test -z "$outputAxisFolders"; and set outputAxisFolders "false"   ;
 
   # Direct (Required) Input
-  test -z "$srcFile"    ;       and set -x srcFile     "$argv[1]";
-  test -z "$outDir"     ;       and set -x outDir      "$argv[2]";
-  test -z "$cleanFirst" ;       and set cleanFirst  "$argv[3]";
+  test -z "$srcFile"    ;       and set -x srcFile        "$argv[1]";
+  test -z "$outDir"     ;       and set -x outDir         "$argv[2]";
+  test -z "$cleanFirst" ;       and set cleanFirst        "$argv[3]";
   # debugPrint "cleanFirst: $cleanFirst";
-  test -z "$cleanFirst" ;       and set cleanFirst  "false"   ;
+  test -z "$cleanFirst" ;       and set cleanFirst        "false"   ;
 
   # Derived and Static Intermediate Settings
 
-  source "$SDIR/../0-detect.fish";
+  source "$SDIR/../detectPH.fish" ;
+  source "$SDIR/0-config.fish"    ;
 
-  set srcFileDir (dirname "$srcFile");
-
-  test -z "$outWorkDir";
-  and set -x outWorkDir      "$srcFileDir/Work";
-  test -z "$outTrialsDir";
-  and set -x outTrialsDir    "$srcFileDir/Trials";
-  set srcFileNameSuffix   (
-    basename "$srcFile" \
-    | sed -r 's|(\.[^.]*?)$| - Extented - Zoom %s\1|g'
-  );
-  test -z "$tmpFitFileMask";
-  and set -x tmpFitFileMask  "$outWorkDir/$srcFileNameSuffix";
   test -z "$tileSize";          and set -x tileSize "256";
 
   if test "$isPHType" = 'true'
@@ -108,15 +98,11 @@ begin
   # debugPrint "force: $force";
   # debugPrint "manualStep: $manualStep";
   # debugPrint "outputZoomFolders: $outputZoomFolders";
+  # debugPrint "outputAxisFolders: $outputAxisFolders";
 
   # debugPrint "srcFile: $srDir";
   # debugPrint "cleanFirst: $cleanFirst";
 
-  # debugPrint "outWorkDir: $outWorkDir";
-  # debugPrint "outTrialsDir: $outTrialsDir";
-
-  # debugPrint "srcFileNameSuffix: $srcFileNameSuffix";
-  # debugPrint "tmpFitFileMask: $tmpFitFileMask";
   # debugPrint "tileSize: $tileSize";
 
   # debugPrint "availableSteps: $availableSteps";

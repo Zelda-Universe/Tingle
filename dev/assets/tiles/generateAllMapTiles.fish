@@ -8,11 +8,10 @@ set -l SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/../../scripts/common/errorPrint.fish";
 
-pushd "$SDIR/../../../tiles";
-
 test -z "$processZoomLevels"; and set -x processZoomLevels '*';
 # debugPrint "processZoomLevels: $processZoomLevels";
 
+pushd "$SDIR/../../../tiles";
 
 ## BotW
 set subMapDir "botw/hyrule";
@@ -29,5 +28,5 @@ test -z "$resLevelChoice"; and set resLevelChoice '0';
 
 "$SDIR/generateMapTiles/run.fish" \
   "$SDIR/switch/games/botw/Maps/$resLevelChoice/Default/Map.png" \
-  "botw/hyrule" \
+  "$subMapDir" \
 ;

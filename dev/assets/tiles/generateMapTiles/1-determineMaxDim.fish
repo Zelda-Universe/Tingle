@@ -13,6 +13,7 @@ source "$SDIR/../../../scripts/common/errorPrint.fish";
 # Always required / internal step.
 # Determines the max zoom level dimensions that fit around the source image.
 source "$SDIR/../0-detect.fish";
+source "$SDIR/0-config.fish";
 
 echo 'Determining image\'s maximum zoom level values...';
 
@@ -22,7 +23,8 @@ echo 'Determining image\'s maximum zoom level values...';
 test -z "$srcFileDims";
 and set srcFileDims (
   # magick identify -format "%wx%h\n" "$srcFile"
-  file -b "$srcFile" | cut -d',' -f2 | string trim
+  # file -b "$srcFile" | cut -d',' -f2 | string trim
+  magick identify -ping -format "%wx%h\n" "$srcFile"
 );
 # debugPrint "Source file dimensions: $srcFileDims";
 # debugPrint "srcFileDims: $srcFileDims";

@@ -6,10 +6,12 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-test -z "$tilesDir"; and set tilesDir "$argv[1]";
-test -z "$tilesDir"; and set tilesDir "$SDIR/";
+source "$SDIR/../../../scripts/common/altPushd.fish";
 
-pushd "$tilesDir";
+test -z "$tilesDir"; and set tilesDir "$argv[1]";
+test -z "$tilesDir"; and set tilesDir "$SDIR/../../../tiles";
+
+altPushd "$tilesDir";
 
 echo -n "Processing $tilesDir";
 find "$tilesDir" -mindepth 1 -maxdepth 1 -type f -iname '*.png' -printf "%f\n" | while read file;

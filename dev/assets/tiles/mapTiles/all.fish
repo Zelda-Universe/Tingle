@@ -26,7 +26,7 @@ end
 
 test -z "$resLevelChoice"; and set resLevelChoice '0';
 
-"$SDIR/generateMapTiles/run.fish" \
+"$SDIR/run.fish" \
   "$SDIR/switch/games/botw/Maps/$resLevelChoice/Default/Map.png" \
   "$subMapDir" \
 ;

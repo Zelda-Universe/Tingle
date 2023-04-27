@@ -6,13 +6,18 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-source "$SDIR/../../../scripts/common/altPushd.fish"          ;
+source "$SDIR/../../../scripts/common/altPushd.fish"            ;
 source "$SDIR/../../../scripts/common/debugPrint.fish"          ;
 source "$SDIR/../../../scripts/common/errorPrint.fish"          ;
 source "$SDIR/../../../scripts/common/timing.fish"              ;
 source "$SDIR/../../../scripts/common/userWaitConditional.fish" ;
 
-source "$SDIR/0-config.fish";
+if not source "$SDIR/0-config.fish"
+  return 1;
+end
+if not source "$SDIR/../0-config-zoom.fish"
+  return 2;
+end
 
 test -z "$cEFDimLimit"      ;
 and set cEFDimLimit '16384' ;
@@ -24,30 +29,9 @@ set timeFilePattern "$outTrialsDir/%s/4 - Cutting.txt";
 
 echo 'Cropping tiles...';
 
-altPushd "$outDir";
-
-set processZoomLevels (
-  string split ' ' (echo "$processZoomLevels" | tr ',' ' ')
-);
-# debugPrint "processZoomLevels: $processZoomLevels";
-# debugPrint "count processZoomLevels: "(count $processZoomLevels);
-
-if test -z "$processZoomLevels"
-  if test -z "$processZoomLevelsMax"
-    errorPrint 'No processZoomLevels as a list of zoom levels to process, or processZoomLevelsMax as an integer of the maximum zoom level to process, provided; exiting...';
-    return 3;
-  end
-end
-
-if test "$processZoomLevels" = '*' -o -n "$processZoomLevelsMax"
-  set processZoomLevels (seq 0 1 "$processZoomLevelsMax");
-end
-
-if test -z "$processZoomLevels"
-  errorPrint 'Possible invalid value given, exiting...';
-  errorPrint "processZoomLevels: $processZoomLevels";
-  errorPrint "processZoomLevelsMax: $processZoomLevelsMax";
-  return 4;
+if not altPushd "$outDir"
+  errorPrint "Could not enter output directory \"$outDir\"; exiting...";
+  return 1;
 end
 
 if test -z "$tileFileNamePatternCoords"

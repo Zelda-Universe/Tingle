@@ -11,8 +11,8 @@ source "$SDIR/../../../scripts/common/errorPrint.fish";
 
 # debugPrint "srcFile: $srcFile"
 if test -z "$srcFile"
-  if not read -P 'Source file: ' outDir
-    exit;
+  if not read -P 'Source file: ' srcFile
+    return 1;
   end
 end
 # debugPrint "srcFile: $srcFile"
@@ -20,14 +20,14 @@ if test \
         -z "$srcFile" \
   -o !  -e "$srcFile" \
   -o !  -f "$srcFile"
-  errorPrint "Source file must be provided as the first argument, exist, and be a file.";
-  exit;
+  errorPrint "Source file must be provided as the first argument, exist, and be a file; exiting...";
+  return 2;
 end
 
 # debugPrint "outDir: $outDir"
 if test -z "$outDir"
   if not read -P 'Output Directory: ' outDir
-    exit;
+    return 3;
   end
 end
 # debugPrint "outDir: $outDir"
@@ -38,9 +38,12 @@ if test \
         -z "$outDir" \
   -o !  -e "$outDir" \
   -o !  -d "$outDir"
-  errorPrint "Output directory must be provided as the first argument, exist, and be a directory.";
-  exit;
+  errorPrint "Output directory must be provided as the first argument, exist, and be a directory; exiting...";
+  return 4;
 end
+
+test -z "$tileSize"; and set -x tileSize "256";
+# debugPrint "tileSize: $tileSize";
 
 set srcFileDir (dirname "$srcFile");
 # set srcFileDir (readlink -f (dirname "$srcPaddedFile/.."));

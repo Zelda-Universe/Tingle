@@ -12,7 +12,7 @@ source "$SDIR/../../../scripts/common/errorPrint.fish";
 # Step 1 - Determine Maximum Dimensions
 # Always required / internal step.
 # Determines the max zoom level dimensions that fit around the source image.
-source "$SDIR/../0-detect.fish";
+source "$SDIR/../placeholderTiles/detect.fish";
 source "$SDIR/0-config.fish";
 
 echo 'Determining image\'s maximum zoom level values...';

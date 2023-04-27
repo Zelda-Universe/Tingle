@@ -33,10 +33,15 @@ begin
 
   # Derived and Static Intermediate Settings
 
-  source "$SDIR/../detectPH.fish" ;
-  source "$SDIR/0-config.fish"    ;
+  source "$SDIR/../placeholderTiles/detect.fish" ;
+  if not source "$SDIR/0-config.fish"
+    return 1;
+  end
+  if not source "$SDIR/../0-config-zoom.fish"
+    return 2;
+  end
 
-  test -z "$tileSize";          and set -x tileSize "256";
+  test -z "$tileSize"; and set -x tileSize "256";
 
   if test "$isPHType" = 'true'
     set availableSteps "2" "generateTiles";
@@ -58,41 +63,9 @@ begin
       echo "Error: Step \"$step\" not valid.";
       echo "Valid choices are: \""(string join "\", \"" $availableSteps)"\"";
       echo "Exiting...";
-      exit;
+      return 3;
     end
   end
-
-  set processZoomLevels (
-    string split ' ' (echo "$processZoomLevels" | tr ',' ' ')
-  );
-  # debugPrint "processZoomLevels: $processZoomLevels";
-  # debugPrint "count processZoomLevels: "(count $processZoomLevels);
-  for zoomLevel in $processZoomLevels
-    if echo "$zoomLevel" | grep -v '[-0-9*]'
-      echo "Error: Zoom level \"$zoomLevel\" is invalid; only enter integers with optional hyphens; exiting...";
-      exit;
-    end
-
-    if test "$zoomLevel" = '*'
-      set newProcessZoomLevels "$zoomLevel"
-      break;
-    end
-
-    set range (string split '-' $zoomLevel);
-    if test (count $range) -gt 1
-      set expandedRange "";
-      if test "$range[1]" -gt "$range[2]"
-        set expandedRange (seq "$range[2]" 1 "$range[1]");
-      else
-        set expandedRange (seq "$range[1]" 1 "$range[2]");
-      end
-      set -a newProcessZoomLevels $expandedRange;
-    else
-      set -a newProcessZoomLevels "$zoomLevel";
-    end
-  end
-  set processZoomLevels $newProcessZoomLevels;
-  # debugPrint "newProcessZoomLevels: $newProcessZoomLevels";
 
   # Settings debug information
   # debugPrint "force: $force";
@@ -100,15 +73,7 @@ begin
   # debugPrint "outputZoomFolders: $outputZoomFolders";
   # debugPrint "outputAxisFolders: $outputAxisFolders";
 
-  # debugPrint "srcFile: $srDir";
   # debugPrint "cleanFirst: $cleanFirst";
-
-  # debugPrint "tileSize: $tileSize";
-
-  # debugPrint "availableSteps: $availableSteps";
-  # debugPrint "processSteps: $processSteps";
-  # debugPrint "processZoomLevels: $processZoomLevels";
-  # debugPrint "count processZoomLevels: "(count $processZoomLevels);
 
   # Optional cleaning preparation step
   if test "$cleanFirst" = "true"
@@ -122,16 +87,6 @@ begin
       -exec rm -rf '{}' \; \
     ;
   	userWaitConditional;
-  end
-
-  # Required settings validation
-
-  # I intentionally check this instead of creating it for the user in case
-  # they provide the wrong argument by accident.  Don't want to create a mess
-  # for them somewhere in some unintentional place.
-  if test -z "$outDir" -o ! -e "$outDir" -o ! -d "$outDir"
-  	echo "Error: Output directory must be provided as the second argument, exist, and be a directory.";
-  	exit;
   end
 end
 

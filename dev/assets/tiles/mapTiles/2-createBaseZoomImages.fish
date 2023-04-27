@@ -23,59 +23,41 @@ begin
   source "$SDIR/../../../scripts/common/errorPrint.fish";
   source "$SDIR/../../../scripts/common/timing.fish"    ;
   
-  source "$SDIR/0-config.fish";
+  if not source "$SDIR/../0-config.fish"
+    return 1;
+  end
+  if not source "$SDIR/../0-config-zoom.fish"
+    return 2;
+  end
 
   set timeFilePattern "$outTrialsDir/%s/%s";
 
-  ## Input Validation
-
-  # debugPrint "zoomLevels: $zoomLevels";
-  test -z "$zoomLevels"; and read -P 'Zoom Levels: ';
   if test -z "$zoomLevels"
-    errorPrint 'zoomLevels (#) not provided; exiting...';
-    return 1;
+    errorPrint 'zoomLevels empty; exiting...';
+    return 3;
   end
-
   set availableZoomLevels (seq 0 1 $zoomLevels);
   # debugPrint "availableZoomLevels: $availableZoomLevels";
   # debugPrint "count availableZoomLevels: "(count $availableZoomLevels);
-
-  ## Input cleaning?
-  # Eliminates a mostly empty processZoomLevels value?
-  # How would that happen though?..  Bad input array parsing/transforming?
-  
-  if test -n "$processZoomLevelsMax"
-    set processZoomLevels (seq 0 1 "$processZoomLevelsMax");
-  end
   
   test -z "$processZoomLevels" -o "$processZoomLevels" = '*';
   and set processZoomLevels $availableZoomLevels;
-  set processZoomLevels (
-    string split ' ' (echo "$processZoomLevels" | tr ',' ' ')
-  );
-  
-  if begin
-    test (count $processZoomLevels) -eq 1;
-    and echo "$processZoomLevels" | grep -q " "
-  end
-    set processZoomLevels (echo "$processZoomLevels" | tr ' ' '\n');
-  end
+  # debugPrint "processZoomLevels: $processZoomLevels";
+  # debugPrint "count processZoomLevels: "(count $processZoomLevels);
 
   ## After Derived/Cleaned / Other Input Validation?
   # May have just fixed a bug here where it never would have been triggered originally.
   for zoomLevel in $processZoomLevels
     if not echo "$availableZoomLevels" | grep -q "\b$zoomLevel\b"
     echo "Error: Zoom Level \"$zoomLevel\" not valid.";
-      echo "Valid choices for this source image: \""(string join "\", \"" $availableZoomLevels)"\"";
-      echo "Exiting...";
+      echo 'Valid choices for this source image: "'(string join '", "' $availableZoomLevels)'"';
+      echo 'Exiting...';
       exit;
     end
   end
 end
 
 # Root debug information
-# debugPrint "srcFile: $srcFile";
-# debugPrint "outTrialsDir: $outTrialsDir";
 # debugPrint "force: $force";
 
 echo 'Creating base zoom images...';

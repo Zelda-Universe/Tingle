@@ -8,7 +8,7 @@ set -l SDIR (readlink -f (dirname (status filename)));
 source "$SDIR/altPrint.fish";
 
 not type -q 'debugPrint';
-function debugPrint
+and function debugPrint
   # echo "DEBUG __DEBUG__: $__DEBUG__";
   if test "$__DEBUG__" = "true"
     # altPrint "DEBUG: $argv";

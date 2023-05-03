@@ -43,11 +43,11 @@ set maxDim (
 # debugPrint "Source file maximum detected dimension: $maxDim";
 # debugPrint "maxDim: $maxDim";
 
-set -x zoomLevels '0';
+set zoomLevels '0';
 
 while true
-	set zoomLevels   (expr $zoomLevels + 1);
-	set numAxisTiles (echo "2 ^ $zoomLevels" | bc);
+	set zoomLevels   (expr $zoomLevels + 1                 );
+	set numAxisTiles (echo "2 ^ $zoomLevels"           | bc);
 	set zoomDim      (echo "$numAxisTiles * $tileSize" | bc);
   # debugPrint "zoomLevels: $zoomLevels";
   # debugPrint "numAxisTiles: $numAxisTiles";
@@ -56,6 +56,8 @@ while true
 	test "$zoomDim" -gt "$maxDim"; and break;
 end
 
-# debugPrint "Max zoom level matched: $zoomLevels";
-# debugPrint "Max zoom level axis tiles amount: $numAxisTiles";
-# debugPrint "Max zoom level dimension: $zoomDim";
+export zoomLevels numAxisTiles zoomDim;
+
+echo "Max zoom level matched          : $zoomLevels"  ;
+echo "Max zoom level axis tiles amount: $numAxisTiles";
+echo "Max zoom level dimension        : $zoomDim"     ;

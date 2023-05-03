@@ -32,6 +32,13 @@ set -e xStart xEnd yStart yEnd;
 for z in $processZoomLevels
   # debugPrint "z: $z";
   
+  if test \
+        "$z" -gt "$zLLimit" \
+    -a  "$forceBigJob" != 'true'
+    echo "Skipping zoom level \"$z\" since it is greater than the recommended limit of \"$zLLimit\", and the images axis dimension \"$cEFDim\" is greater than the recommended limit of \"$cEFDimLimit\"...";
+    continue;
+  end
+  
   set numAxisTiles (echo "2 ^ $z"             | bc);
   set axisEndIndex (echo "$numAxisTiles" - 1  | bc);
   # debugPrint "numAxisTiles: $numAxisTiles";
@@ -60,7 +67,7 @@ for z in $processZoomLevels
     errorPrint "The following variables should not be greater than the axisEndIndex \"$axisEndIndex\" for zoom level \"$z\"; exiting...";
     errorPrint "xEnd: $xEnd";
     errorPrint "yEnd: $yEnd";
-    return 2;
+    return 3;
   end
   
   # debugPrint "xStart: $xStart";
@@ -89,7 +96,5 @@ for z in $processZoomLevels
     end
   end
   timerStop "$timerScope";
-  # debugPrint "timerDuration: "(timerDuration);
-  echo 'Took '(timerDuration "$timerScope")' seconds to process.';
-  # timerDuration > "$timeFilePath";
+  timerDurationReportAndSave "$timerScope" "$timeFilePath";
 end

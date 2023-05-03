@@ -47,24 +47,29 @@ test -z "$tileSize"; and set -x tileSize "256";
 
 set srcFileDir (dirname "$srcFile");
 # set srcFileDir (readlink -f (dirname "$srcPaddedFile/.."));
-test -z "$outWorkDir";
-and set -x outWorkDir      "$srcFileDir/Work";
-test -z "$outTrialsDir";
+test -z "$outWorkDir"                       ;
+and set -x outWorkDir   "$srcFileDir/Work"  ;
+test -z "$outTrialsDir"                     ;
 and set -x outTrialsDir "$srcFileDir/Trials";
 
 set srcFileNameSuffix (
-  basename "$srcFile" \
-  | sed -r 's|(\.[^.]*?)$| - Extented - Zoom %s\1|g'
+  filenameAddSuffix         \
+    (basename "$srcFile")  \
+    ' - Extented - Zoom %s' \
+  ;
 );
 
 test -z "$tmpFitFileMask";
-and set -x tmpFitFileMask  "$outWorkDir/$srcFileNameSuffix";
+and set -x tmpFitFileMask  "$srcFileNameSuffix";
 
-# debugPrint "srcFileDir: $srcFileDir";
-# debugPrint "outWorkDir: $outWorkDir";
-# debugPrint "outTrialsDir: $outTrialsDir";
+# debugPrint "srcFileDir: $srcFileDir"              ;
+# debugPrint "outWorkDir: $outWorkDir"              ;
+# debugPrint "outTrialsDir: $outTrialsDir"          ;
 # debugPrint "srcFileNameSuffix: $srcFileNameSuffix";
-# debugPrint "tmpFitFileMask: $tmpFitFileMask";
+# debugPrint "tmpFitFileMask: $tmpFitFileMask"      ;
 
-mkdir -p "$outWorkDir";
+mkdir -p "$outWorkDir"  ;
 mkdir -p "$outTrialsDir";
+
+test -z "$zLLimit"  ;
+and set zLLimit '7' ; # 128 axis tile amount

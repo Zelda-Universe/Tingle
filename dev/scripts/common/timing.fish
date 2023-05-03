@@ -4,6 +4,10 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
+set -l SDIR (readlink -f (dirname (status filename)));
+
+source "$SDIR/altWrite.fish";
+
 set timeStart -1;
 set timeEnd   -1;
 
@@ -20,6 +24,7 @@ and function timerStart --argument-names scope
     set timeStart (date "+%s");
     # set -S timeStart
   end
+  date;
 end
 
 not type -q 'timerStop';
@@ -29,6 +34,7 @@ and function timerStop --argument-names scope
   else
     set timeEnd (date "+%s");
   end
+  date;
 end
 
 not type -q 'timerDuration';
@@ -55,4 +61,13 @@ and function timerDuration --argument-names scope
       echo "$timeEnd" - "$timeStart" | bc;
     end
   end
+end
+
+not type -q 'timerDurationReportAndSave';
+and function timerDurationReportAndSave --argument-names outputfile
+  # debugPrint "timerDuration: "(timerDuration);
+  echo 'Took '(timerDuration)' seconds to process.';
+  # test -e "$outputfile";
+  # and rm "$outputfile";
+  altWrite "$outputfile" timerDuration;
 end

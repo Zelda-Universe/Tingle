@@ -96,10 +96,8 @@ if test "$dryRun" != 'true'
     "$tileFileName"   \
   ;
   timerStop;
-  # debugPrint "timerDuration: "(timerDuration);
-  echo 'Took '(timerDuration)' seconds to process.';
-  # timerDuration > "$timeFilePath";
-  
+  timerDurationReportAndSave "$timeFilePath";
+    
   if test ! -e "$tileFileName"
     errorPrint 'Could not crop tile; unknown Image Magick error.';
     errorPrint "tileFileName: $tileFileName";

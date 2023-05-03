@@ -3,8 +3,8 @@
 /.env
 /dev/server/nginx/site.conf
 /dev/db/config.yml
-/dev/assets/tiles/**/Maps/**/*.png
-/dev/assets/tiles/**/Maps/**/Trials
+/dev/assets/tiles/**/*.png
+/dev/assets/tiles/**/Trials
 
 ## Team Files
 images/favicon.ico

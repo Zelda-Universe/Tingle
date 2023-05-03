@@ -13,7 +13,11 @@ source "$SDIR/../../../scripts/common/debugPrint.fish";
 source "$SDIR/../../../scripts/common/errorPrint.fish";
 
 if test -n "$zoomLevelsJSON"
-  set zoomLevels (echo "$zoomLevelsJSON" | jq -r '.[]');
+  set zoomLevels (
+    echo "$zoomLevelsJSON" \
+    | jq -r '.[]' \
+    | tr -d '\r'
+  );
   # debugPrint "zoomLevels: $zoomLevels";
   # debugPrint -n "count zoomLevels: "; and debugPrint (count $zoomLevels);
 end

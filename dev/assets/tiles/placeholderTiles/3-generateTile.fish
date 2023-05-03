@@ -57,11 +57,9 @@ end
 if test -n "$inputOptsJSON"
   set inputOpts (
     echo "$inputOptsJSON" \
-    | jq -r '.[]'
+    | jq -r '.[]' \
+    | tr -d '\r'
   );
-
-  # echo "$inputOptsJSON" \
-  # | jq -r '.[]'
 end
 
 for inputOpt in $inputOpts

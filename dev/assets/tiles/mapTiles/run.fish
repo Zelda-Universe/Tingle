@@ -103,24 +103,31 @@ mkdir -p "$outTrialsDir";
 
 # Maybe make step 1 optional only if the user provided a custom argument for it,
 # but it's several....
-source "$SDIR/1-determineMaxDim.fish";
+if test -z "$zoomLevels";
+  if not source "$SDIR/1-determineMaxDim.fish"
+    return;
+  end
+  userWaitConditional;
+end
 # debugPrint "zoomLevels: $zoomLevels";
-userWaitConditional;
 
 if test "$isPHType" = 'true'
   if echo "$processSteps" | grep -qP "((2)|(generateTiles))";
-    export zoomLevels;
     "$SDIR/../generatePHTiles/TLOrigin.fish";
     userWaitConditional;
   end
 else
   if echo "$processSteps" | grep -qP "((2)|(createBaseZoomImages))";
-    "$SDIR/2-createBaseZoomImages.fish";
+    if not "$SDIR/2-createBaseZoomImages.fish"
+      return;
+    end
     userWaitConditional;
   end
 
   if echo "$processSteps" | grep -qP "((3)|(cropTiles))";
-    "$SDIR/3-cropTiles.fish";
+    if not "$SDIR/3-cropTiles.fish"
+      return;
+    end
     userWaitConditional;
   end
 end

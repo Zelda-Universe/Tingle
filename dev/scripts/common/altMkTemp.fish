@@ -6,7 +6,11 @@
 
 not type -q 'altMkTemp';
 and function altMkTemp
+  set path (mktemp $argv);
+
   if test (uname -o) = 'Cygwin'
-    cygpath -m (mktemp $argv);
+    cygpath -m "$path";
+  else
+    echo "$path";
   end
 end

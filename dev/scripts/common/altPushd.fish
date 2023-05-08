@@ -7,6 +7,10 @@
 not type -q 'altPushd';
 and function altPushd
   if test (uname -o) = 'Cygwin'
-    pushd (cygpath $argv);
+    set path (cygpath $argv);
+  else
+    set path $argv;
   end
+
+  pushd $argv;
 end

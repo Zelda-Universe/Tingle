@@ -29,13 +29,13 @@ if test "$action" != 'link' -a "$action" != 'unlink'
   exit 2;
 end
 
-set tilesRootDir (readlink -f "$SDIR/../../../tiles");
+set tilesRootDir (readlink -f "$SDIR/../../../../tiles");
 set disabledDir "$tilesRootDir/_disabled";
 test ! -e "$disabledDir"; and mkdir "$disabledDir";
 set placeholderDir "$tilesRootDir/_placeholder";
 
 if test ! -e "$placeholderDir"
-  errorPrint 'placeholderDir does not exist; exiting...';
+  errorPrint "\"$placeholderDir\" does not exist; exiting...";
   exit 3;
 end
 
@@ -59,14 +59,14 @@ set realTilesSubmapDisabledDir    "$realTilesContainerDisabledDir/$submap";
 if test "$action" = 'link'
   if test -e "$realTilesSubmapDir"
     if test -L "$realTilesSubmapDir"
-      errorPrint 'realTilesSubmapDir is already linked; exiting...';
+      errorPrint "\"$realTilesSubmapDir\" is already linked; exiting...";
       exit 4;
     end
     if test -e "$realTilesSubmapDisabledDir"
-      errorPrint 'Unable to link since realTilesSubmapDisabledDir already exists, and cannot backup the existing realTilesSubmapDir; exiting...';
+      errorPrint "Unable to link since \"$realTilesSubmapDisabledDir\" already exists, and cannot backup the existing \"$realTilesSubmapDir\"; exiting...";
       exit 5;
     else
-      echo 'Moving/Disabling realTilesSubmapDir to realTilesSubmapDisabledDir as a backup...';
+      echo "Moving/Disabling \"$realTilesSubmapDir\" to \"$realTilesSubmapDisabledDir\" as a backup...";
 
       test ! -e "$realTilesContainerDisabledDir";
       and mkdir "$realTilesContainerDisabledDir";
@@ -80,7 +80,7 @@ if test "$action" = 'link'
   test ! -e "$realTilesContainerDir";
   and mkdir "$realTilesContainerDir";
 
-  echo 'Linking realTilesSubmapDir to placeholderDir...';
+  echo "Linking \"$realTilesSubmapDir\" to placeholderDir...";
   ln -s "$placeholderDir" "$realTilesSubmapDir";
 else if test "$action" = 'unlink'
   if test ! -e "$realTilesSubmapDir"
@@ -95,12 +95,12 @@ else if test "$action" = 'unlink'
       exit 8;
     end
   else
-    errorPrint 'Unable to unlink since realTilesSubmapDir exists as real files, not a link to remove; exiting...';
+    errorPrint "Unable to unlink since \"$realTilesSubmapDir\" exists as real files, not a link to remove; exiting...";
     exit 9;
   end
 
   if test -e "$realTilesSubmapDisabledDir"
-    echo 'Moving/Enabled realTilesSubmapDisabledDir to realTilesSubmapDir from being a backup...';
+    echo "Moving/Enabled \"$realTilesSubmapDisabledDir\" to \"$realTilesSubmapDir\" from being a backup...";
 
     mv "$realTilesSubmapDisabledDir" "$realTilesSubmapDir";
   end

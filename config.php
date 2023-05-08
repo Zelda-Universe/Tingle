@@ -42,7 +42,7 @@
   !file_exists(CONFIGFILE) and die('Project `.env` file not found and must be provided.');
 
   load_config();
-  $cacheFolderRootPath = get_config("cacheFolderRootPath");
+  $cacheFolderRootPath = get_config("cacheFolderRootPath", sys_get_temp_dir());
   $cacheFolder = $cacheFolderRootPath."/Tingle";
 
   # Database

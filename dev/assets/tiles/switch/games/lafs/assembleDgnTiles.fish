@@ -12,6 +12,10 @@
 # - Dungeon Tiles:    160   x 128
 # - Dungeon Map Grid: 1,308 x 1,040
 
+source "$SDIR/../../../scripts/common/altPushd.fish"  ;
+source "$SDIR/../../../scripts/common/debugPrint.fish";
+source "$SDIR/../../../scripts/common/errorPrint.fish";
+
 ## General Function Library
 
 function getTileOffsets --argument-names excludesFile tileFile tileWidth tileHeight
@@ -171,7 +175,7 @@ function stepListDgnNames
 end
 
 function stepListCompletedDgns --argument-names outDir
-  pushd "$outDir";
+  altPushd "$outDir";
 
   find -mindepth 1 -type f -iname 'Map.png';
 
@@ -328,7 +332,7 @@ if test ! -e "$dgnMapGridPath"
   end
 end
 
-pushd "$srcDir";
+altPushd "$srcDir";
 
 # Initial dungeon name list generation to be used in the script.
 echo "$processSteps" | grep -qE "\blistDgnNames\b"; and stepListDgnNames;

@@ -21,6 +21,8 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
+source "$SDIR/../../../../../scripts/common/altPushd.fish"    ;
+source "$SDIR/../../../../../scripts/common/debugPrint.fish"  ;
 source "$SDIR/../../../../../scripts/common/timing.fish";
 
 function setupTemplateFiles --argument-names outDir fileName numXTiles numYTiles tileWidth tileHeight
@@ -29,7 +31,7 @@ function setupTemplateFiles --argument-names outDir fileName numXTiles numYTiles
   set workingFile "$outDir/$fileName-Working.png";
 
   # PNG Color Type: https://www.w3.org/TR/PNG/#11IHDR
-  # Took ling enough to solve that issue....
+  # Took long enough to solve that issue....
   if test ! -e "$blankFile"
     convert -define png:color-type=6 -size "$totalDimensions" "canvas:black" "$blankFile";
   end
@@ -109,9 +111,7 @@ function assembleMapIndividually --argument-names outDir fileName numXTiles numY
     placeTile "$tileFile" "$workingFile" "$tileWidth" "$tileHeight";
   end
   timerStop;
-  # debugPrint "timerDuration: "(timerDuration);
-  echo 'Took '(timerDuration)' seconds to process.';
-  timerDuration > "$trialsDir/2a - Assembling.txt";
+  timerDurationReportAndSave "$trialsDir/2a - Assembling.txt";
 
   mv "$workingFile" "$completedFile";
   echo "done!";
@@ -135,9 +135,7 @@ function createMagickScript --argument-names tilePrefix tileSuffix folderPathAnd
     end
     echo '+repage' >> "$srcGenericScript";
     timerStop;
-    # debugPrint "timerDuration: "(timerDuration);
-    echo 'Took '(timerDuration)' seconds to process.';
-    timerDuration > "$trialsDir/1 - Scripting.txt";
+    timerDurationReportAndSave "$trialsDir/1 - Scripting.txt";
   end
 
   echo "$srcGenericScript";
@@ -174,8 +172,7 @@ function assembleMapAtOnce --argument-names tilePrefix tileSuffix outDir folderN
   timerStart;
   if time magick -script "$tempUniqueScript" "$workingFile"
     timerStop;
-    echo 'Took '(timerDuration)' seconds to process.';
-    timerDuration > "$trialsDir/2b - Assembling.txt";
+    timerDurationReportAndSave "$trialsDir/2b - Assembling.txt";
     mv "$workingFile" "$completedFile";
     echo "done!";
   else
@@ -211,8 +208,7 @@ function step1
     timerStart;
     find -maxdepth 1 -type f -name "$folderName""_*" -exec mv -t "$folderName/" '{}' +;
     timerStop;
-    echo 'Took '(timerDuration)' seconds to process.';
-    timerDuration > "$trialsDir/1 - By Res Level.txt";
+    timerDurationReportAndSave "$trialsDir/1 - By Res Level.txt";
   end
 end
 
@@ -262,8 +258,7 @@ function step2
       timerStart;
       find -mindepth 1 -maxdepth 1 -type f -name "$filter" -exec mv -t "$category/" '{}' +;
       timerStop;
-      echo 'Took '(timerDuration)' seconds to process.';
-      timerDuration > "$trialsDir/2 - Scripting.txt";
+      timerDurationReportAndSave "$trialsDir/2 - Scripting.txt";
     end
 
     popd;
@@ -309,11 +304,11 @@ end
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-set indiciesHorizontal  "Z" "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K"
-set tileDims            "3000"   "840"  "300"  "135";
-set totalWidths         "36000" "10080" "3600" "1620";
-set totalHeights        "30000"  "8400" "3000" "1350";
-set folderPrefix        "MapTex";
+set indiciesHorizontal  "Z" "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K";
+set tileDims            "3000"   "840"  "300"  "135"  ;
+set totalWidths         "36000" "10080" "3600" "1620" ;
+set totalHeights        "30000"  "8400" "3000" "1350" ;
+set folderPrefix        "MapTex"                      ;
 
 # Direct (Required) Input
 test -z "$srcDir"; and set srcDir "$argv[1]";
@@ -322,10 +317,10 @@ test -z "$srcDir"; and set srcDir "$argv[1]";
 test -z "$force"; and set force "false";
 
 # Other Settings
-set defaultSteps      "1" "2" "3";
-set defaultResLevels  "0" "1" "2" "3";
-set defaultCategories "Default" "0";
-test -z "$processSteps"     ; and set processResLevels  $defaultSteps     ;
+set defaultSteps      "1" "2" "3"     ;
+set defaultResLevels  "0" "1" "2" "3" ;
+set defaultCategories "Default" "0"   ;
+test -z "$processSteps"     ; and set processSteps      $defaultSteps     ;
 test -z "$processResLevels" ; and set processResLevels  $defaultResLevels ;
 test -z "$processCategories"; and set processCategories $defaultCategories;
 test -z "$outputBaseDir"    ; and set outputBaseDir     "$SDIR/Maps"      ;
@@ -361,7 +356,7 @@ for category in $processCategories
   end
 end
 
-pushd "$srcDir";
+altPushd "$srcDir";
 
 echo "$processSteps" | grep -qE "\b1\b"; and step1;
 echo "$processSteps" | grep -qE "\b2\b"; and step2;

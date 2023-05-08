@@ -13,6 +13,10 @@
 # Underlay: 4106  x 2299
 # OpenMask:  264  x  124
 
+source "$SDIR/../../../scripts/common/altPushd.fish"  ;
+source "$SDIR/../../../scripts/common/debugPrint.fish";
+source "$SDIR/../../../scripts/common/errorPrint.fish";
+
 ## General Function Library
 
 function assembleOverworld --argument-names dgnName outDir
@@ -132,7 +136,7 @@ end
 test -z "$outDir"; and set outDir (realpath "$SDIR/Maps/Overworld");
 mkdir -p "$outDir";
 
-pushd "$srcDir";
+altPushd "$srcDir";
 
 # First, source file hierarchy set-up for easier script writing.
 echo "$processSteps" | grep -qE "\b1\b"; and step1 "$dgnMapGridPath";

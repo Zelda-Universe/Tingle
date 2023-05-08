@@ -11,7 +11,8 @@ set -l SDIR (readlink -f (dirname (status filename)));
 
 pushd "$SDIR";
 
-find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read platform
+find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' \
+| while read platform
   echo "Processing platform \"$platform\"";
   if test ! -e "$platform/games";
     echo "No games found; skipping...";
@@ -19,7 +20,8 @@ find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read platform
   end
   pushd "$platform/games";
 
-  find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read game
+  find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' \
+  | while read game
     echo "Processing game \"$game\"";
     if test ! -e "$game/Maps";
       echo "No Maps found; skipping...";
@@ -27,13 +29,19 @@ find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read platform
     end
     pushd "$game/Maps";
 
-    find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | while read map
+    find -mindepth 1 -maxdepth 1 -type d -printf '%f\n' \
+    | sort -n   \
+    | head -n 1 \
+    | while read map
       echo "Processing map \"$map\"";
       pushd "$map";
 
-      find -mindepth 1 -maxdepth 1 -type f -iname '*.png' -printf '%f\n' | head -n 1 | read srcFile;
+      find -mindepth 1 -maxdepth 1 -type f -iname '*.png' -printf '%f\n' \
+      | sort -n   \
+      | head -n 1 \
+      | read srcFile;
       if test -e "$srcFile";
-        echo env outputZoomFolders=true "$SDIR/generateMapTiles.fish" "$srcFile" .;
+        echo "$SDIR/run.fish" "$srcFile" .;
       else
         echo "Source file for $game $map not found; skipping...";
       end

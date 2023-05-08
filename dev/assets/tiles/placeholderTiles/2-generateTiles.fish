@@ -8,8 +8,16 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
+source "$SDIR/../../../scripts/common/altPushd.fish"  ;
+source "$SDIR/../../../scripts/common/debugPrint.fish";
+source "$SDIR/../../../scripts/common/errorPrint.fish";
+
 if test -n "$zoomLevelsJSON"
-  set zoomLevels (echo "$zoomLevelsJSON" | jq -r '.[]');
+  set zoomLevels (
+    echo "$zoomLevelsJSON" \
+    | jq -r '.[]' \
+    | tr -d '\r'
+  );
   # debugPrint "zoomLevels: $zoomLevels";
   # debugPrint -n "count zoomLevels: "; and debugPrint (count $zoomLevels);
 end
@@ -42,7 +50,7 @@ if test \
 end
 set -e xStart xEnd yStart yEnd;
 
-pushd "$outDir";
+altPushd "$outDir";
 
 # debugPrint "zStart: $zStart";
 # debugPrint "zEnd: $zEnd";
@@ -58,31 +66,29 @@ for z in $zoomLevels
   else
     # debugPrint 'no mkdir z';
   end
-
-  if test \
-        -n "$xStartOrig"  \
-    -a  -n "$xEndOrig"    \
-    -a  -n "$yStartOrig"  \
-    -a  -n "$yEndOrig"
-    set xStart  "$xStartOrig" ;
-    set xEnd    "$xEndOrig"   ;
-    set yStart  "$yStartOrig" ;
-    set yEnd    "$yEndOrig"   ;
-  else
-    set numAxisTiles (echo "2 ^ $z" | bc);
-    # debugPrint "numAxisTiles: $numAxisTiles";
-    set axisEndIndex (echo "$numAxisTiles" - 1 | bc);
-    # debugPrint "axisEndIndex: $axisEndIndex";
-
-    set xStart  '0';
-    set xEnd    "$axisEndIndex";
-    set yStart  '0';
-    set yEnd    "$axisEndIndex";
-    # debugPrint "xStart: $xStart";
-    # debugPrint "xEnd: $xEnd";
-    # debugPrint "yStart: $yStart";
-    # debugPrint "yEnd: $yEnd";
-  end
+  
+  set numAxisTiles (echo "2 ^ $z"             | bc);
+  set axisEndIndex (echo "$numAxisTiles" - 1  | bc);
+  # debugPrint "numAxisTiles: $numAxisTiles";
+  # debugPrint "axisEndIndex: $axisEndIndex";
+  
+  test -n         "$xStartOrig"   ;
+  and set xStart  "$xStartOrig"   ;
+  or  set xStart  '0'             ;
+  test -n         "$xEndOrig"     ;
+  and set xEnd    "$xEndOrig"     ;
+  or  set xEnd    "$axisEndIndex" ;
+  test -n         "$yStartOrig"   ;
+  and set yStart  "$yStartOrig"   ;
+  or  set yStart  '0'             ;
+  test -n         "$yEndOrig"     ;
+  and set yEnd    "$yEndOrig"     ;
+  or  set yEnd    "$axisEndIndex" ;
+  
+  # debugPrint "xStart: $xStart";
+  # debugPrint "xEnd  : $xEnd"  ;
+  # debugPrint "yStart: $yStart";
+  # debugPrint "yEnd  : $yEnd"  ;
 
   for x in (seq "$xStart" "$xEnd")
     # debugPrint "x: $x";

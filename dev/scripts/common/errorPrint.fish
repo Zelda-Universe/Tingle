@@ -4,6 +4,7 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-function errorPrint
+not type -q 'errorPrint';
+and function errorPrint
   altPrint "ERROR: $argv";
 end

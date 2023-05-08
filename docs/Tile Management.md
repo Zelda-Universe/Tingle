@@ -39,7 +39,7 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
 
 ### Linking
 
-  - Command: `dev/assets/tiles/controlPHTiles.fish`
+  - Command: `dev/assets/tiles/placeholderTiles/control.fish`
   - Parameters:
     - `<container/game name>`
     - `<submap name>`
@@ -158,7 +158,7 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
 
 ## Main
 
-  - Command: `dev/assets/tiles/generateAllMapTiles.fish`
+  - Command: `dev/assets/tiles/mapTiles/all.fish`
   - Config:
     - `processZoomLevels`:
       - Type: `SSL int`
@@ -184,11 +184,21 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
       - Modes: `botw`
       - Type: `int`
       - Possible Values: `(0|1|2|3)`
+      
+  There is a possibility bad image tiles could be generated in the file system, where the cropping process would fail (be OOM-killed) on Linux, but on Windows will run, until it experiences a more specific problem running out of available file handles to use, creating files without proper IDATs to be saved.
+  
+  A proper 256x256 32-bit PNG image with only transparent pixels will be 479 bytes, but these will be 189 bytes.
+  
+  Identifying a file like this with Image Magick will present a Read Exception.
+  
+  https://stackoverflow.com/questions/17757114/imagemagick-to-verify-image-integrity#comment134216470_17764714
+  
+  You can clean up these files by running this command: `dev/assets/tiles/mapTiles/cleanBadFiles.fish`.
 
 ## History
 
   Now more of a history section since I finally researched and made scripts to do process the asset files such as cutting and organizing them as preparation.
-  - `dev/assets/tiles/generateAllMapTilesAuto.fish`
+  - `dev/assets/tiles/mapTiles/allAuto.fish`
     - No great way to program this, so disabled for now.
 
   Danilo says he used a [modified version of a] script called `tileCreator.js` (14.4 KB).

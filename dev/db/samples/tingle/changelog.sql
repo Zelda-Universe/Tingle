@@ -39,44 +39,46 @@ CREATE TABLE `changelog` (
 
 LOCK TABLES `changelog` WRITE;
 /*!40000 ALTER TABLE `changelog` DISABLE KEYS */;
-INSERT INTO `changelog` VALUES (1,0,0,0,0,'The fabled start of the project!');
-INSERT INTO `changelog` VALUES (2,0,0,1,0,'Finally, an app to work with :).');
-INSERT INTO `changelog` VALUES (3,0,2,0,0,'You can now add your own markers! Right click on the map and log in / create an account to start adding (best suited for desktop).');
-INSERT INTO `changelog` VALUES (4,0,2,0,0,'Optimizations for mobile devices.');
-INSERT INTO `changelog` VALUES (5,0,2,0,0,'Tons of new markers everyday!');
-INSERT INTO `changelog` VALUES (6,0,3,0,0,'Mark as complete! You can now right-click a marker (desktop only) to hide a marker indefinitely. You can undo this by using ctrl + z in case of a mistake. This shall help you in the quest to get all koroks, making it much easier to see what you\'re missing. This feature uses cookies, so please don\'t clean it.');
-INSERT INTO `changelog` VALUES (7,0,3,0,0,'Don\'t show this again has been fixed. Sorry if you read the intro everytime :).');
-INSERT INTO `changelog` VALUES (8,0,3,0,0,'(Admins only) Ability to draw lines and polygons. Soon, we will have paths for Koroks, side-quests, etc.');
-INSERT INTO `changelog` VALUES (9,0,3,0,0,'The following markers were extracted from the game files and their position are considered final: Koroks, Shrines, Towers, Villages, Stables, Great Fairies! More to come...');
-INSERT INTO `changelog` VALUES (10,0,4,0,0,'Remember to right-click (Desktop) or long press (Mobile) to set a marker as complete!');
-INSERT INTO `changelog` VALUES (11,0,4,0,0,'1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books, and Cooking Pots. These markers were extracted from the game files and their position are considered final, along with Koroks, Shrines, Towers, Villages, Stables, Great Fairies!');
-INSERT INTO `changelog` VALUES (12,0,5,0,0,'Completed markers are tied to your account!');
-INSERT INTO `changelog` VALUES (13,0,5,0,0,'You can now select multiple categories at the same time.');
-INSERT INTO `changelog` VALUES (14,0,5,0,0,'The top left box can now be collapsed.');
-INSERT INTO `changelog` VALUES (15,0,5,0,0,'Marker clustering has been disabled (experimental?).');
-INSERT INTO `changelog` VALUES (16,0,5,0,0,'Markers now show up according to zoom.');
-INSERT INTO `changelog` VALUES (17,0,5,0,0,'Usability fixes and improvements all over the place.');
-INSERT INTO `changelog` VALUES (18,0,6,0,1,'Added login button for more obvious accessibility.');
-INSERT INTO `changelog` VALUES (19,0,6,0,1,'Incremental search with type icons, visual and textual relevancy, jump-to navigation, auto-focus, and quick clear!\nWatch out, the first release of this may be wonky.\nMobile gets a separate-looking search bar.');
-INSERT INTO `changelog` VALUES (20,0,6,0,1,'Slippery fast \'Escape\' hotkey now works for clearing the drawer and toggling its presence.\nThe undo marker completion hotkey was updated to be more intelligent per-OS.');
-INSERT INTO `changelog` VALUES (21,0,6,0,1,'More account features such as recovering a lost password through a reset email, and changing an existing password.');
-INSERT INTO `changelog` VALUES (22,0,6,0,1,'Able to set a starting area to focus the map on page load!\nDynamic controls available upon request to help identify the intended coordinates.\nAlso comes with some new configurable zoom parameters for snap enforcement and change interval amount.');
-INSERT INTO `changelog` VALUES (23,0,6,0,1,'Made top drawer buttons have a larger link area and with highlighting background for representing the current state.');
-INSERT INTO `changelog` VALUES (24,0,6,0,1,'Stylistic updates to more closely match final vision.');
-INSERT INTO `changelog` VALUES (25,0,6,0,1,'A lot of internal system, documentation, and tooling updates!!');
-INSERT INTO `changelog` VALUES (26,0,6,0,0,'New logo by the Zelda Universe design team!');
-INSERT INTO `changelog` VALUES (27,0,6,0,0,'Added Login/Account button');
-INSERT INTO `changelog` VALUES (28,0,6,0,0,'Added Lost Password and Change Password functionality');
-INSERT INTO `changelog` VALUES (29,0,6,0,0,'Added search with live results, category icons, relevancy indicators, jump-to navigation, auto-focus, and quick clear!');
-INSERT INTO `changelog` VALUES (30,0,6,0,0,'Removed button to collapse the sidebar on desktop in favor of hotkey (esc)');
-INSERT INTO `changelog` VALUES (31,0,6,0,0,'Made marker completion hotkeys more intelligent per-OS');
-INSERT INTO `changelog` VALUES (32,0,6,0,0,'Lots of small interface improvements');
-INSERT INTO `changelog` VALUES (33,0,6,0,0,'Internal prep work and documentation for the upcoming Zelda Maps open source project');
-INSERT INTO `changelog` VALUES (34,0,7,0,0,'<b>Multi-game support with Link\'s Awakening:</b> More maps for more Zelda games are on the way.');
-INSERT INTO `changelog` VALUES (35,0,7,0,0,'<b>Sub-map support:</b> Sub-maps cover areas like dungeons. You can view a list of all sub-maps for a given game by clicking on \"Switch Maps\". For LA, we\'ve got maps for every dungeon. We\'re looking into ways to incorporate sub-maps into the Breath of the Wild side of things, too.');
-INSERT INTO `changelog` VALUES (36,0,7,0,0,'<b>Reset completed markers:</b> You can now reset your completed marker progress from your account settings. Super useful if you\'re starting a new run.');
-INSERT INTO `changelog` VALUES (37,0,7,0,0,'<b>Category completion progress:</b> Hovering over marker categories will now show you how many markers you\'ve completed out of the category total.');
-INSERT INTO `changelog` VALUES (38,0,7,0,0,'<b>Embed codes for markers:</b> In addition to being able to get a permalink for each marker, you can now get an iframe embed code. Embeds show a nice zoomed in view of the selected marker.');
+INSERT INTO `changelog` VALUES 
+  (1,0,0,0,0,'The fabled start of the project!'),
+  (2,0,0,1,0,'Finally, an app to work with :).'),
+  (3,0,2,0,0,'You can now add your own markers! Right click on the map and log in / create an account to start adding (best suited for desktop).'),
+  (4,0,2,0,0,'Optimizations for mobile devices.'),
+  (5,0,2,0,0,'Tons of new markers everyday!'),
+  (6,0,3,0,0,'Mark as complete! You can now right-click a marker (desktop only) to hide a marker indefinitely. You can undo this by using ctrl + z in case of a mistake. This shall help you in the quest to get all koroks, making it much easier to see what you\'re missing. This feature uses cookies, so please don\'t clean it.'),
+  (7,0,3,0,0,'Don\'t show this again has been fixed. Sorry if you read the intro everytime :).'),
+  (8,0,3,0,0,'(Admins only) Ability to draw lines and polygons. Soon, we will have paths for Koroks, side-quests, etc.'),
+  (9,0,3,0,0,'The following markers were extracted from the game files and their position are considered final: Koroks, Shrines, Towers, Villages, Stables, Great Fairies! More to come...'),
+  (10,0,4,0,0,'Remember to right-click (Desktop) or long press (Mobile) to set a marker as complete!'),
+  (11,0,4,0,0,'1400+ new markers! This time we added Treasure Chests (with contents), Blupees, Goddess Statues, Memories, Diaries & Books, and Cooking Pots. These markers were extracted from the game files and their position are considered final, along with Koroks, Shrines, Towers, Villages, Stables, Great Fairies!'),
+  (12,0,5,0,0,'Completed markers are tied to your account!'),
+  (13,0,5,0,0,'You can now select multiple categories at the same time.'),
+  (14,0,5,0,0,'The top left box can now be collapsed.'),
+  (15,0,5,0,0,'Marker clustering has been disabled (experimental?).'),
+  (16,0,5,0,0,'Markers now show up according to zoom.'),
+  (17,0,5,0,0,'Usability fixes and improvements all over the place.'),
+  (18,0,6,0,1,'Added login button for more obvious accessibility.'),
+  (19,0,6,0,1,'Incremental search with type icons, visual and textual relevancy, jump-to navigation, auto-focus, and quick clear!\nWatch out, the first release of this may be wonky.\nMobile gets a separate-looking search bar.'),
+  (20,0,6,0,1,'Slippery fast \'Escape\' hotkey now works for clearing the drawer and toggling its presence.\nThe undo marker completion hotkey was updated to be more intelligent per-OS.'),
+  (21,0,6,0,1,'More account features such as recovering a lost password through a reset email, and changing an existing password.'),
+  (22,0,6,0,1,'Able to set a starting area to focus the map on page load!\nDynamic controls available upon request to help identify the intended coordinates.\nAlso comes with some new configurable zoom parameters for snap enforcement and change interval amount.'),
+  (23,0,6,0,1,'Made top drawer buttons have a larger link area and with highlighting background for representing the current state.'),
+  (24,0,6,0,1,'Stylistic updates to more closely match final vision.'),
+  (25,0,6,0,1,'A lot of internal system, documentation, and tooling updates!!'),
+  (26,0,6,0,0,'New logo by the Zelda Universe design team!'),
+  (27,0,6,0,0,'Added Login/Account button'),
+  (28,0,6,0,0,'Added Lost Password and Change Password functionality'),
+  (29,0,6,0,0,'Added search with live results, category icons, relevancy indicators, jump-to navigation, auto-focus, and quick clear!'),
+  (30,0,6,0,0,'Removed button to collapse the sidebar on desktop in favor of hotkey (esc)'),
+  (31,0,6,0,0,'Made marker completion hotkeys more intelligent per-OS'),
+  (32,0,6,0,0,'Lots of small interface improvements'),
+  (33,0,6,0,0,'Internal prep work and documentation for the upcoming Zelda Maps open source project'),
+  (34,0,7,0,0,'<b>Multi-game support with Link\'s Awakening:</b> More maps for more Zelda games are on the way.'),
+  (35,0,7,0,0,'<b>Sub-map support:</b> Sub-maps cover areas like dungeons. You can view a list of all sub-maps for a given game by clicking on \"Switch Maps\". For LA, we\'ve got maps for every dungeon. We\'re looking into ways to incorporate sub-maps into the Breath of the Wild side of things, too.'),
+  (36,0,7,0,0,'<b>Reset completed markers:</b> You can now reset your completed marker progress from your account settings. Super useful if you\'re starting a new run.'),
+  (37,0,7,0,0,'<b>Category completion progress:</b> Hovering over marker categories will now show you how many markers you\'ve completed out of the category total.'),
+  (38,0,7,0,0,'<b>Embed codes for markers:</b> In addition to being able to get a permalink for each marker, you can now get an iframe embed code. Embeds show a nice zoomed in view of the selected marker.')
+;
 /*!40000 ALTER TABLE `changelog` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -89,4 +91,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-04-03 16:13:30
+-- Dump completed on 2023-05-09 13:13:43

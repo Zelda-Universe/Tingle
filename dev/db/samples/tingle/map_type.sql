@@ -37,9 +37,11 @@ CREATE TABLE `map_type` (
 
 LOCK TABLES `map_type` WRITE;
 /*!40000 ALTER TABLE `map_type` DISABLE KEYS */;
-INSERT INTO `map_type` VALUES (1,'FlatMap','Euclidean',0);
-INSERT INTO `map_type` VALUES (2,'ROADMAP','Mercator',1);
-INSERT INTO `map_type` VALUES (3,'SATELLITE','Mercator',1);
+INSERT INTO `map_type` VALUES 
+  (1,'FlatMap','Euclidean',0),
+  (2,'ROADMAP','Mercator',1),
+  (3,'SATELLITE','Mercator',1)
+;
 /*!40000 ALTER TABLE `map_type` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-30 14:31:35
+-- Dump completed on 2023-05-09 13:13:43

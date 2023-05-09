@@ -1,7 +1,35 @@
 class ContainerAddBasicTotKSupport < ActiveRecord::Migration[7.0]
+  def database
+    connection.instance_variable_get(:@config)[:database]
+  end
+
   def up
     execute <<-SQL
-      INSERT INTO `container` (`short_name`, `name`, `icon`) VALUES ('TotK','Tears of the Kingdom', 'Tears-of-the-Kingdom');
+      INSERT INTO `container` (`id`, `short_name`, `name`, `icon`) VALUES (20, 'TotK','Tears of the Kingdom', 'Tears-of-the-Kingdom');
+    SQL
+  end
+  def down
+    execute <<-SQL
+      DELETE FROM `container`
+      WHERE `id` = 20;
+      ;
+    SQL
+
+    aiValue = (
+      execute <<-SQL
+        SELECT `AUTO_INCREMENT`
+        FROM `INFORMATION_SCHEMA`.`TABLES`
+        WHERE `TABLE_SCHEMA` = '#{database}'
+        AND `TABLE_NAME` = 'container'
+        LIMIT 1
+        ;
+      SQL
+    ).first.first
+    contentEntryAmount = 1
+    execute <<-SQL
+      ALTER TABLE `container`
+      AUTO_INCREMENT=#{aiValue - contentEntryAmount}
+      ;
     SQL
   end
 end

@@ -8,4 +8,11 @@ class MapAddTotKOverworldMaps < ActiveRecord::Migration[7.0]
       ;
     SQL
   end
+  def down
+    execute <<-SQL
+      DELETE FROM `map`
+      WHERE `id` IN (30, 31)
+      ;
+    SQL
+  end
 end

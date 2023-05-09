@@ -171,9 +171,9 @@
       - `rake db:migrate RAILS_ENV=test`
     - To execute a specific up/down of one single migration
       - `rake db:migrate:up VERSION=20081220234130`
-    - To revert your last migration
+    - To revert the last migration
       - `rake db:rollback`
-    - To revert your last 3 , and migrations
+    - To revert the last 3 migrations
       - `rake db:rollback STEP=3`
     - Check which version of the tool you are currently using
       - `rake db:version`
@@ -181,26 +181,26 @@
       - `date -u "+%Y%m%d%H%M%S" | putclip`
 
   - Samples:
-    - ActiveRecord Ruby Code
+    - ActiveRecord Ruby Code:
       - Source: http://guides.rubyonrails.org/active_record_migrations.html
       - Source: https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
       - Note: Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
       - Add column:
-        - `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
+        - Code: `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
         - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
       - Changing Columns:
         - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-columns
         - Change table common code:
             - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-tables
             - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
-            - `change_table :table_name do |t|`
+            - Code: `change_table :table_name do |t|`
             - Then refer to the specific section goal below with the reduced  column variants.
         - Change column null property:
-          - `t.change_null :content, false`
+          - Code: `t.change_null :content, false`
           - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
         - Change column default value:
-          - `t.change_default :marker_url, from: '/markers/', to: 'markers/'`
-          - `change_column_default(:table_name, :column_name, '<defaultValue>')`
+          - Code (Table 'batch' block): `t.change_default :marker_url, from: '/markers/', to: 'markers/'`
+          - Code (Individual field): `change_column_default(:table_name, :column_name, '<defaultValue>')`
           - Source: `dev/db/migrate/20230405195637_container_update_and_add_defaults.rb`
           - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_column_default
     - Execute Raw SQL:
@@ -219,6 +219,53 @@
           ```
       - Multiple Queries:
         - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
+    - Specific Goals:
+      - Investigating/Debugging
+        - ```
+          require 'pry'; binding.pry
+          exit
+          ```
+      - Removing entries:
+        - Code (List/Array of Values): ```
+        execute <<-SQL
+          DELETE FROM `submap`
+          WHERE `id` IN (2010, 2011)
+          ;
+        SQL
+        ```
+        - Code (Condition): ```
+        execute <<-SQL
+          DELETE FROM `mapper`
+          WHERE `id` = 3;
+          ;
+        SQL
+          ```
+        - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
+      - Reverting the auto increment value:
+        - Code: ```
+          def database
+            connection.instance_variable_get(:@config)[:database]
+          end
+          ```
+          ```
+          aiValue = (
+            execute <<-SQL
+              SELECT `AUTO_INCREMENT`
+              FROM `INFORMATION_SCHEMA`.`TABLES`
+              WHERE `TABLE_SCHEMA` = '#{database}'
+              AND `TABLE_NAME` = 'mapper'
+              LIMIT 1
+              ;
+            SQL
+          ).first.first
+          contentEntryAmount = 1
+          execute <<-SQL
+            ALTER TABLE `mapper`
+            AUTO_INCREMENT=#{aiValue - contentEntryAmount}
+            ;
+          SQL
+          ```
+        - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
     - Names:
       - Note: Try to keep migration files focused on specific tables.
       - Format:

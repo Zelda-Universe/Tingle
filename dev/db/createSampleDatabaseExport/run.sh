@@ -148,6 +148,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ;
   }
 
+  # dos2unix
   issueStepD2UConditional() {
     file="$1";
 
@@ -212,13 +213,14 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       "Exporting and sanitizing only the required user records by id, with their visiblity and level data for later use in development so that all markers can be displayed." \
       "'$dbClientExe'                         \
         $dbClientCommonOptions                \
+        < '$generateDevUsersQueryFilePath'    \
+        | $orgExtInsCmd                       \
         > '$sanitizedPartialUserDataFilePath' \
         $errorRedirectionString               \
-        < '$generateDevUsersQueryFilePath'    \
       " \
     ;
 
-    # Only for MySQL, all versions, or just old ones?
+    # Only for MySQL.  All versions, or just old ones?
     if \
       echo "$dbClientExe" | grep -Pq '^mysql' \
       && [[ "$verbose" == "true" ]] \
@@ -325,20 +327,21 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
 ## Main Environment Configuration
 {
-  [[ -z "$quiet" ]]            &&               quiet="false" ;
-  [[ -z "$verbose" ]]          &&             verbose="false" ;
-  [[ -z "$briefMessages" ]]    &&       briefMessages="false" ;
-  [[ -z "$pause" ]]            &&               pause="false" ;
-  [[ -z "$dryRun" ]]           &&              dryRun="false" ;
-  [[ -z "$failFast" ]]         &&            failFast="true"  ;
-  [[ -z "$cleanOnFailure" ]]   &&      cleanOnFailure="true"  ;
-  [[ -z "$converge" ]]         &&            converge="false" ;
-  [[ -z "$convergeInPlace" ]]  &&     convergeInPlace="false" ;
-  [[ -z "$oneFile" ]]          &&             oneFile="false" ;
-  [[ -z "$dbName" ]]           &&              dbName="tingle";
-  [[ -z "$outputName" ]]       &&          outputName="tingle";
-  [[ -z "$dbDumpExe" ]]        &&           dbDumpExe="mariadb-dump";
-  [[ -z "$dbClientExe" ]]      &&         dbClientExe="mariadb";
+  [[ -z "$briefMessages"    ]] &&       briefMessages="false"       ;
+  [[ -z "$cleanOnFailure"   ]] &&      cleanOnFailure="true"        ;
+  [[ -z "$converge"         ]] &&            converge="false"       ;
+  [[ -z "$convergeInPlace"  ]] &&     convergeInPlace="false"       ;
+  [[ -z "$dbName"           ]] &&              dbName="tingle"      ;
+  [[ -z "$dbClientExe"      ]] &&         dbClientExe="mariadb"     ;
+  [[ -z "$dbDumpExe"        ]] &&           dbDumpExe="mariadb-dump";
+  [[ -z "$dryRun"           ]] &&              dryRun="false"       ;
+  [[ -z "$failFast"         ]] &&            failFast="true"        ;
+  [[ -z "$oneFile"          ]] &&             oneFile="false"       ;
+  [[ -z "$outputName"       ]] &&          outputName="tingle"      ;
+  [[ -z "$pause"            ]] &&               pause="false"       ;
+  [[ -z "$quiet"            ]] &&               quiet="false"       ;
+  [[ -z "$tableNames"       ]] &&          tableNames=""            ;
+  [[ -z "$verbose"          ]] &&             verbose="false"       ;
 
   # debugPrint "databaseUser: $databaseUser";
   # debugPrint "databasePassword: $([[ -n "$databasePassword" ]] && echo 'Set' || echo 'Not Set').";
@@ -391,7 +394,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     [[ -z "$databaseConnectionString" ]] && databaseConnectionString="$otherConnectionOptions -u'$databaseUser' -p"$databasePassword"";
   }
 
-  [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]] && dbDumpCommonOptions="--column-statistics=0"; # Is this a fix for using plain or also the dump mysql exes to connect to a Maria Server?
+  [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]] && dbDumpCommonOptions="--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
   dbDumpCommonOptions="$dbDumpCommonOptions $databaseConnectionString";
   dbDumpCommonOptions="$dbDumpCommonOptions $dbName";
 
@@ -410,10 +413,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ignoreTablesOptions+="--ignore-table='$dbName.$table' ";
   done
 
+  # For the more involved remove AI process.s
   structureOnlyOptions="--no-data";
   dataOnlyOptions="$dataOnlyOptions --no-create-info";
   dataOnlyOptions="$dataOnlyOptions --skip-add-drop-table";
-  dataOnlyOptions="$dataOnlyOptions --skip-extended-insert";
+  # dataOnlyOptions="$dataOnlyOptions --skip-extended-insert";
 
   if [[ "$verbose" == 'true' ]]; then
     errorRedirectionString="";
@@ -465,6 +469,13 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   && converge='true';
   [[ "$converge" == 'true' && "$convergeInPlace" != 'true' ]] \
   && convergeSuffix="-converged";
+
+  orgExtInsCmd="
+    sed -r                        \
+      -e 's|\),\(|),\n  (|g'      \
+      -e 's|(VALUES )\(|\1\n  (|' \
+      -e 's|\);|)\n;|'            \
+  ";
 
   # debugPrint "samplesDir: $samplesDir";
   # debugPrint "removeAITables: $removeAITables";
@@ -589,6 +600,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       "'$dbDumpExe'             \
         $dbDumpCommonOptions    \
         $dataOnlyOptions        \
+        | $orgExtInsCmd         \
         $ignoreTablesOptions    \
         > '$dataFilePath'       \
         $errorRedirectionString \
@@ -637,6 +649,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     for tableName in $tableNames; do
       # debugPrint "Table Start";
       # debugPrint "tableName: $tableName";
+
+      # Validate table exists.
       if ! includes \
         "$defaultTableNames" \
         "$tableName" \
@@ -651,6 +665,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
       issueStepConvergePrepareConditional "$resultFile";
 
+      # Detect and execute fixing the AI value for each applicable table using a more complex process, or not, and just use the simpler, direct, single-step process.
       if includes \
         "$removeAITables" \
         "$tableName" \
@@ -724,10 +739,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         ## Handle tables that don't require transforming data with the same AI value.
         issueStep \
           "Exporting complete table \"$tableName\" to an individual completed result file, keeping the auto increment values to match the data later on." \
-          "'$dbDumpExe' \
+          "'$dbDumpExe'             \
             $dbDumpCommonOptions    \
-            --skip-extended-insert  \
             $tableName              \
+            | $orgExtInsCmd         \
             > '$resultFile'         \
             $errorRedirectionString \
           " \

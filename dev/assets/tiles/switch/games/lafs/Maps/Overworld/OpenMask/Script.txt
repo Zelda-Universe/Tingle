@@ -1,0 +1,18 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+-size 264x124 "canvas:transparent"
+
+"FldChipOpenMask_00^w.png" -composite
+"FldChipOpenMask_01^t.png" -composite
+"FldChipOpenMask_02^t.png" -composite
+"FldChipOpenMask_03^w.png" -composite
+"FldChipOpenMask_04^t.png" -composite
+"FldChipOpenMask_05^w.png" -composite
+"FldChipOpenMask_09^w.png" -composite
+"FldChipOpenMask_12^w.png" -composite
+"FldChipOpenMask_14^w.png" -composite
+"FldChipOpenMask_17^w.png" -composite
+"FldChipOpenMask_18^t.png" -composite
+"FldChipOpenMask_21^w.png" -composite
+"FldChipOpenMask_22^w.png" -composite

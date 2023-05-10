@@ -1,0 +1,12 @@
+module my-nginx 1.0;
+
+require {
+        type httpd_t;
+        type dosfs_t;
+        class file { getattr open read };
+}
+
+#============= httpd_t ==============
+
+allow httpd_t dosfs_t:file read;
+allow httpd_t dosfs_t:file { getattr open };

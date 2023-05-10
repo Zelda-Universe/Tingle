@@ -6,10 +6,10 @@
 // "Unknown OS" indicates failure to detect the OS
 
 var OSName="Unknown OS";
-if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
-if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
-if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
-if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+if (navigator.appVersion.indexOf("Win"  )!=-1) OSName="Windows" ;
+if (navigator.appVersion.indexOf("Mac"  )!=-1) OSName="MacOS"   ;
+if (navigator.appVersion.indexOf("X11"  )!=-1) OSName="UNIX"    ;
+if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux"   ;
 
 function getUrlParam(vParam) {
 
@@ -39,7 +39,7 @@ function setCookie(cname, cvalue, exdays) {
 
    }
    //console.log(expires);
-   
+
    // Added explicity tag SameSite -> https://www.chromestatus.com/feature/5633521622188032.
    document.cookie = cname + "=" + cvalue + ";" + expires + "; SameSite=Lax";
 }
@@ -114,13 +114,13 @@ function checkChangelog(user) {
    if (lastSeemVersion == null || lastSeemVersion == "") {
       lastSeemVersion = '0.0.0';
    }
-   
+
    new ChangelogHandler({
     user: user,
     seenChangelogVersion: lastSeemVersion,
     version: zMap.version
   });
-  
+
 };
 
 function hideLoginControls() {
@@ -176,26 +176,26 @@ function getUrlParamValue(vParamName, vDefaultValue) {
    return vParamName;
 };
 
-function KeyPress(e) {
-      var evtobj = window.event? event : e
+function globalKeyPressHandler(e) {
+  var evtobj = window.event? event : e
 
-      if (evtobj.key == 'z' && (
-           ((OSName != 'MacOS') && evtobj.ctrlKey) ||
-           ((OSName == 'MacOS') && evtobj.metaKey)
-         )) {
-         zMap.undoMarkerComplete();
-      }
+  if (evtobj.key == 'z' && (
+    ((OSName != 'MacOS') && evtobj.ctrlKey) ||
+    ((OSName == 'MacOS') && evtobj.metaKey)
+    )) {
+    zMap.undoMarkerComplete();
+  }
 }
 
-$(document).on('keydown', KeyPress);
+$(document).on('keydown', globalKeyPressHandler);
 
 // Initial Load
 //  Get map that we want to load (the game ID)
-$.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
-
-   // Should only get only one map
+$.getJSON(
+  "ajax.php?command=get_container&game=" + gameId,
+  function(vResults){
+     // Should only get only one map
    $.each(vResults, function(i, vContainer) {
-
       vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
       vContainer.collapsed                  = getUrlParamValue('collapsed', L.Browser.mobile);
       vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
@@ -257,7 +257,6 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       $("html").css("background-color", vContainer.bgColor);
 
    });
-
 });
 
 function parseBounds(input) {

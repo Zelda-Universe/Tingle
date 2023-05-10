@@ -1,0 +1,15 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+( MapTex2_Z-0_0.png MapTex2_A-0_0.png MapTex2_B-0_0.png MapTex2_C-0_0.png MapTex2_D-0_0.png MapTex2_E-0_0.png MapTex2_F-0_0.png MapTex2_G-0_0.png MapTex2_H-0_0.png MapTex2_I-0_0.png MapTex2_J-0_0.png MapTex2_K-0_0.png +append ) -append
+( MapTex2_Z-1_0.png MapTex2_A-1_0.png MapTex2_B-1_0.png MapTex2_C-1_0.png MapTex2_D-1_0.png MapTex2_E-1_0.png MapTex2_F-1_0.png MapTex2_G-1_0.png MapTex2_H-1_0.png MapTex2_I-1_0.png MapTex2_J-1_0.png MapTex2_K-1_0.png +append ) -append
+( MapTex2_Z-2_0.png MapTex2_A-2_0.png MapTex2_B-2_0.png MapTex2_C-2_0.png MapTex2_D-2_0.png MapTex2_E-2_0.png MapTex2_F-2_0.png MapTex2_G-2_0.png MapTex2_H-2_0.png MapTex2_I-2_0.png MapTex2_J-2_0.png MapTex2_K-2_0.png +append ) -append
+( MapTex2_Z-3_0.png MapTex2_A-3_0.png MapTex2_B-3_0.png MapTex2_C-3_0.png MapTex2_D-3_0.png MapTex2_E-3_0.png MapTex2_F-3_0.png MapTex2_G-3_0.png MapTex2_H-3_0.png MapTex2_I-3_0.png MapTex2_J-3_0.png MapTex2_K-3_0.png +append ) -append
+( MapTex2_Z-4_0.png MapTex2_A-4_0.png MapTex2_B-4_0.png MapTex2_C-4_0.png MapTex2_D-4_0.png MapTex2_E-4_0.png MapTex2_F-4_0.png MapTex2_G-4_0.png MapTex2_H-4_0.png MapTex2_I-4_0.png MapTex2_J-4_0.png MapTex2_K-4_0.png +append ) -append
+( MapTex2_Z-5_0.png MapTex2_A-5_0.png MapTex2_B-5_0.png MapTex2_C-5_0.png MapTex2_D-5_0.png MapTex2_E-5_0.png MapTex2_F-5_0.png MapTex2_G-5_0.png MapTex2_H-5_0.png MapTex2_I-5_0.png MapTex2_J-5_0.png MapTex2_K-5_0.png +append ) -append
+( MapTex2_Z-6_0.png MapTex2_A-6_0.png MapTex2_B-6_0.png MapTex2_C-6_0.png MapTex2_D-6_0.png MapTex2_E-6_0.png MapTex2_F-6_0.png MapTex2_G-6_0.png MapTex2_H-6_0.png MapTex2_I-6_0.png MapTex2_J-6_0.png MapTex2_K-6_0.png +append ) -append
+( MapTex2_Z-7_0.png MapTex2_A-7_0.png MapTex2_B-7_0.png MapTex2_C-7_0.png MapTex2_D-7_0.png MapTex2_E-7_0.png MapTex2_F-7_0.png MapTex2_G-7_0.png MapTex2_H-7_0.png MapTex2_I-7_0.png MapTex2_J-7_0.png MapTex2_K-7_0.png +append ) -append
+( MapTex2_Z-8_0.png MapTex2_A-8_0.png MapTex2_B-8_0.png MapTex2_C-8_0.png MapTex2_D-8_0.png MapTex2_E-8_0.png MapTex2_F-8_0.png MapTex2_G-8_0.png MapTex2_H-8_0.png MapTex2_I-8_0.png MapTex2_J-8_0.png MapTex2_K-8_0.png +append ) -append
+( MapTex2_Z-9_0.png MapTex2_A-9_0.png MapTex2_B-9_0.png MapTex2_C-9_0.png MapTex2_D-9_0.png MapTex2_E-9_0.png MapTex2_F-9_0.png MapTex2_G-9_0.png MapTex2_H-9_0.png MapTex2_I-9_0.png MapTex2_J-9_0.png MapTex2_K-9_0.png +append ) -append
++repage

@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // Link
 // - opts: [Object]
 //   - content: [String or Function] - The content to copy when clicked.
@@ -24,7 +28,7 @@ Link.prototype._initDOMElements = function() {
 
 Link.prototype.action = function() {
   zlogger.info("Navigating browser...");
-  
+
   window.location = this._getContent();
 };
 

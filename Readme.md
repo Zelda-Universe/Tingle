@@ -3,11 +3,12 @@
 
   Currently supports:
   - The Legend of Zelda: Breath of the Wild for the Nintendo Switch and Wii U (March 3, 2017)
+  - The Legend of Zelda: Link's Awakening for the Nintendo Switch (September 20, 2019)
 
 ## Help Sections
-  - [Installation Instructions](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/INSTALL.md)
-  - [Development Process](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/DEVELOPMENT.md)
-  - [Team Contact Information](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/CONTACT.md)
+  - [Installation Instructions](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/Installation.md)
+  - [Development Process](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/Development.md)
+  - [Team Contact Information](https://github.com/Zelda-Universe/Zelda-Maps/blob/master/Contact.md)
 
 # Links
   - [Main hosted site](http://zeldamaps.com)
@@ -15,11 +16,11 @@
   - [Original "Hyrule Legends" site](https://www.zelda.com.br/)
   - [ZU Announcement Forum Thread](https://zeldauniverse.net/forums/Thread/183322-Zelda-Maps-A-site-with-a-map/)
   - Games
-    + BotW
+    + Breath of the Wild
       * [Mostly anecdotal game data breakdown](https://tcrf.net/The_Legend_of_Zelda:_Breath_of_the_Wild)
       * [Relevant game mod - Fully Marked Map](https://gamebanana.com/gamefiles/8774)
       * [Some mined game data](https://github.com/MrCheeze/botw-tools)
-    + LA
+    + Link's Awakening
       * [Reverse engineered ROM file](https://github.com/zladx/LADX-Disassembly)
 
   - Chat

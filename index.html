@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
    <head>
-  		<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
-  		<link rel="apple-touch-icon" href="apple-touch-icon-precomposed.png" />
+  		<link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
+  		<link rel="apple-touch-icon" href="images/apple-touch-icon-precomposed.png" />
   		<title>Breath of the Wild Interactive Map - Zelda Maps</title>
   		<meta charset="utf-8" />
   		<meta name="robots" content="index, follow">
@@ -24,6 +24,13 @@
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <meta http-equiv="Content-Language" content="en-us" />
       <meta name="description" content="Zelda Maps provides rich interactive maps of Hyrule from the The Legend of Zelda with detailed descriptions for each location, character, easter egg and more." />
+
+      <meta http-equiv="Content-Security-Policy" content="
+        default-src *;
+        img-src * 'unsafe-inline' 'unsafe-eval' data:;
+        script-src * 'unsafe-inline' 'unsafe-eval';
+        style-src * 'unsafe-inline';
+      ">
 
       <!-- Third-Party LIBs -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
@@ -109,7 +116,7 @@
 	               adsWidth = 234;
 	               adsHeight = 60;
 	            }
-	
+
 	            document.getElementById('desktopAds').style.width = adsWidth + 'px';
 	            document.getElementById('desktopAds').style.height = adsHeight + 'px';
 	        </script>

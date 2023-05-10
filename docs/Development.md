@@ -160,7 +160,7 @@
 
   - Common Commands:
     - Create a new migration:
-      - `rake db:new_migration name=(read)`
+      - `rake db:new_migration name=(read -P 'Migration Proper Name: ')`
         - Change name subshell to read `read | tr ' ' '_'` on Windows to prevent carriage return characters causing problems.
       - Then edit content with your features' details.
     - To apply your newest migration:
@@ -267,7 +267,7 @@
           ```
         - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
     - Names:
-      - Note: Try to keep migration files focused on specific tables.
+      - Note: The RoR AR Migrations guide may recommend trying to keep migrations focused on a specific table per file.
       - Format:
         - Database table,
         - action,

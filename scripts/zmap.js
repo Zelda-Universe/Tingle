@@ -24,12 +24,12 @@ function ZMap() {
    this.markerIconSmall;
    this.markerIconMedium;
 
-   this.errorTileUrl    = ZConfig.getConfig("errorTileUrl");
+   this.errorTileUrl    = ZConfig.getConfig("errorTileUrl"  );
    this.tileNameFormat  = ZConfig.getConfig("tileNameFormat");
    this.tilesBaseURL    = ZConfig.getConfig("tilesBaseURL"  );
 
-   // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself.
-   //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
+   // @TODO: This is a WORKAROUND. Icon should be in the same folder as the tiled map itself.
+   //        For now, since we don`t want to bother Matthew, we are creating a new folder in the code
    //        In the future, we need to move the icon.png of every map to the tiledmap and change defaultIconURL to defaultTilesURL
    this.defaultIconURL = 'images/icons/';
 

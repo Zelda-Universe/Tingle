@@ -160,7 +160,7 @@
 
   - Common Commands:
     - Create a new migration:
-      - `rake db:new_migration name=(read -P 'Migration Proper Name: ')`
+      - `rake db:new_migration name=(read -P 'Migration Proper Name: ' | tr -d ' ')`
         - Change name subshell to read `read | tr ' ' '_'` on Windows to prevent carriage return characters causing problems.
       - Then edit content with your features' details.
     - To apply your newest migration:
@@ -212,10 +212,32 @@
           SQL
           ```
       - External file:
-        - ```
+        - Code: ```
           execute File.open(
             'dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql'
           ).read
+          ```
+      - External files:
+        - Code: ```
+          def sqlFileNames
+            [
+              '1-container'       ,
+              '2-map'             ,
+              '3-submap'          ,
+              '4-marker_category' ,
+              '5-marker'
+            ]
+          end
+          ```
+          ```
+          filePathPattern = "#{__dir__}/sql/" +
+            File.basename(__FILE__).
+            sub(/\.rb$/i, '/%s.sql')
+
+          sqlFileNames.each do |sqlFileName|
+            sqlFile = sprintf(filePathPattern, sqlFileName);
+            execute File.open(sqlFile).read
+          end
           ```
       - Multiple Queries:
         - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
@@ -242,7 +264,8 @@
           ```
         - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
       - Reverting the auto increment value:
-        - Code: ```
+        - Note: Be sure to check if the table actually has auto increment column(s).
+        - Code (Dynamic): ```
           def database
             connection.instance_variable_get(:@config)[:database]
           end
@@ -262,6 +285,13 @@
           execute <<-SQL
             ALTER TABLE `mapper`
             AUTO_INCREMENT=#{aiValue - contentEntryAmount}
+            ;
+          SQL
+          ```
+        - Code (Manual): ```
+          execute <<-SQL
+            ALTER TABLE `mapper`
+            AUTO_INCREMENT=...
             ;
           SQL
           ```

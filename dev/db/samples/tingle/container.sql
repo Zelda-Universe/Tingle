@@ -55,7 +55,7 @@ CREATE TABLE `container` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `map_id_UNIQUE` (`id`),
   UNIQUE KEY `short_name_UNIQUE` (`short_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +83,8 @@ INSERT INTO `container` VALUES
   (16,'SS','Skyward Sword','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,0,3),
   (17,'ALBW','A Link Between Worlds','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,0,3),
   (18,'TFH','Tri Force Heroes','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,0,3),
-  (19,'BotW','Breath of the Wild','markers/','png','#000000','Breath-of-the-Wild',0,1,1,0,1,112,-159,-49.875,34.25,-206,221,8,9,50,256,23,23,16,16,5,1,5)
+  (19,'BotW','Breath of the Wild','markers/','png','#000000','Breath-of-the-Wild',0,1,1,0,1,112,-159,-49.875,34.25,-206,221,8,9,50,256,23,23,16,16,5,1,5),
+  (21,'TotK','Tears of the Kingdom','/markers/','png','#DEECFD','Breath-of-the-Wild',0,1,1,0,1,70,-59,0,0,-118,141,8,9,50,256,23,23,16,16,5,1,4)
 ;
 /*!40000 ALTER TABLE `container` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -97,4 +98,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 13:13:43
+-- Dump completed on 2023-05-09 14:55:21

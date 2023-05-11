@@ -66,7 +66,10 @@ INSERT INTO `submap` VALUES
   (2006,26,1,1,'Face Shrine',1,'la_rmk/6_face_shrine/','png','blank',6,0,1,1),
   (2007,27,1,1,'Eagle`s Tower',1,'la_rmk/7_eagles_tower/','png','blank',7,0,1,1),
   (2008,28,1,1,'Turtle Rock',1,'la_rmk/8_turtle_rock/','png','blank',8,0,1,1),
-  (2009,29,1,1,'Color Dungeon',1,'la_rmk/0_color_dungeon/','png','blank',9,0,1,1)
+  (2009,29,1,1,'Color Dungeon',1,'la_rmk/0_color_dungeon/','png','blank',9,0,1,1),
+  (2101,2101,1,NULL,'Overworld',0,'totk/hyrule/ground/','png','404',1,0,1,1),
+  (2102,2102,1,NULL,'Sky',0,'totk/hyrule/sky/','png','404',1,0,1,1),
+  (2103,2103,1,NULL,'Underground',0,'totk/hyrule/underground/','png','404',1,0,1,1)
 ;
 /*!40000 ALTER TABLE `submap` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -80,4 +83,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 13:13:43
+-- Dump completed on 2023-05-09 14:55:21

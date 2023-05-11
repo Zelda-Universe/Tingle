@@ -1,0 +1,53 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"Lv08TurtleRock_01D.png" -geometry +494+8 -composite
+"Lv08TurtleRock_01E.png" -geometry +654+8 -composite
+"Lv08TurtleRock_02A.png" -geometry +14+136 -composite
+"Lv08TurtleRock_02D.png" -geometry +494+136 -composite
+"Lv08TurtleRock_02E.png" -geometry +654+136 -composite
+"Lv08TurtleRock_02H.png" -geometry +1134+136 -composite
+"Lv08TurtleRock_03A.png" -geometry +14+264 -composite
+"Lv08TurtleRock_03B.png" -geometry +174+264 -composite
+"Lv08TurtleRock_03C.png" -geometry +334+264 -composite
+"Lv08TurtleRock_03D.png" -geometry +494+264 -composite
+"Lv08TurtleRock_03E.png" -geometry +654+264 -composite
+"Lv08TurtleRock_03F.png" -geometry +814+264 -composite
+"Lv08TurtleRock_03G.png" -geometry +974+264 -composite
+"Lv08TurtleRock_03H.png" -geometry +1134+264 -composite
+"Lv08TurtleRock_04B.png" -geometry +174+392 -composite
+"Lv08TurtleRock_04C.png" -geometry +334+392 -composite
+"Lv08TurtleRock_04D.png" -geometry +494+392 -composite
+"Lv08TurtleRock_04E.png" -geometry +654+392 -composite
+"Lv08TurtleRock_04F.png" -geometry +814+392 -composite
+"Lv08TurtleRock_04G.png" -geometry +974+392 -composite
+"Lv08TurtleRock_05A.png" -geometry +14+520 -composite
+"Lv08TurtleRock_05B.png" -geometry +174+520 -composite
+"Lv08TurtleRock_05C.png" -geometry +334+520 -composite
+"Lv08TurtleRock_05D.png" -geometry +494+520 -composite
+"Lv08TurtleRock_05E.png" -geometry +654+520 -composite
+"Lv08TurtleRock_05F.png" -geometry +814+520 -composite
+"Lv08TurtleRock_05G.png" -geometry +974+520 -composite
+"Lv08TurtleRock_05H.png" -geometry +1134+520 -composite
+"Lv08TurtleRock_06A.png" -geometry +14+648 -composite
+"Lv08TurtleRock_06B.png" -geometry +174+648 -composite
+"Lv08TurtleRock_06C.png" -geometry +334+648 -composite
+"Lv08TurtleRock_06D.png" -geometry +494+648 -composite
+"Lv08TurtleRock_06E.png" -geometry +654+648 -composite
+"Lv08TurtleRock_06F.png" -geometry +814+648 -composite
+"Lv08TurtleRock_06G.png" -geometry +974+648 -composite
+"Lv08TurtleRock_06H.png" -geometry +1134+648 -composite
+"Lv08TurtleRock_07A.png" -geometry +14+776 -composite
+"Lv08TurtleRock_07B.png" -geometry +174+776 -composite
+"Lv08TurtleRock_07C.png" -geometry +334+776 -composite
+"Lv08TurtleRock_07D.png" -geometry +494+776 -composite
+"Lv08TurtleRock_07E.png" -geometry +654+776 -composite
+"Lv08TurtleRock_07F.png" -geometry +814+776 -composite
+"Lv08TurtleRock_07G.png" -geometry +974+776 -composite
+"Lv08TurtleRock_07H.png" -geometry +1134+776 -composite
+"Lv08TurtleRock_08A.png" -geometry +14+904 -composite
+"Lv08TurtleRock_08D.png" -geometry +494+904 -composite
+"Lv08TurtleRock_08E.png" -geometry +654+904 -composite
+"Lv08TurtleRock_08H.png" -geometry +1134+904 -composite

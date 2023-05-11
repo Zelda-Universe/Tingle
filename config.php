@@ -1,103 +1,119 @@
 <?php
-  require __DIR__ . '/vendor/autoload.php';
+  include_once(__DIR__."/lib/common/log.php");
 
-  date_default_timezone_set("UTC");
+  function load_config() {
+    global $config;
+    $config = parse_ini_file(CONFIGFILE);
+  }
+  function get_config($key, $default = null, $type = "string") {
+    global $config;
+    if(!isset($config)) die("Error: Config not loaded; exiting...");
+
+    if(empty($default)) {
+      if(strtolower($type) === "int") {
+        $default = 0;
+      } else if(strtolower($type) === "boolean") {
+        $default = 'true';
+      }
+    }
+
+    $value = $config[$key] ?? $default;
+
+    if(strtolower($type) === "boolean") {
+      // $value = strtolower($value) === "true"; # Seems 'true' string values are 1 already from the ini file load.
+    } else if(strtolower($type) === "int") {
+      $value = intval($value);
+    }
+
+    return $value;
+  }
+
+  define("MAPROOT", __DIR__);
+  define("CONFIGFILE", MAPROOT."/.env");
+
+  require __DIR__ . '/vendor/autoload.php';
 
   $lostPasswordRandomGeneratorStrengthStrings = array_keys((new SecurityLib\Strength)->getConstList());
 
-	// LOCAL
-   error_reporting((E_ALL ^ E_DEPRECATED) & ~E_NOTICE);
-	if ($_SERVER['SERVER_ADDR'] == "127.0.0.1" || $_SERVER['SERVER_ADDR'] == '::1') {
-		$dbms = 'mysql';
-		$dbhost = 'localhost';
-		$dbport = '';
-		$dbname = 'zmap_v2';
-		$dbuser = 'root';
-		$dbpasswd = '';
+  # All but deprecated and notices.
+  # TODO: This is a dev or prod setting currently?
+  error_reporting((E_ALL ^ E_DEPRECATED) & ~E_NOTICE);
 
-		$map_prefix = "";
-	// LIVE SERVER
-	} else {
-		$dbms = 'mysql';
-		$dbhost = 'localhost';
-		$dbport = '';
-		$dbname = '';
-		$dbuser = '';
-		$dbpasswd = '';
+  !file_exists(CONFIGFILE) and die('Project `.env` file not found and must be provided.');
 
-		$map_prefix = "";
-   }
+  load_config();
+  $cacheFolderRootPath = get_config("cacheFolderRootPath", sys_get_temp_dir());
+  $cacheFolder = $cacheFolderRootPath."/Tingle";
 
-   $minifyResources = true;
-   $path = DIRNAME(__FILE__);
+  # Database
+  $dbms         = get_config("DBMS"    );
+  $dbhost       = get_config("DBHOST"  );
+  $dbuser       = get_config("DBUSER"  );
+  $dbpasswd     = get_config("DBPASSWD");
+  $dbname       = get_config("DBNAME"  );
+  $dbport       = get_config("DBPORT"  ,    type: "int");
+  $dbsocket     = get_config("DBSOCKET");
+  $map_prefix   = get_config("PREFIX"  );
+  $minify       = get_config("minify",      type: "boolean");
+  $enableTests  = get_config("enableTests", type: "boolean");
 
-	define("MAPROOT",$path);
-    // We want production to run smoothly,
-    // and still requires a mail server as checked below.
-    $mailEnabled = true;
-    if(file_exists(MAPROOT."/.env")) {
-        $ENV = parse_ini_file(MAPROOT."/.env");
-        $dbms = $ENV["DBMS"];
-        $dbhost = $ENV["DBHOST"];
-        $dbport = $ENV["DBPORT"];
-        $dbname = $ENV["DBNAME"];
-        $dbuser = $ENV["DBUSER"];
-        $dbpasswd = $ENV["DBPASSWD"];
-        $map_prefix = $ENV["PREFIX"];
-        $minifyResources = $ENV["minifyResources"];
-        $lostPasswordRandomGeneratorStrengthString = $ENV["LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH"];
-        if(array_search($lostPasswordRandomGeneratorStrengthString, $lostPasswordRandomGeneratorStrengthStrings) === false) {
-          error_log("Miconfigured \"LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH\" setting; using the value \"MEDIUM\" by default.");
-          $lostPasswordRandomGeneratorStrengthString = "MEDIUM";
-        }
-        $lostPasswordRandomGeneratorStrengthConstant = new SecurityLib\Strength((new SecurityLib\Strength)->getConstList()[$lostPasswordRandomGeneratorStrengthString]);
+  # User features
+  $lostPasswordRandomGeneratorStrengthString = get_config("LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH");
+  if(
+    array_search(
+      $lostPasswordRandomGeneratorStrengthString, $lostPasswordRandomGeneratorStrengthStrings
+    ) === false
+  ) {
+    error_log("Miconfigured \"LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH\" setting; using the value \"MEDIUM\" by default.");
+    $lostPasswordRandomGeneratorStrengthString = "MEDIUM";
+  }
+  $lostPasswordRandomGeneratorStrengthConstant = new SecurityLib\Strength((new SecurityLib\Strength)->getConstList()[$lostPasswordRandomGeneratorStrengthString]);
 
-        $mailEnabled = $ENV['mailEnabled'];
-        $mailServer = $ENV['server'];
-        if(!$mailServer) $mailEnabled = false;
-        $mailPort = $ENV['port'];
-        $mailUsername = $ENV['username'];
-        $mailPassword = $ENV['password'];
-        $mailReplyToAddress = $ENV['replyToAddress'];
-        $mailReplyToName = $ENV['replyToName'];
+  # Mail
+  $mailEnabled        = get_config('mailEnabled');
+  $mailServer         = get_config('server'     );
+  $mailPort           = get_config('port'     );
+  $mailUsername       = get_config('username' );
+  $mailPassword       = get_config('password' );
+  $mailReplyToAddress = get_config('replyToAddress');
+  $mailReplyToName    = get_config('replyToName');
 
-        $lostPasswordSubject = $ENV["lostPasswordSubject"];
-        if(isset($ENV["lostPasswordBodyTemplateFilePath"])) $lostPasswordBodyTemplateFilePath = $ENV["lostPasswordBodyTemplateFilePath"];
-        if(isset($lostPasswordBodyTemplateFilePath) && !empty($lostPasswordBodyTemplateFilePath)) {
-          $lostPasswordBodyTemplate = file_get_contents($lostPasswordBodyTemplateFilePath);
-        }
+  $lostPasswordSubject = get_config("lostPasswordSubject");
+  $lostPasswordBodyTemplateFilePath = get_config("lostPasswordBodyTemplateFilePath");
+  if(!empty($lostPasswordBodyTemplateFilePath)) {
+    $lostPasswordBodyTemplateFilePath = __DIR__."/$lostPasswordBodyTemplateFilePath";
+    $lostPasswordBodyTemplate = file_get_contents($lostPasswordBodyTemplateFilePath);
+  }
 
-        $_ENV = array_merge($ENV,$_ENV);
-    }
+  if(
+    empty($mailServer)                        ||
+    empty($mailPort)                          ||
+    empty($mailUsername)                      ||
+    empty($mailPassword)                      ||
+    empty($mailReplyToAddress)                ||
+    empty($mailReplyToName)                   ||
+    empty($lostPasswordSubject)               ||
+    empty($lostPasswordBodyTemplateFilePath)
+  ) {
+    # Don't want this message output for every request.
+    // error_log("Warning: Disabling mail server integration as a required setting was blank...");
+    $mailEnabled = false;
+  }
 
-    $mysqli = new mysqli($dbhost, $dbuser, $dbpasswd) or die('Database connection problem.');
-    $mysqli->select_db ($dbname) or die('Database connection problem.');
-    $mysqli->query("SET NAMES 'utf8'");
-    $mysqli->query('SET character_set_connection=utf8');
-    $mysqli->query('SET character_set_client=utf8');
-    $mysqli->query('SET character_set_results=utf8');
-
-	function begin() {
-		global $mysqli;
-		return $mysqli->query("BEGIN");
-	}
-
-	function commit() {
-		global $mysqli;
-		return $mysqli->query("COMMIT");
-	}
-
-	function rollback()	{
-		global $mysqli;
-		return $mysqli->query("ROLLBACK");
-	}
-
-	function start_session($name="zmap") {
-		if(!defined("PHP_MAJOR_VERSION") || PHP_MAJOR_VERSION<7) {
-			return session_start($name);
-		} else {
-			$opts = ["name"=>$name];
-			return session_start($opts);
-		}
-	}
+  $debugLoggingMode = get_config('debugLoggingMode', default: 'errorLog');
+  // debug_log("debugLoggingMode: $debugLoggingMode");
+  $cFRPFileExists = file_exists($cacheFolderRootPath);
+  $cFFileExists = file_exists($cacheFolder);
+  // debug_log("cacheFolderRootPath: $cacheFolderRootPath");
+  // debug_log("cacheFolder        : $cacheFolder");
+  // debug_log("cFRPFileExists     : $cFRPFileExists");
+  // debug_log("cFFileExists       : $cFFileExists");
+  if(!$cFRPFileExists) {
+    mkdir($cacheFolderRootPath) or
+    die("Cache root directory error at: ".$cacheFolderRootPath);
+  }
+  if(!$cFFileExists) {
+    mkdir($cacheFolder) or
+    die("Cache directory error at: ".$cacheFolder);
+  }
 ?>

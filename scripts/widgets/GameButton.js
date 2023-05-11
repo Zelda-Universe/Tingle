@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // GameButton
 // - opts: [Object]
 //   - onToggle: [Function] To call when the button is clicked.
@@ -35,4 +39,3 @@ GameButton.prototype.clear = function() {
   this.toggledOn = false;
   this._updateState();
 };
-

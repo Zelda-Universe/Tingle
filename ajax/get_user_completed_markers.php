@@ -1,15 +1,14 @@
 <?php
    if (!isset($_GET['newMarkerId'])) {
-     $path = DIRNAME(__FILE__);
-   	 include_once("$path/../config.php");
+     $path = __DIR__;
    }
 
    $query = 'select m.id markerId
 				   from ' . $map_prefix . 'marker m
                   , ' . $map_prefix . 'marker_category mc
 				      , ' . $map_prefix . 'submap smp
-                  , ' . $map_prefix . 'map mp   
-                  , ' . $map_prefix . 'user_completed_marker ucm  
+                  , ' . $map_prefix . 'map mp
+                  , ' . $map_prefix . 'user_completed_marker ucm
               where m.marker_category_id = mc.id
 				    and m.submap_id = smp.id
                 and smp.map_id = mp.id

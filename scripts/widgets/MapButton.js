@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // MapButton
 // - opts: [Object]
 //   - onToggle: [Function] To call when the button is clicked.
@@ -15,7 +19,7 @@ MapButton.prototype.constructor = MapButton;
 
 MapButton.prototype._initDOMElements = function(opts) {
   CategoryButton.prototype._initDOMElements.call(this, opts);
-  
+
   this.domNode.addClass('completed-button');
   this.domNode.addClass('menu-header-button');
 

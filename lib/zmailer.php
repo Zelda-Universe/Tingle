@@ -1,6 +1,9 @@
 <?php
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
 
-$path = DIRNAME(__FILE__);
+$path = __DIR__;
 include_once("$path/../config.php");
 
 function prepareMailTransport() {

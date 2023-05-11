@@ -1,6 +1,6 @@
 <?php
 function includeMini() {
-    $path = DIRNAME(__FILE__);
+    $path = __DIR__;
     include_once("$path/JSMin.php");
     include_once("$path/CSSmin.php");
 }

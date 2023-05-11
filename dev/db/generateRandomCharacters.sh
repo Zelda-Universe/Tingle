@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
+
 numChars="${1-32}";
 
 # printf '\x'"$(printf '%x' "$(echo "($(printf '%d' '0x'"$(echo -n '!' | xxd -p)") % 95) + 32" | bc)")";

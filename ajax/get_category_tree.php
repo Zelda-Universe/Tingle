@@ -1,6 +1,5 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
+   $path = __DIR__;
 
    $map = $_GET["game"];
 
@@ -28,19 +27,19 @@
       $node['img']  = $row['img'];
       $node['color']= $row['color'];
       $node['checked'] = $row['default_checked'] == 1 ? true : false;
-      $node['visible_zoom']= $row['visibleZoom'];
+      $node['visible_zoom']= $row['visible_zoom'];
 
       $query = 'select *
                   from ' . $map_prefix . 'marker_category
                  where parent_id = ' . $row['id'] . '
                    and container_id = ' . $map . '
                    and visible = 1
-                   and id in (SELECT mc.id 
-                                FROM ' . $map_prefix . 'marker m 
-                                   , ' . $map_prefix . 'marker_category mc 
-                               where m.marker_category_id = mc.id 
-                                 and m.visible = 1 
-                                 and mc.visible = 1 
+                   and id in (SELECT mc.id
+                                FROM ' . $map_prefix . 'marker m
+                                   , ' . $map_prefix . 'marker_category mc
+                               where m.marker_category_id = mc.id
+                                 and m.visible = 1
+                                 and mc.visible = 1
                                  and mc.container_id = ' . $map . '
                                group by mc.id
                               )
@@ -55,7 +54,7 @@
             $children['img']  = $row2['img'];
             $children['color']  = $row2['color'];
             $children['checked'] = $row2['default_checked'] == 1 ? true : false;
-            $children['visible_zoom']= $row2['visibleZoom'];
+            $children['visible_zoom']= $row2['visible_zoom'];
             array_push($arr_child, $children);
          }
          $node['children'] = $arr_child;

@@ -1,0 +1,19 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"PanelLv03KeyCavern_03G.png" -geometry +974+264 -composite
+"PanelLv03KeyCavern_04C.png" -geometry +334+392 -composite
+"PanelLv03KeyCavern_04D.png" -geometry +494+392 -composite
+"PanelLv03KeyCavern_04F.png" -geometry +814+392 -composite
+"PanelLv03KeyCavern_04G.png" -geometry +974+392 -composite
+"PanelLv03KeyCavern_04H.png" -geometry +1134+392 -composite
+"PanelLv03KeyCavern_05G.png" -geometry +974+520 -composite
+"PanelLv03KeyCavern_06C.png" -geometry +334+648 -composite
+"PanelLv03KeyCavern_07G.png" -geometry +974+776 -composite
+"PanelLv03KeyCavern_07H.png" -geometry +1134+776 -composite
+"PanelLv03KeyCavern_08B.png" -geometry +174+904 -composite
+"PanelLv03KeyCavern_08C.png" -geometry +334+904 -composite
+"PanelLv03KeyCavern_08G.png" -geometry +974+904 -composite
+"PanelLv03KeyCavern_08H.png" -geometry +1134+904 -composite

@@ -1,3 +1,5 @@
+-- Password is 'test'.
+
 SELECT
   `unique_marker_and_marker_tab_users`.`user_id` AS `id`,
   CONCAT('test', `unique_marker_and_marker_tab_users`.`user_id`) AS `username`,
@@ -8,7 +10,11 @@ SELECT
   '127.0.0.1' AS `ip`,
   '2018-01-02 02:40:51' AS `last_login`,
   `user`.`level`,
-  `user`.`visible`
+  `user`.`visible`,
+  '0' AS `seen_version_major`,
+  '5' AS `seen_version_minor`,
+  '0' AS `seen_version_patch`,
+  '0' AS `seen_latest_changelog`
 FROM
   (
     SELECT `user_id`

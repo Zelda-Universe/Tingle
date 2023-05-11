@@ -1,0 +1,41 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"Lv05CatfishsMaw_01B_Mask.png" -geometry +174+8 -composite
+"Lv05CatfishsMaw_01C_Mask.png" -geometry +334+8 -composite
+"Lv05CatfishsMaw_01D_Mask.png" -geometry +494+8 -composite
+"Lv05CatfishsMaw_01E_Mask.png" -geometry +654+8 -composite
+"Lv05CatfishsMaw_01F_Mask.png" -geometry +814+8 -composite
+"Lv05CatfishsMaw_02C_Mask.png" -geometry +334+136 -composite
+"Lv05CatfishsMaw_02D_Mask.png" -geometry +494+136 -composite
+"Lv05CatfishsMaw_02E_Mask.png" -geometry +654+136 -composite
+"Lv05CatfishsMaw_02F_Mask.png" -geometry +814+136 -composite
+"Lv05CatfishsMaw_02G_Mask.png" -geometry +974+136 -composite
+"Lv05CatfishsMaw_03B_Mask.png" -geometry +174+264 -composite
+"Lv05CatfishsMaw_03C_Mask.png" -geometry +334+264 -composite
+"Lv05CatfishsMaw_03D_Mask.png" -geometry +494+264 -composite
+"Lv05CatfishsMaw_03E_Mask.png" -geometry +654+264 -composite
+"Lv05CatfishsMaw_03F_Mask.png" -geometry +814+264 -composite
+"Lv05CatfishsMaw_03G_Mask.png" -geometry +974+264 -composite
+"Lv05CatfishsMaw_03H_Mask.png" -geometry +1134+264 -composite
+"Lv05CatfishsMaw_04F_Mask.png" -geometry +814+392 -composite
+"Lv05CatfishsMaw_04G_Mask.png" -geometry +974+392 -composite
+"Lv05CatfishsMaw_04H_Mask.png" -geometry +1134+392 -composite
+"Lv05CatfishsMaw_05C_Mask.png" -geometry +334+520 -composite
+"Lv05CatfishsMaw_05D_Mask.png" -geometry +494+520 -composite
+"Lv05CatfishsMaw_05E_Mask.png" -geometry +654+520 -composite
+"Lv05CatfishsMaw_05F_Mask.png" -geometry +814+520 -composite
+"Lv05CatfishsMaw_05G_Mask.png" -geometry +974+520 -composite
+"Lv05CatfishsMaw_06C_Mask.png" -geometry +334+648 -composite
+"Lv05CatfishsMaw_06D_Mask.png" -geometry +494+648 -composite
+"Lv05CatfishsMaw_06E_Mask.png" -geometry +654+648 -composite
+"Lv05CatfishsMaw_06F_Mask.png" -geometry +814+648 -composite
+"Lv05CatfishsMaw_07D_Mask.png" -geometry +494+776 -composite
+"Lv05CatfishsMaw_07E_Mask.png" -geometry +654+776 -composite
+"Lv05CatfishsMaw_07F_Mask.png" -geometry +814+776 -composite
+"Lv05CatfishsMaw_08E_Mask.png" -geometry +654+904 -composite
+"Lv05CatfishsMaw_08F_Mask.png" -geometry +814+904 -composite
+"Lv05CatfishsMaw_08G_Mask.png" -geometry +974+904 -composite
+"Lv05CatfishsMaw_08H_Mask.png" -geometry +1134+904 -composite

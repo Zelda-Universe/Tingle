@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // ClickHist
 // - opts: [Object]
 //   - precision: [Number]
@@ -58,11 +62,11 @@ L.Control.InfoBox.Mouse.ClickHist = L.Control.InfoBox.Mouse.extend({
   },
 
   _updateCoordsInfo: function(mouse) {
-     
+
   },
   _updateCoordsInfoClick: function(mouse) {
      if (mouse != undefined) {
-        
+
          this.hist.push({id: ++this.cnt, lat: mouse.lat, lng: mouse.lng});
          if (this.hist.length > 5) {
             this.hist.shift();
@@ -71,25 +75,25 @@ L.Control.InfoBox.Mouse.ClickHist = L.Control.InfoBox.Mouse.extend({
          //var mouse = this._map.getMouse();
          if (this.hist[0]) {
             this.rows.row1ValueCell.text(this.hist[0].lat + " / " + this.hist[0].lng);
-            this.pos.row1ValueCell.text(this.hist[0].id);     
-         }                                                    
-         if (this.hist[1]) {                                  
+            this.pos.row1ValueCell.text(this.hist[0].id);
+         }
+         if (this.hist[1]) {
             this.rows.row2ValueCell.text(this.hist[1].lat + " / " + this.hist[1].lng);
-            this.pos.row2ValueCell.text(this.hist[1].id);     
-         }                                                    
-         if (this.hist[2]) {                                  
+            this.pos.row2ValueCell.text(this.hist[1].id);
+         }
+         if (this.hist[2]) {
             this.rows.row3ValueCell.text(this.hist[2].lat + " / " + this.hist[2].lng);
-            this.pos.row3ValueCell.text(this.hist[2].id);     
-         }                                                    
-         if (this.hist[3]) {                                  
-            this.pos.row4ValueCell.text(this.hist[3].id);     
+            this.pos.row3ValueCell.text(this.hist[2].id);
+         }
+         if (this.hist[3]) {
+            this.pos.row4ValueCell.text(this.hist[3].id);
             this.rows.row4ValueCell.text(this.hist[3].lat + " / " + this.hist[3].lng);
-         }                                                    
-         if (this.hist[4]) {                                  
-            this.pos.row5ValueCell.text(this.hist[4].id);     
+         }
+         if (this.hist[4]) {
+            this.pos.row5ValueCell.text(this.hist[4].id);
             this.rows.row5ValueCell.text(this.hist[4].lat + " / " + this.hist[4].lng);
          }
-         
+
          //this.rows.row2ValueCell.text(this.hist[1]);
       }
     //var bounds = this._map.getClickHist();
@@ -108,7 +112,7 @@ L.Control.InfoBox.Mouse.ClickHist = L.Control.InfoBox.Mouse.extend({
          text += this.hist[i].id + "," + this.hist[i].lat + "," + this.hist[i].lng + "|";
       }
       return text;
-    
+
     /*var bounds = this._map.getClickHist();
     var coordsString = "" +
     bounds.getSouth().toFixed(this.options.precision) + "," +

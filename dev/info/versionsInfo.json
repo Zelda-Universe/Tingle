@@ -1,8 +1,10 @@
 [
-  { "version": "0.0.0", "timestamp": 1485020708 },
-  { "version": "0.0.1", "timestamp": 1486161266 },
-  { "version": "0.2.0", "timestamp": 1489091066 },
-  { "version": "0.3.0", "timestamp": 1490748018 },
-  { "version": "0.4.0", "timestamp": 1491238664 },
-  { "version": "0.5.0", "timestamp": 1494570950 }
+  { "version": "0.0.0", "timestamp": 1485020708, "datetimeString": "Sat, Jan 21, 2017 12:45:08 PM", "commitHash": "e0e9a676e05e67092e3b7e2f3da9c5826e38030c" },
+  { "version": "0.0.1", "timestamp": 1486161266, "datetimeString": "Fri, Feb  3, 2017  5:34:26 PM", "commitHash": "4df1f6b1b14223f72758ed3d47b0b40bd0ee6d8b" },
+  { "version": "0.2.0", "timestamp": 1489091066, "datetimeString": "Thu, Mar  9, 2017  3:24:26 PM", "commitHash": "d241f777ebf14ba139aa0ce0c79129bb97f24d46", "link": "https://www.reddit.com/r/zelda/comments/5xtd5i/spoilers_zeldamapscom_full_resolution_map_of/" },
+  { "version": "0.3.0", "timestamp": 1490748018, "datetimeString": "Tue, Mar 28, 2017  8:40:18 PM", "commitHash": "31621a3e349272209dcc129533f0fe4e7c673890", "link": "https://www.reddit.com/r/zelda/comments/623fwr/botwspoilers_zeldamapscom_v03a_is_out_mark_as/" },
+  { "version": "0.4.0", "timestamp": 1491238664, "datetimeString": "Mon, Apr  3, 2017 12:57:44 PM", "commitHash": "523124d5606f388ebf76cef96a6c0900d60a7082" },
+  { "version": "0.5.0", "timestamp": 1494570950, "datetimeString": "Fri, May 12, 2017  2:35:50 AM", "commitHash": "7144acda9537267a64603758214e3df04d3e9f8e", "link": "https://www.reddit.com/r/zelda/comments/6atook/botw_zelda_maps_05a_released_collapsable_sidebar/" },
+  { "version": "0.6.0", "timestamp": 1532274472, "datetimeString": "Sun, Jul 22, 2018 11:47:52 AM", "commitHash": "7f0482f9daf3f7022c7414d4f8c63e1fe666393f", "link": "https://www.reddit.com/r/zelda/comments/8zmn8s/zelda_maps_06_beta_its_true_search_password_reset/" },
+  { "version": "0.7.0", "timestamp": 1570585913, "datetimeString": "Tue, Oct  8, 2019  9:51:53 PM", "commitHash": "7f0482f9daf3f7022c7414d4f8c63e1fe666393f" }
 ]

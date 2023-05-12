@@ -1,0 +1,19 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"PanelLv03KeyCavern_03G_Mask.png" -geometry +974+264 -composite
+"PanelLv03KeyCavern_04C_Mask.png" -geometry +334+392 -composite
+"PanelLv03KeyCavern_04D_Mask.png" -geometry +494+392 -composite
+"PanelLv03KeyCavern_04F_Mask.png" -geometry +814+392 -composite
+"PanelLv03KeyCavern_04G_Mask.png" -geometry +974+392 -composite
+"PanelLv03KeyCavern_04H_Mask.png" -geometry +1134+392 -composite
+"PanelLv03KeyCavern_05G_Mask.png" -geometry +974+520 -composite
+"PanelLv03KeyCavern_06C_Mask.png" -geometry +334+648 -composite
+"PanelLv03KeyCavern_07G_Mask.png" -geometry +974+776 -composite
+"PanelLv03KeyCavern_07H_Mask.png" -geometry +1134+776 -composite
+"PanelLv03KeyCavern_08B_Mask.png" -geometry +174+904 -composite
+"PanelLv03KeyCavern_08C_Mask.png" -geometry +334+904 -composite
+"PanelLv03KeyCavern_08G_Mask.png" -geometry +974+904 -composite
+"PanelLv03KeyCavern_08H_Mask.png" -geometry +1134+904 -composite

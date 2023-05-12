@@ -1,8 +1,23 @@
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
+
+# Usage:
+#
+# In a migration file:
+# require './lib/VersionMigrator.rb'
+# VersionMigrator.createSeenVersionMigrationSQLStatements.each do |sqlStatement|
+#   execute sqlStatement
+# end
+#
+# Debug/Other:
+# puts VersionMigrator.createSeenVersionMigrationSQLStatements
+
 class VersionMigrator
   require 'json'
   require 'active_support/core_ext/hash/indifferent_access'
   @@versionsInfo = JSON.parse(
-    File.read('./dev/versionsInfo.json')
+    File.read('./dev/info/versionsInfo.json')
   ).map { |versionInfo| versionInfo.with_indifferent_access }
   # This step is essential for properly creating the ranges through the contiguous timeline in the correct order.
   @@versionsInfo.sort_by { |versionDatePair| versionDatePair[:timestamp] }
@@ -46,6 +61,3 @@ class VersionMigrator
     end
   end
 end
-
-# Usage:
-# puts VersionMigrator.createSeenVersionMigrationSQLStatements

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
+
 SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
 # Currently this script may require interaction for the MySQL user account.
@@ -64,9 +68,9 @@ done
 
 # cat /dev/urandom | uuencode - | tail --lines=+2 | head --bytes=100 # Gives a decent result, just not as expected from random encoding.
 
-# "$SDIR/generateRandomCharacters.sh" # I did the math and conversions myself.
+# "$SDIR/generateRandomCharacters.sh" # I did the math and conversions myself. # What.
 
-passwordGenerationMethod="'$SDIR/../generateRandomCharacters.sh'";
+passwordGenerationMethod="'$SDIR/generateRandomCharacters.sh'";
 newPassword="$(eval "$passwordGenerationMethod")";
 # echo "newPassword: $newPassword"; # debug
 newPasswordHash="$(php -r 'echo password_hash("$argv[1]", PASSWORD_DEFAULT, ["cost" => 13]);' "$newPassword")";

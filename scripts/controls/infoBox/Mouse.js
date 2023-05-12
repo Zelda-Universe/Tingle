@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // Mouse
 // - opts: [Object]
 //   - precision: [Number]
@@ -60,7 +64,7 @@ L.Control.InfoBox.Mouse = L.Control.InfoBox.extend({
   _updateCoordsInfo: function(event) {
     console.error(this._debugName + ": Superclass method `" + this.prototype._className + "._updateCoordsInfo` not overridden.");
   },
-  
+
   _updateCoordsInfoClick: function(event) {
      //console.error(this._debugName + ": Superclass method `" + this.prototype._className + "._updateCoordsInfo` not overridden.");
   }

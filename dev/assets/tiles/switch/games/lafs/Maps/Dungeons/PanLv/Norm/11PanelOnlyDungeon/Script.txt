@@ -1,0 +1,10 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"PanelLv11PanelOnlyDungeon_02D.png" -geometry +494+136 -composite
+"PanelLv11PanelOnlyDungeon_02E.png" -geometry +654+136 -composite
+"PanelLv11PanelOnlyDungeon_03D.png" -geometry +494+264 -composite
+"PanelLv11PanelOnlyDungeon_03E.png" -geometry +654+264 -composite
+"PanelLv11PanelOnlyDungeon_04D.png" -geometry +494+392 -composite

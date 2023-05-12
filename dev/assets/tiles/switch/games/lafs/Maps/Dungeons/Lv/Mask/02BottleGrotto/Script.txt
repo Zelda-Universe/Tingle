@@ -1,0 +1,31 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"Lv02BottleGrotto_02B_Mask.png" -geometry +174+136 -composite
+"Lv02BottleGrotto_02C_Mask.png" -geometry +334+136 -composite
+"Lv02BottleGrotto_02D_Mask.png" -geometry +494+136 -composite
+"Lv02BottleGrotto_02E_Mask.png" -geometry +654+136 -composite
+"Lv02BottleGrotto_02F_Mask.png" -geometry +814+136 -composite
+"Lv02BottleGrotto_02G_Mask.png" -geometry +974+136 -composite
+"Lv02BottleGrotto_03C_Mask.png" -geometry +334+264 -composite
+"Lv02BottleGrotto_03F_Mask.png" -geometry +814+264 -composite
+"Lv02BottleGrotto_04B_Mask.png" -geometry +174+392 -composite
+"Lv02BottleGrotto_04C_Mask.png" -geometry +334+392 -composite
+"Lv02BottleGrotto_04F_Mask.png" -geometry +814+392 -composite
+"Lv02BottleGrotto_04G_Mask.png" -geometry +974+392 -composite
+"Lv02BottleGrotto_05B_Mask.png" -geometry +174+520 -composite
+"Lv02BottleGrotto_05G_Mask.png" -geometry +974+520 -composite
+"Lv02BottleGrotto_06B_Mask.png" -geometry +174+648 -composite
+"Lv02BottleGrotto_06G_Mask.png" -geometry +974+648 -composite
+"Lv02BottleGrotto_07B_Mask.png" -geometry +174+776 -composite
+"Lv02BottleGrotto_07C_Mask.png" -geometry +334+776 -composite
+"Lv02BottleGrotto_07D_Mask.png" -geometry +494+776 -composite
+"Lv02BottleGrotto_07E_Mask.png" -geometry +654+776 -composite
+"Lv02BottleGrotto_07F_Mask.png" -geometry +814+776 -composite
+"Lv02BottleGrotto_07G_Mask.png" -geometry +974+776 -composite
+"Lv02BottleGrotto_08C_Mask.png" -geometry +334+904 -composite
+"Lv02BottleGrotto_08D_Mask.png" -geometry +494+904 -composite
+"Lv02BottleGrotto_08E_Mask.png" -geometry +654+904 -composite
+"Lv02BottleGrotto_08F_Mask.png" -geometry +814+904 -composite

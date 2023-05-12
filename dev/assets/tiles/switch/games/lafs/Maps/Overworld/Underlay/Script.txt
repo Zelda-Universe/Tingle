@@ -1,0 +1,28 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+-size 4106x2299 "canvas:transparent"
+
+"FldChipUnderlay_00^_H.png" -geometry +0000+0000  -composite
+"FldChipUnderlay_01^_H.png" -geometry +1068+0000  -composite
+"FldChipUnderlay_02^_H.png" -geometry +1339+0000  -composite
+"FldChipUnderlay_03^_H.png" -geometry +0000+0001  -composite
+"FldChipUnderlay_04^_H.png" -geometry +0874+0001  -composite
+"FldChipUnderlay_05^_H.png" -geometry +0000+0154  -composite
+"FldChipUnderlay_06^_H.png" -geometry +0464+0336  -composite
+"FldChipUnderlay_07^_H.png" -geometry +1257+0324  -composite
+"FldChipUnderlay_08^_H.png" -geometry +1177+0453  -composite
+"FldChipUnderlay_09^_H.png" -geometry +1541+0355  -composite
+"FldChipUnderlay_10^_H.png" -geometry +2621+0153  -composite
+"FldChipUnderlay_11^_H.png" -geometry +0000+0376  -composite
+"FldChipUnderlay_12^_H.png" -geometry +0677+0572  -composite
+"FldChipUnderlay_13^_H.png" -geometry +2762+0572  -composite
+"FldChipUnderlay_14^_H.png" -geometry +0000+1158  -composite
+"FldChipUnderlay_15^_H.png" -geometry +0837+1296  -composite
+"FldChipUnderlay_16^_H.png" -geometry +1078+1212  -composite
+"FldChipUnderlay_17^_H.png" -geometry +0000+1343  -composite
+"FldChipUnderlay_18^_H.png" -geometry +1034+1240  -composite
+"FldChipUnderlay_22^_H.png" -geometry +2770+1071  -composite
+"FldChipUnderlay_19^_H.png" -geometry +2630+1181  -composite
+"FldChipUnderlay_20^_H.png" -geometry +2794+1353  -composite
+"FldChipUnderlay_21^_H.png" -geometry +3074+1123  -composite

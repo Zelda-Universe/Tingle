@@ -1,0 +1,26 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"PanelLv06FaceShrine_02A_Mask.png" -geometry +14+136 -composite
+"PanelLv06FaceShrine_02H_Mask.png" -geometry +1134+136 -composite
+"PanelLv06FaceShrine_03A_Mask.png" -geometry +14+264 -composite
+"PanelLv06FaceShrine_03H_Mask.png" -geometry +1134+264 -composite
+"PanelLv06FaceShrine_04A_Mask.png" -geometry +14+392 -composite
+"PanelLv06FaceShrine_04E_Mask.png" -geometry +654+392 -composite
+"PanelLv06FaceShrine_04F_Mask.png" -geometry +814+392 -composite
+"PanelLv06FaceShrine_05A_Mask.png" -geometry +14+520 -composite
+"PanelLv06FaceShrine_05C_Mask.png" -geometry +334+520 -composite
+"PanelLv06FaceShrine_05E_Mask.png" -geometry +654+520 -composite
+"PanelLv06FaceShrine_05F_Mask.png" -geometry +814+520 -composite
+"PanelLv06FaceShrine_05H_Mask.png" -geometry +1134+520 -composite
+"PanelLv06FaceShrine_06D_Mask.png" -geometry +494+648 -composite
+"PanelLv06FaceShrine_06E_Mask.png" -geometry +654+648 -composite
+"PanelLv06FaceShrine_06F_Mask.png" -geometry +814+648 -composite
+"PanelLv06FaceShrine_07B_Mask.png" -geometry +174+776 -composite
+"PanelLv06FaceShrine_07F_Mask.png" -geometry +814+776 -composite
+"PanelLv06FaceShrine_08B_Mask.png" -geometry +174+904 -composite
+"PanelLv06FaceShrine_08D_Mask.png" -geometry +494+904 -composite
+"PanelLv06FaceShrine_08E_Mask.png" -geometry +654+904 -composite
+"PanelLv06FaceShrine_08F_Mask.png" -geometry +814+904 -composite

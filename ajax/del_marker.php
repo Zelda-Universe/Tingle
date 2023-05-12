@@ -1,6 +1,5 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include_once("$path/../config.php");
+   $path = __DIR__;
 
 	begin();
 

@@ -24,12 +24,12 @@ function ZMap() {
    this.markerIconSmall;
    this.markerIconMedium;
 
-   this.tilesBaseURL = ZConfig.getConfig("tilesBaseURL");
-   this.zoomDirectories = ZConfig.getConfig("zoomDirectories");
-   this.tileNameFormat = ZConfig.getConfig("tileNameFormat");
-   
-   // @TODO: This is a WORKAROUND. Icon should be on the same folder as the tiled map itself. 
-   //        For now, since we don`t want to bother Matthew, we are creating a new folder in th ecode
+   this.errorTileUrl    = ZConfig.getConfig("errorTileUrl"  );
+   this.tileNameFormat  = ZConfig.getConfig("tileNameFormat");
+   this.tilesBaseURL    = ZConfig.getConfig("tilesBaseURL"  );
+
+   // @TODO: This is a WORKAROUND. Icon should be in the same folder as the tiled map itself.
+   //        For now, since we don`t want to bother Matthew, we are creating a new folder in the code
    //        In the future, we need to move the icon.png of every map to the tiledmap and change defaultIconURL to defaultTilesURL
    this.defaultIconURL = 'images/icons/';
 
@@ -96,11 +96,11 @@ function ZMap() {
 };
 
 
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                            BEGIN  -  AUXILIARY                           *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************                BEGIN  -  AUXILIARY               *************//
+//*************                                                  *************//
+//****************************************************************************//
 
 // Format string like java
 // http://stackoverflow.com/questions/16371871/replacing-1-and-2-in-my-javascript-string
@@ -147,68 +147,89 @@ if (!Array.prototype.filter) {
     return res;
   };
 }
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                             END  -  AUXILIARY                            *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************                 END  -  AUXILIARY                *************//
+//*************                                                  *************//
+//****************************************************************************//
 
 
 
 ZMap.prototype.constructor = function(vMapOptions) {
-   toastr.options.preventDuplicates = true;
-   // toastr.options.progressBar = true;
+  toastr.options.preventDuplicates = true;
+  // toastr.options.progressBar = true;
 
-   _this = this;
+  _this = this;
 
-   hasUserCheck = false;
-   userWarnedAboutMarkerQty = false;
-   userWarnedAboutLogin = false;
-   mapOptions = {
+  hasUserCheck = false;
+  userWarnedAboutMarkerQty = false;
+  userWarnedAboutLogin = false;
+  mapOptions = {};
 
-   };
+  games = [];
+  maps = [];
+  markers = [];
+  categoryTree = [];
+  categories = [];
+  completedMarkers = [];
+  user = null;
+  newMarker = null;
+  this.cachedMarkersByCategory = {};
+  this.cachedMarkersById = {};
 
-   games = [];
-   maps = [];
-   markers = [];
-   categoryTree = [];
-   categories = [];
-   completedMarkers = [];
-   user = null;
-   newMarker = null;
-   this.cachedMarkersByCategory = {};
-   this.cachedMarkersById = {};
+  if (vMapOptions == null) {
+    alert("Need to pass options to map constructor");
+    return false;
+  } else {
+    if (vMapOptions.showCompleted == undefined) {
+      vMapOptions.showCompleted = true;
+    }
+    mapOptions = vMapOptions;
+  }
 
-   if (vMapOptions == null) {
-      alert("Need to pass options to map constructor");
-      return false;
-   } else {
-      if (vMapOptions.showCompleted == undefined) {
-         vMapOptions.showCompleted = true;
-      }
-      mapOptions = vMapOptions;
-   }
+  if(!mapOptions.categorySelectionMethod)
+  mapOptions.categorySelectionMethod =
+  ZConfig.getConfig("categorySelectionMethod");
 
-   if(!mapOptions.categorySelectionMethod) mapOptions.categorySelectionMethod = ZConfig.getConfig("categorySelectionMethod");
+  if(ZConfig.getConfig("markerClusters") == 'true') {
+    markerCluster = new L.MarkerClusterGroup({
+      maxClusterRadius: mapOptions.clusterGridSize,
+      disableClusteringAtZoom: mapOptions.clusterMaxZoom
+    });
+  }
 
-  // markerCluster = new L.MarkerClusterGroup({maxClusterRadius: mapOptions.clusterGridSize, disableClusteringAtZoom: mapOptions.clusterMaxZoom});
+  markerIconMedium = L.DivIcon.extend({
+    options: {
+      iconSize: [
+        mapOptions.iconWidth,
+        mapOptions.iconHeight
+      ]
+      , iconAnchor: [
+        Math.floor(mapOptions.iconWidth   / 2),
+        Math.floor(mapOptions.iconHeight  / 2)
+      ]
+      , popupAnchor: [0,0]
+    }
+  });
+  markerIconSmall = L.DivIcon.extend({
+    options: {
+      iconSize: [
+        mapOptions.iconSmallWidth,
+        mapOptions.iconSmallHeight
+      ]
+      , iconAnchor: [
+        Math.floor(mapOptions.iconSmallWidth  / 2),
+        Math.floor(mapOptions.iconSmallHeight / 2)
+      ]
+      , popupAnchor: [0,0]
+    }
+  });
 
-   markerIconMedium = L.DivIcon.extend({options:{ iconSize:    [mapOptions.iconWidth,mapOptions.iconHeight]
-                                          , iconAnchor:  [Math.floor(mapOptions.iconWidth/2),Math.floor(mapOptions.iconHeight/2)]
-                                          , popupAnchor: [0,0]
-                                          }
-                          });
-   markerIconSmall = L.DivIcon.extend({options:{ iconSize:    [mapOptions.iconSmallWidth,mapOptions.iconSmallHeight]
-                                          , iconAnchor:  [Math.floor(mapOptions.iconSmallWidth/2),Math.floor(mapOptions.iconSmallHeight/2)]
-                                          , popupAnchor: [0,0]
-                                          }
-                          });
-
-   if (mapOptions.defaultZoom > mapOptions.switchIconsAtZoom) {
-      currentIcon = 'Medium';
-   } else {
-      currentIcon = 'Small';
-   }
+  if (mapOptions.defaultZoom > mapOptions.switchIconsAtZoom) {
+    currentIcon = 'Medium';
+  } else {
+    currentIcon = 'Small';
+  }
 };
 
 // Add a map category
@@ -237,113 +258,127 @@ ZMap.prototype.addMap = function(vMap) {
    }
 
    // If only one submap exists, we just add it without any overlay
-   if (vMap.subMap.length == 1
-         && vMap.subMap[0].submapLayer.length == 0) {
-      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + this.tileNameFormat + '.' + vMap.subMap[0].tileExt
-                                           , { maxZoom:           vMap.maxZoom
-                                             , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[0].mapMapper
-                                             , opacity:           vMap.subMap[0].opacity
-                                             , noWrap:            true
-                                             , tileSize:          mapOptions.tileSize
-                                             , updateWhenIdle:    true
-                                             , updateWhenZooming: false
-                                             , label:             vMap.name
-                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
-                                                 }
-      );
-
-      tLayer.id          = 'mID' + vMap.id;
-      tLayer.originalId  = vMap.id;
-      tLayer.title       = vMap.name;
-      tLayer._overlayMap = [];
-      tLayer.defaultSubMapId = vMap.subMap[0].id;
-
-      maps.push(tLayer);
-   } else {
-      // Create the base map
-      //  We create it as an empty map, so different sized overlay maps won't show on top
-      //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
-      /* TODO: Improve this to use no tile at all (remove tile border)*/
-      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
-                                           , { maxZoom:           vMap.maxZoom
-                                             , noWrap:            true
-                                             , tileSize:          mapOptions.tileSize
-                                             , updateWhenIdle:    true
-                                             , updateWhenZooming: false
-                                             , label:             vMap.name
-                                             , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
-                                             }
-      );
-
-      tLayer.id          = 'mID' + vMap.id;
-      tLayer.originalId  = vMap.id;
-      tLayer.title       = vMap.name;
-      tLayer._overlayMap = [];
-      tLayer.defaultSubMapId = vMap.subMap[0].id;
-
-      // Add all the submaps to the overlay array (including the first submap for control purposes)
-      for (var i = 0; i < vMap.subMap.length; i++) {
-         var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
-                                            , { maxZoom:           vMap.maxZoom
-                                              , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
-                                              , opacity:           vMap.subMap[i].opacity
-                                              , noWrap:            true
-                                              , tileSize:          mapOptions.tileSize
-                                              , updateWhenIdle:    true
-                                              , updateWhenZooming: false
-                                              , label:             vMap.name
-                                              , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
-                                            }
-         );
-
-         overlay.id          = 'mID' + vMap.subMap[i].id;
-         overlay.originalId  = vMap.subMap[i].id;
-         overlay.title       = vMap.subMap[i].name;
-         overlay.isDefault   = vMap.subMap[i].isDefault;
-
-         if (vMap.subMap[i].submapLayer.length > 0) {
-
-            overlay.layers = [];
-            var bgZIdx = _this.backgroundZIndex;
-            var fgZIdx = _this.foregroundZIndex;
-
-            for (var j = 0; j < vMap.subMap[i].submapLayer.length; j++) {
-
-               var submap = vMap.subMap[i].submapLayer[j];
-
-               var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
-                                                                       , { maxZoom:           submap.maxZoom
-                                                                         , noWrap:            true
-                                                                         , attribution:       submap.mapMapper
-                                                                         , zIndex:            (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
-                                                                         , tileSize:          mapOptions.tileSize
-                                                                         , opacity:           submap.opacity
-                                                                         , updateWhenIdle:    false
-                                                                         , updateWhenZooming: false
-                                                                         , label:             vMap.name
-                                                                         , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
-                                                                         });
-               overlay2.id             = 'mID' + submap.id;
-               overlay2.originalId     = submap.id;
-               overlay2.title          = submap.name;
-               overlay2.controlChecked = submap.controlChecked;
-               overlay2.type           = submap.type;
-
-               //console.debug(overlay2);
-               overlay.layers.push(overlay2);
-
-            }
-
-         }
-
-         tLayer._overlayMap.push(overlay);
+  if (
+        vMap.subMap.length == 1
+    &&  vMap.subMap[0].submapLayer.length == 0
+  ) {
+    var tLayer = L.tileLayer(
+      this.tilesBaseURL
+      + vMap.subMap[0].tileURL
+      + this.tileNameFormat
+      + '.'
+      + vMap.subMap[0].tileExt
+      , {
+          maxZoom           : vMap.maxZoom
+        , attribution       : vMap.mapCopyright
+          + ', '
+          + vMap.subMap[0].mapMapper
+        , opacity           : vMap.subMap[0].opacity
+        , noWrap            : true
+        , tileSize          : mapOptions.tileSize
+        , updateWhenIdle    : true
+        , updateWhenZooming : false
+        , label             : vMap.name
+        , iconURL           : this.defaultIconURL
+          + vMap.subMap[0].tileURL
+          + 'icon.'
+          + vMap.subMap[0].tileExt
+        , errorTileUrl      : this.errorTileUrl
       }
+    );
 
-      maps.push(tLayer);
+    tLayer.id               = 'mID' + vMap.id   ;
+    tLayer.originalId       = vMap.id           ;
+    tLayer.title            = vMap.name         ;
+    tLayer._overlayMap      = []                ;
+    tLayer.defaultSubMapId  = vMap.subMap[0].id ;
+
+    maps.push(tLayer);
+  } else {
+    // Create the base map
+    //  We create it as an empty map, so different sized overlay maps won't show on top
+    //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
+    /* TODO: Improve this to use no tile at all (remove tile border)*/
+    var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
+                                         , { maxZoom:           vMap.maxZoom
+                                           , noWrap:            true
+                                           , tileSize:          mapOptions.tileSize
+                                           , updateWhenIdle:    true
+                                           , updateWhenZooming: false
+                                           , label:             vMap.name
+                                           , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                           }
+    );
+
+    tLayer.id          = 'mID' + vMap.id;
+    tLayer.originalId  = vMap.id;
+    tLayer.title       = vMap.name;
+    tLayer._overlayMap = [];
+    tLayer.defaultSubMapId = vMap.subMap[0].id;
+
+    // Add all the submaps to the overlay array (including the first submap for control purposes)
+    for (var i = 0; i < vMap.subMap.length; i++) {
+       var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
+                                          , { maxZoom:           vMap.maxZoom
+                                            , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
+                                            , opacity:           vMap.subMap[i].opacity
+                                            , noWrap:            true
+                                            , tileSize:          mapOptions.tileSize
+                                            , updateWhenIdle:    true
+                                            , updateWhenZooming: false
+                                            , label:             vMap.name
+                                            , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                          }
+       );
+
+       overlay.id          = 'mID' + vMap.subMap[i].id;
+       overlay.originalId  = vMap.subMap[i].id;
+       overlay.title       = vMap.subMap[i].name;
+       overlay.isDefault   = vMap.subMap[i].isDefault;
+
+       if (vMap.subMap[i].submapLayer.length > 0) {
+
+          overlay.layers = [];
+          var bgZIdx = _this.backgroundZIndex;
+          var fgZIdx = _this.foregroundZIndex;
+
+          for (var j = 0; j < vMap.subMap[i].submapLayer.length; j++) {
+
+             var submap = vMap.subMap[i].submapLayer[j];
+
+             var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
+                                                                     , { maxZoom:           submap.maxZoom
+                                                                       , noWrap:            true
+                                                                       , attribution:       submap.mapMapper
+                                                                       , zIndex:            (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
+                                                                       , tileSize:          mapOptions.tileSize
+                                                                       , opacity:           submap.opacity
+                                                                       , updateWhenIdle:    false
+                                                                       , updateWhenZooming: false
+                                                                       , label:             vMap.name
+                                                                       , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
+                                                                       });
+             overlay2.id             = 'mID' + submap.id;
+             overlay2.originalId     = submap.id;
+             overlay2.title          = submap.name;
+             overlay2.controlChecked = submap.controlChecked;
+             overlay2.type           = submap.type;
+
+             //console.debug(overlay2);
+             overlay.layers.push(overlay2);
+
+          }
+
+       }
+
+       tLayer._overlayMap.push(overlay);
+    }
+
+    maps.push(tLayer);
    }
-   if (this.mapControl) {
-      this.mapControl.rebuildMap();
-   }
+  if (this.mapControl) {
+    this.mapControl.rebuildMap();
+  }
 }
 
 ZMap.prototype.addMarkers = function(vMarkers) {
@@ -405,7 +440,7 @@ ZMap.prototype.addMarker = function(vMarker) {
       if (mapControl.isCollapsed()) {
          mapControl.toggle();
       }
-   
+
       if (newMarker == null || (newMarker.markerId != marker.id)) {
          _this._createMarkerPopup(marker);
 
@@ -423,8 +458,12 @@ ZMap.prototype.addMarker = function(vMarker) {
       } else {
         _this._doSetMarkerUndoneAndCookie(marker);
       }
-      if (mapControl.isCollapsed() == false) {
-         if (mapControl.getContentType() == 'm'+marker.id && mapOptions.showCompleted == true) {
+      if (!mapControl.isCollapsed()) {
+         if (
+              mapControl.getContentType() == 'm'
+           +  marker.id
+           && mapOptions.showCompleted    == true
+         ) {
             //@TODO: Improve to not show marker content if this was not being displayed
             _this._createMarkerPopup(marker);
          } else {
@@ -539,7 +578,7 @@ ZMap.prototype._getClipboardParams = function(href) {
 ZMap.prototype._copyToClipboardEmbed = function(vMarkerId) {
    var href = window.location.href.split("?");
    var clipboardParams = this._getClipboardParams(href);
-   
+
    window.prompt("Copy to clipboard: Ctrl+C, Enter", "<iframe src=\"" + href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>");
 }
 ZMap.prototype._copyToClipboard = function(vMarkerId) {
@@ -627,155 +666,183 @@ ZMap.prototype._shouldShowMarker = function(marker) {
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
    categoryTree = vCategoryTree;
-   return; // disabling for refactored category button UI, focus selection style, or both?
-   $.each(categoryTree, function(parentCategoryId, parentCategory) {
-     parentCategory.userChecked = parentCategory.checked;
-     $.each(parentCategory.children, function(index, childCategory) {
-       childCategory.userChecked = childCategory.checked;
-     });
-   });
+   // disabling for refactored category button UI, focus selection style, or both?
+   // $.each(categoryTree, function(parentCategoryId, parentCategory) {
+   //   parentCategory.userChecked = parentCategory.checked;
+   //   $.each(parentCategory.children, function(index, childCategory) {
+   //     childCategory.userChecked = childCategory.checked;
+   //   });
+   // });
 }
 
 ZMap.prototype.buildMap = function() {
-   console.log("Leaflet Version: " + L.version);
-   console.log("Zelda Maps Version: " + _this.version);
+  // console.log("Leaflet Version: "    + L.version     );
+  // console.log("Zelda Maps Version: " + _this.version );
 
-   if (!L.CRS.Simple) {
-      L.CRS.Simple = L.Util.extend({}, L.CRS, { projection:     L.Projection.LonLat
-                                              , transformation: new L.Transformation(1,0,1,0)
-                                              });
-   }
+  if (!L.CRS.Simple) {
+    L.CRS.Simple = L.Util.extend({}, L.CRS, {
+        projection:     L.Projection.LonLat
+      , transformation: new L.Transformation(1,0,1,0)
+    });
+  }
 
-   map = L.map('map', { center:      new L.LatLng(mapOptions.centerY,mapOptions.centerX)
-                      , zoom:        0
-                      , zoomSnap:    mapOptions.zoomSnap
-                      , zoomDelta:   mapOptions.zoomDelta
-                      , zoomControl: false
-                      , crs:         L.CRS.Simple
-                      , layers:      [maps[0]]
-                     // @TODO: Add bounds to Database, so everygame has different bounds
-                      , maxBounds:   new L.LatLngBounds(new L.LatLng(mapOptions.boundTopX, mapOptions.boundTopY), new L.LatLng(mapOptions.boundBottomX, mapOptions.boundBottomY))
-                      , maxBoundsViscosity: 1.0
-                      , contextmenu: true
-                      , contextmenuWidth: 140
-         });
+  if(maps[0]) {
+    map = L.map('map', {
+        center:             new L.LatLng(
+          mapOptions.centerY,
+          mapOptions.centerX
+        )
+      , zoom:               0
+      , zoomSnap:           mapOptions.zoomSnap
+      , zoomDelta:          mapOptions.zoomDelta
+      , zoomControl:        false
+      , crs:                L.CRS.Simple
+      , layers:             [maps[0]]
+      , maxBounds:          new L.LatLngBounds(
+        new L.LatLng(
+          mapOptions.boundTopX,
+          mapOptions.boundTopY
+        ),
+        new L.LatLng(
+          mapOptions.boundBottomX,
+          mapOptions.boundBottomY
+        )
+      )
+      , maxBoundsViscosity: 1.0
+      , contextmenu:        true
+      , contextmenuWidth:   140
+    });
+  }
 
-   // Get all the base maps
-   var baseMaps = {};
-   for (var i = 0; i < maps.length; i++) {
-      baseMaps[maps[i].title] = maps[i];
-   }
+  // Get all the base maps
+  var baseMaps = {};
+  for (var i = 0; i < maps.length; i++) {
+    baseMaps[maps[i].title] = maps[i];
+  }
 
-   var mapControlOptions = $.extend(
-     mapOptions, {
-     "zIndex": 0, "collapsed": false
-   });
+  var mapControlOptions = $.extend(
+    mapOptions, {
+    "zIndex": 0,
+    "collapsed": ZConfig.getConfig("collapsed")
+  });
 
-   if (L.Browser.mobile && window.innerWidth < 768) {
-      mapControl = L.control.zlayersbottom(
-        baseMaps,
-        categoryTree,
-        mapControlOptions
-      );
-      headerBar = L.control.zmobileheaderbar({ mapControl: mapControl });
-      headerBar.addTo(map);
-   } else {
-      mapControl = L.control.zlayers(
-        baseMaps,
-        {},
-        mapControlOptions,
-      );
-      L.control.zoom({ position:'bottomright' }).addTo(map);
-      if (mapOptions.showInfoControls) {
-         $('.leaflet-container').css('cursor','crosshair');
-         L.control.infoBox.mouse.clickhist({ position: 'bottomleft' }).addTo(map);
-         L.control.infoBox.mouse.move({ position: 'bottomleft' }).addTo(map);
-         L.control.infoBox.location.center({ position: 'bottomleft' }).addTo(map);
-         L.control.infoBox.location.bounds({ position: 'bottomleft' }).addTo(map);
-      }
-   }
+  if (L.Browser.mobile && window.innerWidth < 768) {
+    mapControl =  L.control.zlayersbottom(
+      baseMaps,
+      categoryTree,
+      mapControlOptions
+    );
+    headerBar =   L.control.zmobileheaderbar({
+      mapControl: mapControl
+    });
+    headerBar.addTo(map);
+  } else {
+    mapControl =  L.control.zlayers(
+      baseMaps,
+      {},
+      mapControlOptions
+    );
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    if (
+          mapOptions.showInfoControls
+      ||  ZConfig.getConfig("showInfoControls") == 'true'
+    ) {
+      $('.leaflet-container').css('cursor','crosshair');
+      var posBL = { position: 'bottomleft' };
+      L.control.infoBox.mouse.clickhist (posBL).addTo(map);
+      L.control.infoBox.mouse.move      (posBL).addTo(map);
+      L.control.infoBox.location.center (posBL).addTo(map);
+      L.control.infoBox.location.bounds (posBL).addTo(map);
+    }
+  }
 
-   //@TODO: REDO!
-   mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
-   mapControl.setCurrentMapLayer(maps[0]);
-   //console.log(mapControl.getCurrentMap());
-   mapControl.addTo(map);
+  //@TODO: REDO!
+  mapControl.setCurrentMap(parseInt(maps[0].originalId), parseInt(maps[0].defaultSubMapId));
+  mapControl.setCurrentMapLayer(maps[0]);
+  //console.log(mapControl.getCurrentMap());
+  mapControl.addTo(map);
 
-   // TODO keyboard accessibility
-   if (mapControlOptions.collapsed) {
-      //mapControl._map.on('movestart', mapControl._collapse, mapControl);
-      //mapControl._map.on('click', mapControl._collapse, mapControl);
-   } else {
-     mapControl._expand();
-   }
+  // TODO keyboard accessibility
+  if (
+        mapControlOptions.collapsed
+    ||  ZConfig.getConfig("collapsed") == 'true'
+  ) {
+    //mapControl._map.on('movestart', mapControl._collapse, mapControl);
+    //mapControl._map.on('click', mapControl._collapse, mapControl);
+  } else {
+    mapControl._expand();
+  }
 
-   //map.addLayer(markerCluster);
+  //map.addLayer(markerCluster);
 
-   //Change visible region to that specified by the corner coords if relevant query strings are present
-   if (mapOptions.startArea) {
-      map.fitBounds(mapOptions.startArea);
-   }
+  //Change visible region to that specified by the corner coords if relevant query strings are present
+  if (mapOptions.startArea) {
+    map.fitBounds(mapOptions.startArea);
+  }
 
-   map.on('moveend', function(e) {
-      _this.refreshMap();
-      if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {
+  map.on('moveend', function(e) {
+    _this.refreshMap();
+    if (newMarker != null && newMarker.markerPos != null && !map.hasLayer(markers[newMarker.markerPos])) {
          _this._closeNewMarker();
          mapControl.resetContent();
       }
-   });
-   
-   map.on('zoomend', function() {
-      if (map.getZoom() > 5 && currentIcon == 'Small') {
-         currentIcon = 'Medium';
-      } else if (map.getZoom() > 5 && currentIcon == 'Small') {
-         currentIcon = 'Small';
-      } else {
-         return;
-      }
-      var mapBounds = map.getBounds().pad(0.15);
+  });
 
-      for (var i = markers.length -1; i >= 0; i--) {
-         var m = markers[i];
-         if (mapBounds.contains(m.getLatLng())) {
-            m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
-         }
-      }
-   });
+  map.on('zoomend', function() {
+    if (map.getZoom() > 5 && currentIcon == 'Small') {
+      currentIcon = 'Medium';
+    } else if (map.getZoom() > 5 && currentIcon == 'Small') {
+      currentIcon = 'Small';
+    } else {
+      return;
+    }
 
-   map.on('baselayerchange', function(e) {
-      //@TODO: Fix this null value - (for light / dark) - this is when a layer updates
-      //       Defaulting to the first layer for now - workaround!!!!!
-      var defaultSubMapId;
-      var i;
-      for (i = 0; i < maps.length; i++) {
-         if (maps[i].originalId == e.originalId) {
+    var mapBounds = map.getBounds().pad(0.15);
+
+    for (var i = markers.length -1; i >= 0; i--) {
+      var m = markers[i];
+      if (mapBounds.contains(m.getLatLng())) {
+        m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
+      }
+    }
+  });
+
+  map.on('baselayerchange', function(e) {
+    //@TODO: Fix this null value - (for light / dark) - this is when a layer updates
+    //       Defaulting to the first layer for now - workaround!!!!!
+    var defaultSubMapId;
+    var i;
+    for (i = 0; i < maps.length; i++) {
+      if (maps[i].originalId == e.originalId) {
             defaultSubMapId = maps[i].defaultSubMapId;
             break;
          }
-      }
-      // END OF WORKAROUND!!!
-      //console.log(e.originalId + " " + defaultSubMapId);
-      mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
-      _this.refreshMap();
-      _this._closeNewMarker();
-      //mapControl.resetContent();
+    }
+    // END OF WORKAROUND!!!
+    //console.log(e.originalId + " " + defaultSubMapId);
+    mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
+    _this.refreshMap();
+    _this._closeNewMarker();
+    //mapControl.resetContent();
 
-      map.setView(new L.LatLng(mapOptions.centerY,mapOptions.centerX), map.getZoom());
+    map.setView(new L.LatLng(
+      mapOptions.centerY,
+      mapOptions.centerX
+    ), map.getZoom());
+  });
 
-   });
-   
-   $(document).on('keydown', function(e) {
-      if(e.key == "Escape") {
-        if(mapControl._contentType != mapControl.options.defaultContentType) {
-          mapControl.resetContent();
-          _this._closeNewMarker()
-        } else {
-          mapControl.toggle();
-        }
+ $(document).on('keydown', function(e) {
+    if(e.key == "Escape") {
+      if(mapControl._contentType != mapControl.options.defaultContentType) {
+        mapControl.resetContent();
+        _this._closeNewMarker()
+      } else {
+        mapControl.toggle();
       }
-    }.bind(mapControl));
-   
-   _this._buildContextMenu();
+    }
+  }.bind(mapControl));
+
+  _this._buildContextMenu();
 };
 
 ZMap.prototype.goToStart = function() {
@@ -802,7 +869,8 @@ ZMap.prototype.getUser = function() {
   return user;
 };
 
-// TODO: Make this a generic mixin, probably automatically included in all widgets, or even use a JS framework that does this already!!
+// TODO: Make this a generic mixin, probably automatically included in all
+// widgets, or even use a JS framework that provides this functionality already!!
 ZMap.prototype.addHandler = function(eventName, handleFunction) {
   this.handlers[eventName].push(handleFunction);
 };
@@ -894,17 +962,15 @@ ZMap.prototype.updateMarkerVisibility = function(vCatId, vVisible) {
    _this.refreshMap();
 
 };
-
-
 //************* CATEGORY MENU *************//
 
 
 
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                         BEGIN - MARKER HANDLING                          *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************             BEGIN - MARKER HANDLING              *************//
+//*************                                                  *************//
+//****************************************************************************//
 ZMap.prototype.deleteMarker = function(vMarkerId) {
    $.ajax({
            type: "POST",
@@ -936,7 +1002,6 @@ ZMap.prototype.deleteMarker = function(vMarkerId) {
          });
 }
 
-
 ZMap.prototype.editMarker = function(vMarkerId) {
    var vMarker;
    for (var i = 0; i < markers.length; i++) {
@@ -951,7 +1016,6 @@ ZMap.prototype.editMarker = function(vMarkerId) {
    _this._createMarkerForm(vMarker, vMarker._latlng);
 
 }
-
 
 ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
    if (user == null) {
@@ -1169,32 +1233,24 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
        e.preventDefault(); // avoid to execute the actual submit of the form.
    });
 }
+//****************************************************************************//
+//*************                                                  *************//
+//*************               END - MARKER HANDLING              *************//
+//*************                                                  *************//
+//****************************************************************************//
 
 
+//****************************************************************************//
+//*************                                                  *************//
+//*************              BEGIN - MARKER INFO                 *************//
+//*************                                                  *************//
+//****************************************************************************//
 
-
-
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                           END - MARKER HANDLING                          *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
-
-
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                          BEGIN - MARKER INFO                             *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
-
-
-
-
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                          BEGIN - MARKER COMPLETE                         *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************              BEGIN - MARKER COMPLETE             *************//
+//*************                                                  *************//
+//****************************************************************************//
 ZMap.prototype.clearCompletedMarkers = function() {
    if (completedMarkers.length > 0) {
       $.ajax({
@@ -1214,7 +1270,7 @@ ZMap.prototype.clearCompletedMarkers = function() {
               }
             });
    }
-   
+
    for (var i = 0; i < markers.length; i++) {
       _this._doSetMarkerDoneIcon(markers[i], false);
    }
@@ -1233,7 +1289,7 @@ ZMap.prototype.transferCompletedMarkersToDB = function() {
                            completedMarkers = [];
                            document.cookie = 'completedMarkers=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
                            _this.getUserCompletedMarkers();
-                           toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);                           
+                           toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);
                         } else {
                            toastr.error(_this.langMsgs.MARKER_COMPLETE_TRANSFER_ERROR.format(data.msg));
                            //alert(data.msg);
@@ -1255,7 +1311,7 @@ ZMap.prototype.getUserCompletedMarkers = function() {
          for (var i = 0; i < markers.length; i++) {
             if (markers[i].id == marker.markerId) {
                completedMarkers.push(marker.markerId);
-               
+
                categories[markers[i].categoryId].complete++;
                _this._doSetMarkerDoneIcon(markers[i], true);
                break;
@@ -1434,22 +1490,22 @@ ZMap.prototype.undoMarkerComplete = function() {
    }
 }
 
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                           END - MARKER COMPLETE                          *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************               END - MARKER COMPLETE              *************//
+//*************                                                  *************//
+//****************************************************************************//
 
 
 
 
 
 
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                           BEGIN - CONTEXT MENU                           *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************               BEGIN - CONTEXT MENU               *************//
+//*************                                                  *************//
+//****************************************************************************//
 ZMap.prototype._buildContextMenu = function() {
 
    // Check if map and/or context was built
@@ -1618,7 +1674,7 @@ ZMap.prototype._createDialogDeleteAllMarkers = function() {
        this.clearCompletedMarkers();
    } else {
       // Do nothing!
-   }  
+   }
 }
 
 ZMap.prototype._createLostPasswordForm = function() {
@@ -1812,7 +1868,7 @@ ZMap.prototype._createAccountForm = function(user) {
     '</div>',
     'accountPage'
   );
-  
+
   $("#account_clear_completed_btn").click(function(e) {
      _this._createDialogDeleteAllMarkers();
      categories.forEach(function(category) {
@@ -1837,18 +1893,18 @@ ZMap.prototype._createAccountForm = function(user) {
      e.preventDefault();
   }.bind(this));
 }
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                            END - CONTEXT MENU                            *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************                END - CONTEXT MENU                *************//
+//*************                                                  *************//
+//****************************************************************************//
 
 
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                              BEGIN - GO TO                               *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************                  BEGIN - GO TO                   *************//
+//*************                                                  *************//
+//****************************************************************************//
 
 /**
  * Go To a submap, layer or marker
@@ -1868,7 +1924,7 @@ ZMap.prototype.goTo = function(vGoTo) {
    if (vGoTo.marker) {
       _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true);
       // Open Marker already does a change map, so it takes precedence
-      
+
       return;
    }
 
@@ -1928,8 +1984,8 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin, vPanTo) {
 ZMap.prototype.getMarkers = function() {
   return markers;
 };
-//****************************************************************************************************//
-//*************                                                                          *************//
-//*************                              END - GO TO                               *************//
-//*************                                                                          *************//
-//****************************************************************************************************//
+//****************************************************************************//
+//*************                                                  *************//
+//*************                    END - GO TO                   *************//
+//*************                                                  *************//
+//****************************************************************************//

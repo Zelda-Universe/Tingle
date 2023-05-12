@@ -1,9 +1,11 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
-   
+  // debug_log("get_container START");
+
+   $path = __DIR__;
+
    $map = $_GET["game"];
-    
+   // debug_log("map: $map");
+
    $query = 'select id
                   , name
                   , short_name as shortName
@@ -41,10 +43,12 @@
       print($mysqli->error);
       return;
    }
-   
+
    $res = array();
    while($row = $result->fetch_assoc()) {
         $res[] = $row;
    }
    echo json_encode($res);
+
+  // debug_log("get_container END");
 ?>

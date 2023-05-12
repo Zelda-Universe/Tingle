@@ -17,7 +17,7 @@ test -z "$tilesDir"; and set tilesDir "$SDIR/../../../tiles";
 
 altPushd "$tilesDir";
 
-echo "Processing $tilesDir...";
+echo "Processing \"$tilesDir\"...";
 
 find \
   "$tilesDir" \

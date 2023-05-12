@@ -20,11 +20,19 @@ ZConfig = {
 
 // Main config set-up with defaults
 
+// Direct Settings
 // "exact", "focus" (ZU default)
 ZConfig.setConfig("categorySelectionMethod" , "focus" );
+ZConfig.setConfig("changelog"               , 'false' );
+ZConfig.setConfig("collapsed"               , 'false' );
+ZConfig.setConfig("errorTileUrl"            , ''      );
+ZConfig.setConfig("markerClusters"          , 'false' );
+ZConfig.setConfig("showInfoControls"        , 'false' );
 ZConfig.setConfig("tilesBaseURL"            , "https://zeldamaps.com/tiles/");
 ZConfig.setConfig("tileAxisDirectories"     , 'false' );
 ZConfig.setConfig("tileZoomDirectories"     , 'false' );
+
+// Potentially Derived Settings
 ZConfig.setConfig("tileNameFormat"  , (
   (ZConfig.getConfig("tileAxisDirectories") == 'true')
   ? '{z}/{x}/{y}'
@@ -32,7 +40,3 @@ ZConfig.setConfig("tileNameFormat"  , (
     ? '{z}/{x}_{y}'
     : '{z}_{x}_{y}'
 ));
-ZConfig.setConfig("markerClusters"          , 'false' );
-ZConfig.setConfig("showInfoControls"        , 'false' );
-ZConfig.setConfig("collapsed"               , 'false' );
-ZConfig.setConfig("errorTileUrl"            , ''      );

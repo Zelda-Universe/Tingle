@@ -38,8 +38,10 @@ CREATE TABLE `mapper` (
 
 LOCK TABLES `mapper` WRITE;
 /*!40000 ALTER TABLE `mapper` DISABLE KEYS */;
-INSERT INTO `mapper` VALUES (1,'Danilo Passos','danilo.passos@zelda.com.br','Hyrule Legends','https://www.zelda.com.br');
-INSERT INTO `mapper` VALUES (2,'Jacob Zaccaria',NULL,'Zelda Universe','http://zeldauniverse.net');
+INSERT INTO `mapper` VALUES 
+  (1,'Danilo Passos','danilo.passos@zelda.com.br','Hyrule Legends','https://www.zelda.com.br'),
+  (2,'Jacob Zaccaria',NULL,'Zelda Universe','http://zeldauniverse.net')
+;
 /*!40000 ALTER TABLE `mapper` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -52,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-30 14:31:35
+-- Dump completed on 2023-05-09 13:13:43

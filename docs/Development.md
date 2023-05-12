@@ -20,13 +20,31 @@
 
 # Releases
 
-  Done by Jason, from `master` to `production`.
+  - From `master` to `production` by the owner / release manager.
 
-  The release manager must manually set all user accounts `seen_latest_changelog` to `0` (`false`).
-    Don't want a fresh commit to do this before every release; that would be cruft.
-    Do this after you deploy the code, to prevent the edge case of a user visiting the site in the small window of time with the old and/or database without the new changelog entries, and would incorrectly set the `seen_latest_changelog`, and even the `last_login` field as well, so once the new data is present, it would not be triggered and shown to them.
-    Can use this script: `dev/db/resetUsersChangelogSeenPresence.sh`
-      Make sure to set the MySQL parameters appropriately.  See the script header for more details.
+  - When changelog notifications are enabled:
+    - They must manually set all user accounts `seen_latest_changelog` to `0` (`false`).
+      - Don't want a fresh commit to do this before every release; that would be cruft.
+      - Do this after you deploy the code, with database changes.
+        - This is to prevent the edge case of a user visiting the site in the small window of time with the old database without the new changelog entries, which would incorrectly set the `seen_latest_changelog` flag again, so when the new data is present, it would not be triggered and shown to them.
+      - Can use this script: `dev/db/resetUsersChangelogSeenPresence.sh`
+
+# Add new game support
+
+  - Add new database migrations to add:
+    - `container`:
+      - Example: `dev/db/migrate/20230405204517_container_add_basic_tot_k_support.rb`
+    - `map`:
+      - Example: `/srv/ZU/Tingle/dev/db/migrate/20230405222955_map_add_tot_k_overworld_maps.rb`
+    - `submap`:
+      - Example: `dev/db/migrate/20230406031615_submap_add_tot_k_overworld_submaps.rb`
+  - Update sample SQL data files in a focused style.
+    - `set -x tableNames (read)`
+    - `./dev/db/createSampleDatabaseExport/run.sh`
+  - Update game support list in readme file.
+  - Optional:
+    - Change default game parameter for container in index page script block, and any other specific SEO data in the head section.
+  - Test, commit, push, and create a PR!
 
 ## Version Info
 
@@ -142,7 +160,7 @@
 
   - Common Commands:
     - Create a new migration:
-      - `rake db:new_migration name=(read)`
+      - `rake db:new_migration name=(read -P 'Migration Proper Name: ' | tr -d ' ')`
         - Change name subshell to read `read | tr ' ' '_'` on Windows to prevent carriage return characters causing problems.
       - Then edit content with your features' details.
     - To apply your newest migration:
@@ -153,9 +171,9 @@
       - `rake db:migrate RAILS_ENV=test`
     - To execute a specific up/down of one single migration
       - `rake db:migrate:up VERSION=20081220234130`
-    - To revert your last migration
+    - To revert the last migration
       - `rake db:rollback`
-    - To revert your last 3 , and migrations
+    - To revert the last 3 migrations
       - `rake db:rollback STEP=3`
     - Check which version of the tool you are currently using
       - `rake db:version`
@@ -163,14 +181,28 @@
       - `date -u "+%Y%m%d%H%M%S" | putclip`
 
   - Samples:
-    - ActiveRecord Ruby Code
-      - Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
+    - ActiveRecord Ruby Code:
+      - Source: http://guides.rubyonrails.org/active_record_migrations.html
+      - Source: https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
+      - Note: Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
       - Add column:
-        - `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
+        - Code: `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
         - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
-      - Change column null property:
-        - `t.change_null :content, false`
-        - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
+      - Changing Columns:
+        - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-columns
+        - Change table common code:
+            - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-tables
+            - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
+            - Code: `change_table :table_name do |t|`
+            - Then refer to the specific section goal below with the reduced  column variants.
+        - Change column null property:
+          - Code: `t.change_null :content, false`
+          - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
+        - Change column default value:
+          - Code (Table 'batch' block): `t.change_default :marker_url, from: '/markers/', to: 'markers/'`
+          - Code (Individual field): `change_column_default(:table_name, :column_name, '<defaultValue>')`
+          - Source: `dev/db/migrate/20230405195637_container_update_and_add_defaults.rb`
+          - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_column_default
     - Execute Raw SQL:
       - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
       - Inline statement:
@@ -180,16 +212,102 @@
           SQL
           ```
       - External file:
-        - ```
+        - Code: ```
           execute File.open(
             'dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql'
           ).read
           ```
+      - External files:
+        - Code: ```
+          def sqlFileNames
+            [
+              '1-container'       ,
+              '2-map'             ,
+              '3-submap'          ,
+              '4-marker_category' ,
+              '5-marker'
+            ]
+          end
+          ```
+          ```
+          filePathPattern = "#{__dir__}/sql/" +
+            File.basename(__FILE__).
+            sub(/\.rb$/i, '/%s.sql')
+
+          sqlFileNames.each do |sqlFileName|
+            sqlFile = sprintf(filePathPattern, sqlFileName);
+            execute File.open(sqlFile).read
+          end
+          ```
       - Multiple Queries:
         - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
-  - More Info:
-    - http://guides.rubyonrails.org/active_record_migrations.html
-    - https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
+    - Specific Goals:
+      - Investigating/Debugging
+        - ```
+          require 'pry'; binding.pry
+          exit
+          ```
+      - Removing entries:
+        - Code (List/Array of Values): ```
+        execute <<-SQL
+          DELETE FROM `submap`
+          WHERE `id` IN (2010, 2011)
+          ;
+        SQL
+        ```
+        - Code (Condition): ```
+        execute <<-SQL
+          DELETE FROM `mapper`
+          WHERE `id` = 3;
+          ;
+        SQL
+          ```
+        - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
+      - Reverting the auto increment value:
+        - Note: Be sure to check if the table actually has auto increment column(s).
+        - Code (Dynamic): ```
+          def database
+            connection.instance_variable_get(:@config)[:database]
+          end
+          ```
+          ```
+          aiValue = (
+            execute <<-SQL
+              SELECT `AUTO_INCREMENT`
+              FROM `INFORMATION_SCHEMA`.`TABLES`
+              WHERE `TABLE_SCHEMA` = '#{database}'
+              AND `TABLE_NAME` = 'mapper'
+              LIMIT 1
+              ;
+            SQL
+          ).first.first
+          contentEntryAmount = 1
+          execute <<-SQL
+            ALTER TABLE `mapper`
+            AUTO_INCREMENT=#{aiValue - contentEntryAmount}
+            ;
+          SQL
+          ```
+        - Code (Manual): ```
+          execute <<-SQL
+            ALTER TABLE `mapper`
+            AUTO_INCREMENT=...
+            ;
+          SQL
+          ```
+        - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
+    - Names:
+      - Note: The RoR AR Migrations guide may recommend trying to keep migrations focused on a specific table per file.
+      - Format:
+        - Database table,
+        - action,
+        - object,
+        - and repeat.
+      - `ChangelogAddHiddenField`
+      - `ChangelogHideOldEntries`
+      - `ContainerUpdateAndAddDefaults`
+      - `ContainerAddTotKSupport`
+      - `MapAddTotKOverworldMaps`
 
 ## MySQL Workbench (MWB) File Handling
 

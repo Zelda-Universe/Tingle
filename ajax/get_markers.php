@@ -1,10 +1,10 @@
 <?php
-   if (!isset($_GET['newMarkerId'])) {
-     $path = __DIR__;
-   }
-   /*
-	session_start("zmap");
-   $query = 'select max(last_updated) as last_updated
+  if (!isset($_GET['newMarkerId'])) {
+    $path = __DIR__;
+  }
+  /*
+	  session_start("zmap");
+    $query = 'select max(last_updated) as last_updated
                from ' . $map_prefix . 'marker m
 			         , ' . $map_prefix . 'map mp
               where m.map_id = mp.id
@@ -12,23 +12,29 @@
 				    and m.last_updated > \'' . $_SESSION["last_updated"] . '\';
     ';
 
-   $result = @$mysqli->query($query) or die(mysql_error());
+    $result = @$mysqli->query($query) or die(mysql_error());
 
-	$row = $mysqli->fetch_array($result, MYSQL_ASSOC);
+	   $row = $mysqli->fetch_array($result, MYSQL_ASSOC);
 
-	if ($row['last_updated'] != $_SESSION["last_updated"]
-			&& $row['last_updated'] != "") {
-		$temp = $row['last_updated'];
-	} else {
-		exit("[]");
-	}
-   $_SESSION["last_updated"]
+  	if ($row['last_updated'] != $_SESSION["last_updated"]
+  			&& $row['last_updated'] != "") {
+  		$temp = $row['last_updated'];
+  	} else {
+  		exit("[]");
+  	}
+    $_SESSION["last_updated"]
 	*/
-   $visible = "1";
-   if (isset($_GET['all']) || (strpos($_SERVER["HTTP_REFERER"], 'grid.html') !== false)) {
-      $visible = "0,1";
-   }
-   $last_update = $temp = '1800-01-01 00:00:00';
+  $visible = "1";
+  if (
+    isset($_GET['all'])
+    || (
+          isset ($_SERVER["HTTP_REFERER"])
+      &&  strpos($_SERVER["HTTP_REFERER"], '/grid.html') !== false
+    )
+  ) {
+    $visible = "0,1";
+  }
+  $last_update = $temp = '1800-01-01 00:00:00';
 	$query = "SET SESSION group_concat_max_len = 4294967295";
 	$result = @$mysqli->query($query);
 

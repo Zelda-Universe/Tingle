@@ -36,8 +36,10 @@ CREATE TABLE `marker_status` (
 
 LOCK TABLES `marker_status` WRITE;
 /*!40000 ALTER TABLE `marker_status` DISABLE KEYS */;
-INSERT INTO `marker_status` VALUES (1,'Pending',0);
-INSERT INTO `marker_status` VALUES (2,'Approved',1);
+INSERT INTO `marker_status` VALUES 
+  (1,'Pending',0),
+  (2,'Approved',1)
+;
 /*!40000 ALTER TABLE `marker_status` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-30 14:31:35
+-- Dump completed on 2023-05-09 13:13:43

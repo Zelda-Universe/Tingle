@@ -36,9 +36,11 @@ CREATE TABLE `marker_category_type` (
 
 LOCK TABLES `marker_category_type` WRITE;
 /*!40000 ALTER TABLE `marker_category_type` DISABLE KEYS */;
-INSERT INTO `marker_category_type` VALUES (1,'Regular',1);
-INSERT INTO `marker_category_type` VALUES (2,'Jump (Go To)',1);
-INSERT INTO `marker_category_type` VALUES (3,'Label',1);
+INSERT INTO `marker_category_type` VALUES 
+  (1,'Regular',1),
+  (2,'Jump (Go To)',1),
+  (3,'Label',1)
+;
 /*!40000 ALTER TABLE `marker_category_type` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-30 14:31:35
+-- Dump completed on 2023-05-09 13:13:43

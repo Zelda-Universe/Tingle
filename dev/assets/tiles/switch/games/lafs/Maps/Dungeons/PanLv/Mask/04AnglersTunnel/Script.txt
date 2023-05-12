@@ -1,0 +1,15 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"PanelLv04AnglersTunnel_02D_Mask.png" -geometry +494+136 -composite
+"PanelLv04AnglersTunnel_02E_Mask.png" -geometry +654+136 -composite
+"PanelLv04AnglersTunnel_03E_Mask.png" -geometry +654+264 -composite
+"PanelLv04AnglersTunnel_03F_Mask.png" -geometry +814+264 -composite
+"PanelLv04AnglersTunnel_03G_Mask.png" -geometry +974+264 -composite
+"PanelLv04AnglersTunnel_04B_Mask.png" -geometry +174+392 -composite
+"PanelLv04AnglersTunnel_04C_Mask.png" -geometry +334+392 -composite
+"PanelLv04AnglersTunnel_05B_Mask.png" -geometry +174+520 -composite
+"PanelLv04AnglersTunnel_08D_Mask.png" -geometry +494+904 -composite
+"PanelLv04AnglersTunnel_08E_Mask.png" -geometry +654+904 -composite

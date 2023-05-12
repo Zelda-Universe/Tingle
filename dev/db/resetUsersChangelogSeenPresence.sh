@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
+
 SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
 # Currently this script may require interaction for the MySQL user account.

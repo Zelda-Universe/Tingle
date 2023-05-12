@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // MarkerSearchField
 // - opts: [Object]
 //   - minMatchCharLength: [Number] Minimum number of characters required before a search should be executed.  Too few for a lot of search material may cost heavily for performance.

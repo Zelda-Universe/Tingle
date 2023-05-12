@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // CopyLink
 // - opts: [Object]
 //   - content: [String or Function] - The content to copy when clicked.

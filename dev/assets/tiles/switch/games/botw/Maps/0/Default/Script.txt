@@ -1,0 +1,15 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+( MapTex_Z-0.png MapTex_A-0.png MapTex_B-0.png MapTex_C-0.png MapTex_D-0.png MapTex_E-0.png MapTex_F-0.png MapTex_G-0.png MapTex_H-0.png MapTex_I-0.png MapTex_J-0.png MapTex_K-0.png +append ) -append
+( MapTex_Z-1.png MapTex_A-1.png MapTex_B-1.png MapTex_C-1.png MapTex_D-1.png MapTex_E-1.png MapTex_F-1.png MapTex_G-1.png MapTex_H-1.png MapTex_I-1.png MapTex_J-1.png MapTex_K-1.png +append ) -append
+( MapTex_Z-2.png MapTex_A-2.png MapTex_B-2.png MapTex_C-2.png MapTex_D-2.png MapTex_E-2.png MapTex_F-2.png MapTex_G-2.png MapTex_H-2.png MapTex_I-2.png MapTex_J-2.png MapTex_K-2.png +append ) -append
+( MapTex_Z-3.png MapTex_A-3.png MapTex_B-3.png MapTex_C-3.png MapTex_D-3.png MapTex_E-3.png MapTex_F-3.png MapTex_G-3.png MapTex_H-3.png MapTex_I-3.png MapTex_J-3.png MapTex_K-3.png +append ) -append
+( MapTex_Z-4.png MapTex_A-4.png MapTex_B-4.png MapTex_C-4.png MapTex_D-4.png MapTex_E-4.png MapTex_F-4.png MapTex_G-4.png MapTex_H-4.png MapTex_I-4.png MapTex_J-4.png MapTex_K-4.png +append ) -append
+( MapTex_Z-5.png MapTex_A-5.png MapTex_B-5.png MapTex_C-5.png MapTex_D-5.png MapTex_E-5.png MapTex_F-5.png MapTex_G-5.png MapTex_H-5.png MapTex_I-5.png MapTex_J-5.png MapTex_K-5.png +append ) -append
+( MapTex_Z-6.png MapTex_A-6.png MapTex_B-6.png MapTex_C-6.png MapTex_D-6.png MapTex_E-6.png MapTex_F-6.png MapTex_G-6.png MapTex_H-6.png MapTex_I-6.png MapTex_J-6.png MapTex_K-6.png +append ) -append
+( MapTex_Z-7.png MapTex_A-7.png MapTex_B-7.png MapTex_C-7.png MapTex_D-7.png MapTex_E-7.png MapTex_F-7.png MapTex_G-7.png MapTex_H-7.png MapTex_I-7.png MapTex_J-7.png MapTex_K-7.png +append ) -append
+( MapTex_Z-8.png MapTex_A-8.png MapTex_B-8.png MapTex_C-8.png MapTex_D-8.png MapTex_E-8.png MapTex_F-8.png MapTex_G-8.png MapTex_H-8.png MapTex_I-8.png MapTex_J-8.png MapTex_K-8.png +append ) -append
+( MapTex_Z-9.png MapTex_A-9.png MapTex_B-9.png MapTex_C-9.png MapTex_D-9.png MapTex_E-9.png MapTex_F-9.png MapTex_G-9.png MapTex_H-9.png MapTex_I-9.png MapTex_J-9.png MapTex_K-9.png +append ) -append
++repage

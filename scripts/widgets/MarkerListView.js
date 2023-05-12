@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // MarkerListView
 // - opts: [Object] Typical options object.
 //   - markerEntryClick: [Function] The function to execute when a marker entry in the list is clicked.

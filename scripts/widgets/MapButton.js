@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // MapButton
 // - opts: [Object]
 //   - onToggle: [Function] To call when the button is clicked.
@@ -5,7 +9,7 @@
 
 function MapButton(opts) {
   CategoryButton.call(this, $.extend(true, {
-    icon: new CategoryIcon({img: 'General_Map', color: "red"}),
+    icon: new CategoryIcon({img: 'General_Map'}),
     toggledOn: true
   }, opts));
 };
@@ -25,9 +29,14 @@ MapButton.prototype._initDOMElements = function(opts) {
 };
 
 MapButton.prototype.toggle = function(toggledOn) {
-  this.toggledOn = true;
+  this.toggledOn = !this.toggledOn;
   this._updateState();
   this.onToggle(this.toggledOn, this.category);
   // this.domNode.trigger('toggle', this.category); // Alternative?
+  this.categoryIcon.domNode.addClass("toggledOff");
 };
 
+MapButton.prototype.clear = function() {
+  this.toggledOn = false;
+  this._updateState();
+};

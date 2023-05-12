@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // CategoryMenu - Pulls the buttons together to control the categories ineither method.
 // - opts:
 //   - onCategoryToggle: [Boolean]
@@ -80,7 +84,8 @@ CategoryMenu.prototype._addCategoryMenuEntries = function() {
         onToggle: this.onCategoryToggle.bind(this),
         toggledOn: getSetOrDefaultValue(this.defaultToggledState, childCategory.checked),
         automaticToggle: this.automaticToggle,
-        customToggle: this.customToggle
+        customToggle: this.customToggle,
+        showProgress: true,
       });
       category._button = currentChildCategoryButton;
       categories[childCategory.id]._button = currentChildCategoryButton;
@@ -194,9 +199,11 @@ CategoryMenu.prototype.checkActiveCategoryAmount = function() {
 
 CategoryMenu.prototype.customToggle = function() {
   this.onToggle(this.toggledOn, this.category);
-  Object.values(categories).forEach(function(category) {
-    category._button.toggledOn = ((hasUserCheck) ? category.userChecked : category.checked);
-    category._button._updateState();
+  categories.forEach(function(category) {
+     if (category._button) {
+         category._button.toggledOn = ((hasUserCheck) ? category.userChecked : category.checked);
+         category._button._updateState();
+     }
   });
   // zMap.refreshMap(categories);
 };

@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // Logo
 // - opts: [Object]
 //   - parent: [DOMElement] The parent node to attach to.
@@ -9,5 +13,5 @@ function Logo(opts) {
 
 Logo.prototype._initDOMElements = function(opts) {
   var logoDiv = L.DomUtil.create('img', 'logo', opts.parent);
-  logoDiv.src  = 'images/zmaps_white.png';
+  logoDiv.src  = 'images/zmaps_white_simple.png';
 };

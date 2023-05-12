@@ -1,0 +1,16 @@
+At least bring them closer to the expected types, instead of being defaults.
+https://stackoverflow.com/questions/5634104/what-is-the-size-of-column-of-int11-in-mysql-in-bytes
+"
+It you don't provide a length for integer fields, MySQL will set a default value (tinyint 4, smallint 6, mediumint 9, int 11, bigint 20) It is worthy to note that these default lengths are enough to display any number that can be stored in this field (ex : smallint max value is 2^16 = 65536, 5 digits) Unless you have a very good reason to do otherwise, I'd recommand to leave the default sizes to avoid bad surprises. – Thibault Witzig Jan 2 '17 at 10:04
+"
+So the `int(11)` and `bigint(20)` typed fields that I see are remote defaults so we don't need to work on close, I am cleaning them out of the export data only for personal comparison.
+Assuming the same for `datetime(6)` as well.
+
+For the rest, find the appropriate type name for MySQL.
+
+Just tried this:
+1	7	19:03:05	ALTER TABLE `map` CHANGE `default_zoom` `default_zoom` tinyint(2)	0 row(s) affected, 1 warning(s):
+ 1681 Integer display width is deprecated and will be removed in a future release.
+ Records: 0  Duplicates: 0  Warnings: 1	0.250 sec
+ 
+So possibly Maria supports this and we won't.  Just format in views I'm guessing.  Cleaning out all field display amounts now, possibly even in the usable source SQL too....

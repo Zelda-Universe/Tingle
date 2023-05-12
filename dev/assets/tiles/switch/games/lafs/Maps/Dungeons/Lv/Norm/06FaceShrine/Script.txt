@@ -1,0 +1,45 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"Lv06FaceShrine_02A.png" -geometry +14+136 -composite
+"Lv06FaceShrine_02H.png" -geometry +1134+136 -composite
+"Lv06FaceShrine_03A.png" -geometry +14+264 -composite
+"Lv06FaceShrine_03B.png" -geometry +174+264 -composite
+"Lv06FaceShrine_03D.png" -geometry +494+264 -composite
+"Lv06FaceShrine_03E.png" -geometry +654+264 -composite
+"Lv06FaceShrine_03G.png" -geometry +974+264 -composite
+"Lv06FaceShrine_03H.png" -geometry +1134+264 -composite
+"Lv06FaceShrine_04A.png" -geometry +14+392 -composite
+"Lv06FaceShrine_04B.png" -geometry +174+392 -composite
+"Lv06FaceShrine_04C.png" -geometry +334+392 -composite
+"Lv06FaceShrine_04D.png" -geometry +494+392 -composite
+"Lv06FaceShrine_04E.png" -geometry +654+392 -composite
+"Lv06FaceShrine_04F.png" -geometry +814+392 -composite
+"Lv06FaceShrine_04G.png" -geometry +974+392 -composite
+"Lv06FaceShrine_04H.png" -geometry +1134+392 -composite
+"Lv06FaceShrine_05A.png" -geometry +14+520 -composite
+"Lv06FaceShrine_05B.png" -geometry +174+520 -composite
+"Lv06FaceShrine_05C.png" -geometry +334+520 -composite
+"Lv06FaceShrine_05D.png" -geometry +494+520 -composite
+"Lv06FaceShrine_05E.png" -geometry +654+520 -composite
+"Lv06FaceShrine_05F.png" -geometry +814+520 -composite
+"Lv06FaceShrine_05G.png" -geometry +974+520 -composite
+"Lv06FaceShrine_05H.png" -geometry +1134+520 -composite
+"Lv06FaceShrine_06B.png" -geometry +174+648 -composite
+"Lv06FaceShrine_06C.png" -geometry +334+648 -composite
+"Lv06FaceShrine_06D.png" -geometry +494+648 -composite
+"Lv06FaceShrine_06E.png" -geometry +654+648 -composite
+"Lv06FaceShrine_06F.png" -geometry +814+648 -composite
+"Lv06FaceShrine_06G.png" -geometry +974+648 -composite
+"Lv06FaceShrine_07B.png" -geometry +174+776 -composite
+"Lv06FaceShrine_07C.png" -geometry +334+776 -composite
+"Lv06FaceShrine_07F.png" -geometry +814+776 -composite
+"Lv06FaceShrine_07G.png" -geometry +974+776 -composite
+"Lv06FaceShrine_08B.png" -geometry +174+904 -composite
+"Lv06FaceShrine_08C.png" -geometry +334+904 -composite
+"Lv06FaceShrine_08D.png" -geometry +494+904 -composite
+"Lv06FaceShrine_08E.png" -geometry +654+904 -composite
+"Lv06FaceShrine_08F.png" -geometry +814+904 -composite
+"Lv06FaceShrine_08G.png" -geometry +974+904 -composite

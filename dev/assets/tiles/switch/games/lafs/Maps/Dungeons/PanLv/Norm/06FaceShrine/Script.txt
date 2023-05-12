@@ -1,0 +1,26 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"PanelLv06FaceShrine_02A.png" -geometry +14+136 -composite
+"PanelLv06FaceShrine_02H.png" -geometry +1134+136 -composite
+"PanelLv06FaceShrine_03A.png" -geometry +14+264 -composite
+"PanelLv06FaceShrine_03H.png" -geometry +1134+264 -composite
+"PanelLv06FaceShrine_04A.png" -geometry +14+392 -composite
+"PanelLv06FaceShrine_04E.png" -geometry +654+392 -composite
+"PanelLv06FaceShrine_04F.png" -geometry +814+392 -composite
+"PanelLv06FaceShrine_05A.png" -geometry +14+520 -composite
+"PanelLv06FaceShrine_05C.png" -geometry +334+520 -composite
+"PanelLv06FaceShrine_05E.png" -geometry +654+520 -composite
+"PanelLv06FaceShrine_05F.png" -geometry +814+520 -composite
+"PanelLv06FaceShrine_05H.png" -geometry +1134+520 -composite
+"PanelLv06FaceShrine_06D.png" -geometry +494+648 -composite
+"PanelLv06FaceShrine_06E.png" -geometry +654+648 -composite
+"PanelLv06FaceShrine_06F.png" -geometry +814+648 -composite
+"PanelLv06FaceShrine_07B.png" -geometry +174+776 -composite
+"PanelLv06FaceShrine_07F.png" -geometry +814+776 -composite
+"PanelLv06FaceShrine_08B.png" -geometry +174+904 -composite
+"PanelLv06FaceShrine_08D.png" -geometry +494+904 -composite
+"PanelLv06FaceShrine_08E.png" -geometry +654+904 -composite
+"PanelLv06FaceShrine_08F.png" -geometry +814+904 -composite

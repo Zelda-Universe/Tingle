@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // CategoryButton
 // - opts: [Object]
 //   - category: [Object] - A single category from the database API.
@@ -29,9 +33,10 @@ $.extend(CategoryButton.prototype, EventHandlersMixin.prototype);
 CategoryButton.prototype._initSettings = function(opts) {
   if(!opts.category) opts.category = {};
   if(opts.showIcon == undefined) opts.showIcon = true;
-   
+  if(opts.showProgress == undefined) opts.showProgress = false;
+
   this.showIcon = opts.showIcon;
-   
+
   this.category = opts.category;
   this.onToggle = opts.onToggle || $.noop;
 
@@ -73,6 +78,14 @@ CategoryButton.prototype._setupUserInputListener = function(opts) {
   //     else this.toggle();
   //   }.bind(this));
   // }
+  this.domNode.on('mouseenter', function(e) {
+    e.preventDefault();
+    if(opts.showProgress) this.mouseEnter.call(this);
+  }.bind(this));
+  this.domNode.on('mouseleave', function(e) {
+    e.preventDefault();
+    if(opts.showProgress) this.mouseLeave.call(this);
+  }.bind(this));
 };
 
 CategoryButton.prototype._updateState = function() {
@@ -86,3 +99,15 @@ CategoryButton.prototype.toggle = function(toggledOn) {
   this.onToggle(this.category, this.toggledOn);
   // this.domNode.trigger('toggle', this.category); // Alternative?
 };
+
+
+CategoryButton.prototype.mouseEnter = function() {
+  this.labelNode.html(categories[this.category.id].complete+'/'+categories[this.category.id].total + (this.labelNode[0].clientHeight == 24 ? "<BR><BR>" : ""));
+
+};
+
+CategoryButton.prototype.mouseLeave = function() {
+  this.labelNode.text(categories[this.category.id].name);
+};
+
+CategoryButton.prototype._className = "CategoryButton";

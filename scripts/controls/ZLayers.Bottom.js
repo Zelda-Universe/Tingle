@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   _className: "L.Control.ZLayersBottom",
 
@@ -136,7 +140,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
          }, this);
 
       var logo = new Logo({ parent: headerMenu });
-      
+
       _thisLayer = this;
       this._gameMenu = this.createGameMenu();
       this._mapsMenu = this.createMapsMenu();
@@ -152,24 +156,41 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(completedButton.domNode);*/
-      
-      var mapsButton = new MapButton({
-        toggledOn: true,
-        onToggle: function() {
-           _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
+
+      this._mapsButton = new MapButton({
+        toggledOn: false,
+        onToggle: function(toggledOn) {
+           if (toggledOn) {
+               _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
+               _thisLayer._gamesButton.clear();
+           } else {
+               //_thisLayer.resetContent();
+               //_thisLayer._gamesButton.clear();
+               //_thisLayer._mapsButton.clear();
+               _thisLayer.closeDrawer();
+           }
+	      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+      });
+      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+      $(headerMenu).append(this._mapsButton.domNode);
+
+      this._gamesButton = new GameButton({
+        toggledOn: false,
+        onToggle: function(toggledOn) {
+           if (toggledOn) {
+               _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
+               _thisLayer._mapsButton.clear();
+           } else {
+               //_thisLayer.resetContent();
+               //_thisLayer._gamesButton.clear();
+               //_thisLayer._mapsButton.clear();
+               _thisLayer.closeDrawer();
+           }
+
 	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
       });
       // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(mapsButton.domNode);
-      
-      var gamesButton = new GameButton({
-        toggledOn: true,
-        onToggle: function() {
-           _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
-	      } // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
-      });
-      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(gamesButton.domNode);
+      $(headerMenu).append(this._gamesButton.domNode);
 
       this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
@@ -192,11 +213,11 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
     // and make expand match openDrawer expectations.
     if (true || !this.options.collapsed) this._expand();
    },
-   
+
    rebuildMapsMenu: function () {
       this._mapsMenu = this.createMapsMenu();
    },
-   
+
    createGameMenu: function() {
      return new GameMenu({
       categoryTree: games,
@@ -209,7 +230,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
       defaultToggledState: (this.options.categorySelectionMethod == "focus")
     });
    },
-   
+
   createMapsMenu: function() {
     return new MapsMenu({
      categoryTree: maps,
@@ -217,7 +238,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
          if (this.currentMapLayer.id != category.id) {
                map.removeLayer(this.currentMapLayer);
                map.addLayer(category);
-               this.currentMapLayer = category;        
+               this.currentMapLayer = category;
                this.currentMapLayer.bringToBack();
                map.fire("baselayerchange", this.currentMapLayer);
          }
@@ -226,7 +247,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
    });
   },
-  
+
 
     _animate: function(menu, from, to, isOpen) {
       // console.log(from + ' ' + to + ' ' + isOpen);
@@ -304,8 +325,12 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   },
 
   closeDrawer: function() {
-    if(this._open)
+    if(this._open) {
       this._setDrawerState(false, this._startPosition);
+      this._gamesButton.clear();
+      this._mapsButton.clear();
+      this.resetContent();
+    }
   }
 });
 

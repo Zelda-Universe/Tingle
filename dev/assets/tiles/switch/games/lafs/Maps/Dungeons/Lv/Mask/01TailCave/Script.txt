@@ -1,0 +1,30 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"Lv01TailCave_03G_Mask.png" -geometry +974+264 -composite
+"Lv01TailCave_04B_Mask.png" -geometry +174+392 -composite
+"Lv01TailCave_04C_Mask.png" -geometry +334+392 -composite
+"Lv01TailCave_04D_Mask.png" -geometry +494+392 -composite
+"Lv01TailCave_04G_Mask.png" -geometry +974+392 -composite
+"Lv01TailCave_05A_Mask.png" -geometry +14+520 -composite
+"Lv01TailCave_05C_Mask.png" -geometry +334+520 -composite
+"Lv01TailCave_05D_Mask.png" -geometry +494+520 -composite
+"Lv01TailCave_05E_Mask.png" -geometry +654+520 -composite
+"Lv01TailCave_05F_Mask.png" -geometry +814+520 -composite
+"Lv01TailCave_05G_Mask.png" -geometry +974+520 -composite
+"Lv01TailCave_06A_Mask.png" -geometry +14+648 -composite
+"Lv01TailCave_06B_Mask.png" -geometry +174+648 -composite
+"Lv01TailCave_06C_Mask.png" -geometry +334+648 -composite
+"Lv01TailCave_06D_Mask.png" -geometry +494+648 -composite
+"Lv01TailCave_06E_Mask.png" -geometry +654+648 -composite
+"Lv01TailCave_06F_Mask.png" -geometry +814+648 -composite
+"Lv01TailCave_06G_Mask.png" -geometry +974+648 -composite
+"Lv01TailCave_07A_Mask.png" -geometry +14+776 -composite
+"Lv01TailCave_07C_Mask.png" -geometry +334+776 -composite
+"Lv01TailCave_07D_Mask.png" -geometry +494+776 -composite
+"Lv01TailCave_07E_Mask.png" -geometry +654+776 -composite
+"Lv01TailCave_08B_Mask.png" -geometry +174+904 -composite
+"Lv01TailCave_08C_Mask.png" -geometry +334+904 -composite
+"Lv01TailCave_08D_Mask.png" -geometry +494+904 -composite

@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?3m8qpl');
-  src:  url('fonts/icomoon.eot?3m8qpl#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?3m8qpl') format('truetype'),
-    url('fonts/icomoon.woff?3m8qpl') format('woff'),
-    url('fonts/icomoon.svg?3m8qpl#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?gu1tnm');
+  src:  url('fonts/icomoon.eot?gu1tnm#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?gu1tnm') format('truetype'),
+    url('fonts/icomoon.woff?gu1tnm') format('woff'),
+    url('fonts/icomoon.svg?gu1tnm#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -13,7 +13,7 @@
 [class^="icon-"], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
-  speak: none;
+  speak: never;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -25,11 +25,15 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-General_Store:before {
-  content: "\e900";
+.icon-Tears-of-the-Kingdom:before {
+  content: "\e932";
+  color: #fff;
 }
-.icon-General_Heart:before {
-  content: "\f004";
+.icon-TotK_Well:before {
+  content: "\e92a";
+}
+.icon-General_Cave:before {
+  content: "\e92b";
 }
 .icon-General_Map:before {
   content: "\e928";
@@ -205,6 +209,27 @@
 .icon-fa-envelope:before {
   content: "\f0e0";
 }
+.icon-TotK_Chasm:before {
+  content: "\e92c";
+}
+.icon-TotK_Bubbulfrog:before {
+  content: "\f069";
+}
+.icon-TotK_Sages-Will:before {
+  content: "\f111";
+}
+.icon-TotK_Lightroot:before {
+  content: "\f1bb";
+}
+.icon-TotK_SignNpc:before {
+  content: "\f277";
+}
+.icon-General_Heart:before {
+  content: "\f004";
+}
+.icon-LA_Portal:before {
+  content: "\e929";
+}
 .icon-General_House:before {
   content: "\e92d";
 }
@@ -217,3 +242,7 @@
 .icon-embed2:before {
   content: "\ea80";
 }
+.icon-General_Store:before {
+  content: "\e900";
+}
+

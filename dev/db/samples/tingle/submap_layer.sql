@@ -50,9 +50,11 @@ CREATE TABLE `submap_layer` (
 
 LOCK TABLES `submap_layer` WRITE;
 /*!40000 ALTER TABLE `submap_layer` DISABLE KEYS */;
-INSERT INTO `submap_layer` VALUES (190019010,1900,NULL,'VGA 2016','botw/vga2014/','png','blank',1,0,'F',2,0.4,1);
-INSERT INTO `submap_layer` VALUES (190019011,1900,2,'Hand Drawn','botw/zu/','png','blank',1,1,'F',1,1,1);
-INSERT INTO `submap_layer` VALUES (190019012,1901,2,'Labels','botw/hyrule_labels/','png','blank',1,1,'F',1,1,0);
+INSERT INTO `submap_layer` VALUES 
+  (190019010,1900,NULL,'VGA 2016','botw/vga2014/','png','blank',1,0,'F',2,0.4,1),
+  (190019011,1900,2,'Hand Drawn','botw/zu/','png','blank',1,1,'F',1,1,1),
+  (190019012,1901,2,'Labels','botw/hyrule_labels/','png','blank',1,1,'F',1,1,0)
+;
 /*!40000 ALTER TABLE `submap_layer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -65,4 +67,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-30 14:31:35
+-- Dump completed on 2023-05-09 13:13:43

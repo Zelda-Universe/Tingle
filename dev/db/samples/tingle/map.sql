@@ -44,18 +44,23 @@ CREATE TABLE `map` (
 
 LOCK TABLES `map` WRITE;
 /*!40000 ALTER TABLE `map` DISABLE KEYS */;
-INSERT INTO `map` VALUES (3,3,'Overworld',0,2,6,'(c) Nintendo',0,1);
-INSERT INTO `map` VALUES (19,19,'Hyrule',0,2,8,'(c) Nintendo',1,1);
-INSERT INTO `map` VALUES (20,4,'Koholint Island',1,2,4,'(c) Nintendo',0,1);
-INSERT INTO `map` VALUES (21,4,'Tail Cave',1,2,4,'(c) Nintendo',1,1);
-INSERT INTO `map` VALUES (22,4,'Bottle Grotto',1,2,4,'(c) Nintendo',2,1);
-INSERT INTO `map` VALUES (23,4,'Key Cavern',1,2,4,'(c) Nintendo',3,1);
-INSERT INTO `map` VALUES (24,4,'Angler`s Tunnel',1,2,4,'(c) Nintendo',4,1);
-INSERT INTO `map` VALUES (25,4,'Catfish`s Maw',1,2,4,'(c) Nintendo',5,1);
-INSERT INTO `map` VALUES (26,4,'Face Shrine',1,2,4,'(c) Nintendo',6,1);
-INSERT INTO `map` VALUES (27,4,'Eagle`s Tower',1,2,4,'(c) Nintendo',7,1);
-INSERT INTO `map` VALUES (28,4,'Turtle Rock',1,2,4,'(c) Nintendo',8,1);
-INSERT INTO `map` VALUES (29,4,'Color Dungeon',1,2,4,'(c) Nintendo',9,1);
+INSERT INTO `map` VALUES 
+  (3,3,'Overworld',0,2,6,'(c) Nintendo',0,1),
+  (19,19,'Hyrule',0,2,8,'(c) Nintendo',1,1),
+  (20,4,'Koholint Island',1,2,4,'(c) Nintendo',0,1),
+  (21,4,'Tail Cave',1,2,4,'(c) Nintendo',1,1),
+  (22,4,'Bottle Grotto',1,2,4,'(c) Nintendo',2,1),
+  (23,4,'Key Cavern',1,2,4,'(c) Nintendo',3,1),
+  (24,4,'Angler`s Tunnel',1,2,4,'(c) Nintendo',4,1),
+  (25,4,'Catfish`s Maw',1,2,4,'(c) Nintendo',5,1),
+  (26,4,'Face Shrine',1,2,4,'(c) Nintendo',6,1),
+  (27,4,'Eagle`s Tower',1,2,4,'(c) Nintendo',7,1),
+  (28,4,'Turtle Rock',1,2,4,'(c) Nintendo',8,1),
+  (29,4,'Color Dungeon',1,2,4,'(c) Nintendo',9,1),
+  (2101,21,'Hyrule',1,1,8,'',1,1),
+  (2102,21,'Sky',0,1,8,'',1,1),
+  (2103,21,'Underground',0,1,8,'',1,1)
+;
 /*!40000 ALTER TABLE `map` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -68,4 +73,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-03-30 14:31:35
+-- Dump completed on 2023-05-09 14:55:21

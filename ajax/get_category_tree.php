@@ -1,6 +1,7 @@
 <?php
-   $path = __DIR__;
-
+   $path = DIRNAME(__FILE__);
+   include("$path/../config.php");
+   
    $map = $_GET["game"];
 
    $query = 'select *
@@ -8,6 +9,7 @@
               where parent_id is null
                 and container_id = ' . $map . '
                 and visible = 1
+                and marker_category_type_id <> 3
               order by id
             ';
 

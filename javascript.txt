@@ -35,6 +35,7 @@ scripts/controls/ZLayers.js
 scripts/controls/ZMobileHeaderBar.js
 scripts/controls/ZLayers.Bottom.js
 scripts/zmap.js
+scripts/zmain.lib.js
 scripts/zmain.js
 scripts/util/debug.js
 scripts/widgets/CategoryButtonCompletedBlock.js

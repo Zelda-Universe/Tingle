@@ -397,9 +397,14 @@ ZMap.prototype.addMarker = function(vMarker) {
    }
 
    var marker;
+   if (vMarker.markerCategoryTypeId != 3) {
       marker = new L.Marker([vMarker.y,vMarker.x], { title: vMarker.name
                                                    , icon: _this._createMarkerIcon(vMarker.markerCategoryId)
                                                    });
+   } else {
+	   marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
+	   marker.bindTooltip(vMarker.name, {permanent: true, className: mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
+   }
 
    marker.id              = vMarker.id;
    marker.title           = vMarker.name;
@@ -645,6 +650,8 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
 };
 
 ZMap.prototype._shouldShowMarker = function(marker) {
+	
+	if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
   return marker.visible
     && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
     && (
@@ -661,7 +668,37 @@ ZMap.prototype._shouldShowMarker = function(marker) {
         && marker.complete != true
       )
     ) // Should we show completed markers?
+	
   ;
+	} else if (marker.categoryTypeId == 3) {
+	  return marker.visible
+	   // @TODO: HARDCODE for TotK Release, need better handling
+		&& mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
+		&& (
+		  (
+			mapOptions.categorySelectionMethod == "focus"
+			&& categories[marker.categoryId].visibleZoom <= map.getZoom()
+			&& (
+			   
+				   (
+					(marker.categoryId == 2163 && map.getZoom() <= 3)
+					|| (marker.categoryId == 2164 && map.getZoom() > 3 && map.getZoom() <= 5)
+					|| (marker.categoryId == 2165 && map.getZoom() > 5 && map.getZoom() <= 6)
+					|| (marker.categoryId == 2166 && map.getZoom() > 6 && map.getZoom() <= 8)
+				   )
+			   )
+		  )
+//		  || categories[marker.categoryId].userChecked
+		) // Check if we should show for the category, and at this zoom level
+		&& (
+		  mapOptions.showCompleted == true || (
+			mapOptions.showCompleted == false
+			&& marker.complete != true
+		  )
+		) // Should we show completed markers?
+		
+	  ;
+	}
 }
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {

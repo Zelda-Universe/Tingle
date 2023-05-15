@@ -217,7 +217,8 @@ $.getJSON("ajax.php?command=get_container&game=" + gameId, function(vResults){
       vContainer.showInfoControls           = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
 
       /* startArea entered as a csv to display/fit an area of the map on load */
-      vContainer.startArea                  = getUrlParamValue('startArea', "-168,102,-148,122");
+	  // @TODO: Validate this logic. It was breaking mobile + bad hardcode
+      //vContainer.startArea                  = getUrlParamValue('startArea', "-168,102,-148,122");
 
       if (vContainer.startArea) {
         vContainer.startArea = parseBounds(vContainer.startArea);

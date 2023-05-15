@@ -919,7 +919,10 @@ a.icon-close2 {
 	left: 12px !important;
 	right: 12px !important;
 	height: 50px !important;
-	width: auto !important;
+	width: 100% !important;
+
+    min-width:300px !important;
+	max-width:450px !important;
 }
 
 #desktopAds {

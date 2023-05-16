@@ -133,8 +133,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (21131, 21135, 2, 1, '', '&lt;p&gt;Equipment: Magic Rod&lt;/p&gt;&lt;p&gt;These spell-casting monsters can be found all over Hyrule. They hurl multiple balls of electricity, summon monsters surging with electricity, and have been known to cause thunderstorms in the area. They are more resilient and dangerous than Electric Wizzrobes.&lt;/p&gt;', 1, 1),
 (21132, 21136, 2, 1, '', '&lt;p&gt;Equipment: Magic Rod&lt;/p&gt;&lt;p&gt;These spell-casting monsters can be found all over Hyrule. They hurl multiple balls of electricity, summon monsters surging with electricity, and have been known to cause thunderstorms in the area. They are more resilient and dangerous than Electric Wizzrobes.&lt;/p&gt;', 1, 1),
 (21133, 21137, 2, 1, '', '&lt;p&gt;Equipment: Magic Rod&lt;/p&gt;&lt;p&gt;These spell-casting monsters can be found all over Hyrule. They hurl multiple balls of electricity, summon monsters surging with electricity, and have been known to cause thunderstorms in the area. They are more resilient and dangerous than Electric Wizzrobes.&lt;/p&gt;', 1, 1),
-(21134, 21138, 2, 1, '', '&lt;p&gt;Equipment: Traveler\'s Sword&lt;/p&gt;&lt;p&gt;These spell-casting monsters can be found all over Hyrule. They hurl fireballs, summon flaming monsters, and have been known to severely raise the temperature around them. The weather will normalize once the Wizzrobe is defeated.&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(21134, 21138, 2, 1, '', '&lt;p&gt;Equipment: Traveler\'s Sword&lt;/p&gt;&lt;p&gt;These spell-casting monsters can be found all over Hyrule. They hurl fireballs, summon flaming monsters, and have been known to severely raise the temperature around them. The weather will normalize once the Wizzrobe is defeated.&lt;/p&gt;', 1, 1),
 (21135, 21139, 2, 1, '', '&lt;p&gt;Equipment: Traveler\'s Sword&lt;/p&gt;&lt;p&gt;These spell-casting monsters can be found all over Hyrule. They hurl fireballs, summon flaming monsters, and have been known to severely raise the temperature around them. The weather will normalize once the Wizzrobe is defeated.&lt;/p&gt;', 1, 1),
 (21136, 21140, 2, 1, '', '&lt;p&gt;Equipment: Traveler\'s Sword&lt;/p&gt;&lt;p&gt;These spell-casting monsters can be found all over Hyrule. They hurl fireballs, summon flaming monsters, and have been known to severely raise the temperature around them. The weather will normalize once the Wizzrobe is defeated.&lt;/p&gt;', 1, 1),
 (21137, 21141, 2, 1, '', '&lt;p&gt;Equipment: Traveler\'s Sword&lt;/p&gt;&lt;p&gt;These spell-casting monsters can be found all over Hyrule. They hurl fireballs, summon flaming monsters, and have been known to severely raise the temperature around them. The weather will normalize once the Wizzrobe is defeated.&lt;/p&gt;', 1, 1),
@@ -635,8 +634,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (21632, 22215, 2, 1, '', '&lt;p&gt;Contains: Forest Dweller\'s Spear&lt;/p&gt;', 1, 1),
 (21633, 22216, 2, 1, '', '&lt;p&gt;Contains: Royal Guard\'s Spear&lt;/p&gt;', 1, 1),
 (21634, 22217, 2, 1, '', '&lt;p&gt;Contains: Opal&lt;/p&gt;', 1, 1),
-(21635, 22218, 2, 1, '', '&lt;p&gt;Contains: Wooden Stick&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(21635, 22218, 2, 1, '', '&lt;p&gt;Contains: Wooden Stick&lt;/p&gt;', 1, 1),
 (21636, 22219, 2, 1, '', '&lt;p&gt;Contains: Giant Brightbloom Seed x5&lt;/p&gt;', 1, 1),
 (21637, 22220, 2, 1, '', '&lt;p&gt;Contains: Brightbloom Seed x5&lt;/p&gt;', 1, 1),
 (21638, 22221, 2, 1, '', '&lt;p&gt;Contains: Opal&lt;/p&gt;', 1, 1),
@@ -1045,8 +1043,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (22041, 22685, 2, 1, '', '&lt;p&gt;A stick cut off from a large tree. It isn\'t very sturdy, but its heavier end can swat a shield away.&lt;/p&gt;', 1, 1),
 (22042, 22686, 2, 1, '', '&lt;p&gt;A stick cut off from a large tree. It isn\'t very sturdy, but its heavier end can swat a shield away.&lt;/p&gt;', 1, 1),
 (22043, 22687, 2, 1, '', '&lt;p&gt;A stick cut off from a large tree. It isn\'t very sturdy, but its heavier end can swat a shield away.&lt;/p&gt;', 1, 1),
-(22044, 22688, 2, 1, '', '&lt;p&gt;A stick cut off from a large tree. It isn\'t very sturdy, but its heavier end can swat a shield away.&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(22044, 22688, 2, 1, '', '&lt;p&gt;A stick cut off from a large tree. It isn\'t very sturdy, but its heavier end can swat a shield away.&lt;/p&gt;', 1, 1),
 (22045, 22689, 2, 1, '', '&lt;p&gt;A stick cut off from a large tree. It isn\'t very sturdy, but its heavier end can swat a shield away.&lt;/p&gt;', 1, 1),
 (22046, 22690, 2, 1, '', '&lt;p&gt;A stick cut off from a large tree. It isn\'t very sturdy, but its heavier end can swat a shield away.&lt;/p&gt;', 1, 1),
 (22047, 22691, 2, 1, '', '&lt;p&gt;A stick cut off from a large tree. It isn\'t very sturdy, but its heavier end can swat a shield away.&lt;/p&gt;', 1, 1),
@@ -1301,8 +1298,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (22296, 22940, 2, 1, '', '&lt;p&gt;A sturdy shield loved by many an adventurer. It is made of animal hide and sturdy wood and is best suited to defending against weak monsters or animals.&lt;/p&gt;', 1, 1),
 (22297, 22941, 2, 1, '', '&lt;p&gt;A sturdy shield loved by many an adventurer. It is made of animal hide and sturdy wood and is best suited to defending against weak monsters or animals.&lt;/p&gt;', 1, 1),
 (22298, 22942, 2, 1, '', '&lt;p&gt;A sturdy shield loved by many an adventurer. It is made of animal hide and sturdy wood and is best suited to defending against weak monsters or animals.&lt;/p&gt;', 1, 1),
-(22299, 22943, 2, 1, '', '&lt;p&gt;A sturdy shield loved by many an adventurer. It is made of animal hide and sturdy wood and is best suited to defending against weak monsters or animals.&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(22299, 22943, 2, 1, '', '&lt;p&gt;A sturdy shield loved by many an adventurer. It is made of animal hide and sturdy wood and is best suited to defending against weak monsters or animals.&lt;/p&gt;', 1, 1),
 (22300, 22944, 2, 1, '', '&lt;p&gt;A sturdy shield loved by many an adventurer. It is made of animal hide and sturdy wood and is best suited to defending against weak monsters or animals.&lt;/p&gt;', 1, 1),
 (22301, 22945, 2, 1, '', '&lt;p&gt;A sturdy shield loved by many an adventurer. It is made of animal hide and sturdy wood and is best suited to defending against weak monsters or animals.&lt;/p&gt;', 1, 1),
 (22302, 22946, 2, 1, '', '&lt;p&gt;A sturdy shield loved by many an adventurer. It is made of animal hide and sturdy wood and is best suited to defending against weak monsters or animals.&lt;/p&gt;', 1, 1),
@@ -1573,8 +1569,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (22567, 23211, 2, 1, '', '&lt;p&gt;A kitchen implement often used for serving delicious soups. It was carved from the wood of a sturdy tree, so it actually packs quite the wallop.&lt;/p&gt;', 1, 1),
 (22568, 23212, 2, 1, '', '&lt;p&gt;A kitchen implement often used for serving delicious soups. It was carved from the wood of a sturdy tree, so it actually packs quite the wallop.&lt;/p&gt;', 1, 1),
 (22569, 23213, 2, 1, '', '&lt;p&gt;A kitchen implement often used for serving delicious soups. It was carved from the wood of a sturdy tree, so it actually packs quite the wallop.&lt;/p&gt;', 1, 1),
-(22570, 23214, 2, 1, '', '&lt;p&gt;A kitchen implement often used for serving delicious soups. It was carved from the wood of a sturdy tree, so it actually packs quite the wallop.&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(22570, 23214, 2, 1, '', '&lt;p&gt;A kitchen implement often used for serving delicious soups. It was carved from the wood of a sturdy tree, so it actually packs quite the wallop.&lt;/p&gt;', 1, 1),
 (22571, 23215, 2, 1, '', '&lt;p&gt;A kitchen implement often used for serving delicious soups. It was carved from the wood of a sturdy tree, so it actually packs quite the wallop.&lt;/p&gt;', 1, 1),
 (22572, 23216, 2, 1, '', '&lt;p&gt;A kitchen implement often used for serving delicious soups. It was carved from the wood of a sturdy tree, so it actually packs quite the wallop.&lt;/p&gt;', 1, 1),
 (22573, 23217, 2, 1, '', '&lt;p&gt;A kitchen implement often used for serving delicious soups. It was carved from the wood of a sturdy tree, so it actually packs quite the wallop.&lt;/p&gt;', 1, 1),
@@ -1859,8 +1854,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (22852, 23496, 2, 1, '', '&lt;p&gt;A light, thin metal sword used by the guards of Hyrule Castle. Its light weight makes it easy to handle and enables quicker charged attacks.&lt;/p&gt;', 1, 1),
 (22853, 23497, 2, 1, '', '&lt;p&gt;A light, thin metal sword used by the guards of Hyrule Castle. Its light weight makes it easy to handle and enables quicker charged attacks.&lt;/p&gt;', 1, 1),
 (22854, 23498, 2, 1, '', '&lt;p&gt;A light, thin metal sword used by the guards of Hyrule Castle. Its light weight makes it easy to handle and enables quicker charged attacks.&lt;/p&gt;', 1, 1),
-(22855, 23499, 2, 1, '', '&lt;p&gt;A light, thin metal sword used by the guards of Hyrule Castle. Its light weight makes it easy to handle and enables quicker charged attacks.&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(22855, 23499, 2, 1, '', '&lt;p&gt;A light, thin metal sword used by the guards of Hyrule Castle. Its light weight makes it easy to handle and enables quicker charged attacks.&lt;/p&gt;', 1, 1),
 (22856, 23500, 2, 1, '', '&lt;p&gt;A light, thin metal sword used by the guards of Hyrule Castle. Its light weight makes it easy to handle and enables quicker charged attacks.&lt;/p&gt;', 1, 1),
 (22857, 23501, 2, 1, '', '&lt;p&gt;A light, thin metal sword used by the guards of Hyrule Castle. Its light weight makes it easy to handle and enables quicker charged attacks.&lt;/p&gt;', 1, 1),
 (22858, 23502, 2, 1, '', '&lt;p&gt;A light, thin metal sword used by the guards of Hyrule Castle. Its light weight makes it easy to handle and enables quicker charged attacks.&lt;/p&gt;', 1, 1),
@@ -2183,8 +2177,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (23175, 23883, 2, 1, '', '&lt;p&gt;A tree branch with an added grip and excellent balance. Equip it, and use it as a weapon.&lt;/p&gt;', 1, 1),
 (23176, 23884, 2, 1, '', '&lt;p&gt;A tree branch with an added grip and excellent balance. Equip it, and use it as a weapon.&lt;/p&gt;', 1, 1),
 (23177, 23885, 2, 1, '', '&lt;p&gt;A tree branch with an added grip and excellent balance. Equip it, and use it as a weapon.&lt;/p&gt;', 1, 1),
-(23178, 23886, 2, 1, '', '&lt;p&gt;A tree branch with an added grip and excellent balance. Equip it, and use it as a weapon.&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(23178, 23886, 2, 1, '', '&lt;p&gt;A tree branch with an added grip and excellent balance. Equip it, and use it as a weapon.&lt;/p&gt;', 1, 1),
 (23179, 23887, 2, 1, '', '&lt;p&gt;A tree branch with an added grip and excellent balance. Equip it, and use it as a weapon.&lt;/p&gt;', 1, 1),
 (23180, 23888, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;The Demon King\'s Phantom Saboteur&lt;/p&gt;', 1, 1),
 (23181, 23889, 2, 1, '', '&lt;p&gt;The leader of the Yiga Clan, who worship the Demon King. His larger-than-life presence makes him popular and deeply respected. After the Upheaval, Kohga latched on to Zonai devices as a way to increase his power. He had his underlings use the technology to make a variety of bizarre and deadly contraptions to kill you with.&lt;/p&gt;', 1, 1),
@@ -2323,8 +2316,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (23314, 24022, 2, 1, '', '&lt;p&gt;A construct composed of interconnected blocks, made by the Zonai with advanced techniques and magic.  This model has increased defenses to protect its vulnerable core. Can change shape in order to block attacks. To provide sufficient energy to power its gigantic form, this construct contains a massive store of Zonai charge.&lt;/p&gt;', 1, 1),
 (23315, 24023, 2, 1, '', '&lt;p&gt;A construct composed of interconnected blocks, made by the Zonai with advanced techniques and magic.  This model has increased defenses to protect its vulnerable core. Can change shape in order to block attacks. To provide sufficient energy to power its gigantic form, this construct contains a massive store of Zonai charge.&lt;/p&gt;', 1, 1),
 (23316, 24024, 2, 1, '', '&lt;p&gt;A construct composed of interconnected blocks, made by the Zonai with advanced techniques and magic.  This model has increased defenses to protect its vulnerable core. Can change shape in order to block attacks. To provide sufficient energy to power its gigantic form, this construct contains a massive store of Zonai charge.&lt;/p&gt;', 1, 1),
-(23317, 24146, 2, 1, '', '&lt;p&gt;Contains: Large Crystallized Charge&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(23317, 24146, 2, 1, '', '&lt;p&gt;Contains: Large Crystallized Charge&lt;/p&gt;', 1, 1),
 (23318, 24147, 2, 1, '', '&lt;p&gt;Contains: Large Crystallized Charge&lt;/p&gt;', 1, 1),
 (23319, 24148, 2, 1, '', '&lt;p&gt;Contains: Large Crystallized Charge&lt;/p&gt;', 1, 1),
 (23320, 24149, 2, 1, '', '&lt;p&gt;Contains: Large Crystallized Charge&lt;/p&gt;', 1, 1),
@@ -2765,8 +2757,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (23755, 24587, 2, 1, '', '&lt;p&gt;A stick made out of a hard tree branch. The tree soaked up lots of sunshine, so it\'s sturdier than a regular stick and has high durability.&lt;/p&gt;', 1, 1),
 (23756, 24588, 2, 1, '', '&lt;p&gt;A stick made out of a hard tree branch. The tree soaked up lots of sunshine, so it\'s sturdier than a regular stick and has high durability.&lt;/p&gt;', 1, 1),
 (23757, 24589, 2, 1, '', '&lt;p&gt;A stick made out of a hard tree branch. The tree soaked up lots of sunshine, so it\'s sturdier than a regular stick and has high durability.&lt;/p&gt;', 1, 1),
-(23758, 24590, 2, 1, '', '&lt;p&gt;A stick made out of a hard tree branch. The tree soaked up lots of sunshine, so it\'s sturdier than a regular stick and has high durability.&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(23758, 24590, 2, 1, '', '&lt;p&gt;A stick made out of a hard tree branch. The tree soaked up lots of sunshine, so it\'s sturdier than a regular stick and has high durability.&lt;/p&gt;', 1, 1),
 (23759, 24591, 2, 1, '', '&lt;p&gt;A stick made out of a hard tree branch. The tree soaked up lots of sunshine, so it\'s sturdier than a regular stick and has high durability.&lt;/p&gt;', 1, 1),
 (23760, 24592, 2, 1, '', '&lt;p&gt;A stick made out of a hard tree branch. The tree soaked up lots of sunshine, so it\'s sturdier than a regular stick and has high durability.&lt;/p&gt;', 1, 1),
 (23761, 24593, 2, 1, '', '&lt;p&gt;A stick made out of a hard tree branch. The tree soaked up lots of sunshine, so it\'s sturdier than a regular stick and has high durability.&lt;/p&gt;', 1, 1),
@@ -2957,8 +2948,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (23946, 24778, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Deplian Badlands Cave&lt;/p&gt;&lt;p&gt;Contains: Gnarled Long Stick&lt;/p&gt;', 1, 1),
 (23947, 24779, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;South Gerudo Cave&lt;/p&gt;&lt;p&gt;Contains: Gerudo Spear&lt;/p&gt;', 1, 1),
 (23948, 24780, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Deplian Badlands Cave&lt;/p&gt;&lt;p&gt;Contains: Forest Dweller\'s Spear&lt;/p&gt;', 1, 1),
-(23949, 24781, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Passeri Greenbelt Cave&lt;/p&gt;&lt;p&gt;Contains: Traveler\'s Spear&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(23949, 24781, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Passeri Greenbelt Cave&lt;/p&gt;&lt;p&gt;Contains: Traveler\'s Spear&lt;/p&gt;', 1, 1),
 (23950, 24782, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Rauru Hillside Cave&lt;/p&gt;&lt;p&gt;Contains: Sturdy Long Stick&lt;/p&gt;', 1, 1),
 (23951, 24783, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Tabantha Hills Cave&lt;/p&gt;&lt;p&gt;Contains: Feathered Spear&lt;/p&gt;', 1, 1),
 (23952, 24784, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Irch Plain Well&lt;/p&gt;&lt;p&gt;Contains: Soldier\'s Spear&lt;/p&gt;', 1, 1),
@@ -3270,8 +3260,7 @@ INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, 
 (24258, 25094, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Mount Floria Cave&lt;/p&gt;&lt;p&gt;A shield favored by the knights who served the Hyrulean royal family. Its sturdy metal construction makes it quite durable, but its weight requires decent skill to wield.&lt;/p&gt;', 1, 1),
 (24259, 25095, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Foothill Monster Den&lt;/p&gt;&lt;p&gt;A Boko shield made of slightly stronger wood and reinforced with animal bones.&lt;/p&gt;', 1, 1),
 (24260, 25096, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Lower Spectacle Rock Cave&lt;/p&gt;&lt;p&gt;A Boko shield made of slightly stronger wood and reinforced with animal bones.&lt;/p&gt;', 1, 1),
-(24261, 25097, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Robred Dropoff Cave&lt;/p&gt;&lt;p&gt;A Boko shield made of slightly stronger wood and reinforced with animal bones.&lt;/p&gt;', 1, 1);
-INSERT INTO `marker_tab` (`marker_tab_id`, `marker_id`, `marker_tab_status_id`, `user_id`, `tab_title`, `tab_text`, `tab_order`, `visible`) VALUES
+(24261, 25097, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Robred Dropoff Cave&lt;/p&gt;&lt;p&gt;A Boko shield made of slightly stronger wood and reinforced with animal bones.&lt;/p&gt;', 1, 1),
 (24262, 25098, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Ancient Altar Ruins&lt;/p&gt;&lt;p&gt;This Boko shield is reinforced with fossilized bone. Its defensive capabilities are respectable, but its predictably slipshod craftsmanship spells low durability.&lt;/p&gt;', 1, 1),
 (24263, 25099, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Stalry Plateau Cave&lt;/p&gt;&lt;p&gt;It\'s likely this rusty old shield once belonged to a knight. It still has some defensive capabilities, but its usefulness has been worn down by time.&lt;/p&gt;', 1, 1),
 (24264, 25100, 2, 1, '', '&lt;p style=&quot;text-align: center&quot;&gt;Gerudo Sanctuary&lt;/p&gt;&lt;p&gt;The design of this metal shield has changed over time to match the Gerudo\'s sword-and- shield fighting style. It\'s favored by soldiers and travelers alike.&lt;/p&gt;', 1, 1),

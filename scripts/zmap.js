@@ -650,7 +650,7 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
 };
 
 ZMap.prototype._shouldShowMarker = function(marker) {
-	
+
 	if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
   return marker.visible
     && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
@@ -668,7 +668,7 @@ ZMap.prototype._shouldShowMarker = function(marker) {
         && marker.complete != true
       )
     ) // Should we show completed markers?
-	
+
   ;
 	} else if (marker.categoryTypeId == 3) {
 	  return marker.visible
@@ -679,7 +679,7 @@ ZMap.prototype._shouldShowMarker = function(marker) {
 			mapOptions.categorySelectionMethod == "focus"
 			&& categories[marker.categoryId].visibleZoom <= map.getZoom()
 			&& (
-			   
+
 				   (
 					(marker.categoryId == 2163 && map.getZoom() <= 3)
 					|| (marker.categoryId == 2164 && map.getZoom() > 3 && map.getZoom() <= 5)
@@ -696,7 +696,7 @@ ZMap.prototype._shouldShowMarker = function(marker) {
 			&& marker.complete != true
 		  )
 		) // Should we show completed markers?
-		
+
 	  ;
 	}
 }
@@ -1950,7 +1950,7 @@ ZMap.prototype._createAccountForm = function(user) {
  * @param vGoTo.subMap          - Submap ID (Unique)
  * @param vGoTo.marker          - Marker to be opened (Takes precedence over subMap and Layer)
  **/
-ZMap.prototype.goTo = function(vGoTo) {
+ZMap.prototype.goTo = function(vGoTo, notByInput) {
    if (vGoTo.hideOthers) {
       for (var i = 0; i < markers.length; i++) {
          markers[i].visible = false;
@@ -1959,7 +1959,7 @@ ZMap.prototype.goTo = function(vGoTo) {
    }
 
    if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true, notByInput);
       // Open Marker already does a change map, so it takes precedence
 
       return;
@@ -1975,14 +1975,15 @@ ZMap.prototype.goTo = function(vGoTo) {
  *
  * @param vMarkerID             - Marker ID to be opened
  **/
-ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   _openMarker(vMarkerId, vZoom, true, false);
-}
+ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin = true, vPanTo = false, notByInput) {
+  var marker = this.cachedMarkersById[vMarkerId];
+  if (marker) {
+    if (notByInput === true) {
+      mapControl.changeMapToMarker(marker);
+    } else {
+      mapControl.changeMap(marker.mapId, marker.submapId);
+    }
 
-ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin, vPanTo) {
-   var marker = this.cachedMarkersById[vMarkerId];
-   if(marker) {
-     mapControl.changeMap(marker.mapId, marker.submapId);
      marker.visible = true;
 
      if (!vZoom) {

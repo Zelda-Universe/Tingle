@@ -84,7 +84,7 @@ INSERT INTO `container` VALUES
   (17,'ALBW','A Link Between Worlds','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,0,3),
   (18,'TFH','Tri Force Heroes','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,0,3),
   (19,'BotW','Breath of the Wild','markers/','png','#000000','Breath-of-the-Wild',0,1,1,0,1,112,-159,-49.875,34.25,-206,221,8,9,50,256,23,23,16,16,5,1,5),
-  (21,'TotK','Tears of the Kingdom','/markers/','png','#DEECFD','Tears-of-the-Kingdom',0,1,1,0,1,70,-59,0,0,-118,141,4,8,9,50,256,23,23,16,16,5,1)
+  (21,'TotK','Tears of the Kingdom','/markers/','png','#000000','Tears-of-the-Kingdom',0,1,1,0,1,74.9648,-74.0977,0,0,-118,141,8,9,50,256,23,23,16,16,5,1,5)
 ;
 /*!40000 ALTER TABLE `container` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -98,4 +98,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-16 14:48:02
+-- Dump completed on 2023-05-17 13:10:07

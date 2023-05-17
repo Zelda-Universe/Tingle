@@ -828,6 +828,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   ## Converge Warning Message
   if [[ "$converge" == "true" ]]; then
+    echo 'Since the in place setting was enabled, important information may not be updated.' > "$SDIR/do-not-commit-converged-sql-files";
     echo;
     echo "Important Note: The 'converge' option is enabled.  Do NOT store these exported SQL files permanently in source control OR import them into any database, ESPECIALLY if they are overwritten in place!
     They are for comparing important differences more easily and quickly by removing any less important or always differing information such as defaults and other details *to the content*, but are still important for proper function for the data in its respective sources.

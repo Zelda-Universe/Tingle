@@ -53,18 +53,21 @@ class UpdateTotKData < ActiveRecord::Migration[7.0]
     execute <<-SQL
       UPDATE `container`
       SET
+        `background_color`      = '#000000',
         `icon`                  = 'Tears-of-the-Kingdom',
-        `max_zoom`              = 4,
-        `cluster_max_zoom`      = 8,
-        `cluster_grid_size`     = 9,
-        `tile_size`             = 50,
-        `icon_width`            = 256,
+        `default_pos_x`         = 74.9648,
+        `default_pos_y`         = -74.0977,
+        `max_zoom`              = 8,
+        `cluster_max_zoom`      = 9,
+        `cluster_grid_size`     = 50,
+        `tile_size`             = 256,
+        `icon_width`            = 23,
         `icon_height`           = 23,
-        `icon_small_width`      = 23,
+        `icon_small_width`      = 16,
         `icon_small_height`     = 16,
-        `switch_icons_at_zoom`  = 16,
-        `visible`               = 5,
-        `default_zoom`          = 1
+        `switch_icons_at_zoom`  = 5,
+        `visible`               = 1,
+        `default_zoom`          = 5
       WHERE `id` = 21
       ;
     SQL
@@ -126,7 +129,10 @@ class UpdateTotKData < ActiveRecord::Migration[7.0]
     execute <<-SQL
       UPDATE `container`
       SET
+        `background_color`      = '#DEECFD',
         `icon`                  = 'Breath-of-the-Wild',
+        `default_pos_x`         = 70,
+        `default_pos_y`         = -59,
         `max_zoom`              = 8,
         `cluster_max_zoom`      = 9,
         `cluster_grid_size`     = 50,

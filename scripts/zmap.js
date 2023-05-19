@@ -392,6 +392,15 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    marker.complete        = false;
+	if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
+		
+		path = [];
+		JSON.parse(vMarker.path).forEach(function(vLatLng) {
+			path.push(new L.latLng(vLatLng));
+		  }, this);
+		marker.path = L.polyline(path, {color: categories[marker.categoryId].color});
+	}
+
    categories[marker.categoryId].total++;
    for (var i = 0; i < completedMarkers.length; i++) {
       if (marker.id == completedMarkers[i]) {
@@ -600,13 +609,22 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
      )
    {
      map.removeLayer(marker);
+	 if (marker.path != undefined && marker.path != null && marker.path != "") {
+		map.removeLayer(marker.path);
+	 }
      return;
   }
   if(this._shouldShowMarker(marker)) {
     marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
     map.addLayer(marker);
+	if (marker.path != undefined && marker.path != null && marker.path != "") {
+		marker.path.addTo(map);
+	}
   } else {
     map.removeLayer(marker);
+	if (marker.path != undefined && marker.path != null && marker.path != "") {
+		map.removeLayer(marker.path);
+	}
   }
 };
 

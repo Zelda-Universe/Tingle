@@ -51,6 +51,7 @@
                   , GROUP_CONCAT(coalesce(t.tab_text, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabText
 				      , GROUP_CONCAT(coalesce(t.user_id, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')      as tabUserId
 				      , GROUP_CONCAT(coalesce(t.username, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabUserName
+					  , path
 				      , m.global                     as globalMarker
 				      , m.visible
 				   from ' . $map_prefix . 'marker m

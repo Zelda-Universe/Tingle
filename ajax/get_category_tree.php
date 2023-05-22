@@ -1,7 +1,7 @@
 <?php
    $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
-   
+   include_once("$path/../config.php");
+
    $map = $_GET["game"];
 
    $query = 'select *

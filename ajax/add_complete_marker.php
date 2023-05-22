@@ -42,7 +42,7 @@
       //echo json_encode(array("success"=>false));
       echo json_encode(array("success"=>true, "msg"=>"Marker ".$_POST['markerId']." has been completed!"));
    } else {
-      echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
+      echo json_encode(array("success"=>false, "msg"=>$mysqli->error));
       rollback();
    }
    commit();

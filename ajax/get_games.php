@@ -2,6 +2,11 @@
    $path = DIRNAME(__FILE__);
    include("$path/../config.php");
 
+   if (file_exists("$path/ajax/static/games_" . $_GET["game"] . ".json")) {
+	   readfile("$path/ajax/static/games_" . $_GET["game"] . ".json");
+	   return;
+   }
+   
    $map = $_GET["game"];
     
    $query = "select c.id

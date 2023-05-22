@@ -1,6 +1,11 @@
 <?php
    $path = DIRNAME(__FILE__);
    include("$path/../config.php");
+
+   if (file_exists("$path/ajax/static/container_" . $_GET["game"] . ".json")) {
+	   readfile("$path/ajax/static/container_" . $_GET["game"] . ".json");
+	   return;
+   }
    
    $map = $_GET["game"];
     

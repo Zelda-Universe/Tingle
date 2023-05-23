@@ -1,6 +1,11 @@
 <?php
    $path = __DIR__;
 
+   if (file_exists("$path/ajax/static/map_" . $_GET["game"] . ".json")) {
+	   readfile("$path/ajax/static/map_" . $_GET["game"] . ".json");
+	   return;
+   }
+   
    $map = $_GET["game"];
 
    $query = "select m.id

@@ -3,6 +3,12 @@
 
   $path = __DIR__;
 
+   if (file_exists("$path/ajax/static/container_name_" . $_GET["game"] . ".json")) {
+	   readfile("$path/ajax/static/container_name_" . $_GET["game"] . ".json");
+	   return;
+   }
+   
+
 	if(empty($_GET["game"])) {
     print(json_encode(array(
       "success" => false,

@@ -1,24 +1,38 @@
 <?php
-   $path = __DIR__;
+  $path = __DIR__;
 
-   $map = $_GET["game"];
+  if (!isset($_GET["game"]) || empty($_GET["game"])) {
+    echo json_encode(array(
+      "success" => false,
+      "msg"     => "Must provide the game parameter with an integer!"
+    ));
+    return;
+  }
 
-   $query = 'select *
+  if (file_exists("$path/ajax/static/categories_tree_${_GET["game"]}.json")) {
+	  readfile("$path/ajax/static/categories_tree_${_GET["game"]}.json");
+	  return;
+  }
+
+  $map = $_GET["game"];
+
+  $query = 'select *
                from ' . $map_prefix . 'marker_category
               where parent_id is null
                 and container_id = ' . $map . '
                 and visible = 1
+                and marker_category_type_id <> 3
               order by id
             ';
 
-   $result = @$mysqli->query($query);
+  $result = @$mysqli->query($query);
 
 	if(!$result) {
 		print($mysqli->error);
 		return;
 	}
 
-   $arr_treeview = array();
+  $arr_treeview = array();
 
    while ($row = $result->fetch_array()) {
       $arr_child = array();

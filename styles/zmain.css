@@ -919,7 +919,10 @@ a.icon-close2 {
 	left: 12px !important;
 	right: 12px !important;
 	height: 50px !important;
-	width: auto !important;
+	width: 100% !important;
+
+    min-width:300px !important;
+	max-width:450px !important;
 }
 
 #desktopAds {
@@ -1345,3 +1348,19 @@ header.ex1 {
     background-color: rgba(50,50,50,.8) !important;
 }
 
+
+.TotK-label {
+	color: #f8efae;
+    text-shadow: #977f41 0px 0px 3px,   #977f41 0px 0px 3px,   #977f41 0px 0px 3px,
+                 #977f41 0px 0px 3px,   #977f41 0px 0px 3px,   #977f41 0px 0px 3px;
+    background-color: transparent;
+    box-shadow: none;
+    border: 0px;
+    font-size: 24px;
+	text-align: center;
+	line-height: 0.7;
+}
+
+.leaflet-tooltip-pane {
+	z-index: 400;
+}

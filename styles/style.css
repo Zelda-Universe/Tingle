@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?yy9fm4');
-  src:  url('fonts/icomoon.eot?yy9fm4#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?yy9fm4') format('truetype'),
-    url('fonts/icomoon.woff?yy9fm4') format('woff'),
-    url('fonts/icomoon.svg?yy9fm4#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?3ddjzj');
+  src:  url('fonts/icomoon.eot?3ddjzj#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?3ddjzj') format('truetype'),
+    url('fonts/icomoon.woff?3ddjzj') format('woff'),
+    url('fonts/icomoon.svg?3ddjzj#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -28,6 +28,18 @@
 .icon-Tears-of-the-Kingdom:before {
   content: "\e932";
   color: #fff;
+}
+.icon-TotK_AncientTablet:before {
+  content: "\e936";
+}
+.icon-TotK_CherryTree:before {
+  content: "\e933";
+}
+.icon-TotK_Lightroot:before {
+  content: "\e934";
+}
+.icon-TotK_Dispenser:before {
+  content: "\e935";
 }
 .icon-TotK_Well:before {
   content: "\e92a";
@@ -218,8 +230,8 @@
 .icon-TotK_Sages-Will:before {
   content: "\f111";
 }
-.icon-TotK_Lightroot:before {
-  content: "\f1bb";
+.icon-TotK_Battery:before {
+  content: "\f241";
 }
 .icon-TotK_SignNpc:before {
   content: "\f277";

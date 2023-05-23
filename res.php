@@ -138,8 +138,18 @@
   ## Update category checks
 
   $update = false;
+
+  if(
+        !$update
+    &&  isset($_GET['update'])
+    &&  (strtolower($_GET['update']) === "true")
+  ) {
+    // debug_log('Resource request is explicitly prompting an update.');
+    $update = true;
+  }
+
   // debug_log("update                 : ".var_export($update, true));
-  if(!$cacheRegistryFileExists) {
+  if(!$cacheRegistryFileExists || $update) {
     // debug_log('Registry file not currectly cached; copying over, inifying, and prompting an update...');
     $update = true;
     copy("$localRegistryFile", "$cacheRegistryFile")
@@ -152,15 +162,6 @@
   }
 
   // exit('Debug forced stop: '."\n".$debugLog); // Debug
-
-  if(
-        !$update
-    &&  isset($_GET['update'])
-    &&  (strtolower($_GET['update']) === "true")
-  ) {
-    // debug_log('Resource request is explicitly prompting an update.');
-    $update = true;
-  }
 
   if(
         !$update

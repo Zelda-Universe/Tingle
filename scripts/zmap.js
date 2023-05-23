@@ -4,7 +4,7 @@ function ZMap() {
    // Now that we have the changelog system using the database
    // with a field for each number, let's use 3 numbers and no
    // letters in the version.
-   this.version = '0.7.0';
+   this.version = '0.8.1';
 
    this.maps = [];
    this.games = [];
@@ -397,9 +397,14 @@ ZMap.prototype.addMarker = function(vMarker) {
    }
 
    var marker;
+   if (vMarker.markerCategoryTypeId != 3) {
       marker = new L.Marker([vMarker.y,vMarker.x], { title: vMarker.name
                                                    , icon: _this._createMarkerIcon(vMarker.markerCategoryId)
                                                    });
+   } else {
+	   marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
+	   marker.bindTooltip(vMarker.name, {permanent: true, className: mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
+   }
 
    marker.id              = vMarker.id;
    marker.title           = vMarker.name;
@@ -422,6 +427,15 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    marker.complete        = false;
+	if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
+		
+		path = [];
+		JSON.parse(vMarker.path).forEach(function(vLatLng) {
+			path.push(new L.latLng(vLatLng));
+		  }, this);
+		marker.path = L.polyline(path, {color: categories[marker.categoryId].color});
+	}
+
    categories[marker.categoryId].total++;
    for (var i = 0; i < completedMarkers.length; i++) {
       if (marker.id == completedMarkers[i]) {
@@ -634,17 +648,28 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
      )
    {
      map.removeLayer(marker);
+	 if (marker.path != undefined && marker.path != null && marker.path != "") {
+		map.removeLayer(marker.path);
+	 }
      return;
   }
   if(this._shouldShowMarker(marker)) {
     marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
     map.addLayer(marker);
+	if (marker.path != undefined && marker.path != null && marker.path != "") {
+		marker.path.addTo(map);
+	}
   } else {
     map.removeLayer(marker);
+	if (marker.path != undefined && marker.path != null && marker.path != "") {
+		map.removeLayer(marker.path);
+	}
   }
 };
 
 ZMap.prototype._shouldShowMarker = function(marker) {
+
+	if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
   return marker.visible
     && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
     && (
@@ -661,7 +686,37 @@ ZMap.prototype._shouldShowMarker = function(marker) {
         && marker.complete != true
       )
     ) // Should we show completed markers?
+
   ;
+	} else if (marker.categoryTypeId == 3) {
+	  return marker.visible
+	   // @TODO: HARDCODE for TotK Release, need better handling
+		&& mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
+		&& (
+		  (
+			mapOptions.categorySelectionMethod == "focus"
+			&& categories[marker.categoryId].visibleZoom <= map.getZoom()
+			&& (
+
+				   (
+					(marker.categoryId == 2163 && map.getZoom() <= 3)
+					|| (marker.categoryId == 2164 && map.getZoom() > 3 && map.getZoom() <= 5)
+					|| (marker.categoryId == 2165 && map.getZoom() > 5 && map.getZoom() <= 6)
+					|| (marker.categoryId == 2166 && map.getZoom() > 6 && map.getZoom() <= 8)
+				   )
+			   )
+		  )
+//		  || categories[marker.categoryId].userChecked
+		) // Check if we should show for the category, and at this zoom level
+		&& (
+		  mapOptions.showCompleted == true || (
+			mapOptions.showCompleted == false
+			&& marker.complete != true
+		  )
+		) // Should we show completed markers?
+
+	  ;
+	}
 }
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
@@ -1345,45 +1400,44 @@ ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
 }
 
 ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
-   for (var i = 0; i < completedMarkers.length; i++) {
-      if (completedMarkers[i] == vMarker.id) {
-         return;
-      }
-   }
-   completedMarkers.push(vMarker.id);
-   _this._doSetMarkerDoneIcon(vMarker, true);
-   if (user != null || user != undefined) {
-      $.ajax({
-              type: "POST",
-              url: "ajax.php?command=add_complete_marker",
-              data: {markerId: vMarker.id, userId: user.id},
-              success: function(data) {
-                  //data = jQuery.parseJSON(data);
-                  if (data.success) {
-                     categories[vMarker.categoryId].complete++;
-                  } else {
-                     toastr.error(_this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg));
-                     //alert(data.msg);
-                  }
-              }
-            });
-   } else {
-      categories[vMarker.categoryId].complete++;
-      setCookie('completedMarkers', JSON.stringify(completedMarkers));
-      if (!userWarnedAboutLogin) {
-         toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
-         userWarnedAboutLogin = true;
-      }
-   }
-   if (!mapOptions.showCompleted) {
-      // If we need to hide completed markers, remove the pin on top of the marker and reset the content of the map control
-      // Issue: https://github.com/Zelda-Universe/Zelda-Maps/issues/231
-      _this._closeNewMarker();
-      mapControl.resetContent();
-      _this.refreshMap();
-   }
-}
+  if (completedMarkers.some((cMId) => cMId == vMarker.id)) {
+    return;
+  }
 
+  if (user != null || user != undefined) {
+    $.ajax({
+      type: "POST",
+      url: "ajax.php?command=add_complete_marker",
+      data: { markerId: vMarker.id, userId: user.id },
+      success: function(data) {
+        if (data.success) {
+          completedMarkers.push(vMarker.id);
+          _this._doSetMarkerDoneIcon(vMarker, true);
+          categories[vMarker.categoryId].complete++;
+        } else {
+          toastr.error(_this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg));
+        }
+      }
+    });
+  } else {
+    completedMarkers.push(vMarker.id);
+    _this._doSetMarkerDoneIcon(vMarker, true);
+    categories[vMarker.categoryId].complete++;
+    setCookie('completedMarkers', JSON.stringify(completedMarkers));
+    if (!userWarnedAboutLogin) {
+      toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
+      userWarnedAboutLogin = true;
+    }
+  }
+
+  if (!mapOptions.showCompleted) {
+    // If we need to hide completed markers, remove the pin on top of the marker and reset the content of the map control
+    // Issue: https://github.com/Zelda-Universe/Zelda-Maps/issues/231
+    _this._closeNewMarker();
+    mapControl.resetContent();
+    _this.refreshMap();
+  }
+}
 
 if (!Array.prototype.filter) {
   Array.prototype.filter = function(fun/*, thisArg*/) {
@@ -1421,73 +1475,69 @@ if (!Array.prototype.filter) {
 }
 
 ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
-   completedMarkers = completedMarkers.filter(function(item) {
-      return item !== vMarker.id;
-   });
-   _this._doSetMarkerDoneIcon(vMarker, false);
-
-   if (user != null || user != undefined) {
-      $.ajax({
-              type: "POST",
-              url: "ajax.php?command=del_complete_marker",
-              data: {markerId: vMarker.id, userId: user.id},
-              success: function(data) {
-                  //data = jQuery.parseJSON(data);
-                  if (data.success) {
-                     categories[vMarker.categoryId].complete--;
-                  } else {
-                     toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
-                     //alert(data.msg);
-                  }
-              }
-            });
-   } else {
-      setCookie('completedMarkers', JSON.stringify(completedMarkers));
-      categories[vMarker.categoryId].complete--;
-      if (!userWarnedAboutLogin) {
-         toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
-         userWarnedAboutLogin = true;
+  if (user != null || user != undefined) {
+    $.ajax({
+      type: "POST",
+      url: "ajax.php?command=del_complete_marker",
+      data: { markerId: vMarker.id, userId: user.id },
+      success: function(data) {
+        if (data.success) {
+          vMIdx = completedMarkers.indexOf(vMarker.id);
+          if (vMIdx >= 0) completedMarkers.splice(vMIdx, 1);
+          _this._doSetMarkerDoneIcon(vMarker, false);
+          categories[vMarker.categoryId].complete--;
+        } else {
+          toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
+        }
       }
-   }
-   vMarker.complete = false;
-   if (!mapOptions.showCompleted) {
-      _this.refreshMap();
-   }
+    });
+  } else {
+    vMIdx = completedMarkers.indexOf(vMarker.id);
+    if (vMIdx >= 0) completedMarkers.splice(vMIdx, 1);
+    _this._doSetMarkerDoneIcon(vMarker, false);
+    setCookie('completedMarkers', JSON.stringify(completedMarkers));
+    categories[vMarker.categoryId].complete--;
+    if (!userWarnedAboutLogin) {
+      toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
+      userWarnedAboutLogin = true;
+    }
+  }
+  vMarker.complete = false;
+  if (!mapOptions.showCompleted) {
+    _this.refreshMap();
+  }
 }
 
 
 // This is done by ctrl + z
 ZMap.prototype.undoMarkerComplete = function() {
-   var mID = completedMarkers.pop();
-   if (mID != undefined) {
-      for (var i = 0; i < markers.length; i++) {
-         if (markers[i].id == mID) {
-            _this._doSetMarkerDoneIcon(markers[i], false);
-            if (user != null || user != undefined) {
-               $.ajax({
-                       type: "POST",
-                       url: "ajax.php?command=del_complete_marker",
-                       data: {markerId: mID, userId: user.id},
-                       success: function(data) {
-                           //data = jQuery.parseJSON(data);
-                           if (data.success) {
-                              categories[vMarker.categoryId].complete--;
-                           } else {
-                              toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
-                              //alert(data.msg);
-                           }
-                       }
-                     });
-
-            } else {
-               categories[markers[i].categoryId].complete--;
-               setCookie('completedMarkers', JSON.stringify(completedMarkers));
+  var mID = completedMarkers.pop();
+  if (mID != undefined) {
+    for (var i = 0; i < markers.length; i++) {
+      if (markers[i].id == mID) {
+        _this._doSetMarkerDoneIcon(markers[i], false);
+        if (user != null || user != undefined) {
+          $.ajax({
+            type: "POST",
+            url: "ajax.php?command=del_complete_marker",
+            data: {markerId: mID, userId: user.id},
+            success: function(data) {
+              if (data.success) {
+                categories[vMarker.categoryId].complete--;
+              } else {
+                toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
+              }
             }
-            //_this.refreshMap();
-            break;
-         }
+          });
+        } else {
+          categories[markers[i].categoryId].complete--;
+          setCookie('completedMarkers', JSON.stringify(completedMarkers));
+        }
+        //_this.refreshMap();
+        break;
       }
-   }
+    }
+  }
 }
 
 //****************************************************************************//
@@ -1913,7 +1963,7 @@ ZMap.prototype._createAccountForm = function(user) {
  * @param vGoTo.subMap          - Submap ID (Unique)
  * @param vGoTo.marker          - Marker to be opened (Takes precedence over subMap and Layer)
  **/
-ZMap.prototype.goTo = function(vGoTo) {
+ZMap.prototype.goTo = function(vGoTo, notByInput) {
    if (vGoTo.hideOthers) {
       for (var i = 0; i < markers.length; i++) {
          markers[i].visible = false;
@@ -1922,7 +1972,7 @@ ZMap.prototype.goTo = function(vGoTo) {
    }
 
    if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true);
+      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true, notByInput);
       // Open Marker already does a change map, so it takes precedence
 
       return;
@@ -1938,14 +1988,15 @@ ZMap.prototype.goTo = function(vGoTo) {
  *
  * @param vMarkerID             - Marker ID to be opened
  **/
-ZMap.prototype._openMarker = function(vMarkerId, vZoom) {
-   _openMarker(vMarkerId, vZoom, true, false);
-}
+ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin = true, vPanTo = false, notByInput) {
+  var marker = this.cachedMarkersById[vMarkerId];
+  if (marker) {
+    if (notByInput === true) {
+      mapControl.changeMapToMarker(marker);
+    } else {
+      mapControl.changeMap(marker.mapId, marker.submapId);
+    }
 
-ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin, vPanTo) {
-   var marker = this.cachedMarkersById[vMarkerId];
-   if(marker) {
-     mapControl.changeMap(marker.mapId, marker.submapId);
      marker.visible = true;
 
      if (!vZoom) {

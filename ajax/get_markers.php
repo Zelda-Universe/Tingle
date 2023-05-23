@@ -3,12 +3,10 @@
     $path = __DIR__;
   }
    if (file_exists("$path/ajax/static/markers_" . $_GET["game"] . ".json")) {
-	   readfile("$path/ajax/static   
-   if (file_exists("$path/ajax/static/markers_" . $_GET["game"] . ".json")) {
 	   readfile("$path/ajax/static/markers_" . $_GET["game"] . ".json");
 	   return;
    }
-	   
+
    /*
 	session_start("zmap");
    $query = 'select max(last_updated) as last_updated

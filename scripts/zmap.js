@@ -1382,45 +1382,44 @@ ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
 }
 
 ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
-   for (var i = 0; i < completedMarkers.length; i++) {
-      if (completedMarkers[i] == vMarker.id) {
-         return;
-      }
-   }
-   completedMarkers.push(vMarker.id);
-   _this._doSetMarkerDoneIcon(vMarker, true);
-   if (user != null || user != undefined) {
-      $.ajax({
-              type: "POST",
-              url: "ajax.php?command=add_complete_marker",
-              data: {markerId: vMarker.id, userId: user.id},
-              success: function(data) {
-                  //data = jQuery.parseJSON(data);
-                  if (data.success) {
-                     categories[vMarker.categoryId].complete++;
-                  } else {
-                     toastr.error(_this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg));
-                     //alert(data.msg);
-                  }
-              }
-            });
-   } else {
-      categories[vMarker.categoryId].complete++;
-      setCookie('completedMarkers', JSON.stringify(completedMarkers));
-      if (!userWarnedAboutLogin) {
-         toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
-         userWarnedAboutLogin = true;
-      }
-   }
-   if (!mapOptions.showCompleted) {
-      // If we need to hide completed markers, remove the pin on top of the marker and reset the content of the map control
-      // Issue: https://github.com/Zelda-Universe/Zelda-Maps/issues/231
-      _this._closeNewMarker();
-      mapControl.resetContent();
-      _this.refreshMap();
-   }
-}
+  if (completedMarkers.some((cMId) => cMId == vMarker.id)) {
+    return;
+  }
 
+  if (user != null || user != undefined) {
+    $.ajax({
+      type: "POST",
+      url: "ajax.php?command=add_complete_marker",
+      data: { markerId: vMarker.id, userId: user.id },
+      success: function(data) {
+        if (data.success) {
+          completedMarkers.push(vMarker.id);
+          _this._doSetMarkerDoneIcon(vMarker, true);
+          categories[vMarker.categoryId].complete++;
+        } else {
+          toastr.error(_this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg));
+        }
+      }
+    });
+  } else {
+    completedMarkers.push(vMarker.id);
+    _this._doSetMarkerDoneIcon(vMarker, true);
+    categories[vMarker.categoryId].complete++;
+    setCookie('completedMarkers', JSON.stringify(completedMarkers));
+    if (!userWarnedAboutLogin) {
+      toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
+      userWarnedAboutLogin = true;
+    }
+  }
+
+  if (!mapOptions.showCompleted) {
+    // If we need to hide completed markers, remove the pin on top of the marker and reset the content of the map control
+    // Issue: https://github.com/Zelda-Universe/Zelda-Maps/issues/231
+    _this._closeNewMarker();
+    mapControl.resetContent();
+    _this.refreshMap();
+  }
+}
 
 if (!Array.prototype.filter) {
   Array.prototype.filter = function(fun/*, thisArg*/) {
@@ -1458,73 +1457,69 @@ if (!Array.prototype.filter) {
 }
 
 ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
-   completedMarkers = completedMarkers.filter(function(item) {
-      return item !== vMarker.id;
-   });
-   _this._doSetMarkerDoneIcon(vMarker, false);
-
-   if (user != null || user != undefined) {
-      $.ajax({
-              type: "POST",
-              url: "ajax.php?command=del_complete_marker",
-              data: {markerId: vMarker.id, userId: user.id},
-              success: function(data) {
-                  //data = jQuery.parseJSON(data);
-                  if (data.success) {
-                     categories[vMarker.categoryId].complete--;
-                  } else {
-                     toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
-                     //alert(data.msg);
-                  }
-              }
-            });
-   } else {
-      setCookie('completedMarkers', JSON.stringify(completedMarkers));
-      categories[vMarker.categoryId].complete--;
-      if (!userWarnedAboutLogin) {
-         toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
-         userWarnedAboutLogin = true;
+  if (user != null || user != undefined) {
+    $.ajax({
+      type: "POST",
+      url: "ajax.php?command=del_complete_marker",
+      data: { markerId: vMarker.id, userId: user.id },
+      success: function(data) {
+        if (data.success) {
+          vMIdx = completedMarkers.indexOf(vMarker.id);
+          if (vMIdx >= 0) completedMarkers.splice(vMIdx, 1);
+          _this._doSetMarkerDoneIcon(vMarker, false);
+          categories[vMarker.categoryId].complete--;
+        } else {
+          toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
+        }
       }
-   }
-   vMarker.complete = false;
-   if (!mapOptions.showCompleted) {
-      _this.refreshMap();
-   }
+    });
+  } else {
+    vMIdx = completedMarkers.indexOf(vMarker.id);
+    if (vMIdx >= 0) completedMarkers.splice(vMIdx, 1);
+    _this._doSetMarkerDoneIcon(vMarker, false);
+    setCookie('completedMarkers', JSON.stringify(completedMarkers));
+    categories[vMarker.categoryId].complete--;
+    if (!userWarnedAboutLogin) {
+      toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
+      userWarnedAboutLogin = true;
+    }
+  }
+  vMarker.complete = false;
+  if (!mapOptions.showCompleted) {
+    _this.refreshMap();
+  }
 }
 
 
 // This is done by ctrl + z
 ZMap.prototype.undoMarkerComplete = function() {
-   var mID = completedMarkers.pop();
-   if (mID != undefined) {
-      for (var i = 0; i < markers.length; i++) {
-         if (markers[i].id == mID) {
-            _this._doSetMarkerDoneIcon(markers[i], false);
-            if (user != null || user != undefined) {
-               $.ajax({
-                       type: "POST",
-                       url: "ajax.php?command=del_complete_marker",
-                       data: {markerId: mID, userId: user.id},
-                       success: function(data) {
-                           //data = jQuery.parseJSON(data);
-                           if (data.success) {
-                              categories[vMarker.categoryId].complete--;
-                           } else {
-                              toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
-                              //alert(data.msg);
-                           }
-                       }
-                     });
-
-            } else {
-               categories[markers[i].categoryId].complete--;
-               setCookie('completedMarkers', JSON.stringify(completedMarkers));
+  var mID = completedMarkers.pop();
+  if (mID != undefined) {
+    for (var i = 0; i < markers.length; i++) {
+      if (markers[i].id == mID) {
+        _this._doSetMarkerDoneIcon(markers[i], false);
+        if (user != null || user != undefined) {
+          $.ajax({
+            type: "POST",
+            url: "ajax.php?command=del_complete_marker",
+            data: {markerId: mID, userId: user.id},
+            success: function(data) {
+              if (data.success) {
+                categories[vMarker.categoryId].complete--;
+              } else {
+                toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
+              }
             }
-            //_this.refreshMap();
-            break;
-         }
+          });
+        } else {
+          categories[markers[i].categoryId].complete--;
+          setCookie('completedMarkers', JSON.stringify(completedMarkers));
+        }
+        //_this.refreshMap();
+        break;
       }
-   }
+    }
+  }
 }
 
 //****************************************************************************//

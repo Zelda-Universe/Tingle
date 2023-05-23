@@ -23,7 +23,7 @@
 
    if ($result) {
 		//echo json_encode(array("success"=>false));
-      echo json_encode(array("success"=>true, "msg"=>"Marker ".$_POST['markerId']." has been as not completed!"));
+      echo json_encode(array("success"=>true, "msg"=>"Marker ".$_POST['markerId']." has no longer been marked as completed!"));
       commit();
    } else {
       echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));

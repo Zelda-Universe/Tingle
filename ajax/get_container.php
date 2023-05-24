@@ -3,6 +3,11 @@
 
    $path = __DIR__;
 
+   if (file_exists("$path/ajax/static/container_" . $_GET["game"] . ".json")) {
+	   readfile("$path/ajax/static/container_" . $_GET["game"] . ".json");
+	   return;
+   }
+   
    $map = $_GET["game"];
    // debug_log("map: $map");
 

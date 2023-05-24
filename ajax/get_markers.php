@@ -2,9 +2,14 @@
   if (!isset($_GET['newMarkerId'])) {
     $path = __DIR__;
   }
-  /*
-	  session_start("zmap");
-    $query = 'select max(last_updated) as last_updated
+   if (file_exists("$path/ajax/static/markers_" . $_GET["game"] . ".json")) {
+	   readfile("$path/ajax/static/markers_" . $_GET["game"] . ".json");
+	   return;
+   }
+
+   /*
+	session_start("zmap");
+   $query = 'select max(last_updated) as last_updated
                from ' . $map_prefix . 'marker m
 			         , ' . $map_prefix . 'map mp
               where m.map_id = mp.id
@@ -56,6 +61,7 @@
                   , GROUP_CONCAT(coalesce(t.tab_text, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabText
 				      , GROUP_CONCAT(coalesce(t.user_id, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')      as tabUserId
 				      , GROUP_CONCAT(coalesce(t.username, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabUserName
+					  , m.path
 				      , m.global                     as globalMarker
 				      , m.visible
 				   from ' . $map_prefix . 'marker m

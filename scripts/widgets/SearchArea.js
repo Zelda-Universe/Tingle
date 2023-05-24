@@ -24,7 +24,7 @@ SearchArea.prototype._initState = function(opts) {
     markerSearchField: this.markerSearchField,
     showSearchStats: true,
     markerSearchClick: function(marker, e) {
-      zMap.goTo({ marker: marker.id });
+      zMap.goTo({ marker: marker.id }, true);
     }
   });
   searchMarkerHandler.addHandler("markerListViewBuilt", opts.markerListViewBuiltHandler);

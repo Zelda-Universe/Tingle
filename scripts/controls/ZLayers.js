@@ -410,6 +410,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.currentMapLayer = vMap;
    },
 	// Needs improvements
+  // yea..
 	changeMap: function(mapId, subMapId) {
 		inputs = this._form.getElementsByTagName('input'),
 		inputsLen = inputs.length;
@@ -442,6 +443,24 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		}
 
 	},
+  // Default function relies on map control input elemens to contain a value.
+  // Creating separate functions for other consuming code without that dependency expectation, like selecting a search result.
+  changeMapOnly: function(mapId, subMapId) {
+    var newMap = maps.find((map) => map.originalId == mapId);
+    if (newMap && this.currentMapLayer.id != newMap.id) {
+      map.removeLayer(this.currentMapLayer);
+      map.addLayer(newMap);
+      this.currentMapLayer = newMap;
+      this.currentMapLayer.bringToBack();
+      map.fire("baselayerchange", this.currentMapLayer);
+
+      this.currentMap = mapId;
+      this.currentSubMap = subMapId;
+    }
+  },
+  changeMapToMarker: function(marker) {
+    this.changeMapOnly(marker.mapId, marker.submapId);
+  },
 
    isMobile: function() {
       return false;

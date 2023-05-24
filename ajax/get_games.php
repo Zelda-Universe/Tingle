@@ -1,27 +1,42 @@
 <?php
-   $path = __DIR__;
+  $path = __DIR__;
 
-   $query = "select c.id
+  if (!isset($_GET["game"]) || empty($_GET["game"])) {
+    echo json_encode(array(
+      "success" => false,
+      "msg"     => "Must provide the game parameter with an integer!"
+    ));
+    return;
+  }
+
+  if (file_exists("$path/ajax/static/games_${_GET["game"]}.json")) {
+	  readfile("$path/ajax/static/games_${_GET["game"]}.json");
+	  return;
+  }
+
+  $map = $_GET["game"];
+
+  $query = "select c.id
                   , c.short_name as shortName
                   , c.name
                   , c.icon
-               from " . $map_prefix . "container c
+               from ${map_prefix}container c
               where c.visible = 1
              order by c.id
-   ;";
-   //echo $query;
+  ;";
+  //echo $query;
 
-   $result = @$mysqli->query($query);
+  $result = @$mysqli->query($query);
 
 	if(!$result) {
 		print($mysqli->error);
 		return;
 	}
 
-   $res = array();
+  $res = array();
 
-   while ($row = $result->fetch_assoc()) {
-      array_push($res, $row);
-   }
-   echo json_encode($res);
+  while ($row = $result->fetch_assoc()) {
+    array_push($res, $row);
+  }
+  echo json_encode($res);
 ?>

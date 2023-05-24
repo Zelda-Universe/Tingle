@@ -8,8 +8,23 @@ $(document).on('keydown', globalKeyPressHandler);
 $.getJSON(
   "ajax.php?command=get_container&game=" + gameId,
   function(vResults) {
-     // Should only get only one map
-   $.each(vResults, function(i, vContainer) {
+    // Should only get only one map
+
+    // if (vResults.success === false) { # Bad condition, or overlap???? false without msg???????? no success, or no vR at alll, must not be empty cont list success, no db conn at least perm/constr has msg, so what else.....
+    //   notifyFatal('Container response provided!');
+    //   return 1;
+    // }
+    if (vResults.success === false) {
+      notifyFatal(vResults.msg);
+      return 2;
+    }
+
+    if (vResults.length == 0 || !vResults.every((vC)=>vC)) {
+      notifyFatal('No containers provided to load!');
+      return 3;
+    }
+
+    $.each(vResults, function(i, vContainer) {
       vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
       vContainer.collapsed                  = getUrlParamValue('collapsed', L.Browser.mobile);
       vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
@@ -31,7 +46,8 @@ $.getJSON(
       vContainer.showInfoControls           = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
 
       /* startArea entered as a csv to display/fit an area of the map on load */
-      vContainer.startArea                  = getUrlParamValue('startArea', "-168,102,-148,122");
+	  // @TODO: Validate this logic. It was breaking mobile + bad hardcode
+      //vContainer.startArea                  = getUrlParamValue('startArea', "-168,102,-148,122");
 
       if (vContainer.startArea) {
         vContainer.startArea = parseBounds(vContainer.startArea);
@@ -69,6 +85,5 @@ $.getJSON(
       $("#map").css("background-color", vContainer.bgColor);
       $("body").css("background-color", vContainer.bgColor);
       $("html").css("background-color", vContainer.bgColor);
-
    });
 });

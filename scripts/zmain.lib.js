@@ -231,3 +231,13 @@ function updateAdState() {
   var desktopAds = document.getElementById("desktopAds");
   if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
 };
+
+function notifyFatal(message) {
+  zlogger.error(
+    message, {
+    closeButton: true,
+    positionClass: "toast-top-full-width",
+    timeOut: 0,
+    extendedTimeOut: 0
+  });
+};

@@ -12,13 +12,19 @@ test -z "$container"; and begin
   or exit 1;
 end
 
-test -z "$submap"; and set submap "$argv[2]";
+test -z "$map"; and set map "$argv[2]";
+test -z "$map"; and begin
+  read map -P 'Map name: ' map;
+  or exit 1;
+end
+
+test -z "$submap"; and set submap "$argv[3]";
 test -z "$submap"; and begin
   read submap -P 'Submap name: ' submap;
   or exit 1;
 end
 
-test -z "$action"; and set action "$argv[3]";
+test -z "$action"; and set action "$argv[4]";
 test -z "$action"; and begin
   read action -P 'Action (link, unlink): ' action;
   or exit 1;
@@ -40,9 +46,9 @@ if test ! -e "$placeholderDir"
 end
 
 set realTilesContainerDir         "$tilesRootDir/$container";
-set realTilesSubmapDir            "$realTilesContainerDir/$submap";
+set realTilesSubmapDir            "$realTilesContainerDir/$map/$submap";
 set realTilesContainerDisabledDir "$disabledDir/$container";
-set realTilesSubmapDisabledDir    "$realTilesContainerDisabledDir/$submap";
+set realTilesSubmapDisabledDir    "$realTilesContainerDisabledDir/$map/$submap";
 
 # debugPrint "container: $container";
 # debugPrint "submap: $submap";
@@ -84,7 +90,7 @@ if test "$action" = 'link'
   ln -s "$placeholderDir" "$realTilesSubmapDir";
 else if test "$action" = 'unlink'
   if test ! -e "$realTilesSubmapDir"
-    errorPrint 'realTilesSubmapDir does not exist, so nothing to unlink; exiting...';
+    errorPrint "\"$realTilesSubmapDir\" does not exist, so nothing to unlink; exiting...";
     exit 7;
   end
 

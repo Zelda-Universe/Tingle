@@ -7,7 +7,7 @@
     global $config;
     $config = parse_ini_file(CONFIGFILE);
   }
-  function get_config($key, $default = null, $type = "string") {
+  function get_config($key, $type = "string", $default = null) {
     global $config;
     if(!isset($config)) die("Error: Config not loaded; exiting...");
 
@@ -16,6 +16,8 @@
         $default = 0;
       } else if(strtolower($type) === "boolean") {
         $default = 'true';
+      } else if(strtolower($type) === "string") {
+        $default = '';
       }
     }
 
@@ -39,7 +41,7 @@
 
   # Debug feature
   {
-    $debugLoggingMode = get_config('debugLoggingMode', default: 'errorLog');
+    $debugLoggingMode = get_config('debugLoggingMode', 'string', 'errorLog');
     // debug_log("debugLoggingMode: $debugLoggingMode");
   }
 
@@ -53,16 +55,16 @@
 
   # Database Config Loading
   {
-    $dbms         = get_config("DBMS"    );
-    $dbhost       = get_config("DBHOST"  );
-    $dbuser       = get_config("DBUSER"  );
-    $dbpasswd     = get_config("DBPASSWD");
-    $dbname       = get_config("DBNAME"  );
-    $dbport       = get_config("DBPORT"  ,    type: "int");
-    $dbsocket     = get_config("DBSOCKET");
-    $map_prefix   = get_config("PREFIX"  );
-    $minify       = get_config("minify",      type: "boolean");
-    $enableTests  = get_config("enableTests", type: "boolean");
+    $dbms         = get_config("DBMS"       , 'string', 'mysql' );
+    $dbhost       = get_config("DBHOST"     , 'string'          );
+    $dbuser       = get_config("DBUSER"     , 'string'          );
+    $dbpasswd     = get_config("DBPASSWD"   , 'string'          );
+    $dbname       = get_config("DBNAME"     , 'string'          );
+    $dbport       = get_config("DBPORT"     , 'int'             );
+    $dbsocket     = get_config("DBSOCKET"   , 'string'          );
+    $map_prefix   = get_config("PREFIX"     , 'string'          );
+    $minify       = get_config("minify"     , 'boolean', true   );
+    $enableTests  = get_config("enableTests", 'boolean', false  );
 
     // debug_log('dbms: '.$dbms);
     // debug_log('dbhost: '.$dbhost);
@@ -88,6 +90,7 @@
         $lostPasswordRandomGeneratorStrengthString, $lostPasswordRandomGeneratorStrengthStrings
       ) === false
     ) {
+      // Display notice instead of using a silent default since it could be an important setting for security.
       error_log("Miconfigured \"LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH\" setting; using the value \"MEDIUM\" by default.");
       $lostPasswordRandomGeneratorStrengthString = "MEDIUM";
     }
@@ -97,13 +100,13 @@
   # Mail
   {
     # Config Loading
-    $mailEnabled        = get_config('mailEnabled');
-    $mailServer         = get_config('server'     );
-    $mailPort           = get_config('port'     );
-    $mailUsername       = get_config('username' );
-    $mailPassword       = get_config('password' );
-    $mailReplyToAddress = get_config('replyToAddress');
-    $mailReplyToName    = get_config('replyToName');
+    $mailEnabled        = get_config('mailEnabled'    );
+    $mailServer         = get_config('server'         );
+    $mailPort           = get_config('port'           );
+    $mailUsername       = get_config('username'       );
+    $mailPassword       = get_config('password'       );
+    $mailReplyToAddress = get_config('replyToAddress' );
+    $mailReplyToName    = get_config('replyToName'    );
 
     $lostPasswordSubject = get_config("lostPasswordSubject");
     $lostPasswordBodyTemplateFilePath = get_config("lostPasswordBodyTemplateFilePath");

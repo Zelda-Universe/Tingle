@@ -1,4 +1,9 @@
 <?php
+  # https://stackoverflow.com/questions/666811/how-to-solve-fatal-error-class-mysqli-not-found
+  if (!function_exists('mysqli_init') && !extension_loaded('mysqli')) {
+    die('We don\'t have mysqli!!!');
+  }
+
   include_once(__DIR__."/lib/common/log.php");
 
   // debug_log('Config START');

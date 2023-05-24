@@ -1,21 +1,6 @@
 <?php
   $path = __DIR__;
 
-  if (!isset($_GET["game"]) || empty($_GET["game"])) {
-    echo json_encode(array(
-      "success" => false,
-      "msg"     => "Must provide the game parameter with an integer!"
-    ));
-    return;
-  }
-
-  if (file_exists("$path/ajax/static/games_${_GET["game"]}.json")) {
-	  readfile("$path/ajax/static/games_${_GET["game"]}.json");
-	  return;
-  }
-
-  $map = $_GET["game"];
-
   $query = "select c.id
                   , c.short_name as shortName
                   , c.name

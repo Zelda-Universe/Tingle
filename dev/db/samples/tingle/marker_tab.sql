@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: tingle
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -38,7 +38,7 @@ CREATE TABLE `marker_tab` (
   CONSTRAINT `fk_map_marker_tab_map_marker1` FOREIGN KEY (`marker_id`) REFERENCES `marker` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_marker_tab_marker_tab_status1` FOREIGN KEY (`marker_tab_status_id`) REFERENCES `marker_tab_status` (`id`),
   CONSTRAINT `fk_marker_tab_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4075 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24342 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

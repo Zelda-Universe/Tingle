@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: tingle
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -57,9 +57,9 @@ INSERT INTO `map` VALUES
   (27,4,'Eagle`s Tower',1,2,4,'(c) Nintendo',7,1),
   (28,4,'Turtle Rock',1,2,4,'(c) Nintendo',8,1),
   (29,4,'Color Dungeon',1,2,4,'(c) Nintendo',9,1),
-  (2101,21,'Hyrule',1,1,8,'',1,1),
-  (2102,21,'Sky',0,1,8,'',1,1),
-  (2103,21,'Underground',0,1,8,'',1,1)
+  (2101,21,'Surface',0,1,8,'',1,1),
+  (2102,21,'Sky',1,1,8,'',0,1),
+  (2103,21,'Depths',0,1,8,'',1,1)
 ;
 /*!40000 ALTER TABLE `map` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -73,4 +73,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 14:55:21
+-- Dump completed on 2023-05-24 12:59:53

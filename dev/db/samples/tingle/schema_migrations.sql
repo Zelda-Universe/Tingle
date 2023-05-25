@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: tingle
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -52,7 +52,10 @@ INSERT INTO `schema_migrations` VALUES
   ('20230403193442'),
   ('20230403195503'),
   ('20230405195637'),
-  ('20230509201500')
+  ('20230509201500'),
+  ('20230516154219'),
+  ('20230523175651'),
+  ('20230523182542')
 ;
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -66,4 +69,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-11 13:57:24
+-- Dump completed on 2023-05-24 12:09:22

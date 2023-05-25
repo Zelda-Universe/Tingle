@@ -57,9 +57,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint 'issueStep Start';
     if [[ "$#" -eq "1" ]]; then
       commandString="$1";
-    elif [[ "$#" -eq "2" ]]; then
+    elif [[ "$#" -gt "1" ]]; then
       description="$1";
       commandString="$2";
+      force="$3";
     fi
     # debugPrint "issueStep commandString: $commandString";
 
@@ -74,7 +75,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       )${NC}\n";
     fi
 
-    issueCommand "$commandString";
+    issueCommand \
+      "$commandString" \
+      "$force" \
+    ;
     commandStatus="$?";
     # debugPrint "commandStatus: $commandStatus";
 
@@ -96,11 +100,13 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   issueCommand() {
     # debugPrint 'issueCommand Start';
     commandString="$1";
+    force="$2";
+    # debugPrint "force: $force";
     # debugPrint "commandString: $commandString";
     # commandString="$(echo "$commandString" | sed 's|"|\\"|g')";
     # debugPrint "commandString: $commandString";
 
-    if [[ "$dryRun" == "false" ]]; then
+    if [[ "$dryRun" == 'false' || "$force" == 'true' ]]; then
       eval "$commandString";
       commandStatus="$?";
       # debugPrint "commandStatus: $commandStatus";
@@ -283,8 +289,17 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ]]; then
       issueStep \
         "Preparing existing data for later converging replacement." \
-        "bakStr=\"\$(grep -P '^-- Dump completed on (.+)?\$' '$filePath')\"" \
+        "
+          bakStrDumpCompl=\"\$(grep -P '^-- Dump completed on (.+)?\$' '$filePath')\";
+          bakStrDump=\"\$(grep -P '^-- MariaDB dump (.+)?\$' '$filePath')\";
+          bakStrSerVer=\"\$(grep -P '^-- Server version\s(.+)?\$' '$filePath')\";
+          bakStrDB=\"\$(grep -P '^-- Host: \S+\s+Database: (.+)?\$' '$filePath')\";
+        " \
       ;
+      # debugPrint "bakStrDumpCompl: $bakStrDumpCompl";
+      # debugPrint "bakStrDump: $bakStrDump";
+      # debugPrint "bakStrSerVer: $bakStrSerVer";
+      # debugPrint "bakStrDB: $bakStrDB";
     fi
   }
 
@@ -296,7 +311,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       if [[ "$convergeInPlace" == "true" ]]; then
         issueStep \
           "Converging database SQL formats by replacing less important details with those from the previous file." \
-          "sed -r -i 's|^-- Dump completed on (.+)?\$|$bakStr|' '$filePath';
+          "
+            sed -r -i 's|^-- Dump completed on (.+)?\$|$bakStrDumpCompl|' '$filePath';
+            sed -r -i 's|^-- MariaDB dump (.+)?\$|$bakStrDump|' '$filePath';
+            sed -r -i 's|^-- Server version\s(.+)?\$|$bakStrSerVer|' '$filePath';
+            sed -r -i 's|^-- Host: \S+\s+Database: (.+)?\$|$bakStrDB|' '$filePath';
           " \
         ;
       else
@@ -305,8 +324,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
           "sed -r -f                \
             '$convergeSedFilePath'  \
             '$filePath'             \
-            > "$convergedFilePath";
-          " \
+            > "$convergedFilePath"  \
+          ;" \
         ;
       fi
     fi
@@ -331,7 +350,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   [[ -z "$cleanOnFailure"   ]] &&      cleanOnFailure="true"        ;
   [[ -z "$converge"         ]] &&            converge="false"       ;
   [[ -z "$convergeInPlace"  ]] &&     convergeInPlace="false"       ;
-  [[ -z "$dbName"           ]] &&              dbName="tingle"      ;
+  [[ -z "$databaseName"     ]] &&        databaseName="tingle"      ;
   [[ -z "$dbClientExe"      ]] &&         dbClientExe="mariadb"     ;
   [[ -z "$dbDumpExe"        ]] &&           dbDumpExe="mariadb-dump";
   [[ -z "$dryRun"           ]] &&              dryRun="false"       ;
@@ -355,7 +374,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   # debugPrint "converge: $converge";
   # debugPrint "convergeInPlace: $convergeInPlace";
   # debugPrint "oneFile: $oneFile";
-  # debugPrint "dbName: $dbName";
+  # debugPrint "databaseName: $databaseName";
   # debugPrint "outputName: $outputName";
   # debugPrint "dbDumpExe: $dbDumpExe";
   # debugPrint "dbClientExe: $dbClientExe";
@@ -369,16 +388,32 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   {
     # Loops as required.
     while [[ -z "$databaseUser" ]]; do
-      read -p "Database Username: " databaseUser;
+      if [[ -z "$databaseConnectionString" ]]; then
+        if [[ -z "$databaseUser" ]]; then
+          databaseUser="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.username')";
+          # debugPrint "databaseUser: $databaseUser";
+        fi
+        if [[ -z "$databaseUser" ]]; then
+          read -p "Database Username: " databaseUser;
+          echo;
+        fi
+      fi
     done
 
     # Only asks once as optional if no other connection information is provided first.
     if [[ -z "$databasePassword" ]]; then
-      if [[ -z "$DATABASE_CONNECTION_STRING" ]]; then
-        # echo "$DATABASE_CONNECTION_STRING" | grep -vq " -p" && \
-        # echo "$DATABASE_CONNECTION_STRING" | grep -vq " --password"; then
-        read -s -p "Database Password: " databasePassword;
-        echo;
+      if [[ -z "$databaseConnectionString" ]]; then
+        if [[ -z "$databasePassword" ]]; then
+          # databasePassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
+          databasePassword="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.password')";
+          # debugPrint "databasePassword: $databasePassword";
+        fi
+        if [[ -z "$databasePassword" ]]; then
+          # echo "$databaseConnectionString" | grep -vq " -p" && \
+          # echo "$databaseConnectionString" | grep -vq " --password"; then
+          read -s -p "Database Password: " databasePassword;
+          echo;
+        fi
       fi
     # else
       #databasePassword="$(echo "$databasePassword" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
@@ -388,19 +423,30 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # echo "$databasePassword"
     # echo "$databasePassword" | sed -r "s|([\`'\"\$])|\\\\\1|g";
     # databasePassword="$(echo "$databasePassword" | sed -r "s|([\`'\"\$\\])|\\\\\1|g")";
-    # exit
+    databasePassword="$(echo "$databasePassword" | sed -r "s|([\`\"\$\\])|\\\\\1|g")";
+    # debugPrint "databasePassword: $databasePassword";
 
     # [[ -z "$otherConnectionOptions" ]] && otherConnectionOptions="";
-    [[ -z "$databaseConnectionString" ]] && databaseConnectionString="$otherConnectionOptions -u'$databaseUser' -p"$databasePassword"";
+    if [[ -z "$databaseConnectionString" ]]; then
+      databaseConnectionString="$otherConnectionOptions --user='$databaseUser' --password=\"$databasePassword\"";
+      if [[ -n "$databaseHost" ]]; then
+        databaseConnectionString+=" --host='$databaseHost'";
+      fi
+      if [[ -n "$databaseSocket" ]]; then
+        databaseConnectionString+=" --protocol=socket --socket='$databaseSocket'";
+      elif [[ -n "$databasePort" ]]; then
+        databaseConnectionString+=" --port='$databasePort'";
+      fi
+    fi
   }
 
   [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]] && dbDumpCommonOptions="--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
   dbDumpCommonOptions="$dbDumpCommonOptions $databaseConnectionString";
-  dbDumpCommonOptions="$dbDumpCommonOptions $dbName";
+  dbDumpCommonOptions="$dbDumpCommonOptions $databaseName";
 
   if [[ -z "$dbClientCommonOptions" ]]; then
     dbClientCommonOptions="$dbClientCommonOptions $databaseConnectionString";
-    dbClientCommonOptions="$dbClientCommonOptions --database=$dbName";
+    dbClientCommonOptions="$dbClientCommonOptions --database=$databaseName";
     dbClientCommonOptions="$dbClientCommonOptions $verboseString";
   fi
 
@@ -410,10 +456,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   ignoreTablesOptions='';
   for table in $removeAITables; do
-    ignoreTablesOptions+="--ignore-table='$dbName.$table' ";
+    ignoreTablesOptions+="--ignore-table='$databaseName.$table' ";
   done
 
-  # For the more involved remove AI process.s
+  # For the more involved remove AI process.
   structureOnlyOptions="--no-data";
   dataOnlyOptions="$dataOnlyOptions --no-create-info";
   dataOnlyOptions="$dataOnlyOptions --skip-add-drop-table";
@@ -502,7 +548,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     echo -e "\tconvergeInPlace - Like converge, but does not alter the result file name, and runs an alternate, more limited, set of pattern replacements to better show only content changes with the primary samples. Do not store this!! (Current: $convergeInPlace)";
     echo -e "\tdbClientExe    - The executable to use when issuing certain custom commands to the database server. (Current: $dbClientExe)";
     echo -e "\tdbDumpExe      - The executable to use when exporting data from the database server. (Current: $dbDumpExe)";
-    echo -e "\tdbName         - The name of the database schema to work with. (Current: $dbName)";
+    echo -e "\tdatabaseName   - The name of the database schema to work with. (Current: $databaseName)";
     echo -e "\tdryRun         - Output step commands, but do not execute them. (Current: $dryRun)";
     echo -e "\tfailFast       - Stop when a single step encounters a problem. (Current: $failFast)";
     echo -e "\toneFile        - Enables the mode to output result data in a single file in the root directory, versus separate ones in a respective subdirectory. (Current: $oneFile)";
@@ -524,7 +570,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     echo -e "\tconvergeInPlace:  $(pTWSC "$convergeInPlace" )";
     echo -e "\tdbClientExe    :  $dbClientExe"                ;
     echo -e "\tdbDumpExe      :  $dbDumpExe"                  ;
-    echo -e "\tdbName         :  $dbName"                     ;
+    echo -e "\tdatabaseName   :  $databaseName"               ;
     echo -e "\tdryRun         :  $(pTWSC "$dryRun"          )";
     echo -e "\tfailFast       :  $(pTWSC "$failFast"        )";
     echo -e "\toneFile        :  $(pTWSC "$oneFile"         )";
@@ -539,7 +585,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 ## Main Program Flow
 {
   trap ' \
-    statusPrint "${RED}User cancels process; checking to clean now...${NC}"; \
+    statusPrint "${RED}User cancels process; checking to clean now...${NC}\n"; \
     cleanAndExit 1; \
   ' INT KILL TERM STOP;
 
@@ -549,26 +595,34 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   {
     issueStep \
       'Test executing database client.' \
-      "type -t "$dbClientExe" > /dev/null";
+      "type -t "$dbClientExe" > /dev/null" \
+      'true' \
+      ;
     issueStep \
       'Test executing database dump.' \
-      "type -t "$dbDumpExe" > /dev/null";
+      "type -t "$dbDumpExe" > /dev/null" \
+      'true' \
+      ;
     issueStep \
       'Test client connection to database.' \
-      "echo \
-      | '$dbClientExe' \
-        $dbClientCommonOptions \
+      "echo                     \
+      | '$dbClientExe'          \
+        $dbClientCommonOptions  \
         $errorRedirectionString \
-      " \
+      "       \
+      'true'  \
     ;
-    issueStep \
-      'Test dump connection to database.' \
-      "'$dbDumpExe' \
-        $dbDumpCommonOptions \
-        > /dev/null \
-        $errorRedirectionString \
-      " \
-    ;
+    # Remove or change to better / more efficient test command.
+    # Probably freezing due to a lot of data..
+    # issueStep \
+    #   'Test dump connection to database.' \
+    #   "'$dbDumpExe'             \
+    #     $dbDumpCommonOptions    \
+    #     > /dev/null             \
+    #     $errorRedirectionString \
+    #   "       \
+    #   'true'  \
+    # ;
   }
 
   # debugPrint "oneFile: $oneFile";
@@ -635,13 +689,20 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   else
     # debugPrint "Not oneFile Start";
     ## Export to multiple, individual files.
-    defaultTableNames="$(            \
-      "$dbClientExe"          \
-      $dbClientCommonOptions  \
-      -e 'SHOW TABLES'        \
-      --batch                 \
-      --skip-column-names     \
-    ;)";
+    issueStep \
+      'Reading and storing list of tables...' \
+      "defaultTableNames=\"\$(  \
+        '$dbClientExe'          \
+        $dbClientCommonOptions  \
+        -e 'SHOW TABLES'        \
+        --batch                 \
+        --skip-column-names     \
+      ;)\"
+    ";
+    if [[ -z "$defaultTableNames" ]]; then
+      errorPrint 'Could not retrieve list of table names, or there are none; exiting...';
+      exit 1;
+    fi
     [[ -z "$tableNames" ]] && tableNames="$defaultTableNames";
     # debugPrint "defaultTableNames: $defaultTableNames";
     # debugPrint "tableNames: $tableNames";
@@ -767,6 +828,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   ## Converge Warning Message
   if [[ "$converge" == "true" ]]; then
+    echo 'Since the in place setting was enabled, important information may not be updated.' > "$SDIR/do-not-commit-converged-sql-files";
     echo;
     echo "Important Note: The 'converge' option is enabled.  Do NOT store these exported SQL files permanently in source control OR import them into any database, ESPECIALLY if they are overwritten in place!
     They are for comparing important differences more easily and quickly by removing any less important or always differing information such as defaults and other details *to the content*, but are still important for proper function for the data in its respective sources.

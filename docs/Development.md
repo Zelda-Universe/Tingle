@@ -146,15 +146,17 @@
 
 ## Migrations
 
-  Tracking database changes to use in the future for features and bug fixes is important, and we will create migration files that can be easily issued in any environment.
+  Description:
 
-  Thought it would be easy to utilize other projects' existing mechanisms, and I have been using Ruby on Rails lately that seems to do a good job of it.
-  https://github.com/thuss/standalone-migrations
+    Tracking database changes to use in the future for features and bug fixes is important, and we will create migration files that can be easily issued in any environment.
 
-  Now that only accomplishes half of the responsibility.  In order to operate on that actual database content data, we don't have ActiveRecord objects to use as an API, so we just implement raw SQL for these, and make sure that both of the `up` and `down` methods are made as appropriate as possible, if both methods possible for that certain situation.
+    Thought it would be easy to utilize other projects' existing mechanisms, and I have been using Ruby on Rails lately that seems to do a good job of it.
+    https://github.com/thuss/standalone-migrations
 
-  It seems we must only pass a single SQL statement per block to avoid a security risk, otherwise it keeps receiving a syntax error only when sent through the migration framework.. https://stackoverflow.com/questions/14856856/how-to-write-sql-in-a-migration-in-rails#comment86794302_42991237
-  `Mysql2::Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UPDATE....'`
+    Now that only accomplishes half of the responsibility.  In order to operate on that actual database content data, we don't have ActiveRecord objects to use as an API, so we just implement raw SQL for these, and make sure that both of the `up` and `down` methods are made as appropriate as possible, if both methods possible for that certain situation.
+
+    It seems we must only pass a single SQL statement per block to avoid a security risk, otherwise it keeps receiving a syntax error only when sent through the migration framework.. https://stackoverflow.com/questions/14856856/how-to-write-sql-in-a-migration-in-rails#comment86794302_42991237
+    `Mysql2::Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UPDATE....'`
 
   Important Note: Do not edit a migration that has been pushed (to others).
 
@@ -178,7 +180,7 @@
     - Check which version of the tool you are currently using
       - `rake db:version`
     - Manually generate a timestamp:
-      - `date -u "+%Y%m%d%H%M%S" | putclip`
+      - `date -u "+%Y%m%d%H%M%S" | head -c -1`
 
   - Samples:
     - ActiveRecord Ruby Code:
@@ -186,8 +188,10 @@
       - Source: https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
       - Note: Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
       - Add column:
-        - Code: `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
+        - Code (Table 'batch' block): `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
         - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
+        - Code (Individual field): `add_column :marker, :path, :text, null: false, default: '', after: :global`
+        - Source: `dev/db/migrate/20230523175651_marker_add_path_column.rb`
       - Changing Columns:
         - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-columns
         - Change table common code:

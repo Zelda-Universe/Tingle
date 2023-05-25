@@ -50,4 +50,5 @@ MapsMenu.prototype._addMapsMenuEntry = function(categoryButton) {
 MapsMenu.prototype.customToggle = function() {
   this.onToggle(this.toggledOn, this.category);
   mapControl.resetContent();
+  mapControl._mapsButton.clear();
 };

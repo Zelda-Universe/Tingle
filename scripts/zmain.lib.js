@@ -79,13 +79,13 @@ function getMapCategoriesTree() {
 };
 
 function getGames() {
+   $.getJSON("ajax.php?command=get_games", function(vResults) {
+      if (vResults.success === false || vResults.length === 0) return;
 
-   $.getJSON("ajax.php?command=get_games", function(vResults){
       $.each(vResults, function(i,map){
-         zMap.addGame(map);
+        zMap.addGame(map);
       });
    });
-
 };
 
 function getMaps() {

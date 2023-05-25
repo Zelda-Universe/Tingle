@@ -107,25 +107,6 @@ INSERT INTO `marker_category` VALUES
   (328,322,1,3,'Chefes',1,'map_boss','#000000',5,1),
   (329,322,2,3,'Marcadores de Pulo',1,'map_jump','#000000',5,1),
   (330,322,3,3,'Lugares',1,'map_places','#000000',5,1),
-  (400,NULL,1,4,'Itens',1,'map_item','#000000',5,1),
-  (401,400,1,4,'Itens comuns',1,'map_item','#000000',5,1),
-  (402,400,1,4,'Mapa',1,'map_map','#000000',5,1),
-  (403,400,1,4,'Bússola',1,'map_compass','#000000',5,1),
-  (404,400,1,4,'Chave',1,'map_key','#000000',5,1),
-  (405,400,1,4,'Coração',1,'map_heart','#000000',5,1),
-  (415,NULL,1,4,'Segredos',1,'map_secret','#000000',5,1),
-  (416,415,1,4,'Secret Seashell ',1,'placeholder','#000000',5,1),
-  (417,415,1,4,'Mad Batter',1,'placeholder','#000000',5,1),
-  (418,415,1,4,'Easter Egg ',1,'map_gambling','#000000',5,1),
-  (419,415,1,4,'Trocas',1,'map_move','#000000',5,1),
-  (420,415,1,4,'Portal',1,'map_tloz_warp','#000000',5,1),
-  (421,415,1,4,'Rupees',1,'map_rupee','#000000',5,1),
-  (430,NULL,1,4,'Pontos de Interesse ',1,'map_poi','#000000',5,1),
-  (431,430,1,4,'Informação',1,'map_info','#000000',5,1),
-  (432,430,1,4,'Level',1,'map_dungeon','#000000',5,1),
-  (433,430,1,4,'Chefe',1,'map_boss','#000000',5,1),
-  (434,430,3,4,'Lugares',1,'map_places','#000000',5,1),
-  (435,430,2,4,'Marcadores de Pulo',1,'map_jump','#000000',5,1),
   (500,NULL,1,5,'Itens',1,'map_item','#000000',5,1),
   (501,500,1,5,'Itens comuns',1,'map_item','#000000',5,1),
   (502,500,1,5,'Garrafa',1,'map_bottle','#000000',5,1),
@@ -307,4 +288,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-16 14:48:02
+-- Dump completed on 2023-05-25 13:40:30

@@ -33,6 +33,13 @@
         * Edit the newly copied `.env` file to your database's parameters for connection location and account credentials.
     * Set-up web server
       * Linux:
+        * Compile:
+          * https://www.php.net/distributions/
+            * Current servers running 7.0.33.
+            * Using 7.4.33.
+          * https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
+          * Or: https://askubuntu.com/questions/134666/what-is-the-easiest-way-to-enable-php-on-nginx
+        * Packages:
         * `sudo dnf install nginx php-fpm php-mysqlnd`
           * https://www.php.net/manual/en/mysqli.installation.php
         * `sudo mkdir -p /etc/nginx`
@@ -88,6 +95,7 @@
         * Now the mysqlnd package.
         * (Old?) Make sure it is enabled in `php.ini`.  Just uncomment the extension line most likely.
       * Optional: Install php zend extension xdebug
+        * https://xdebug.org/wizard
         * https://stackify.com/php-debugging-guide/
           * Download
             * https://xdebug.org/docs/install#windows

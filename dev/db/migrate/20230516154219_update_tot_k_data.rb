@@ -16,10 +16,6 @@ class UpdateTotKData < ActiveRecord::Migration[7.0]
     '20230509201500_add_tot_k_data.rb'
   end
 
-  def database
-    connection.instance_variable_get(:@config)[:database]
-  end
-
   def up
     execute <<-SQL
       DELETE FROM `marker`
@@ -154,7 +150,7 @@ class UpdateTotKData < ActiveRecord::Migration[7.0]
 
     sqlFileNamesDown.each do |sqlFileName|
       sqlFile = sprintf(filePathPattern, sqlFileName);
-      print "sqlFile: #{sqlFile}"
+      # print "sqlFile: #{sqlFile}"
       execute File.open(sqlFile).read
     end
   end

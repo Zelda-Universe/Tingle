@@ -180,7 +180,7 @@
     - Check which version of the tool you are currently using
       - `rake db:version`
     - Manually generate a timestamp:
-      - `date -u "+%Y%m%d%H%M%S" | putclip`
+      - `date -u "+%Y%m%d%H%M%S" | head -c -1`
 
   - Samples:
     - ActiveRecord Ruby Code:
@@ -191,7 +191,7 @@
         - Code (Table 'batch' block): `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
         - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
         - Code (Individual field): `add_column :marker, :path, :text, null: false, default: '', after: :global`
-        - Source: `...`
+        - Source: `dev/db/migrate/20230523175651_marker_add_path_column.rb`
       - Changing Columns:
         - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-columns
         - Change table common code:

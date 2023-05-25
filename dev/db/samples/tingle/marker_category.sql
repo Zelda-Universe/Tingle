@@ -40,7 +40,7 @@ CREATE TABLE `marker_category` (
   CONSTRAINT `fk_marker_category_map_container1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`),
   CONSTRAINT `fk_marker_category_marker_category1` FOREIGN KEY (`parent_id`) REFERENCES `marker_category` (`id`),
   CONSTRAINT `fk_marker_category_marker_category_type1` FOREIGN KEY (`marker_category_type_id`) REFERENCES `marker_category_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2162 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2171 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -238,7 +238,7 @@ INSERT INTO `marker_category` VALUES
   (2120,NULL,1,21,'Locations',1,'BotW_Locations','#8e72b9',5,1),
   (2121,2120,1,21,'Village',1,'BotW_Village','#8e72b9',5,1),
   (2122,2120,1,21,'Town (House)',1,'BotW_Farm','#8e72b9',5,0),
-  (2123,2120,1,21,'Sheikah Tower',1,'BotW_Sheikah-Tower','#8e72b9',0,1),
+  (2123,2120,1,21,'Skyview Tower',1,'BotW_Sheikah-Tower','#8e72b9',0,1),
   (2124,2120,1,21,'Shops',1,'General_Store','#8e72b9',5,1),
   (2125,2120,1,21,'Shrine of Light',1,'BotW_Shrines-of-Trials','#8e72b9',2,1),
   (2126,2120,1,21,'Lightroot',1,'TotK_Lightroot','#8e72b9',0,1),
@@ -274,7 +274,16 @@ INSERT INTO `marker_category` VALUES
   (2158,2110,1,21,'Treasure Chest (Sage\'s Will)',1,'TotK_Sages-Will','#3cbc75',6,1),
   (2159,2110,1,21,'Treasure Chest (Treasure Map)',1,'General_Map','#3cbc75',6,1),
   (2160,2130,1,21,'Frox',1,'BotW_Boss','#ff422e',6,1),
-  (2161,2130,1,21,'Boss',1,'BotW_Boss','#ff422e',6,1)
+  (2161,2130,1,21,'Boss',1,'BotW_Boss','#ff422e',6,1),
+  (2162,NULL,3,21,'Labels',1,'General_Map','#3cbc75',6,1),
+  (2163,2162,3,21,'Region Labels',1,'','',2,1),
+  (2164,2162,3,21,'Area Labels',1,'','',3,1),
+  (2165,2162,3,21,'Places Labels',1,'','',3,1),
+  (2166,2162,3,21,'Places Labels - Close',1,'','',3,1),
+  (2167,2101,1,21,'Device Dispenser',1,'TotK_Dispenser','#4bc5ee',6,1),
+  (2168,2101,1,21,'Cherry Tree',1,'TotK_CherryTree','#4bc5ee',6,1),
+  (2169,2101,1,21,'Ancient Tablet',1,'TotK_AncientTablet','#4bc5ee',6,1),
+  (2170,2130,1,21,'Gloom Hands',1,'BotW_Boss','#ff422e',6,1)
 ;
 /*!40000 ALTER TABLE `marker_category` ENABLE KEYS */;
 UNLOCK TABLES;

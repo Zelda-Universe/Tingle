@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: tingle
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -30,7 +30,7 @@ CREATE TABLE `changelog` (
   `hidden` tinyint(1) NOT NULL DEFAULT 0,
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,12 @@ INSERT INTO `changelog` VALUES
   (35,0,7,0,0,'<b>Sub-map support:</b> Sub-maps cover areas like dungeons. You can view a list of all sub-maps for a given game by clicking on \"Switch Maps\". For LA, we\'ve got maps for every dungeon. We\'re looking into ways to incorporate sub-maps into the Breath of the Wild side of things, too.'),
   (36,0,7,0,0,'<b>Reset completed markers:</b> You can now reset your completed marker progress from your account settings. Super useful if you\'re starting a new run.'),
   (37,0,7,0,0,'<b>Category completion progress:</b> Hovering over marker categories will now show you how many markers you\'ve completed out of the category total.'),
-  (38,0,7,0,0,'<b>Embed codes for markers:</b> In addition to being able to get a permalink for each marker, you can now get an iframe embed code. Embeds show a nice zoomed in view of the selected marker.')
+  (38,0,7,0,0,'<b>Embed codes for markers:</b> In addition to being able to get a permalink for each marker, you can now get an iframe embed code. Embeds show a nice zoomed in view of the selected marker.'),
+  (39,0,8,0,0,'<b>Tears of the Kingdom is here!</b> Please take notice of the Switch Maps option in order to access other areas'),
+  (40,0,8,0,0,'<b>5,182 markers added!</b> We are still 8 Koroks short, so let us know if you find them!'),
+  (41,0,8,1,0,'<b>Region Labels added!</b> Should make your life easy on your quest for 100%'),
+  (42,0,8,1,0,'<span color=\"red\"><b>Did you know?</b></span> On Desktop, you can press ESC key to hide the category menu! Also, logged in users don\'t see ads!'),
+  (43,0,8,1,0,'<span color=\"red\"><b>Any feedback?</b></span> Please send a tweet to our dev: https://twitter.com/ninzel !')
 ;
 /*!40000 ALTER TABLE `changelog` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -91,4 +96,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 13:13:43
+-- Dump completed on 2023-05-24 12:59:48

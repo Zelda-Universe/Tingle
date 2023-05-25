@@ -1047,9 +1047,9 @@ header.ex1 {
 	float: none;
 	box-sizing: content-box;
 	text-align: left;
-	height: 75px !important;
-	padding: 12px 16px !important;
-	margin-left: 0;
+	height: 66px !important;
+	padding: 17px 0px 17px 12px!important;
+    margin-left: 0;
 	margin-right: 0;
 }
 

@@ -7,12 +7,12 @@
 
 	if (!isset($_SESSION['user_id']) || !isset($_SESSION['username']) || !isset($_SESSION['level'])) {
 		session_destroy();
-		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
+		echo json_encode(array("success"=>false, "msg"=>"Session - Not Logged!"));
 		return;
 	};
 
    if (!isset($_COOKIE['user_id']) || !isset($_COOKIE['username'])) {
-		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
+		echo json_encode(array("success"=>false, "msg"=>"Cookie - Not Logged!"));
 		return;
    }
 

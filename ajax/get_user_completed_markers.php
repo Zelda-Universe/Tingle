@@ -4,6 +4,9 @@
    	 include_once("$path/../config.php");
    }
 
+   $game = $mysqli->real_escape_string($_GET["game"]);
+   $userId = $mysqli->real_escape_string($_GET["userId"]);
+
    $query = 'select m.id markerId
 				   from ' . $map_prefix . 'marker m
                   , ' . $map_prefix . 'marker_category mc
@@ -13,11 +16,11 @@
               where m.marker_category_id = mc.id
 				    and m.submap_id = smp.id
                 and smp.map_id = mp.id
-				    and mp.container_id = ' . $_GET["game"] . '
+				    and mp.container_id = ' . $game . '
                 and m.visible = 1
                 and mc.visible = 1
                 and ucm.marker_id = m.id
-                and ucm.user_id = ' . $_GET["userId"] .'
+                and ucm.user_id = ' . $userId .'
                 ';
 
    //echo $query . "\n";

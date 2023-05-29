@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?3ddjzj');
-  src:  url('fonts/icomoon.eot?3ddjzj#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?3ddjzj') format('truetype'),
-    url('fonts/icomoon.woff?3ddjzj') format('woff'),
-    url('fonts/icomoon.svg?3ddjzj#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?q5au6g');
+  src:  url('fonts/icomoon.eot?q5au6g#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?q5au6g') format('truetype'),
+    url('fonts/icomoon.woff?q5au6g') format('woff'),
+    url('fonts/icomoon.svg?q5au6g#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-BotW_Icon_Talus:before {
+  content: "\e937";
+  color: #fff;
+}
+.icon-BotW_Icon_Molduga:before {
+  content: "\e938";
+  color: #fff;
+}
+.icon-BotW_Bomb:before {
+  content: "\e939";
+  color: #fff;
+}
 .icon-Tears-of-the-Kingdom:before {
   content: "\e932";
   color: #fff;
@@ -151,9 +163,6 @@
 }
 .icon-BotW_Village:before {
   content: "\e91d";
-}
-.icon-BotW_Bomb:before {
-  content: "\e91e";
 }
 .icon-BotW_Weapons:before {
   content: "\e91f";

@@ -1,17 +1,17 @@
 <?php
   // debug_log("get_container START");
 
-   $path = __DIR__;
+  $path = __DIR__;
 
-   if (file_exists("$path/ajax/static/container_" . $_GET["game"] . ".json")) {
-	   readfile("$path/ajax/static/container_" . $_GET["game"] . ".json");
-	   return;
-   }
-   
-   $map = $_GET["game"];
-   // debug_log("map: $map");
+  if (file_exists("$path/ajax/static/container_" . $_GET["game"] . ".json")) {
+	  readfile("$path/ajax/static/container_" . $_GET["game"] . ".json");
+	  return;
+  }
 
-   $query = 'select id
+  $map = $_GET["game"];
+  // debug_log("map: $map");
+
+  $query = 'select id
                   , name
                   , short_name as shortName
                   , icon       as icon
@@ -40,20 +40,22 @@
               where (c.id = \'' . $map . '\'
                      or c.short_name = \'' . $map . '\')
                 and c.visible = 1;
-   ';
-   //echo $query;
-   $result = @$mysqli->query($query);
+  ';
+  //echo $query;
+  $result = @$mysqli->query($query);
 
-   if(!$result) {
-      print($mysqli->error);
-      return;
-   }
+  if(!$result) {
+    print($mysqli->error);
+    return;
+  }
 
-   $res = array();
-   while($row = $result->fetch_assoc()) {
-        $res[] = $row;
-   }
-   echo json_encode($res);
+  $res = array();
+
+  while($row = $result->fetch_assoc()) {
+    $res[] = $row;
+  }
+
+  echo json_encode($res);
 
   // debug_log("get_container END");
 ?>

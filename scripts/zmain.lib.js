@@ -80,7 +80,10 @@ function getMapCategoriesTree() {
 
 function getGames() {
    $.getJSON("ajax.php?command=get_games", function(vResults) {
-      if (vResults.success === false || vResults.length === 0) return;
+      if (vResults.success === false || vResults.length === 0) {
+        notifyFatal('No games provided to switch between!');
+        return 4;
+      }
 
       $.each(vResults, function(i,map){
         zMap.addGame(map);
@@ -139,6 +142,10 @@ function showLoginControls() {
 
 function getMarkers() {
   $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults) {
+    if (vResults.success === false || vResults.length == 0) {
+      notifyFatal('No markers provided to show!');
+      return 5;
+    }
     zMap.buildMap();
     getUserInfo();
     zMap.addMarkers(vResults);

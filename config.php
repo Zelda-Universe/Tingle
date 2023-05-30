@@ -28,7 +28,10 @@
       }
     }
 
-    $value = $config[$key];
+    if(isset($config[$key])) {
+      $value = $config[$key];
+    }
+
     if (empty($value)) {
       for ($i = 0, $size = count($defaults); $i < $size; $i++) {
         $value = $defaults[$i];

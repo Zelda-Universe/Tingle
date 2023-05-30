@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: tingle
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -40,7 +40,7 @@ CREATE TABLE `marker_category` (
   CONSTRAINT `fk_marker_category_map_container1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`),
   CONSTRAINT `fk_marker_category_marker_category1` FOREIGN KEY (`parent_id`) REFERENCES `marker_category` (`id`),
   CONSTRAINT `fk_marker_category_marker_category_type1` FOREIGN KEY (`marker_category_type_id`) REFERENCES `marker_category_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2156 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2171 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,25 +107,6 @@ INSERT INTO `marker_category` VALUES
   (328,322,1,3,'Chefes',1,'map_boss','#000000',5,1),
   (329,322,2,3,'Marcadores de Pulo',1,'map_jump','#000000',5,1),
   (330,322,3,3,'Lugares',1,'map_places','#000000',5,1),
-  (400,NULL,1,4,'Itens',1,'map_item','#000000',5,1),
-  (401,400,1,4,'Itens comuns',1,'map_item','#000000',5,1),
-  (402,400,1,4,'Mapa',1,'map_map','#000000',5,1),
-  (403,400,1,4,'Bússola',1,'map_compass','#000000',5,1),
-  (404,400,1,4,'Chave',1,'map_key','#000000',5,1),
-  (405,400,1,4,'Coração',1,'map_heart','#000000',5,1),
-  (415,NULL,1,4,'Segredos',1,'map_secret','#000000',5,1),
-  (416,415,1,4,'Secret Seashell ',1,'placeholder','#000000',5,1),
-  (417,415,1,4,'Mad Batter',1,'placeholder','#000000',5,1),
-  (418,415,1,4,'Easter Egg ',1,'map_gambling','#000000',5,1),
-  (419,415,1,4,'Trocas',1,'map_move','#000000',5,1),
-  (420,415,1,4,'Portal',1,'map_tloz_warp','#000000',5,1),
-  (421,415,1,4,'Rupees',1,'map_rupee','#000000',5,1),
-  (430,NULL,1,4,'Pontos de Interesse ',1,'map_poi','#000000',5,1),
-  (431,430,1,4,'Informação',1,'map_info','#000000',5,1),
-  (432,430,1,4,'Level',1,'map_dungeon','#000000',5,1),
-  (433,430,1,4,'Chefe',1,'map_boss','#000000',5,1),
-  (434,430,3,4,'Lugares',1,'map_places','#000000',5,1),
-  (435,430,2,4,'Marcadores de Pulo',1,'map_jump','#000000',5,1),
   (500,NULL,1,5,'Itens',1,'map_item','#000000',5,1),
   (501,500,1,5,'Itens comuns',1,'map_item','#000000',5,1),
   (502,500,1,5,'Garrafa',1,'map_bottle','#000000',5,1),
@@ -257,11 +238,11 @@ INSERT INTO `marker_category` VALUES
   (2120,NULL,1,21,'Locations',1,'BotW_Locations','#8e72b9',5,1),
   (2121,2120,1,21,'Village',1,'BotW_Village','#8e72b9',5,1),
   (2122,2120,1,21,'Town (House)',1,'BotW_Farm','#8e72b9',5,0),
-  (2123,2120,1,21,'Sheikah Tower',1,'BotW_Sheikah-Tower','#8e72b9',0,1),
-  (2124,2120,1,21,'Shrine of Resurrection',1,'BotW_Shrine-of-Resurrection','#8e72b9',5,0),
-  (2125,2120,1,21,'Shrine of Trials',1,'BotW_Shrines-of-Trials','#8e72b9',2,1),
-  (2126,2120,1,21,'Divine Beast',1,'BotW_Dungeon','#8e72b9',5,1),
-  (2127,2120,1,21,'Temple of Time',1,'BotW_The-Temple-of-Time','#8e72b9',5,0),
+  (2123,2120,1,21,'Skyview Tower',1,'BotW_Sheikah-Tower','#8e72b9',0,1),
+  (2124,2120,1,21,'Shops',1,'General_Store','#8e72b9',5,1),
+  (2125,2120,1,21,'Shrine of Light',1,'BotW_Shrines-of-Trials','#8e72b9',2,1),
+  (2126,2120,1,21,'Lightroot',1,'TotK_Lightroot','#8e72b9',0,1),
+  (2127,2120,1,21,'Dungeon',1,'BotW_Dungeon','#8e72b9',5,1),
   (2130,NULL,1,21,'Enemies',1,'BotW_Enemies','#ff422e',5,1),
   (2131,2130,1,21,'Enemy Camp',1,'BotW_Enemy-Camp','#ff422e',5,1),
   (2132,2130,1,21,'Bubbulfrog',1,'TotK_Bubbulfrog','#ff422e',5,1),
@@ -276,18 +257,33 @@ INSERT INTO `marker_category` VALUES
   (2141,2130,1,21,'Talus',1,'BotW_Boss','#ff422e',6,1),
   (2142,2130,1,21,'Hinox',1,'BotW_Hinox','#ff422e',6,1),
   (2143,2110,1,21,'Treasure Chest (Non-Equip.)',1,'BotW_Treasure-Chest','#3cbc75',6,1),
-  (2144,2102,1,21,'Treasure Chest (Equip.)',1,'BotW_Treasure-Chest','#ffad48',6,1),
-  (2145,2110,1,21,'Blupee',1,'BotW_Blupee','#3cbc75',7,1),
+  (2144,2102,1,21,'Treasure Chest (Weapon)',1,'BotW_Treasure-Chest','#ffad48',6,1),
+  (2145,2102,1,21,'Treasure Chest (Armor)',1,'BotW_Armor','#ffad48',6,1),
   (2146,2101,1,21,'Diary & Books',1,'BotW_Book','#4bc5ee',8,1),
   (2147,2130,1,21,'Molduga',1,'BotW_Boss','#ff422e',6,1),
   (2148,2101,1,21,'Cooking Pot',1,'BotW_Cooking_Pot','#4bc5ee',8,1),
   (2149,2101,1,21,'Goddess Statue',1,'BotW_Goddess_Statue','#4bc5ee',6,1),
-  (2150,2101,1,21,'Wells',1,'TotK_Wells','#4bc5ee',6,1),
-  (2151,2101,1,21,'Caves',1,'TotK_Caves','#4bc5ee',6,1),
-  (2152,2101,1,21,'Chasm',1,'TotK_Chasms','#4bc5ee',6,1),
-  (2153,2130,1,21,'Gleeok',1,'TotK_Gleeok','#ff422e',6,1),
-  (2154,2130,1,21,'Flux Construct',1,'TotK_FluxConstruct','#ff422e',6,1),
-  (2155,2101,1,21,'NPCs',1,'TotK_Npc','#4bc5ee',6,1)
+  (2150,2120,1,21,'Wells',1,'TotK_Well','#8e72b9',6,1),
+  (2151,2120,1,21,'Caves',1,'General_Cave','#8e72b9',6,1),
+  (2152,2120,1,21,'Chasm',1,'TotK_Chasm','#8e72b9',6,1),
+  (2153,2130,1,21,'Gleeok',1,'BotW_Boss','#ff422e',6,1),
+  (2154,2130,1,21,'Flux Construct',1,'BotW_Boss','#ff422e',6,1),
+  (2155,2101,1,21,'NPCs',1,'TotK_Npc','#4bc5ee',6,1),
+  (2156,2101,1,21,'Sign Guy',1,'TotK_SignNpc','#4bc5ee',6,1),
+  (2157,2110,1,21,'Treasure Chest (AutoBuild)',1,'BotW_Treasure-Chest','#3cbc75',6,1),
+  (2158,2110,1,21,'Treasure Chest (Sage\'s Will)',1,'TotK_Sages-Will','#3cbc75',6,1),
+  (2159,2110,1,21,'Treasure Chest (Treasure Map)',1,'General_Map','#3cbc75',6,1),
+  (2160,2130,1,21,'Frox',1,'BotW_Boss','#ff422e',6,1),
+  (2161,2130,1,21,'Boss',1,'BotW_Boss','#ff422e',6,1),
+  (2162,NULL,3,21,'Labels',1,'General_Map','#3cbc75',6,1),
+  (2163,2162,3,21,'Region Labels',1,'','',2,1),
+  (2164,2162,3,21,'Area Labels',1,'','',3,1),
+  (2165,2162,3,21,'Places Labels',1,'','',3,1),
+  (2166,2162,3,21,'Places Labels - Close',1,'','',3,1),
+  (2167,2101,1,21,'Device Dispenser',1,'TotK_Dispenser','#4bc5ee',6,1),
+  (2168,2101,1,21,'Cherry Tree',1,'TotK_CherryTree','#4bc5ee',6,1),
+  (2169,2101,1,21,'Ancient Tablet',1,'TotK_AncientTablet','#4bc5ee',6,1),
+  (2170,2130,1,21,'Gloom Hands',1,'BotW_Boss','#ff422e',6,1)
 ;
 /*!40000 ALTER TABLE `marker_category` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -301,4 +297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 14:55:21
+-- Dump completed on 2023-05-25 13:40:30

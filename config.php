@@ -12,21 +12,28 @@
     global $config;
     $config = parse_ini_file(CONFIGFILE);
   }
-  function get_config($key, $type = "string", $default = null) {
+  function get_config($key, $type = "string", $defaults = []) {
     global $config;
     if(!isset($config)) die("Error: Config not loaded; exiting...");
 
-    if(empty($default)) {
-      if(strtolower($type) === "int") {
-        $default = 0;
-      } else if(strtolower($type) === "boolean") {
-        $default = 'true';
-      } else if(strtolower($type) === "string") {
-        $default = '';
+    $typeLowered = strtolower($type);
+
+    if(empty($defaults)) {
+      if(       $typeLowered === 'int'    ) {
+        $defaults = [0      ];
+      } else if($typeLowered === 'boolean') {
+        $defaults = ['true' ];
+      } else if($typeLowered === 'string' ) {
+        $defaults = [''     ];
       }
     }
 
-    $value = $config[$key] ?? $default;
+    $value = $config[$key];
+    if (empty($value)) {
+      for ($i = 0, $size = count($defaults); $i < $size; $i++) {
+        $value = $defaults[$i];
+      }
+    }
 
     if(strtolower($type) === "boolean") {
       // $value = strtolower($value) === "true"; # Seems 'true' string values are 1 already from the ini file load.
@@ -46,7 +53,7 @@
 
   # Debug feature
   {
-    $debugLoggingMode = get_config('debugLoggingMode', 'string', 'errorLog');
+    $debugLoggingMode = get_config('debugLoggingMode', 'string', ['errorLog']);
     // debug_log("debugLoggingMode: $debugLoggingMode");
   }
 
@@ -60,16 +67,16 @@
 
   # Database Config Loading
   {
-    $dbms         = get_config("DBMS"       , 'string', 'mysql' );
-    $dbhost       = get_config("DBHOST"     , 'string'          );
-    $dbuser       = get_config("DBUSER"     , 'string'          );
-    $dbpasswd     = get_config("DBPASSWD"   , 'string'          );
-    $dbname       = get_config("DBNAME"     , 'string'          );
-    $dbport       = get_config("DBPORT"     , 'int'             );
-    $dbsocket     = get_config("DBSOCKET"   , 'string'          );
-    $map_prefix   = get_config("PREFIX"     , 'string'          );
-    $minify       = get_config("minify"     , 'boolean', true   );
-    $enableTests  = get_config("enableTests", 'boolean', false  );
+    $dbms         = get_config("DBMS"       , 'string', ['mysql']     );
+    $dbhost       = get_config("DBHOST"     , 'string'                );
+    $dbuser       = get_config("DBUSER"     , 'string'                );
+    $dbpasswd     = get_config("DBPASSWD"   , 'string'                );
+    $dbname       = get_config("DBNAME"     , 'string'                );
+    $dbport       = get_config("DBPORT"     , 'int'                   );
+    $dbsocket     = get_config("DBSOCKET"   , 'string'                );
+    $map_prefix   = get_config("PREFIX"     , 'string'                );
+    $minify       = get_config("minify"     , 'boolean', ['true'  ]   );
+    $enableTests  = get_config("enableTests", 'boolean', ['false' ]   );
 
     // debug_log('dbms: '.$dbms);
     // debug_log('dbhost: '.$dbhost);
@@ -141,23 +148,29 @@
 
   # Cache / temporary control
   {
-    $cacheFolderRootPath = get_config("cacheFolderRootPath", sys_get_temp_dir());
-    $cacheFolder = $cacheFolderRootPath."/Tingle";
+    $cacheFolderRootPath = get_config(
+      'cacheFolderRootPath',
+      'string',
+      [
+        sys_get_temp_dir(),
+        __DIR__.'/tmp'
+      ]
+    );
+    $cacheFolder  = $cacheFolderRootPath."/Tingle"    ;
 
-    $cacheFolderRootPath = get_config("cacheFolderRootPath", sys_get_temp_dir());
-    $cacheFolder = $cacheFolderRootPath."/Tingle";
+    $cFRPExists   = file_exists($cacheFolderRootPath) ;
+    $cFExists     = file_exists($cacheFolder)         ;
 
-    $cFRPFileExists = file_exists($cacheFolderRootPath);
-    $cFFileExists = file_exists($cacheFolder);
-    // debug_log("cacheFolderRootPath: $cacheFolderRootPath");
-    // debug_log("cacheFolder        : $cacheFolder");
-    // debug_log("cFRPFileExists     : $cFRPFileExists");
-    // debug_log("cFFileExists       : $cFFileExists");
-    if(!$cFRPFileExists) {
+    // debug_log("cacheFolderRootPath : $cacheFolderRootPath");
+    // debug_log("cacheFolder         : $cacheFolder")        ;
+    // debug_log("cFRPExists          : $cFRPExists")         ;
+    // debug_log("cFExists            : $cFExists")           ;
+
+    if(!$cFRPExists) {
       mkdir($cacheFolderRootPath) or
-      die("Cache root directory error at: ".$cacheFolderRootPath);
+      die("Cache root directory error at: ${cacheFolderRootPath}");
     }
-    if(!$cFFileExists) {
+    if(!$cFExists) {
       mkdir($cacheFolder) or
       die("Cache directory error at: ".$cacheFolder);
     }

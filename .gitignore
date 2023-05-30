@@ -13,6 +13,7 @@ images/apple-touch-icon-precomposed.png
 # Cached Files / Runtime-updated Files
 /cache/*
 !/cache/index.html
+/tmp
 
 /css.ini
 /javascript.ini

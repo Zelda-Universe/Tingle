@@ -20,6 +20,7 @@ class AddTotKData < ActiveRecord::Migration[7.0]
 
     sqlFileNames.each do |sqlFileName|
       sqlFile = sprintf(filePathPattern, sqlFileName);
+      # print "sqlFile: #{sqlFile}"
       execute File.open(sqlFile).read
     end
   end
@@ -76,6 +77,5 @@ class AddTotKData < ActiveRecord::Migration[7.0]
       AUTO_INCREMENT=20
       ;
     SQL
-
   end
 end

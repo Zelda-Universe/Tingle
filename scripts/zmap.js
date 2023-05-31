@@ -271,7 +271,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , updateWhenIdle:    true
                                              , updateWhenZooming: false
                                              , label:             vMap.name
-                                             , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
                                              }
       );
 

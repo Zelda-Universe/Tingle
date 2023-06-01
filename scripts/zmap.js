@@ -1824,7 +1824,13 @@ ZMap.prototype._createLoginForm = function() {
                _this.setUser(data.user);
                updateAdState();
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
-               mapControl.resetContent();
+				if (mapControl.isMobile()) {
+				   mapControl.closeDrawer();
+				} else {
+				   mapControl.resetContent();
+				}
+
+			   
             } else {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));

@@ -6,10 +6,6 @@
 /dev/assets/tiles/**/*.png
 /dev/assets/tiles/**/Trials
 
-## Team Files
-images/favicon.ico
-images/apple-touch-icon-precomposed.png
-
 # Cached Files / Runtime-updated Files
 /cache/*
 !/cache/index.html

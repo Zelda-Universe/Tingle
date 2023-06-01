@@ -1,14 +1,13 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
-   
+   $path = __DIR__;
+
    if (file_exists("$path/ajax/static/categories_" . $_GET["game"] . ".json")) {
 	   readfile("$path/ajax/static/categories_" . $_GET["game"] . ".json");
 	   return;
    }
 
    $map = $_GET["game"];
-   
+
 	$query = 'select id
 				      , parent_id               as parentId
 			         , name
@@ -29,7 +28,7 @@
 		print($mysqli->error);
 		return;
 	}
-   
+
    $res = array();
    while($row = $result->fetch_assoc()) {
         $res[] = $row;

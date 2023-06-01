@@ -1,15 +1,22 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
-   
-   if (file_exists("$path/ajax/static/categories_tree_" . $_GET["game"] . ".json")) {
-	   readfile("$path/ajax/static/categories_tree_" . $_GET["game"] . ".json");
-	   return;
-   }
-   
-   $map = $_GET["game"];
+  $path = __DIR__;
 
-   $query = 'select *
+  if (!isset($_GET["game"]) || empty($_GET["game"])) {
+    echo json_encode(array(
+      "success" => false,
+      "msg"     => "Must provide the game parameter with an integer!"
+    ));
+    return;
+  }
+
+  if (file_exists("$path/ajax/static/categories_tree_${_GET["game"]}.json")) {
+	  readfile("$path/ajax/static/categories_tree_${_GET["game"]}.json");
+	  return;
+  }
+
+  $map = $_GET["game"];
+
+  $query = 'select *
                from ' . $map_prefix . 'marker_category
               where parent_id is null
                 and container_id = ' . $map . '
@@ -18,14 +25,14 @@
               order by id
             ';
 
-   $result = @$mysqli->query($query);
+  $result = @$mysqli->query($query);
 
 	if(!$result) {
 		print($mysqli->error);
 		return;
 	}
 
-   $arr_treeview = array();
+  $arr_treeview = array();
 
    while ($row = $result->fetch_array()) {
       $arr_child = array();
@@ -34,19 +41,19 @@
       $node['img']  = $row['img'];
       $node['color']= $row['color'];
       $node['checked'] = $row['default_checked'] == 1 ? true : false;
-      $node['visible_zoom']= $row['visibleZoom'];
+      $node['visible_zoom']= $row['visible_zoom'];
 
       $query = 'select *
                   from ' . $map_prefix . 'marker_category
                  where parent_id = ' . $row['id'] . '
                    and container_id = ' . $map . '
                    and visible = 1
-                   and id in (SELECT mc.id 
-                                FROM ' . $map_prefix . 'marker m 
-                                   , ' . $map_prefix . 'marker_category mc 
-                               where m.marker_category_id = mc.id 
-                                 and m.visible = 1 
-                                 and mc.visible = 1 
+                   and id in (SELECT mc.id
+                                FROM ' . $map_prefix . 'marker m
+                                   , ' . $map_prefix . 'marker_category mc
+                               where m.marker_category_id = mc.id
+                                 and m.visible = 1
+                                 and mc.visible = 1
                                  and mc.container_id = ' . $map . '
                                group by mc.id
                               )
@@ -61,7 +68,7 @@
             $children['img']  = $row2['img'];
             $children['color']  = $row2['color'];
             $children['checked'] = $row2['default_checked'] == 1 ? true : false;
-            $children['visible_zoom']= $row2['visibleZoom'];
+            $children['visible_zoom']= $row2['visible_zoom'];
             array_push($arr_child, $children);
          }
          $node['children'] = $arr_child;

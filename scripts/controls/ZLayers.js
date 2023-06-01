@@ -82,10 +82,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
 	_initLayout: function () {
     var container = this._container;
 
-      if (!this.options.showMapControl) {
-         container.style.display = 'none';
-         container.style.marginTop = '0px';
-      }
+    if (!this.options.showMapControl) {
+       container.style.display = 'none';
+       container.style.marginTop = '0px';
+    }
 
 		if (!L.Browser.touch) {
 			L.DomEvent.disableClickPropagation(container);
@@ -99,108 +99,108 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		// Why did we need the expand click iteraction at least?
 		// This was getting in the way of having a nice default focus
 		// into the search area.
-      // L.DomEvent
-      //     .on(container, 'click', this._expand, this)
-      //     //.on(container, 'mouseout', this._collapse, this)
-      // ;
+    // L.DomEvent
+    //     .on(container, 'click', this._expand, this)
+    //     //.on(container, 'mouseout', this._collapse, this)
+    // ;
 
-      var link = this._layersLink = L.DomUtil.create('a', this.options.className + '-toggle', container);
-      link.href = '#';
-      link.title = 'Layers';
+    var link = this._layersLink = L.DomUtil.create('a', this.options.className + '-toggle', container);
+    link.href = '#';
+    link.title = 'Layers';
 
-      L.DomEvent
-          .on(container, 'click', L.DomEvent.stopPropagation)
-          //.on(container, 'click', L.DomEvent.preventDefault)
-          .on(container, 'dblclick', L.DomEvent.stopPropagation)
-          .on(container, 'dblclick', L.DomEvent.preventDefault);
+    L.DomEvent
+        .on(container, 'click', L.DomEvent.stopPropagation)
+        //.on(container, 'click', L.DomEvent.preventDefault)
+        .on(container, 'dblclick', L.DomEvent.stopPropagation)
+        .on(container, 'dblclick', L.DomEvent.preventDefault);
 
-      if (L.Browser.touch) {
-         L.DomEvent
-            /*.on(link, 'click', L.DomEvent.stopPropagation)
-             .on(link, 'click', L.DomEvent.preventDefault)*/
-             .on(link, 'click', this._expand, this);
-      }
-      else {
-         L.DomEvent.on(link, 'focus', this._expand, this);
-      }
+    if (L.Browser.touch) {
+       L.DomEvent
+          /*.on(link, 'click', L.DomEvent.stopPropagation)
+           .on(link, 'click', L.DomEvent.preventDefault)*/
+           .on(link, 'click', this._expand, this);
+    }
+    else {
+       L.DomEvent.on(link, 'focus', this._expand, this);
+    }
 
-      form1.style.width = '360px';
+    form1.style.width = '360px';
 
-      this.headerBar = new HeaderBar({
-        parent: form1,
-        mapControl: this,
-        shrinkButton: true
-      });
+    this.headerBar = new HeaderBar({
+      parent: form1,
+      mapControl: this,
+      shrinkButton: true
+    });
 
-      this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
+    this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
-      var headerMenu = L.DomUtil.create('header', 'ex1', form1);
-      headerMenu.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
+    var headerMenu = L.DomUtil.create('header', 'ex1', form1);
+    headerMenu.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
 
-      var logo = new Logo({ parent: headerMenu });
+    var logo = new Logo({ parent: headerMenu });
 
-      _thisLayer = this;
-      this._gameMenu = this.createGameMenu();
-      this._mapsMenu = this.createMapsMenu();
-     
-      this._mapsButton = new MapButton({
-        toggledOn: false,
-        onToggle: function(toggledOn) {
-           if (toggledOn) {
-               _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
-               _thisLayer._gamesButton.clear();
-           } else {
-               _thisLayer.resetContent();
-               _thisLayer._gamesButton.clear();
-               _thisLayer._mapsButton.clear();
-           }
-	      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
-      });
-      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(this._mapsButton.domNode);
-      
-      this._gamesButton = new GameButton({
-        toggledOn: false,
-        onToggle: function(toggledOn) {
-           if (toggledOn) {
-               _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
-               _thisLayer._mapsButton.clear();
-           } else {
-               _thisLayer.resetContent();
-               _thisLayer._gamesButton.clear();
-               _thisLayer._mapsButton.clear();
-           }
+    _thisLayer = this;
+    this._gameMenu = this.createGameMenu();
+    this._mapsMenu = this.createMapsMenu();
 
-	      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
-      });
-      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
-      $(headerMenu).append(this._gamesButton.domNode);
-      
+    this._mapsButton = new MapButton({
+      toggledOn: false,
+      onToggle: function(toggledOn) {
+         if (toggledOn) {
+             _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
+             _thisLayer._gamesButton.clear();
+         } else {
+             _thisLayer.resetContent();
+             _thisLayer._gamesButton.clear();
+             _thisLayer._mapsButton.clear();
+         }
+      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+    });
+    // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+    $(headerMenu).append(this._mapsButton.domNode);
+
+    this._gamesButton = new GameButton({
+      toggledOn: false,
+      onToggle: function(toggledOn) {
+         if (toggledOn) {
+             _thisLayer.setContent(_thisLayer._gameMenu.domNode, "game");
+             _thisLayer._mapsButton.clear();
+         } else {
+             _thisLayer.resetContent();
+             _thisLayer._gamesButton.clear();
+             _thisLayer._mapsButton.clear();
+         }
+
+      }.bind(this) // Where should the cookie code come from.... some config object with an abstracted persistence layer?,
+    });
+    // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
+    $(headerMenu).append(this._gamesButton.domNode);
 
 
-      this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
-      this._contents = L.DomUtil.create('div', 'main-content ' + this.options.className + '-list');
-      L.DomEvent.disableClickPropagation(this._contents);
-      L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
-      this._contents.id = 'menu-cat-content';
+    this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
 
-      this._categoryMenu = this.createCategoryMenu();
-      
+    this._contents = L.DomUtil.create('div', 'main-content ' + this.options.className + '-list');
+    L.DomEvent.disableClickPropagation(this._contents);
+    L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
+    this._contents.id = 'menu-cat-content';
 
-      this.resetContent();
+    this._categoryMenu = this.createCategoryMenu();
 
-      this._contents.style.clear = 'both';
-      this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
-      this._contents.style.width = '360px';
+
+    this.resetContent();
+
+    this._contents.style.clear = 'both';
+    this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
+    this._contents.style.width = '360px';
 
 		container.appendChild(form1);
 		container.appendChild(this._contents);
    },
-   
-   rebuildMapsMenu: function () {
-      this._mapsMenu = this.createMapsMenu();
-   },
+
+  rebuildMapsMenu: function () {
+    this._mapsMenu = this.createMapsMenu();
+  },
 
   createCategoryMenu: function() {
     return new CategoryMenu({
@@ -229,7 +229,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
    });
   },
-  
+
   createMapsMenu: function() {
     return new MapsMenu({
      categoryTree: maps,
@@ -237,7 +237,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
          if (this.currentMapLayer.id != category.id) {
                map.removeLayer(this.currentMapLayer);
                map.addLayer(category);
-               this.currentMapLayer = category;        
+               this.currentMapLayer = category;
                this.currentMapLayer.bringToBack();
                map.fire("baselayerchange", this.currentMapLayer);
          }
@@ -246,11 +246,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
      defaultToggledState: (this.options.categorySelectionMethod == "focus")
    });
   },
-  
+
   changeMapLayer: function(category) {
 
   },
-  
+
    setDefaultFocus: function() {
      this.headerBar.focus();
    },
@@ -361,22 +361,26 @@ L.Control.ZLayers = L.Control.Layers.extend({
     return this.options.collapsed;
   },
 
-   _collapse: function() {
-      this.resetContent();
-      this.options.collapsed = true;
-      return this.collapse();
-   },
+  _collapse: function() {
+    this.resetContent();
+    this.options.collapsed = true;
+    return this.collapse();
+  },
 
-   _expand: function() {
-     this._triggerHandler("before_expand");
-      if (this._contents != undefined) {
-         this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
-      }
+  _expand: function() {
+    this._triggerHandler("before_expand");
+    if (this._contents != undefined) {
+      this._contents.style.maxHeight = (
+        (window.innerHeight > 250)
+        ? (window.innerHeight - 250)
+        : 250
+      ) + 'px';
+    }
 
-      this.options.collapsed = false;
-      this.expand();
+    this.options.collapsed = false;
+    this.expand();
     this._triggerHandler("after_expand");
-   },
+  },
 
   after_expand: function() {
     this.setDefaultFocus();
@@ -406,6 +410,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.currentMapLayer = vMap;
    },
 	// Needs improvements
+  // yea..
 	changeMap: function(mapId, subMapId) {
 		inputs = this._form.getElementsByTagName('input'),
 		inputsLen = inputs.length;
@@ -438,6 +443,24 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		}
 
 	},
+  // Default function relies on map control input elemens to contain a value.
+  // Creating separate functions for other consuming code without that dependency expectation, like selecting a search result.
+  changeMapOnly: function(mapId, subMapId) {
+    var newMap = maps.find((map) => map.originalId == mapId);
+    if (newMap && this.currentMapLayer.id != newMap.id) {
+      map.removeLayer(this.currentMapLayer);
+      map.addLayer(newMap);
+      this.currentMapLayer = newMap;
+      this.currentMapLayer.bringToBack();
+      map.fire("baselayerchange", this.currentMapLayer);
+
+      this.currentMap = mapId;
+      this.currentSubMap = subMapId;
+    }
+  },
+  changeMapToMarker: function(marker) {
+    this.changeMapOnly(marker.mapId, marker.submapId);
+  },
 
    isMobile: function() {
       return false;
@@ -450,21 +473,24 @@ L.Control.ZLayers = L.Control.Layers.extend({
       setContentFunction();
     }
   },
-  
+
 	// @method expand(): this
 	// Expand the control container if collapsed.
 	expand: function () {
-		L.DomUtil.addClass(this._container, 'leaflet-control-layers-expanded');
-      if (this._section) {
-         this._section.style.height = null;
-         var acceptableHeight = this._map.getSize().y - (this._container.offsetTop + 50);
-         if (acceptableHeight < this._section.clientHeight) {
-            DomUtil.addClass(this._section, 'leaflet-control-layers-scrollbar');
-            this._section.style.height = acceptableHeight + 'px';
-         } else {
-            DomUtil.removeClass(this._section, 'leaflet-control-layers-scrollbar');
-         }
+		L.DomUtil.addClass(
+      this._container,
+      'leaflet-control-layers-expanded'
+    );
+    if (this._section) {
+      this._section.style.height = null;
+      var acceptableHeight = this._map.getSize().y - (this._container.offsetTop + 50);
+      if (acceptableHeight < this._section.clientHeight) {
+        DomUtil.addClass(this._section, 'leaflet-control-layers-scrollbar');
+        this._section.style.height = acceptableHeight + 'px';
+      } else {
+        DomUtil.removeClass(this._section, 'leaflet-control-layers-scrollbar');
       }
+    }
 		this._checkDisabledLayers();
 		return this;
 	},

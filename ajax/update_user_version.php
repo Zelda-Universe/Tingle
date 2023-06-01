@@ -1,6 +1,5 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
+   $path = __DIR__;
 
 	start_session("zmap");
 	begin();
@@ -29,5 +28,5 @@
    $_SESSION['seen_latest_changelog'] = true;
 
    echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$userId));
-   
+
 ?>

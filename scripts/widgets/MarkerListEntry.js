@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 // MarkerListEntry
 // - opts: [Object] Typical options object.
 //   - onClick: [Function] The function to call when clicked.  Passes in the owned marker data object this entry represents.

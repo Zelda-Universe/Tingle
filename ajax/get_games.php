@@ -1,35 +1,27 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
+  $path = __DIR__;
 
-   if (file_exists("$path/ajax/static/games_" . $_GET["game"] . ".json")) {
-	   readfile("$path/ajax/static/games_" . $_GET["game"] . ".json");
-	   return;
-   }
-   
-   $map = $_GET["game"];
-    
-   $query = "select c.id
+  $query = "select c.id
                   , c.short_name as shortName
                   , c.name
                   , c.icon
-               from " . $map_prefix . "container c
+               from ${map_prefix}container c
               where c.visible = 1
              order by c.id
-   ;";
-   //echo $query;
-    
-   $result = @$mysqli->query($query);
+  ;";
+  //echo $query;
+
+  $result = @$mysqli->query($query);
 
 	if(!$result) {
 		print($mysqli->error);
 		return;
 	}
-   
-   $res = array();
-   
-   while ($row = $result->fetch_assoc()) {
-      array_push($res, $row);
-   }
-   echo json_encode($res);
+
+  $res = array();
+
+  while ($row = $result->fetch_assoc()) {
+    array_push($res, $row);
+  }
+  echo json_encode($res);
 ?>

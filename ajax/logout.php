@@ -1,6 +1,5 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
+   $path = __DIR__;
 
 	start_session("zmap");
   setcookie(session_name(), '', 0);

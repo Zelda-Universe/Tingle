@@ -1,7 +1,6 @@
 <?php
    if (!isset($_GET['newMarkerId'])) {
-     $path = DIRNAME(__FILE__);
-     include_once("$path/../config.php");
+     $path = __DIR__;
    }
 
    $game = $mysqli->real_escape_string($_GET["game"]);

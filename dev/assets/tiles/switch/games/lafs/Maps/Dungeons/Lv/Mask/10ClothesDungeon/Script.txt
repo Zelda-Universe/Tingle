@@ -1,0 +1,28 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+
+-size 1308x1040 "../../../Background.png"
+"Lv10ClothesDungeon_04B_Mask.png" -geometry +174+392 -composite
+"Lv10ClothesDungeon_04C_Mask.png" -geometry +334+392 -composite
+"Lv10ClothesDungeon_04D_Mask.png" -geometry +494+392 -composite
+"Lv10ClothesDungeon_04F_Mask.png" -geometry +814+392 -composite
+"Lv10ClothesDungeon_04G_Mask.png" -geometry +974+392 -composite
+"Lv10ClothesDungeon_05B_Mask.png" -geometry +174+520 -composite
+"Lv10ClothesDungeon_05C_Mask.png" -geometry +334+520 -composite
+"Lv10ClothesDungeon_05D_Mask.png" -geometry +494+520 -composite
+"Lv10ClothesDungeon_05E_Mask.png" -geometry +654+520 -composite
+"Lv10ClothesDungeon_05F_Mask.png" -geometry +814+520 -composite
+"Lv10ClothesDungeon_05G_Mask.png" -geometry +974+520 -composite
+"Lv10ClothesDungeon_06C_Mask.png" -geometry +334+648 -composite
+"Lv10ClothesDungeon_06D_Mask.png" -geometry +494+648 -composite
+"Lv10ClothesDungeon_06E_Mask.png" -geometry +654+648 -composite
+"Lv10ClothesDungeon_06F_Mask.png" -geometry +814+648 -composite
+"Lv10ClothesDungeon_07C_Mask.png" -geometry +334+776 -composite
+"Lv10ClothesDungeon_07D_Mask.png" -geometry +494+776 -composite
+"Lv10ClothesDungeon_07E_Mask.png" -geometry +654+776 -composite
+"Lv10ClothesDungeon_07F_Mask.png" -geometry +814+776 -composite
+"Lv10ClothesDungeon_08C_Mask.png" -geometry +334+904 -composite
+"Lv10ClothesDungeon_08D_Mask.png" -geometry +494+904 -composite
+"Lv10ClothesDungeon_08E_Mask.png" -geometry +654+904 -composite
+"Lv10ClothesDungeon_08F_Mask.png" -geometry +814+904 -composite

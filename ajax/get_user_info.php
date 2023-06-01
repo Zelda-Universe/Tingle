@@ -1,6 +1,5 @@
 <?php
-   $path = DIRNAME(__FILE__);
-   include("$path/../config.php");
+   $path = __DIR__;
 
 	start_session("zmap");
 	begin();
@@ -18,13 +17,20 @@
 
 
    if ($_SESSION['user_id'] == $_COOKIE['user_id']
-         && $_SESSION['username'] == $_COOKIE['username'])
-   {
+         && $_SESSION['username'] == $_COOKIE['username']) {
          $query = "
-            select max(concat(`version_major`, '.', `version_minor`, '.', `version_patch`)) latestversion
-              from `changelog`
+            SELECT CONCAT(
+              `version_major`, '.',
+              `version_minor`, '.',
+              `version_patch`
+            ) AS `version`
+            FROM tingle.changelog
+            ORDER BY
+              `version_major` DESC,
+              `version_minor` DESC,
+              `version_patch` DESC
+            LIMIT 1;
          ";
-         //echo $query;
 
          $result = @$mysqli->query($query);
 
@@ -35,7 +41,7 @@
 
          $lastestVersion = '0.0.0';
          while($row = $result->fetch_assoc()) {
-            $lastestVersion = $row['LATESTVERSION'];
+            $lastestVersion = $row['version'];
          }
 //         echo $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3'];
          if ($lastestVersion > $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3']) {
@@ -46,7 +52,7 @@
          } else {
             $user['seen_version'] = $_SESSION['v1'] . '.' . $_SESSION['v2'] . '.' . $_SESSION['v3'];
          }
-         
+
          $user['id'] = $_SESSION['user_id'];
          $user['username'] = $_SESSION['username'];
          $user['level'] = $_SESSION['level'];

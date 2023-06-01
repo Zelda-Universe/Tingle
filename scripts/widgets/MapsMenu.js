@@ -1,3 +1,7 @@
+// MIT Licensed
+// Copyright (c) 2023 Pysis(868)
+// https://choosealicense.com/licenses/mit/
+
 function MapsMenu(opts) {
   this._initSettings(opts);
   this._initDOMElements(opts);
@@ -22,7 +26,7 @@ MapsMenu.prototype._initDOMElements = function(opts) {
   ;
 
   var currentCategoryParentButton;
-  
+
   this._categoryTree.forEach(function(category) {
       category.name = category.title;
       currentCategoryParentButton = new CategoryButtonMap({

@@ -1,0 +1,13 @@
+#!/usr/bin/env magick-script
+
+-define png:color-type=6
+-size 4108x2301 "canvas:transparent"
+
+"FldChip_00^_H.png" -geometry +0001+0000  -composite
+"FldChip_03^_H.png" -geometry +0001+0002  -composite
+"FldChip_04^_H.png" -geometry +0872+0001  -composite
+"FldChip_12^_H.png" -geometry +0679+0572  -composite
+"FldChip_17^_H.png" -geometry +0001+1344  -composite
+"FldChip_21^_H.png" -geometry +3074+1124  -composite
+
+-fill none -fuzz 15% -draw 'alpha 1,1 floodfill'

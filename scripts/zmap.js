@@ -428,7 +428,7 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    marker.complete        = false;
 	if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
-		
+
 		path = [];
 		JSON.parse(vMarker.path).forEach(function(vLatLng) {
 			path.push(new L.latLng(vLatLng));
@@ -778,7 +778,7 @@ ZMap.prototype.buildMap = function() {
   var mapControlOptions = $.extend(
     mapOptions, {
     "zIndex": 0,
-    "collapsed": ZConfig.getConfig("collapsed")
+    "collapsed": ZConfig.getConfig("collapsed") == 'true'
   });
 
   if (L.Browser.mobile && window.innerWidth < 768) {
@@ -1881,7 +1881,7 @@ ZMap.prototype._createLoginForm = function() {
 				   mapControl.resetContent();
 				}
 
-			   
+
             } else {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));

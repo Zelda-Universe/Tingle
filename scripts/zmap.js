@@ -402,8 +402,8 @@ ZMap.prototype.addMarker = function(vMarker) {
                                                    , icon: _this._createMarkerIcon(vMarker.markerCategoryId)
                                                    });
    } else {
-	   marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
-	   marker.bindTooltip(vMarker.name, {permanent: true, className: mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
+      marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
+      marker.bindTooltip(vMarker.name, {permanent: true, className: mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
    }
 
    marker.id              = vMarker.id;
@@ -427,14 +427,14 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    marker.complete        = false;
-	if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
+   if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
 
-		path = [];
-		JSON.parse(vMarker.path).forEach(function(vLatLng) {
-			path.push(new L.latLng(vLatLng));
-		  }, this);
-		marker.path = L.polyline(path, {color: categories[marker.categoryId].color});
-	}
+      path = [];
+      JSON.parse(vMarker.path).forEach(function(vLatLng) {
+         path.push(new L.latLng(vLatLng));
+        }, this);
+      marker.path = L.polyline(path, {color: categories[marker.categoryId].color});
+   }
 
    categories[marker.categoryId].total++;
    for (var i = 0; i < completedMarkers.length; i++) {
@@ -648,28 +648,28 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
      )
    {
      map.removeLayer(marker);
-	 if (marker.path != undefined && marker.path != null && marker.path != "") {
-		map.removeLayer(marker.path);
-	 }
+    if (marker.path != undefined && marker.path != null && marker.path != "") {
+      map.removeLayer(marker.path);
+    }
      return;
   }
   if(this._shouldShowMarker(marker)) {
     marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
     map.addLayer(marker);
-	if (marker.path != undefined && marker.path != null && marker.path != "") {
-		marker.path.addTo(map);
-	}
+   if (marker.path != undefined && marker.path != null && marker.path != "") {
+      marker.path.addTo(map);
+   }
   } else {
     map.removeLayer(marker);
-	if (marker.path != undefined && marker.path != null && marker.path != "") {
-		map.removeLayer(marker.path);
-	}
+   if (marker.path != undefined && marker.path != null && marker.path != "") {
+      map.removeLayer(marker.path);
+   }
   }
 };
 
 ZMap.prototype._shouldShowMarker = function(marker) {
 
-	if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
+   if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
   return marker.visible
     && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
     && (
@@ -688,35 +688,35 @@ ZMap.prototype._shouldShowMarker = function(marker) {
     ) // Should we show completed markers?
 
   ;
-	} else if (marker.categoryTypeId == 3) {
-	  return marker.visible
-	   // @TODO: HARDCODE for TotK Release, need better handling
-		&& mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
-		&& (
-		  (
-			mapOptions.categorySelectionMethod == "focus"
-			&& categories[marker.categoryId].visibleZoom <= map.getZoom()
-			&& (
+   } else if (marker.categoryTypeId == 3) {
+     return marker.visible
+      // @TODO: HARDCODE for TotK Release, need better handling
+      && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
+      && (
+        (
+         mapOptions.categorySelectionMethod == "focus"
+         && categories[marker.categoryId].visibleZoom <= map.getZoom()
+         && (
 
-				   (
-					(marker.categoryId == 2163 && map.getZoom() <= 3)
-					|| (marker.categoryId == 2164 && map.getZoom() > 3 && map.getZoom() <= 5)
-					|| (marker.categoryId == 2165 && map.getZoom() > 5 && map.getZoom() <= 6)
-					|| (marker.categoryId == 2166 && map.getZoom() > 6 && map.getZoom() <= 8)
-				   )
-			   )
-		  )
-//		  || categories[marker.categoryId].userChecked
-		) // Check if we should show for the category, and at this zoom level
-		&& (
-		  mapOptions.showCompleted == true || (
-			mapOptions.showCompleted == false
-			&& marker.complete != true
-		  )
-		) // Should we show completed markers?
+               (
+               (marker.categoryId == 2163 && map.getZoom() <= 3)
+               || (marker.categoryId == 2164 && map.getZoom() > 3 && map.getZoom() <= 5)
+               || (marker.categoryId == 2165 && map.getZoom() > 5 && map.getZoom() <= 6)
+               || (marker.categoryId == 2166 && map.getZoom() > 6 && map.getZoom() <= 8)
+               )
+            )
+        )
+//      || categories[marker.categoryId].userChecked
+      ) // Check if we should show for the category, and at this zoom level
+      && (
+        mapOptions.showCompleted == true || (
+         mapOptions.showCompleted == false
+         && marker.complete != true
+        )
+      ) // Should we show completed markers?
 
-	  ;
-	}
+     ;
+   }
 }
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
@@ -734,39 +734,41 @@ ZMap.prototype.buildMap = function() {
   // console.log("Leaflet Version: "    + L.version     );
   // console.log("Zelda Maps Version: " + _this.version );
 
-  if (!L.CRS.Simple) {
-    L.CRS.Simple = L.Util.extend({}, L.CRS, {
-        projection:     L.Projection.LonLat
-      , transformation: new L.Transformation(1,0,1,0)
-    });
-  }
 
-  if(maps[0]) {
-    map = L.map('map', {
-        center:             new L.LatLng(
-          mapOptions.centerY,
-          mapOptions.centerX
-        )
-      , zoom:               0
-      , zoomSnap:           mapOptions.zoomSnap
-      , zoomDelta:          mapOptions.zoomDelta
-      , zoomControl:        false
-      , crs:                L.CRS.Simple
-      , layers:             [maps[0]]
-      , maxBounds:          new L.LatLngBounds(
-        new L.LatLng(
-          mapOptions.boundTopX,
-          mapOptions.boundTopY
-        ),
-        new L.LatLng(
-          mapOptions.boundBottomX,
-          mapOptions.boundBottomY
-        )
-      )
-      , maxBoundsViscosity: 1.0
-      , contextmenu:        true
-      , contextmenuWidth:   140
-    });
+   let scale = 36000/256/12000;
+   let offsetX = 36000/256/2;
+   let offsetY = 30000/256/2;
+   
+   let ZCRS = L.extend({}, L.CRS.Simple, {
+      transformation: new L.transformation(scale, offsetX, -scale, offsetY)
+   });
+
+   if(maps[0]) {
+      map = L.map('map', {
+           center:             new L.LatLng(
+             mapOptions.centerY,
+             mapOptions.centerX
+           )
+         , zoom:               0
+         , zoomSnap:           mapOptions.zoomSnap
+         , zoomDelta:          mapOptions.zoomDelta
+         , zoomControl:        false
+         , crs:                ZCRS
+         , layers:             [maps[0]]
+         , maxBounds:          new L.LatLngBounds(
+           new L.LatLng(
+             mapOptions.boundTopX,
+             mapOptions.boundTopY
+           ),
+           new L.LatLng(
+             mapOptions.boundBottomX,
+             mapOptions.boundBottomY
+           )
+         )
+         , maxBoundsViscosity: 1.0
+         , contextmenu:        true
+         , contextmenuWidth:   140
+       });
   }
 
   // Get all the base maps
@@ -1875,11 +1877,11 @@ ZMap.prototype._createLoginForm = function() {
                _this.setUser(data.user);
                updateAdState();
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
-				if (mapControl.isMobile()) {
-				   mapControl.closeDrawer();
-				} else {
-				   mapControl.resetContent();
-				}
+            if (mapControl.isMobile()) {
+               mapControl.closeDrawer();
+            } else {
+               mapControl.resetContent();
+            }
 
 
             } else {

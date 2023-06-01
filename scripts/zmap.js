@@ -735,12 +735,13 @@ ZMap.prototype.buildMap = function() {
   // console.log("Zelda Maps Version: " + _this.version );
 
 
-   let scale = 36000/256/12000;
-   let offsetX = 36000/256/2;
-   let offsetY = 30000/256/2;
+// TOTK
+//   let scale = 36000/256/12000;
+//   let offsetX = 36000/256/2;
+//   let offsetY = 30000/256/2;
    
    let ZCRS = L.extend({}, L.CRS.Simple, {
-      transformation: new L.transformation(scale, offsetX, -scale, offsetY)
+      transformation: new L.transformation(mapOptions.scaleP, parseFloat(mapOptions.offsetX), mapOptions.scaleN, parseFloat(mapOptions.offsetY))
    });
 
    if(maps[0]) {

@@ -36,6 +36,10 @@
                   , icon_small_width as iconSmallWidth
                   , icon_height as iconSmallHeight
                   , switch_icons_at_zoom as switchIconsAtZoom
+                  , scaleP  as scaleP 
+                  , scaleN  as scaleN 
+                  , offsetX as offsetX
+                  , offsetY as offsetY
                from ' . $map_prefix . 'container c
               where (c.id = \'' . $map . '\'
                      or c.short_name = \'' . $map . '\')

@@ -26,6 +26,7 @@
       `{$map_prefix}user`
     WHERE
       `username` = '{$username}'
+	  or `email` = '{$username}'
     ;
   ";
 	$result = $mysqli->query($query);

@@ -295,20 +295,20 @@ ZMap.prototype.addMap = function(vMap) {
 
     maps.push(tLayer);
   } else {
-    // Create the base map
-    //  We create it as an empty map, so different sized overlay maps won't show on top
-    //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
-    /* TODO: Improve this to use no tile at all (remove tile border)*/
-    var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
-                                         , { maxZoom:           vMap.maxZoom
-                                           , noWrap:            true
-                                           , tileSize:          mapOptions.tileSize
-                                           , updateWhenIdle:    true
-                                           , updateWhenZooming: false
-                                           , label:             vMap.name
-                                           , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
-                                           }
-    );
+      // Create the base map
+      //  We create it as an empty map, so different sized overlay maps won't show on top
+      //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
+      /* TODO: Improve this to use no tile at all (remove tile border)*/
+      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
+                                           , { maxZoom:           vMap.maxZoom
+                                             , noWrap:            true
+                                             , tileSize:          mapOptions.tileSize
+                                             , updateWhenIdle:    true
+                                             , updateWhenZooming: false
+                                             , label:             vMap.name
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
+                                             }
+      );
 
     tLayer.id          = 'mID' + vMap.id;
     tLayer.originalId  = vMap.id;
@@ -1831,7 +1831,7 @@ ZMap.prototype._createLoginForm = function() {
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
                                     '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
-                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Username"/>'+
+                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Username or email"/>'+
                                  '</div>'+
                               '</div>'+
                            '</div>'+
@@ -1875,7 +1875,13 @@ ZMap.prototype._createLoginForm = function() {
                _this.setUser(data.user);
                updateAdState();
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
-               mapControl.resetContent();
+				if (mapControl.isMobile()) {
+				   mapControl.closeDrawer();
+				} else {
+				   mapControl.resetContent();
+				}
+
+			   
             } else {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));

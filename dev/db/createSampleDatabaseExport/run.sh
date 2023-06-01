@@ -723,6 +723,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       resultFile="$completeDirPath/$tableName.sql";
       resultConvergedFilePath="$completeDirPath/$tableName$convergeSuffix.sql";
       # debugPrint "resultFile: $resultFile";
+      # break # Testing
 
       issueStepConvergePrepareConditional "$resultFile";
 
@@ -822,6 +823,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
       # debugPrint "Table End";
     done
+
+    issueStep \
+      "Cleaning unwanted SQL constructs that cannot be disabled with any native commands." \
+      "fish '$SDIR/cleanSQL.fish' '$resultFile'" \
+    ;
 
     # debugPrint "Not oneFile End";
   fi

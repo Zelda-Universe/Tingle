@@ -1,7 +1,7 @@
 -- custom projections aside from flat 256
 ALTER TABLE container 
         ADD scaleP FLOAT  NOT NULL DEFAULT 1 AFTER switch_icons_at_zoom
-      , ADD scaleN FLOAT  NOT NULL DEFAULT 1 AFTER scaleP
+      , ADD scaleN FLOAT  NOT NULL DEFAULT -1 AFTER scaleP
       , ADD offsetX FLOAT NOT NULL DEFAULT 0 AFTER scaleN
       , ADD offsetY FLOAT NOT NULL DEFAULT 0 AFTER offsetX
 ;

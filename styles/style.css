@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?q5au6g');
-  src:  url('fonts/icomoon.eot?q5au6g#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?q5au6g') format('truetype'),
-    url('fonts/icomoon.woff?q5au6g') format('woff'),
-    url('fonts/icomoon.svg?q5au6g#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?piurct');
+  src:  url('fonts/icomoon.eot?piurct#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?piurct') format('truetype'),
+    url('fonts/icomoon.woff?piurct') format('woff'),
+    url('fonts/icomoon.svg?piurct#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-TotK_Dragon:before {
+  content: "\e91e";
+}
 .icon-BotW_Icon_Talus:before {
   content: "\e937";
   color: #fff;

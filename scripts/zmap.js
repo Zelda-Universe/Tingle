@@ -1267,7 +1267,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
    $("#newMarkerForm").submit(function(e) {
       $.ajax({
               type: "POST",
-              url: "ajax/add_marker.php",
+              url: "ajax.php?command=add_marker.php",
               data: $("#newMarkerForm").serialize(), // serializes the form's elements.
               success: function(data) {
                   data = jQuery.parseJSON(data);

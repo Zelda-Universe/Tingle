@@ -1,46 +1,53 @@
 <?php
-   $path = __DIR__;
+  $path = __DIR__;
 
 	begin();
 
-   if (!is_numeric($_POST['categoryId'])
-         && !is_numeric($_POST['game'])
-         && !is_numeric($_POST['lat'])
-         && !is_numeric($_POST['lng'])
-         && !is_numeric($_POST['userId'])
-         && !is_numeric($_POST['submapId']) )
-   {
-		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
+  if (
+        !is_numeric($_POST['categoryId'])
+    &&  !is_numeric($_POST['game']      )
+    &&  !is_numeric($_POST['lat']       )
+    &&  !is_numeric($_POST['lng']       )
+    &&  !is_numeric($_POST['userId']    )
+    &&  !is_numeric($_POST['submapId']  )
+  ) {
+		echo json_encode(array("success"=>false, "msg"=>"Need all relevant marker data!"));
 		return;
 	}
 
   start_session("zmap");
-	if ($_SESSION['user_id'] != $_POST['userId']) {
-		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
-		return;
-	}
+	// if ($_SESSION['user_id'] != $_POST['userId']) {
+	// 	echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
+	// 	return;
+	// }
 
    // If it`s an update
-   if (isset($_POST['markerId'])) {
-      // Validate the rank of the user
-      if ($_SESSION['level'] < 5
-         || ($_SESSION['level'] < 10 && ($_SESSION['user_id'] != $_POST['userId'])) // @TODO: Improve this to get actual marker user, since he can change the POST data
+  if (isset($_POST['markerId'])) {
+    // Validate the rank of the user
+    if (
+          $_SESSION['level'] < 5
+      ||  (
+            $_SESSION['level'] < 10
+        &&  (
+          $_SESSION['user_id'] != $_POST['userId']
+        )
+      ) // @TODO: Improve this to get actual marker user, since they can change the POST data
       ) {
-         echo json_encode(array("success"=>false, "msg"=>"You can't delete this marker!"));
+         echo json_encode(array("success"=>false, "msg"=>"You can't add this marker!"));
          return;
       }
-   } else {
-      // Ok, anyone can add marker :)
-   }
+  } else {
+    // Ok, anyone can add marker :)
+  }
 
-   //----------------------------------------------------------//
-   if (!isset($_POST['markerId'])) {
-   $visible = 0;
-      if ($_SESSION['level'] >= 5) {
-         $visible = 1;
-      }
+  //----------------------------------------------------------//
+  if (!isset($_POST['markerId'])) {
+  $visible = 0;
+    if ($_SESSION['level'] >= 5) {
+      $visible = 1;
+    }
 
-      $query = "insert into " . $map_prefix . "marker (
+    $query = "insert into " . $map_prefix . "marker (
                                           id
                                         , submap_id
                                         , marker_status_id
@@ -67,8 +74,8 @@
                                         , " . $visible . "
                                         , now()
                                   )";
-   } else {
-      $query = "update " . $map_prefix . "marker
+  } else {
+    $query = "update " . $map_prefix . "marker
                    set submap_id = ".$_POST['submapId']."
                      , marker_category_id = ".$_POST['categoryId']."
                      , name = '" . addslashes(htmlentities(stripslashes($_POST['markerTitle']), ENT_QUOTES, "UTF-8")) . "'
@@ -78,21 +85,21 @@
                      , global = " . (isset($_POST['isGlobal'])?1:0) . "
                      , last_updated = now()
                ";
-      if ($_SESSION['level'] >= 10) {
-      $query = $query . "
-                     , visible = " . (isset($_POST['isVisible'])?1:0);
-      }
+    if ($_SESSION['level'] >= 10) {
+    $query = $query . "
+                   , visible = " . (isset($_POST['isVisible'])?1:0);
+    }
 
-      $query = $query . "
-                 where id = " . $_POST['markerId'];
+    $query = $query . "
+               where id = " . $_POST['markerId'];
    }
    session_write_close();
 
 	//echo $query;
-   $result = @$mysqli->query($query); // or die(mysql_error());
-   $num = $result->num_rows;
+  $result = @$mysqli->query($query); // or die(mysql_error());
+  $num = $result->num_rows;
 
-   if ($result) {
+  if ($result) {
       if (!isset($_POST['markerId'])) {
          $marker_id = $mysqli->insert_id;
       } else {

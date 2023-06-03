@@ -1,5 +1,5 @@
 <?php
-   $path = __DIR__;
+  $path = __DIR__;
 
 	begin();
 
@@ -28,7 +28,7 @@
 
       if($commitResult) {
         if($mailEnabled) {
-          include_once("$path/lib/zmailer.php");
+          include_once("$path/../lib/zmailer.php");
           $mailResult = sendMail(createResetPasswordEmail($email, $rowSelectUser['name'], $randomPassword));
           if($mailResult) {
             echo json_encode(array("success"=>true, "msg"=>"Password reset. Email sent."));

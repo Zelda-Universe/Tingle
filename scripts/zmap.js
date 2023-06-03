@@ -430,10 +430,22 @@ ZMap.prototype.addMarker = function(vMarker) {
    if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
 
       path = [];
-      JSON.parse(vMarker.path).forEach(function(vLatLng) {
+      var pathJSON = JSON.parse(vMarker.path);
+      pathJSON.forEach(function(vLatLng) {
          path.push(new L.latLng(vLatLng));
-        }, this);
-      marker.path = L.polyline(path, {color: categories[marker.categoryId].color});
+      }, this);
+      
+      var vColor = categories[marker.categoryId].color;
+      if (pathJSON[0].color != undefined && pathJSON[0].color != null && pathJSON[0].color != "") {
+         vColor = pathJSON[0].color;
+      }
+      console.log(vColor);
+      marker.path = L.polyline(path, {smoothFactor: 1, color: vColor});
+      marker.pathDecorator = L.polylineDecorator(path, {
+         patterns: [
+            {offset: 15, repeat: 50, symbol: L.Symbol.arrowHead({pixelSize: 15, pathOptions: {fillOpacity: 1, weight: 0, color: vColor}})}
+         ]
+      });
    }
 
    categories[marker.categoryId].total++;
@@ -650,6 +662,7 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
      map.removeLayer(marker);
     if (marker.path != undefined && marker.path != null && marker.path != "") {
       map.removeLayer(marker.path);
+      map.removeLayer(marker.pathDecorator);
     }
      return;
   }
@@ -658,11 +671,13 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
     map.addLayer(marker);
    if (marker.path != undefined && marker.path != null && marker.path != "") {
       marker.path.addTo(map);
+      marker.pathDecorator.addTo(map);
    }
   } else {
     map.removeLayer(marker);
    if (marker.path != undefined && marker.path != null && marker.path != "") {
       map.removeLayer(marker.path);
+      map.removeLayer(marker.pathDecorator);
    }
   }
 };

@@ -435,11 +435,12 @@ ZMap.prototype.addMarker = function(vMarker) {
          path.push(new L.latLng(vLatLng));
       }, this);
       
+      
       var vColor = categories[marker.categoryId].color;
+      // @TODO: Current library only supports one color. Consider switch to a different lib with multiple color support (hence why color is in the array and not global)
       if (pathJSON[0].color != undefined && pathJSON[0].color != null && pathJSON[0].color != "") {
          vColor = pathJSON[0].color;
       }
-      console.log(vColor);
       marker.path = L.polyline(path, {smoothFactor: 1, color: vColor});
       marker.pathDecorator = L.polylineDecorator(path, {
          patterns: [

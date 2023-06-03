@@ -5,7 +5,7 @@ ALTER TABLE container
       , ADD offsetX FLOAT NOT NULL DEFAULT 0 AFTER scaleN
       , ADD offsetY FLOAT NOT NULL DEFAULT 0 AFTER offsetX
 ;
-
+/*
 -- default
 update container 
    set scaleP =  0.01171875
@@ -21,3 +21,6 @@ update marker
      , y = (y*256*10000/30000+5000)
  where submap_id in (2101, 2102, 2103)
 ;
+
+-- @TODO: PATH conversion
+*/

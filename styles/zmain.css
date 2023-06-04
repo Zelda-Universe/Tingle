@@ -443,6 +443,10 @@ body,
 	font-size: 14px;
 }
 
+.menu-cat-content-inner ul {
+	font-size: 14px;
+}
+
 .menu-cat-content-inner form {
 	padding: 16px 24px 24px 24px;
 }

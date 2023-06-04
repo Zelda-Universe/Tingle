@@ -24,7 +24,7 @@
               `version_minor`, '.',
               `version_patch`
             ) AS `version`
-            FROM tingle.changelog
+            FROM changelog
             ORDER BY
               `version_major` DESC,
               `version_minor` DESC,

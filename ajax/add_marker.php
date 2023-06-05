@@ -74,6 +74,7 @@
   } else {
     // Ok, anyone can add marker :)
   }
+  
 
   //----------------------------------------------------------//
   if (!isset($_POST['markerId'])) {
@@ -131,8 +132,8 @@
    session_write_close();
 
 	//echo $query;
-  error_log($query);
-  die();
+  //error_log($query);
+  //die();
   $result = @$mysqli->query($query); // or die(mysql_error());
   $num = $result->num_rows;
 

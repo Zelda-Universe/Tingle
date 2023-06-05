@@ -9,6 +9,10 @@
             * `sudo dnf install community-mysql-server`
             * `sudo systemctl start mysqld`
       * Install recommended GUI editor/IDE
+        * https://dbeaver.io/download/
+          * Community edition
+        * https://github.com/Sequel-Ace/Sequel-Ace
+          * https://github.com/sequelpro/sequelpro/issues/2485#issuecomment-1403679595
         * https://dev.mysql.com/downloads/workbench/
       * Perform the usual and secure database set-up steps:
         * Catch the new, randomly generated root account's password during the installation.
@@ -20,17 +24,36 @@
             * Force root local only: `y`
             * Remove test database: `y`
             * Reload privs: `y`
+      * Create the database using a root account:
+        * ```
+            CREATE SCHEMA `zeldamaps`
+            DEFAULT CHARACTER SET latin1
+            DEFAULT COLLATE latin1_swedish_ci
+          ```
       * A dedicated account is recommended to only read the related database schemas, so add a less privileged database account for this project to use:
-        * `CREATE USER 'tingle'@'localhost' IDENTIFIED BY '<password>';`
+        * `CREATE USER 'zeldamaps'@'localhost' IDENTIFIED BY '<password>';`
         * The `mysql_config_editor` to create and store local, default, client credentials may be recommended, especially when contacting different project-related servers.
-      * Import the sample database file.
-        * `dev/db/samples/tingle.sql`
-      * Grant the new db user all or some schema privileges to the newly imported `tingle` schema.
-        * All: ``GRANT ALL PRIVILEGES ON `tingle`.* to 'tingle'@'localhost'``
-        * Specific Schema Privileges: ``GRANT SELECT, INSERT, UPDATE, DELETE ON `tingle`.* to 'tingle'@'localhost';``
+      * Grant the new db user all or some schema privileges to the newly imported `zeldamaps` schema.
+        * Specific Schema Privileges: ``GRANT SELECT, INSERT, UPDATE, DELETE ON `zeldamaps`.* to 'zeldamaps'@'localhost';``
+        * All (Not recommended): ``GRANT ALL PRIVILEGES ON `zeldamaps`.* to 'zeldamaps'@'localhost'``
+      * Possibly do the same for a devevlopment DB management account too:
+        * `CREATE USER 'zeldamaps-manage'@'localhost' IDENTIFIED BY '<password>';`
+        * ``GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, LOCK TABLES, ALTER ON `zeldamaps`.* to 'zeldamaps-manage'@'localhost';``
       * Setup project local backend PHP config parameters:
         * `cp .env.example .env`
         * Edit the newly copied `.env` file to your database's parameters for connection location and account credentials.
+      * Import the sample database files, hopefully using the specific management account.
+        * ```
+          if pushd dev/db/samples/zeldamaps
+            find -type f -iname '*.sql' \
+            | sort | while read file
+              echo Importing \"$file\"...   ;
+              dev/db/command.fish < "$file" ;
+            end
+
+            popd;
+          end
+          ```
     * Set-up web server
       * Linux:
         * Compile:

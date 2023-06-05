@@ -391,7 +391,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   ## Database connection Details
   {
-    # Loops as required.
     while [[ -z "$databaseUser" ]]; do
       if [[ -z "$databaseConnectionString" ]]; then
         if [[ -z "$databaseUser" ]]; then
@@ -445,6 +444,14 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     fi
   }
 
+  if [[ "$verbose" == 'true' ]]; then
+    errorRedirectionString="";
+    verboseString="-v";
+  else
+    errorRedirectionString="2>/dev/null";
+    verboseString="";
+  fi
+
   [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]] && dbDumpCommonOptions="--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
   dbDumpCommonOptions="$dbDumpCommonOptions $databaseConnectionString";
   dbDumpCommonOptions="$dbDumpCommonOptions $databaseName";
@@ -469,14 +476,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   dataOnlyOptions="$dataOnlyOptions --no-create-info";
   dataOnlyOptions="$dataOnlyOptions --skip-add-drop-table";
   # dataOnlyOptions="$dataOnlyOptions --skip-extended-insert";
-
-  if [[ "$verbose" == 'true' ]]; then
-    errorRedirectionString="";
-    verboseString="-v";
-  else
-    errorRedirectionString="2>/dev/null";
-    verboseString="";
-  fi
 
   if [[ "$briefMessages" == "true" ]]; then
     availableMessageCharacters="$(expr "$(tput cols)" - 12 - 3)"; # For the result messages, their wrapping characters, the message prefix, and then the ellipsis.

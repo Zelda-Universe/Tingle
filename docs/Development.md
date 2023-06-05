@@ -4,7 +4,7 @@
 
   1. Branch off of `master` using the branch prefix `feature/`.
   2. While working on code changes, commit & push, early & often, so other team members are aware of current code changes to possibly integrate and/or merge with.  Also mind Development Guidelines below.
-  3. When finalized, merge to `staging`, and open a pull request on GitHub.  Probably assign it to Jason.
+  3. When finalized, merge to `staging`, and open a pull request on GitHub.
   4. At this point, auto deployment should push it to the staging server.  You can check that it works there.
   5. After review, the pull request can be merged by the reviewer, or maybe even the developer, back into `master`.
 

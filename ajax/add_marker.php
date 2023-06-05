@@ -12,7 +12,7 @@
     'submapId'
   ];
   $fieldNamesStrs = [
-    'level'             ,
+//    'level'             ,
     'markerTitle'       ,
     'markerDescription' ,
     'tabText'

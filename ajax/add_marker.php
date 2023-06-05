@@ -4,14 +4,17 @@
 	begin();
 
   if (
-        !is_numeric($_POST['categoryId'])
-    &&  !is_numeric($_POST['game']      )
-    &&  !is_numeric($_POST['lat']       )
-    &&  !is_numeric($_POST['lng']       )
-    &&  !is_numeric($_POST['userId']    )
-    &&  !is_numeric($_POST['submapId']  )
+        !isset($_POST['categoryId'])  || !is_numeric($_POST['categoryId'])
+    &&  !isset($_POST['game'])        || !is_numeric($_POST['game']      )
+    &&  !isset($_POST['lat'])         || !is_numeric($_POST['lat']       )
+    &&  !isset($_POST['lng'])         || !is_numeric($_POST['lng']       )
+    &&  !isset($_POST['userId'])      || !is_numeric($_POST['userId']    )
+    &&  !isset($_POST['submapId'])    || !is_numeric($_POST['submapId']  )
   ) {
-		echo json_encode(array("success"=>false, "msg"=>"Need all relevant marker data!"));
+		echo json_encode(array(
+      "success" => false,
+      "msg"     => "Need all relevant and properly formatted marker data!"
+    ));
 		return;
 	}
 

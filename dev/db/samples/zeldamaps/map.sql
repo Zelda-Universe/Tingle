@@ -1,6 +1,6 @@
 -- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
 -- Server version	10.5.19-MariaDB
 

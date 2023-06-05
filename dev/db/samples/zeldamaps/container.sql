@@ -1,6 +1,6 @@
 -- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
 -- Server version	10.5.19-MariaDB
 
@@ -64,7 +64,7 @@ CREATE TABLE `container` (
 
 LOCK TABLES `container` WRITE;
 /*!40000 ALTER TABLE `container` DISABLE KEYS */;
-INSERT INTO `container` VALUES 
+INSERT INTO `container` VALUES
   (1,'TLoZ','The Legend of Zelda','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,0,3),
   (2,'AoL','Zelda 2: Adventure of Link','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,0,3),
   (3,'ALttP','A Link to the Past','markers/','png','#000000','',0,1,1,0,1,128,-128,0,0,-256,256,6,4,30,256,23,23,16,16,5,0,3),

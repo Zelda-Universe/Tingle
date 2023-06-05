@@ -3,26 +3,55 @@
 
 	begin();
 
-  if (
-        !isset($_POST['categoryId'])  || !is_numeric($_POST['categoryId'])
-    &&  !isset($_POST['game'])        || !is_numeric($_POST['game']      )
-    &&  !isset($_POST['lat'])         || !is_numeric($_POST['lat']       )
-    &&  !isset($_POST['lng'])         || !is_numeric($_POST['lng']       )
-    &&  !isset($_POST['userId'])      || !is_numeric($_POST['userId']    )
-    &&  !isset($_POST['submapId'])    || !is_numeric($_POST['submapId']  )
+  $fieldNamesInts = [
+    'categoryId'        ,
+    'game'              ,
+    'lat'               ,
+    'lng'               ,
+    'userId'            ,
+    'submapId'
+  ];
+  $fieldNamesStrs = [
+    'level'             ,
+    'markerTitle'       ,
+    'markerDescription' ,
+    'tabText'
+  ];
+
+  $fieldNamesAll = array_merge($fieldNamesInts, $fieldNamesStrs);
+
+  foreach ($fieldNamesAll as $fieldName) {
+    if (!isset($_POST[$fieldName])) {
+  		echo json_encode(array(
+        "success" => false,
+        "msg"     => "Need all relevant marker data!"
+      ));
+  		return;
+  	}
+  }
+
+  foreach ($fieldNamesInts as $fieldName) {
+    if (!is_numeric($_POST[$fieldName])) {
+  		echo json_encode(array(
+        "success" => false,
+        "msg"     => "Need all marker data to be properly formatted!"
+      ));
+  		return;
+  	}
+  }
+
+  start_session("zmap");
+
+	if (
+        !isset($_SESSION['user_id'])
+    ||  $_SESSION['user_id'] != $_POST['userId']
   ) {
 		echo json_encode(array(
       "success" => false,
-      "msg"     => "Need all relevant and properly formatted marker data!"
+      "msg"     => "Not logged!"
     ));
 		return;
 	}
-
-  start_session("zmap");
-	// if ($_SESSION['user_id'] != $_POST['userId']) {
-	// 	echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
-	// 	return;
-	// }
 
    // If it`s an update
   if (isset($_POST['markerId'])) {
@@ -36,7 +65,10 @@
         )
       ) // @TODO: Improve this to get actual marker user, since they can change the POST data
       ) {
-         echo json_encode(array("success"=>false, "msg"=>"You can't add this marker!"));
+         echo json_encode(array(
+           "success"  => false,
+           "msg"      => "You can't add this marker!"
+         ));
          return;
       }
   } else {
@@ -99,6 +131,8 @@
    session_write_close();
 
 	//echo $query;
+  error_log($query);
+  die();
   $result = @$mysqli->query($query); // or die(mysql_error());
   $num = $result->num_rows;
 
@@ -154,7 +188,8 @@
 			if (!$result) {
 				break;
 			}
-    	}
+    }
+
 		if ($result) {
 			//echo json_encode(array("success"=>true, "msg"=>"Marker inserted!", "markerId"=>$marker_id));
          //@TODO: IMPROVE THIS TO GET FROM PHP FILE
@@ -165,15 +200,26 @@
          include("$path/ajax/get_markers.php");
          $output = ob_get_clean();
 
-         echo json_encode(array("success"=>true, "action"=>(!isset($_POST['markerId'])?"ADD":"UPDATE"), "marker"=>$output));
+         echo json_encode(array(
+           "success"  => true,
+           "action"   =>  (
+             !isset($_POST['markerId']) ? "ADD" : "UPDATE"
+           ),
+           "marker" =>  $output));
 		} else {
-			echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
+			echo json_encode(array(
+        "success" => false,
+        "msg"     => $mysqli->error
+      ));
 			rollback();
 		}
-    } else {
-        echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
-		rollback();
-    }
+  } else {
+      echo json_encode(array(
+        "success" => false,
+        "msg"=> $mysqli->error
+      ));
+	  rollback();
+  }
 
 
    commit();

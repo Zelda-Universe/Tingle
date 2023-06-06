@@ -870,6 +870,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         "sed -i -r \"/DEFAULT NULL/!  s|(DEFAULT )([^', =]+)([, ])|\\1'\\2'\\3|\" '$resultFile'" \
       ;
 
+      issueStep \
+        'Re-add "COLLATE" term if missing from table definition.' \
+        "fish '$SDIR/addCollate.fish' '$resultFile'" \
+      ;
+
       # debugPrint "Table End";
     done
 

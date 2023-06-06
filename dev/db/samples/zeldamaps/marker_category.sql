@@ -28,11 +28,11 @@ CREATE TABLE `marker_category` (
   `marker_category_type_id` int(11) NOT NULL,
   `container_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `default_checked` tinyint(1) NOT NULL DEFAULT 0,
+  `default_checked` tinyint(1) NOT NULL DEFAULT '0',
   `img` varchar(45) NOT NULL,
   `color` varchar(45) NOT NULL DEFAULT '#000000',
   `visible_zoom` int(11) NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_marker_category_map_container1_idx` (`container_id`),
   KEY `fk_marker_category_marker_category_type1_idx` (`marker_category_type_id`),
@@ -49,7 +49,7 @@ CREATE TABLE `marker_category` (
 
 LOCK TABLES `marker_category` WRITE;
 /*!40000 ALTER TABLE `marker_category` DISABLE KEYS */;
-INSERT INTO `marker_category` VALUES 
+INSERT INTO `marker_category` VALUES
   (1,NULL,1,1,'Itens',1,'map_gear','#000000',5,1),
   (2,1,1,1,'Itens comuns',1,'map_item','#000000',5,1),
   (3,1,1,1,'Mapa',1,'map_map','#000000',5,1),
@@ -297,4 +297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-25 13:40:30
+-- Dump completed on 2023-06-05 17:22:19

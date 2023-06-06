@@ -34,7 +34,7 @@ CREATE TABLE `schema_migrations` (
 
 LOCK TABLES `schema_migrations` WRITE;
 /*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
-INSERT INTO `schema_migrations` VALUES 
+INSERT INTO `schema_migrations` VALUES
   ('20180427013505'),
   ('20180430012556'),
   ('20180430031250'),

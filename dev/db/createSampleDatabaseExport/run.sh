@@ -524,6 +524,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     sed -r                        \
       -e 's|\),\(|),\n  (|g'      \
       -e 's|(VALUES )\(|\1\n  (|' \
+      -e 's|(VALUES) |\1|'        \
       -e 's|\);|)\n;|'            \
   ";
 
@@ -692,6 +693,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint "oneFile End";
   else
     # debugPrint "Not oneFile Start";
+
     ## Export to multiple, individual files.
     issueStep \
       'Reading and storing list of tables...' \
@@ -703,6 +705,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         --skip-column-names     \
       ;)\"
     ";
+    # | tail -n +5            \
     if [[ -z "$defaultTableNames" ]]; then
       errorPrint 'Could not retrieve list of table names, or there are none; exiting...';
       exit 1;
@@ -835,8 +838,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         # debugPrint "Not removeAITable Start";
 
         ## Handle tables that don't require transforming data with the same AI value.
-        issueStep \
-          "Exporting complete table \"$tableName\" to an individual completed result file, keeping the auto increment values to match the data later on." \
+        issueStep     \
+          "Exporting complete table \"$tableName\" to an individual completed result file, keeping the auto increment values to match the data later on."  \
           "'$dbDumpExe'             \
             $dbDumpCommonOptions    \
             $tableName              \
@@ -858,8 +861,13 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       ;
 
       issueStep \
-        "Cleaning unwanted SQL constructs that cannot be disabled with any native commands." \
-        "fish '$SDIR/cleanSQL.fish' '$resultFile'" \
+        'Cleaning unwanted SQL constructs that cannot be disabled with any native commands, such as the duplicate "INSERT" statements with matching preceding semicolons and absence of trailing commas when breaking the extended syntax data clause list.' \
+        "fish '$SDIR/cleanSQL.fish' '$resultFile'"      \
+      ;
+
+      issueStep \
+        'Make "DEFAULT" values in field definition consistent.' \
+        "sed -i -r \"/DEFAULT NULL/!  s|(DEFAULT )([^', =]+)([, ])|\\1'\\2'\\3|\" '$resultFile'" \
       ;
 
       # debugPrint "Table End";

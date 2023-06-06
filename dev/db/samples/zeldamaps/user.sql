@@ -31,12 +31,12 @@ CREATE TABLE `user` (
   `created` datetime NOT NULL,
   `ip` varchar(46) NOT NULL,
   `last_login` datetime NOT NULL,
-  `level` tinyint(1) NOT NULL DEFAULT 1,
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
-  `seen_version_major` int(11) NOT NULL DEFAULT 0,
-  `seen_version_minor` int(11) NOT NULL DEFAULT 0,
-  `seen_version_patch` int(11) NOT NULL DEFAULT 0,
-  `seen_latest_changelog` tinyint(1) NOT NULL DEFAULT 1,
+  `level` tinyint(1) NOT NULL DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  `seen_version_major` int(11) NOT NULL DEFAULT '0',
+  `seen_version_minor` int(11) NOT NULL DEFAULT '0',
+  `seen_version_patch` int(11) NOT NULL DEFAULT '0',
+  `seen_latest_changelog` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `email_UNIQUE` (`email`)
@@ -3129,4 +3129,4 @@ VALUES
   ('206391', 'test206391', '$2y$13$6X4RYJqepBi2Te1pY1nq5.oGtUMY7aB6SOTO2lTEOx7lUTlNwOfqS', 'test206391', 'test206391@test.com', '2018-01-02 02:40:51', '127.0.0.1', '2018-01-02 02:40:51', '1', '1', '0', '5', '0', '0')
 ;
 
--- Dump completed on 2023-06-05 14:44:47
+-- Dump completed on 2023-06-05 17:22:20

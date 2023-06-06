@@ -38,7 +38,7 @@ CREATE TABLE `mapper` (
 
 LOCK TABLES `mapper` WRITE;
 /*!40000 ALTER TABLE `mapper` DISABLE KEYS */;
-INSERT INTO `mapper` VALUES 
+INSERT INTO `mapper` VALUES
   (1,'Danilo Passos','danilo.passos@zelda.com.br','Hyrule Legends','https://www.zelda.com.br'),
   (2,'Jacob Zaccaria',NULL,'Zelda Universe','http://zeldauniverse.net')
 ;

@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -34,8 +34,8 @@ CREATE TABLE `submap_layer` (
   `control_checked` tinyint(1) DEFAULT NULL COMMENT '''If the layer is default visible or not''',
   `type` char(1) DEFAULT NULL COMMENT '''F - Foreground / B - Background''',
   `layer_order` int(11) DEFAULT NULL,
-  `opacity` float NOT NULL DEFAULT 1,
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
+  `opacity` float NOT NULL DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `fk_map_layer_submap1_idx` (`submap_id`),
   KEY `fk_submap_layer_mapper1_idx` (`mapper_id`),
@@ -50,7 +50,7 @@ CREATE TABLE `submap_layer` (
 
 LOCK TABLES `submap_layer` WRITE;
 /*!40000 ALTER TABLE `submap_layer` DISABLE KEYS */;
-INSERT INTO `submap_layer` VALUES 
+INSERT INTO `submap_layer` VALUES
   (190019010,1900,NULL,'VGA 2016','botw/vga2014/','png','blank',1,0,'F',2,0.4,1),
   (190019011,1900,2,'Hand Drawn','botw/zu/','png','blank',1,1,'F',1,1,1),
   (190019012,1901,2,'Labels','botw/hyrule_labels/','png','blank',1,1,'F',1,1,0)
@@ -67,4 +67,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 13:13:43
+-- Dump completed on 2023-06-05 17:22:20

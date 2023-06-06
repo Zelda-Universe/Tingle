@@ -37,7 +37,7 @@ CREATE TABLE `ar_internal_metadata` (
 
 LOCK TABLES `ar_internal_metadata` WRITE;
 /*!40000 ALTER TABLE `ar_internal_metadata` DISABLE KEYS */;
-INSERT INTO `ar_internal_metadata` VALUES 
+INSERT INTO `ar_internal_metadata` VALUES
   ('environment','development','2021-08-09 17:53:35.510720','2021-08-09 17:53:35.510720')
 ;
 /*!40000 ALTER TABLE `ar_internal_metadata` ENABLE KEYS */;

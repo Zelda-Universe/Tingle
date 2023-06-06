@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -25,17 +25,17 @@ DROP TABLE IF EXISTS `submap`;
 CREATE TABLE `submap` (
   `id` int(11) NOT NULL,
   `map_id` int(11) NOT NULL,
-  `map_type_id` int(11) NOT NULL DEFAULT 0,
+  `map_type_id` int(11) NOT NULL DEFAULT '0',
   `mapper_id` int(11) DEFAULT NULL,
   `name` varchar(45) NOT NULL,
-  `is_default` tinyint(1) NOT NULL DEFAULT 0,
+  `is_default` tinyint(1) NOT NULL DEFAULT '0',
   `tile_url` varchar(250) NOT NULL,
   `tile_ext` char(3) NOT NULL DEFAULT 'png',
   `img404` varchar(10) NOT NULL DEFAULT '404',
-  `submap_order` int(11) NOT NULL DEFAULT -1,
+  `submap_order` int(11) NOT NULL DEFAULT '-1',
   `empty_map` tinyint(1) NOT NULL,
-  `opacity` float NOT NULL DEFAULT 1,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `opacity` float NOT NULL DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_map_game_map_type1_idx` (`map_type_id`),
   KEY `fk_map_mapper1_idx` (`mapper_id`),
@@ -52,7 +52,7 @@ CREATE TABLE `submap` (
 
 LOCK TABLES `submap` WRITE;
 /*!40000 ALTER TABLE `submap` DISABLE KEYS */;
-INSERT INTO `submap` VALUES 
+INSERT INTO `submap` VALUES
   (140,3,1,NULL,'Light World',1,'alttp/overworld/light/','png','404',0,0,1,1),
   (141,3,1,NULL,'Dark World',0,'alttp/overworld/dark/','png','404',1,0,1,1),
   (1900,19,1,1,'DO NOT USE',0,'botw/e32016/','png','blank',0,0,1,0),
@@ -83,4 +83,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 14:55:21
+-- Dump completed on 2023-06-05 17:22:20

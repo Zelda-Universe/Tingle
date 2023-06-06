@@ -29,8 +29,8 @@ CREATE TABLE `marker_tab` (
   `user_id` int(11) NOT NULL,
   `tab_title` varchar(45) NOT NULL,
   `tab_text` text NOT NULL,
-  `tab_order` int(11) NOT NULL DEFAULT -1,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `tab_order` int(11) NOT NULL DEFAULT '-1',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`marker_tab_id`),
   KEY `fk_map_marker_tab_map_marker1_idx` (`marker_id`),
   KEY `fk_marker_tab_marker_tab_status1_idx` (`marker_tab_status_id`),
@@ -47,7 +47,7 @@ CREATE TABLE `marker_tab` (
 
 LOCK TABLES `marker_tab` WRITE;
 /*!40000 ALTER TABLE `marker_tab` DISABLE KEYS */;
-INSERT INTO `marker_tab` VALUES 
+INSERT INTO `marker_tab` VALUES
   (42,22,1,1,'','&lt;img src=&quot;https://zeldawiki.org/images/2/22/BotW_Temple_of_Time.png&quot; width=&quot;100%&quot;&gt;In Breath of the Wild, the Temple of Time is located in the Great Plateau in Central Hyrule, close to the Shrine of Resurrection. The temple can be seen in an extremely dilapidated state, with missing and broken windows, crumbling rooftop, and collapsed walls. Rubble is strewn around the temple&#039;s interior and the structure appears to have been reclaimed by nature as grass can be seen growing inside and ivy creeps up the walls.',1,0),
   (43,23,1,1,'','&lt;img src=&quot;https://zeldawiki.org/images/0/00/BotW_Shrine_of_Resurrection.png&quot; width=&quot;100%&quot;&gt;Link awakens from within the Shrine of Resurrection after hearing the call of an unknown voice. He is guided to a pedestal, where he receives the Sheikah Slate. Afterwards, the door to the chamber opens, leading to another room containing two Treasure Chests with the Old Shirt and the Well-Worn Trousers. Behind the Chests rests a pedestal from which Link can place the Sheikah Slate and open the entrance to the Shrine of Resurrection, leading to the Great Plateau.',1,0),
   (44,22,1,1,'','&lt;img src=&quot;https://zeldawiki.org/images/2/22/BotW_Temple_of_Time.png&quot; width=&quot;100%&quot;&gt;\r\n&lt;p&gt;In Breath of the Wild, the Temple of Time is located in the Great Plateau in Central Hyrule, close to the Shrine of Resurrection. The temple can be seen in an extremely dilapidated state, with missing and broken windows, crumbling rooftop, and collapsed walls. Rubble is strewn around the temple&#039;s interior and the structure appears to have been reclaimed by nature as grass can be seen growing inside and ivy creeps up the walls.&lt;/p&gt;',1,1),
@@ -6716,4 +6716,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-25 13:46:11
+-- Dump completed on 2023-06-05 17:22:19

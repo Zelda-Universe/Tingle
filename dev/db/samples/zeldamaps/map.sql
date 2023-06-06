@@ -26,12 +26,12 @@ CREATE TABLE `map` (
   `id` int(11) NOT NULL,
   `container_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `is_default` tinyint(1) NOT NULL DEFAULT 0,
-  `default_zoom` tinyint(4) NOT NULL DEFAULT 1,
+  `is_default` tinyint(1) NOT NULL DEFAULT '0',
+  `default_zoom` tinyint(4) NOT NULL DEFAULT '1',
   `max_zoom` tinyint(1) NOT NULL,
   `map_copyright` varchar(250) NOT NULL,
   `map_order` tinyint(4) NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_map_project1_idx` (`container_id`),
   CONSTRAINT `fk_map_project1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`)
@@ -44,7 +44,7 @@ CREATE TABLE `map` (
 
 LOCK TABLES `map` WRITE;
 /*!40000 ALTER TABLE `map` DISABLE KEYS */;
-INSERT INTO `map` VALUES 
+INSERT INTO `map` VALUES
   (3,3,'Overworld',0,2,6,'(c) Nintendo',0,1),
   (19,19,'Hyrule',0,2,8,'(c) Nintendo',1,1),
   (20,4,'Koholint Island',1,2,4,'(c) Nintendo',0,1),
@@ -73,4 +73,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-24 12:59:53
+-- Dump completed on 2023-06-05 17:22:19

@@ -26,17 +26,17 @@ CREATE TABLE `marker` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `submap_id` int(11) NOT NULL,
   `overlay_id` int(11) DEFAULT NULL,
-  `marker_status_id` int(11) NOT NULL DEFAULT 1,
+  `marker_status_id` int(11) NOT NULL DEFAULT '1',
   `marker_category_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `name` text NOT NULL,
   `description` text NOT NULL,
   `x` double NOT NULL,
   `y` double NOT NULL,
-  `jump_marker_id` int(11) NOT NULL DEFAULT 0,
-  `global` tinyint(1) DEFAULT 0,
+  `jump_marker_id` int(11) NOT NULL DEFAULT '0',
+  `global` tinyint(1) DEFAULT '0',
   `path` text NOT NULL DEFAULT '',
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   `last_updated` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_map_marker_map_marker_status1_idx` (`marker_status_id`),
@@ -56,7 +56,7 @@ CREATE TABLE `marker` (
 
 LOCK TABLES `marker` WRITE;
 /*!40000 ALTER TABLE `marker` DISABLE KEYS */;
-INSERT INTO `marker` VALUES 
+INSERT INTO `marker` VALUES
   (22,1900,NULL,2,1927,1,'Temple of Time','',114.125,-165.53125,0,0,'',0,'2017-01-23 04:06:43'),
   (23,1900,NULL,2,1924,1,'Shrine of Resurrection','BEFORE HACK',111.046875,-163.421875,0,0,'',0,'2017-01-23 04:07:11'),
   (24,1900,NULL,2,1925,1,'Oman Au Shrine','BEFORE HACK',116.703125,-157.21875,0,0,'',0,'2017-01-23 05:50:10'),
@@ -18259,4 +18259,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-01 11:58:48
+-- Dump completed on 2023-06-05 17:22:19

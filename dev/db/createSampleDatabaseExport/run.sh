@@ -466,7 +466,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   removeAITables='user user_completed_marker'; # With transformed data.
   noDataTables='user_completed_marker';
 
-  ignoreTablesOptions='';
+  ignoreTablesOptions='ar_internal_metadata';
   for table in $removeAITables; do
     ignoreTablesOptions+="--ignore-table='$databaseName.$table' ";
   done

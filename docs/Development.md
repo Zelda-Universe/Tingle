@@ -207,6 +207,10 @@
           - Code (Individual field): `change_column_default(:table_name, :column_name, '<defaultValue>')`
           - Source: `dev/db/migrate/20230405195637_container_update_and_add_defaults.rb`
           - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_column_default
+        - Can't change integer 'width':
+          - Limit is bytes and change type too much.\
+          - Precision, reverted to `11`, but did not change to `2` at all.
+          - So just use raw SQL..
     - Execute Raw SQL:
       - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
       - Inline statement:

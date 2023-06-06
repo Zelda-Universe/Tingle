@@ -521,11 +521,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   && convergeSuffix="-converged";
 
   orgExtInsCmd="
-    sed -r                        \
-      -e 's|\),\(|),\n  (|g'      \
-      -e 's|(VALUES )\(|\1\n  (|' \
-      -e 's|(VALUES) |\1|'        \
-      -e 's|\);|)\n;|'            \
+    sed -r                          \
+      -e 's|\),\(|),\n  (|g'        \
+      -e 's|(VALUES )\(|\1\n  (|g'  \
+      -e 's|(VALUES) |\1|g'         \
+      -e 's|\);\$|)\n;|g'           \
   ";
 
   # debugPrint "samplesDir: $samplesDir";

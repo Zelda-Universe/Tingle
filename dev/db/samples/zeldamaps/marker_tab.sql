@@ -36,8 +36,8 @@ CREATE TABLE `marker_tab` (
   KEY `fk_marker_tab_marker_tab_status1_idx` (`marker_tab_status_id`),
   KEY `fk_marker_tab_user1_idx` (`user_id`),
   CONSTRAINT `fk_map_marker_tab_map_marker1` FOREIGN KEY (`marker_id`) REFERENCES `marker` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_marker_tab_marker_tab_status1` FOREIGN KEY (`marker_tab_status_id`) REFERENCES `marker_tab_status` (`id`),
-  CONSTRAINT `fk_marker_tab_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `fk_marker_tab_marker_tab_status1` FOREIGN KEY (`marker_tab_status_id`) REFERENCES `marker_tab_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marker_tab_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=24342 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -6716,4 +6716,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-06 13:31:35
+-- Dump completed on 2023-06-07 12:49:54

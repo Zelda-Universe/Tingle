@@ -41,12 +41,12 @@ CREATE TABLE `container` (
   `bound_top_pos_y` float NOT NULL DEFAULT '0',
   `bound_bottom_pos_x` float NOT NULL DEFAULT '-256',
   `bound_bottom_pos_y` float NOT NULL DEFAULT '256',
-  `max_zoom` int(11) DEFAULT '6',
-  `cluster_max_zoom` int(11) NOT NULL DEFAULT '4' COMMENT 'Max zoom to cluster the markers. Best -2 from the max zoom allowed (if 6 is the max, cluster should be 4)',
-  `cluster_grid_size` int(11) NOT NULL DEFAULT '30' COMMENT 'Pixel size of grid (default 30)',
-  `tile_size` int(11) NOT NULL DEFAULT '256' COMMENT 'Internet default is 256',
-  `icon_width` int(11) NOT NULL DEFAULT '23',
-  `icon_height` int(11) NOT NULL DEFAULT '23',
+  `max_zoom` int(2) DEFAULT '6',
+  `cluster_max_zoom` int(2) NOT NULL DEFAULT '4' COMMENT 'Max zoom to cluster the markers. Best -2 from the max zoom allowed (if 6 is the max, cluster should be 4)',
+  `cluster_grid_size` int(2) NOT NULL DEFAULT '30' COMMENT 'Pixel size of grid (default 30)',
+  `tile_size` int(3) NOT NULL DEFAULT '256' COMMENT 'Internet default is 256',
+  `icon_width` int(11) NOT NULL,
+  `icon_height` int(11) NOT NULL,
   `icon_small_width` int(11) NOT NULL DEFAULT '16',
   `icon_small_height` int(11) NOT NULL DEFAULT '16',
   `switch_icons_at_zoom` int(11) NOT NULL DEFAULT '5',
@@ -98,4 +98,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-06 12:23:14
+-- Dump completed on 2023-06-07 14:19:52

@@ -37,9 +37,9 @@ CREATE TABLE `marker_category` (
   KEY `fk_marker_category_map_container1_idx` (`container_id`),
   KEY `fk_marker_category_marker_category_type1_idx` (`marker_category_type_id`),
   KEY `fk_marker_category_marker_category1_idx` (`parent_id`),
-  CONSTRAINT `fk_marker_category_map_container1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`),
-  CONSTRAINT `fk_marker_category_marker_category1` FOREIGN KEY (`parent_id`) REFERENCES `marker_category` (`id`),
-  CONSTRAINT `fk_marker_category_marker_category_type1` FOREIGN KEY (`marker_category_type_id`) REFERENCES `marker_category_type` (`id`)
+  CONSTRAINT `fk_marker_category_map_container1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marker_category_marker_category1` FOREIGN KEY (`parent_id`) REFERENCES `marker_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marker_category_marker_category_type1` FOREIGN KEY (`marker_category_type_id`) REFERENCES `marker_category_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2171 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -297,4 +297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-05 17:22:19
+-- Dump completed on 2023-06-07 12:49:54

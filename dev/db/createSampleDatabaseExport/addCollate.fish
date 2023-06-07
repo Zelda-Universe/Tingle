@@ -49,7 +49,7 @@ set line (sed -n {$lineNumCTEndParen}p "$filePath");
 # debugPrint "line: $line";
 
 if string match -q '* COLLATE=*' $line
-  return 3;
+  return;
 end
 
 sed -i "$lineNumCTEndParen s|;\$| COLLATE=latin1_swedish_ci;|" $filePath;

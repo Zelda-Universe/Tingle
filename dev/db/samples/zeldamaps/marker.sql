@@ -35,7 +35,7 @@ CREATE TABLE `marker` (
   `y` double NOT NULL,
   `jump_marker_id` int(11) NOT NULL DEFAULT '0',
   `global` tinyint(1) DEFAULT '0',
-  `path` text NOT NULL DEFAULT '',
+  `path` text NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '0',
   `last_updated` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -43,10 +43,10 @@ CREATE TABLE `marker` (
   KEY `fk_map_marker_map_marker_category1_idx` (`marker_category_id`),
   KEY `fk_marker_submap1_idx` (`submap_id`),
   KEY `fk_marker_submap2_idx` (`overlay_id`),
-  CONSTRAINT `fk_map_marker_map_marker_category1` FOREIGN KEY (`marker_category_id`) REFERENCES `marker_category` (`id`),
-  CONSTRAINT `fk_map_marker_map_marker_status1` FOREIGN KEY (`marker_status_id`) REFERENCES `marker_status` (`id`),
-  CONSTRAINT `fk_marker_submap1` FOREIGN KEY (`submap_id`) REFERENCES `submap` (`id`),
-  CONSTRAINT `fk_marker_submap2` FOREIGN KEY (`overlay_id`) REFERENCES `submap` (`id`)
+  CONSTRAINT `fk_map_marker_map_marker_category1` FOREIGN KEY (`marker_category_id`) REFERENCES `marker_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_map_marker_map_marker_status1` FOREIGN KEY (`marker_status_id`) REFERENCES `marker_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marker_submap1` FOREIGN KEY (`submap_id`) REFERENCES `submap` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marker_submap2` FOREIGN KEY (`overlay_id`) REFERENCES `submap` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=29374 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -18259,4 +18259,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-05 17:22:19
+-- Dump completed on 2023-06-07 12:49:53

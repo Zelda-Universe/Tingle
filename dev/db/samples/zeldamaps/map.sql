@@ -27,14 +27,14 @@ CREATE TABLE `map` (
   `container_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
   `is_default` tinyint(1) NOT NULL DEFAULT '0',
-  `default_zoom` tinyint(4) NOT NULL DEFAULT '1',
+  `default_zoom` tinyint(2) NOT NULL DEFAULT '1',
   `max_zoom` tinyint(1) NOT NULL,
   `map_copyright` varchar(250) NOT NULL,
-  `map_order` tinyint(4) NOT NULL,
+  `map_order` tinyint(2) NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_map_project1_idx` (`container_id`),
-  CONSTRAINT `fk_map_project1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`)
+  CONSTRAINT `fk_map_project1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -73,4 +73,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-05 17:22:19
+-- Dump completed on 2023-06-07 12:49:53

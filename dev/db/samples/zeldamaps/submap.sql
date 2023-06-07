@@ -40,9 +40,9 @@ CREATE TABLE `submap` (
   KEY `fk_map_game_map_type1_idx` (`map_type_id`),
   KEY `fk_map_mapper1_idx` (`mapper_id`),
   KEY `fk_submap_map1_idx` (`map_id`),
-  CONSTRAINT `fk_map_game_map_type10` FOREIGN KEY (`map_type_id`) REFERENCES `map_type` (`id`),
-  CONSTRAINT `fk_map_mapper10` FOREIGN KEY (`mapper_id`) REFERENCES `mapper` (`id`),
-  CONSTRAINT `fk_submap_map1` FOREIGN KEY (`map_id`) REFERENCES `map` (`id`)
+  CONSTRAINT `fk_map_game_map_type10` FOREIGN KEY (`map_type_id`) REFERENCES `map_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_map_mapper10` FOREIGN KEY (`mapper_id`) REFERENCES `mapper` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_submap_map1` FOREIGN KEY (`map_id`) REFERENCES `map` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -83,4 +83,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-05 17:22:20
+-- Dump completed on 2023-06-07 12:49:54

@@ -185,6 +185,7 @@
   - Samples:
     - ActiveRecord Ruby Code:
       - Source: http://guides.rubyonrails.org/active_record_migrations.html
+      - Source: https://guides.rubyonrails.org/active_record_migrations.html#using-the-change-method
       - Source: https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
       - Note: Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
       - Add column:
@@ -211,6 +212,26 @@
           - Limit is bytes and change type too much.\
           - Precision, reverted to `11`, but did not change to `2` at all.
           - So just use raw SQL..
+      - Foreign Keys:
+        - Remove:
+          - Code: `remove_foreign_key  :map, column: :container_id, name: :fk_map_project1`
+          - SQL: ```
+            ALTER TABLE `map`
+            DROP FOREIGN KEY `fk_map_project1`
+          ```
+        - Add:
+          - Code: `add_foreign_key     :map, :container, column: :container_id, name: :fk_map_project1, on_delete: :restrict, on_update: :restrict`
+          - SQL: ```
+            ALTER TABLE `map`
+            ADD CONSTRAINT `fk_map_project1`
+            FOREIGN KEY (`container_id`)
+            REFERENCES `container` (`id`)
+            ON DELETE NO ACTION ON UPDATE NO ACTION
+          ```
+          - Notes:
+            - No action cannot be specified using AR code, as it does not support that key as a dependency, so use raw SQL for that choice instead.
+            - Restrict is MySQL-specific, MariaDB of course supports, equivalent to no action for the standard, mostly, may be a difference between immediate rejection by statement, when using InnoDB engine, or upon transaction commit, allowing it to be resolved more flexibly.
+          - Source: `dev/db/migrate/20230607153536_update_fk_actions.rb`
     - Execute Raw SQL:
       - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
       - Inline statement:

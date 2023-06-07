@@ -1273,7 +1273,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
               url: "ajax.php?command=add_marker",
               data: $("#newMarkerForm").serialize(), // serializes the form's elements.
               success: function(data) {
-                  data = jQuery.parseJSON(data);
+                  //data = jQuery.parseJSON(data);
                   if (data.success) {
                      if (user.level < 5) {
                         tinymce.remove();

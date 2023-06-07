@@ -281,7 +281,7 @@
           end
           ```
       - Multiple Queries:
-        - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
+        - Remove `execute` from the beginning of the line, and add `.lines.each { |line| execute line if line != "\n" }` to the read command for the file containing the queries separated by newlines.
     - Specific Goals:
       - Investigating/Debugging
         - ```

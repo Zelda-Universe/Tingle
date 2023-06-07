@@ -12,16 +12,16 @@ class ContainerAddCrsOptionsAndUpdateTotKAreas < ActiveRecord::Migration[7.0]
         execute <<-SQL
           UPDATE `container`
           SET
-            `default_pos_x`       = '378.665'   ,
-            `default_pos_y`       = '-1335.99'  ,
-            `bound_top_pos_x`     = '7000'      ,
-            `bound_top_pos_y`     = '-8000'     ,
-            `bound_bottom_pos_x`  = '-7000'     ,
-            `bound_bottom_pos_y`  = '8000'      ,
-            `scaleP`              = '0.0117188' ,
-            `scaleN`              = '-0.0117188',
-            `offsetX`             = '70.3125'   ,
-            `offsetY`             = '58.5938'
+            `default_pos_x`       = '378.6650510291156' ,
+            `default_pos_y`       = '-1335.990033109192',
+            `bound_top_pos_x`     = '7000'              ,
+            `bound_top_pos_y`     = '-8000'             ,
+            `bound_bottom_pos_x`  = '-7000'             ,
+            `bound_bottom_pos_y`  = '8000'              ,
+            `scaleP`              = '0.01171875'        ,
+            `scaleN`              = '-0.01171875'       ,
+            `offsetX`             = '70.3125'           ,
+            `offsetY`             = '58.59375'
           WHERE `id` = '21'
           ;
         SQL

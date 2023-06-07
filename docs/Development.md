@@ -188,6 +188,23 @@
       - Source: https://guides.rubyonrails.org/active_record_migrations.html#using-the-change-method
       - Source: https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
       - Note: Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
+      - Add custom reversible code
+        - Source: https://guides.rubyonrails.org/active_record_migrations.html#using-reversible
+        - ```
+          reversible do |dir|
+            dir.up do
+              ...
+            end
+            dir.down do
+              ...
+            end
+          end
+          ```
+      - Change table common code:
+          - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-tables
+          - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
+          - Code: `change_table :table_name do |t|`
+          - Then refer to the specific section goal below with the reduced  column variants.
       - Add column:
         - Code (Table 'batch' block): `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
         - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
@@ -195,11 +212,6 @@
         - Source: `dev/db/migrate/20230523175651_marker_add_path_column.rb`
       - Changing Columns:
         - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-columns
-        - Change table common code:
-            - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-tables
-            - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
-            - Code: `change_table :table_name do |t|`
-            - Then refer to the specific section goal below with the reduced  column variants.
         - Change column null property:
           - Code: `t.change_null :content, false`
           - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
@@ -227,7 +239,7 @@
             FOREIGN KEY (`container_id`)
             REFERENCES `container` (`id`)
             ON DELETE NO ACTION ON UPDATE NO ACTION
-          ```
+            ```
           - Notes:
             - No action cannot be specified using AR code, as it does not support that key as a dependency, so use raw SQL for that choice instead.
             - Restrict is MySQL-specific, MariaDB of course supports, equivalent to no action for the standard, mostly, may be a difference between immediate rejection by statement, when using InnoDB engine, or upon transaction commit, allowing it to be resolved more flexibly.

@@ -817,6 +817,8 @@ ZMap.prototype.buildMap = function() {
       mapControlOptions
     );
     L.control.zoom({ position: 'bottomright' }).addTo(map);
+    L.control.infoBox.coords.move({ position: 'bottomright' }).addTo(map);
+
     if (
           mapOptions.showInfoControls
       ||  ZConfig.getConfig("showInfoControls") == 'true'
@@ -828,6 +830,7 @@ ZMap.prototype.buildMap = function() {
       L.control.infoBox.location.center (posBL).addTo(map);
       L.control.infoBox.location.bounds (posBL).addTo(map);
     }
+
   }
 
   //@TODO: REDO!
@@ -1270,7 +1273,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
               url: "ajax.php?command=add_marker",
               data: $("#newMarkerForm").serialize(), // serializes the form's elements.
               success: function(data) {
-                  //data = jQuery.parseJSON(data);
+                  data = jQuery.parseJSON(data);
                   if (data.success) {
                      if (user.level < 5) {
                         tinymce.remove();

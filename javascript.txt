@@ -46,5 +46,7 @@ scripts/widgets/MapsMenu.js
 scripts/widgets/CategoryButtonMap.js
 scripts/controls/infoBox/Mouse.js
 scripts/controls/infoBox/mouse/Move.js
+scripts/controls/infoBox/Coords.js
+scripts/controls/infoBox/mouse/Coords.js
 scripts/controls/infoBox/mouse/ClickHist.js
 scripts/util/leaflet.polylineDecorator.js

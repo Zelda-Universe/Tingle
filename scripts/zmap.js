@@ -2019,7 +2019,7 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin = true, vPanTo = fa
     if (notByInput === true) {
       mapControl.changeMapToMarker(marker);
     } else {
-      mapControl.changeMap(marker.mapId, marker.submapId);
+      mapControl.changeMapToMarker(marker);
     }
 
      marker.visible = true;

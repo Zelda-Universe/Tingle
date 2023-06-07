@@ -23,7 +23,7 @@ ZConfig = {
 // Direct Settings
 // "exact", "focus" (ZU default)
 ZConfig.setConfig("categorySelectionMethod" , "focus" );
-ZConfig.setConfig("changelog"               , 'false' );
+ZConfig.setConfig("changelog"               , 'true'  );
 ZConfig.setConfig("collapsed"               , 'false' );
 ZConfig.setConfig("errorTileUrl"            , ''      );
 ZConfig.setConfig("markerClusters"          , 'false' );

@@ -466,7 +466,15 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   removeAITables='user user_completed_marker'; # With transformed data.
   noDataTables='user_completed_marker';
 
-  ignoreTablesOptions='ar_internal_metadata';
+  # Total ignore, both with DB client and this script's actions.
+  ignoreTables="ar_internal_metadata";
+
+
+  # Preparation for DB client ignores.
+  ignoreTablesOptions='';
+  for table in $ignoreTables; do
+    ignoreTablesOptions+="--ignore-table='$databaseName.$table' ";
+  done
   for table in $removeAITables; do
     ignoreTablesOptions+="--ignore-table='$databaseName.$table' ";
   done
@@ -710,13 +718,23 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       errorPrint 'Could not retrieve list of table names, or there are none; exiting...';
       exit 1;
     fi
-    [[ -z "$tableNames" ]] && tableNames="$defaultTableNames";
+    if [[ -z "$tableNames" ]]; then
+      tableNames="$defaultTableNames";
+    fi
     # debugPrint "defaultTableNames: $defaultTableNames";
     # debugPrint "tableNames: $tableNames";
 
     for tableName in $tableNames; do
       # debugPrint "Table Start";
       # debugPrint "tableName: $tableName";
+
+      if includes \
+        "$ignoreTables" \
+        "$tableName" \
+      ; then
+        altPrint "Skipping table \"$tableName\" as it is set to be ignored...";
+        continue;
+      fi
 
       # Validate table exists.
       if ! includes \

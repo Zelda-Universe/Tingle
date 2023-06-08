@@ -58,4 +58,5 @@ MapsMenu.prototype.customToggle = function() {
   if (mapControl.name.indexOf("ZLayersBottom") > -1) {
 	  mapControl.closeDrawer();
   }
+  _this.updateUrl();
 };

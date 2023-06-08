@@ -863,6 +863,8 @@ ZMap.prototype.buildMap = function() {
          _this._closeNewMarker();
          mapControl.resetContent();
       }
+	  
+	  _this.updateUrl();
   });
 
   map.on('zoomend', function() {
@@ -2068,3 +2070,14 @@ ZMap.prototype.getMarkers = function() {
 //*************                    END - GO TO                   *************//
 //*************                                                  *************//
 //****************************************************************************//
+
+
+ZMap.prototype.updateUrl = function() {
+   var url = new URL(window.location.toString());
+   url.searchParams.set("map", mapControl.getCurrentMap().mapId);
+   url.searchParams.set("submap", mapControl.getCurrentMap().subMapId);
+   url.searchParams.set("zoom", map.getZoom());
+   url.searchParams.set("x", Math.floor(map.getCenter().lng));
+   url.searchParams.set("y", Math.floor(map.getCenter().lat));
+   history.pushState({}, "", url);
+}

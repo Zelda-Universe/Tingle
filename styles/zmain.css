@@ -640,6 +640,7 @@ a.icon-close2 {
 	float: right;
 	text-align: right;
 	width: 65px;
+   font-size: 10px;
 }
 
 .infobox.location.bounds .column:first-child {
@@ -1367,4 +1368,52 @@ header.ex1 {
 
 .leaflet-tooltip-pane {
 	z-index: 400;
+}
+
+
+
+hr {
+    clear: both;
+    border: 0;
+    text-align: center;
+    padding: 1em 0 0 0;
+    height: 25px;
+}
+
+hr::before {
+    content: url(images/divider.png);
+}
+
+.paragraph-highlight {
+   font-weight: bold;
+}
+
+.item-highlight {
+   font-weight: bold;
+   color: red;
+}
+
+.mouse-coords .row .value {
+	float: right;
+	text-align: center !important;
+	width: 75px;
+   font-size: 11px;
+}
+.mouse-coords .infobox-separator {
+   display: none;
+}
+
+.leaflet-right .leaflet-control-scale {
+  display: inline-block;
+  float: none;
+}
+
+span.mouse-coords, .leaflet-control-zoom {
+   display: inline-block;
+   float: none !important;
+   vertical-align: bottom;
+}
+
+span.mouse-coord div.infobox-separator {
+   display: none;
 }

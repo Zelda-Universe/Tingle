@@ -817,6 +817,8 @@ ZMap.prototype.buildMap = function() {
       mapControlOptions
     );
     L.control.zoom({ position: 'bottomright' }).addTo(map);
+    L.control.infoBox.coords.move({ position: 'bottomright' }).addTo(map);
+
     if (
           mapOptions.showInfoControls
       ||  ZConfig.getConfig("showInfoControls") == 'true'
@@ -828,6 +830,7 @@ ZMap.prototype.buildMap = function() {
       L.control.infoBox.location.center (posBL).addTo(map);
       L.control.infoBox.location.bounds (posBL).addTo(map);
     }
+
   }
 
   //@TODO: REDO!
@@ -860,6 +863,8 @@ ZMap.prototype.buildMap = function() {
          _this._closeNewMarker();
          mapControl.resetContent();
       }
+	  
+	  _this.updateUrl();
   });
 
   map.on('zoomend', function() {
@@ -2019,7 +2024,7 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin = true, vPanTo = fa
     if (notByInput === true) {
       mapControl.changeMapToMarker(marker);
     } else {
-      mapControl.changeMap(marker.mapId, marker.submapId);
+      mapControl.changeMapToMarker(marker);
     }
 
      marker.visible = true;
@@ -2065,3 +2070,14 @@ ZMap.prototype.getMarkers = function() {
 //*************                    END - GO TO                   *************//
 //*************                                                  *************//
 //****************************************************************************//
+
+
+ZMap.prototype.updateUrl = function() {
+   var url = new URL(window.location.toString());
+   url.searchParams.set("map", mapControl.getCurrentMap().mapId);
+   url.searchParams.set("submap", mapControl.getCurrentMap().subMapId);
+   url.searchParams.set("zoom", map.getZoom());
+   url.searchParams.set("x", Math.floor(map.getCenter().lng));
+   url.searchParams.set("y", Math.floor(map.getCenter().lat));
+   history.pushState({}, "", url);
+}

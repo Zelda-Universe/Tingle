@@ -253,11 +253,23 @@
           SQL
           ```
       - External file:
-        - Code: ```
-          execute File.open(
-            'dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql'
-          ).read
-          ```
+        - Single statement
+          - Code: ```
+            execute File.open(
+              'dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql'
+            ).read
+            ```
+        - Multiple statements (NWY)
+          - Note: Just use external files for now and extended syntax to combine multiple data statements.
+          - Note: Semicolons in data are still unintentionally split.
+          - Code: ```
+            sqlFile = '...'
+            sql = File.open(sqlFile).read
+            sqlOrganized = sql.lines.join.
+            split(';').
+            reject  { |line| line.empty? or line =~ /\A\s+\Z/ }
+            sqlOrganized.each { |sqlLine| execute(sqlLine) }
+            ```
       - External files:
         - Code: ```
           def sqlFileNames

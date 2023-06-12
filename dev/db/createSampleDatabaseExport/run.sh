@@ -467,7 +467,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   noDataTables='user_completed_marker';
 
   # Total ignore, both with DB client and this script's actions.
-  ignoreTables="ar_internal_metadata";
+  if [[ -z "$ignoreTables" ]]; then
+    ignoreTables="ar_internal_metadata";
+  else
+    ignoreTables="ar_internal_metadata $ignoreTables";
+  fi
 
 
   # Preparation for DB client ignores.

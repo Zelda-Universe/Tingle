@@ -11,6 +11,7 @@
 /dev/assets/tiles/**/Trials
 
 # Cached Files / Runtime-updated Files
+/ajax/static
 /cache/*
 !/cache/index.html
 /tmp

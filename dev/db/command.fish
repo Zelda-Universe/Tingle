@@ -13,6 +13,7 @@ end
 
 ## Main Environment Configuration
 begin
+  test -z "$dbDump"       ; and        set dbDump "false"       ;
   test -z "$dbHost"       ; and        set dbHost ""            ;
   test -z "$dbName"       ; and        set dbName "zeldamaps"   ;
   # test -z "$dbOthConnOpts"; and set dbOthConnOpts ""            ;
@@ -105,15 +106,28 @@ begin
     end
   end
 
-  if test -z "$dbClientCommonOptions"
-    set -a dbClientCommonOptions $dbConStr          ;
-    set -a dbClientCommonOptions --database=$dbName ;
-  end
+  if test "$dbDump" != 'true'
+    if test -z "$dbClientCommonOptions"
+      set -a dbClientCommonOptions $dbConStr          ;
+      set -a dbClientCommonOptions --database=$dbName ;
+    end
 
-  set command               \
-    $dbClientExe            \
-    $dbClientCommonOptions  \
-  ;
+    set command               \
+      $dbClientExe            \
+      $dbClientCommonOptions  \
+    ;
+  else
+    if test -z "$dbDumpCommonOptions" -a "$dbDumpExe" = 'mysqldump'
+      set dbDumpCommonOptions "--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
+    end
+    set -a dbDumpCommonOptions "$dbConStr";
+    set -a dbDumpCommonOptions "$dbName";
+
+    set command             \
+      $dbDumpExe            \
+      $dbDumpCommonOptions  \
+    ;
+  end
 
   if test "$verbose" = 'true'
     set -a command "-v";
@@ -132,5 +146,5 @@ end
 # end
 
 if test "$dryRun" = 'false' -o "$force" = 'true'
-  $command;
+  $command $argv;
 end

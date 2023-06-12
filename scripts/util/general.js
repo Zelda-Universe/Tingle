@@ -3,11 +3,11 @@
 // https://choosealicense.com/licenses/mit/
 
 function getSetOrDefaultValue(value, defaultValue) {
-  if(value === undefined) {
-    return defaultValue;
-  } else {
-    return value;
-  }
+  return (
+    (value === undefined)
+    ? defaultValue
+    : value
+  );
 };
 
 function getSetOrDefaultValues(arrayOfValues, defaultValue, addlCondition) {

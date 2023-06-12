@@ -1,3 +1,4 @@
+scripts/util/ZConfig.lib.js
 scripts/util/ZConfig.js
 scripts/util/zlogger.js
 scripts/util/general.js

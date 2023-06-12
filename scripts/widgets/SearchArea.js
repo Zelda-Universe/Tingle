@@ -20,18 +20,18 @@ SearchArea.prototype._initState = function(opts) {
   });
   $(this.markerSearchField.domNode).appendTo(opts.parent);
 
-  var searchMarkerHandler = new SearchMarkerHandler({
+  this.searchMarkerHandler = new SearchMarkerHandler({
     markerSearchField: this.markerSearchField,
     showSearchStats: true,
     markerSearchClick: function(marker, e) {
       zMap.goTo({ marker: marker.id }, true);
     }
   });
-  searchMarkerHandler.addHandler("markerListViewBuilt", opts.markerListViewBuiltHandler);
+  this.searchMarkerHandler.addHandler("markerListViewBuilt", opts.markerListViewBuiltHandler);
 
   zMap.addHandler("markersAdded", function(markers) {
-    searchMarkerHandler.setMarkers(markers);
-  });
+    this.searchMarkerHandler.setMarkers(markers);
+  }.bind(this));
 
   L.DomEvent.disableClickPropagation(opts.parent);
   L.DomEvent.on(opts.parent, 'click', L.DomEvent.stopPropagation);

@@ -4,10 +4,40 @@
 
 var callLevel = 0;
 
+var verbose = ZConfig.getConfig('verbose') == 'true';
+
 function debugPrint() {
-  if(isDebugMode) {
+  if(verbose) {
     console.debug(arguments);
   }
+};
+
+function startTracing() {
+  var targetClasses = JSON.parse(ZConfig.getConfig("codetrace-targetClasses") || '[]');
+  // var targetClasses = [
+  //   L.Control.ZLayers,
+  //   L.Control.ZLayersBottom
+  // ];
+
+  var methodsToIgnore = JSON.parse(ZConfig.getConfig("codetrace-methodsToIgnore") || '{}');
+  // var methodsToIgnore = {
+  //   "L.Control.ZLayersBottom": [
+  //     "_animate",
+  //     "drawerTop"
+  //   ]
+  // };
+
+  var debugOptions = {
+    abbvFn      : true,
+    argNewLines : false,
+    stringMax   : 20,
+    ignore      : methodsToIgnore
+  };
+
+  applyFunctionTraceToObjects(
+    targetClasses,
+    debugOptions
+  );
 };
 
 function applyFunctionTraceToObjects(objectsToTrace, options) {

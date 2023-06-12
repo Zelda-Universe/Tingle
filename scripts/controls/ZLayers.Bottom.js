@@ -3,14 +3,12 @@
 // https://choosealicense.com/licenses/mit/
 
 L.Control.ZLayersBottom = L.Control.ZLayers.extend({
-  options: {
-    position: 'topleft',
-    delay: 0,
-    //openTo: 78,
-    openTo: 150,
-    softOpenBottom: 250,
-    softOpenTo: 0 // REVERSE
-  },
+  options: $.extend(
+    true,
+    JSON.parse(ZConfig.getConfig("layersBottomHeightOptionsDefaults"  ) || '{}'),
+    this.searchOptionsOpts,
+    JSON.parse(ZConfig.getConfig("layersBottomHeightOptionsOverrides" ) || '{}')
+  ),
   _open: false,
 
   initialize: function(baseLayers, categoryTree, options) {

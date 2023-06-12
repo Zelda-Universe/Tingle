@@ -191,7 +191,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.resetContent();
 
     this._contents.style.clear = 'both';
-    this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
+    this._contents.style.maxHeight = ZConfig.getConfig("layersHeight");
     this._contents.style.width = '360px';
 
 		container.appendChild(form1);
@@ -370,11 +370,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   _expand: function() {
     this._triggerHandler("before_expand");
     if (this._contents != undefined) {
-      this._contents.style.maxHeight = (
-        (window.innerHeight > 250)
-        ? (window.innerHeight - 250)
-        : 250
-      ) + 'px';
+      this._contents.style.maxHeight = ZConfig.getConfig("layersHeight");
     }
 
     this.options.collapsed = false;

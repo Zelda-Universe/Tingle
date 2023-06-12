@@ -25,8 +25,8 @@ ZConfig = {
 ZConfig.setConfig("categorySelectionMethod" , "focus" );
 ZConfig.setConfig("changelog"               , 'true'  );
 ZConfig.setConfig("collapsed"               , 'false' );
-ZConfig.setConfig("errorTileUrl"            , ''      );
-ZConfig.setConfig("markerClusters"          , 'false' );
+ZConfig.getConfig("codetrace-methodsToIgnore" , '{}'    );
+ZConfig.setConfig("codetrace-targetClasses"   , '[]'    );
 ZConfig.setConfig("showInfoControls"        , 'false' );
 ZConfig.setConfig("tilesBaseURL"            , "https://zeldamaps.com/tiles/");
 ZConfig.setConfig("tileAxisDirectories"     , 'false' );
@@ -40,3 +40,4 @@ ZConfig.setConfig("tileNameFormat"  , (
     ? '{z}/{x}_{y}'
     : '{z}_{x}_{y}'
 ));
+ZConfig.setConfig("verbose"                 , 'false' );

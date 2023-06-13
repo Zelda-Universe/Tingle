@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?ewd02');
-  src:  url('fonts/icomoon.eot?ewd02#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?ewd02') format('truetype'),
-    url('fonts/icomoon.woff?ewd02') format('woff'),
-    url('fonts/icomoon.svg?ewd02#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?9n4aky');
+  src:  url('fonts/icomoon.eot?9n4aky#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?9n4aky') format('truetype'),
+    url('fonts/icomoon.woff?9n4aky') format('woff'),
+    url('fonts/icomoon.svg?9n4aky#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-TotK_Bargainer_Statue:before {
+  content: "\e93b";
+}
 .icon-TotK_Forge_Construct:before {
   content: "\e93a";
 }
@@ -238,18 +241,6 @@
 }
 .icon-TotK_Chasm:before {
   content: "\e92c";
-}
-.icon-TotK_Sages-Will:before {
-  content: "\f111";
-}
-.icon-TotK_Battery:before {
-  content: "\f241";
-}
-.icon-TotK_SignNpc:before {
-  content: "\f277";
-}
-.icon-General_Heart:before {
-  content: "\f004";
 }
 .icon-TotK_Bubbulfrog:before {
   content: "\f069";

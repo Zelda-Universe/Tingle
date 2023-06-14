@@ -34,9 +34,9 @@ CopyLink.prototype.action = function() {
   var success = this.copy();
 
   if(success)
-    zlogger.success("Text copied!");
+    zLogger.success("Text copied!");
   else
-    zlogger.error("Text not copied.");
+    zLogger.error("Text not copied.");
 };
 
 // Source: https://stackoverflow.com/a/31596687/1091943

@@ -27,7 +27,7 @@ Link.prototype._initDOMElements = function() {
 };
 
 Link.prototype.action = function() {
-  zlogger.info("Navigating browser...");
+  zLogger.info("Navigating browser...");
 
   window.location = this._getContent();
 };

@@ -78,7 +78,7 @@ ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, ver
          })
   };
 
-  return zlogger.info(
+  return zLogger.info(
     '<ul>' +
       versionEntry.join('') +
     '</ul>',

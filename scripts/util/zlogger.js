@@ -2,15 +2,23 @@
 // Copyright (c) 2023 Pysis(868)
 // https://choosealicense.com/licenses/mit/
 
-function ZLogger(opts) {
-  opts = opts || {};
-  if(opts.notification === undefined) opts.notification = true;
-  if(opts.console === undefined) opts.console = false;
+function ZLogger(options) {
+  $.extend(true, this, {
+    tui: ZConfig.getConfig('zLogger.tui') == 'true',
+    gui: ZConfig.getConfig('zLogger.gui') == 'true'
+  }, (options || {}));
 
-  this.notification = opts.notification;
-  this.console = opts.console;
+  this.functionMappings = {
+    toastr: {
+      debug     : 'info',
+      exception : 'error'
+    },
+    console: {
+      success: 'log',
+      warning: 'warn'
+    }
+  };
 };
-
 
 [
   "info",
@@ -23,44 +31,52 @@ function ZLogger(opts) {
   // Why are there double definitions sometimes.
   // All unloaded with page refresh, so updating res js minified file should not be a trigger, right?
   if(ZLogger.prototype[methodName]) {
-    console.error("ZLogger.prototype's \""+methodName+"\" already defined.");
-  } else {
-    Object.defineProperty(
-      ZLogger.prototype,
-      methodName,
-      {
-        value: function(opts) {
-          opts = opts || {};
+    console.error(`ZLogger.prototype's "${methodName}" already defined.`);
+    return;
+  }
 
-          var returnVal;
-
-          if (
-            this.notification && (
-              opts.notification === undefined ||
-              opts.notification
-            )
-          )
-            returnVal = toastr[methodName].apply(toastr, arguments)
-
-          if (
-            this.console && (
-              opts.console === undefined ||
-              opts.console
-            )
-          )
-            console[methodName].apply(console, arguments)
-
-          return returnVal;
-        }
-      }
+  ZLogger.prototype[methodName] = function(message, options) {
+    options = $.extend(
+      true            ,
+      (options || {}) ,
+      (({gui, tui}) => ({gui, tui}))(this)
     );
+
+    otherOptions = Object.omit(options, 'gui', 'tui');
+
+    [
+      { enabled: options.gui, mechanism: toastr , mechanismName: 'toastr'   },
+      { enabled: options.tui, mechanism: console, mechanismName: 'console'  }
+    ].forEach(function({ enabled, mechanism, mechanismName, message }) {
+      if(!mechanism) {
+        let message = `${mechanismName} not loaded but required!`;
+
+        if(mechanismName == 'console') message;
+        else console.error(message);
+
+        return;
+      }
+      if(!mechanism[methodName])
+        methodName = this.functionMappings[mechanismName][methodName];
+
+      if(!mechanism[methodName]) {
+        let message = `${mechanismName}[${methodName}] alternative method does not exist but required!`;
+
+        if(mechanismName == 'console' && methodName == 'error') message;
+        else console.error(message);
+
+        return;
+      }
+
+      mechanism[methodName](methodName, message);
+    }, this);
   }
 });
-// Alias to add in order to prevent missing function errors
-// and complicated logic within the custom logging methods.
-toastr.debug = toastr.info;
-toastr.exception = toastr.error;
-console.success = console.log;
-console.warning = console.warn;
 
-var zlogger = new ZLogger();
+var zLogger = new ZLogger();
+
+$.extend(
+  true,
+  toastr.options,
+  JSON.parse(ZConfig.getConfig('toastr') || '{}')
+);

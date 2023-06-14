@@ -66,16 +66,16 @@ function zMapInit(vResults) {
   // Should only get only one map
 
   // if (vResults.success === false) { # Bad condition, or overlap???? false without msg???????? no success, or no vR at alll, must not be empty cont list success, no db conn at least perm/constr has msg, so what else.....
-  //   notifyFatal('Container response provided!');
+  //   zLogger.error('Container response provided!');
   //   return 1;
   // }
   if (vResults.success === false) {
-    notifyFatal(vResults.msg);
+    zLogger.error(vResults.msg);
     return 2;
   }
 
   if (vResults.length == 0 || !vResults.every((vC)=>vC)) {
-    notifyFatal('No containers provided to load!');
+    zLogger.error('No containers provided to load!');
     return 3;
   }
 
@@ -164,7 +164,7 @@ function getMapCategoriesTree() {
 function getGames() {
    $.getJSON("ajax.php?command=get_games", function(vResults) {
       if (vResults.success === false || vResults.length === 0) {
-        notifyFatal('No games provided to switch between!');
+        zLogger.error('No games provided to switch between!');
         return 4;
       }
 
@@ -226,7 +226,7 @@ function showLoginControls() {
 function getMarkers() {
   $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults) {
     if (vResults.success === false || vResults.length == 0) {
-      notifyFatal('No markers provided to show!');
+      zLogger.error('No markers provided to show!');
       return 5;
     }
     zMap.buildMap();
@@ -274,7 +274,7 @@ function globalKeyPressHandler(e) {
 
 function parseBounds(input) {
   function error() {
-    zlogger.error("Map parameter is invalid: \"" + input + "\".  Ignoring, and continuing to load the map with the default view.");
+    zLogger.error("Map parameter is invalid: \"" + input + "\".  Ignoring, and continuing to load the map with the default view.");
     return false;
   };
 
@@ -320,14 +320,4 @@ function updateAdState() {
   if(mobileAds) $(mobileAds).toggleClass("hidden", (!mapControl.isMobile() || authenticated));
   var desktopAds = document.getElementById("desktopAds");
   if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
-};
-
-function notifyFatal(message) {
-  zlogger.error(
-    message, {
-    closeButton: true,
-    positionClass: "toast-top-full-width",
-    timeOut: 0,
-    extendedTimeOut: 0
-  });
 };

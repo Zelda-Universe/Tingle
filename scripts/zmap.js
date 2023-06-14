@@ -764,14 +764,14 @@ ZMap.prototype.buildMap = function() {
   });
 
   if(maps.length == 0) {
-    notifyFatal('No maps provided to load!');
+    zLogger.error('No maps provided to load!');
     return 1;
   }
 
   var mainEl = $('main')[0];
 
   if(!mainEl) {
-    notifyFatal('No main page element to add to!');
+    zLogger.error('No main page element to add to!');
     return 2;
   }
 

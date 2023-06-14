@@ -52,8 +52,12 @@ ZConfig.setDefault("showInfoControls"          , 'false' );
 ZConfig.setDefault("tilesBaseURL"              , "https://zeldamaps.com/tiles/");
 ZConfig.setDefault("tileAxisDirectories"       , 'false' );
 ZConfig.setDefault("tileZoomDirectories"       , 'false' );
-
-// Potentially Derived Settings
+ZConfig.setDefault('toastr', JSON.stringify({
+  closeButton     : true,
+  positionClass   : "toast-top-full-width",
+  timeOut         : 0   ,
+  extendedTimeOut : 0
+}));
 ZConfig.setDefault("tileNameFormat"  , (
   (ZConfig.getConfig("tileAxisDirectories") == 'true')
   ? '{z}/{x}/{y}'
@@ -61,4 +65,6 @@ ZConfig.setDefault("tileNameFormat"  , (
     ? '{z}/{x}_{y}'
     : '{z}_{x}_{y}'
 ));
-ZConfig.setDefault("verbose"                 , 'false' );
+ZConfig.setDefault("verbose"                  , 'false' );
+ZConfig.setDefault('zLogger.tui'              , 'false' );
+ZConfig.setDefault('zLogger.gui'              , 'true'  );

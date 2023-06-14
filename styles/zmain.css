@@ -68,7 +68,7 @@ body {
 
 html,
 body,
-#map {
+main {
 	height: 100vh;
 	width: 100vw;
 	background-color: #565656;
@@ -1246,7 +1246,7 @@ header.ex1 {
 
 .game-selection-list {
    margin-top: 20px;
-}   
+}
 .maps-selector {
    width: 50% !important;
    border-radius: 10px;
@@ -1257,7 +1257,7 @@ header.ex1 {
 }
 
 .menu-header-button {
-    width:86px;    
+    width:86px;
 }
 
 .completed-button.toggledOff {
@@ -1335,7 +1335,7 @@ header.ex1 {
 #help .panel-heading {
    background: rgba(255,255,255,.2);
 }
-    
+
 #help .panel-body {
     background: rgba(255,255,255,.4);
 }

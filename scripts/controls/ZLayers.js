@@ -129,7 +129,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.headerBar = new HeaderBar({
       parent: form1,
       mapControl: this,
-      shrinkButton: true
+      shrinkButton: true,
+      name: mapOptions.name
     });
 
     this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);

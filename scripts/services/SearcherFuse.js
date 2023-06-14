@@ -3,62 +3,72 @@
 // https://choosealicense.com/licenses/mit/
 
 // SearcherFuse
-// - opts: [Object]
+// - options: [Object]
+//   - name: [String] Component name used for event handling.
 //   - targetSearchMaterial: [Array] Objects to search through.
 //   - searchOptions: [Object] (See fusejs website for more information.)
 
 // http://fusejs.io/
-function SearcherFuse(opts) {
-  this._initSettings(opts)    ;
+
+function SearcherFuse(options) {
+  this.options = options || {};
+
+  this._initSettings()        ;
   this._updateSearchSettings();
-  this._initCore(opts)        ;
+  this._initCore()            ;
   this._initHandlers()        ;
 };
 
-SearcherFuse.prototype._initSettings = function(opts) {
-  if (opts.name) {
-    this.name = opts.name;
-  }
-  if (!this.name) {
-    this.name = "search" + Date.now();
+SearcherFuse.prototype._initSettings = function() {
+  if (!this.options.name) {
+    this.options.name = "search" + Date.now();
   }
 
   if (
-        opts.targetSearchMaterial
-    &&  $.type(opts.targetSearchMaterial) == "array"
+        this.options.targetSearchMaterial
+    &&  $.type(this.options.targetSearchMaterial) != "array"
   ) {
-    this.targetSearchMaterial = Object.pop(opts, "targetSearchMaterial");
-  }
-
-  if(opts.searchOptions) {
-    this.searchOptionsOpts = opts.searchOptions;
-  }
-  if(!this.searchOptionsOpts) {
-    this.searchOptionsOpts = {};
+    delete this.options.targetSearchMaterial;
   }
 };
 
 SearcherFuse.prototype._updateSearchSettings = function() {
-  // ZConfig.resetConfigValue("searchDefaults-"  + this.name);
-  // ZConfig.resetConfigValue("searchOverrides-" + this.name);
-
-  this.searchOptions = $.extend(
+  this.options.core = $.extend(
     true,
-    JSON.parse(ZConfig.getConfig("searchDefaults-"   + this.name) || '{}'),
-    this.searchOptionsOpts,
-    JSON.parse(ZConfig.getConfig("searchOverrides-"  + this.name) || '{}')
+    JSON.parse(ZConfig.getConfig(
+      "searchDefaults-"   + this.options.name
+    ) || '{}'),
+    JSON.parse(ZConfig.getConfig(
+      "searchOverrides-"  + this.options.name
+    ) || '{}')
   );
 }
 
 SearcherFuse.prototype._initHandlers = function() {
-  ZConfig.addHandler("searchDefaults-" + this.name,  this._updateSearchSettings.bind(this));
-  ZConfig.addHandler("searchOverrides-" + this.name, this._updateSearchSettings.bind(this));
+  ZConfig.addHandlers([
+      "searchDefaults-"   + this.options.name,
+      "searchOverrides-"  + this.options.name,
+    ],
+    this._updateSearchSettings.bind(this)
+  );
 }
 
-SearcherFuse.prototype._initCore = function(opts) {
-  this.core = new Fuse(this.targetSearchMaterial, this.searchOptions);
+SearcherFuse.prototype._initCore = function() {
+  this.core = new Fuse(
+    this.options.targetSearchMaterial,
+    this.options.core
+  );
 };
 
 SearcherFuse.prototype.search = function(query) {
   return this.core.search(query);
 };
+
+if (
+      typeof module         === "object"
+  &&  typeof module.exports === "object"
+) {
+  module.exports = {
+    SearcherFuse: SearcherFuse
+  };
+}

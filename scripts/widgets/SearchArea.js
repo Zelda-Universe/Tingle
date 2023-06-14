@@ -16,7 +16,8 @@ function SearchArea(opts) {
 SearchArea.prototype._initState = function(opts) {
   this.markerSearchField = new MarkerSearchField({
     incrementalSearch: true,
-    updateProgressTotalStepsAmount: 15
+    updateProgressTotalStepsAmount: 15,
+    name: opts.name
   });
   $(this.markerSearchField.domNode).appendTo(opts.parent);
 
@@ -27,7 +28,10 @@ SearchArea.prototype._initState = function(opts) {
       zMap.goTo({ marker: marker.id }, true);
     }
   });
-  this.searchMarkerHandler.addHandler("markerListViewBuilt", opts.markerListViewBuiltHandler);
+  this.searchMarkerHandler.addHandler(
+    "markerListViewBuilt",
+    opts.markerListViewBuiltHandler
+  );
 
   zMap.addHandler("markersAdded", function(markers) {
     this.searchMarkerHandler.setMarkers(markers);

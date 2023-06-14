@@ -6,7 +6,6 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
   options: $.extend(
     true,
     JSON.parse(ZConfig.getConfig("layersBottomHeightOptionsDefaults"  ) || '{}'),
-    this.searchOptionsOpts,
     JSON.parse(ZConfig.getConfig("layersBottomHeightOptionsOverrides" ) || '{}')
   ),
   _open: false,

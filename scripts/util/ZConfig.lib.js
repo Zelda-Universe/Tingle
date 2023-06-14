@@ -9,33 +9,33 @@ ZConfig = {
   // having consuming code create each category as necessary.
   defaults: {},
   handlers: {},
-  options : {},
   // types   : {},
 
   // Functions
 
-  addHandler    : function(handleName, handleFunction) {
+  addHandler      : function(handleName, handleFunction) {
     if(!this.handlers[handleName]) {
       this.handlers[handleName] = [];
     }
     this.handlers[handleName].push(handleFunction);
   },
-  triggerHandler: function(handleName) {
+  addHandlers     : function(handleNames, handleFunction) {
+    handleNames.forEach((handleName) =>
+      this.addHandler(
+        handleName,
+        handleFunction
+      )
+    );
+  },
+  triggerHandler  : function(handleName) {
     if(!this.handlers[handleName]) return 1;
     this.handlers[handleName].forEach(function(handler) {
       var handlerArgs = Array.prototype.slice.call(arguments, 1);
       handler.apply(null, handlerArgs);
     }, this);
   },
-  getConfig     : function(propertyName) {
-    return this.options[propertyName];
-  },
-  setConfig     : function(propertyName, defaultValue) {
-    if(this.defaults[propertyName] === undefined) {
-      this.defaults[propertyName] = defaultValue;
-    }
-
-    this.options[propertyName] = getSetOrDefaultValues([
+  getConfig       : function(propertyName) {
+    return getSetOrDefaultValues([
         getUrlParam(propertyName) ,
         localStorage[propertyName],
         getCookie(propertyName)
@@ -43,9 +43,12 @@ ZConfig = {
       this.defaults[propertyName]
     );
   },
-  resetConfigValue: function(propertyName) {
-    if(!this.options.hasOwnProperty(propertyName)) return;
+  setDefault      : function(propertyName, defaultValue) {
+    this.defaults[propertyName] = defaultValue;
+  },
+  removeDefault   : function(propertyName) {
+    if(!this.defaults.hasOwnProperty(propertyName)) return;
 
-    delete this.options[propertyName];
+    delete this.defaults[propertyName];
   }
 };

@@ -33,7 +33,7 @@ HeaderBar.prototype._initSettings = function(opts) {
   this.mapControl = opts.mapControl;
 };
 
-HeaderBar.prototype._initDOMElements = function() {
+HeaderBar.prototype._initDOMElements = function(opts) {
   var headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', this.parent);
 
   if(this.accountButton) {
@@ -54,10 +54,8 @@ HeaderBar.prototype._initDOMElements = function() {
     ),
     headerDiv
   );
-  this.createSearchArea(headerDivMid);
+  this.createSearchArea(headerDivMid, opts.name);
 
-  // Hiding the shrink button for now due to UX conflict ~ Jason, May 22nd 2018
-  
   if(this.shrinkButton) {
    var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
    this.createShrinkButton(headerDivRight);
@@ -84,12 +82,13 @@ HeaderBar.prototype.createAccountButton = function(parent) {
   $(parent).append(accountButton.domNode);
 };
 
-HeaderBar.prototype.createSearchArea = function(parent) {
+HeaderBar.prototype.createSearchArea = function(parent, name) {
   this.searchArea = new SearchArea({
     parent: parent,
     markerListViewBuiltHandler: function(markerListView) {
       this.mapControl.setContent(markerListView.domNode, 'search');
-    }.bind(this)
+    }.bind(this),
+    name: name
   });
 };
 

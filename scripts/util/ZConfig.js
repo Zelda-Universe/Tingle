@@ -6,18 +6,18 @@
 
 // Direct Settings
 // "exact", "focus" (ZU default)
-ZConfig.setConfig("categorySelectionMethod"   , "focus" );
-ZConfig.setConfig("changelog"                 , 'true'  );
-ZConfig.setConfig("collapsed"                 , 'false' );
-ZConfig.getConfig("codetrace-methodsToIgnore" , '{}'    );
-ZConfig.setConfig("codetrace-targetClasses"   , '[]'    );
-ZConfig.setConfig("errorTileUrl"              , ''      );
-ZConfig.setConfig("markerClusters"            , 'false' );
-ZConfig.setConfig(
+ZConfig.setDefault("categorySelectionMethod"   , "focus" );
+ZConfig.setDefault("changelog"                 , 'true'  );
+ZConfig.setDefault("collapsed"                 , 'false' );
+ZConfig.setDefault("codetrace-methodsToIgnore" , '{}'    );
+ZConfig.setDefault("codetrace-targetClasses"   , '[]'    );
+ZConfig.setDefault("errorTileUrl"              , ''      );
+ZConfig.setDefault("markerClusters"            , 'false' );
+ZConfig.setDefault(
   "layersHeight",
   Math.max(window.innerHeight - 250, 250) + 'px'
 );
-ZConfig.setConfig(
+ZConfig.setDefault(
   "layersBottomHeightOptionsDefaults",
   JSON.stringify({
     position: 'topleft',
@@ -27,13 +27,11 @@ ZConfig.setConfig(
     softOpenBottom: 250,
     softOpenTo: 0 // REVERSE
 }));
-ZConfig.setConfig("layersBottomHeightOptionsOverrides", '{}');
+ZConfig.setDefault("layersBottomHeightOptionsOverrides", '{}');
 
 //https://fusejs.io/api/options.html
-ZConfig.setConfig("searchDefaults-markers"    , JSON.stringify({
-  // pattern must be within (distance * threshold) number of characters away from location
-  distance          : 20  ,
-  findAllMatches    : true,
+ZConfig.setDefault("searchDefaults-markers"    , JSON.stringify({
+  ignoreLocation    : true,
   includeScore      : true,
   includeMatches    : true,
   keys              : [
@@ -41,29 +39,26 @@ ZConfig.setConfig("searchDefaults-markers"    , JSON.stringify({
     'description' ,
     'tabText'
   ]                       ,
-  // content starting offset for pattern
-  location          : 0   ,
   maxPatternLength  : 32  ,
   minMatchCharLength: 3   ,
-  shouldSort        : true,
   // 0.0 perfect match, 1.0 any match
-  threshold         : 0.6
+  threshold         : 0.4 // default: 0.6
 }));
-ZConfig.setConfig("searchOverrides-markers"   , '{}'    );
-ZConfig.setConfig('searchTargetIndexEnd-markers'  , null);
-ZConfig.setConfig('searchTargetIndexStart-markers', null);
+ZConfig.setDefault("searchOverrides-markers"   , '{}'    );
+ZConfig.setDefault('searchTargetIndexEnd-markers'  , null);
+ZConfig.setDefault('searchTargetIndexStart-markers', null);
 
-ZConfig.setConfig("showInfoControls"          , 'false' );
-ZConfig.setConfig("tilesBaseURL"              , "https://zeldamaps.com/tiles/");
-ZConfig.setConfig("tileAxisDirectories"       , 'false' );
-ZConfig.setConfig("tileZoomDirectories"       , 'false' );
+ZConfig.setDefault("showInfoControls"          , 'false' );
+ZConfig.setDefault("tilesBaseURL"              , "https://zeldamaps.com/tiles/");
+ZConfig.setDefault("tileAxisDirectories"       , 'false' );
+ZConfig.setDefault("tileZoomDirectories"       , 'false' );
 
 // Potentially Derived Settings
-ZConfig.setConfig("tileNameFormat"  , (
+ZConfig.setDefault("tileNameFormat"  , (
   (ZConfig.getConfig("tileAxisDirectories") == 'true')
   ? '{z}/{x}/{y}'
   : (ZConfig.getConfig("tileZoomDirectories") == 'true')
     ? '{z}/{x}_{y}'
     : '{z}_{x}_{y}'
 ));
-ZConfig.setConfig("verbose"                 , 'false' );
+ZConfig.setDefault("verbose"                 , 'false' );

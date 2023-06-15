@@ -35,7 +35,8 @@ function ZLogger(options) {
   // Why are there double definitions sometimes.
   // All unloaded with page refresh, so updating res js minified file should not be a trigger, right?
   if(ZLogger.prototype[methodName]) {
-    console.error(`ZLogger.prototype's "${methodName}" already defined.`);
+    // console.error(`ZLogger.prototype's "${methodName}" already defined.`);
+    console.error("ZLogger.prototype's \""+methodName+"\" already defined.");
     return;
   }
 

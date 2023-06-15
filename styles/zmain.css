@@ -74,7 +74,7 @@ main {
 	background-color: #565656;
 	overflow: hidden;
 	position: fixed;
-    font-family: "BrandonText", sans-serif;
+	font-family: "BrandonText", sans-serif !important;
 }
 
 .relativeContainer {
@@ -1416,4 +1416,8 @@ span.mouse-coords, .leaflet-control-zoom {
 
 span.mouse-coord div.infobox-separator {
    display: none;
+}
+
+.leaflet-container {
+    background: inherit;
 }

@@ -1,5 +1,9 @@
 #!/usr/bin/env fish
 
+# MIT Licensed
+# Copyright (c) 2023 Pysis(868)
+# https://choosealicense.com/licenses/mit/
+
 set -l SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/../../scripts/common/errorPrint.fish";
@@ -16,6 +20,6 @@ set patternInsert   '^INSERT INTO `[^`]+` VALUES.*$';
 set patternSCs      '^;$'                           ;
 set patternValNoCom '^\s*\([^)]+\)$'                ;
 
-editLines "$filePath" "$patternInsert"    '1:'  'd'     ;
-editLines "$filePath" "$patternSCs"       ':-1' 'd'     ;
-editLines "$filePath" "$patternValNoCom"  ':-1' 's|$|,|';
+editLines "$filePath" "$patternInsert"    'd'      '1:' ;
+editLines "$filePath" "$patternSCs"       'd'      ':-1';
+editLines "$filePath" "$patternValNoCom"  's|$|,|' ':-1';

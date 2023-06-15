@@ -8,6 +8,8 @@
 
   // debug_log('Config START');
 
+  # Defaults should be production-ready.
+
   function load_config() {
     global $config;
     $config = parse_ini_file(CONFIGFILE);
@@ -53,8 +55,8 @@
     return $value;
   }
 
-  define("MAPROOT", __DIR__);
-  define("CONFIGFILE", MAPROOT."/.env");
+  define("MAPROOT"    , __DIR__         );
+  define("CONFIGFILE" , MAPROOT."/.env" );
 
   !file_exists(CONFIGFILE) and die('Project `.env` file not found and must be provided.');
 
@@ -123,7 +125,7 @@
   # Mail
   {
     # Config Loading
-    $mailEnabled        = get_config('mailEnabled'    );
+    $mailEnabled        = get_config('mailEnabled', 'boolean', false);
     $mailServer         = get_config('server'         );
     $mailPort           = get_config('port'           );
     $mailUsername       = get_config('username'       );

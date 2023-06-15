@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.5.19-MariaDB
+-- Server version	10.5.18-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,48 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `schema_migrations`
+-- Table structure for table `mapper`
 --
 
-DROP TABLE IF EXISTS `schema_migrations`;
+DROP TABLE IF EXISTS `mapper`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `schema_migrations` (
-  `version` varchar(255) NOT NULL,
-  PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+CREATE TABLE `mapper` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `email` varchar(45) DEFAULT NULL,
+  `site_name` varchar(45) DEFAULT NULL,
+  `site_url` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `schema_migrations`
+-- Dumping data for table `mapper`
 --
 
-LOCK TABLES `schema_migrations` WRITE;
-/*!40000 ALTER TABLE `schema_migrations` DISABLE KEYS */;
-INSERT INTO `schema_migrations` VALUES 
-  ('20180427013505'),
-  ('20180430012556'),
-  ('20180430031250'),
-  ('20180430035101'),
-  ('20210810041408'),
-  ('20210810213006'),
-  ('20210811020718'),
-  ('20210811022855'),
-  ('20210811031425'),
-  ('20210811034535'),
-  ('20210811035109'),
-  ('20210811040936'),
-  ('20210811143812'),
-  ('20230331200740'),
-  ('20230403193442'),
-  ('20230403195503'),
-  ('20230405195637'),
-  ('20230509201500'),
-  ('20230516154219'),
-  ('20230523175651'),
-  ('20230523182542')
+LOCK TABLES `mapper` WRITE;
+/*!40000 ALTER TABLE `mapper` DISABLE KEYS */;
+INSERT INTO `mapper` VALUES
+  (1,'Danilo Passos','danilo.passos@zelda.com.br','Hyrule Legends','https://www.zelda.com.br'),
+  (2,'Jacob Zaccaria',NULL,'Zelda Universe','http://zeldauniverse.net')
 ;
-/*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mapper` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -69,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-24 12:09:22
+-- Dump completed on 2023-05-09 13:13:43

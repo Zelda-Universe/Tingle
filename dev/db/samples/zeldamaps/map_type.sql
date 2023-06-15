@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,31 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `ar_internal_metadata`
+-- Table structure for table `map_type`
 --
 
-DROP TABLE IF EXISTS `ar_internal_metadata`;
+DROP TABLE IF EXISTS `map_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `ar_internal_metadata` (
-  `key` varchar(255) NOT NULL,
-  `value` varchar(255) DEFAULT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL,
-  PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+CREATE TABLE `map_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `projection` varchar(45) NOT NULL,
+  `google_default` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ar_internal_metadata`
+-- Dumping data for table `map_type`
 --
 
-LOCK TABLES `ar_internal_metadata` WRITE;
-/*!40000 ALTER TABLE `ar_internal_metadata` DISABLE KEYS */;
-INSERT INTO `ar_internal_metadata` VALUES 
-  ('environment','development','2021-08-09 17:53:35.510720','2021-08-09 17:53:35.510720')
+LOCK TABLES `map_type` WRITE;
+/*!40000 ALTER TABLE `map_type` DISABLE KEYS */;
+INSERT INTO `map_type` VALUES
+  (1,'FlatMap','Euclidean',0),
+  (2,'ROADMAP','Mercator',1),
+  (3,'SATELLITE','Mercator',1)
 ;
-/*!40000 ALTER TABLE `ar_internal_metadata` ENABLE KEYS */;
+/*!40000 ALTER TABLE `map_type` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 13:13:43
+-- Dump completed on 2023-06-05 17:22:19

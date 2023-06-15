@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.5.18-MariaDB
+-- Server version	10.5.19-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,31 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `marker_tab_status`
+-- Table structure for table `marker_category_type`
 --
 
-DROP TABLE IF EXISTS `marker_tab_status`;
+DROP TABLE IF EXISTS `marker_category_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `marker_tab_status` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `marker_category_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT 1,
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `marker_tab_status`
+-- Dumping data for table `marker_category_type`
 --
 
-LOCK TABLES `marker_tab_status` WRITE;
-/*!40000 ALTER TABLE `marker_tab_status` DISABLE KEYS */;
-INSERT INTO `marker_tab_status` VALUES 
-  (1,'Pending',0),
-  (2,'Approved',1)
+LOCK TABLES `marker_category_type` WRITE;
+/*!40000 ALTER TABLE `marker_category_type` DISABLE KEYS */;
+INSERT INTO `marker_category_type` VALUES
+  (1,'Regular',1),
+  (2,'Jump (Go To)',1),
+  (3,'Label',1)
 ;
-/*!40000 ALTER TABLE `marker_tab_status` ENABLE KEYS */;
+/*!40000 ALTER TABLE `marker_category_type` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-09 13:13:43
+-- Dump completed on 2023-06-05 17:22:19

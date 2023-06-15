@@ -1,6 +1,6 @@
 -- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
 -- Server version	10.5.19-MariaDB
 
@@ -28,18 +28,18 @@ CREATE TABLE `marker_category` (
   `marker_category_type_id` int(11) NOT NULL,
   `container_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `default_checked` tinyint(1) NOT NULL DEFAULT 0,
+  `default_checked` tinyint(1) NOT NULL DEFAULT '0',
   `img` varchar(45) NOT NULL,
   `color` varchar(45) NOT NULL DEFAULT '#000000',
   `visible_zoom` int(11) NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_marker_category_map_container1_idx` (`container_id`),
   KEY `fk_marker_category_marker_category_type1_idx` (`marker_category_type_id`),
   KEY `fk_marker_category_marker_category1_idx` (`parent_id`),
-  CONSTRAINT `fk_marker_category_map_container1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`),
-  CONSTRAINT `fk_marker_category_marker_category1` FOREIGN KEY (`parent_id`) REFERENCES `marker_category` (`id`),
-  CONSTRAINT `fk_marker_category_marker_category_type1` FOREIGN KEY (`marker_category_type_id`) REFERENCES `marker_category_type` (`id`)
+  CONSTRAINT `fk_marker_category_map_container1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marker_category_marker_category1` FOREIGN KEY (`parent_id`) REFERENCES `marker_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marker_category_marker_category_type1` FOREIGN KEY (`marker_category_type_id`) REFERENCES `marker_category_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2171 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -49,7 +49,7 @@ CREATE TABLE `marker_category` (
 
 LOCK TABLES `marker_category` WRITE;
 /*!40000 ALTER TABLE `marker_category` DISABLE KEYS */;
-INSERT INTO `marker_category` VALUES 
+INSERT INTO `marker_category` VALUES
   (1,NULL,1,1,'Itens',1,'map_gear','#000000',5,1),
   (2,1,1,1,'Itens comuns',1,'map_item','#000000',5,1),
   (3,1,1,1,'Mapa',1,'map_map','#000000',5,1),
@@ -297,4 +297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-25 13:40:30
+-- Dump completed on 2023-06-07 12:49:54

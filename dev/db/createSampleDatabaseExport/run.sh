@@ -75,9 +75,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       )${NC}\n";
     fi
 
-    issueCommand \
-      "$commandString" \
-      "$force" \
+    issueCommand        \
+      "$commandString"  \
+      "$force"          \
     ;
     commandStatus="$?";
     # debugPrint "commandStatus: $commandStatus";
@@ -92,7 +92,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
     if [[ "$commandStatus" -gt '0' ]]; then
       # debugPrint 'issueStep cleanAndExit';
-      cleanAndExit;
+      exitAndMaybeClean;
     fi
     # debugPrint 'issueStep End';
   }
@@ -118,10 +118,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
         statusPrint "[${RED}Failure${NC}] ";
 
-        if [[ "$cleanOnFailure" == "true" ]]; then
-          issueStepClean;
-        fi
-
         if [[ "$failFast" == "true" ]]; then
           # debugPrint "issueCommand return commandStatus: $commandStatus";
           return "$commandStatus";
@@ -133,15 +129,21 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint 'issueCommand End';
   }
 
-  cleanAndExit() {
+  exitAndMaybeClean() {
     exitStatusToApply="${1:-2}";
     # statusPrint "\n";
-    issueStepClean;
+
+    if [[ "$cleanOnFailure" == "true" ]]; then
+      issueStepClean;
+    fi
+
     statusPrint "Exiting...";
     exit "$exitStatusToApply";
   }
 
   issueStepClean() {
+    [[ "$keepIntFiles" = 'true' ]] && return;
+
     # [[ -n "$allIntermediateDirPaths" ]] && \
     # issueStep \
     #   "Cleaning the no longer needed intermediate directories for SQL files." \
@@ -213,7 +215,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # Also even if the variable naming is consistent, the values won't be.
     # Might not matter in the code, but wanted to make this explicitly obvious at least, when understanding the statements for any future coding.
     sanitizedPartialUserDataFilePath="$1";
-    generatedDevUserDataFilePath="$2";
+        generatedDevUserDataFilePath="$2";
 
     issueStep \
       "Exporting and sanitizing only the required user records by id, with their visiblity and level data for later use in development so that all markers can be displayed." \
@@ -249,7 +251,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
     issueStep \
       "Writing SQL INSERT header." \
-      "echo 'INSERT INTO \`user\`' > '$generatedDevUserDataFilePath'" \
+      "echo -n 'INSERT INTO \`user\`' > '$generatedDevUserDataFilePath'" \
     ;
 
     issueStep \
@@ -257,6 +259,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       "head -n 1                            \
         '$sanitizedPartialUserDataFilePath' \
         >> '$generatedDevUserDataFilePath'  \
+      ;
+      sed -i '1 s|\`  (\`|\` (\`|' '$generatedDevUserDataFilePath';
       " \
     ;
     issueStep \
@@ -355,6 +359,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   [[ -z "$dbDumpExe"        ]] &&           dbDumpExe="mariadb-dump";
   [[ -z "$dryRun"           ]] &&              dryRun="false"       ;
   [[ -z "$failFast"         ]] &&            failFast="true"        ;
+  [[ -z "$keepIntFiles"     ]] &&        keepIntFiles="false"       ;
   [[ -z "$oneFile"          ]] &&             oneFile="false"       ;
   [[ -z "$outputName"       ]] &&          outputName="zeldamaps"   ;
   [[ -z "$pause"            ]] &&               pause="false"       ;
@@ -386,7 +391,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   ## Database connection Details
   {
-    # Loops as required.
     while [[ -z "$databaseUser" ]]; do
       if [[ -z "$databaseConnectionString" ]]; then
         if [[ -z "$databaseUser" ]]; then
@@ -440,6 +444,14 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     fi
   }
 
+  if [[ "$verbose" == 'true' ]]; then
+    errorRedirectionString="";
+    verboseString="-v";
+  else
+    errorRedirectionString="2>/dev/null";
+    verboseString="";
+  fi
+
   [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]] && dbDumpCommonOptions="--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
   dbDumpCommonOptions="$dbDumpCommonOptions $databaseConnectionString";
   dbDumpCommonOptions="$dbDumpCommonOptions $databaseName";
@@ -454,7 +466,19 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   removeAITables='user user_completed_marker'; # With transformed data.
   noDataTables='user_completed_marker';
 
+  # Total ignore, both with DB client and this script's actions.
+  if [[ -z "$ignoreTables" ]]; then
+    ignoreTables="ar_internal_metadata";
+  else
+    ignoreTables="ar_internal_metadata $ignoreTables";
+  fi
+
+
+  # Preparation for DB client ignores.
   ignoreTablesOptions='';
+  for table in $ignoreTables; do
+    ignoreTablesOptions+="--ignore-table='$databaseName.$table' ";
+  done
   for table in $removeAITables; do
     ignoreTablesOptions+="--ignore-table='$databaseName.$table' ";
   done
@@ -464,14 +488,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   dataOnlyOptions="$dataOnlyOptions --no-create-info";
   dataOnlyOptions="$dataOnlyOptions --skip-add-drop-table";
   # dataOnlyOptions="$dataOnlyOptions --skip-extended-insert";
-
-  if [[ "$verbose" == 'true' ]]; then
-    errorRedirectionString="";
-    verboseString="-v";
-  else
-    errorRedirectionString="2>/dev/null";
-    verboseString="";
-  fi
 
   if [[ "$briefMessages" == "true" ]]; then
     availableMessageCharacters="$(expr "$(tput cols)" - 12 - 3)"; # For the result messages, their wrapping characters, the message prefix, and then the ellipsis.
@@ -517,10 +533,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   && convergeSuffix="-converged";
 
   orgExtInsCmd="
-    sed -r                        \
-      -e 's|\),\(|),\n  (|g'      \
-      -e 's|(VALUES )\(|\1\n  (|' \
-      -e 's|\);|)\n;|'            \
+    sed -r                          \
+      -e 's|\),\(|),\n  (|g'        \
+      -e 's|(VALUES )\(|\1\n  (|g'  \
+      -e 's|(VALUES) |\1|g'         \
+      -e 's|\);\$|)\n;|g'           \
   ";
 
   # debugPrint "samplesDir: $samplesDir";
@@ -688,6 +705,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint "oneFile End";
   else
     # debugPrint "Not oneFile Start";
+
     ## Export to multiple, individual files.
     issueStep \
       'Reading and storing list of tables...' \
@@ -699,17 +717,28 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         --skip-column-names     \
       ;)\"
     ";
+    # | tail -n +5            \
     if [[ -z "$defaultTableNames" ]]; then
       errorPrint 'Could not retrieve list of table names, or there are none; exiting...';
       exit 1;
     fi
-    [[ -z "$tableNames" ]] && tableNames="$defaultTableNames";
+    if [[ -z "$tableNames" ]]; then
+      tableNames="$defaultTableNames";
+    fi
     # debugPrint "defaultTableNames: $defaultTableNames";
     # debugPrint "tableNames: $tableNames";
 
     for tableName in $tableNames; do
       # debugPrint "Table Start";
       # debugPrint "tableName: $tableName";
+
+      if includes \
+        "$ignoreTables" \
+        "$tableName" \
+      ; then
+        altPrint "Skipping table \"$tableName\" as it is set to be ignored...";
+        continue;
+      fi
 
       # Validate table exists.
       if ! includes \
@@ -768,11 +797,13 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
           # debugPrint "Data Table Start";
           sanitizedPartialUserDataFilePath="$samplesDir/$tableName-03-sanitizedPartialUserData.txt";
           generatedDevUserDataFilePath="$samplesDir/$tableName-04-devUserData.sql";
+          lastFilePath="$samplesDir/$tableName-05-last.sql";
 
           allIntermediateFilePaths="            \
             $allIntermediateFilePaths           \
             '$sanitizedPartialUserDataFilePath' \
             '$generatedDevUserDataFilePath'     \
+            '$lastFilePath'                     \
           ";
 
           issueStepsUserSanAndGen               \
@@ -780,13 +811,43 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
             "$generatedDevUserDataFilePath"     \
           ;
 
+          patternTimestamp='^-- Dump completed on .+?$';
           issueStep \
+            'Saving timestamp from structure export to add as final data in assembled file.'  \
+            "exportTimestamp=\$(
+              grep -P '$patternTimestamp' '$aiRemovedFilePath'
+            );"               \
+          ;
+
+          issueStep \
+            'Removing timestamp and extra newline from structure export so it does not exist before the assembled data.' \
+            "fish -c \"
+              editLines '$toRemoveAIFilePath' '$patternTimestamp' 'd';
+            \";
+            sed -i \"\$(
+              wc -l '$aiRemovedFilePath' \
+              | cut -d' ' -f1
+            )d\" '$aiRemovedFilePath' \
+            ;
+            " \
+          ;
+
+          issueStep \
+            'Adding timestamp to last intermediate file.' \
+            "
+              echo > '$lastFilePath'                    ;
+              echo '$exportTimestamp' >> '$lastFilePath';
+            "   \
+          ;
+
+          issueStep   \
             "Combining intermediate SQL files into the individual table script for later, more specific and efficient, import and version control." \
-            "cat \
+            "cat                              \
               '$aiRemovedFilePath'            \
               '$generatedDevUserDataFilePath' \
+              '$lastFilePath'                 \
               > '$resultFile'                 \
-            " \
+            "         \
           ;
 
           # debugPrint "Data Table End";
@@ -799,8 +860,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         # debugPrint "Not removeAITable Start";
 
         ## Handle tables that don't require transforming data with the same AI value.
-        issueStep \
-          "Exporting complete table \"$tableName\" to an individual completed result file, keeping the auto increment values to match the data later on." \
+        issueStep     \
+          "Exporting complete table \"$tableName\" to an individual completed result file, keeping the auto increment values to match the data later on."  \
           "'$dbDumpExe'             \
             $dbDumpCommonOptions    \
             $tableName              \
@@ -821,13 +882,23 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         "$resultConvergedFilePath"  \
       ;
 
+      issueStep \
+        'Cleaning unwanted SQL constructs that cannot be disabled with any native commands, such as the duplicate "INSERT" statements with matching preceding semicolons and absence of trailing commas when breaking the extended syntax data clause list.' \
+        "fish '$SDIR/cleanSQL.fish' '$resultFile'"      \
+      ;
+
+      issueStep \
+        'Make "DEFAULT" values in field definition consistent.' \
+        "sed -i -r \"/DEFAULT NULL/!  s|(DEFAULT )([^', =]+)([, ])|\\1'\\2'\\3|\" '$resultFile'" \
+      ;
+
+      issueStep \
+        'Re-add "COLLATE" term if missing from table definition.' \
+        "fish '$SDIR/addCollate.fish' '$resultFile'" \
+      ;
+
       # debugPrint "Table End";
     done
-
-    issueStep \
-      "Cleaning unwanted SQL constructs that cannot be disabled with any native commands." \
-      "fish '$SDIR/cleanSQL.fish' '$resultFile'" \
-    ;
 
     # debugPrint "Not oneFile End";
   fi

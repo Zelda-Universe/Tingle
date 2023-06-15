@@ -74,7 +74,7 @@
   } else {
     // Ok, anyone can add marker :)
   }
-  
+
 
   //----------------------------------------------------------//
   if (!isset($_POST['markerId'])) {
@@ -148,7 +148,7 @@
 			$result = @$mysqli->query($query); // or die($mysqli->error());
       }
 
-    	for ($i = 0; $i < sizeof($_POST['tabText']); $i++) {
+    	for ($i = 0; $i < strlen($_POST['tabText']); $i++) {
 				if (/*!isset($_POST['tabTitle'][$i]) || */!isset($_POST['tabText'][$i])) {
 					continue;
 				} else if (/*$_POST['tabTitle'][$i] == "" || */$_POST['tabText'][$i] == "") {
@@ -198,7 +198,7 @@
          $_GET['newMarkerId'] = $marker_id;
          $_GET['game'] = $_POST['game'];
          ob_start();
-         include("$path/ajax/get_markers.php");
+         include("$path/get_markers.php");
          $output = ob_get_clean();
 
          echo json_encode(array(

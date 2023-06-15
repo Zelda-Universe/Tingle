@@ -1,6 +1,6 @@
 -- MariaDB dump 10.19  Distrib 10.5.18-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
 -- Server version	10.5.18-MariaDB
 
@@ -38,7 +38,7 @@ CREATE TABLE `tmp_loc` (
 
 LOCK TABLES `tmp_loc` WRITE;
 /*!40000 ALTER TABLE `tmp_loc` DISABLE KEYS */;
-INSERT INTO `tmp_loc` VALUES 
+INSERT INTO `tmp_loc` VALUES
   (-4022.127,-3711.697,'To Quomo Shrine',1925,65.154265625,-70.004734375),
   (-4446.018,-3802.419,'Hia Miu Shrine',1925,58.53096875,-68.587203125),
   (-4058.835,-2508.257,'Maka Rah Shrine',1925,64.580703125,-88.808484375),

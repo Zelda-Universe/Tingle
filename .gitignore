@@ -3,10 +3,15 @@
 /.env
 /dev/server/nginx/site.conf
 /dev/db/config.yml
+/dev/db/samples/*-01-structure_to-remove-AI.sql
+/dev/db/samples/*-02-structure_AI-removed.sql
+/dev/db/samples/*-03-sanitizedPartialUserData.txt
+/dev/db/samples/*-04-devUserData.sql
 /dev/assets/tiles/**/*.png
 /dev/assets/tiles/**/Trials
 
 # Cached Files / Runtime-updated Files
+/ajax/static
 /cache/*
 !/cache/index.html
 /tmp

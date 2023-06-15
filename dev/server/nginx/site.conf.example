@@ -1,5 +1,4 @@
 server {
-
   set   $project_location /path/to/Zelda-Maps ;
   root  $project_location                     ;
 

@@ -1,6 +1,6 @@
 -- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
 -- Server version	10.5.19-MariaDB
 
@@ -27,7 +27,7 @@ CREATE TABLE `changelog` (
   `version_major` int(11) NOT NULL,
   `version_minor` int(11) NOT NULL,
   `version_patch` int(11) NOT NULL,
-  `hidden` tinyint(1) NOT NULL DEFAULT 0,
+  `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -39,7 +39,7 @@ CREATE TABLE `changelog` (
 
 LOCK TABLES `changelog` WRITE;
 /*!40000 ALTER TABLE `changelog` DISABLE KEYS */;
-INSERT INTO `changelog` VALUES 
+INSERT INTO `changelog` VALUES
   (1,0,0,0,0,'The fabled start of the project!'),
   (2,0,0,1,0,'Finally, an app to work with :).'),
   (3,0,2,0,0,'You can now add your own markers! Right click on the map and log in / create an account to start adding (best suited for desktop).'),
@@ -96,4 +96,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-24 12:59:48
+-- Dump completed on 2023-06-05 17:22:18

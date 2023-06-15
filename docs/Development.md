@@ -4,7 +4,7 @@
 
   1. Branch off of `master` using the branch prefix `feature/`.
   2. While working on code changes, commit & push, early & often, so other team members are aware of current code changes to possibly integrate and/or merge with.  Also mind Development Guidelines below.
-  3. When finalized, merge to `staging`, and open a pull request on GitHub.  Probably assign it to Jason.
+  3. When finalized, merge to `staging`, and open a pull request on GitHub.
   4. At this point, auto deployment should push it to the staging server.  You can check that it works there.
   5. After review, the pull request can be merged by the reviewer, or maybe even the developer, back into `master`.
 
@@ -185,8 +185,26 @@
   - Samples:
     - ActiveRecord Ruby Code:
       - Source: http://guides.rubyonrails.org/active_record_migrations.html
+      - Source: https://guides.rubyonrails.org/active_record_migrations.html#using-the-change-method
       - Source: https://www.ralfebert.de/snippets/ruby-rails/models-tables-migrations-cheat-sheet/
       - Note: Main benefit is hopefully more terse and efficient syntax, but also applies to automatically handling bidirectional migration/rollback support with declarative styling.
+      - Add custom reversible code
+        - Source: https://guides.rubyonrails.org/active_record_migrations.html#using-reversible
+        - ```
+          reversible do |dir|
+            dir.up do
+              ...
+            end
+            dir.down do
+              ...
+            end
+          end
+          ```
+      - Change table common code:
+          - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-tables
+          - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
+          - Code: `change_table :table_name do |t|`
+          - Then refer to the specific section goal below with the reduced  column variants.
       - Add column:
         - Code (Table 'batch' block): `t.column :hidden, :boolean, null: false, default: 0, after: :version_patch`
         - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
@@ -194,11 +212,6 @@
         - Source: `dev/db/migrate/20230523175651_marker_add_path_column.rb`
       - Changing Columns:
         - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-columns
-        - Change table common code:
-            - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-tables
-            - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_table
-            - Code: `change_table :table_name do |t|`
-            - Then refer to the specific section goal below with the reduced  column variants.
         - Change column null property:
           - Code: `t.change_null :content, false`
           - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
@@ -207,6 +220,30 @@
           - Code (Individual field): `change_column_default(:table_name, :column_name, '<defaultValue>')`
           - Source: `dev/db/migrate/20230405195637_container_update_and_add_defaults.rb`
           - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_column_default
+        - Can't change integer 'width':
+          - Limit is bytes and change type too much.\
+          - Precision, reverted to `11`, but did not change to `2` at all.
+          - So just use raw SQL..
+      - Foreign Keys:
+        - Remove:
+          - Code: `remove_foreign_key  :map, column: :container_id, name: :fk_map_project1`
+          - SQL: ```
+            ALTER TABLE `map`
+            DROP FOREIGN KEY `fk_map_project1`
+          ```
+        - Add:
+          - Code: `add_foreign_key     :map, :container, column: :container_id, name: :fk_map_project1, on_delete: :restrict, on_update: :restrict`
+          - SQL: ```
+            ALTER TABLE `map`
+            ADD CONSTRAINT `fk_map_project1`
+            FOREIGN KEY (`container_id`)
+            REFERENCES `container` (`id`)
+            ON DELETE NO ACTION ON UPDATE NO ACTION
+            ```
+          - Notes:
+            - No action cannot be specified using AR code, as it does not support that key as a dependency, so use raw SQL for that choice instead.
+            - Restrict is MySQL-specific, MariaDB of course supports, equivalent to no action for the standard, mostly, may be a difference between immediate rejection by statement, when using InnoDB engine, or upon transaction commit, allowing it to be resolved more flexibly.
+          - Source: `dev/db/migrate/20230607153536_update_fk_actions.rb`
     - Execute Raw SQL:
       - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
       - Inline statement:
@@ -216,11 +253,23 @@
           SQL
           ```
       - External file:
-        - Code: ```
-          execute File.open(
-            'dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql'
-          ).read
-          ```
+        - Single statement
+          - Code: ```
+            execute File.open(
+              'dev/db/migrate/sql/20210811040936_users_add_new_placeholders_for_new_marker_contributions.sql'
+            ).read
+            ```
+        - Multiple statements (NWY)
+          - Note: Just use external files for now and extended syntax to combine multiple data statements.
+          - Note: Semicolons in data are still unintentionally split.
+          - Code: ```
+            sqlFile = '...'
+            sql = File.open(sqlFile).read
+            sqlOrganized = sql.lines.join.
+            split(';').
+            reject  { |line| line.empty? or line =~ /\A\s+\Z/ }
+            sqlOrganized.each { |sqlLine| execute(sqlLine) }
+            ```
       - External files:
         - Code: ```
           def sqlFileNames
@@ -244,7 +293,7 @@
           end
           ```
       - Multiple Queries:
-        - Add `.lines.each { |line| execute line if line != "\n" }` the string containing the queries separated by newlines.
+        - Remove `execute` from the beginning of the line, and add `.lines.each { |line| execute line if line != "\n" }` to the read command for the file containing the queries separated by newlines.
     - Specific Goals:
       - Investigating/Debugging
         - ```

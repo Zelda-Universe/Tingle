@@ -1,173 +1,239 @@
 <!DOCTYPE html>
 <html>
-   <head>
-  		<link rel="shortcut icon" href="images/favicon.ico" type="image/vnd.microsoft.icon" />
-  		<link rel="apple-touch-icon" href="images/apple-touch-icon-precomposed.png" />
-  		<title>Zelda Maps - Tears of the Kingdom Interactive Map</title>
-  		<meta charset="utf-8" />
-  		<meta name="robots" content="index, follow">
-  		<meta name="keywords" content="Zelda, totk interactive map, tears of the kingdom interactive map, botw interactive map, breath of the wild interactive map, interactive map, map, botw, BotW, totk, TotK, Breath of the Wild, Tears of the Kingdom, Zelda Maps, tears of the kingdom map, totk map, breath of the wild map, botw map, Hyrule, hyrule map, botw guide, totk guide" />
-  		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" />
-  		<meta name="apple-mobile-web-app-capable" content="yes" />
-  		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <head>
+    <!-- Metadata -->
 
-  		<meta name='owner' content='Zelda Universe (zeldauniverse.net) &amp; Hyrule Legends (zelda.com.br)'>
+      <!-- Generic / Web Standard -->
 
-		<!-- Facebook Meta Tags -->
-		<meta property="og:url" content="https://zeldamaps.com">
-		<meta property="og:type" content="website">
-		<meta property="og:title" content="Zelda Maps - Tears of the Kingdom Interactive Map">
-		<meta property="og:description" content="Complete interactive map of Hyrule from Zelda: Tears of the Kingdom with locations of every Korok Seed, Shrine, and more.">
-		<meta property="og:image" content="https://zeldamaps.com/images/social.png">
+    		<link
+          rel="shortcut icon"
+          href="images/favicon.ico"
+          type="image/vnd.microsoft.icon"
+        />
 
-		<!-- Twitter Meta Tags -->
-		<meta name="twitter:card" content="summary_large_image">
-		<meta property="twitter:domain" content="zeldamaps.com">
-		<meta property="twitter:url" content="https://zeldamaps.com">
-		<meta name="twitter:title" content="Zelda Maps - Tears of the Kingdom Interactive Map">
-		<meta name="twitter:description" content="Complete interactive map of Hyrule from Zelda: Tears of the Kingdom with locations of every Korok Seed, Shrine, and more.">
-		<meta name="twitter:image" content="https://zeldamaps.com/images/social.png">
+  		  <title>
+          Zelda Maps - Tears of the Kingdom Interactive Map
+        </title>
 
-  		<meta property="og:locale:alternate" content="en_US" />
-  		<meta property="og:type" content="activity" />
-  		<meta property="og:url" content="https://zeldamaps.com" />
-  		<meta property="og:site_name" content="Zelda Maps" />
-  		<meta property="og:locale" content="en_US" />
+        <meta charset="utf-8" />
 
-  		<meta property="og:title" content="Zelda Maps" />
-  		<meta property="og:description" content="Zelda Maps provides rich interactive maps of Hyrule from the The Legend of Zelda with detailed descriptions for each location, character, easter egg and more."/>
+    		<meta http-equiv="Content-Type"     content="text/html; charset=utf-8" />
+    		<meta
+          http-equiv="Content-Language"
+          content="en-us"
+        />
 
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta http-equiv="Content-Language" content="en-us" />
-		<meta name="description" content="Complete interactive map of Hyrule from Zelda: Tears of the Kingdom with locations of every Korok Seed, Shrine, and more.">
+        <meta name="description" content="Complete interactive map of Hyrule from Zelda: Tears of the Kingdom with locations of every Korok Seed, Shrine, and more.">
+    		<meta
+          name="keywords"
+          content="Zelda, totk interactive map, tears of the kingdom interactive map, botw interactive map, breath of the wild interactive map, interactive map, map, botw, BotW, totk, TotK, Breath of the Wild, Tears of the Kingdom, Zelda Maps, tears of the kingdom map, totk map, breath of the wild map, botw map, Hyrule, hyrule map, botw guide, totk guide"
+        />
+        <meta name='owner'    content='Zelda Universe (zeldauniverse.net) &amp; Hyrule Legends (zelda.com.br)'>
+        <meta name="robots"   content="index, follow">
+    		<meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover"
+        />
 
-      <!-- Third-Party LIBs -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-      <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.16/tinymce.min.js"></script>
-      <script>tinymce.init({ selector:'textarea' });</script>
+
+      <!-- Apple -->
+
+    		<link
+          rel="apple-touch-icon"
+          href="images/apple-touch-icon-precomposed.png"
+        />
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+
+  		<!-- OpenGraph (OG) / Facebook/Meta Tags -->
+
+        <meta property="og:description"       content="Complete interactive map of Hyrule from Zelda: Tears of the Kingdom with locations of every Korok Seed, Shrine, and more.">
+        <meta property="og:locale"  content="en_US" />
+        <meta property="og:locale:alternate"  content="en_US" />
+        <meta property="og:image"   content="https://zeldamaps.com/images/social.png">
+        <meta property="og:site_name" content="Zelda Maps" />
+    		<meta property="og:title"   content="Zelda Maps - Tears of the Kingdom Interactive Map">
+        <meta property="og:type"    content="website">
+        <meta property="og:url"     content="https://zeldamaps.com">
+
+
+  		<!-- Twitter Meta Tags -->
+
+        <meta name="twitter:card"     content="summary_large_image">
+        <meta name="twitter:description"  content="Complete interactive map of Hyrule from Zelda: Tears of the Kingdom with locations of every Korok Seed, Shrine, and more.">
+        <meta property="twitter:domain"   content="zeldamaps.com">
+        <meta name="twitter:image"    content="https://zeldamaps.com/images/social.png">
+    		<meta name="twitter:title"    content="Zelda Maps - Tears of the Kingdom Interactive Map">
+        <meta property="twitter:url"  content="https://zeldamaps.com">
+
+
+
+    <!-- Third-Party Code -->
+
+      <script
+        src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"
+      ></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
+      ></script>
+      <script
+        defer
+        src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"
+        integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
+        crossorigin="anonymous"
+      ></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+      ></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"
+      ></script>
+      <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.16/tinymce.min.js"
+      ></script>
+      <script>
+        tinymce.init({ selector:'textarea' });
+      </script>
+
+
+    <!-- Third-Party Styles -->
 
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
+
     <!-- First-Party Code & Style -->
-    <section>
+
       <script type="text/javascript" src="res.php?type=javascript"></script>
       <link rel="stylesheet" type="text/css" href="res.php?type=css" />
 
+      <!-- Auto-select default game when none other provided. -->
       <script>
-      var urlParams;
-      $(function(){
+        var urlParams;
+        $(function(){
           (window.onpopstate = function () {
-              var match,
-                  pl     = /\+/g,  // Regex for replacing addition symbol with a space
-                  search = /([^&=]+)=?([^&]*)/g,
-                  decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-                  query  = window.location.search.substring(1);
+            var
+              match,
+              pl     = /\+/g,  // Regex for replacing addition symbol with a space
+              search = /([^&=]+)=?([^&]*)/g,
+              decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+              query  = window.location.search.substring(1)
+            ;
 
-              urlParams = {};
-              while (match = search.exec(query))
-                 urlParams[decode(match[1])] = decode(match[2]);
+            urlParams = {};
+            while (match = search.exec(query))
+              urlParams[decode(match[1])] = decode(match[2]);
           })();
           var game = urlParams["game"];
-          if(game===undefined) {
-              window.location.href = "?game=TotK";
+          if(game === undefined) {
+            window.location.href = "?game=TotK";
           }
-          $.getJSON("ajax.php?command=get_container_name&game="+game,function(data){
+          $.getJSON(
+            "ajax.php?command=get_container_name&game="+game,
+            function(data) {
               if(!data.success) {
                 document.title="Zelda Maps";
                 return;
               }
-              document.title=data.name+" Interactive Map - Zelda Maps";
+              document.title= data.name + " Interactive Map - Zelda Maps";
           });
-      });
+        });
       </script>
-
-      <!-- Internal LIBS -->
-       <!--
-      <script src="scripts/zmap.js"></script>
-      <script src="scripts/zmain.js"></script>
-      <script src="scripts/Control.ZLayers2.js"></script>
-      <link rel="stylesheet" href="scripts/zmain.css" />
-       -->
-
-   </head>
-   <body>
-   <body>
-      <div id="map">
-	      <div id="mobileAds" align="center">
-	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<!-- Zelda Maps -->
-			<ins class="adsbygoogle"
-			     style="display:block"
-			     data-ad-client="ca-pub-7269573247649351"
-			     data-ad-slot="4512666333"
-			     ></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>
+  </head>
+  <body>
+    <main>
+      <!--
+        Note: Ads should be above the map/layers/tiles area,
+        and beneath the leaflet controls
+      -->
+      <div id="ads" align="center">
+	      <div id="mobileAds" >
+          <div class="googlePageAds">
+  	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      			<ins
+              class="adsbygoogle"
+      			  style="display:block"
+      			  data-ad-client="ca-pub-7269573247649351"
+      			  data-ad-slot="4512666333"
+      			></ins>
+      			<script>
+      			  (adsbygoogle = window.adsbygoogle || []).push({});
+      			</script>
+          </div>
 	      </div>
-	      <div id="desktopAds" align="center">
+	      <div id="desktopAds">
+          <!-- Dynamically resize this section-->
 	        <script>
-	            var width = $(document).width();
-	            var adsWidth = 0;
-	            var adsHeight = 0;
-	            if (width > 728) {
-	               adsWidth = 728;
-	               adsHeight = 90;
-	            } else if (width > 468) {
-	               adsWidth = 468;
-	               adsHeight = 60;
-	            } else {
-	               adsWidth = 234;
-	               adsHeight = 60;
-	            }
+            var width = $(document).width();
+            var adsWidth = 0;
+            var adsHeight = 0;
+            if (width > 728) {
+              adsWidth = 728;
+              adsHeight = 90;
+            } else if (width > 468) {
+              adsWidth = 468;
+              adsHeight = 60;
+            } else {
+              adsWidth = 234;
+              adsHeight = 60;
+            }
 
-	            document.getElementById('desktopAds').style.width = adsWidth + 'px';
-	            document.getElementById('desktopAds').style.height = adsHeight + 'px';
+            var dtAdsStyle = document.getElementById('desktopAds').style
+            dtAdsStyle.width  = adsWidth  + 'px';
+            dtAdsStyle.height = adsHeight + 'px';
 	        </script>
-	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-			<!-- Zelda Maps -->
-			<ins class="adsbygoogle infeed"
-			     style="display:block;"
-			     data-ad-client="ca-pub-7269573247649351"
-			     data-ad-slot="4512666333"
-			     data-ad-format="horizontal"></ins>
-			<script>
-			(adsbygoogle = window.adsbygoogle || []).push({});
-			</script>
+
+          <div class="googlePageAds">
+  	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      			<ins class="adsbygoogle infeed"
+      			     style="display:block;"
+      			     data-ad-client="ca-pub-7269573247649351"
+      			     data-ad-slot="4512666333"
+      			     data-ad-format="horizontal"></ins>
+       			<script>
+       			  (adsbygoogle = window.adsbygoogle || []).push({});
+       			</script>
+          </div>
 	      </div>
       </div>
 
+      <!-- Zelda Maps -->
+    </main>
+
+    <div id="tracking">
       <!-- Google Analytics -->
       <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-       ga('create', 'UA-317947-14', 'auto');
-       ga('send', 'pageview');
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-317947-14', 'auto');
+        ga('send', 'pageview');
       </script>
 
       <!-- comScore -->
-	  <script>
-		var _comscore = _comscore || [];
-		_comscore.push({ c1: "2", c2: "6035118" });
-		(function() {
-		   var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
-		   s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
-		   el.parentNode.insertBefore(s, el);
-		})();
-	  </script>
-	  <noscript>
-	       <img src="http://b.scorecardresearch.com/p?c1=2&amp;c2=6035118&amp;cv=2.0&amp;cj=1" />
-	  </noscript>
+  	  <script>
+  		  var _comscore = _comscore || [];
+  		  _comscore.push({ c1: "2", c2: "6035118" });
+    		(function() {
+    		   var s = document.createElement("script"), el = document.getElementsByTagName("script")[0]; s.async = true;
+    		   s.src = (document.location.protocol == "https:" ? "https://sb" : "http://b") + ".scorecardresearch.com/beacon.js";
+    		   el.parentNode.insertBefore(s, el);
+    		})();
+  	  </script>
 
-	  <!-- Nielsen Online SiteCensus -->
-	  <div><img src="//secure-us.imrworldwide.com/cgi-bin/m?ci=us-603339h&amp;cg=0&amp;cc=1&amp;ts=noscript" width="1" height="1" alt="" /></div>
-   </body>
+      <!-- Scorecard Research -->
+  	  <noscript>
+  	    <img src="http://b.scorecardresearch.com/p?c1=2&amp;c2=6035118&amp;cv=2.0&amp;cj=1" />
+  	  </noscript>
+
+  	  <!-- Nielsen Online SiteCensus -->
+  	  <div>
+        <img src="//secure-us.imrworldwide.com/cgi-bin/m?ci=us-603339h&amp;cg=0&amp;cc=1&amp;ts=noscript" width="1" height="1" alt="" />
+      </div>
+    </div>
+  </body>
 </html>

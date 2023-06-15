@@ -1,6 +1,6 @@
 -- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: tingle
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
 -- Server version	10.5.19-MariaDB
 
@@ -29,15 +29,15 @@ CREATE TABLE `marker_tab` (
   `user_id` int(11) NOT NULL,
   `tab_title` varchar(45) NOT NULL,
   `tab_text` text NOT NULL,
-  `tab_order` int(11) NOT NULL DEFAULT -1,
-  `visible` tinyint(1) NOT NULL DEFAULT 0,
+  `tab_order` int(11) NOT NULL DEFAULT '-1',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`marker_tab_id`),
   KEY `fk_map_marker_tab_map_marker1_idx` (`marker_id`),
   KEY `fk_marker_tab_marker_tab_status1_idx` (`marker_tab_status_id`),
   KEY `fk_marker_tab_user1_idx` (`user_id`),
   CONSTRAINT `fk_map_marker_tab_map_marker1` FOREIGN KEY (`marker_id`) REFERENCES `marker` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_marker_tab_marker_tab_status1` FOREIGN KEY (`marker_tab_status_id`) REFERENCES `marker_tab_status` (`id`),
-  CONSTRAINT `fk_marker_tab_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `fk_marker_tab_marker_tab_status1` FOREIGN KEY (`marker_tab_status_id`) REFERENCES `marker_tab_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marker_tab_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=24342 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -47,7 +47,7 @@ CREATE TABLE `marker_tab` (
 
 LOCK TABLES `marker_tab` WRITE;
 /*!40000 ALTER TABLE `marker_tab` DISABLE KEYS */;
-INSERT INTO `marker_tab` VALUES 
+INSERT INTO `marker_tab` VALUES
   (42,22,1,1,'','&lt;img src=&quot;https://zeldawiki.org/images/2/22/BotW_Temple_of_Time.png&quot; width=&quot;100%&quot;&gt;In Breath of the Wild, the Temple of Time is located in the Great Plateau in Central Hyrule, close to the Shrine of Resurrection. The temple can be seen in an extremely dilapidated state, with missing and broken windows, crumbling rooftop, and collapsed walls. Rubble is strewn around the temple&#039;s interior and the structure appears to have been reclaimed by nature as grass can be seen growing inside and ivy creeps up the walls.',1,0),
   (43,23,1,1,'','&lt;img src=&quot;https://zeldawiki.org/images/0/00/BotW_Shrine_of_Resurrection.png&quot; width=&quot;100%&quot;&gt;Link awakens from within the Shrine of Resurrection after hearing the call of an unknown voice. He is guided to a pedestal, where he receives the Sheikah Slate. Afterwards, the door to the chamber opens, leading to another room containing two Treasure Chests with the Old Shirt and the Well-Worn Trousers. Behind the Chests rests a pedestal from which Link can place the Sheikah Slate and open the entrance to the Shrine of Resurrection, leading to the Great Plateau.',1,0),
   (44,22,1,1,'','&lt;img src=&quot;https://zeldawiki.org/images/2/22/BotW_Temple_of_Time.png&quot; width=&quot;100%&quot;&gt;\r\n&lt;p&gt;In Breath of the Wild, the Temple of Time is located in the Great Plateau in Central Hyrule, close to the Shrine of Resurrection. The temple can be seen in an extremely dilapidated state, with missing and broken windows, crumbling rooftop, and collapsed walls. Rubble is strewn around the temple&#039;s interior and the structure appears to have been reclaimed by nature as grass can be seen growing inside and ivy creeps up the walls.&lt;/p&gt;',1,1),
@@ -3006,8 +3006,7 @@ INSERT INTO `marker_tab` VALUES
   (3637,10362,1,45711,'','&lt;p&gt;Path to Light&lt;/p&gt;\r\n&lt;p&gt;(DLC)&lt;/p&gt;',1,1),
   (3638,10363,1,45711,'','&lt;p&gt;Master the Orb&lt;/p&gt;',1,1),
   (3639,10364,1,45711,'','&lt;p&gt;Aim for Stilness&lt;/p&gt;',1,1),
-  (3640,10381,1,57925,'','&lt;p&gt;Wild Horse Location&lt;/p&gt;\r\n&lt;div id=&quot;simple-translate&quot;&gt;\r\n&lt;div&gt;\r\n&lt;div class=&quot;simple-translate-button &quot; style=&quot;background-image: url(&#039;moz-extension://d17e1a95-b60e-472b-b6ce-74b5eea5aa60/icons/512.png&#039;)
-; height: 22px; width: 22px; top: 10px; left: 10px;&quot;&gt;&amp;nbsp;&lt;/div&gt;\r\n&lt;div class=&quot;simple-translate-panel &quot; style=&quot;width: 300px; height: 200px; top: 0px; left: 0px; font-size: 13px; background-color: #ffffff;&quot;&gt;\r\n&lt;div class=&quot;simple-translate-result-wrapper&quot; style=&quot;overflow: hidden;&quot;&gt;\r\n&lt;p class=&quot;simple-translate-result&quot; style=&quot;color: #000000;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;p class=&quot;simple-translate-candidate&quot; style=&quot;color: #737373;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;',1,1),
+  (3640,10381,1,57925,'','&lt;p&gt;Wild Horse Location&lt;/p&gt;\r\n&lt;div id=&quot;simple-translate&quot;&gt;\r\n&lt;div&gt;\r\n&lt;div class=&quot;simple-translate-button &quot; style=&quot;background-image: url(&#039;moz-extension://d17e1a95-b60e-472b-b6ce-74b5eea5aa60/icons/512.png&#039;)\n; height: 22px; width: 22px; top: 10px; left: 10px;&quot;&gt;&amp;nbsp;&lt;/div&gt;\r\n&lt;div class=&quot;simple-translate-panel &quot; style=&quot;width: 300px; height: 200px; top: 0px; left: 0px; font-size: 13px; background-color: #ffffff;&quot;&gt;\r\n&lt;div class=&quot;simple-translate-result-wrapper&quot; style=&quot;overflow: hidden;&quot;&gt;\r\n&lt;p class=&quot;simple-translate-result&quot; style=&quot;color: #000000;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;p class=&quot;simple-translate-candidate&quot; style=&quot;color: #737373;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;',1,1),
   (3641,10384,1,57925,'','&lt;p&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;div id=&quot;simple-translate&quot;&gt;\r\n&lt;div&gt;\r\n&lt;div class=&quot;simple-translate-button &quot; style=&quot;background-image: url(&#039;moz-extension://d17e1a95-b60e-472b-b6ce-74b5eea5aa60/icons/512.png&#039;); height: 22px; width: 22px; top: 10px; left: 10px;&quot;&gt;&amp;nbsp;&lt;/div&gt;\r\n&lt;div class=&quot;simple-translate-panel &quot; style=&quot;width: 300px; height: 200px; top: 0px; left: 0px; font-size: 13px; background-color: #ffffff;&quot;&gt;\r\n&lt;div class=&quot;simple-translate-result-wrapper&quot; style=&quot;overflow: hidden;&quot;&gt;\r\n&lt;p class=&quot;simple-translate-result&quot; style=&quot;color: #000000;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;p class=&quot;simple-translate-candidate&quot; style=&quot;color: #737373;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;',1,1),
   (3642,10385,1,57925,'','&lt;p&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;div id=&quot;simple-translate&quot;&gt;\r\n&lt;div&gt;\r\n&lt;div class=&quot;simple-translate-button &quot; style=&quot;background-image: url(&#039;moz-extension://d17e1a95-b60e-472b-b6ce-74b5eea5aa60/icons/512.png&#039;); height: 22px; width: 22px; top: 10px; left: 10px;&quot;&gt;&amp;nbsp;&lt;/div&gt;\r\n&lt;div class=&quot;simple-translate-panel &quot; style=&quot;width: 300px; height: 200px; top: 0px; left: 0px; font-size: 13px; background-color: #ffffff;&quot;&gt;\r\n&lt;div class=&quot;simple-translate-result-wrapper&quot; style=&quot;overflow: hidden;&quot;&gt;\r\n&lt;p class=&quot;simple-translate-result&quot; style=&quot;color: #000000;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;p class=&quot;simple-translate-candidate&quot; style=&quot;color: #737373;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;',1,1),
   (3643,10386,1,57925,'','&lt;p&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;div id=&quot;simple-translate&quot;&gt;\r\n&lt;div&gt;\r\n&lt;div class=&quot;simple-translate-button &quot; style=&quot;background-image: url(&#039;moz-extension://d17e1a95-b60e-472b-b6ce-74b5eea5aa60/icons/512.png&#039;); height: 22px; width: 22px; top: 10px; left: 10px;&quot;&gt;&amp;nbsp;&lt;/div&gt;\r\n&lt;div class=&quot;simple-translate-panel &quot; style=&quot;width: 300px; height: 200px; top: 0px; left: 0px; font-size: 13px; background-color: #ffffff;&quot;&gt;\r\n&lt;div class=&quot;simple-translate-result-wrapper&quot; style=&quot;overflow: hidden;&quot;&gt;\r\n&lt;p class=&quot;simple-translate-result&quot; style=&quot;color: #000000;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;p class=&quot;simple-translate-candidate&quot; style=&quot;color: #737373;&quot;&gt;&amp;nbsp;&lt;/p&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;\r\n&lt;/div&gt;',1,1),
@@ -6703,7 +6702,8 @@ INSERT INTO `marker_tab` VALUES
   (24338,25174,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Lanayru Wetlands Well&lt;/p&gt;&lt;p&gt;A single-edged sword of the Sheikah tribe.  Its small blade, now decayed, is suited for covert actions and yields more powerful sneakstrikes than ordinary blades.&lt;/p&gt;',1,1),
   (24339,25175,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Ancient Prison Ruins&lt;/p&gt;&lt;p&gt;A decaying scimitar from the Gerudo region, it is designed for maximizing force. Attaching a material greatly enhances the material\'s power but doesn\'t add as much durability.&lt;/p&gt;',1,1),
   (24340,25176,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Ancient Prison Ruins&lt;/p&gt;&lt;p&gt;A decaying scimitar from the Gerudo region, it is designed for maximizing force. Attaching a material greatly enhances the material\'s power but doesn\'t add as much durability.&lt;/p&gt;',1,1),
-  (24341,25177,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Gerudo Sanctuary&lt;/p&gt;&lt;p&gt;A decaying scimitar from the Gerudo region, it is designed for maximizing force. Attaching a material greatly enhances the material\'s power but doesn\'t add as much durability.&lt;/p&gt;',1,1);
+  (24341,25177,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Gerudo Sanctuary&lt;/p&gt;&lt;p&gt;A decaying scimitar from the Gerudo region, it is designed for maximizing force. Attaching a material greatly enhances the material\'s power but doesn\'t add as much durability.&lt;/p&gt;',1,1)
+;
 /*!40000 ALTER TABLE `marker_tab` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -6716,4 +6716,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-25 13:46:11
+-- Dump completed on 2023-06-07 12:49:54

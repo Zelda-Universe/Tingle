@@ -156,9 +156,6 @@ if (!Array.prototype.filter) {
 
 
 ZMap.prototype.constructor = function(vMapOptions) {
-  toastr.options.preventDuplicates = true;
-  // toastr.options.progressBar = true;
-
   _this = this;
 
   hasUserCheck = false;
@@ -434,8 +431,8 @@ ZMap.prototype.addMarker = function(vMarker) {
       pathJSON.forEach(function(vLatLng) {
          path.push(new L.latLng(vLatLng));
       }, this);
-      
-      
+
+
       var vColor = categories[marker.categoryId].color;
       // @TODO: Current library only supports one color. Consider switch to a different lib with multiple color support (hence why color is in the array and not global)
       if (pathJSON[0].color != undefined && pathJSON[0].color != null && pathJSON[0].color != "") {
@@ -750,43 +747,56 @@ ZMap.prototype.buildMap = function() {
   // console.log("Leaflet Version: "    + L.version     );
   // console.log("Zelda Maps Version: " + _this.version );
 
+  // TOTK
+  //   let scale = 36000/256/12000;
+  //   let offsetX = 36000/256/2;
+  //   let offsetY = 30000/256/2;
 
-// TOTK
-//   let scale = 36000/256/12000;
-//   let offsetX = 36000/256/2;
-//   let offsetY = 30000/256/2;
-   
-   let ZCRS = L.extend({}, L.CRS.Simple, {
-      transformation: new L.transformation(mapOptions.scaleP, parseFloat(mapOptions.offsetX), mapOptions.scaleN, parseFloat(mapOptions.offsetY))
-   });
+  let ZCRS = L.extend({}, L.CRS.Simple, {
+    transformation: new L.transformation(
+      mapOptions.scaleP,
+      parseFloat(mapOptions.offsetX),
+      mapOptions.scaleN, parseFloat(mapOptions.offsetY)
+    )
+  });
 
-   if(maps[0]) {
-      map = L.map('map', {
-           center:             new L.LatLng(
-             mapOptions.centerY,
-             mapOptions.centerX
-           )
-         , zoom:               0
-         , zoomSnap:           mapOptions.zoomSnap
-         , zoomDelta:          mapOptions.zoomDelta
-         , zoomControl:        false
-         , crs:                ZCRS
-         , layers:             [maps[0]]
-         , maxBounds:          new L.LatLngBounds(
-           new L.LatLng(
-             mapOptions.boundTopX,
-             mapOptions.boundTopY
-           ),
-           new L.LatLng(
-             mapOptions.boundBottomX,
-             mapOptions.boundBottomY
-           )
-         )
-         , maxBoundsViscosity: 1.0
-         , contextmenu:        true
-         , contextmenuWidth:   140
-       });
+  if(maps.length == 0) {
+    zLogger.error('No maps provided to load!');
+    return 1;
   }
+
+  var mainEl = $('main')[0];
+
+  if(!mainEl) {
+    zLogger.error('No main page element to add to!');
+    return 2;
+  }
+
+  map = L.map(mainEl, {
+      center:             new L.LatLng(
+        mapOptions.centerY,
+        mapOptions.centerX
+      )
+    , zoom:               0
+    , zoomSnap:           mapOptions.zoomSnap
+    , zoomDelta:          mapOptions.zoomDelta
+    , zoomControl:        false
+    , crs:                ZCRS
+    , layers:             [maps[0]]
+    , maxBounds:          new L.LatLngBounds(
+      new L.LatLng(
+        mapOptions.boundTopX,
+        mapOptions.boundTopY
+      ),
+      new L.LatLng(
+        mapOptions.boundBottomX,
+        mapOptions.boundBottomY
+      )
+    )
+    , maxBoundsViscosity: 1.0
+    , contextmenu:        true
+    , contextmenuWidth:   140
+  });
 
   // Get all the base maps
   var baseMaps = {};
@@ -863,7 +873,7 @@ ZMap.prototype.buildMap = function() {
          _this._closeNewMarker();
          mapControl.resetContent();
       }
-	  
+
 	  _this.updateUrl();
   });
 

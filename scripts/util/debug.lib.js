@@ -4,17 +4,47 @@
 
 var callLevel = 0;
 
+var verbose = ZConfig.getConfig('verbose') == 'true';
+
 function debugPrint() {
-  if(isDebugMode) {
+  if(verbose) {
     console.debug(arguments);
   }
-};
+}
+
+function startTracing() {
+  var targetClasses = JSON.parse(ZConfig.getConfig("codetrace-targetClasses") || '[]');
+  // var targetClasses = [
+  //   L.Control.ZLayers,
+  //   L.Control.ZLayersBottom
+  // ];
+
+  var methodsToIgnore = JSON.parse(ZConfig.getConfig("codetrace-methodsToIgnore") || '{}');
+  // var methodsToIgnore = {
+  //   "L.Control.ZLayersBottom": [
+  //     "_animate",
+  //     "drawerTop"
+  //   ]
+  // };
+
+  var debugOptions = {
+    abbvFn      : true,
+    argNewLines : false,
+    stringMax   : 20,
+    ignore      : methodsToIgnore
+  };
+
+  applyFunctionTraceToObjects(
+    targetClasses,
+    debugOptions
+  );
+}
 
 function applyFunctionTraceToObjects(objectsToTrace, options) {
   objectsToTrace.forEach(function(objectToTrace) {
     inject(objectToTrace, logFnCall, options);
   });
-};
+}
 
 // TODO: Would we want to debug instance methods along with the class' prototype's methods as well?
 // If so, refactor into a function doing 2 passes, 1 for each set.
@@ -63,7 +93,7 @@ function inject(object, extraFn, options = {}) {
       })(propName);
     }
   }
-};
+}
 
 function logFnCall(before, className, fnName, options = {}, args) {
   if(options.abbvFn === undefined) options.abbvFn = true;
@@ -162,15 +192,49 @@ function logFnCall(before, className, fnName, options = {}, args) {
   if(callLevel == 0 && !before) {
     quickColorLog('%c---  %cEnd  of Monitored Execution %c---', colors.punct, colors.fn, colors.punct);
   }
-};
+}
 
 function quickColorLog() {
   console.log.apply(
     console,
     [arguments[0]].concat(
-      Array.prototype.slice.call(arguments, 1).map(function(color) {
+      Array.prototype.slice.call(arguments, 1).
+      map(function(color) {
         return "color: " + color + ";";
       })
     )
   );
-};
+}
+
+function traceEvents(events, object, callback) {
+  events.forEach((event) =>
+    L.DomEvent.on(object, event, callback)
+  );
+}
+
+function logEvent(event) {
+  return (
+    ({ type, x, y, wheelDelta, target }) => (
+      zLogger.debug(
+        JSON.stringify($.extend(
+          true,
+          { x, y, wheelDelta },
+          { dateNow: Date.now(), targetClassName: target.className }
+        ), null, 2),
+        `logEvent: ${type}`, {
+          gui: {
+            messageTx: (msg) => (
+              msg.
+              replaceAll(' ', '&nbsp;').
+              replaceAll('\n', '<br />')
+            )
+          }
+        }
+      )
+    )
+  )(event);
+}
+
+function logEvents(events, object) {
+  traceEvents.apply(this, Array.from(arguments).concat(logEvent));
+}

@@ -21,26 +21,26 @@ Number.roundDecimal   = function(value, decimals) {
 };
 
 // https://stackoverflow.com/questions/17781472/how-to-get-a-subset-of-a-javascript-objects-properties
-Object.inclusivePick  = function (...keys) {
+Object.inclusivePick  = function (hash = {}, ...keys) {
   return Object.fromEntries(
     keys.map(key => [key, hash[key]])
   );
 }
 
-Object.omit = function(hash, ...keys) {
+Object.omit = function(hash = {}, ...keys) {
   return Object.fromEntries(
     Object.entries(hash)
     .filter(([key]) => !keys.includes(key))
   );
 }
 
-Object.pop  = function(hash, propertyName, defaultValue) {
+Object.pop  = function(hash = {}, propertyName, defaultValue) {
   var value = getSetOrDefaultValue(hash[propertyName], defaultValue);
   hash[propertyName] = null;
   return value;
 };
 
-Object.pick = function(hash, ...keys) {
+Object.pick = function(hash = {}, ...keys) {
   return Object.fromEntries(
     keys
     .filter(key => key in hash)
@@ -48,8 +48,7 @@ Object.pick = function(hash, ...keys) {
   );
 }
 
-Object.try  = function(hash, pathElements) {
-  var value = hash || {};
+Object.try  = function(hash = {}, pathElements) {
   pathElements.forEach(function(pathElement) {
     if(value === undefined) return;
     if(typeof value != "object") {

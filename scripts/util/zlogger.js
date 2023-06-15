@@ -4,8 +4,12 @@
 
 function ZLogger(options) {
   $.extend(true, this, {
-    tui: ZConfig.getConfig('zLogger.tui') == 'true',
-    gui: ZConfig.getConfig('zLogger.gui') == 'true'
+    tui: {
+      enabled: ZConfig.getConfig('zLogger.tui') == 'true'
+    },
+    gui: {
+      enabled: ZConfig.getConfig('zLogger.gui') == 'true'
+    }
   }, (options || {}));
 
   this.functionMappings = {
@@ -35,8 +39,8 @@ function ZLogger(options) {
     return;
   }
 
-  ZLogger.prototype[methodName] = function(message, options) {
-    options = $.extend(
+  ZLogger.prototype[methodName] = function(message, title, options) {
+    zLogOptions = $.extend(
       true            ,
       (options || {}) ,
       (({gui, tui}) => ({gui, tui}))(this)
@@ -45,9 +49,19 @@ function ZLogger(options) {
     otherOptions = Object.omit(options, 'gui', 'tui');
 
     [
-      { enabled: options.gui, mechanism: toastr , mechanismName: 'toastr'   },
-      { enabled: options.tui, mechanism: console, mechanismName: 'console'  }
-    ].forEach(function({ enabled, mechanism, mechanismName, message }) {
+      {
+        mechanism     : toastr  ,
+        mechanismName : 'toastr',
+        type          : 'gui'
+      },
+      {
+        mechanism     : console   ,
+        mechanismName : 'console' ,
+        type          : 'tui'
+      }
+    ].forEach(function({ mechanism, mechanismName, type }) {
+      if(!zLogOptions[type].enabled) return;
+
       if(!mechanism) {
         let message = `${mechanismName} not loaded but required!`;
 
@@ -56,19 +70,28 @@ function ZLogger(options) {
 
         return;
       }
-      if(!mechanism[methodName])
+
+      while(!mechanism[methodName]) {
         methodName = this.functionMappings[mechanismName][methodName];
 
-      if(!mechanism[methodName]) {
-        let message = `${mechanismName}[${methodName}] alternative method does not exist but required!`;
+        if(!methodName) {
+          let message = `${mechanismName}[${methodName}] alternative method does not exist but required!`;
 
-        if(mechanismName == 'console' && methodName == 'error') message;
-        else console.error(message);
+          if(mechanismName == 'console' && methodName == 'error') message;
+          else console.error(message);
 
-        return;
+          return;
+        }
       }
 
-      mechanism[methodName](methodName, message);
+      mechanism[methodName]((
+          ( zLogOptions[type].messageTx)
+          ? zLogOptions[type].messageTx(message)
+          : message
+        ),
+        title,
+        otherOptions
+      );
     }, this);
   }
 });

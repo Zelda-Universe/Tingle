@@ -8,6 +8,7 @@
 // "exact", "focus" (ZU default)
 ZConfig.setDefault("categorySelectionMethod"   , "focus" );
 ZConfig.setDefault("changelog"                 , 'true'  );
+ZConfig.setDefault("changelogForce"            , 'false' );
 ZConfig.setDefault("collapsed"                 , 'false' );
 ZConfig.setDefault("codetrace-methodsToIgnore" , '{}'    );
 ZConfig.setDefault("codetrace-targetClasses"   , '[]'    );
@@ -52,11 +53,15 @@ ZConfig.setDefault("showInfoControls"          , 'false' );
 ZConfig.setDefault("tilesBaseURL"              , "https://zeldamaps.com/tiles/");
 ZConfig.setDefault("tileAxisDirectories"       , 'false' );
 ZConfig.setDefault("tileZoomDirectories"       , 'false' );
+
+// https://github.com/CodeSeven/toastr/blob/master/README.md#other-options
+// https://codeseven.github.io/toastr/demo.html
 ZConfig.setDefault('toastr', JSON.stringify({
+  extendedTimeOut : 0,
   closeButton     : true,
+  newestOnTop     : true,
   positionClass   : "toast-top-full-width",
-  timeOut         : 0   ,
-  extendedTimeOut : 0
+  timeOut         : 0
 }));
 ZConfig.setDefault("tileNameFormat"  , (
   (ZConfig.getConfig("tileAxisDirectories") == 'true')

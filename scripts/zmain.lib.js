@@ -194,15 +194,9 @@ function getUserInfo() {
 };
 
 function checkChangelog(user) {
-   var lastSeenVersion = getCookie(seenChangelogVersionCookieName);
-   if (lastSeenVersion == null || lastSeenVersion == "") {
-      lastSeenVersion = '0.0.0';
-   }
-
    new ChangelogHandler({
-    user: user,
-    seenChangelogVersion: lastSeenVersion,
-    version: zMap.version
+    user    : user,
+    version : zMap.version
   });
 
 };

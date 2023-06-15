@@ -156,9 +156,6 @@ if (!Array.prototype.filter) {
 
 
 ZMap.prototype.constructor = function(vMapOptions) {
-  toastr.options.preventDuplicates = true;
-  // toastr.options.progressBar = true;
-
   _this = this;
 
   hasUserCheck = false;

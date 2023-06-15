@@ -191,7 +191,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 
       this._contents = L.DomUtil.create('div', 'main-content bottommenu');
       L.DomEvent.disableClickPropagation(this._contents);
-      L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
+      L.DomEvent.on(this._contents, 'wheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
 
       this._categoryMenu = this.createCategoryMenu();

@@ -23,6 +23,15 @@ SearchMarkerHandler.prototype._initSettings = function(opts) {
 
   opts["markerEntryClick"] = Object.pop(opts, "markerSearchClick");
 
+  ZConfig.addHandlers(
+    [
+      'searchTarget-markers'          ,
+      'searchTargetIndexStart-markers',
+      'searchTargetIndexEnd-markers'
+    ],
+    this.createSearcher.bind(this)
+  );
+
   this.handlers = {
     markerListViewBuilt: []
   };
@@ -43,7 +52,30 @@ SearchMarkerHandler.prototype._initComponents = function(opts) {
 };
 
 SearchMarkerHandler.prototype.setMarkers = function(markers) {
-  this.searcher = new SearcherFuse({ targetSearchMaterial: markers });
+  this.markers = markers;
+
+  this.createSearcher();
+};
+
+SearchMarkerHandler.prototype.createSearcher = function() {
+  var startIndex  =  Number.parseInt(ZConfig.getConfig(
+    'searchTargetIndexStart-markers'
+  ));
+  if(!Number.isInteger(startIndex)) {
+    startIndex = 0;
+  }
+
+  var endIndex    =  Number.parseInt(ZConfig.getConfig(
+    'searchTargetIndexEnd-markers'
+  ));
+  if(!Number.isInteger(endIndex)) {
+    endIndex = markers.length - 1;
+  }
+
+  this.searcher = new SearcherFuse({
+    name: 'markers',
+    targetSearchMaterial: this.markers.slice(startIndex, endIndex)
+  });
 };
 
 SearchMarkerHandler.prototype._setupUIInteraction = function() {

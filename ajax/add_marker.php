@@ -1,46 +1,89 @@
 <?php
-   $path = __DIR__;
+  $path = __DIR__;
 
 	begin();
 
-   if (!is_numeric($_POST['categoryId'])
-         && !is_numeric($_POST['game'])
-         && !is_numeric($_POST['lat'])
-         && !is_numeric($_POST['lng'])
-         && !is_numeric($_POST['userId'])
-         && !is_numeric($_POST['submapId']) )
-   {
-		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
-		return;
-	}
+  $fieldNamesInts = [
+    'categoryId'        ,
+    'game'              ,
+    'lat'               ,
+    'lng'               ,
+    'userId'            ,
+    'submapId'
+  ];
+  $fieldNamesStrs = [
+//    'level'             ,
+    'markerTitle'       ,
+    'markerDescription' ,
+    'tabText'
+  ];
+
+  $fieldNamesAll = array_merge($fieldNamesInts, $fieldNamesStrs);
+
+  foreach ($fieldNamesAll as $fieldName) {
+    if (!isset($_POST[$fieldName])) {
+  		echo json_encode(array(
+        "success" => false,
+        "msg"     => "Need all relevant marker data!"
+      ));
+  		return;
+  	}
+  }
+
+  foreach ($fieldNamesInts as $fieldName) {
+    if (!is_numeric($_POST[$fieldName])) {
+  		echo json_encode(array(
+        "success" => false,
+        "msg"     => "Need all marker data to be properly formatted!"
+      ));
+  		return;
+  	}
+  }
 
   start_session("zmap");
-	if ($_SESSION['user_id'] != $_POST['userId']) {
-		echo json_encode(array("success"=>false, "msg"=>"Not logged!"));
+
+	if (
+        !isset($_SESSION['user_id'])
+    ||  $_SESSION['user_id'] != $_POST['userId']
+  ) {
+		echo json_encode(array(
+      "success" => false,
+      "msg"     => "Not logged!"
+    ));
 		return;
 	}
 
    // If it`s an update
-   if (isset($_POST['markerId'])) {
-      // Validate the rank of the user
-      if ($_SESSION['level'] < 5
-         || ($_SESSION['level'] < 10 && ($_SESSION['user_id'] != $_POST['userId'])) // @TODO: Improve this to get actual marker user, since he can change the POST data
+  if (isset($_POST['markerId'])) {
+    // Validate the rank of the user
+    if (
+          $_SESSION['level'] < 5
+      ||  (
+            $_SESSION['level'] < 10
+        &&  (
+          $_SESSION['user_id'] != $_POST['userId']
+        )
+      ) // @TODO: Improve this to get actual marker user, since they can change the POST data
       ) {
-         echo json_encode(array("success"=>false, "msg"=>"You can't delete this marker!"));
+         echo json_encode(array(
+           "success"  => false,
+           "msg"      => "You can't add this marker!"
+         ));
          return;
       }
-   } else {
-      // Ok, anyone can add marker :)
-   }
+  } else {
+    // Ok, anyone can add marker :)
+  }
 
-   //----------------------------------------------------------//
-   if (!isset($_POST['markerId'])) {
-   $visible = 0;
-      if ($_SESSION['level'] >= 5) {
-         $visible = 1;
-      }
 
-      $query = "insert into " . $map_prefix . "marker (
+  //----------------------------------------------------------//
+  if (!isset($_POST['markerId'])) {
+  $visible = 0;
+    if ($_SESSION['level'] >= 5) {
+      $visible = 1;
+    }
+
+    $query = "insert into " . $map_prefix . "marker (
                                           id
                                         , submap_id
                                         , marker_status_id
@@ -67,8 +110,8 @@
                                         , " . $visible . "
                                         , now()
                                   )";
-   } else {
-      $query = "update " . $map_prefix . "marker
+  } else {
+    $query = "update " . $map_prefix . "marker
                    set submap_id = ".$_POST['submapId']."
                      , marker_category_id = ".$_POST['categoryId']."
                      , name = '" . addslashes(htmlentities(stripslashes($_POST['markerTitle']), ENT_QUOTES, "UTF-8")) . "'
@@ -78,21 +121,23 @@
                      , global = " . (isset($_POST['isGlobal'])?1:0) . "
                      , last_updated = now()
                ";
-      if ($_SESSION['level'] >= 10) {
-      $query = $query . "
-                     , visible = " . (isset($_POST['isVisible'])?1:0);
-      }
+    if ($_SESSION['level'] >= 10) {
+    $query = $query . "
+                   , visible = " . (isset($_POST['isVisible'])?1:0);
+    }
 
-      $query = $query . "
-                 where id = " . $_POST['markerId'];
+    $query = $query . "
+               where id = " . $_POST['markerId'];
    }
    session_write_close();
 
 	//echo $query;
-   $result = @$mysqli->query($query); // or die(mysql_error());
-   $num = $result->num_rows;
+  //error_log($query);
+  //die();
+  $result = @$mysqli->query($query); // or die(mysql_error());
+  $num = $result->num_rows;
 
-   if ($result) {
+  if ($result) {
       if (!isset($_POST['markerId'])) {
          $marker_id = $mysqli->insert_id;
       } else {
@@ -103,7 +148,7 @@
 			$result = @$mysqli->query($query); // or die($mysqli->error());
       }
 
-    	for ($i = 0; $i < sizeof($_POST['tabText']); $i++) {
+    	for ($i = 0; $i < strlen($_POST['tabText']); $i++) {
 				if (/*!isset($_POST['tabTitle'][$i]) || */!isset($_POST['tabText'][$i])) {
 					continue;
 				} else if (/*$_POST['tabTitle'][$i] == "" || */$_POST['tabText'][$i] == "") {
@@ -144,7 +189,8 @@
 			if (!$result) {
 				break;
 			}
-    	}
+    }
+
 		if ($result) {
 			//echo json_encode(array("success"=>true, "msg"=>"Marker inserted!", "markerId"=>$marker_id));
          //@TODO: IMPROVE THIS TO GET FROM PHP FILE
@@ -152,18 +198,29 @@
          $_GET['newMarkerId'] = $marker_id;
          $_GET['game'] = $_POST['game'];
          ob_start();
-         include("$path/ajax/get_markers.php");
+         include("$path/get_markers.php");
          $output = ob_get_clean();
 
-         echo json_encode(array("success"=>true, "action"=>(!isset($_POST['markerId'])?"ADD":"UPDATE"), "marker"=>$output));
+         echo json_encode(array(
+           "success"  => true,
+           "action"   =>  (
+             !isset($_POST['markerId']) ? "ADD" : "UPDATE"
+           ),
+           "marker" =>  $output));
 		} else {
-			echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
+			echo json_encode(array(
+        "success" => false,
+        "msg"     => $mysqli->error
+      ));
 			rollback();
 		}
-    } else {
-        echo json_encode(array("success"=>false, "msg"=>$mysqli->error()));
-		rollback();
-    }
+  } else {
+      echo json_encode(array(
+        "success" => false,
+        "msg"=> $mysqli->error
+      ));
+	  rollback();
+  }
 
 
    commit();

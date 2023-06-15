@@ -1,9 +1,11 @@
+scripts/util/ZConfig.lib.js
+scripts/util/ZConfig.js
 scripts/util/zlogger.js
 scripts/util/general.js
 scripts/util/customPolyfills.js
 scripts/util/debug.lib.js
 scripts/util/debug.zmap.lib.js
-scripts/util/ZConfig.js
+scripts/util/leaflet.polylineDecorator.js
 scripts/widgets/ProgressBar.js
 scripts/widgets/Link.js
 scripts/widgets/CopyLink.js
@@ -45,4 +47,7 @@ scripts/widgets/MapsMenu.js
 scripts/widgets/CategoryButtonMap.js
 scripts/controls/infoBox/Mouse.js
 scripts/controls/infoBox/mouse/Move.js
+scripts/controls/infoBox/Coords.js
+scripts/controls/infoBox/mouse/Coords.js
 scripts/controls/infoBox/mouse/ClickHist.js
+scripts/util/leaflet.polylineDecorator.js

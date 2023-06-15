@@ -129,7 +129,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.headerBar = new HeaderBar({
       parent: form1,
       mapControl: this,
-      shrinkButton: true
+      shrinkButton: true,
+      name: mapOptions.name
     });
 
     this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
@@ -182,7 +183,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     this._contents = L.DomUtil.create('div', 'main-content ' + this.options.className + '-list');
     L.DomEvent.disableClickPropagation(this._contents);
-    L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
+    L.DomEvent.on(this._contents, 'wheel', L.DomEvent.stopPropagation);
     this._contents.id = 'menu-cat-content';
 
     this._categoryMenu = this.createCategoryMenu();
@@ -191,7 +192,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.resetContent();
 
     this._contents.style.clear = 'both';
-    this._contents.style.maxHeight = (window.innerHeight>250?window.innerHeight  - 250:250) + 'px';
+    this._contents.style.maxHeight = ZConfig.getConfig("layersHeight");
     this._contents.style.width = '360px';
 
 		container.appendChild(form1);
@@ -370,11 +371,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   _expand: function() {
     this._triggerHandler("before_expand");
     if (this._contents != undefined) {
-      this._contents.style.maxHeight = (
-        (window.innerHeight > 250)
-        ? (window.innerHeight - 250)
-        : 250
-      ) + 'px';
+      this._contents.style.maxHeight = ZConfig.getConfig("layersHeight");
     }
 
     this.options.collapsed = false;

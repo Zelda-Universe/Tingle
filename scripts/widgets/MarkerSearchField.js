@@ -13,17 +13,16 @@
 
 function MarkerSearchField(opts) {
   this._initSettings(opts);
-  this._initDOMElements();
+  this._initDOMElements(opts);
   this._setupInputListeners();
 };
 
 
-MarkerSearchField.prototype._initDOMElements = function() {
+MarkerSearchField.prototype._initDOMElements = function(opts) {
   this.domNode = $('' +
     '<div class="form-group search-box">' +
       '<div class="icon-addon addon-sm">' +
-        //@TODO: Name should be a parameter and not obtained from a global variable
-        '<input type="text" placeholder="Search ' + mapOptions.name +'" class="form-control marker-search" id="marker-search">' +
+        '<input type="text" placeholder="Search ' + opts.name +'" class="form-control marker-search" id="marker-search">' +
         '<a class="button icon-close2" href="javascript:;">×</a>' +
         '<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email">' +
         '</label>' +

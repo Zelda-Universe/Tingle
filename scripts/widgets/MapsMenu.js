@@ -53,4 +53,10 @@ MapsMenu.prototype._addMapsMenuEntry = function(categoryButton) {
 
 MapsMenu.prototype.customToggle = function() {
   this.onToggle(this.toggledOn, this.category);
+  mapControl.resetContent();
+  mapControl._mapsButton.clear();
+  if (mapControl.name.indexOf("ZLayersBottom") > -1) {
+	  mapControl.closeDrawer();
+  }
+  _this.updateUrl();
 };

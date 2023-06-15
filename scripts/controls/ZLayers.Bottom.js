@@ -3,14 +3,11 @@
 // https://choosealicense.com/licenses/mit/
 
 L.Control.ZLayersBottom = L.Control.ZLayers.extend({
-  options: {
-    position: 'topleft',
-    delay: 0,
-    //openTo: 78,
-    openTo: 150,
-    softOpenBottom: 250,
-    softOpenTo: 0 // REVERSE
-  },
+  options: $.extend(
+    true,
+    JSON.parse(ZConfig.getConfig("layersBottomHeightOptionsDefaults"  ) || '{}'),
+    JSON.parse(ZConfig.getConfig("layersBottomHeightOptionsOverrides" ) || '{}')
+  ),
   _open: false,
 
   initialize: function(baseLayers, categoryTree, options) {
@@ -194,7 +191,7 @@ L.Control.ZLayersBottom = L.Control.ZLayers.extend({
 
       this._contents = L.DomUtil.create('div', 'main-content bottommenu');
       L.DomEvent.disableClickPropagation(this._contents);
-      L.DomEvent.on(this._contents, 'mousewheel', L.DomEvent.stopPropagation);
+      L.DomEvent.on(this._contents, 'wheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
 
       this._categoryMenu = this.createCategoryMenu();

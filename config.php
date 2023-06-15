@@ -8,6 +8,8 @@
 
   // debug_log('Config START');
 
+  # Defaults should be production-ready.
+
   function load_config() {
     global $config;
     $config = parse_ini_file(CONFIGFILE);
@@ -15,6 +17,7 @@
   function get_config($key, $type = "string", $defaults = []) {
     global $config;
     if(!isset($config)) die("Error: Config not loaded; exiting...");
+    // error_log(print_r($config, 1));
 
     $typeLowered = strtolower($type);
 
@@ -28,14 +31,19 @@
       }
     }
 
+    $value = null;
+
+    // if($key == 'minify') error_log("isset($config[$key]): ".isset($config[$key]));
     if(isset($config[$key])) {
       $value = $config[$key];
-    }
-
-    if (empty($value)) {
-      for ($i = 0, $size = count($defaults); $i < $size; $i++) {
-        $value = $defaults[$i];
+      // if($key == 'minify') error_log("value: {$value}");
+    } else {
+      if (empty($value)) {
+        for ($i = 0, $size = count($defaults); $i < $size; $i++) {
+          $value = $defaults[$i];
+        }
       }
+      // if($key == 'minify') error_log("value: {$value}");
     }
 
     if(strtolower($type) === "boolean") {
@@ -47,8 +55,8 @@
     return $value;
   }
 
-  define("MAPROOT", __DIR__);
-  define("CONFIGFILE", MAPROOT."/.env");
+  define("MAPROOT"    , __DIR__         );
+  define("CONFIGFILE" , MAPROOT."/.env" );
 
   !file_exists(CONFIGFILE) and die('Project `.env` file not found and must be provided.');
 
@@ -78,8 +86,6 @@
     $dbport       = get_config("DBPORT"     , 'int'                   );
     $dbsocket     = get_config("DBSOCKET"   , 'string'                );
     $map_prefix   = get_config("PREFIX"     , 'string'                );
-    $minify       = get_config("minify"     , 'boolean', ['true'  ]   );
-    $enableTests  = get_config("enableTests", 'boolean', ['false' ]   );
 
     // debug_log('dbms: '.$dbms);
     // debug_log('dbhost: '.$dbhost);
@@ -89,9 +95,13 @@
     // debug_log('dbport: '.$dbport);
     // debug_log('dbsocket: '.$dbsocket);
     // debug_log('map_prefix: '.$map_prefix);
-    // debug_log('minify: '.$minify);
-    // debug_log('enableTests: '.$enableTests);
   }
+
+  # System features
+  $minify       = get_config("minify"     , 'boolean', ['true'  ]);
+  $enableTests  = get_config("enableTests", 'boolean', ['false' ]);
+  // debug_log('minify: '.$minify); # Boolean values are misleading to print simply still..
+  // debug_log('enableTests: '.$enableTests);
 
   # User features
 
@@ -115,7 +125,7 @@
   # Mail
   {
     # Config Loading
-    $mailEnabled        = get_config('mailEnabled'    );
+    $mailEnabled        = get_config('mailEnabled', 'boolean', false);
     $mailServer         = get_config('server'         );
     $mailPort           = get_config('port'           );
     $mailUsername       = get_config('username'       );

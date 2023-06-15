@@ -60,6 +60,89 @@ function getCookie(cname) {
     return "";
 }
 
+
+
+function zMapInit(vResults) {
+  // Should only get only one map
+
+  // if (vResults.success === false) { # Bad condition, or overlap???? false without msg???????? no success, or no vR at alll, must not be empty cont list success, no db conn at least perm/constr has msg, so what else.....
+  //   zLogger.error('Container response provided!');
+  //   return 1;
+  // }
+  if (vResults.success === false) {
+    zLogger.error(vResults.msg);
+    return 2;
+  }
+
+  if (vResults.length == 0 || !vResults.every((vC)=>vC)) {
+    zLogger.error('No containers provided to load!');
+    return 3;
+  }
+
+  $.each(vResults, function(i, vContainer) {
+    vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
+    vContainer.collapsed                  = getUrlParamValue('collapsed', L.Browser.mobile);
+    vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
+    if (getCookie('isCategoryOpen') == '') {
+       setCookie('isCategoryOpen',"true");
+    }
+    vContainer.showCategoryControlOpened  = getUrlParamValue('showCategoryControlOpened', getCookie('isCategoryOpen')=="true");//vContainer.showCategoryControl);
+    vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
+
+    vContainer.zoom                       = getUrlParamValue('zoom', vContainer.defaultZoom);
+    vContainer.zoomSnap                   = parseFloat(getUrlParamValue('zoomSnap', 1)); /*@TODO: Check if there is a zoomSnap parameter. If not, use the one we got from the DB*/
+    vContainer.zoomDelta                  = parseFloat(getUrlParamValue('zoomDelta', 1)); /*@TODO: Check if there is a zoomDelta parameter. If not, use the one we got from the DB*/
+    if (vContainer.zoom > vContainer.maxZoom) {
+       vContainer.zoom = vContainer.maxZoom;
+    }
+    vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
+    vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
+    vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
+    vContainer.showInfoControls           = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
+
+    /* startArea entered as a csv to display/fit an area of the map on load */
+  // @TODO: Validate this logic. It was breaking mobile + bad hardcode
+    //vContainer.startArea                  = getUrlParamValue('startArea', "-168,102,-148,122");
+
+    if (vContainer.startArea) {
+      vContainer.startArea = parseBounds(vContainer.startArea);
+    }
+
+    vContainer.help                       = getUrlParamValue('help', true);
+
+    var showCompleted = getCookie('showCompleted');
+    if (showCompleted == '') {
+       setCookie('showCompleted',"true");
+       vContainer.showCompleted = true;
+    } else {
+       vContainer.showCompleted = (showCompleted == 'true');
+    }
+
+    zMap.constructor(vContainer);
+
+    gameId = vContainer.id;
+
+    getMapCategories();
+
+    if (vContainer.showCategoryControl) {
+       getMapCategoriesTree();
+    }
+
+
+    var completedMarkers = getCookie('completedMarkers');
+    if (completedMarkers != undefined && completedMarkers != null && completedMarkers != "") {
+       zMap.addCompletedMarkers(JSON.parse(completedMarkers));
+    }
+
+    getGames();
+    getMaps();
+
+    $("#map").css("background-color", vContainer.bgColor);
+    $("body").css("background-color", vContainer.bgColor);
+    $("html").css("background-color", vContainer.bgColor);
+ });
+}
+
 function getMapCategories() {
 
    $.getJSON("ajax.php?command=get_categories&game=" + gameId, function(vResults){
@@ -81,7 +164,7 @@ function getMapCategoriesTree() {
 function getGames() {
    $.getJSON("ajax.php?command=get_games", function(vResults) {
       if (vResults.success === false || vResults.length === 0) {
-        notifyFatal('No games provided to switch between!');
+        zLogger.error('No games provided to switch between!');
         return 4;
       }
 
@@ -111,15 +194,9 @@ function getUserInfo() {
 };
 
 function checkChangelog(user) {
-   var lastSeenVersion = getCookie(seenChangelogVersionCookieName);
-   if (lastSeenVersion == null || lastSeenVersion == "") {
-      lastSeenVersion = '0.0.0';
-   }
-
    new ChangelogHandler({
-    user: user,
-    seenChangelogVersion: lastSeenVersion,
-    version: zMap.version
+    user    : user,
+    version : zMap.version
   });
 
 };
@@ -143,7 +220,7 @@ function showLoginControls() {
 function getMarkers() {
   $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults) {
     if (vResults.success === false || vResults.length == 0) {
-      notifyFatal('No markers provided to show!');
+      zLogger.error('No markers provided to show!');
       return 5;
     }
     zMap.buildMap();
@@ -191,7 +268,7 @@ function globalKeyPressHandler(e) {
 
 function parseBounds(input) {
   function error() {
-    zlogger.error("Map parameter is invalid: \"" + input + "\".  Ignoring, and continuing to load the map with the default view.");
+    zLogger.error("Map parameter is invalid: \"" + input + "\".  Ignoring, and continuing to load the map with the default view.");
     return false;
   };
 
@@ -237,14 +314,4 @@ function updateAdState() {
   if(mobileAds) $(mobileAds).toggleClass("hidden", (!mapControl.isMobile() || authenticated));
   var desktopAds = document.getElementById("desktopAds");
   if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
-};
-
-function notifyFatal(message) {
-  zlogger.error(
-    message, {
-    closeButton: true,
-    positionClass: "toast-top-full-width",
-    timeOut: 0,
-    extendedTimeOut: 0
-  });
 };

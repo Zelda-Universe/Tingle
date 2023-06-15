@@ -11,30 +11,39 @@
 var seenChangelogVersionCookieName = "seenChangelogVersion";
 
 function ChangelogHandler(opts) {
-  this._initSettings();
   this._fetchChangelogEntries(opts);
 };
 
-ChangelogHandler.prototype._initSettings = function() {
-  this.notificationWidth = (
-    (mapControl.isMobile())
-    ? (window.innerWidth-24)
-    : "450"
-  ) + "px";
-};
-
 ChangelogHandler.prototype._fetchChangelogEntries = function(opts) {
-   if (opts.user) {
-      if (opts.user.seen_version < opts.version) {
-         this._fetchChangelogEntriesByUser(opts.user);
-      }
-   } else if (opts.seenChangelogVersion && opts.seenChangelogVersion < opts.version) {
-      this._fetchChangelogEntriesByCookie(opts.seenChangelogVersion, opts.version);
-   } else {
-      setCookie(seenChangelogVersionCookieName, opts.version);
-   }
+  // Forced mode
+  if (ZConfig.getConfig("changelogForce") == 'true') {
+    this._fetchChangelogEntriesByVersion(
+      '0.0.0',
+      opts.version
+    );
 
-   if(this.fetchFunction) this.fetchFunction();
+    return;
+  }
+
+  // User mode
+  if (opts.user) {
+    if (opts.user.seen_version < opts.version) {
+      this._fetchChangelogEntriesByUser(opts.user);
+    }
+    return;
+  }
+
+  // Local mode
+  let lastSeenVersion = (
+    getCookie(seenChangelogVersionCookieName) || '0.0.0'
+  );
+
+  if (lastSeenVersion < opts.version) {
+    this._fetchChangelogEntriesByVersion(
+      opts.seenChangelogVersion,
+      opts.version
+    );
+  }
 };
 
 ChangelogHandler.prototype._fetchChangelogEntriesByUser = function(user) {
@@ -44,7 +53,7 @@ ChangelogHandler.prototype._fetchChangelogEntriesByUser = function(user) {
   }.bind(this));
 };
 
-ChangelogHandler.prototype._fetchChangelogEntriesByCookie = function(seenChangelogVersion, version) {
+ChangelogHandler.prototype._fetchChangelogEntriesByVersion = function(seenChangelogVersion, version) {
   $.getJSON("ajax.php?command=get_changelog&sinceVersion=" + seenChangelogVersion, function(entries) {
     this._notifyChangelogVersionUpdates(entries, null);
     setCookie(seenChangelogVersionCookieName, version);
@@ -78,19 +87,12 @@ ChangelogHandler.prototype._notifyChangelogVersionUpdate = function(version, ver
          })
   };
 
-  return zlogger.info(
+  return zLogger.info(
     '<ul>' +
       versionEntry.join('') +
     '</ul>',
-    "Zelda Maps Update - Version " + version, {
-    closeButton: true,
-    positionClass: "toast-top-full-width",
-    timeOut: 0,
-    extendedTimeOut: 0,
-    newestOnTop: false
-  })
-  .css(this.notificationWidth);
-  // Width-setting from the old code, in case we decide to not use the full top placement.
+    "Zelda Maps Update - Version " + version
+  )
 };
 
 ChangelogHandler.prototype._notifyChangelogVersionUpdates = function(entries, user) {

@@ -6,12 +6,12 @@
 
 	if (!isset($_SESSION['user_id']) || !isset($_SESSION['username']) || !isset($_SESSION['level'])) {
 		session_destroy();
-		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
+		echo json_encode(array("success"=>false, "msg"=>"Session - Not Logged!"));
 		return;
 	};
 
    if (!isset($_COOKIE['user_id']) || !isset($_COOKIE['username'])) {
-		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
+		echo json_encode(array("success"=>false, "msg"=>"Cookie - Not Logged!"));
 		return;
    }
 
@@ -24,7 +24,7 @@
               `version_minor`, '.',
               `version_patch`
             ) AS `version`
-            FROM tingle.changelog
+            FROM changelog
             ORDER BY
               `version_major` DESC,
               `version_minor` DESC,

@@ -156,9 +156,6 @@ if (!Array.prototype.filter) {
 
 
 ZMap.prototype.constructor = function(vMapOptions) {
-  toastr.options.preventDuplicates = true;
-  // toastr.options.progressBar = true;
-
   _this = this;
 
   hasUserCheck = false;
@@ -295,20 +292,20 @@ ZMap.prototype.addMap = function(vMap) {
 
     maps.push(tLayer);
   } else {
-    // Create the base map
-    //  We create it as an empty map, so different sized overlay maps won't show on top
-    //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
-    /* TODO: Improve this to use no tile at all (remove tile border)*/
-    var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
-                                         , { maxZoom:           vMap.maxZoom
-                                           , noWrap:            true
-                                           , tileSize:          mapOptions.tileSize
-                                           , updateWhenIdle:    true
-                                           , updateWhenZooming: false
-                                           , label:             vMap.name
-                                           , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
-                                           }
-    );
+      // Create the base map
+      //  We create it as an empty map, so different sized overlay maps won't show on top
+      //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
+      /* TODO: Improve this to use no tile at all (remove tile border)*/
+      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
+                                           , { maxZoom:           vMap.maxZoom
+                                             , noWrap:            true
+                                             , tileSize:          mapOptions.tileSize
+                                             , updateWhenIdle:    true
+                                             , updateWhenZooming: false
+                                             , label:             vMap.name
+                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
+                                             }
+      );
 
     tLayer.id          = 'mID' + vMap.id;
     tLayer.originalId  = vMap.id;
@@ -402,8 +399,8 @@ ZMap.prototype.addMarker = function(vMarker) {
                                                    , icon: _this._createMarkerIcon(vMarker.markerCategoryId)
                                                    });
    } else {
-	   marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
-	   marker.bindTooltip(vMarker.name, {permanent: true, className: mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
+      marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
+      marker.bindTooltip(vMarker.name, {permanent: true, className: mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
    }
 
    marker.id              = vMarker.id;
@@ -427,14 +424,27 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    marker.complete        = false;
-	if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
-		
-		path = [];
-		JSON.parse(vMarker.path).forEach(function(vLatLng) {
-			path.push(new L.latLng(vLatLng));
-		  }, this);
-		marker.path = L.polyline(path, {color: categories[marker.categoryId].color});
-	}
+   if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
+
+      path = [];
+      var pathJSON = JSON.parse(vMarker.path);
+      pathJSON.forEach(function(vLatLng) {
+         path.push(new L.latLng(vLatLng));
+      }, this);
+
+
+      var vColor = categories[marker.categoryId].color;
+      // @TODO: Current library only supports one color. Consider switch to a different lib with multiple color support (hence why color is in the array and not global)
+      if (pathJSON[0].color != undefined && pathJSON[0].color != null && pathJSON[0].color != "") {
+         vColor = pathJSON[0].color;
+      }
+      marker.path = L.polyline(path, {smoothFactor: 1, color: vColor});
+      marker.pathDecorator = L.polylineDecorator(path, {
+         patterns: [
+            {offset: 15, repeat: 50, symbol: L.Symbol.arrowHead({pixelSize: 15, pathOptions: {fillOpacity: 1, weight: 0, color: vColor}})}
+         ]
+      });
+   }
 
    categories[marker.categoryId].total++;
    for (var i = 0; i < completedMarkers.length; i++) {
@@ -648,28 +658,31 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
      )
    {
      map.removeLayer(marker);
-	 if (marker.path != undefined && marker.path != null && marker.path != "") {
-		map.removeLayer(marker.path);
-	 }
+    if (marker.path != undefined && marker.path != null && marker.path != "") {
+      map.removeLayer(marker.path);
+      map.removeLayer(marker.pathDecorator);
+    }
      return;
   }
   if(this._shouldShowMarker(marker)) {
     marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
     map.addLayer(marker);
-	if (marker.path != undefined && marker.path != null && marker.path != "") {
-		marker.path.addTo(map);
-	}
+   if (marker.path != undefined && marker.path != null && marker.path != "") {
+      marker.path.addTo(map);
+      marker.pathDecorator.addTo(map);
+   }
   } else {
     map.removeLayer(marker);
-	if (marker.path != undefined && marker.path != null && marker.path != "") {
-		map.removeLayer(marker.path);
-	}
+   if (marker.path != undefined && marker.path != null && marker.path != "") {
+      map.removeLayer(marker.path);
+      map.removeLayer(marker.pathDecorator);
+   }
   }
 };
 
 ZMap.prototype._shouldShowMarker = function(marker) {
 
-	if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
+   if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
   return marker.visible
     && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
     && (
@@ -688,35 +701,35 @@ ZMap.prototype._shouldShowMarker = function(marker) {
     ) // Should we show completed markers?
 
   ;
-	} else if (marker.categoryTypeId == 3) {
-	  return marker.visible
-	   // @TODO: HARDCODE for TotK Release, need better handling
-		&& mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
-		&& (
-		  (
-			mapOptions.categorySelectionMethod == "focus"
-			&& categories[marker.categoryId].visibleZoom <= map.getZoom()
-			&& (
+   } else if (marker.categoryTypeId == 3) {
+     return marker.visible
+      // @TODO: HARDCODE for TotK Release, need better handling
+      && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
+      && (
+        (
+         mapOptions.categorySelectionMethod == "focus"
+         && categories[marker.categoryId].visibleZoom <= map.getZoom()
+         && (
 
-				   (
-					(marker.categoryId == 2163 && map.getZoom() <= 3)
-					|| (marker.categoryId == 2164 && map.getZoom() > 3 && map.getZoom() <= 5)
-					|| (marker.categoryId == 2165 && map.getZoom() > 5 && map.getZoom() <= 6)
-					|| (marker.categoryId == 2166 && map.getZoom() > 6 && map.getZoom() <= 8)
-				   )
-			   )
-		  )
-//		  || categories[marker.categoryId].userChecked
-		) // Check if we should show for the category, and at this zoom level
-		&& (
-		  mapOptions.showCompleted == true || (
-			mapOptions.showCompleted == false
-			&& marker.complete != true
-		  )
-		) // Should we show completed markers?
+               (
+               (marker.categoryId == 2163 && map.getZoom() <= 3)
+               || (marker.categoryId == 2164 && map.getZoom() > 3 && map.getZoom() <= 5)
+               || (marker.categoryId == 2165 && map.getZoom() > 5 && map.getZoom() <= 6)
+               || (marker.categoryId == 2166 && map.getZoom() > 6 && map.getZoom() <= 8)
+               )
+            )
+        )
+//      || categories[marker.categoryId].userChecked
+      ) // Check if we should show for the category, and at this zoom level
+      && (
+        mapOptions.showCompleted == true || (
+         mapOptions.showCompleted == false
+         && marker.complete != true
+        )
+      ) // Should we show completed markers?
 
-	  ;
-	}
+     ;
+   }
 }
 
 ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
@@ -734,40 +747,56 @@ ZMap.prototype.buildMap = function() {
   // console.log("Leaflet Version: "    + L.version     );
   // console.log("Zelda Maps Version: " + _this.version );
 
-  if (!L.CRS.Simple) {
-    L.CRS.Simple = L.Util.extend({}, L.CRS, {
-        projection:     L.Projection.LonLat
-      , transformation: new L.Transformation(1,0,1,0)
-    });
+  // TOTK
+  //   let scale = 36000/256/12000;
+  //   let offsetX = 36000/256/2;
+  //   let offsetY = 30000/256/2;
+
+  let ZCRS = L.extend({}, L.CRS.Simple, {
+    transformation: new L.transformation(
+      mapOptions.scaleP,
+      parseFloat(mapOptions.offsetX),
+      mapOptions.scaleN, parseFloat(mapOptions.offsetY)
+    )
+  });
+
+  if(maps.length == 0) {
+    zLogger.error('No maps provided to load!');
+    return 1;
   }
 
-  if(maps[0]) {
-    map = L.map('map', {
-        center:             new L.LatLng(
-          mapOptions.centerY,
-          mapOptions.centerX
-        )
-      , zoom:               0
-      , zoomSnap:           mapOptions.zoomSnap
-      , zoomDelta:          mapOptions.zoomDelta
-      , zoomControl:        false
-      , crs:                L.CRS.Simple
-      , layers:             [maps[0]]
-      , maxBounds:          new L.LatLngBounds(
-        new L.LatLng(
-          mapOptions.boundTopX,
-          mapOptions.boundTopY
-        ),
-        new L.LatLng(
-          mapOptions.boundBottomX,
-          mapOptions.boundBottomY
-        )
-      )
-      , maxBoundsViscosity: 1.0
-      , contextmenu:        true
-      , contextmenuWidth:   140
-    });
+  var mainEl = $('main')[0];
+
+  if(!mainEl) {
+    zLogger.error('No main page element to add to!');
+    return 2;
   }
+
+  map = L.map(mainEl, {
+      center:             new L.LatLng(
+        mapOptions.centerY,
+        mapOptions.centerX
+      )
+    , zoom:               0
+    , zoomSnap:           mapOptions.zoomSnap
+    , zoomDelta:          mapOptions.zoomDelta
+    , zoomControl:        false
+    , crs:                ZCRS
+    , layers:             [maps[0]]
+    , maxBounds:          new L.LatLngBounds(
+      new L.LatLng(
+        mapOptions.boundTopX,
+        mapOptions.boundTopY
+      ),
+      new L.LatLng(
+        mapOptions.boundBottomX,
+        mapOptions.boundBottomY
+      )
+    )
+    , maxBoundsViscosity: 1.0
+    , contextmenu:        true
+    , contextmenuWidth:   140
+  });
 
   // Get all the base maps
   var baseMaps = {};
@@ -778,7 +807,7 @@ ZMap.prototype.buildMap = function() {
   var mapControlOptions = $.extend(
     mapOptions, {
     "zIndex": 0,
-    "collapsed": ZConfig.getConfig("collapsed")
+    "collapsed": ZConfig.getConfig("collapsed") == 'true'
   });
 
   if (L.Browser.mobile && window.innerWidth < 768) {
@@ -798,6 +827,8 @@ ZMap.prototype.buildMap = function() {
       mapControlOptions
     );
     L.control.zoom({ position: 'bottomright' }).addTo(map);
+    L.control.infoBox.coords.move({ position: 'bottomright' }).addTo(map);
+
     if (
           mapOptions.showInfoControls
       ||  ZConfig.getConfig("showInfoControls") == 'true'
@@ -809,6 +840,7 @@ ZMap.prototype.buildMap = function() {
       L.control.infoBox.location.center (posBL).addTo(map);
       L.control.infoBox.location.bounds (posBL).addTo(map);
     }
+
   }
 
   //@TODO: REDO!
@@ -841,6 +873,8 @@ ZMap.prototype.buildMap = function() {
          _this._closeNewMarker();
          mapControl.resetContent();
       }
+
+	  _this.updateUrl();
   });
 
   map.on('zoomend', function() {
@@ -1248,10 +1282,10 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
    $("#newMarkerForm").submit(function(e) {
       $.ajax({
               type: "POST",
-              url: "ajax/add_marker.php",
+              url: "ajax.php?command=add_marker",
               data: $("#newMarkerForm").serialize(), // serializes the form's elements.
               success: function(data) {
-                  data = jQuery.parseJSON(data);
+                  //data = jQuery.parseJSON(data);
                   if (data.success) {
                      if (user.level < 5) {
                         tinymce.remove();
@@ -1831,7 +1865,7 @@ ZMap.prototype._createLoginForm = function() {
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
                                     '<span class="input-group-addon"><i class="fa-user fa" aria-hidden="true"></i></span>'+
-                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Username"/>'+
+                                    '<input type="text" class="form-control" name="user" id="user" required="" placeholder="Username or email"/>'+
                                  '</div>'+
                               '</div>'+
                            '</div>'+
@@ -1875,7 +1909,13 @@ ZMap.prototype._createLoginForm = function() {
                _this.setUser(data.user);
                updateAdState();
                toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
+            if (mapControl.isMobile()) {
+               mapControl.closeDrawer();
+            } else {
                mapControl.resetContent();
+            }
+
+
             } else {
                console.log(data.msg);
                toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));
@@ -1994,7 +2034,7 @@ ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin = true, vPanTo = fa
     if (notByInput === true) {
       mapControl.changeMapToMarker(marker);
     } else {
-      mapControl.changeMap(marker.mapId, marker.submapId);
+      mapControl.changeMapToMarker(marker);
     }
 
      marker.visible = true;
@@ -2040,3 +2080,14 @@ ZMap.prototype.getMarkers = function() {
 //*************                    END - GO TO                   *************//
 //*************                                                  *************//
 //****************************************************************************//
+
+
+ZMap.prototype.updateUrl = function() {
+   var url = new URL(window.location.toString());
+   url.searchParams.set("map", mapControl.getCurrentMap().mapId);
+   url.searchParams.set("submap", mapControl.getCurrentMap().subMapId);
+   url.searchParams.set("zoom", map.getZoom());
+   url.searchParams.set("x", Math.floor(map.getCenter().lng));
+   url.searchParams.set("y", Math.floor(map.getCenter().lat));
+   history.pushState({}, "", url);
+}

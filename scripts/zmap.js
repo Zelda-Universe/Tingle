@@ -797,6 +797,7 @@ ZMap.prototype.buildMap = function() {
     , contextmenu:        true
     , contextmenuWidth:   140
   });
+  this.map = map;
 
   // Get all the base maps
   var baseMaps = {};

@@ -434,8 +434,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 					}
 				}
 
-        this.currentMap = mapId;
-        this.currentSubMap = subMapId;
+        this.setCurrentMap(mapId, subMapId);
 
 				return;
 			}
@@ -453,17 +452,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.currentMapLayer.bringToBack();
       map.fire("baselayerchange", this.currentMapLayer);
 
-      this.currentMap = mapId;
-      this.currentSubMap = subMapId;
+      this.setCurrentMap(mapId, subMapId);
     }
   },
   changeMapToMarker: function(marker) {
     this.changeMapOnly(marker.mapId, marker.submapId);
   },
 
-   isMobile: function() {
-      return false;
-   },
+  isMobile: function() {
+    return false;
+  },
 
   toggleContent: function(targetContentType, setContentFunction) {
     if(this._contentType == targetContentType) {

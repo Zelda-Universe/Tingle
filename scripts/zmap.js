@@ -743,7 +743,7 @@ ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
    // });
 }
 
-ZMap.prototype.buildMap = function() {
+ZMap.prototype.buildMap = function(gameId) {
   // console.log("Leaflet Version: "    + L.version     );
   // console.log("Zelda Maps Version: " + _this.version );
 
@@ -756,7 +756,8 @@ ZMap.prototype.buildMap = function() {
     transformation: new L.transformation(
       mapOptions.scaleP,
       parseFloat(mapOptions.offsetX),
-      mapOptions.scaleN, parseFloat(mapOptions.offsetY)
+      mapOptions.scaleN,
+      parseFloat(mapOptions.offsetY)
     )
   });
 
@@ -772,31 +773,62 @@ ZMap.prototype.buildMap = function() {
     return 2;
   }
 
-  map = L.map(mainEl, {
-      center:             new L.LatLng(
-        mapOptions.centerY,
-        mapOptions.centerX
-      )
-    , zoom:               0
-    , zoomSnap:           mapOptions.zoomSnap
-    , zoomDelta:          mapOptions.zoomDelta
-    , zoomControl:        false
-    , crs:                ZCRS
-    , layers:             [maps[0]]
-    , maxBounds:          new L.LatLngBounds(
-      new L.LatLng(
-        mapOptions.boundTopX,
-        mapOptions.boundTopY
+  $.extend(
+    true      ,
+    mapOptions,
+    {
+      crs:          ZCRS,
+      contextmenu:  ZConfig.getConfig('contextmenu' ) == 'false',
+      contextmenuWidth: Number.parseInt(
+        ZConfig.getConfig('contextmenuWidth')
       ),
-      new L.LatLng(
-        mapOptions.boundBottomX,
-        mapOptions.boundBottomY
-      )
+      layers:       [maps[0]],
+      maxBoundsViscosity: Number.parseFloat(
+        ZConfig.getConfig('maxBoundsViscosity')
+      ),
+      zoom:         Number.parseInt(
+            ZConfig.getConfig('zoom')
+        ||  ZConfig.getConfig(`zoom-${gameId}`)
+      ),
+      zoomControl:  ZConfig.getConfig('zoomControl' ) == 'true',
+      zoomDelta:    Number.parseInt(ZConfig.getConfig('zoomDelta' )),
+      zoomSnap:     Number.parseInt(ZConfig.getConfig('zoomSnap'  ))
+    }
+  );
+  mapOptions.center = new L.LatLng((
+          ZConfig.getConfig('centerY')
+      ||  ZConfig.getConfig('y')
+      ||  ZConfig.getConfig(`centerY-${gameId}`)
+      ||  ZConfig.getConfig(`y-${gameId}`)
+      ||  mapOptions.centerY
+    ), (
+          ZConfig.getConfig('centerX')
+      ||  ZConfig.getConfig('x')
+      ||  ZConfig.getConfig(`centerX-${gameId}`)
+      ||  ZConfig.getConfig(`x-${gameId}`)
+      ||  mapOptions.centerX
     )
-    , maxBoundsViscosity: 1.0
-    , contextmenu:        true
-    , contextmenuWidth:   140
-  });
+  );
+  mapOptions.maxBounds = new L.LatLngBounds(
+    new L.LatLng(
+          ZConfig.getConfig('boundTopX')
+      ||  ZConfig.getConfig(`boundTopX-${gameId}`)
+      ||  mapOptions.boundTopX,
+          ZConfig.getConfig('boundTopY')
+      ||  ZConfig.getConfig(`boundTopY-${gameId}`)
+      ||  mapOptions.boundTopY
+    ),
+    new L.LatLng(
+          ZConfig.getConfig('boundBottomX')
+      ||  ZConfig.getConfig(`boundBottomX-${gameId}`)
+      ||  mapOptions.boundBottomX,
+          ZConfig.getConfig('boundBottomY')
+      ||  ZConfig.getConfig(`boundBottomY-${gameId}`)
+      ||  mapOptions.boundBottomY
+    )
+  );
+
+  map = L.map(mainEl, mapOptions);
   this.map = map;
 
   // Get all the base maps
@@ -932,6 +964,9 @@ ZMap.prototype.buildMap = function() {
       } else {
         mapControl.toggle();
       }
+    } else if(e.ctrlKey && e.key == "U") {
+      _this.updateUrl();
+      zLogger.info('Manually updated URL!');
     }
   }.bind(mapControl));
 
@@ -2008,23 +2043,29 @@ ZMap.prototype._createAccountForm = function(user) {
  * @param vGoTo.marker          - Marker to be opened (Takes precedence over subMap and Layer)
  **/
 ZMap.prototype.goTo = function(vGoTo, notByInput) {
-   if (vGoTo.hideOthers) {
+   if (vGoTo.hideOthers || ZConfig.getConfig('hideOthers') == 'true') {
       for (var i = 0; i < markers.length; i++) {
          markers[i].visible = false;
       }
       _this.refreshMap();
    }
 
-   if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true, notByInput);
-      // Open Marker already does a change map, so it takes precedence
+  if (vGoTo.marker) {
+    _this._openMarker(
+      vGoTo.marker,
+      vGoTo.zoom,
+      !vGoTo.hidePin,
+      true,
+      notByInput
+    );
+    // Open Marker already does a change map, so it takes precedence
 
-      return;
-   }
+    return;
+  }
 
-   if (vGoTo.map || (vGoTo.map && vGoTo.subMap)) {
-      mapControl.changeMap(vGoTo.map, vGoTo.subMap);
-   }
+  if (vGoTo.map || (vGoTo.map && vGoTo.subMap)) {
+    mapControl.changeMap(vGoTo.map, vGoTo.subMap);
+  }
 }
 
 /**
@@ -2032,7 +2073,13 @@ ZMap.prototype.goTo = function(vGoTo, notByInput) {
  *
  * @param vMarkerID             - Marker ID to be opened
  **/
-ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin = true, vPanTo = false, notByInput) {
+ZMap.prototype._openMarker = function(
+  vMarkerId,
+  vZoom,
+  vPin = ZConfig.getConfig('hidePin') == 'true',
+  vPanTo = false,
+  notByInput
+) {
   var marker = this.cachedMarkersById[vMarkerId];
   if (marker) {
     if (notByInput === true) {

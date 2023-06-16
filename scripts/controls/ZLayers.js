@@ -412,8 +412,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
 		inputs = this._form.getElementsByTagName('input'),
 		inputsLen = inputs.length;
 
-      for (i = 0; i < inputsLen; i++) {
+    for (i = 0; i < inputsLen; i++) {
 			input = inputs[i];
+
 			if ('mID' + mapId == input.mapId) {
 				if (!input.checked) {
 					input.checked = true;
@@ -433,8 +434,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
 					}
 				}
 
-            this.currentMap = mapId;
-            this.currentSubMap = subMapId;
+        this.currentMap = mapId;
+        this.currentSubMap = subMapId;
+
 				return;
 			}
 		}

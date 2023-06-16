@@ -10,8 +10,14 @@ function MapsMenu(opts) {
 MapsMenu.prototype._initSettings = function(opts) {
   this.defaultToggledState = getSetOrDefaultValue(opts.defaultToggledState, false);
 
-  this.categorySelectionMethod = getSetOrDefaultValue(opts.categorySelectionMethod, ZConfig.getConfig("categorySelectionMethod"));
-  this.automaticToggle = getSetOrDefaultValue(opts.automaticToggle, !(this.categorySelectionMethod == "focus"));
+  this.categorySelectionMethod = getSetOrDefaultValue(
+    opts.categorySelectionMethod,
+    ZConfig.getConfig("categorySelectionMethod")
+  );
+  this.automaticToggle = getSetOrDefaultValue(
+    opts.automaticToggle,
+    !(this.categorySelectionMethod == "focus")
+  );
   this._categoryTree = opts.categoryTree;
 };
 
@@ -58,5 +64,9 @@ MapsMenu.prototype.customToggle = function() {
   if (mapControl.name.indexOf("ZLayersBottom") > -1) {
 	  mapControl.closeDrawer();
   }
-  _this.updateUrl();
+
+  if(
+        ZConfig.getConfig('autoUpdateUrl'         ) != 'false'
+    &&  ZConfig.getConfig('autoUpdateUrlMapsMenu' ) != 'false'
+  ) _this.updateUrl();
 };

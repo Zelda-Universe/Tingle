@@ -5,6 +5,9 @@
 // Main config set-up with defaults
 
 // Direct Settings
+ZConfig.setDefault('autoUpdateUrl'            , 'false' );
+ZConfig.setDefault('autoUpdateUrlMapsMenu'    , 'false' );
+ZConfig.setDefault('autoUpdateUrlMove'        , 'false' );
 // "exact", "focus" (ZU default)
 ZConfig.setDefault("categorySelectionMethod"   , "focus" );
 ZConfig.setDefault("changelog"                 , 'true'  );

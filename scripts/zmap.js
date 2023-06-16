@@ -875,7 +875,10 @@ ZMap.prototype.buildMap = function() {
          mapControl.resetContent();
       }
 
-	  _this.updateUrl();
+    if(
+          ZConfig.getConfig('autoUpdateUrl'     ) != 'false'
+      &&  ZConfig.getConfig('autoUpdateUrlMove' ) != 'false'
+    ) _this.updateUrl();
   });
 
   map.on('zoomend', function() {

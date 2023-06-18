@@ -161,31 +161,23 @@
 
   # Cache / temporary control
   {
-    $cacheFolderRootPath = get_config(
-      'cacheFolderRootPath',
+    $cacheFolder = get_config(
+      'cacheFolder',
       'string',
       [
         sys_get_temp_dir(),
         __DIR__.'/tmp'
       ]
     );
-    $cacheFolder  = $cacheFolderRootPath."/Tingle"    ;
 
-    $cFRPExists   = file_exists($cacheFolderRootPath) ;
     $cFExists     = file_exists($cacheFolder)         ;
 
-    // debug_log("cacheFolderRootPath : $cacheFolderRootPath");
     // debug_log("cacheFolder         : $cacheFolder")        ;
-    // debug_log("cFRPExists          : $cFRPExists")         ;
     // debug_log("cFExists            : $cFExists")           ;
 
-    if(!$cFRPExists) {
-      mkdir($cacheFolderRootPath) or
-      die("Cache root directory error at: ${cacheFolderRootPath}");
-    }
     if(!$cFExists) {
       mkdir($cacheFolder) or
-      die("Cache directory error at: ".$cacheFolder);
+      die("Cache directory error at: {$cacheFolder}");
     }
   }
 

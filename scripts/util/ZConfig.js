@@ -5,9 +5,9 @@
 // Main config set-up with defaults
 
 // Direct Settings
-ZConfig.setDefault('autoUpdateUrl'            , 'false' );
-ZConfig.setDefault('autoUpdateUrlMapsMenu'    , 'false' );
-ZConfig.setDefault('autoUpdateUrlMove'        , 'false' );
+ZConfig.setDefault('autoUpdateUrl'            , 'true' );
+ZConfig.setDefault('autoUpdateUrlMapsMenu'    , 'true' );
+ZConfig.setDefault('autoUpdateUrlMove'        , 'true' );
 
 ZConfig.setDefault('boundTopX'                , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('boundTopY'                , ''      ); // Also suffix with `-${gameId}`

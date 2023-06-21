@@ -156,6 +156,7 @@ if (!Array.prototype.filter) {
 
 
 ZMap.prototype.constructor = function(vMapOptions) {
+	
   _this = this;
 
   hasUserCheck = false;
@@ -227,6 +228,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
   } else {
     currentIcon = 'Small';
   }
+
 };
 
 // Add a map category
@@ -787,14 +789,16 @@ ZMap.prototype.buildMap = function(gameId) {
         ZConfig.getConfig('maxBoundsViscosity')
       ),
       zoom:         Number.parseInt(
-            ZConfig.getConfig('zoom')
-        ||  ZConfig.getConfig(`zoom-${gameId}`)
+            mapOptions.zoom
+	    || ZConfig.getConfig('zoom')
+        || ZConfig.getConfig(`zoom-${gameId}`)
       ),
       zoomControl:  ZConfig.getConfig('zoomControl' ) == 'true',
       zoomDelta:    Number.parseInt(ZConfig.getConfig('zoomDelta' )),
       zoomSnap:     Number.parseInt(ZConfig.getConfig('zoomSnap'  ))
     }
   );
+
   mapOptions.center = new L.LatLng((
           ZConfig.getConfig('centerY')
       ||  ZConfig.getConfig('y')
@@ -907,10 +911,13 @@ ZMap.prototype.buildMap = function(gameId) {
          mapControl.resetContent();
       }
 
-    if(
+    if (
           ZConfig.getConfig('autoUpdateUrl'     ) != 'false'
       &&  ZConfig.getConfig('autoUpdateUrlMove' ) != 'false'
-    ) _this.updateUrl();
+    ) { 
+		_this.updateUrl();
+	}
+	
   });
 
   map.on('zoomend', function() {

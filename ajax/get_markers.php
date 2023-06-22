@@ -55,15 +55,17 @@
                   , m.description
                   , m.x
                   , m.y
+				  , m.z
                   , m.jump_marker_id             as jumpMakerId
 				      , GROUP_CONCAT(coalesce(t.marker_tab_id,\'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\') as tabId
                   , GROUP_CONCAT(coalesce(t.tab_title,\'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabTitle
                   , GROUP_CONCAT(coalesce(t.tab_text, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabText
-				      , GROUP_CONCAT(coalesce(t.user_id, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')      as tabUserId
-				      , GROUP_CONCAT(coalesce(t.username, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabUserName
-					  , m.path
-				      , m.global                     as globalMarker
-				      , m.visible
+				  , GROUP_CONCAT(coalesce(t.user_id, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')      as tabUserId
+				  , GROUP_CONCAT(coalesce(t.username, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabUserName
+			      , m.path
+				  , m.game_data                  as gameData
+				  , m.global                     as globalMarker
+				  , m.visible
 				   from ' . $map_prefix . 'marker m
                left outer join (SELECT c.marker_tab_id
 				                         , c.tab_title

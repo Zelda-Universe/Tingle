@@ -10,6 +10,7 @@ function ZMap() {
    this.games = [];
    this._overlayMap = [];
    this.map;
+   this.lang = {};
    this.mapControl;
    this.currentMap;
    this.currentOverlaypMap;
@@ -426,6 +427,7 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    marker.complete        = false;
+   marker.z               = vMarker.z
    if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
 
       path = [];
@@ -447,6 +449,16 @@ ZMap.prototype.addMarker = function(vMarker) {
          ]
       });
    }
+   
+    if (vMarker.gameData != null && vMarker.gameData.length > 0) {
+        try {
+            marker.gameData = JSON.parse(vMarker.gameData);
+        } catch (e) {
+            console.log(vMarker.gameData);
+        }
+    } else {
+        marker.gameData = null;
+    }
 
    categories[marker.categoryId].total++;
    for (var i = 0; i < completedMarkers.length; i++) {
@@ -512,13 +524,68 @@ ZMap.prototype._closeNewMarker = function() {
 }
 
 
+ZMap.prototype._createMarkerContentList = function(list) {
+	var content = "";
+	if (list != null) {
+		content = content + "<ul class=\"list-group\">";
+		for (var i = 0; i < list.length; i++) {
+			content = content + "<li class=\"list-group-item\"><img src=\"data/" + mapOptions.shortName + "/item/" + list[i] + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"> <span class=\"item-text\">" + _this.lang[list[i] + "_Name"] + "</span>";
+			if (list.length == 1 && _this.lang[list[0] + "_Caption"] != null) {
+				content = content + "<p style=\"margin-top: 10px;\">" + _this.lang[list[0] + "_Caption"] + "</p>";    
+			}
+			content = content + "</li>";
+		}
+		content = content + "</ul>";
+	}
+	return content;	
+}
+
 ZMap.prototype._createMarkerPopup = function(marker) {
-   var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
-   content = content + "<div class='popupContent'>";
-   for (var i = 0; i < marker.tabText.length; i++) {
-      content = content + marker.tabText[i];
-   }
+    var title = marker.title;
+    if (marker.gameData != null && marker.gameData.actor != null && _this.lang[marker.gameData.actor + "_Name"] != null) {
+       title = _this.lang[marker.gameData.actor + "_Name"]
+    }
+
+    var content = "<h2 class='popupTitle'>" + title + "</h2>";
+    content = content + "<div class='popupContent'>";
+
+    if (marker.gameData != null) {
+		//console.log(marker.gameData);
+        if (marker.gameData.subtitle != null && _this.lang["Nickname_" + marker.gameData.subtitle] != null) {
+            content = content + "<p class=\"subtitle\">" + _this.lang["Nickname_" + marker.gameData.subtitle] + "</p>";     
+        }
+        if (marker.gameData.location != null && _this.lang[marker.gameData.location] != null && marker.gameData.subtitle == null && _this.lang[marker.gameData.subtitle] == null) {
+            content = content + "<p class=\"subtitle\">" + _this.lang[marker.gameData.location] + "</p>";     
+        }
+        
+        if (marker.gameData.actor != null && _this.lang[marker.gameData.actor + "_Caption"] != null && marker.gameData.rewards == null) {
+			content = content + "<p><img src=\"data/" + mapOptions.shortName + "/item/" + marker.gameData.actor + ".png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\"><img src=\"data/" + mapOptions.shortName + "/gallery/" + marker.gameData.actor + "_Icon.png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\">" + _this.lang[marker.gameData.actor + "_Caption"] + "</p>";      
+        }
+		
+		content = content + this._createMarkerContentList(marker.gameData.rewards);
+		content = content + this._createMarkerContentList(marker.gameData.equip);
+		//content = content + this._createMarkerContentList(marker.gameData.carry);
+		
+         
+    }
+   
+    if (marker.z != null) {
+        content = content + "<p style='text-align: center; clear:both;'>" 
+                          + this.pad(Math.round(marker.getLatLng().lng),4) + " | " 
+                          + this.pad(Math.round(marker.getLatLng().lat),4) + " | " 
+                          + this.pad(Math.round(marker.z),4) //@TODO: TotK only, need to remove hardcode
+                          + "</p>";
+    }
+	
+	if (marker.gameData != null) {
+		//content = content + "<hr>";
+	   
+		for (var i = 0; i < marker.tabText.length; i++) {
+		   content = content + marker.tabText[i];
+		}
+	}
    /*
+
    if (marker.tabText.length > 1) {
       var ul = "<ul>";
       for (var i = 0; i < marker.tabText.length; i++) {
@@ -2143,9 +2210,28 @@ ZMap.prototype.getMarkers = function() {
 ZMap.prototype.updateUrl = function() {
    var url = new URL(window.location.toString());
    url.searchParams.set("map", mapControl.getCurrentMap().mapId);
-   url.searchParams.set("submap", mapControl.getCurrentMap().subMapId);
+   url.searchParams.set("subMap", mapControl.getCurrentMap().subMapId);
    url.searchParams.set("zoom", map.getZoom());
    url.searchParams.set("x", Math.floor(map.getCenter().lng));
    url.searchParams.set("y", Math.floor(map.getCenter().lat));
    history.pushState({}, "", url);
+}
+
+ZMap.prototype.addLanguage = function(lang) {
+    _this.lang = lang;
+}
+
+ZMap.prototype.pad = function(num, size) {
+    var newNum = num;
+    if (num < 0) {
+        newNum = num *-1;
+    }
+     
+    newNum = newNum.toString();
+    newNum = ("000"+newNum).slice(-1 * size);
+    if (num < 0) {
+        newNum = '-' + newNum;
+    }
+    return newNum;
+
 }

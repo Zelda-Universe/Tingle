@@ -119,6 +119,8 @@ function zMapInit(vResults) {
     }
 
     zMap.constructor(vContainer);
+	
+	getLang(vContainer.shortName);
 
     gameId = vContainer.id;
 
@@ -309,4 +311,15 @@ function updateAdState() {
   if(mobileAds) $(mobileAds).toggleClass("hidden", (!mapControl.isMobile() || authenticated));
   var desktopAds = document.getElementById("desktopAds");
   if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
+};
+
+
+
+/**** LANG *****/
+function getLang(shortName) {
+
+   $.getJSON("data/" + shortName + "/lang/en-us.json", function(vResults){
+		zMap.addLanguage(vResults);
+   });
+
 };

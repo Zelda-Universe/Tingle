@@ -1,5 +1,5 @@
 # Install
-  * Download project from GitHub at this URL: `https://github.com/Zelda-Universe/Tingle`.
+  * Download project from GitHub at this URL: `https://github.com/Zelda-Universe/Zelda-Maps-Website`.
   * Set-up Dependencies
     * Set-up database
       * Install and configure a database connection for this project.
@@ -30,9 +30,10 @@
             DEFAULT CHARACTER SET latin1
             DEFAULT COLLATE latin1_swedish_ci
           ```
-      * A dedicated account is recommended to only read the related database schemas, so add a less privileged database account for this project to use:
+      * Create a dedicated basic account
+        * It is recommended to only read and perform other basic functions to the related database schema(s) as a less privileged database account for this project to use:
         * `CREATE USER 'zeldamaps'@'localhost' IDENTIFIED BY '<password>';`
-        * The `mysql_config_editor` to create and store local, default, client credentials may be recommended, especially when contacting different project-related servers.
+        * For mysql, `mysql_config_editor` to create and store local, default, client credentials may be recommended, especially when contacting different project-related servers.
       * Grant the new db user all or some schema privileges to the newly imported `zeldamaps` schema.
         * Specific Schema Privileges: ``GRANT SELECT, INSERT, UPDATE, DELETE ON `zeldamaps`.* to 'zeldamaps'@'localhost';``
         * All (Not recommended): ``GRANT ALL PRIVILEGES ON `zeldamaps`.* to 'zeldamaps'@'localhost'``
@@ -48,7 +49,7 @@
             find -type f -iname '*.sql' \
             | sort | while read file
               echo Importing \"$file\"...   ;
-              dev/db/command.fish < "$file" ;
+              ../../command.fish < "$file" ;
             end
 
             popd;

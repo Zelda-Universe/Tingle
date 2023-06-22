@@ -5,21 +5,33 @@
 // Main config set-up with defaults
 
 // Direct Settings
+ZConfig.setDefault('autoUpdateUrl'            , 'true' );
+ZConfig.setDefault('autoUpdateUrlMapsMenu'    , 'true' );
+ZConfig.setDefault('autoUpdateUrlMove'        , 'true' );
+
+ZConfig.setDefault('boundTopX'                , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('boundTopY'                , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('boundBottomX'             , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('boundBottomY'             , ''      ); // Also suffix with `-${gameId}`
+
 // "exact", "focus" (ZU default)
-ZConfig.setDefault("categorySelectionMethod"   , "focus" );
-ZConfig.setDefault("changelog"                 , 'true'  );
-ZConfig.setDefault("changelogForce"            , 'false' );
-ZConfig.setDefault("collapsed"                 , 'false' );
-ZConfig.setDefault("codetrace-methodsToIgnore" , '{}'    );
-ZConfig.setDefault("codetrace-targetClasses"   , '[]'    );
-ZConfig.setDefault("errorTileUrl"              , ''      );
-ZConfig.setDefault("markerClusters"            , 'false' );
+ZConfig.setDefault('categorySelectionMethod'  , 'focus' );
+ZConfig.setDefault('centerX'                  , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('centerY'                  , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('changelog'                , 'true'  );
+ZConfig.setDefault('changelogForce'           , 'false' );
+ZConfig.setDefault('collapsed'                , 'false' );
+ZConfig.setDefault('codetrace-methodsToIgnore', '{}'    );
+ZConfig.setDefault('codetrace-targetClasses'  , '[]'    );
+
+ZConfig.setDefault('contextmenu'              , 'true'  );
+ZConfig.setDefault('contextmenuWidth'         , '140'   );
+
+ZConfig.setDefault('errorTileUrl'             , ''      );
+ZConfig.setDefault('hideOthers'               , 'false' );
+ZConfig.setDefault('hidePin'                  , 'false' );
 ZConfig.setDefault(
-  "layersHeight",
-  Math.max(window.innerHeight - 250, 250) + 'px'
-);
-ZConfig.setDefault(
-  "layersBottomHeightOptionsDefaults",
+  'layersBottomHeightOptionsDefaults',
   JSON.stringify({
     position: 'topleft',
     delay: 0,
@@ -28,10 +40,18 @@ ZConfig.setDefault(
     softOpenBottom: 250,
     softOpenTo: 0 // REVERSE
 }));
-ZConfig.setDefault("layersBottomHeightOptionsOverrides", '{}');
+ZConfig.setDefault('layersBottomHeightOptionsOverrides', '{}');
+ZConfig.setDefault(
+  'layersHeight',
+  Math.max(window.innerHeight - 250, 250) + 'px'
+);
+ZConfig.setDefault('map'                      , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('marker'                   , ''      );
+ZConfig.setDefault('markerClusters'           , 'false' );
+ZConfig.setDefault('maxBoundsViscosity'       , '1.0'   );
 
 //https://fusejs.io/api/options.html
-ZConfig.setDefault("searchDefaults-markers"    , JSON.stringify({
+ZConfig.setDefault('searchDefaults-markers'   , JSON.stringify({
   ignoreLocation    : true,
   includeScore      : true,
   includeMatches    : true,
@@ -45,14 +65,15 @@ ZConfig.setDefault("searchDefaults-markers"    , JSON.stringify({
   // 0.0 perfect match, 1.0 any match
   threshold         : 0.4 // default: 0.6
 }));
-ZConfig.setDefault("searchOverrides-markers"   , '{}'    );
-ZConfig.setDefault('searchTargetIndexEnd-markers'  , null);
-ZConfig.setDefault('searchTargetIndexStart-markers', null);
+ZConfig.setDefault('searchOverrides-markers'        , '{}');
+ZConfig.setDefault('searchTargetIndexEnd-markers'   , ''  );
+ZConfig.setDefault('searchTargetIndexStart-markers' , ''  );
 
-ZConfig.setDefault("showInfoControls"          , 'false' );
-ZConfig.setDefault("tilesBaseURL"              , "https://zeldamaps.com/tiles/");
-ZConfig.setDefault("tileAxisDirectories"       , 'false' );
-ZConfig.setDefault("tileZoomDirectories"       , 'false' );
+ZConfig.setDefault('showInfoControls'         , 'false' );
+ZConfig.setDefault('subMap'                   , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('tilesBaseURL'             , 'https://zeldamaps.com/tiles/');
+ZConfig.setDefault('tileAxisDirectories'      , 'false' );
+ZConfig.setDefault('tileZoomDirectories'      , 'false' );
 
 // https://github.com/CodeSeven/toastr/blob/master/README.md#other-options
 // https://codeseven.github.io/toastr/demo.html
@@ -60,16 +81,22 @@ ZConfig.setDefault('toastr', JSON.stringify({
   extendedTimeOut : 0,
   closeButton     : true,
   newestOnTop     : true,
-  positionClass   : "toast-top-full-width",
+  positionClass   : 'toast-top-full-width',
   timeOut         : 0
 }));
-ZConfig.setDefault("tileNameFormat"  , (
-  (ZConfig.getConfig("tileAxisDirectories") == 'true')
+ZConfig.setDefault('tileNameFormat'  , (
+  (ZConfig.getConfig('tileAxisDirectories') == 'true')
   ? '{z}/{x}/{y}'
-  : (ZConfig.getConfig("tileZoomDirectories") == 'true')
+  : (ZConfig.getConfig('tileZoomDirectories') == 'true')
     ? '{z}/{x}_{y}'
     : '{z}_{x}_{y}'
 ));
-ZConfig.setDefault("verbose"                  , 'false' );
+ZConfig.setDefault('verbose'                  , 'false' );
+ZConfig.setDefault('x'                        , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('y'                        , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('zLogger.tui'              , 'false' );
 ZConfig.setDefault('zLogger.gui'              , 'true'  );
+ZConfig.setDefault('zoom'                     , '0'     ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('zoomControl'              , 'false' );
+ZConfig.setDefault('zoomDelta'                , ''      );
+ZConfig.setDefault('zoomSnap'                 , ''      );

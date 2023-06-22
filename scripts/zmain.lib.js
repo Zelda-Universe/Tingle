@@ -119,6 +119,8 @@ function zMapInit(vResults) {
     }
 
     zMap.constructor(vContainer);
+	
+	getLang(vContainer.shortName);
 
     gameId = vContainer.id;
 
@@ -218,25 +220,20 @@ function showLoginControls() {
 }
 
 function getMarkers() {
-  $.getJSON("ajax.php?command=get_markers&game=" + gameId, function(vResults) {
-    if (vResults.success === false || vResults.length == 0) {
-      zLogger.error('No markers provided to show!');
-      return 5;
-    }
-    zMap.buildMap();
-    getUserInfo();
-    zMap.addMarkers(vResults);
-    zMap.refreshMap();
-    zMap.goToStart();
-    zMap.goTo({
-      map        : getUrlParamValue('map'       , null  )
-    , subMap     : getUrlParamValue('subMap'    , null  )
-    , marker     : getUrlParamValue('marker'    , null  )
-    , zoom       : getUrlParamValue('zoom'      , 4     )
-    , hideOthers : getUrlParamValue('hideOthers', false )
-    , hidePin    : getUrlParamValue('hidePin'   , false )
-    });
-  });
+  $.getJSON(
+    "ajax.php?command=get_markers&game=" + gameId,
+    function(gameId, vResults) {
+      if (vResults.success === false || vResults.length == 0) {
+        zLogger.error('No markers provided to show!');
+        return 5;
+      }
+
+      zMap.buildMap(gameId);
+      getUserInfo();
+      zMap.addMarkers(vResults);
+      zMap.refreshMap();
+    }.bind(this, gameId)
+  );
 };
 
 // Get value of parameters
@@ -314,4 +311,15 @@ function updateAdState() {
   if(mobileAds) $(mobileAds).toggleClass("hidden", (!mapControl.isMobile() || authenticated));
   var desktopAds = document.getElementById("desktopAds");
   if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
+};
+
+
+
+/**** LANG *****/
+function getLang(shortName) {
+
+   $.getJSON("data/" + shortName + "/lang/en-us.json", function(vResults){
+		zMap.addLanguage(vResults);
+   });
+
 };

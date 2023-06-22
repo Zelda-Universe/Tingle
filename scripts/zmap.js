@@ -10,6 +10,7 @@ function ZMap() {
    this.games = [];
    this._overlayMap = [];
    this.map;
+   this.lang = {};
    this.mapControl;
    this.currentMap;
    this.currentOverlaypMap;
@@ -156,6 +157,7 @@ if (!Array.prototype.filter) {
 
 
 ZMap.prototype.constructor = function(vMapOptions) {
+	
   _this = this;
 
   hasUserCheck = false;
@@ -227,6 +229,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
   } else {
     currentIcon = 'Small';
   }
+
 };
 
 // Add a map category
@@ -424,6 +427,7 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
    marker.draggable       = true; // @TODO: not working ... maybe marker cluster is removing the draggable event
    marker.complete        = false;
+   marker.z               = vMarker.z
    if (vMarker.path != undefined && vMarker.path != null && vMarker.path != "") {
 
       path = [];
@@ -445,6 +449,16 @@ ZMap.prototype.addMarker = function(vMarker) {
          ]
       });
    }
+   
+    if (vMarker.gameData != null && vMarker.gameData.length > 0) {
+        try {
+            marker.gameData = JSON.parse(vMarker.gameData);
+        } catch (e) {
+            console.log(vMarker.gameData);
+        }
+    } else {
+        marker.gameData = null;
+    }
 
    categories[marker.categoryId].total++;
    for (var i = 0; i < completedMarkers.length; i++) {
@@ -510,13 +524,68 @@ ZMap.prototype._closeNewMarker = function() {
 }
 
 
+ZMap.prototype._createMarkerContentList = function(list) {
+	var content = "";
+	if (list != null) {
+		content = content + "<ul class=\"list-group\">";
+		for (var i = 0; i < list.length; i++) {
+			content = content + "<li class=\"list-group-item\"><img src=\"data/" + mapOptions.shortName + "/item/" + list[i] + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"> <span class=\"item-text\">" + _this.lang[list[i] + "_Name"] + "</span>";
+			if (list.length == 1 && _this.lang[list[0] + "_Caption"] != null) {
+				content = content + "<p style=\"margin-top: 10px;\">" + _this.lang[list[0] + "_Caption"] + "</p>";    
+			}
+			content = content + "</li>";
+		}
+		content = content + "</ul>";
+	}
+	return content;	
+}
+
 ZMap.prototype._createMarkerPopup = function(marker) {
-   var content = "<h2 class='popupTitle'>" + marker.title + "</h2>";
-   content = content + "<div class='popupContent'>";
-   for (var i = 0; i < marker.tabText.length; i++) {
-      content = content + marker.tabText[i];
-   }
+    var title = marker.title;
+    if (marker.gameData != null && marker.gameData.actor != null && _this.lang[marker.gameData.actor + "_Name"] != null) {
+       title = _this.lang[marker.gameData.actor + "_Name"]
+    }
+
+    var content = "<h2 class='popupTitle'>" + title + "</h2>";
+    content = content + "<div class='popupContent'>";
+
+    if (marker.gameData != null) {
+		//console.log(marker.gameData);
+        if (marker.gameData.subtitle != null && _this.lang["Nickname_" + marker.gameData.subtitle] != null) {
+            content = content + "<p class=\"subtitle\">" + _this.lang["Nickname_" + marker.gameData.subtitle] + "</p>";     
+        }
+        if (marker.gameData.location != null && _this.lang[marker.gameData.location] != null && marker.gameData.subtitle == null && _this.lang[marker.gameData.subtitle] == null) {
+            content = content + "<p class=\"subtitle\">" + _this.lang[marker.gameData.location] + "</p>";     
+        }
+        
+        if (marker.gameData.actor != null && _this.lang[marker.gameData.actor + "_Caption"] != null && marker.gameData.rewards == null) {
+			content = content + "<p><img src=\"data/" + mapOptions.shortName + "/item/" + marker.gameData.actor + ".png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\"><img src=\"data/" + mapOptions.shortName + "/gallery/" + marker.gameData.actor + "_Icon.png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\">" + _this.lang[marker.gameData.actor + "_Caption"] + "</p>";      
+        }
+		
+		content = content + this._createMarkerContentList(marker.gameData.rewards);
+		content = content + this._createMarkerContentList(marker.gameData.equip);
+		//content = content + this._createMarkerContentList(marker.gameData.carry);
+		
+         
+    }
+   
+    if (marker.z != null) {
+        content = content + "<p style='text-align: center; clear:both;'>" 
+                          + this.pad(Math.round(marker.getLatLng().lng),4) + " | " 
+                          + this.pad(Math.round(marker.getLatLng().lat),4) + " | " 
+                          + this.pad(Math.round(marker.z),4) //@TODO: TotK only, need to remove hardcode
+                          + "</p>";
+    }
+	
+	if (marker.gameData == null) {
+		//content = content + "<hr>";
+	   
+		for (var i = 0; i < marker.tabText.length; i++) {
+		   content = content + marker.tabText[i];
+		}
+	}
    /*
+
    if (marker.tabText.length > 1) {
       var ul = "<ul>";
       for (var i = 0; i < marker.tabText.length; i++) {
@@ -743,7 +812,7 @@ ZMap.prototype.buildCategoryMenu = function(vCategoryTree) {
    // });
 }
 
-ZMap.prototype.buildMap = function() {
+ZMap.prototype.buildMap = function(gameId) {
   // console.log("Leaflet Version: "    + L.version     );
   // console.log("Zelda Maps Version: " + _this.version );
 
@@ -756,7 +825,8 @@ ZMap.prototype.buildMap = function() {
     transformation: new L.transformation(
       mapOptions.scaleP,
       parseFloat(mapOptions.offsetX),
-      mapOptions.scaleN, parseFloat(mapOptions.offsetY)
+      mapOptions.scaleN,
+      parseFloat(mapOptions.offsetY)
     )
   });
 
@@ -772,31 +842,65 @@ ZMap.prototype.buildMap = function() {
     return 2;
   }
 
-  map = L.map(mainEl, {
-      center:             new L.LatLng(
-        mapOptions.centerY,
-        mapOptions.centerX
-      )
-    , zoom:               0
-    , zoomSnap:           mapOptions.zoomSnap
-    , zoomDelta:          mapOptions.zoomDelta
-    , zoomControl:        false
-    , crs:                ZCRS
-    , layers:             [maps[0]]
-    , maxBounds:          new L.LatLngBounds(
-      new L.LatLng(
-        mapOptions.boundTopX,
-        mapOptions.boundTopY
+  $.extend(
+    true      ,
+    mapOptions,
+    {
+      crs:          ZCRS,
+      contextmenu:  ZConfig.getConfig('contextmenu' ) == 'false',
+      contextmenuWidth: Number.parseInt(
+        ZConfig.getConfig('contextmenuWidth')
       ),
-      new L.LatLng(
-        mapOptions.boundBottomX,
-        mapOptions.boundBottomY
-      )
+      layers:       [maps[0]],
+      maxBoundsViscosity: Number.parseFloat(
+        ZConfig.getConfig('maxBoundsViscosity')
+      ),
+      zoom:         Number.parseInt(
+            mapOptions.zoom
+	    || ZConfig.getConfig('zoom')
+        || ZConfig.getConfig(`zoom-${gameId}`)
+      ),
+      zoomControl:  ZConfig.getConfig('zoomControl' ) == 'true',
+      zoomDelta:    Number.parseInt(ZConfig.getConfig('zoomDelta' )),
+      zoomSnap:     Number.parseInt(ZConfig.getConfig('zoomSnap'  ))
+    }
+  );
+
+  mapOptions.center = new L.LatLng((
+          ZConfig.getConfig('centerY')
+      ||  ZConfig.getConfig('y')
+      ||  ZConfig.getConfig(`centerY-${gameId}`)
+      ||  ZConfig.getConfig(`y-${gameId}`)
+      ||  mapOptions.centerY
+    ), (
+          ZConfig.getConfig('centerX')
+      ||  ZConfig.getConfig('x')
+      ||  ZConfig.getConfig(`centerX-${gameId}`)
+      ||  ZConfig.getConfig(`x-${gameId}`)
+      ||  mapOptions.centerX
     )
-    , maxBoundsViscosity: 1.0
-    , contextmenu:        true
-    , contextmenuWidth:   140
-  });
+  );
+  mapOptions.maxBounds = new L.LatLngBounds(
+    new L.LatLng(
+          ZConfig.getConfig('boundTopX')
+      ||  ZConfig.getConfig(`boundTopX-${gameId}`)
+      ||  mapOptions.boundTopX,
+          ZConfig.getConfig('boundTopY')
+      ||  ZConfig.getConfig(`boundTopY-${gameId}`)
+      ||  mapOptions.boundTopY
+    ),
+    new L.LatLng(
+          ZConfig.getConfig('boundBottomX')
+      ||  ZConfig.getConfig(`boundBottomX-${gameId}`)
+      ||  mapOptions.boundBottomX,
+          ZConfig.getConfig('boundBottomY')
+      ||  ZConfig.getConfig(`boundBottomY-${gameId}`)
+      ||  mapOptions.boundBottomY
+    )
+  );
+
+  map = L.map(mainEl, mapOptions);
+  this.map = map;
 
   // Get all the base maps
   var baseMaps = {};
@@ -874,7 +978,13 @@ ZMap.prototype.buildMap = function() {
          mapControl.resetContent();
       }
 
-	  _this.updateUrl();
+    if (
+          ZConfig.getConfig('autoUpdateUrl'     ) != 'false'
+      &&  ZConfig.getConfig('autoUpdateUrlMove' ) != 'false'
+    ) { 
+		_this.updateUrl();
+	}
+	
   });
 
   map.on('zoomend', function() {
@@ -928,6 +1038,9 @@ ZMap.prototype.buildMap = function() {
       } else {
         mapControl.toggle();
       }
+    } else if(e.ctrlKey && e.key == "U") {
+      _this.updateUrl();
+      zLogger.info('Manually updated URL!');
     }
   }.bind(mapControl));
 
@@ -2004,23 +2117,29 @@ ZMap.prototype._createAccountForm = function(user) {
  * @param vGoTo.marker          - Marker to be opened (Takes precedence over subMap and Layer)
  **/
 ZMap.prototype.goTo = function(vGoTo, notByInput) {
-   if (vGoTo.hideOthers) {
+   if (vGoTo.hideOthers || ZConfig.getConfig('hideOthers') == 'true') {
       for (var i = 0; i < markers.length; i++) {
          markers[i].visible = false;
       }
       _this.refreshMap();
    }
 
-   if (vGoTo.marker) {
-      _this._openMarker(vGoTo.marker, vGoTo.zoom, !vGoTo.hidePin, true, notByInput);
-      // Open Marker already does a change map, so it takes precedence
+  if (vGoTo.marker) {
+    _this._openMarker(
+      vGoTo.marker,
+      vGoTo.zoom,
+      !vGoTo.hidePin,
+      true,
+      notByInput
+    );
+    // Open Marker already does a change map, so it takes precedence
 
-      return;
-   }
+    return;
+  }
 
-   if (vGoTo.map || (vGoTo.map && vGoTo.subMap)) {
-      mapControl.changeMap(vGoTo.map, vGoTo.subMap);
-   }
+  if (vGoTo.map || (vGoTo.map && vGoTo.subMap)) {
+    mapControl.changeMap(vGoTo.map, vGoTo.subMap);
+  }
 }
 
 /**
@@ -2028,7 +2147,13 @@ ZMap.prototype.goTo = function(vGoTo, notByInput) {
  *
  * @param vMarkerID             - Marker ID to be opened
  **/
-ZMap.prototype._openMarker = function(vMarkerId, vZoom, vPin = true, vPanTo = false, notByInput) {
+ZMap.prototype._openMarker = function(
+  vMarkerId,
+  vZoom,
+  vPin = ZConfig.getConfig('hidePin') == 'true',
+  vPanTo = false,
+  notByInput
+) {
   var marker = this.cachedMarkersById[vMarkerId];
   if (marker) {
     if (notByInput === true) {
@@ -2085,9 +2210,28 @@ ZMap.prototype.getMarkers = function() {
 ZMap.prototype.updateUrl = function() {
    var url = new URL(window.location.toString());
    url.searchParams.set("map", mapControl.getCurrentMap().mapId);
-   url.searchParams.set("submap", mapControl.getCurrentMap().subMapId);
+   url.searchParams.set("subMap", mapControl.getCurrentMap().subMapId);
    url.searchParams.set("zoom", map.getZoom());
    url.searchParams.set("x", Math.floor(map.getCenter().lng));
    url.searchParams.set("y", Math.floor(map.getCenter().lat));
    history.pushState({}, "", url);
+}
+
+ZMap.prototype.addLanguage = function(lang) {
+    _this.lang = lang;
+}
+
+ZMap.prototype.pad = function(num, size) {
+    var newNum = num;
+    if (num < 0) {
+        newNum = num *-1;
+    }
+     
+    newNum = newNum.toString();
+    newNum = ("000"+newNum).slice(-1 * size);
+    if (num < 0) {
+        newNum = '-' + newNum;
+    }
+    return newNum;
+
 }

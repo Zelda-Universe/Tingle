@@ -577,7 +577,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
                           + "</p>";
     }
 	
-	if (marker.gameData != null) {
+	if (marker.gameData == null) {
 		//content = content + "<hr>";
 	   
 		for (var i = 0; i < marker.tabText.length; i++) {

@@ -98,5 +98,5 @@ ZConfig.setDefault('zLogger.tui'              , 'false' );
 ZConfig.setDefault('zLogger.gui'              , 'true'  );
 ZConfig.setDefault('zoom'                     , '0'     ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('zoomControl'              , 'false' );
-ZConfig.setDefault('zoomDelta'                , ''      );
-ZConfig.setDefault('zoomSnap'                 , ''      );
+ZConfig.setDefault('zoomDelta'                , '1'     );
+ZConfig.setDefault('zoomSnap'                 , '1'     );

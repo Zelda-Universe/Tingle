@@ -394,7 +394,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     while [[ -z "$databaseUser" ]]; do
       if [[ -z "$databaseConnectionString" ]]; then
         if [[ -z "$databaseUser" ]]; then
-          if type -t 'js-yaml'; then
+          if type -t 'js-yaml' >/dev/null; then
             databaseUser="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.username')";
             # debugPrint "databaseUser: $databaseUser";
           fi
@@ -411,7 +411,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       if [[ -z "$databaseConnectionString" ]]; then
         if [[ -z "$databasePassword" ]]; then
           # databasePassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
-          if type -t 'js-yaml'; then
+          if type -t 'js-yaml' >/dev/null; then
             databasePassword="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.password')";
             # debugPrint "databasePassword: $databasePassword";
           fi

@@ -7,8 +7,11 @@ source "https://rubygems.org"
 
 # TODO: Unable to use updated fork+branch with default schema syntax error rm fix, so just install manually for now:
 # Source: https://github.com/thuss/standalone-migrations/issues/169#issuecomment-1492516629
-gem 'standalone_migrations'
+# gem 'standalone_migrations'
 # gem 'standalone-migrations', git: 'https://github.com/mlarraz/standalone-migrations', branch: 'rm_schema_default'
+# gem 'standalone_migrations', git: 'https://github.com/mlarraz/standalone-migrations.git', branch: 'rm_schema_default'
+# gem 'standalone_migrations', git: 'https://github.com/Pysis868/standalone-migrations.git', branch: 'rm_schema_default'
+gem 'standalone_migrations', git: 'https://github.com/vovka/standalone-migrations'
 # gem 'standalone-migrations', github: 'mlarraz/standalone-migrations', branch: 'rm_schema_default'
 
 # Still relevant as `mysql` is still out-dated/-moded by Ruby 2/4
@@ -16,6 +19,7 @@ gem 'standalone_migrations'
 gem 'mysql2'
 
 group :development do
+  gem 'pry'
   gem 'pry-byebug'
   # gem 'pry-byebug', require: true
 end

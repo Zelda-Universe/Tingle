@@ -2,19 +2,26 @@
   * Download project from GitHub at this URL: `https://github.com/Zelda-Universe/Zelda-Maps-Website`.
   * Set-up Dependencies
     * Set-up database
+      * If refreshing using the project's stored samples, issue this command after careful consideration:
+        * ``echo 'DROP DATABASE IF EXISTS `zeldamaps`' | ./dev/db/command.fish``
+        * and then this script for the remaining tasks:
+          * `dev/db/prep/refresh.fish`
       * Install and configure a database connection for this project.
         * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/
           * Linux
             * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/linux-installation-native.html
             * `sudo dnf install community-mysql-server`
-            * `sudo systemctl start mysqld`
+          * `sudo systemctl start mysqld`
+      * Setup project local backend PHP config parameters:
+        * `cp .env.example .env`
+        * Edit the newly copied `.env` file to your database's parameters for connection location and account credentials.
       * Install recommended GUI editor/IDE
         * https://dbeaver.io/download/
           * Community edition
         * https://github.com/Sequel-Ace/Sequel-Ace
           * https://github.com/sequelpro/sequelpro/issues/2485#issuecomment-1403679595
         * https://dev.mysql.com/downloads/workbench/
-      * Perform the usual and secure database set-up steps:
+      * Perform the usual and secure database set-up tasks:
         * Catch the new, randomly generated root account's password during the installation.
         * Windows/Cygwin?: Add `/usr/local/mysql/bin` to user path variable.
         * `mysql_secure_installation`
@@ -24,37 +31,17 @@
             * Force root local only: `y`
             * Remove test database: `y`
             * Reload privs: `y`
-      * Create the database using a root account:
-        * ```
-            CREATE SCHEMA `zeldamaps`
-            DEFAULT CHARACTER SET latin1
-            DEFAULT COLLATE latin1_swedish_ci
-          ```
-      * Create a dedicated basic account
-        * It is recommended to only read and perform other basic functions to the related database schema(s) as a less privileged database account for this project to use:
-        * `CREATE USER 'zeldamaps'@'localhost' IDENTIFIED BY '<password>';`
-        * For mysql, `mysql_config_editor` to create and store local, default, client credentials may be recommended, especially when contacting different project-related servers.
-      * Grant the new db user all or some schema privileges to the newly imported `zeldamaps` schema.
-        * Specific Schema Privileges: ``GRANT SELECT, INSERT, UPDATE, DELETE ON `zeldamaps`.* to 'zeldamaps'@'localhost';``
-        * All (Not recommended): ``GRANT ALL PRIVILEGES ON `zeldamaps`.* to 'zeldamaps'@'localhost'``
-      * Possibly do the same for a devevlopment DB management account too:
-        * `CREATE USER 'zeldamaps-manage'@'localhost' IDENTIFIED BY '<password>';`
-        * ``GRANT SELECT, INSERT, UPDATE, DELETE, DROP, CREATE, LOCK TABLES, ALTER ON `zeldamaps`.* to 'zeldamaps-manage'@'localhost';``
-      * Setup project local backend PHP config parameters:
-        * `cp .env.example .env`
-        * Edit the newly copied `.env` file to your database's parameters for connection location and account credentials.
+      * Perform specific project database set-up tasks:
+        * `dev/db/prep/install.fish`
+          * Create the database using a root account.
+          * Create a dedicated basic account
+            * It is recommended to only read and perform other basic functions to the related database schema(s) as a less privileged database account for this project to use.
+            * For mysql, `mysql_config_editor` to create and store local, default, client credentials may be recommended, especially when contacting different project-related servers.
+          * Grant the new db user all or some schema privileges to the newly imported `zeldamaps` schema.
+          * Specific schema privileges
+          * or all (not recommended).
+          * Possibly do the same for a development DB management account too.
       * Import the sample database files, hopefully using the specific management account.
-        * ```
-          if pushd dev/db/samples/zeldamaps
-            find -type f -iname '*.sql' \
-            | sort | while read file
-              echo Importing \"$file\"...   ;
-              ../../command.fish < "$file" ;
-            end
-
-            popd;
-          end
-          ```
     * Set-up web server
       * Linux:
         * Compile:

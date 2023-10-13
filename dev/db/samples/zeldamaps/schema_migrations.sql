@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.22-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.5.19-MariaDB
+-- Server version	10.5.22-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -61,7 +61,10 @@ INSERT INTO `schema_migrations` VALUES
   ('20230607153536'),
   ('20230607182946'),
   ('20230607191601'),
-  ('20230607193507')
+  ('20230607193507'),
+  ('20230607195019'),
+  ('20230615002623'),
+  ('20230723163346')
 ;
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -75,4 +78,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-07 16:14:36
+-- Dump completed on 2023-10-13 16:18:31

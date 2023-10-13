@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.22-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.5.19-MariaDB
+-- Server version	10.5.22-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -38,7 +38,7 @@ CREATE TABLE `marker_tab` (
   CONSTRAINT `fk_map_marker_tab_map_marker1` FOREIGN KEY (`marker_id`) REFERENCES `marker` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_marker_tab_marker_tab_status1` FOREIGN KEY (`marker_tab_status_id`) REFERENCES `marker_tab_status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_marker_tab_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=24342 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29349 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -6702,7 +6702,14 @@ INSERT INTO `marker_tab` VALUES
   (24338,25174,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Lanayru Wetlands Well&lt;/p&gt;&lt;p&gt;A single-edged sword of the Sheikah tribe.  Its small blade, now decayed, is suited for covert actions and yields more powerful sneakstrikes than ordinary blades.&lt;/p&gt;',1,1),
   (24339,25175,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Ancient Prison Ruins&lt;/p&gt;&lt;p&gt;A decaying scimitar from the Gerudo region, it is designed for maximizing force. Attaching a material greatly enhances the material\'s power but doesn\'t add as much durability.&lt;/p&gt;',1,1),
   (24340,25176,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Ancient Prison Ruins&lt;/p&gt;&lt;p&gt;A decaying scimitar from the Gerudo region, it is designed for maximizing force. Attaching a material greatly enhances the material\'s power but doesn\'t add as much durability.&lt;/p&gt;',1,1),
-  (24341,25177,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Gerudo Sanctuary&lt;/p&gt;&lt;p&gt;A decaying scimitar from the Gerudo region, it is designed for maximizing force. Attaching a material greatly enhances the material\'s power but doesn\'t add as much durability.&lt;/p&gt;',1,1)
+  (24341,25177,2,1,'','&lt;p style=&quot;text-align: center&quot;&gt;Gerudo Sanctuary&lt;/p&gt;&lt;p&gt;A decaying scimitar from the Gerudo region, it is designed for maximizing force. Attaching a material greatly enhances the material\'s power but doesn\'t add as much durability.&lt;/p&gt;',1,1),
+  (29342,30175,2,1,'','',1,1),
+  (29343,30176,2,1,'','',1,1),
+  (29344,30177,2,1,'','',1,1),
+  (29345,30178,2,1,'','',1,1),
+  (29346,30179,2,1,'','',1,1),
+  (29347,30180,2,1,'','',1,1),
+  (29348,30181,2,1,'','',1,1)
 ;
 /*!40000 ALTER TABLE `marker_tab` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -6716,4 +6723,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-07 12:49:54
+-- Dump completed on 2023-10-13 16:18:30

@@ -1,8 +1,8 @@
--- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19  Distrib 10.5.22-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.5.19-MariaDB
+-- Server version	10.5.22-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -40,7 +40,7 @@ CREATE TABLE `marker_category` (
   CONSTRAINT `fk_marker_category_map_container1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_marker_category_marker_category1` FOREIGN KEY (`parent_id`) REFERENCES `marker_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_marker_category_marker_category_type1` FOREIGN KEY (`marker_category_type_id`) REFERENCES `marker_category_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2171 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2174 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,7 +283,8 @@ INSERT INTO `marker_category` VALUES
   (2167,2101,1,21,'Device Dispenser',1,'TotK_Dispenser','#4bc5ee',6,1),
   (2168,2101,1,21,'Cherry Tree',1,'TotK_CherryTree','#4bc5ee',6,1),
   (2169,2101,1,21,'Ancient Tablet',1,'TotK_AncientTablet','#4bc5ee',6,1),
-  (2170,2130,1,21,'Gloom Hands',1,'BotW_Boss','#ff422e',6,1)
+  (2170,2130,1,21,'Gloom Hands',1,'BotW_Boss','#ff422e',6,1),
+  (2173,2101,1,21,'Dragon',1,'TotK_Dragon','#4bc5ee',6,1)
 ;
 /*!40000 ALTER TABLE `marker_category` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -297,4 +298,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-07 12:49:54
+-- Dump completed on 2023-10-13 16:18:31

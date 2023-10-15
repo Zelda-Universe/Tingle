@@ -294,10 +294,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       issueStep \
         "Preparing existing data for later converging replacement." \
         "
-          bakStrDumpCompl=\"\$(grep -P '^-- Dump completed on (.+)?\$' '$filePath')\";
-          bakStrDump=\"\$(grep -P '^-- MariaDB dump (.+)?\$' '$filePath')\";
-          bakStrSerVer=\"\$(grep -P '^-- Server version\s(.+)?\$' '$filePath')\";
-          bakStrDB=\"\$(grep -P '^-- Host: \S+\s+Database: (.+)?\$' '$filePath')\";
+           bakStrDumpCompl=\"\$(grep -P '^-- Dump completed on (.+)?\$'     '$filePath')\";
+                bakStrDump=\"\$(grep -P '^-- MariaDB dump (.+)?\$'          '$filePath')\";
+              bakStrSerVer=\"\$(grep -P '^-- Server version\s(.+)?\$'       '$filePath')\";
+                  bakStrDB=\"\$(grep -P '^-- Host: \S+\s+Database: (.+)?\$' '$filePath')\";
         " \
       ;
       # debugPrint "bakStrDumpCompl: $bakStrDumpCompl";
@@ -538,6 +538,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   orgExtInsCmd="
     sed -r                          \
+      -e 's|^\(|  (|g'              \
       -e 's|\),\(|),\n  (|g'        \
       -e 's|(VALUES )\(|\1\n  (|g'  \
       -e 's|(VALUES) |\1|g'         \
@@ -646,6 +647,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # ;
   }
 
+  echo;
+
   # debugPrint "oneFile: $oneFile";
   if [[ "$oneFile" = 'true' ]]; then
     ## Export to a single, ultimate combined file.
@@ -731,6 +734,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     fi
     # debugPrint "defaultTableNames: $defaultTableNames";
     # debugPrint "tableNames: $tableNames";
+
+    echo;
 
     for tableName in $tableNames; do
       # debugPrint "Table Start";
@@ -900,6 +905,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         'Re-add "COLLATE" term if missing from table definition.' \
         "fish '$SDIR/addCollate.fish' '$resultFile'" \
       ;
+
+      echo;
 
       # debugPrint "Table End";
     done

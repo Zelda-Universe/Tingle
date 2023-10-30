@@ -212,14 +212,23 @@
         - Source: `dev/db/migrate/20230523175651_marker_add_path_column.rb`
       - Changing Columns:
         - Source: https://guides.rubyonrails.org/active_record_migrations.html#changing-columns
-        - Change column null property:
+        - Change null property:
           - Code: `t.change_null :content, false`
           - Source: `dev/db/migrate/20230403193442_changelog_add_hidden_field_and_disable_blank_content.rb`
-        - Change column default value:
+        - Set default value:
           - Code (Table 'batch' block): `t.change_default :marker_url, from: '/markers/', to: 'markers/'`
           - Code (Individual field): `change_column_default(:table_name, :column_name, '<defaultValue>')`
           - Source: `dev/db/migrate/20230405195637_container_update_and_add_defaults.rb`
           - Source: https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/ConnectionAdapters/SchemaStatements.html#method-i-change_column_default
+        - Remove default value:
+          - Sadly no Rails code for this..
+          - Code (SQL): ```
+              execute <<-SQL
+                ALTER TABLE `marker`
+                MODIFY COLUMN `game_data`
+                DROP DEFAULT
+              SQL
+            ```
         - Can't change integer 'width':
           - Limit is bytes and change type too much.\
           - Precision, reverted to `11`, but did not change to `2` at all.

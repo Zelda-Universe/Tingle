@@ -91,7 +91,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     pauseWhenEnabled;
 
     if [[ "$commandStatus" -gt '0' ]]; then
-      # debugPrint 'issueStep cleanAndExit';
+      # debugPrint 'issueStep exitAndMaybeClean';
       exitAndMaybeClean;
     fi
     # debugPrint 'issueStep End';
@@ -220,7 +220,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     issueStep \
       "Exporting and sanitizing only the required user records by id, with their visiblity and level data for later use in development so that all markers can be displayed." \
       "'$dbClientExe'                         \
-        $dbClientCommonOptions                \
+        $dbClientCommonOptionsNoVerbose       \
         < '$generateDevUsersQueryFilePath'    \
         | $orgExtInsCmd                       \
         > '$sanitizedPartialUserDataFilePath' \
@@ -616,7 +616,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 {
   trap ' \
     statusPrint "${RED}User cancels process; checking to clean now...${NC}\n"; \
-    cleanAndExit 1; \
+    exitAndMaybeClean 1; \
   ' INT KILL TERM STOP;
 
   # debugPrint "Script Start";

@@ -1,6 +1,7 @@
 GIT
-  remote: https://github.com/vovka/standalone-migrations
-  revision: 7327dc67fe2a6356fa2c8897559fad3da1969177
+  remote: https://github.com/pysis868/standalone-migrations
+  revision: 0ec51c18245a6a5ae971174cb742e4e070eaeb59
+  branch: master-thuss-improved
   specs:
     standalone_migrations (7.1.1)
       activerecord (>= 4.2.7, < 7.1.0, != 5.2.3.rc1, != 5.2.3)

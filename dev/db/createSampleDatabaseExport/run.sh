@@ -184,7 +184,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       descPrefixToRemoveAI='Exporting the rest of the database structure';
       descPrefixAIRemove='Removing auto increment values in sensitive data tables';
     else
-      descPrefixToRemoveAI="Exporting structure for table \"$tableName\"";
+      descPrefixToRemoveAI="Exporting structure";
       descPrefixAIRemove='Removing auto increment value in this sensitive data table';
     fi
 
@@ -350,7 +350,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
 ## Main Environment Configuration
 {
-  [[ -z "$briefMessages"    ]] &&       briefMessages="false"       ;
+  [[ -z "$briefMessages"    ]] &&       briefMessages="true"        ;
   [[ -z "$cleanOnFailure"   ]] &&      cleanOnFailure="true"        ;
   [[ -z "$converge"         ]] &&            converge="false"       ;
   [[ -z "$convergeInPlace"  ]] &&     convergeInPlace="false"       ;
@@ -387,17 +387,19 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
 ## Derived Configuration & Internal Variables
 {
-  samplesDir="$SDIR/../samples";
+  samplesDir="$(readlink -f "$SDIR/../samples")";
 
   ## Database connection Details
   {
     while [[ -z "$databaseUser" ]]; do
       if [[ -z "$databaseConnectionString" ]]; then
         if [[ -z "$databaseUser" ]]; then
+          # Use the admin/management user, at least for the lock tables permission.
           if type -t 'js-yaml' >/dev/null; then
             databaseUser="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.username')";
             # debugPrint "databaseUser: $databaseUser";
           fi
+          # databaseUser="$(grep -P '^DBUSER=' "$SDIR/../../../.env" | cut -d'=' -f2-)";
         fi
         if [[ -z "$databaseUser" ]]; then
           read -p "Database Username: " databaseUser;
@@ -410,11 +412,16 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     if [[ -z "$databasePassword" ]]; then
       if [[ -z "$databaseConnectionString" ]]; then
         if [[ -z "$databasePassword" ]]; then
-          # databasePassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
+          # Use the admin/management user, at least for the lock tables permission.
           if type -t 'js-yaml' >/dev/null; then
             databasePassword="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.password')";
             # debugPrint "databasePassword: $databasePassword";
           fi
+          # databasePassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
+          # databasePassword="$(grep -P '^DBPASSWD=' "$SDIR/../../../.env" | cut -d'=' -f2-)";
+          # if echo "$databasePassword" | grep -qP '^"'; then
+          #   databasePassword="$(echo "$databasePassword" | sed -r -e 's|(^")\|("$)||g' -e 's|\\"|"|g')";
+          # fi
         fi
         if [[ -z "$databasePassword" ]]; then
           # echo "$databaseConnectionString" | grep -vq " -p" && \
@@ -463,6 +470,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   if [[ -z "$dbClientCommonOptions" ]]; then
     dbClientCommonOptions="$dbClientCommonOptions $databaseConnectionString";
     dbClientCommonOptions="$dbClientCommonOptions --database=$databaseName";
+    dbClientCommonOptionsNoVerbose="$dbClientCommonOptions";
     dbClientCommonOptions="$dbClientCommonOptions $verboseString";
   fi
 
@@ -613,6 +621,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   # debugPrint "Script Start";
 
+  echo 'Initializing...';
+
   ## Basic Preliminary Tests
   {
     issueStep \
@@ -714,25 +724,31 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint "Not oneFile Start";
 
     ## Export to multiple, individual files.
-    issueStep \
-      'Reading and storing list of tables...' \
-      "defaultTableNames=\"\$(  \
-        '$dbClientExe'          \
-        $dbClientCommonOptions  \
-        -e 'SHOW TABLES'        \
-        --batch                 \
-        --skip-column-names     \
-      ;)\"
-    ";
-    # | tail -n +5            \
+
+    ## Read list of available tables, at least for validation,
+    ## but also to process for export if none are explicitly selected.
+    {
+      issueStep \
+        'Reading and storing list of tables...' \
+        "defaultTableNames=\"\$(  \
+          '$dbClientExe'          \
+          $dbClientCommonOptionsNoVerbose \
+          -e 'SHOW TABLES'        \
+          --batch                 \
+          --skip-column-names     \
+        ;)\"
+      ";
+    }
+
     if [[ -z "$defaultTableNames" ]]; then
       errorPrint 'Could not retrieve list of table names, or there are none; exiting...';
       exit 1;
     fi
+    # debugPrint "defaultTableNames: $defaultTableNames";
+
     if [[ -z "$tableNames" ]]; then
       tableNames="$defaultTableNames";
     fi
-    # debugPrint "defaultTableNames: $defaultTableNames";
     # debugPrint "tableNames: $tableNames";
 
     echo;
@@ -741,6 +757,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       # debugPrint "Table Start";
       # debugPrint "tableName: $tableName";
 
+      echo "Processing table \"$tableName\"...";
+
+      # Skip ignored tables.
       if includes \
         "$ignoreTables" \
         "$tableName" \
@@ -870,7 +889,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
         ## Handle tables that don't require transforming data with the same AI value.
         issueStep     \
-          "Exporting complete table \"$tableName\" to an individual completed result file, keeping the auto increment values to match the data later on."  \
+          "Exporting complete table to an individual completed result file, keeping the auto increment values to match the data later on."  \
           "'$dbDumpExe'             \
             $dbDumpCommonOptions    \
             $tableName              \

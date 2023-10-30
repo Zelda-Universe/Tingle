@@ -4,14 +4,30 @@
     * Set-up database
       * If refreshing using the project's stored samples, issue this command after careful consideration:
         * ``echo 'DROP DATABASE IF EXISTS `zeldamaps`' | ./dev/db/command.fish``
-        * and then this script for the remaining tasks:
+        * If you are also having problems with the user accounts, you can run also this SQL query, and then use the install script instead:
+          * ``DROP USER IF EXISTS 'zeldamaps'@'localhost', 'zeldamaps-manage'@'localhost'``
+        * and then this script for the remaining project-specific tasks:
           * `dev/db/prep/refresh.fish`
       * Install and configure a database connection for this project.
         * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/
           * Linux
-            * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/linux-installation-native.html
-            * `sudo dnf install community-mysql-server`
-          * `sudo systemctl start mysqld`
+            * MariaDB
+              ```
+                > docker create   \
+                  --name mariadb  \
+                  --env MYSQL_ROOT_PASSWORD=(read -s -P 'Root Password: ') \
+                  --volume '/etc/mysql:/etc/mysql'            \
+                  --volume '/var/lib/mysql:/var/lib/mysql'    \
+                  --volume '/var/run/mysqld:/var/run/mysqld'  \
+                  mariadb:10.1.21
+                ;
+                > sudo chown -R 999:999 /var/run/mysqld
+                > sudo chmod -R 777 /var/run/mysqld
+              ```
+            * MySQL
+              * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/linux-installation-native.html
+              * `sudo dnf install community-mysql-server`
+              * `sudo systemctl start mysqld`
       * Setup project local backend PHP config parameters:
         * `cp .env.example .env`
         * Edit the newly copied `.env` file to your database's parameters for connection location and account credentials.
@@ -21,7 +37,7 @@
         * https://github.com/Sequel-Ace/Sequel-Ace
           * https://github.com/sequelpro/sequelpro/issues/2485#issuecomment-1403679595
         * https://dev.mysql.com/downloads/workbench/
-      * Perform the usual and secure database set-up tasks:
+      * Perform secure database set-up tasks:
         * Catch the new, randomly generated root account's password during the installation.
         * Windows/Cygwin?: Add `/usr/local/mysql/bin` to user path variable.
         * `mysql_secure_installation`

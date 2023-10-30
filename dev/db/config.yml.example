@@ -1,8 +1,9 @@
 defaults: &DEFAULTS
   adapter: mysql2
-  database: tingle
-  username: tingle-manage
+  database: zeldamaps
+  username: zeldamaps-manage
   encoding: utf8
+  socket: /var/run/mysqld/mysqld.sock
 
 development:
   <<: *DEFAULTS
@@ -11,4 +12,3 @@ development:
 production:
   <<: *DEFAULTS
   password: ...
-  socket: /var/run/mysqld/mysqld.sock

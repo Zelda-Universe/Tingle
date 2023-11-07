@@ -60,22 +60,42 @@
       * Import the sample database files, hopefully using the specific management account.
     * Set-up web server
       * Linux:
+        * Docker:
+          * May need to replace a docker create volume set of options with `-v '/etc/nginx:/etc/nginx_host'` temporarily at first (if you have never used this process before, and don't have recent copies of a working, default, nginx configuration), then copy out the default configuration, then proceed with the direct directory mapping next for the normal container creation.
+          * ```
+            docker create   \
+              --name nginx  \
+              -p 80:80      \
+              -v '/etc/nginx:/etc/nginx'          \
+              -v '/var/log/nginx:/var/log/nginx'  \
+              -v '/srv/nginx:/srv'                \
+              nginx         \
+            ;
+            ```
+            * SSL/TLS/HTTPS does not seem to work with the container.
+              * May still be recommended when the container can ease deployment for use in more important contexts.
+              * `sslscan` could be used to help investigate and solve problems fixing this configuration.
+              * For now, version `2.0.6-static` showed the container using OpenSSL 1.1.1g, and all features not suppored, disabled, or failed.
         * Compile:
           * https://www.php.net/distributions/
             * Current servers running 7.0.33.
             * Using 7.4.33.
           * https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
           * Or: https://askubuntu.com/questions/134666/what-is-the-easiest-way-to-enable-php-on-nginx
-        * Packages:
-        * `sudo dnf install nginx php-fpm php-mysqlnd`
-          * https://www.php.net/manual/en/mysqli.installation.php
-        * `sudo mkdir -p /etc/nginx`
-        * `sudo openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout /etc/nginx/nginx.key -out /etc/nginx/nginx.crt`
-        * `cp dev/server/nginx/site.conf.example dev/server/nginx/site.conf`
-        * `sed -i -r 's|(\s+set \$project_location ).+$|\1'(readlink -f .)';|' dev/server/nginx/site.conf`
-        * Could use `unix:/` socket instead of network pass.
-        * `sudo ln -s (readlink -f dev/server/nginx/site.conf) /etc/nginx/conf.d/Tingle.conf`
-        * `sudo systemctl start php-fpm nginx`
+        * Manual
+          * Packages:
+            * `sudo dnf install nginx php-fpm php-mysqlnd`
+              * https://www.php.net/manual/en/mysqli.installation.php
+          * `sudo mkdir -p /etc/nginx`
+          * `sudo systemctl start php-fpm nginx`
+        * Configuration:
+          * Add `/etc/hosts` line:
+            * `127.0.0.1 zeldamaps`
+          * `sudo openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout /etc/nginx/conf.d/zeldamaps.key -out /etc/nginx/conf.d/zeldamaps.crt`
+          * `cp dev/server/nginx/site.conf.example dev/server/nginx/site.conf`
+          * `sed -i -r 's|(\s+set \$project_location ).+$|\1'(readlink -f .)';|' dev/server/nginx/site.conf`
+          * Could use `unix:/` socket instead of network pass.
+          * `sudo ln -s /srv/ZU/Zelda-Maps-Website/dev/server/nginx/site.conf /etc/nginx/conf.d/Zelda-Maps.conf`
         * Check for failures due to SELinux
           * `sudo systemctl status nginx`
             * open failed for site conf file

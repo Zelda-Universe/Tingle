@@ -2,6 +2,7 @@
 ## Environment Files
 /.env
 /dev/server/nginx/site.conf
+/dev/server/nginx/root.conf
 /dev/db/config.yml
 /dev/db/samples/*-01-structure_to-remove-AI.sql
 /dev/db/samples/*-02-structure_AI-removed.sql
@@ -36,5 +37,6 @@ node_modules
 # Extra Files
 ## Part of the database migration framework we're using that could be useful, just not right now.
 /dev/db/schema.rb
+/dev/db/samples/zeldamaps-*
 /dev/db/samples/tingle-*
 *.sublime-workspace

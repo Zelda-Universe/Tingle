@@ -19,9 +19,9 @@
                   --volume '/etc/mysql:/etc/mysql'            \
                   --volume '/var/lib/mysql:/var/lib/mysql'    \
                   --volume '/var/run/mysqld:/var/run/mysqld'  \
+                  --volume '/srv/nginx:/srv'                  \
                   mariadb:10.1.21
                 ;
-                > sudo chown -R 999:999 /var/run/mysqld
                 > sudo chmod -R 777 /var/run/mysqld
               ```
             * MySQL
@@ -60,52 +60,95 @@
       * Import the sample database files, hopefully using the specific management account.
     * Set-up web server
       * Linux:
-        * Docker:
-          * May need to replace a docker create volume set of options with `-v '/etc/nginx:/etc/nginx_host'` temporarily at first (if you have never used this process before, and don't have recent copies of a working, default, nginx configuration), then copy out the default configuration, then proceed with the direct directory mapping next for the normal container creation.
-          * ```
-            docker create   \
-              --name nginx  \
-              -p 80:80      \
-              -v '/etc/nginx:/etc/nginx'          \
-              -v '/var/log/nginx:/var/log/nginx'  \
-              -v '/srv/nginx:/srv'                \
-              nginx         \
-            ;
-            ```
+        * Nginx:
+          * Creation:
+            * Docker:
+              * Simple:
+                * https://hub.docker.com/_/nginx#How_to_use_this_image
+              * Multi-site:
+                * Initial load:
+                  * May need to replace a docker create volume set of options with `-v '/etc/nginx:/etc/nginx-host'` temporarily at first (if you have never used this process before, and don't have recent copies of a working, default, nginx configuration), then copy out the default configuration, then remove and proceed with the direct directory mapping next for the normal container creation.
+                    * You could also just use `-v '/etc/nginx/conf.d:/etc/nginx/conf.d'`.
+                      * You might see errors looking for `default.html` if you don't copy out that file for this location.
+                * ```
+                  docker create   \
+                    --name nginx  \
+                    -p 80:80      \
+                    -v '/etc/nginx:/etc/nginx'                  \
+                    -v '/var/log/nginx:/var/log/nginx'          \
+                    -v '/srv/nginx:/srv'                        \
+                    -v '/usr/local/var/run:/usr/local/var/run'  \
+                    nginx         \
+                  ;
+                  ```
+          * Compile:
+            * https://www.php.net/distributions/
+              * Current servers running 7.0.33.
+              * Using 7.4.33.
+            * https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
+            * Or: https://askubuntu.com/questions/134666/what-is-the-easiest-way-to-enable-php-on-nginx
+          * Manual
+            * Packages:
+              * `sudo dnf install nginx php-fpm php-mysqlnd`
+                * https://www.php.net/manual/en/mysqli.installation.php
+            * `sudo mkdir -p /etc/nginx`
+            * `sudo systemctl start php-fpm nginx`
+          * Configuration:
+            * Add `/etc/hosts` line:
+              * `127.0.0.1 zeldamaps`
+            * SSL Preparation, if working:
+              * `sudo openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout /etc/nginx/conf.d/zeldamaps.key -out /etc/nginx/conf.d/zeldamaps.crt`
+            * `cp dev/server/nginx/site.conf.example dev/server/nginx/site.conf`
+            * `sed -i -r 's|(\s+set \$project_location ).+$|\1'(readlink -f .)';|' dev/server/nginx/site.conf`
+            * Could use `unix:/` socket instead of network pass.
+            * `sudo ln -s /srv/ZU/Zelda-Maps-Website/dev/server/nginx/site.conf /etc/nginx/conf.d/Zelda-Maps.conf`
+          * Check for failures:
+            * `sudo systemctl status nginx`
+              * open failed for site conf file
+                * Either used the wrong path when symlinking,
+                * Or SELinux problem:
+                  * Copy relevant error line.
+                  * `xclip -out | audit2why`
+                  * `xclip -out | audit2allow`
+                  * `sudo semodule -i dev/server/nginx/selinux/httpd-dosfs_read-open.pp/`
+            * `sudo systemctl status php-fpm`
+              * May require additional permissions to connect to network address and port for database communication.
+                * Using the local Linux socket route works with additional configuration.
             * SSL/TLS/HTTPS does not seem to work with the container.
               * May still be recommended when the container can ease deployment for use in more important contexts.
               * `sslscan` could be used to help investigate and solve problems fixing this configuration.
               * For now, version `2.0.6-static` showed the container using OpenSSL 1.1.1g, and all features not suppored, disabled, or failed.
-        * Compile:
-          * https://www.php.net/distributions/
-            * Current servers running 7.0.33.
-            * Using 7.4.33.
-          * https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
-          * Or: https://askubuntu.com/questions/134666/what-is-the-easiest-way-to-enable-php-on-nginx
-        * Manual
-          * Packages:
-            * `sudo dnf install nginx php-fpm php-mysqlnd`
-              * https://www.php.net/manual/en/mysqli.installation.php
-          * `sudo mkdir -p /etc/nginx`
-          * `sudo systemctl start php-fpm nginx`
-        * Configuration:
-          * Add `/etc/hosts` line:
-            * `127.0.0.1 zeldamaps`
-          * `sudo openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout /etc/nginx/conf.d/zeldamaps.key -out /etc/nginx/conf.d/zeldamaps.crt`
-          * `cp dev/server/nginx/site.conf.example dev/server/nginx/site.conf`
-          * `sed -i -r 's|(\s+set \$project_location ).+$|\1'(readlink -f .)';|' dev/server/nginx/site.conf`
-          * Could use `unix:/` socket instead of network pass.
-          * `sudo ln -s /srv/ZU/Zelda-Maps-Website/dev/server/nginx/site.conf /etc/nginx/conf.d/Zelda-Maps.conf`
-        * Check for failures due to SELinux
-          * `sudo systemctl status nginx`
-            * open failed for site conf file
-              * Copy relevant error line.
-              * `xclip -out | audit2why`
-              * `xclip -out | audit2allow`
-              * `sudo semodule -i dev/server/nginx/selinux/httpd-dosfs_read-open.pp/`
-          * `sudo systemctl status php-fpm`
-            * May require additional permissions to connect to network address and port for database communication.
-              * Using the local Linux socket route works with additional configuration.
+        * PHP-FPM/-CGI
+          * Creation:
+            * Docker:
+              * Initial load:
+                * May need to replace a docker create volume set of options with `-v '/usr/local/etc/php7:/usr/local/etc-php-host'` temporarily at first (if you have never used this process before, and don't have recent copies of a working, default, nginx configuration), then copy out the default configuration, then remove and proceed with the direct directory mapping next for the normal container creation.
+              * ```
+                docker create --name php7 \
+                  -v '/usr/local/etc/php7:/usr/local/etc'         \
+                  -v '/usr/local/var/run/php7:/usr/local/var/run' \
+                  -v '/var/run/mysqld:/var/run/mysqld'            \
+                  -v '/srv/nginx:/srv'    \
+                  php:7.4.33-fpm          \
+                ;
+                ```
+              * Configuration:
+                * `sudo chown -R <user>:<user> /usr/local/etc/php7`
+                * `sudo chmod 666 /usr/local/var/run/php7/php-fpm.sock`
+                * `php-fpm.d/www.conf`
+                  * Lines 36-37: ```
+                    ; listen = 127.0.0.1:9000
+                    listen = /usr/local/var/run/php-fpm.sock
+                    ```
+                  * Line 51: `listen.mode = 0666`
+                * `php-fpm.d/zz-docker.conf`
+                  * Lines 4-5: ```
+                    ;[www]
+                    ;listen = 9000
+                    ```
+                * `cd '/srv/ZU/Zelda-Maps-Website/'`
+                * `chgrp 33 .`
+                * `chmod g+w .`
       * Mac:
         * nginx or [MAMP](https://www.mamp.info)
         * Install through Homebrew: `brew install nginx`.
@@ -139,8 +182,12 @@
         * Tell the Windows OS to "Allow network connections" when the dialog automatically appears.
     * PHP dependencies
       * Mysqli
-        * Now the mysqlnd package.
-        * (Old?) Make sure it is enabled in `php.ini`.  Just uncomment the extension line most likely.
+        * Docker
+          * `docker exec php7 docker-php-ext-install mysqli`
+            * https://hub.docker.com/_/php/#How_to_install_more_PHP_extensions
+        * Manual
+          * Now the mysqlnd package?
+          * (Old?) Make sure it is enabled in `php.ini`.  Just uncomment the extension line most likely.
       * Optional: Install php zend extension xdebug
         * https://xdebug.org/wizard
         * https://stackify.com/php-debugging-guide/

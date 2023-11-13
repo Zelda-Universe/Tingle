@@ -56,7 +56,13 @@
 
   I used this command to reverse the timestamps: `date -d @(getclip) | head -c -1 | putclip`.
 
+  If converting from a human-readable date-time format to a Unix timestamp, use this: `echo 'console.log(Date.parse(\''(xout)'\'));' | node - | head -c -4;`
+
+  Old/alternative/limited information: `date -d (xout) '+%s'`.  Although, I had to change it from this format `Fri May 12 01:45:45 2023 -0700`, to this one manually: `2023-05-12 01:45:45 -0700`.
+
   You can see if a version already exists by using this command `git show-ref refs/tags/<version_name>` and seeing if you have a line output with a hash or not.
+
+  To find the published version links: https://www.reddit.com/r/zelda/search/?q=%22zelda%20maps%22%20released&restrict_sr=1
 
 # Backup
 

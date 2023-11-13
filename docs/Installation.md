@@ -1,6 +1,6 @@
 # Install
   * Download project from GitHub at this URL: `https://github.com/Zelda-Universe/Zelda-Maps-Website`.
-  * Set-up Dependencies
+  * Set-up Dependencies (for viewing/operating/executing)
     * Set-up database
       * If refreshing using the project's stored samples, issue this command after careful consideration:
         * ``echo 'DROP DATABASE IF EXISTS `zeldamaps`' | ./dev/db/command.fish``
@@ -219,7 +219,7 @@
           + `env outputZoomFolders=true dev/generateDebugTiles.fish markers/debug/test`
           + This script can serve as a nice template for any potential future use.
         - Note I've been including an additional, non-default parameter for these sample script invocations.  Right now, We keep all tiles in one directory, but it may be helpful to transition to using nested zoom folders.
-  * Coding Workflow
+  * Coding Workflow (for development)
     * Import this Git Flow configuration:
       * ```
         [gitflow "branch"]
@@ -234,22 +234,38 @@
         ```
     * Install database migration creation framework tool, and run it.
       * Install Ruby and its development header files too.
-        * I used 2.4.1/3.1.3.
+        * I used 2.4.1/3.2.2.
+        * I chose `ruby.x86_64` and `ruby-devel.x86_64` using Fedora, and received this list as remaining required dependencies:
+          * `ruby-default-gems.noarch`
+          * `ruby-libs.x86_64`
+          * `rubygem-bigdecimal.x86_64`
+          * `rubygem-bundler.noarch`
+          * `rubygem-io-console.x86_64`
+          * `rubygem-json.x86_64`
+          * `rubygem-psych.x86_64`
+          * `rubygem-rdoc.noarch`
+          * `rubygems.noarch`
+          * `rubypick.noarch`
+        * Should include bundler, doc, and basic/default gemset for your OS distribution.
+         * bundler
+          * 1.16.1/2.4.20
+          * To update:
+            * `sudo bundle update --bundler`
       * Install/Update RubyGems
         * https://rubygems.org/pages/download
-        * I used 2.6.11/3.3.26/3.4.10.
+        * I used 2.6.11/3.4.20.
           * `gem update --system`
       * Install the migration tool, and its dependencies
         * Note: If you use Cygwin or other Linux-like environments like msys2 or mingw, be careful that they don't interfere with gems that require native installation at least like nokogiri, but also possibly mysql2 as well.
-          * I removed the Cygwin ruby package and installed the native Windows one using the installer that bundles the devkit to help.  Then I had some stray `gem`, `rake`, and `*mingw*` commands in my Cygwin environment possibly without a proper package, so I just removed them, and also made fish functions to call them by their Windows-style paths.  I stopped getting install errors after that like configure with an `*-ar` executable, failed to apply a patch by not finding a file that is actually there, etc.
+          * I removed the Cygwin ruby package and installed the native Windows one using the installer that bundles the 'devkit' to help.  Then I had some stray `gem`, `rake`, and `*mingw*` commands in my Cygwin environment possibly without a proper package, so I just removed them, and also made fish functions to call them by their Windows-style paths.  I stopped getting install errors after that like configure with an `*-ar` executable, failed to apply a patch by not finding a file that is actually there, etc.
           * `gem install nokogiri -v 1.10.1 --platform=ruby`
           * Mysql2 was then having more unique issues..  I had to figure that out and issue a crazy command like this:
             * `gem install mysql2 -v 0.5.2 --platform=ruby -- --with-mysqlclient-dir="C:/Program Files/MySQL/MySQL Server 8.0/bin" --with-mysql-rpath="C:/Program\ Files/MySQL/MySQL\ Server\ 8.0/lib"`
         * The individual way
           * `gem install mysql2`
-            * 0.5.2
+            * 0.5.2/0.5.5
           * `gem install standalone_migrations`
-            * 5.2.5
+            * 5.2.5/7.1.2
             * You might need my edited version of the repository instead.
           * https://github.com/Pysis868/standalone-migrations
           * As of commit `685d343752a1b42ff844b5a75677db7e4acf8a36`.

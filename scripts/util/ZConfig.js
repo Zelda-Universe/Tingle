@@ -3,8 +3,8 @@
 // https://choosealicense.com/licenses/mit/
 
 // Main config set-up with defaults
-
-// Direct Settings
+// todo: change to 'define' and add desc field?
+// Direct Settings(?)
 ZConfig.setDefault('autoUpdateUrl'            , 'true' );
 ZConfig.setDefault('autoUpdateUrlMapsMenu'    , 'true' );
 ZConfig.setDefault('autoUpdateUrlMove'        , 'true' );

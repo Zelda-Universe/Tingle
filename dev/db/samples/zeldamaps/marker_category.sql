@@ -40,7 +40,7 @@ CREATE TABLE `marker_category` (
   CONSTRAINT `fk_marker_category_map_container1` FOREIGN KEY (`container_id`) REFERENCES `container` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_marker_category_marker_category1` FOREIGN KEY (`parent_id`) REFERENCES `marker_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_marker_category_marker_category_type1` FOREIGN KEY (`marker_category_type_id`) REFERENCES `marker_category_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2174 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2176 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -254,13 +254,13 @@ INSERT INTO `marker_category` VALUES
   (2138,2120,1,21,'Stables',1,'BotW_Stables','#8e72b9',5,1),
   (2139,2130,1,21,'Wizzrobe',1,'BotW_Wizzrobe','#ff422e',6,1),
   (2140,2130,1,21,'Lynel',1,'BotW_Lynel','#ff422e',6,1),
-  (2141,2130,1,21,'Talus',1,'BotW_Boss','#ff422e',6,1),
+  (2141,2130,1,21,'Talus',1,'BotW_Icon_Talus','#ff422e',6,1),
   (2142,2130,1,21,'Hinox',1,'BotW_Hinox','#ff422e',6,1),
   (2143,2110,1,21,'Treasure Chest (Non-Equip.)',1,'BotW_Treasure-Chest','#3cbc75',6,1),
   (2144,2102,1,21,'Treasure Chest (Weapon)',1,'BotW_Treasure-Chest','#ffad48',6,1),
   (2145,2102,1,21,'Treasure Chest (Armor)',1,'BotW_Armor','#ffad48',6,1),
   (2146,2101,1,21,'Diary & Books',1,'BotW_Book','#4bc5ee',8,1),
-  (2147,2130,1,21,'Molduga',1,'BotW_Boss','#ff422e',6,1),
+  (2147,2130,1,21,'Molduga',1,'BotW_Icon_Molduga','#ff422e',6,1),
   (2148,2101,1,21,'Cooking Pot',1,'BotW_Cooking_Pot','#4bc5ee',8,1),
   (2149,2101,1,21,'Goddess Statue',1,'BotW_Goddess_Statue','#4bc5ee',6,1),
   (2150,2120,1,21,'Wells',1,'TotK_Well','#8e72b9',6,1),
@@ -283,8 +283,12 @@ INSERT INTO `marker_category` VALUES
   (2167,2101,1,21,'Device Dispenser',1,'TotK_Dispenser','#4bc5ee',6,1),
   (2168,2101,1,21,'Cherry Tree',1,'TotK_CherryTree','#4bc5ee',6,1),
   (2169,2101,1,21,'Ancient Tablet',1,'TotK_AncientTablet','#4bc5ee',6,1),
-  (2170,2130,1,21,'Gloom Hands',1,'BotW_Boss','#ff422e',6,1),
-  (2173,2101,1,21,'Dragon',1,'TotK_Dragon','#4bc5ee',6,1)
+  (2170,2130,1,21,'Gloom Spawn',1,'BotW_Boss','#ff422e',6,1),
+  (2171,2101,1,21,'Rock Octorok (Repair)',1,'BotW_Boss','#4bc5ee',6,1),
+  (2172,2101,1,21,'Ghost with Weapon',1,'BotW_Weapons','#4bc5ee',6,1),
+  (2173,2101,1,21,'Dragon',1,'TotK_Dragon','#4bc5ee',6,1),
+  (2174,2101,1,21,'Forge Construct',1,'TotK_Forge_Construct','#4bc5ee',6,1),
+  (2175,2101,1,21,'Bargainer Statue',1,'TotK_Bargainer_Statue','#4bc5ee',6,1)
 ;
 /*!40000 ALTER TABLE `marker_category` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -298,4 +302,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-30 21:07:31
+-- Dump completed on 2023-11-13 18:32:34

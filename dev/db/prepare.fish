@@ -2,16 +2,20 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-source "$SDIR/../../scripts/common/errorPrint.fish";
+source "$SDIR/../scripts/common/errorPrint.fish";
 
 ## Mode
+set mode "$argv[1]";
 
-if test "$argv[1]" = 'refresh'
-  set modeInstall 'false' ;
-  set modeRefresh 'true'  ;
-else
-  set modeInstall 'true'  ;
-  set modeRefresh 'false' ;
+if test -z "$mode"
+  errorPrint 'Mode must not be empty; exiting...';
+  return 1;
+end
+
+if not echo "$mode" \
+  | grep -qP '((install)|(refreshAll)|(refreshSpecific))'
+  errorPrint 'Mode must be one of either \"install\", \"refreshAll\", or \"refreshSpecific\"; exiting...';
+  return 2;
 end
 
 ## Credentials
@@ -19,32 +23,6 @@ end
 # if test -z "$dbUser"
 #   set dbUser 'root';
 # end
-
-if test -z "$dbRootPP"
-  if not read -s -P 'Database Root Passphrase: ' dbPP;
-    errorPrint 'This information is required for root account database access; exiting...';
-    exit 1;
-  end
-end
-if test -z "$dbBasicPP"
-  if not set -x dbBasicPP (
-    read -s -P 'Database Basic Account Passphrase: ' \
-    | sed -r 's|\'|\\\\\'|g'
-    )
-
-    errorPrint 'This information is required for default project account database access; exiting...';
-    exit 2;
-  end
-end
-if test -z "$dbAdvPP"
-  if not set -x dbAdvPP (
-    read -s -P 'Database Advanced Account Passphrase: ' \
-    | sed -r 's|\'|\\\\\'|g'
-    )
-    errorPrint 'This information is required for manage project account database access; exiting...';
-    exit 3;
-  end
-end
 
 ## Query Preparation
 
@@ -56,7 +34,7 @@ set sqlCreateDB                         \
 ;
 
 ## When installing, add more queries to create users with certain permissions.
-if test "$modeInstall" = 'true'
+if test "$mode" = 'install'
   set sqlUserAccessCreate           \
     'CREATE USER '\n                \
     'IF NOT EXISTS'\n               \
@@ -106,7 +84,7 @@ if test "$modeInstall" = 'true'
 end
 
 ## Based on the mode, add the appropriate queries to the processing list.
-if test "$modeInstall" = 'true'
+if test "$mode" = 'install'
   set sqlQueries                \
     "$sqlCreateDB"              \
     "$sqlUserAccessCreate"      \
@@ -114,7 +92,7 @@ if test "$modeInstall" = 'true'
     "$sqlUserManageCreate"      \
     "$sqlUserManageGrantEnough" \
   ;
-else if test "$modeRefresh" = 'true'
+else if test "$mode" = 'refreshAll'
   set sqlQueries                \
     "$sqlCreateDB"              \
   ;
@@ -122,27 +100,47 @@ end
 
 ## Execution
 
-echo 'Running queries...';
-echo;
+if test -n "$sqlQueries"
+  echo 'Running queries...';
+  echo;
 
-for sqlQuery in $sqlQueries
-  echo 'sqlQuery: '\n"$sqlQuery";
+  for sqlQuery in $sqlQueries
+    echo 'sqlQuery: '\n"$sqlQuery";
 
-  if not echo "$sqlQuery" | mariadb -p"$dbRootPP"
-    errorPrint 'Last query execution failed; skipping remaining queries...';
-    exit 4;
-  else
-    echo;
+    if not echo "$sqlQuery" | mariadb -p"$dbRootPP"
+      errorPrint 'Last query execution failed; skipping remaining queries...';
+      exit 4;
+    else
+      echo;
+    end
   end
 end
 
-if pushd "$SDIR/../samples/zeldamaps"
+echo 'Loading sample data...';
+echo;
+
+if pushd "$SDIR/samples/zeldamaps"
+  if test -n "$tableNames"
+    echo 'Limiting loading to specified tables...';
+    echo "$tableNames";
+    echo;
+  end
+  # debugPrint "tableNames: $tableNames";
+
   find -type f -iname '*.sql' -printf '%f\n' \
   | sort | while read file
-    echo "Importing \"$file\"...";
-    if not '../../command.fish' < "$file" ;
-      errorPrint 'Last query file import failed; skipping remaining files...';
-      exit 5;
+    # debugPrint "fRE f: "(filenameRemoveExtension "$file");
+
+    if begin
+      test -z "$tableNames";
+      or echo "$tableNames" \
+      | grep -qP '\b'(filenameRemoveExtension "$file")'\b'
+    end
+      echo "Importing \"$file\"...";
+      if not "$SDIR/command.fish" < "$file"
+        errorPrint 'Last query file import failed; skipping remaining files...';
+        exit 5;
+      end
     end
   end
 

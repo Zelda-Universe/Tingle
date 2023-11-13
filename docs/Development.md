@@ -253,15 +253,28 @@
             - No action cannot be specified using AR code, as it does not support that key as a dependency, so use raw SQL for that choice instead.
             - Restrict is MySQL-specific, MariaDB of course supports, equivalent to no action for the standard, mostly, may be a difference between immediate rejection by statement, when using InnoDB engine, or upon transaction commit, allowing it to be resolved more flexibly.
           - Source: `dev/db/migrate/20230607153536_update_fk_actions.rb`
-    - Execute Raw SQL:
-      - So far in the migration Ruby code just have the up method typically, but could always support down with the custom opposing statements in later habits where necessary.
+    - Raw SQL:
+      - Omitting respective rollback/'down' statements
+        - ```
+          def down
+            puts 'Error: Not yet implemented.'
+            exit 254
+          end
+          ```
+        - Note (efficient/convenient working):
+        - For now, just use the sample provided to make it more obvious.
+          - The migrations' format just has the up method typically, but could always support down with the custom opposing statements in later habits where necessary, in one case, testing feature/data breakages, but probably just for smaller changesets.
       - Inline statement:
         - ```
           execute <<-SQL
             UPDATE `user` SET `seen_latest_changelog` = 0;
           SQL
           ```
-      - External file:
+      - External file(s):
+        - Note (Working/developing):
+          - The execution of loading multiple SQL files may, for some reason, be run as separate transactions, and persist, even when the migration fails to be added completely, resulting in partial progress, and causing successive migrations to fail, such as later during repeated executions, with the error of a duplicate primary key.
+            - Reset all application table to the current stored sample data, fix any errors specific to the developing mifgration file(s), and continue.
+            - `set -x tableNames (read); dev/db/prepare.fish refreshSpecific;` can help with this process.
         - Single statement
           - Code: ```
             execute File.open(
@@ -279,36 +292,101 @@
             reject  { |line| line.empty? or line =~ /\A\s+\Z/ }
             sqlOrganized.each { |sqlLine| execute(sqlLine) }
             ```
-      - External files:
-        - Code: ```
-          def sqlFileNames
+        - External files:
+          - Code (Init): ```
+            def sqlFileNames
+              [
+                '1-container'       ,
+                '2-map'             ,
+                '3-submap'          ,
+                '4-marker_category' ,
+                '5-marker'
+              ]
+            end
+            ```
+              - Source: `dev/db/migrate/20230607195019_add_dragon_data.rb`
+            - Code (Load & Execute): ```
+            filePathPattern = "#{__dir__}/sql/" +
+              File.basename(__FILE__).
+              sub(/\.rb$/i, '/%s.sql')
+
+            sqlFileNames.each do |sqlFileName|
+              sqlFile = sprintf(filePathPattern, sqlFileName);
+              execute File.open(sqlFile).read
+            end
+            ```
+              - Source: `dev/db/migrate/20230607195019_add_dragon_data.rb`
+      - Multiple Queries:
+        - Code (Mixed file types - Init): ```
+          def sqlFileNamesMultiple
             [
-              '1-container'       ,
-              '2-map'             ,
-              '3-submap'          ,
-              '4-marker_category' ,
-              '5-marker'
+              '1-marker_category-updates'
             ]
           end
           ```
-          ```
-          filePathPattern = "#{__dir__}/sql/" +
-            File.basename(__FILE__).
-            sub(/\.rb$/i, '/%s.sql')
-
-          sqlFileNames.each do |sqlFileName|
-            sqlFile = sprintf(filePathPattern, sqlFileName);
-            execute File.open(sqlFile).read
+            - Source: `dev/db/migrate/20231109164022_remaining_tot_k_updates.rb`
+          - Code (Mixed file types - Branch): ```
+            if sqlFileNamesMultiple.include?(sqlFileName)
+              File.open(sqlFile).read.lines.each do |line|
+                execute line if line != "\n"
+              end
+            else
+              execute File.open(sqlFile).read
+            end
+            ```
+              - Source: `dev/db/migrate/20231109164022_remaining_tot_k_updates.rb`
+        - Code (Single File - Single Line Statements): ```
+          File.open(
+            '....sql'
+          ).read.lines.each do |line|
+            execute line if line != "\n"
           end
           ```
-      - Multiple Queries:
-        - Remove `execute` from the beginning of the line, and add `.lines.each { |line| execute line if line != "\n" }` to the read command for the file containing the queries separated by newlines.
+          - Edits Explanation:
+            - Remove `execute` from the beginning of the line, and add `.lines.each { |line| execute line if line != "\n" }` to the read command for the file containing the queries separated by newlines.
+          - Source: `dev/db/migrate/20230607193507_marker_update_path_for_new_crs.rb`
+        - Code (Single File - Multi Line Statements): Unsupported
+          - Parsing too complex.
+            - Start with non-empty,
+            - end with semicolon on line by itself?
+              - Better than at end in case string literal is still open, which would require more parsing..
+              - Still still a bit strict format,
+              and necessary not to forget semicolon,
+              but that would show an error message from the interpreter anyway.
     - Specific Goals:
       - Investigating/Debugging
         - ```
           require 'pry'; binding.pry
           exit
           ```
+      - Updating entries:
+        - Code (Id - Value): ```
+          UPDATE `marker_category`
+          SET `img` = 'BotW_Icon_Talus'
+          WHERE `id` = '2141'
+          ;
+          ;
+          ```
+            - Source: `dev/db/migrate/sql/20231109164022_remaing_tot_k_updates/1-marker_category.sql`
+        - Code (Id - Values): ```
+          UPDATE `container`
+          SET
+            `bound_top_pos_x`     = '16'  ,
+            `bound_top_pos_y`     = '-16' ,
+            `bound_bottom_pos_x`  = '-134',
+            `bound_bottom_pos_y`  = '157'
+          WHERE `id` = '21'
+          ;
+          ```
+            - Source: `dev/db/migrate/20230525181248_tot_k_update_data.rb`
+        - Code (Condition - Values): ```
+          UPDATE `marker`
+             SET `x` = (`x` * 256 * 12000 / 36000) - 6000
+               , `y` = (`y` * 256 * 10000 / 30000) + 5000
+           WHERE `submap_id` IN (2101, 2102, 2103)
+          ;
+          ```
+            - Source: `dev/db/migrate/20230525181248_tot_k_update_data.rb`
       - Removing entries:
         - Code (List/Array of Values): ```
         execute <<-SQL
@@ -317,14 +395,23 @@
           ;
         SQL
         ```
-        - Code (Condition): ```
+          - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
+        - Code (Condition - Id Range): ```
+        execute <<-SQL
+          DELETE FROM `marker_tab`
+          WHERE `id` BETWEEN 29342 AND 29348
+          ;
+        SQL
+        ```
+          - Source: `dev/db/migrate/20230607195019_add_dragon_data.rb`
+        - Code (Condition - Any): ```
         execute <<-SQL
           DELETE FROM `mapper`
           WHERE `id` = 3;
           ;
         SQL
-          ```
-        - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
+        ```
+          - Source: `dev/db/migrate/disabled/20230406031615_submap_add_tot_k_overworld_submaps.rb`
       - Reverting the auto increment value:
         - Note: Be sure to check if the table actually has auto increment column(s).
         - Code (Dynamic): ```

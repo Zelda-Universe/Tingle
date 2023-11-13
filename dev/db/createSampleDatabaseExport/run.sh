@@ -453,6 +453,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         databaseConnectionString+=" --port='$databasePort'";
       fi
     fi
+    # debugPrint "databaseConnectionString: $databaseConnectionString"
   }
 
   if [[ "$verbose" == 'true' ]]; then

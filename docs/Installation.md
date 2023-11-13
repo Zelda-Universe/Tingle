@@ -7,7 +7,7 @@
         * If you are also having problems with the user accounts, you can run also this SQL query, and then use the install script instead:
           * ``DROP USER IF EXISTS 'zeldamaps'@'localhost', 'zeldamaps-manage'@'localhost'``
         * and then this script for the remaining project-specific tasks:
-          * `dev/db/prep/refresh.fish`
+          * `dev/db/prepare.fish refreshAll`
       * Install and configure a database connection for this project.
         * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/
           * Linux
@@ -16,14 +16,16 @@
                 > docker create   \
                   --name mariadb  \
                   --env MYSQL_ROOT_PASSWORD=(read -s -P 'Root Password: ') \
-                  --volume '/etc/mysql:/etc/mysql'            \
-                  --volume '/var/lib/mysql:/var/lib/mysql'    \
-                  --volume '/var/run/mysqld:/var/run/mysqld'  \
-                  --volume '/srv/nginx:/srv'                  \
+                  -v '/etc/mysql:/etc/mysql'            \
+                  -v '/var/lib/mysql:/var/lib/mysql'    \
+                  -v '/var/run/mysqld:/var/run/mysqld'  \
+                  -v '/srv/nginx:/srv'                  \
                   mariadb:10.1.21
                 ;
-                > sudo chmod -R 777 /var/run/mysqld
               ```
+                * `sudo chmod -R 777 /var/run/mysqld`
+                  * May need to be run every container start..
+                  * TODO: Fix in docker volume syntax?  Additional colon and options?
             * MySQL
               * https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/linux-installation-native.html
               * `sudo dnf install community-mysql-server`
@@ -48,7 +50,7 @@
             * Remove test database: `y`
             * Reload privs: `y`
       * Perform specific project database set-up tasks:
-        * `dev/db/prep/install.fish`
+        * `dev/db/prepare.fish install`
           * Create the database using a root account.
           * Create a dedicated basic account
             * It is recommended to only read and perform other basic functions to the related database schema(s) as a less privileged database account for this project to use.

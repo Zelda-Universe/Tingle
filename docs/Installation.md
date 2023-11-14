@@ -285,6 +285,3 @@
           * May only need to modify the password, and if not, also the database and/or username fields as well.
         * Migrate database
           * `rake db:migrate`
-            * Since using the bundler git format for the SM ruby gem, requires nesting using that tool to run commands to include specific gems such as that one:
-              * `bundle exec rake db:migrate`
-              * `alias rake 'bundle exec rake'`

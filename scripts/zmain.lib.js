@@ -232,7 +232,17 @@ function getMarkers() {
       getUserInfo();
       zMap.addMarkers(vResults);
       zMap.refreshMap();
+      
+      finalLoad();
     }.bind(this, gameId)
+  );
+};
+
+function finalLoad() {
+  zMap.goTo({
+      marker: ZConfig.getConfig('marker')
+    },
+    ZConfig.getConfig('zoom')
   );
 };
 

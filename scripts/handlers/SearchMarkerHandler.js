@@ -1,5 +1,5 @@
 // MIT Licensed
-// Copyright (c) 2023 Pysis(868)
+// Copyright (c) 2017-2024 Pysis(868)
 // https://choosealicense.com/licenses/mit/
 
 // SearchMarkerHandler - Connects the various related widgets to perform search actions, cohesively-containing logic, and provides configuration.

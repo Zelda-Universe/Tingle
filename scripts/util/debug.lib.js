@@ -1,14 +1,31 @@
 // MIT Licensed
-// Copyright (c) 2023 Pysis(868)
+// Copyright (c) 2017-2024 Pysis(868)
 // https://choosealicense.com/licenses/mit/
+
+// Config:
+// - targetClasses (Array)    : Class names to hook methods in.
+// - methodsToIgnore (Object) : Keys of class names, with values being lists of function names.
+
+// Example:
+// 
+// codetrace-targetClasses: [ "ZMap" ]
+// methodsToIgnore        : {
+//  "ZMap": [
+//    "addCategory"             ,
+//    "addMarker"               ,
+//    "addMarkers"              ,
+//    "addMarkerToCategoryCache",
+//    "_createMarkerIcon"       ,
+//    "_shouldShowMarker"       ,
+//    "_updateMarkerPresence"   ,
+//    "_updateMarkersPresence"
+//  ] }
 
 var callLevel = 0;
 
-var verbose = ZConfig.getConfig('verbose') == 'true';
-
 function debugPrint() {
-  if(verbose) {
-    console.debug(arguments);
+  if(ZConfig.getConfig('verbose') == 'true') {
+    console.debug.apply(this, arguments);
   }
 }
 
@@ -34,15 +51,15 @@ function startTracing() {
     ignore      : methodsToIgnore
   };
 
-  applyFunctionTraceToObjects(
+  applyFunctionTraceToClasses(
     targetClasses,
     debugOptions
   );
 }
 
-function applyFunctionTraceToObjects(objectsToTrace, options) {
-  objectsToTrace.forEach(function(objectToTrace) {
-    inject(objectToTrace, logFnCall, options);
+function applyFunctionTraceToClasses(classesToTrace, options) {
+  classesToTrace.forEach(function(classToTrace) {
+    inject(window[classToTrace], logFnCall, options);
   });
 }
 
@@ -95,7 +112,7 @@ function inject(object, extraFn, options = {}) {
   }
 }
 
-function logFnCall(before, className, fnName, options = {}, args) {
+function logFnCall(before, className, fnName, options = {}, args) {  
   if(options.abbvFn === undefined) options.abbvFn = true;
   if(options.argNewLines === undefined) options.argNewLines = false;
   if(options.colors === undefined) options.colors = true;
@@ -190,7 +207,7 @@ function logFnCall(before, className, fnName, options = {}, args) {
   quickColorLog.apply(console, [finalString].concat(colorList));
 
   if(callLevel == 0 && !before) {
-    quickColorLog('%c---  %cEnd  of Monitored Execution %c---', colors.punct, colors.fn, colors.punct);
+    quickColorLog('%c---   %cEnd of Monitored Execution %c---', colors.punct, colors.fn, colors.punct);
   }
 }
 

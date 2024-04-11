@@ -34,10 +34,11 @@ function editLines --argument-names filePath pattern sedCmd procLinesArrExpr
     getFilePatternLineNums  \
       "$filePath"           \
       "$pattern"            \
-    | jq -sr ".[$procLinesArrExpr][]"
+    | jq -sMr ".[$procLinesArrExpr][]"
   );
   # debugPrint "lineNums: $lineNums";
   # debugPrint -n "count lineNums: "; and count $lineNums;
+  # echo $lineNums | xxd; # Testing
 
   if test -z "$lineNums"
     # altPrint 'Pattern not found in file, at all, or after first match, from no line numbers being produced; exiting...';
@@ -46,11 +47,20 @@ function editLines --argument-names filePath pattern sedCmd procLinesArrExpr
 
   set sedExprOpts (
     for num in $lineNums
-      echo -- "-e" "$num $sedCmd";
+      echo -- '-e';
+      echo "$num$sedCmd";
+      # echo 's|123|h|g'; # Testing
     end
+    echo -- '--';
   );
   # debugPrint "sedExprOpts: $sedExprOpts";
+  # debugPrint 'count sedExprOpts: '(count $sedExprOpts);
 
-  sed -i $sedExprOpts "$filePath"
-  # sed $sedExprOpts "$filePath" # Testing
+  # echo sed -i $sedExprOpts "$filePath"; # Testing
+  sed -i $sedExprOpts "$filePath";
+  # echo sed $sedExprOpts "$filePath"; # Testing
+  # echo sed $sedExprOpts "$filePath" | xxd; # Testing
+  # string join -- \n sed $sedExprOpts "$filePath"; # Testing
+  # sed $sedExprOpts "$filePath" | head; # Testing
+  # cat "$filePath" | sed $sedExprOpts | head; # Testing
 end

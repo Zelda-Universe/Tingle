@@ -1,13 +1,13 @@
--- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.21-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: zeldamaps
+-- Host: localhost    Database: localhost
 -- ------------------------------------------------------
--- Server version	10.5.19-MariaDB
+-- Server version	10.1.21-MariaDB-1~jessie
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -68,7 +68,7 @@ INSERT INTO `submap` VALUES
   (2008,28,1,1,'Turtle Rock',1,'la_rmk/8_turtle_rock/','png','blank',8,0,1,1),
   (2009,29,1,1,'Color Dungeon',1,'la_rmk/0_color_dungeon/','png','blank',9,0,1,1),
   (2101,2101,1,NULL,'Overworld',0,'totk/hyrule/ground/','png','404',1,0,1,1),
-  (2102,2102,1,NULL,'Sky',0,'totk/hyrule/sky/','png','404',1,0,1,1),
+  (2102,2102,1,NULL,'Sky',0,'totk/hyrule/sky_after/','png','404',1,0,1,1),
   (2103,2103,1,NULL,'Underground',0,'totk/hyrule/underground/','png','404',1,0,1,1)
 ;
 /*!40000 ALTER TABLE `submap` ENABLE KEYS */;
@@ -83,4 +83,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-07 12:49:54
+-- Dump completed on 2023-11-13 18:32:37

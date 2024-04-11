@@ -1,13 +1,13 @@
--- MariaDB dump 10.19  Distrib 10.5.19-MariaDB, for Linux (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.21-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: zeldamaps
+-- Host: localhost    Database: localhost
 -- ------------------------------------------------------
--- Server version	10.5.19-MariaDB
+-- Server version	10.1.21-MariaDB-1~jessie
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -61,7 +61,11 @@ INSERT INTO `schema_migrations` VALUES
   ('20230607153536'),
   ('20230607182946'),
   ('20230607191601'),
-  ('20230607193507')
+  ('20230607193507'),
+  ('20230607195019'),
+  ('20230615002623'),
+  ('20230723163346'),
+  ('20231109164022')
 ;
 /*!40000 ALTER TABLE `schema_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -75,4 +79,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-07 16:14:36
+-- Dump completed on 2023-11-13 18:32:37

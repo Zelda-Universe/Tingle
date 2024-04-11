@@ -30,93 +30,85 @@ end
 begin
   ## Database connection Details
   begin
-    while test -z "$databaseUser"
+    while test -z "$dbUser"
       if test -z "$dbConStr"
-        if test -z "$databaseUser"
-          set databaseUser (
+        if test -z "$dbUser"
+          set dbUser (
             js-yaml "$SDIR/config.yml" \
             | jq -r '.development.username'
           );
-          # debugPrint "databaseUser: $databaseUser";
+          # debugPrint "dbUser: $dbUser";
         end
-        if test -z "$databaseUser"
-          read -P "Database Username: " databaseUser;
+        if test -z "$dbUser"
+          read -P "Database Username: " dbUser;
           echo;
         end
       end
     end
+    # debugPrint "dbUser: $dbUser";
 
     # Only asks once as optional if no other connection information is provided first.
-    if test -z "$databasePassword"
+    if test -z "$dbPassword"
       if test -z "$dbConStr"
-        if test -z "$databasePassword"
-          # databasePassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
-          set databasePassword (
+        if test -z "$dbPassword"
+          # dbPassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
+          set dbPassword (
             js-yaml "$SDIR/config.yml" \
             | jq -r '.development.password'
           );
-          # debugPrint "databasePassword: $databasePassword";
+          # debugPrint "dbPassword: $dbPassword";
         end
-        if test -z "$databasePassword"
+        if test -z "$dbPassword"
           # echo "$dbConStr" | grep -vq " -p" && \
           # echo "$dbConStr" | grep -vq " --password"; then
-          read -s -P "Database Password: " databasePassword;
+          read -s -P "Database Password: " dbPassword;
           echo;
         end
       end
     # else
-      #databasePassword="$(echo "$databasePassword" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
+      #dbPassword="$(echo "$dbPassword" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
     end
+    # debugPrint "dbPassword: $dbPassword";
 
-    # debugPrint "databasePassword: $databasePassword";
-    # echo "$databasePassword"
-    # echo "$databasePassword" | sed -r "s|([\`'\"\$])|\\\\\1|g";
-    # databasePassword="$(echo "$databasePassword" | sed -r "s|([\`'\"\$\\])|\\\\\1|g")";
-    set databasePassword (
-      echo "$databasePassword" \
+    # echo "$dbPassword"
+    # echo "$dbPassword" | sed -r "s|([\`'\"\$])|\\\\\1|g";
+    # dbPassword="$(echo "$dbPassword" | sed -r "s|([\`'\"\$\\])|\\\\\1|g")";
+    set dbPassword (
+      echo "$dbPassword" \
       | sed -r "s|([\"\$\\])|\\\\\1|g"
     );
-    # debugPrint "databasePassword: $databasePassword";
+    # debugPrint "dbPassword: $dbPassword";
 
     if test -z "$dbConStr"
-      set -a dbConStr                   \
-        $dbOthConnOpts                  \
-        --user="$databaseUser"          \
-        --password="$databasePassword"  \
-      ;
-      # set -a dbConStr --user=$databaseUser --password=$databasePassword
+      # set -a dbConStr             \
+      #   $dbOthConnOpts            \
+      #   --user="$dbUser"          \
+      #   --password="$dbPassword"  \
+      # ;
+      set -a dbConStr --user=$dbUser --password=$dbPassword
       # debugPrint "dbConStr: $dbConStr";
       # debugPrint -n 'dbConStr: '; and count $dbConStr;
 
       if test -n "$dbHost"
-        set dbConStr -a     \
+        set -a dbConStr     \
           --host="$dbHost"  \
         ;
       end
       if test -n "$dbSocket"
-        set dbConStr -a         \
+        set -a dbConStr         \
           --protocol=socket     \
           --socket="$dbSocket"  \
         ;
       else if test -n "$dbPort"
-        set dbConStr -a     \
+        set dbConStr     \
           --port="$dbPort"  \
         ;
       end
     end
+    # debugPrint "dbConStr: $dbConStr";
   end
 
-  if test "$dbDump" != 'true'
-    if test -z "$dbClientCommonOptions"
-      set -a dbClientCommonOptions $dbConStr          ;
-      set -a dbClientCommonOptions --database=$dbName ;
-    end
-
-    set command               \
-      $dbClientExe            \
-      $dbClientCommonOptions  \
-    ;
-  else
+  if test "$dbDump" = 'true'
     if test -z "$dbDumpCommonOptions" -a "$dbDumpExe" = 'mysqldump'
       set dbDumpCommonOptions "--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
     end
@@ -126,6 +118,16 @@ begin
     set command             \
       $dbDumpExe            \
       $dbDumpCommonOptions  \
+    ;
+  else
+    if test -z "$dbClientCommonOptions"
+      set -a dbClientCommonOptions $dbConStr          ;
+      set -a dbClientCommonOptions --database=$dbName ;
+    end
+
+    set command               \
+      $dbClientExe            \
+      $dbClientCommonOptions  \
     ;
   end
 
@@ -145,6 +147,6 @@ end
 #   debugPrint "commandTerm: $commandTerm";
 # end
 
-if test "$dryRun" = 'false' -o "$force" = 'true'
+if test "$dryRun" = 'false'
   $command $argv;
 end

@@ -1,5 +1,5 @@
 // MIT Licensed
-// Copyright (c) 2023 Pysis(868)
+// Copyright (c) 2017-2024 Pysis(868)
 // https://choosealicense.com/licenses/mit/
 
 ZConfig = {
@@ -36,8 +36,6 @@ ZConfig = {
   },
   // Does not read fragment currently.
   getConfig       : function(propertyName) {
-    propertyName = propertyName.toLocaleLowerCase();
-
     return getSetOrDefaultValues([
         getUrlParam(propertyName) ,
         localStorage[propertyName],
@@ -47,8 +45,6 @@ ZConfig = {
     );
   },
   setDefault      : function(propertyName, defaultValue) {
-    propertyName = propertyName.toLocaleLowerCase();
-
     this.defaults[propertyName] = defaultValue;
   },
   removeDefault   : function(propertyName) {

@@ -7,10 +7,12 @@
 set -l SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/../../scripts/common/errorPrint.fish";
-
 source "$SDIR/../../scripts/common/editLines.fish";
 
-test -z "$filePath"; and set filePath "$argv[1]";
+# Validation
+
+test -z "$filePath";
+and set filePath "$argv[1]";
 if test -z "$filePath"
   errorPrint 'No file given; exiting...';
   return 1;
@@ -18,14 +20,17 @@ end
 
 set patternCT         '^CREATE TABLE' ;
 set patternCTEndParen '^\)'           ;
+# debugPrint "patternCT: $patternCT";
+# debugPrint "patternCTEndParen: $patternCTEndParen";
 
 set lineNumCT (
   getFilePatternLineNums  \
     $filePath             \
     $patternCT
 )[1];
+# debugPrint "lineNumCT: $lineNumCT";
 if test -z $lineNumCT
-  return 1;
+  return 2;
 end
 
 set lineNumsCTEndParen (
@@ -33,12 +38,13 @@ set lineNumsCTEndParen (
     $filePath             \
     $patternCTEndParen
 );
+# debugPrint "lineNumsCTEndParen: $lineNumsCTEndParen";
 if test -z $lineNumsCTEndParen
-  return 2;
+  return 3;
 end
 
 for lineNumParen in $lineNumsCTEndParen
-  if test $lineNumParen -gt $lineNumCT;
+  if test $lineNumParen -gt $lineNumCT
     set lineNumCTEndParen $lineNumParen;
     break;
   end

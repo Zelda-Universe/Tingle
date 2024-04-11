@@ -1,4 +1,7 @@
 function ZMap() {
+  this.name = 'ZMap';
+  this._debugName = this.name + "[" + L.Util.stamp(this) + "]";
+  
    var _this;
 
    // Now that we have the changelog system using the database
@@ -96,7 +99,6 @@ function ZMap() {
    };
 };
 
-
 //****************************************************************************//
 //*************                                                  *************//
 //*************                BEGIN  -  AUXILIARY               *************//
@@ -157,7 +159,6 @@ if (!Array.prototype.filter) {
 
 
 ZMap.prototype.constructor = function(vMapOptions) {
-
   _this = this;
 
   hasUserCheck = false;

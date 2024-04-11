@@ -70,6 +70,7 @@ ZConfig.setDefault('searchTargetIndexEnd-markers'   , ''  );
 ZConfig.setDefault('searchTargetIndexStart-markers' , ''  );
 
 ZConfig.setDefault('showInfoControls'         , 'false' );
+ZConfig.setDefault('startTracing'             , 'false' );
 ZConfig.setDefault('subMap'                   , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('tilesBaseURL'             , 'https://zeldamaps.com/tiles/');
 ZConfig.setDefault('tileAxisDirectories'      , 'false' );
@@ -100,3 +101,7 @@ ZConfig.setDefault('zoom'                     , '0'     ); // Also suffix with `
 ZConfig.setDefault('zoomControl'              , 'false' );
 ZConfig.setDefault('zoomDelta'                , '1'     );
 ZConfig.setDefault('zoomSnap'                 , '1'     );
+
+// debugPrint('ZConfig.defaults:');
+// debugPrint(JSON.stringify(ZConfig.defaults, null, 2));
+// debugPrint(ZConfig.defaults);

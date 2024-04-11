@@ -36,8 +36,6 @@ ZConfig = {
   },
   // Does not read fragment currently.
   getConfig       : function(propertyName) {
-    propertyName = propertyName.toLocaleLowerCase();
-
     return getSetOrDefaultValues([
         getUrlParam(propertyName) ,
         localStorage[propertyName],
@@ -47,8 +45,6 @@ ZConfig = {
     );
   },
   setDefault      : function(propertyName, defaultValue) {
-    propertyName = propertyName.toLocaleLowerCase();
-
     this.defaults[propertyName] = defaultValue;
   },
   removeDefault   : function(propertyName) {

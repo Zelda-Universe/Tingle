@@ -206,6 +206,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   createCategoryMenu: function() {
     return new CategoryMenu({
      categoryTree: categoryTree,
+     categories: categories,
      onCategoryToggle: function(toggledOn, category) {
        (
          (this.options.categorySelectionMethod == "focus")
@@ -219,11 +220,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   createGameMenu: function() {
-    return new GameMenu({
+    return new CategoryMenu({
      categoryTree: games,
+     categories: [],
      onCategoryToggle: function(toggledOn, category) {
        (
-         window.location.replace(location.protocol + '//' + location.host + location.pathname + "?game=" + category.shortName)
+         window.location.replace(
+           location.protocol + '//' + location.host +
+           location.pathname + "?game=" + category.shortName
+         )
        ).call(zMap, category, toggledOn)
      }.bind(this), // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
      categorySelectionMethod: this.options.categorySelectionMethod,

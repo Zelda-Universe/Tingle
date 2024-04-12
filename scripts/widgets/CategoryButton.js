@@ -9,6 +9,7 @@
 //     - name: [String]
 //     - color: [String]
 //     - img: [String] - Class name suffix for child category icon selection.
+//     - childCategoryButtons: [Array [Object]] - List of child objects to
 //   - onToggle: [Function] To call when the button is clicked.
 //   - toggledOn: [Boolean] Initial state of the button.
 
@@ -38,6 +39,10 @@ CategoryButton.prototype._initSettings = function(opts) {
 
   this.toggledOn = getSetOrDefaultValues([opts.toggledOn, this.category.userChecked], false);
   this.automaticToggle = getSetOrDefaultValue(opts.automaticToggle, true);
+  
+  this.childCategoryButtons = opts.childCategoryButtons || [];
+  
+  this.categoryMenu = opts.categoryMenu;
 };
 
 CategoryButton.prototype._initTemplate = function() {
@@ -81,11 +86,21 @@ CategoryButton.prototype._updateState = function() {
   this.domNode.addClass(   ((this.toggledOn) ? "toggledOn"  : "toggledOff"));
 };
 
+CategoryButton.prototype.addChild = function(childCategoryButton) {
+  this.childCategoryButtons.push(childCategoryButton);
+};
+CategoryButton.prototype.addCategoryButton = CategoryButton.prototype.addChild;
+CategoryButton.prototype.addChildCategoryButton = CategoryButton.prototype.addChild;
+
 CategoryButton.prototype.toggle = function(toggledOn) {
   this.toggledOn = getSetOrDefaultValue(toggledOn, !this.toggledOn);
   this._updateState();
   this.onToggle(this.toggledOn, this.category);
   // this.domNode.trigger('toggle', this.category); // Alternative?
+  
+  this.childCategoryButtons.forEach(function(childCategoryButton) {
+    childCategoryButton.toggle(this.toggledOn, this.category);
+  }, this);
 };
 
 

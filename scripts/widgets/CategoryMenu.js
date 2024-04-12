@@ -3,8 +3,14 @@
 // https://choosealicense.com/licenses/mit/
 
 function CategoryMenu(opts) {
+  this._setDebugNames();
   this._initSettings(opts);
   this._initDOMElements(opts);
+};
+
+CategoryMenu.prototype._setDebugNames = function() {
+  this.name = this.__proto__._className + "[" + L.Util.stamp(this) + "]";
+  this._debugName = this.name;
 };
 
 CategoryMenu.prototype._initSettings = function(opts) {
@@ -13,6 +19,7 @@ CategoryMenu.prototype._initSettings = function(opts) {
   this.categorySelectionMethod = getSetOrDefaultValue(opts.categorySelectionMethod, ZConfig.getConfig("categorySelectionMethod"));
   this.automaticToggle = getSetOrDefaultValue(opts.automaticToggle, !(this.categorySelectionMethod == "focus"));
   this._categoryTree = opts.categoryTree;
+  this._categories = opts.categories;
 };
 
 CategoryMenu.prototype._initDOMElements = function(opts) {
@@ -34,46 +41,46 @@ CategoryMenu.prototype._initDOMElements = function(opts) {
     '</li>'
   ;
 
-  var currentCategoryParentButton;
   this._categoryTree.forEach(function(category) {
-    currentCategoryParentButton = new CategoryParentButton({
-      category: category,
-      onToggle: opts.onCategoryToggle,
-      toggledOn: getSetOrDefaultValue(this.defaultToggledState, category.checked),
-      automaticToggle: this.automaticToggle,
-      customToggle: this.customToggle
-    });
-    category._button = currentCategoryParentButton;
-    categories[category.id]._button = currentCategoryParentButton;
-
-    this._addCategoryMenuEntry(currentCategoryParentButton);
-
-    category.children.forEach(function(childCategory) {
-      currentChildCategoryButton = new CategoryButton({
-        category: childCategory,
-        onToggle: opts.onCategoryToggle,
-        toggledOn: getSetOrDefaultValue(this.defaultToggledState, childCategory.checked),
-        automaticToggle: this.automaticToggle,
-        customToggle: this.customToggle,
-        showProgress: true,
-      });
-      category._button = currentChildCategoryButton;
-      categories[childCategory.id]._button = currentChildCategoryButton;
-      this._addCategoryMenuEntry(currentChildCategoryButton);
-      currentCategoryParentButton.addChild(currentChildCategoryButton);
-    }, this);
+    this._addCategoryEntry(category, opts);
   }, this);
 };
 
-CategoryMenu.prototype._addCategoryMenuEntry = function(categoryButton) {
-  var menuEntry = $(this.menuEntryContainerTemplate);
-  menuEntry.append(categoryButton.domNode);
-  this.domNode.append(menuEntry);
+CategoryMenu.prototype._addCategoryEntry = function(category, opts) {
+  var categoryButton = new CategoryButton({
+           category: category,
+           onToggle: opts.onCategoryToggle,
+          toggledOn: getSetOrDefaultValue(
+            this.defaultToggledState,
+            category.checked
+          ),
+    automaticToggle: this.automaticToggle,
+       customToggle: this.customToggle,
+       categoryMenu: this
+  });
+  category._button = categoryButton;
+  if(this._categories && this._categories[category.id]) {
+    this._categories[category.id]._button = category._button;
+  }
+  
+  if(category.children) {
+    category.children.forEach(function(childCategory) {
+      categoryButton.addChild(
+        this._addCategoryEntry(childCategory, opts)
+      );
+    }, this);
+  } else {
+    var menuEntry = $(this.menuEntryContainerTemplate);
+    menuEntry.append(categoryButton.domNode);
+    this.domNode.append(menuEntry);
+  }
+  
+  return categoryButton;
 };
 
 CategoryMenu.prototype.customToggle = function() {
   this.onToggle(this.toggledOn, this.category);
-  categories.forEach(function(category) {
+  this.categoryMenu._categories.forEach(function(category) {
      if (category._button) {
          category._button.toggledOn = ((hasUserCheck) ? category.userChecked : category.checked);
          category._button._updateState();

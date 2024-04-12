@@ -1,3 +1,29 @@
+// Code TraceExample:
+// 
+// codeTrace-targetClasses  : [ "ZMap" ]
+// codeTrace-methodsToIgnore: {
+//  "ZMap": [
+//    "addCategory"             ,
+//    "addGame"                 ,
+//    "addHandler"              ,
+//    "addMap"                  ,
+//    "addMarker"               ,
+//    "addMarkers"              ,
+//    "addMarkerToCategoryCache",
+//    "buildCategoryMenu"       ,
+//    "_buildContextMenu"       ,
+//    "buildMap"                ,
+//    "_createMarkerIcon"       ,
+//    "_createMarkerPopup"      ,
+//    "getUser"                 ,
+//    "goTo"                    ,
+//    "_openMarker"             ,
+//    "refreshMap"              ,
+//    "_shouldShowMarker"       ,
+//    "_updateMarkerPresence"   ,
+//    "_updateMarkersPresence"
+//  ] }
+
 function ZMap() {
   this.name = 'ZMap';
   this._debugName = this.name + "[" + L.Util.stamp(this) + "]";

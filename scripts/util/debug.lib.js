@@ -3,23 +3,11 @@
 // https://choosealicense.com/licenses/mit/
 
 // Config:
+// Prefix: codeTrace-
 // - targetClasses (Array)    : Class names to hook methods in.
 // - methodsToIgnore (Object) : Keys of class names, with values being lists of function names.
 
-// Example:
-// 
-// codetrace-targetClasses: [ "ZMap" ]
-// methodsToIgnore        : {
-//  "ZMap": [
-//    "addCategory"             ,
-//    "addMarker"               ,
-//    "addMarkers"              ,
-//    "addMarkerToCategoryCache",
-//    "_createMarkerIcon"       ,
-//    "_shouldShowMarker"       ,
-//    "_updateMarkerPresence"   ,
-//    "_updateMarkersPresence"
-//  ] }
+// Examples in relevant class files.
 
 var callLevel = 0;
 
@@ -30,13 +18,13 @@ function debugPrint() {
 }
 
 function startTracing() {
-  var targetClasses = JSON.parse(ZConfig.getConfig("codetrace-targetClasses") || '[]');
+  var targetClasses = JSON.parse(ZConfig.getConfig("codeTrace-targetClasses") || '[]');
   // var targetClasses = [
   //   L.Control.ZLayers,
   //   L.Control.ZLayersBottom
   // ];
 
-  var methodsToIgnore = JSON.parse(ZConfig.getConfig("codetrace-methodsToIgnore") || '{}');
+  var methodsToIgnore = JSON.parse(ZConfig.getConfig("codeTrace-methodsToIgnore") || '{}');
   // var methodsToIgnore = {
   //   "L.Control.ZLayersBottom": [
   //     "_animate",

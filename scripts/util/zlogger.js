@@ -51,16 +51,18 @@ function ZLogger(options) {
 
     [
       {
+        argumentCount : 3,
         mechanism     : toastr  ,
         mechanismName : 'toastr',
         type          : 'gui'
       },
       {
+        argumentCount : 1,
         mechanism     : console   ,
         mechanismName : 'console' ,
         type          : 'tui'
       }
-    ].forEach(function({ mechanism, mechanismName, type }) {
+    ].forEach(function({ argumentCount, mechanism, mechanismName, type }) {
       if(!zLogOptions[type].enabled) return;
 
       if(!mechanism) {
@@ -85,14 +87,18 @@ function ZLogger(options) {
         }
       }
 
-      mechanism[methodName]((
+      var messageTx = (
           ( zLogOptions[type].messageTx)
           ? zLogOptions[type].messageTx(message)
           : message
-        ),
+      );
+      
+      mechanism[methodName].apply(
+        this, [
+        messageTx,
         title,
         otherOptions
-      );
+      ].slice(0, argumentCount));
     }, this);
   }
 });

@@ -42,18 +42,6 @@ L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
     rootObject.lngValueCell = $('.value', lngRow);
   },
 
-  _buildActionGroup: function(parent) {
-    var actionGroup = L.DomUtil.create('div', 'action-group');
-
-    var copyLink = new CopyLink({ content: this.generateLink.bind(this) });
-    $(actionGroup).append(copyLink.domNode);
-
-    var link = new Link({ content: this.generateLink.bind(this) });
-    $(actionGroup).append(link.domNode);
-
-    $(parent).append(actionGroup);
-  },
-
   _updateCoordsInfo: function() {
     var bounds = this._map.getBounds();
     var ne = bounds.getNorthEast();
@@ -68,10 +56,10 @@ L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
   generateLink: function() {
     var bounds = this._map.getBounds();
     var coordsString = "" +
-    bounds.getSouth().toFixed(this.options.precision) + "," +
-      bounds.getWest().toFixed(this.options.precision) + "," +
+      bounds.getSouth().toFixed(this.options.precision) + "," +
+      bounds.getWest() .toFixed(this.options.precision) + "," +
       bounds.getNorth().toFixed(this.options.precision) + "," +
-      bounds.getEast().toFixed(this.options.precision)
+      bounds.getEast() .toFixed(this.options.precision)
     ;
 
     if(getUrlParam("startArea")) {

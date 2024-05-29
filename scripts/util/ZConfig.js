@@ -13,6 +13,7 @@ ZConfig.setDefault('boundTopX'                , ''      ); // Also suffix with `
 ZConfig.setDefault('boundTopY'                , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('boundBottomX'             , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('boundBottomY'             , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('breaktime'                , 'false' ); // For development investigations
 
 // "exact", "focus" (ZU default)
 ZConfig.setDefault('categorySelectionMethod'  , 'focus' );
@@ -20,9 +21,10 @@ ZConfig.setDefault('centerX'                  , ''      ); // Also suffix with `
 ZConfig.setDefault('centerY'                  , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('changelog'                , 'true'  );
 ZConfig.setDefault('changelogForce'           , 'false' );
-ZConfig.setDefault('collapsed'                , 'false' );
 ZConfig.setDefault('codetrace-methodsToIgnore', '{}'    );
 ZConfig.setDefault('codetrace-targetClasses'  , '[]'    );
+
+ZConfig.setDefault('collapsed'                , 'false' );
 
 ZConfig.setDefault('contextmenu'              , 'true'  );
 ZConfig.setDefault('contextmenuWidth'         , '140'   );
@@ -72,10 +74,16 @@ ZConfig.setDefault('searchTargetIndexStart-markers' , ''  );
 ZConfig.setDefault('showInfoControls'         , 'false' );
 ZConfig.setDefault('startTracing'             , 'false' );
 ZConfig.setDefault('subMap'                   , ''      ); // Also suffix with `-${gameId}`
-ZConfig.setDefault('tilesBaseURL'             , 'https://zeldamaps.com/tiles/');
 ZConfig.setDefault('tileAxisDirectories'      , 'false' );
+ZConfig.setDefault('tilesBaseURL'             , 'https://zeldamaps.com/tiles/');
 ZConfig.setDefault('tileZoomDirectories'      , 'false' );
-
+ZConfig.setDefault('tileNameFormat'           , (
+  (ZConfig.getConfig('tileAxisDirectories') == 'true')
+  ? '{z}/{x}/{y}'
+  : (ZConfig.getConfig('tileZoomDirectories') == 'true')
+    ? '{z}/{x}_{y}'
+    : '{z}_{x}_{y}'
+));
 // https://github.com/CodeSeven/toastr/blob/master/README.md#other-options
 // https://codeseven.github.io/toastr/demo.html
 ZConfig.setDefault('toastr', JSON.stringify({
@@ -85,18 +93,12 @@ ZConfig.setDefault('toastr', JSON.stringify({
   positionClass   : 'toast-top-full-width',
   timeOut         : 0
 }));
-ZConfig.setDefault('tileNameFormat'  , (
-  (ZConfig.getConfig('tileAxisDirectories') == 'true')
-  ? '{z}/{x}/{y}'
-  : (ZConfig.getConfig('tileZoomDirectories') == 'true')
-    ? '{z}/{x}_{y}'
-    : '{z}_{x}_{y}'
-));
 ZConfig.setDefault('verbose'                  , 'false' );
+ZConfig.setDefault('verboseFirst'             , 'false' );
 ZConfig.setDefault('x'                        , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('y'                        , ''      ); // Also suffix with `-${gameId}`
-ZConfig.setDefault('zLogger.tui'              , 'false' );
-ZConfig.setDefault('zLogger.gui'              , 'true'  );
+ZConfig.setDefault('zLogger.gui'              , 'true'  ); // Enabled default for simple usage as this is can inform users of problems during regular application operation.
+ZConfig.setDefault('zLogger.tui'              , 'false' ); // Disabled default for simple usage as this is mainly a development pathway.
 ZConfig.setDefault('zoom'                     , '0'     ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('zoomControl'              , 'false' );
 ZConfig.setDefault('zoomDelta'                , '1'     );

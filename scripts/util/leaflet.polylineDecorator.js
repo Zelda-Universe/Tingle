@@ -208,12 +208,12 @@ L$1.Symbol.Dash = L$1.Class.extend({
             return L$1.polyline([dirPoint.latLng, dirPoint.latLng], opts.pathOptions);
         }
 
-        var midPoint = map.project(dirPoint.latLng);
+        var midPoint = this._map.project(dirPoint.latLng);
         var angle = -(dirPoint.heading - 90) * d2r;
         var a = L$1.point(midPoint.x + opts.pixelSize * Math.cos(angle + Math.PI) / 2, midPoint.y + opts.pixelSize * Math.sin(angle) / 2);
         // compute second point by central symmetry to avoid unecessary cos/sin
         var b = midPoint.add(midPoint.subtract(a));
-        return L$1.polyline([map.unproject(a), map.unproject(b)], opts.pathOptions);
+        return L$1.polyline([map.unproject(a), this._map.unproject(b)], opts.pathOptions);
     }
 });
 
@@ -300,7 +300,6 @@ L$1.PolylineDecorator = L$1.FeatureGroup.extend({
     initialize: function initialize(paths, options) {
         L$1.FeatureGroup.prototype.initialize.call(this);
         L$1.Util.setOptions(this, options);
-        this._map = null;
         this._paths = this._initPaths(paths);
         this._bounds = this._initBounds();
         this._patterns = this._initPatterns(this.options.patterns);
@@ -372,14 +371,12 @@ L$1.PolylineDecorator = L$1.FeatureGroup.extend({
     },
 
     onAdd: function onAdd(map) {
-        this._map = map;
         this._draw();
         this._map.on('moveend', this.redraw, this);
     },
 
     onRemove: function onRemove(map) {
         this._map.off('moveend', this.redraw, this);
-        this._map = null;
         L$1.FeatureGroup.prototype.onRemove.call(this, map);
     },
 

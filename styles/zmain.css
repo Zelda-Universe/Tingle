@@ -230,7 +230,16 @@ main {
 
 .category-selector {
 	display: inline-block;
+  overflow: clip;
+  text-align: center;
 	vertical-align: top;
+	width: 25%;
+}
+
+.category-selector:nth-of-type(7)::after {
+	display: block;
+	content: " ";
+	height: 8px;
 }
 
 .category-selection-list>.category-selector>.category-button>.label {
@@ -256,15 +265,8 @@ main {
 .category-selection-list {
 }
 
-.category-selector {
-	width: 25%;
-	text-align: center;
-}
-
-.category-selector:nth-of-type(7)::after {
-	display: block;
-	content: " ";
-	height: 8px;
+a.category-button.disabled {
+  cursor: initial;
 }
 
 .category-button.toggledOn {
@@ -273,15 +275,6 @@ main {
 
 .category-button.toggledOff {
 	opacity: 0.35;
-}
-
-.category-icon {
-	position: relative;
-	font-size: 36px;
-}
-
-.icon-background {
-	color: white;
 }
 
 .category-button.toggledOn>.label>.completed-label-hide {
@@ -298,6 +291,15 @@ main {
 
 .category-button.toggledOff>.label>.completed-label-show {
 	display: inherit;
+}
+
+.category-icon {
+	position: relative;
+	font-size: 36px;
+}
+
+.icon-background {
+	color: white;
 }
 
 .main-content>p {}
@@ -322,11 +324,13 @@ main {
 	position: sticky;
 }
 
-.leaflet-control-layers-toggle {
+a.button.leaflet-control-layers-toggle {
 	background-image: url('images/zmaps_white_small.png') !important;
-   background-size: 26px 26px;
-	width: 36px;
-	height: 36px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 26px 26px;
+	height: 44px;
+  width: 44px;
 }
 
 
@@ -475,17 +479,22 @@ main {
 	top: -3px;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 a.button {
-	padding: 0px;
-	border: none;
-	text-align: center;
-	width: 18px;
-	height: 14px;
-    font-family: "BrandonText", sans-serif;
-	color: #c3c3c3;
-	text-decoration: none;
+  background: transparent;
+  border: none;
+  color: #c3c3c3;
+  cursor: pointer;
+  font-family: "BrandonText", sans-serif;
 	font-weight: bold;
-	background: transparent;
+	height: 14px;
+	padding: 0px;
+	text-align: center;
+  text-decoration: none;
+	width: 18px;
 }
 
 a.button:hover {
@@ -511,7 +520,7 @@ a.icon-close2 {
 .back-button {
 	height: initial;
 	float: left;
-	position: sticky;
+	position: absolute;
 	margin-top: 3px;
 	margin-left: 5px;
 	z-index: 100;

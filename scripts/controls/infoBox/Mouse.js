@@ -26,8 +26,6 @@ L.Control.InfoBox.Mouse = L.Control.InfoBox.extend({
   },
 
   onAdd: function(map) {
-    this._map = map;
-
     var container = L.Control.InfoBox.prototype.onAdd.call(this);
     $(container).addClass("location");
 

@@ -11,7 +11,7 @@ function AccountButton(opts) {
 
 AccountButton.prototype._initDOMElements = function() {
   this.domNode = $('' +
-    '<a class="button account-button full-icon-space" href="#account" style="outline: none;">' +
+    '<a class="button account-button full-icon-space" style="outline: none;">' +
       '<i class="fas fa-user"></i>' +
     '</a>'
   );

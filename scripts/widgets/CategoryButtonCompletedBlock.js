@@ -9,7 +9,7 @@
 
 function CategoryButtonCompletedBlock(opts) {
   CategoryButton.call(this, $.extend(true, {
-    showIcon: false,
+     showIcon: false,
     toggledOn: Object.pop(opts, "showCompleted")
   }, opts));
 };

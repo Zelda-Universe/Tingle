@@ -26,6 +26,7 @@ HeaderBar.prototype._initSettings = function(opts) {
   // component code locations, rather than creating the form now and hiding
   // it later on, but hey
   this.accountButton = getSetOrDefaultValue(opts.accountButton, !zMap.getUser());
+  this.isolated = getSetOrDefaultValue(opts.isolated, false);
   this.largerSearchArea = getSetOrDefaultValue(opts.largerSearchArea, !this.accountButton);
 
   this.shrinkButton = opts.shrinkButton;
@@ -34,7 +35,14 @@ HeaderBar.prototype._initSettings = function(opts) {
 };
 
 HeaderBar.prototype._initDOMElements = function(opts) {
-  var headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', this.parent);
+  var parentDiv, headerDiv;
+  if(this.isolated) {
+    parentDiv = L.DomUtil.create('div', 'header-bar mobile-header-bar leaflet-control', this.parent); // Maybe make full control later and remove this redundant addition then....
+    headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', parentDiv);
+  } else {
+    parentDiv = headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', this.parent);
+  }
+  this.domNode = parentDiv;
 
   if(this.accountButton) {
     var headerDivLeft = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
@@ -54,7 +62,7 @@ HeaderBar.prototype._initDOMElements = function(opts) {
     ),
     headerDiv
   );
-  this.createSearchArea(headerDivMid, opts.name);
+  this.createSearchArea(headerDivMid, opts.name, opts.categories);
 
   if(this.shrinkButton) {
    var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
@@ -64,8 +72,7 @@ HeaderBar.prototype._initDOMElements = function(opts) {
 
 HeaderBar.prototype.createActionsButton = function(parent) {
   var barsButton = L.DomUtil.create('a', 'button icon-bars full-icon-space', parent);
-  barsButton.innerHTML = '';
-  barsButton.href = "#close";
+  // barsButton.innerHTML = '';
   L.DomEvent
     .on(barsButton, 'click', L.DomEvent.stopPropagation)
     .on(barsButton, 'click', function(e) {
@@ -73,29 +80,29 @@ HeaderBar.prototype.createActionsButton = function(parent) {
       this._collapse();
       _this._closeNewMarker();
       e.preventDefault();
-    }, mapControl)
+    }, this.mapControl)
   ;
 };
 
 HeaderBar.prototype.createAccountButton = function(parent) {
-  var accountButton = new AccountButton({ mapControl: mapControl });
+  var accountButton = new AccountButton({ mapControl: this.mapControl });
   $(parent).append(accountButton.domNode);
 };
 
-HeaderBar.prototype.createSearchArea = function(parent, name) {
+HeaderBar.prototype.createSearchArea = function(parent, name, categories) {
   this.searchArea = new SearchArea({
     parent: parent,
     markerListViewBuiltHandler: function(markerListView) {
       this.mapControl.setContent(markerListView.domNode, 'search');
     }.bind(this),
-    name: name
+    name: name,
+    categories: categories
   });
 };
 
 HeaderBar.prototype.createShrinkButton = function(parent) {
   var shrinkButton = L.DomUtil.create('a', 'button icon-shrink full-icon-space', parent);
-  shrinkButton.innerHTML = '';
-  shrinkButton.href = "#close";
+  // shrinkButton.innerHTML = '';
   L.DomEvent
     .on(shrinkButton, 'click', L.DomEvent.stopPropagation)
     .on(shrinkButton, 'click', function(e) {
@@ -103,7 +110,7 @@ HeaderBar.prototype.createShrinkButton = function(parent) {
       this._collapse();
       _this._closeNewMarker();
       e.preventDefault();
-    }, mapControl);
+    }, this.mapControl);
 };
 
 HeaderBar.prototype.focus = function() {

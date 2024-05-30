@@ -3,11 +3,12 @@
 // https://choosealicense.com/licenses/mit/
 
 // Config:
+// Prefix: codeTrace-
 // - startTracing (Boolean): Automatically enable tracing.
 
 // Example:
 // startTracing           : true
 
-if(ZConfig.getConfig('startTracing') == 'true') {
+if(ZConfig.getConfig('codeTrace-startTracing') == 'true') {
   startTracing();
 }

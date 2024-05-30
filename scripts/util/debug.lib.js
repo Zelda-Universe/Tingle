@@ -47,7 +47,7 @@ function startTracing() {
 
 function applyFunctionTraceToClasses(classesToTrace, options) {
   classesToTrace.forEach(function(classToTrace) {
-    inject(window[classToTrace], logFnCall, options);
+    inject(Object.dig(window, classToTrace.split('.')), logFnCall, options);
   });
 }
 
@@ -61,7 +61,7 @@ function inject(object, extraFn, options = {}) {
     object._className ||
     object._debugName ||
     object.displayName ||
-    object.name
+    object.name // NewClass during Leaflet construction....
   );
 
   for (let propName of Object.getOwnPropertyNames(objectPrototype)) {
@@ -100,7 +100,7 @@ function inject(object, extraFn, options = {}) {
   }
 }
 
-function logFnCall(before, className, fnName, options = {}, args) {  
+function logFnCall(before, className, fnName, options = {}, args) {
   if(options.abbvFn === undefined) options.abbvFn = true;
   if(options.argNewLines === undefined) options.argNewLines = false;
   if(options.colors === undefined) options.colors = true;
@@ -137,13 +137,17 @@ function logFnCall(before, className, fnName, options = {}, args) {
 
   if(before) callLevel++;
 
-  let headerString = '' +
-    '(' + callLevel + ') ' +
-    positionText + ' ' +
-    '%c' + objectName + ': ' +
-    '%c' + className + '.' +
-    '%c' + fnName + '%c('
-  ;
+  // let headerString = '' +
+  //   '(' + callLevel + ') ' +
+  //   positionText + ' ' +
+  //   '%c' + objectName + ': ' +
+  //   '%c' + className + '.' +
+  //   '%c' + fnName + '%c('
+  // ;
+  // let headerString = `\
+  //   (${callLevel}) ${positionText} %c${objectName}: %c${className}.%c${fnName}%c(\
+  // `;
+  let headerString = `(${callLevel}) ${positionText} %c${objectName}: %c${className}.%c${fnName}%c(`;
   colorList = colorList.concat([
     colors.obj,
     colors.class,

@@ -13,6 +13,7 @@ function MarkerListView(opts) {
 
 MarkerListView.prototype._initSettings = function(opts) {
   this.markerEntryClick = opts.markerEntryClick;
+  this.categories = opts.categories;
 };
 
 MarkerListView.prototype._initDOMElements = function() {
@@ -67,7 +68,10 @@ MarkerListView.prototype.showMarkers = function(query, markers) {
 
 MarkerListView.prototype._addEntries = function(markers) {
   markers.forEach(function(marker) {
-    var entry = this._createEntry(marker, { onClick: this.markerEntryClick });
+    var entry = this._createEntry(marker, {
+      onClick: this.markerEntryClick,
+      categories: this.categories
+    });
     this.markerListDomNode.append(entry.domNode);
     this.markerListDomNode.append($(this.separatorDomNodeTemplate));
   }, this);

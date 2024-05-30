@@ -438,6 +438,10 @@ a.button.leaflet-control-layers-toggle {
 
 /*** MARKER CONTENT ***/
 
+#menu-cat-content {
+	min-height: 35px;
+}
+
 .menu-cat-content-inner {
 	min-width: 360px;
 }
@@ -467,12 +471,14 @@ a.button.leaflet-control-layers-toggle {
 	height: auto;
 }
 
+.popupContent .icon-checkmark,
 .popupContent .icon-checkbox-checked,
 .popupContent .icon-checkbox-unchecked,
 .popupContent .fa-link  {
 	margin-right: 6px !important;
 }
 
+.popupContent .icon-checkmark,
 .popupContent .icon-checkbox-checked,
 .popupContent .icon-checkbox-unchecked {
 	position: relative;
@@ -527,6 +533,22 @@ a.icon-close2 {
 	font-size: 21px;
 }
 
+.leaflet-control-layers #menu-cat-content .menu-cat-content-inner .action-group {
+	/* height: initial; */
+	/* float: right; */
+  /* position: absolute; */
+	/* position: fixed; */
+	/* margin-top: 3px; */
+	/* margin-left: 5px; */
+  margin-right: 5px;
+  /* top: 3px; */
+  /* right: 5px; */
+	/* z-index: 100; */
+  /* font-size: 21px; */
+	font-size: 12px;
+  text-align: right;
+}
+
 .infoWindowIcn {
 	cursor: pointer;
 	margin-left: 5px;
@@ -543,6 +565,10 @@ a.icon-close2 {
 
 .infoWindowIcn:first-of-type {
 	margin-top: 32px;
+}
+
+.category-menu-marker-setting-area .button-completed-visibility {
+  margin-top: 16px;
 }
 
 .infoWindowIcn:last-of-type {

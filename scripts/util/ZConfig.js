@@ -15,6 +15,7 @@ ZConfig.setDefault('boundBottomX'             , ''      ); // Also suffix with `
 ZConfig.setDefault('boundBottomY'             , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('breaktime'                , 'false' ); // For development investigations
 
+ZConfig.setDefault('categoriesSelectedIds'    , '[]'    );
 // "exact", "focus" (ZU default)
 ZConfig.setDefault('categorySelectionMethod'  , 'focus' );
 ZConfig.setDefault('centerX'                  , ''      ); // Also suffix with `-${gameId}`

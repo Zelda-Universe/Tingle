@@ -348,7 +348,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
         label: 'Switch Games',
         toggledOn: false
       });
-      // this.categoryButtonCompleted.domNode.on('toggle', opts.onCompletedToggle.bind(this.categoryButtonCompleted));
       $(headerMenu).append(this._gamesButton.domNode);
     }
 
@@ -368,7 +367,19 @@ L.Control.ZLayers = L.Control.Layers.extend({
       L.DomEvent.on(this._contents, 'wheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
 
+      this._categoryMenuMarkerSettingArea = $(
+        '<div class="category-menu-marker-setting-area"></div>'
+      );
+
+      var completedButtonBlock = new CategoryButtonCompletedBlock({ //rename..
+        addlClasses: 'button-completed-visibility',
+        afterToggle: zMap.toggleCompleted,
+        toggledOn: this.zMap.mapOptions.showCompleted
+      });
+      this._categoryMenuMarkerSettingArea.append(completedButtonBlock.domNode);
+
       this._categoryMenu = this.createCategoryMenu();
+      this._categoryMenuMarkerSettingArea.append(this._categoryMenu.domNode);
 
       // Platform specific reset code
       if(this.viewStyleBottomSlide) {
@@ -490,18 +501,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   createCategoryMenu: function() {
-    var categoryMenu = new CategoryMenu({
+    return new CategoryMenu({
+      buildActionGroup: true,
       categories: this.zMap.categories,
       categoryTree: this.zMap.categoryRoots,
       categorySelectionMethod: this.options.categorySelectionMethod,
       defaultToggledState: this.options.defaultToggledState
     });
-    var completedButtonBlock = new CategoryButtonCompletedBlock({
-      toggledOn: this.zMap.mapOptions.showCompleted,
-      afterToggle: zMap.toggleCompleted
-    });
-    categoryMenu.domNode.prepend(completedButtonBlock.domNode); // Move back into CM when that simply extends from a more general class that game and maps menus also extend from.
-   return categoryMenu;
   },
 
   createGameMenu: function() {
@@ -640,7 +646,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // more efficient code style, but also to retain the event
     // listeners set-up during intialization.
     if(this._contentType == 'category') {// in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
-      $(this._categoryMenu.domNode).detach();
+      $(this._categoryMenuMarkerSettingArea).detach();
     }
     if(this._contentType == 'games') {// in the future when everything is a widget with re-usable DOM elements, we won't need the check here, or even detach, as we should be hiding!
       this._gamesButton.clear();
@@ -665,7 +671,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       : (this._setContent)
     ).call(
       this,
-      this._categoryMenu.domNode,
+      this._categoryMenuMarkerSettingArea,
       this.options.defaultContentType
     );
     // $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");

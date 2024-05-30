@@ -2,6 +2,9 @@
 // Copyright (c) 2017-2024 Pysis(868)
 // https://choosealicense.com/licenses/mit/
 
+// TODO: Rename, really not about categor-y/-ies.
+//       Actually marker view preference....
+
 // CategoryButtonCompletedBlock
 // - opts: [Object]
 //   - onToggle: [Function] To call when the button is clicked.

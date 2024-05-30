@@ -12,7 +12,6 @@ if (navigator.appVersion.indexOf("X11"  )!=-1) OSName="UNIX"    ;
 if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux"   ;
 
 function getUrlParam(vParam) {
-
    vParam = vParam.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
 
    var regexS = "[\\?&]"+vParam+"=([^&#]*)";
@@ -22,7 +21,7 @@ function getUrlParam(vParam) {
    if (vResults == null) {
       return "";
    } else {
-      return vResults[1];
+      return decodeURIComponent(vResults[1]);
    }
 
 };
@@ -134,7 +133,7 @@ function zMapInit(vResults) {
     );
     if (categoriesSelectedIds && categoriesSelectedIds.length > 0) {
       var categoriesSelectedIdPairsObject = Object.fromEntries(
-        categoriesSelectedIds.map((id)=>[id, true])
+        categoriesSelectedIds.map((id) => [id, true])
       );
       zMap.categoriesSelectedIdPairsObject = categoriesSelectedIdPairsObject;
     }
@@ -159,13 +158,20 @@ function getMapCategories(categoriesSelectedIdPairsObject) {
     "ajax.php?command=get_categories&game=" + gameId,
     function(vResults) {
       $.each(vResults, function(i, category) {
+        zMap.addCategory(category);
+
         if (categoriesSelectedIdPairsObject) {
           category.checked = !!categoriesSelectedIdPairsObject[category.id];
-          category.checkedUser = category.checked;
         }
-
-        zMap.addCategory(category);
       });
+
+      for(categoryRoot of zMap.categoryRootsArr) {
+        if(categoryRoot.checked) {
+          for(categoryChild of categoryRoot.childrenArr) {
+            categoryChild.checked = true;
+          }
+        }
+      }
 
       getMaps();
     }

@@ -31,6 +31,9 @@ CategoryMenu.prototype._setDebugNames = function() {
 };
 
 CategoryMenu.prototype._initSettings = function(opts) {
+  this.buildActionGroup = (
+    Object.pop(opts, 'buildActionGroup')
+  );
   this._categories = Object.pop(opts, 'categories');
   this.categoryButtonOptions = Object.pop(opts, 'categoryButtonOptions') || {};
   this.categoryButtonParents = [];
@@ -61,7 +64,9 @@ CategoryMenu.prototype._initSettings = function(opts) {
 
   // Derived
 
-  this.modeAutomatic = this._categoryTreeArr && !this.computeHasUncheck(); // True for all checked.
+  this.modeAutomatic = (
+    this._categoryTreeArr && !this.computeHasUncheck()
+  ); // True for all checked.
   if(!this._categories) {
     // this._categories = this._categoryTree;
     this._categories = [];
@@ -69,13 +74,11 @@ CategoryMenu.prototype._initSettings = function(opts) {
       this._categories.push(category);
     }, this._categoryTree);
   }
-  // // this.categoryButtonOptions.afterToggle combining
   // this.categoryButtonOptions.beforeToggle combining
   {
     var handlersUCS = [];
 
     // Extra external function(s).
-    // var cBOAT = Object.pop(this.categoryButtonOptions, 'afterToggle');
     var cBOBT = Object.pop(this.categoryButtonOptions, 'beforeToggle');
     if (cBOBT) {
       // Addl: Check if array too?
@@ -91,7 +94,6 @@ CategoryMenu.prototype._initSettings = function(opts) {
       };
       handlersUCS.push(uCSFUsingScopeFn);
 
-      // this.categoryButtonOptions.afterToggle = handlersUCS;
       this.categoryButtonOptions.beforeToggle = handlersUCS;
     } else { // CSM 'exact' or other,
       // for using the simple method.
@@ -121,14 +123,23 @@ CategoryMenu.prototype._initSettings = function(opts) {
       this.categoryButtonOptions.afterToggle = handlersUCS;
     }
   }
-  // this.hasUserCheck = this.computeHasUserCheck();
 };
 
 CategoryMenu.prototype._initDOMElements = function() {
   this.domNode = $('' +
+    '<div class="category-menu"></div>'
+  );
+
+  this.domNodeCategorySelectionList = $(
     '<ul class="category-selection-list">' +
     '</ul>'
   );
+  this.domNode.append(this.domNodeCategorySelectionList);
+
+  if(this.buildActionGroup) {
+    this._buildActionGroup(this.domNode);
+  }
+
   this.menuEntryContainerTemplate = '' +
     '<li class="category-selector">' +
     '</li>'
@@ -173,6 +184,40 @@ CategoryMenu.prototype._initDOMElements = function() {
   }
 };
 
+CategoryMenu.prototype._buildActionGroup = function(parent) {
+  var actionGroup = L.DomUtil.create('div', 'action-group');
+
+  var copyLink = new CopyLink({ content: this.generateLink.bind(this) });
+  $(actionGroup).append(copyLink.domNode);
+
+  var link = new Link({ content: this.generateLink.bind(this) });
+  $(actionGroup).append(link.domNode);
+
+  $(parent).append(actionGroup);
+};
+
+CategoryMenu.prototype.generateLink = function() {
+  var categoriesSelectedIdsString = `[${(
+    zMap.categoriesArr
+      .filter ((category) => category.checked )
+      .map    ((category) => category.id      )
+      .join(',')
+  )}]`;
+
+  if(getUrlParam("categoriesSelectedIds")) {
+    return window.location.href.replace(
+      new RegExp("(categoriesSelectedIds=).*?(&|$)"),
+      "$1" + categoriesSelectedIdsString + "$2"
+    );
+  } else {
+    return '' +
+      `${window.location.href}&categoriesSelectedIds=${
+        categoriesSelectedIdsString
+      }`
+    ;
+  }
+}
+
 CategoryMenu.prototype._addCategoryEntry = function(category) {
   var categoryButton = new CategoryButton(
     $.extend(
@@ -191,11 +236,11 @@ CategoryMenu.prototype._addCategoryEntry = function(category) {
   this.categoryButtons.push(categoryButton);
 
   var menuEntry = $(this.menuEntryContainerTemplate);
-  if(!category.visible) {
+  if(category.visible !== undefined && !category.visible) {
     menuEntry.addClass('hidden');
   }
   menuEntry.append(categoryButton.domNode);
-  this.domNode.append(menuEntry);
+  this.domNodeCategorySelectionList.append(menuEntry);
 
   return categoryButton;
 };
@@ -311,91 +356,3 @@ CategoryMenu.prototype.updateCategorySelectionFocus = function(categoryButton) {
 
   return false;
 };
-
-// CategoryMenu.prototype.updateCategorySelectionOld = function(categoryButton) {
-//   if(this.categorySelectionMethod == 'focus') {
-//     if(categoryButton.toggledOn) {
-//       if(!this.computeHasUncheck()) { // All checked
-//         this.toggleAll(false);
-//
-//         categoryButton.category.checked = true;
-//         categoryButton._toggle(true);
-//
-//         return false;
-//       } else { // Are, at least some, unchecked.
-//         categoryButton.category.checked = false;
-//         categoryButton._toggle(false);
-//
-//         if(!this.computeHasCheck()) {
-//           this.toggleAll(true);
-//
-//           return false;
-//         } // Were originally, none checked.
-//
-//         // There were some checked, and the modification to turn this
-//         // button and associated category, was already completed, since it
-//         // aids the previous, simplified, conditional statement, to see if all
-//         // are unchecked, thus needing to enable all to automatic mode.
-//
-//         return false;
-//       } // Were originally, at least some, unchecked.
-//     } else { // Toggled off
-//       categoryButton.category.checked = true;
-//       categoryButton._toggle(true);
-//     }
-//   }
-// };
-//
-// CategoryMenu.prototype.updateCategorySelectionOlder = function(categoryButton) {
-//   var category = categoryButton.category;
-//   var vChecked = categoryButton.toggledOn;
-//
-//   if(category.checked != category.checkedUser) {
-//     category.checkedUser = category.checked;
-//   } else {
-//     category.checked = vChecked;
-//     category.checkedUser = vChecked;
-//   }
-//
-//   var hasUserCheckNew = this.computeHasUserCheck();
-//
-//   if (this.categorySelectionMethod == 'focus') {
-//     if (this.hasUserCheck != hasUserCheckNew) {
-//       this.categoryButtonParents.forEach(
-//         function(categoryButtonParent) {
-//           categoryButtonParent._toggle();
-//         }
-//       );
-//       this._categoryTreeArr.forEach(function(category) {
-//         category.checked = vChecked;
-//       });
-//
-//       this.hasUserCheck = !this.hasUserCheck;
-//
-//       if (this.hasUserCheck) {
-//         categoryButton._toggle();
-//         category.checked = !category.checked;
-//         categoryButton.category.checkedUser = !categoryButton.category.checkedUser;
-//       }
-//
-//       targetCategories = this._categoryTreeArr;
-//     } else {
-//       targetCategories = [category];
-//     }
-//   } else if (this.categorySelectionMethod == 'exact') {
-//     // Check again..
-//
-//     var targetCategories = [category];
-//     if(category.children) targetCategories.concat(category.children);
-//
-//     targetCategories.forEach(function(category) {
-//       zMap.categories[category.id].checkedUser = vChecked;
-//     }, this);
-//   }
-//
-//   zMap.checkWarnUserSeveralEnabledCategories();
-//
-//   zMap.refreshMap(targetCategories);
-//
-//   return true;
-// };

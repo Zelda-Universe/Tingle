@@ -29,6 +29,7 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `created` datetime NOT NULL,
+  `deleted` datetime(6) DEFAULT NULL,
   `ip` varchar(46) NOT NULL,
   `last_login` datetime NOT NULL,
   `level` tinyint(1) NOT NULL DEFAULT '1',
@@ -3258,4 +3259,4 @@ VALUES
   ('227816', 'test227816', '$2y$13$6X4RYJqepBi2Te1pY1nq5.oGtUMY7aB6SOTO2lTEOx7lUTlNwOfqS', 'test227816', 'test227816@test.com', '2018-01-02 02:40:51', '127.0.0.1', '2018-01-02 02:40:51', '1', '1', '0', '5', '0', '0')
 ;
 
--- Dump completed on 2023-11-13 18:32:39
+-- Dump completed on 2024-06-03 19:10:01

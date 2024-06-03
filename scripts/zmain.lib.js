@@ -334,9 +334,9 @@ function parseBounds(input) {
 function updateAdState() {
   var authenticated = !!user;
   var mobileAds = document.getElementById("mobileAds");
-  if(mobileAds) $(mobileAds).toggleClass("hidden", (!mapControl.isMobile() || authenticated));
+  if(mobileAds) $(mobileAds).toggleClass("hidden", (!zMap.mapControl.isMobile || authenticated));
   var desktopAds = document.getElementById("desktopAds");
-  if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
+  if(desktopAds) $(desktopAds).toggleClass("hidden", (zMap.mapControl.isMobile || authenticated));
 };
 
 

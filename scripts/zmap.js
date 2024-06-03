@@ -43,7 +43,7 @@ function ZMap() {
    // Now that we have the changelog system using the database
    // with a field for each number, let's use 3 numbers and no
    // letters in the version.
-   this.version = '0.9.2';
+   this.version = '0.10.0';
 
    this.maps = [];
    this.games = [];
@@ -110,6 +110,10 @@ function ZMap() {
       CHANGE_PASSWORD_WELCOME: "Change Your Password",
       CHANGE_PASSWORD_SUCCESS: "Excuuuuse me, %1! Your password has been successfully updated!",
       CHANGE_PASSWORD_ERROR: "I AM ERROR. Could not update password. Try again.  %1",
+
+      DELETE_ACCOUNT_WELCOME: "Delete your account",
+      DELETE_ACCOUNT_SUCCESS: "Account has been deleted.",
+      DELETE_ACCOUNT_ERROR: "Account could not be deleted: %1",
 
       MARKER_COMPLETE_WARNING : "You're not logged in, so your completed markers will be stored in a cookie. Log in or create an account to save your markers in our database.",
 
@@ -1207,7 +1211,7 @@ ZMap.prototype.deleteMarker = function(vMarkerId) {
                         markers[i].visible = 0;
                         markers[i].categoryId = -1;
                         toastr.success(_this.langMsgs.MARKER_DEL_SUCCESS.format(markers[i].id));
-                        if (this.mapControl.isMobile()) {
+                        if (this.mapControl.isMobile) {
                            this.mapControl.closeDrawer();
                         } else {
                            this.mapControl.resetContent();
@@ -1249,7 +1253,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
    tinymce.remove();
 
    var catSelection = "";
-   this.categories.forEach(function(entry) {
+   this.categoriesArr.forEach(function(entry) {
       catSelection = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"' + (vMarker!=null&&vMarker.categoryId==entry.id?"selected":"") + '> ' + entry.name + '</option>';
    });
 
@@ -1522,7 +1526,7 @@ ZMap.prototype.transferCompletedMarkersToDB = function() {
 
 ZMap.prototype.getUserCompletedMarkers = function() {
    // clean the categories complete count
-   this.categories.forEach(function(category) {
+   this.categoriesArr.forEach(function(category) {
       this.categories[category.id].complete = 0;
    }, this);
 
@@ -1767,23 +1771,25 @@ ZMap.prototype._buildContextMenu = function() {
 }
 
 ZMap.prototype.logout = function() {
-   $.ajax({
-      type: "POST",
-      url: "ajax.php?command=logout",
-      success: function(data) {
-         //data = jQuery.parseJSON(data);
-         if (data.success) {
-            toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
-            user = null;
-            updateAdState();
-            _this._buildContextMenu();
-            this.mapControl.resetContent();
-            showLoginControls();
-         } else {
-            toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
-         }
+  $.ajax({
+    type: "POST",
+    url: "ajax.php?command=logout",
+    success: function(data) {
+      if(data.success) {
+        toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
+        user = null;
+        updateAdState();
+        _this._buildContextMenu();
+        _this.mapControl.resetContent();
+        showLoginControls();
+      } else {
+        toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
       }
-   });
+    },
+    error: function(data) {
+      toastr.error(_this.langMsgs.LOGOUT_ERROR.format(data.msg));
+    }
+  });
 };
 
 
@@ -1893,14 +1899,13 @@ ZMap.prototype._createLostPasswordForm = function() {
         url: "ajax.php?command=lost_password",
         data: $("#lostpasswordform").serialize(), // serializes the form's elements.
         success: function(data) {
-            //data = jQuery.parseJSON(data);
-            if (data.success) {
-               toastr.success(_this.langMsgs.LOST_PASSWORD_SUCCESS);
-               this.mapControl.resetContent();
-            } else {
-               console.log(data.msg);
-               toastr.error(_this.langMsgs.LOST_PASSWORD_ERROR.format(data.msg));
-            }
+          //data = jQuery.parseJSON(data);
+          if (data.success) {
+            toastr.success(_this.langMsgs.LOST_PASSWORD_SUCCESS);
+            _this.mapControl.resetContent();
+          } else {
+            toastr.error(_this.langMsgs.LOST_PASSWORD_ERROR.format(data.msg));
+          }
         }
       });
 
@@ -1945,19 +1950,69 @@ ZMap.prototype._createChangePasswordForm = function() {
         url: "ajax.php?command=change_password",
         data: $("#changepasswordform").serialize(), // serializes the form's elements.
         success: function(data) {
-            //data = jQuery.parseJSON(data);
-            if (data.success) {
-               toastr.success(_this.langMsgs.CHANGE_PASSWORD_SUCCESS);
-               this.mapControl.resetContent();
-            } else {
-               console.log(data.msg);
-               toastr.error(_this.langMsgs.CHANGE_PASSWORD_ERROR.format(data.msg));
-            }
+          //data = jQuery.parseJSON(data);
+          if (data.success) {
+            toastr.success(_this.langMsgs.CHANGE_PASSWORD_SUCCESS);
+            _this.mapControl.resetContent();
+          } else {
+            toastr.error(_this.langMsgs.CHANGE_PASSWORD_ERROR.format(data.msg));
+          }
         }
       });
 
       e.preventDefault();
    });
+}
+
+ZMap.prototype._createAccountDeleteForm = function() {
+  this.mapControl.setContent(
+    '<div id="deleteaccount">' +
+      '<h3 class="text-center">' + this.langMsgs.DELETE_ACCOUNT_WELCOME + '</h3>' +
+      '<form class="leaflet-control-layers-list" role="deleteaccountform" id="deleteaccountform" enctype="multipart/form-data">' +
+        '<div class="form-group">' +
+           '<div class="cols-sm-10">' +
+              '<div class="input-group">' +
+                '<span class="input-group-addon">' +
+                  '<i class="icon-fa-lock fa-lg" aria-hidden="true"></i>' +
+                '</span>' +
+                '<input type="password" s="form-control" class="form-control" name="currentpassword" id="currentpassword" required="" placeholder="Enter your current password"/>' +
+              '</div>' +
+           '</div>' +
+        '</div>' +
+        '<div class="modal-footer">' +
+           '<div>' +
+              '<button type="submit" class="btn btn-primary btn-lg btn-block bad">Delete Account</button>' +
+           '</div>' +
+         '</div>' +
+      '</form>' +
+    '</div>'
+  , 'deleteAccountForm'
+  );
+
+  var _this = this;
+
+  $("#deleteaccountform").submit(function(e) {
+    $.ajax({
+      type: "POST",
+      async: false,
+      url: "ajax.php?command=delete_account",
+      data: $("#deleteaccountform").serialize(),
+      success: function(data) {
+        if(data.success) {
+          toastr.success(_this.langMsgs.DELETE_ACCOUNT_SUCCESS);
+          _this.logout();
+          _this.mapControl.resetContent();
+        } else {
+          toastr.error(_this.langMsgs.DELETE_ACCOUNT_ERROR.format(data.msg));
+        }
+      },
+      error: function(data) {
+        toastr.error(_this.langMsgs.DELETE_ACCOUNT_ERROR.format(data.msg));
+      }
+    });
+
+    e.preventDefault();
+  });
 }
 
 ZMap.prototype._createLoginForm = function() {
@@ -2006,23 +2061,21 @@ ZMap.prototype._createLoginForm = function() {
         url: "ajax.php?command=login",
         data: $("#loginform").serialize(),
         success: function(data) {
-            //data = jQuery.parseJSON(data);
-            if (data.success) {
-               checkChangelog(data.user);
-               _this.setUser(data.user);
-               updateAdState();
-               toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
-            if (this.mapControl.isMobile()) {
-               this.mapControl.closeDrawer();
-            } else {
-               this.mapControl.resetContent();
-            }
+          //data = jQuery.parseJSON(data);
+          if (data.success) {
+            checkChangelog(data.user);
+            _this.setUser(data.user);
+            updateAdState();
+            toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
 
-
+            if (_this.mapControl.isMobile) {
+               _this.mapControl.closeDrawer();
             } else {
-               console.log(data.msg);
-               toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));
+              _this.mapControl.resetContent();
             }
+          } else {
+            toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));
+          }
         }
       });
       e.preventDefault();
@@ -2041,6 +2094,8 @@ ZMap.prototype._createLoginForm = function() {
 }
 
 ZMap.prototype._createAccountForm = function(user) {
+  var _this = this;
+
   this.mapControl.setContent(
      '<div id="account">' +
       '<h3 class="text-center">' +
@@ -2056,6 +2111,7 @@ ZMap.prototype._createAccountForm = function(user) {
            '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
+           '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
          '</div>' +
       '</div>' +
     '</div>',
@@ -2064,10 +2120,10 @@ ZMap.prototype._createAccountForm = function(user) {
 
   $("#account_clear_completed_btn").click(function(e) {
      _this._createDialogDeleteAllMarkers();
-     this.categories.forEach(function(category) {
+     _this.categoriesArr.forEach(function(category) {
        category.complete = 0;
      }, this);
-     this.mapControl.resetContent();
+     _this.mapControl.resetContent();
      e.preventDefault();
   });
 
@@ -2081,10 +2137,15 @@ ZMap.prototype._createAccountForm = function(user) {
      e.preventDefault();
   });
 
-  $("#log_out_btn").click(function(e) {
-     this.logout();
+  $("#account_delete_btn").click(function(e) {
+     _this._createAccountDeleteForm();
      e.preventDefault();
-  }.bind(this));
+  });
+
+  $("#log_out_btn").click(function(e) {
+    _this.logout();
+    e.preventDefault();
+  });
 }
 //****************************************************************************//
 //*************                                                  *************//

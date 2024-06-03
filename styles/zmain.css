@@ -945,6 +945,10 @@ a.icon-close2 {
 	margin: -8px;
 }
 
+#menu-cat-content .menu-cat-content-inner #account .modal-footer div {
+	margin: 0px;
+}
+
 .modal-footer .infoWindowIcn {
 	width: calc(100% - 32px);
 }
@@ -1494,4 +1498,29 @@ li.list-group-item  p {
 
 p.subtitle {
 	text-align: center
+}
+
+.bad {
+  background-color: red;
+}
+
+.menu-cat-content-inner h1,
+.menu-cat-content-inner h2,
+.menu-cat-content-inner h3,
+.menu-cat-content-inner h4,
+.menu-cat-content-inner h5,
+.menu-cat-content-inner h6 {
+  margin-top: 10px;
+}
+
+.menu-cat-content-inner #account p {
+  margin-bottom: 0px;
+}
+
+.menu-cat-content-inner #account .infoWindowIcn:first-of-type {
+  margin-top: 0px;
+}
+
+.menu-cat-content-inner #account .infoWindowIcn:last-of-type {
+  margin-bottom: 8px;
 }

@@ -105,10 +105,13 @@
   }
 
   # System features
-  $minify       = get_config("minify"     , 'boolean', ['true'  ]);
-  $enableTests  = get_config("enableTests", 'boolean', ['false' ]);
-  // debug_log('minify: '.$minify); # Boolean values are misleading to print simply still..
-  // debug_log('enableTests: '.$enableTests);
+  $enableTests  = get_config('enableTests', 'boolean', ['false' ]);
+  $minify       = get_config('minify'     , 'boolean', ['true'  ]);
+  $softDelete   = get_config('softDelete' , 'boolean', ['true'  ]);
+  # Boolean values are misleading to print simply still..
+  // debug_log('enableTests : '.$enableTests);
+  // debug_log('minify      : '.$minify     );
+  // debug_log('softDelete  : '.$softDelete );
 
   # User features
 

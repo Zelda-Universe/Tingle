@@ -766,6 +766,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         "$tableName" \
       ; then
         altPrint "Skipping table \"$tableName\" as it is set to be ignored...";
+        altPrint;
         continue;
       fi
 

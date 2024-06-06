@@ -88,6 +88,8 @@
   // debug_log("mtype                  : $mtype" );
   // debug_log("ext                    : $ext"   );
 
+  $update = false;
+
   header("Content-Type: $mtype");
 
         $localRegistryFile = "$type.txt";
@@ -114,8 +116,9 @@
     $cacheDestFileMTime     = filemtime("$cacheDestFile");
     $cacheDestFileLC        = getLineCount("$cacheDestFile");
   } else {
-    $cacheDestFileMTime = false;
-    $cacheDestFileLC    = false;
+    $cacheDestFileMTime = false ;
+    $cacheDestFileLC    = false ;
+    $update             = true  ;
   }
 
   // debug_log("localRegistryFile      : $localRegistryFile"       );
@@ -136,8 +139,6 @@
 
 
   ## Update category checks
-
-  $update = false;
 
   if(
         !$update

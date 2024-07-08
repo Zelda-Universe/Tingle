@@ -4,18 +4,25 @@ set -l SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/../scripts/common/errorPrint.fish";
 
+for exe in 'mariadb' 'js-yaml'
+  if not type -q "$exe"
+    errorPrint "Executable does not exist: \"$exe\"; exiting...";
+    return 1;
+  end
+end
+
 ## Mode
 set mode "$argv[1]";
 
 if test -z "$mode"
   errorPrint 'Mode must not be empty; exiting...';
-  return 1;
+  return 2;
 end
 
 if not echo "$mode" \
   | grep -qP '((install)|(refreshAll)|(refreshSpecific))'
   errorPrint 'Mode must be one of either \"install\", \"refreshAll\", or \"refreshSpecific\"; exiting...';
-  return 2;
+  return 3;
 end
 
 ## Credentials

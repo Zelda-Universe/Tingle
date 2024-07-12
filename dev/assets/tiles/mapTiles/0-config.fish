@@ -9,6 +9,8 @@ set -l SDIR (readlink -f (dirname (status filename)));
 source "$SDIR/../../../scripts/common/debugPrint.fish";
 source "$SDIR/../../../scripts/common/errorPrint.fish";
 
+source "$SDIR/../../../scripts/common/filenameAddSuffix.fish";
+
 # debugPrint "srcFile: $srcFile"
 if test -z "$srcFile"
   if not read -P 'Source file: ' srcFile

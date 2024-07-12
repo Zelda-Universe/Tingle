@@ -22,15 +22,15 @@ echo 'Determining image\'s maximum zoom level values...';
 # https://imagemagick.org/script/escape.php
 test -z "$srcFileDims";
 and set srcFileDims (
-  # magick identify -format "%wx%h\n" "$srcFile"
-  # file -b "$srcFile" | cut -d',' -f2 | string trim
-  magick identify -ping -format "%wx%h\n" "$srcFile"
+  # "$imageProg" identify -format "%wx%h\n" "$srcFile";
+  # file -b "$srcFile" | cut -d',' -f2 | string trim;
+  "$imageProg" identify -ping -format '%wx%h\n' "$srcFile";
 );
 # debugPrint "Source file dimensions: $srcFileDims";
 # debugPrint "srcFileDims: $srcFileDims";
 
 if test -z "$srcFileDims"
-  errorPrint 'srcFileDims still empty; unknown error using image magick; exiting...';
+  errorPrint 'srcFileDims still empty; unknown error using magick; exiting...';
   exit 1;
 end
 

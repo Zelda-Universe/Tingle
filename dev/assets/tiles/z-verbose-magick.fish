@@ -10,7 +10,7 @@ end
 set includedZVerboseMagick 'true';
 
 if test                         \
-  "$gm" != 'true'               \
+  "$imageProgGM" != 'true'      \
   -a \(                         \
         "$monitor"    = 'true'  \
     -o  "$verbose"    = 'true'  \

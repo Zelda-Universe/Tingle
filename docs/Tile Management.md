@@ -159,13 +159,13 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
 ## Main
 
   - Command: `dev/assets/tiles/mapTiles/all.fish`
-  - Config:
+  - Options:
     - `processZoomLevels`:
       - Type: `SSL int`
-      - Possible Values: `0-<maxZoomLevelForImage> ...`
+      - Possible Values: `<0-maxZoomLevelForImage> ...`
     - `processZoomLevelsMax`:
       - Type: `int`
-      - Possible Values: `0-<maxZoomLevelForImage>`
+      - Possible Values: `<0-maxZoomLevelForImage>`
     - `processSteps`
       - Type: `SSL int|string`
       - Possible Values:
@@ -176,6 +176,15 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
           - `2|3`
           - `createBaseZoomImages`
           - `cropTiles`
+      - Default:
+        - Mode `Placeholder`:
+          - `2 generateTiles`
+        - Mode `Real`:
+          - `2 3 createBaseZoomImages cropTiles`
+    - `outputZoomFolders`:
+      - Type: `boolean`
+      - Default: `false`
+      - Superseded by: `outputAxisFolders`
     - `outputAxisFolders`:
       - Type: `boolean`
       - Default: `false`
@@ -184,15 +193,16 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
       - Modes: `botw`
       - Type: `int`
       - Possible Values: `(0|1|2|3)`
-      
+      - Default: `0`
+
   There is a possibility bad image tiles could be generated in the file system, where the cropping process would fail (be OOM-killed) on Linux, but on Windows will run, until it experiences a more specific problem running out of available file handles to use, creating files without proper IDATs to be saved.
-  
+
   A proper 256x256 32-bit PNG image with only transparent pixels will be 479 bytes, but these will be 189 bytes.
-  
+
   Identifying a file like this with Image Magick will present a Read Exception.
-  
+
   https://stackoverflow.com/questions/17757114/imagemagick-to-verify-image-integrity#comment134216470_17764714
-  
+
   You can clean up these files by running this command: `dev/assets/tiles/mapTiles/cleanBadFiles.fish`.
 
 ## History
@@ -201,7 +211,7 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
   - `dev/assets/tiles/mapTiles/allAuto.fish`
     - No great way to program this, so disabled for now.
 
-  Danilo says he used a [modified version of a] script called `tileCreator.js` (14.4 KB).
+  Danilo says he used a [modified version of a script called `tileCreator.js`] (14.4 KB).
   I assume it's modified because the original tries to fetch data from a database which we do not use for our map tiles, directly at least.
   I may have found that original here: [tileCreator.js](https://github.com/AnderPijoan/vectorosm/blob/master/tileCreator/tileCreator.js).
 

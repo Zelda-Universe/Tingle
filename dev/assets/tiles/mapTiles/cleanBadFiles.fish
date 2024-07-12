@@ -21,7 +21,7 @@ echo;
 find -type f -iname '*.png' \
 | while read file;
 	if test -f "$file"
-		if set info (magick identify -regard-warnings "$file" 2>&1)
+		if set info ("$imageProg" identify -regard-warnings "$file" 2>&1)
 			echo "Good file: $file";
 		else
 			echo "Removing bad file \"$file\"...";

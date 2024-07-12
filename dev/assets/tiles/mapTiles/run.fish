@@ -4,7 +4,7 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-# Dependencies: magick/ImageMagick, bc, ...
+# Dependencies: gm/GraphicsMagick or magick/ImageMagick, bc, ...
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
@@ -41,7 +41,8 @@ begin
     return 2;
   end
 
-  test -z "$tileSize"; and set -x tileSize "256";
+  test -z "$tileSize";
+  and set -x tileSize "256";
 
   if test "$isPHType" = 'true'
     set availableSteps "2" "generateTiles";
@@ -50,8 +51,9 @@ begin
     # "listFinishedGames" # ?
   end
 
-  test -z "$processSteps"; and set processSteps $availableSteps;
-  if begin;
+  test -z "$processSteps";
+  and set processSteps $availableSteps;
+  if begin
     test (count $processSteps) -eq 1;
     and echo "$processSteps" | grep -q " ";
   end
@@ -67,6 +69,42 @@ begin
     end
   end
 
+  if test -z "$imageProgGM"
+    if type -q 'gm'
+      set -x imageProgGM 'true'  ;
+      if test -z "$imageProg"
+        set -x imageProg 'gm'    ;
+      end
+    else
+      set -x imageProgGM 'false' ;
+    end
+  end
+
+  if test -z "$imageProgIM"
+    if type -q 'magick'
+      set -x imageProgIM 'true'  ;
+      if test -z "$imageProg"
+        set -x imageProg 'magick';
+      end
+    else
+      set imageProgIM 'false' ;
+    end
+  end
+
+  set srcFileDir (dirName "$srcFile");
+  set mapInfoJSONFile "$srcFileDir/mappingInfo.json";
+  # debugPrint "mapInfoJSONFile: $mapInfoJSONFile";
+  if test -f "$mapInfoJSONFile"
+    set mapInfoJSON     (cat "$mapInfoJSONFile");
+    # debugPrint "mapInfoJSON: $mapInfoJSON";
+
+    set -x zoomLevels    (echo "$mapInfoJSON" | jq -r '.zoomLevels'  );
+    set -x numAxisTiles  (echo "$mapInfoJSON" | jq -r '.numAxisTiles');
+    set -x zoomDim       (echo "$mapInfoJSON" | jq -r '.zoomDim'     );
+    # debugPrint "zoomLevels  : $zoomLevels"  ;
+    # debugPrint "numAxisTiles: $numAxisTiles";
+    # debugPrint "zoomDim     : $zoomDim"     ;
+  end
   # Settings debug information
   # debugPrint "force: $force";
   # debugPrint "manualStep: $manualStep";
@@ -103,10 +141,22 @@ mkdir -p "$outTrialsDir";
 
 # Maybe make step 1 optional only if the user provided a custom argument for it,
 # but it's several....
-if test -z "$zoomLevels";
+if test -z "$zoomLevels"
   if not source "$SDIR/1-determineMaxDim.fish"
     return;
   end
+
+  jq -M -n                              \
+    --arg zoomLevels    "$zoomLevels"   \
+    --arg numAxisTiles  "$numAxisTiles" \
+    --arg zoomDim       "$zoomDim"      \
+    '
+      .zoomLevels=$zoomLevels     |
+      .numAxisTiles=$numAxisTiles |
+      .zoomDim=$zoomDim
+    ' \
+    > "$mapInfoJSONFile"                \
+  ;
   userWaitConditional;
 end
 # debugPrint "zoomLevels: $zoomLevels";

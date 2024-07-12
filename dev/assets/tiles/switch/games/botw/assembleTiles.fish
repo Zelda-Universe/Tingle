@@ -305,9 +305,9 @@ end
 set -l SDIR (readlink -f (dirname (status filename)));
 
 set indiciesHorizontal  "Z" "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K";
-set tileDims            "3000"   "840"  "300"  "135"  ;
+set tileDims            "3000"  "840"   "300"  "135"  ;
 set totalWidths         "36000" "10080" "3600" "1620" ;
-set totalHeights        "30000"  "8400" "3000" "1350" ;
+set totalHeights        "30000" "8400"  "3000" "1350" ;
 set folderPrefix        "MapTex"                      ;
 
 # Direct (Required) Input

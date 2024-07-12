@@ -4,6 +4,11 @@
 # Copyright (c) 2023 Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
+set -l SDIR (readlink -f (dirname (status filename)));
+
+source "$SDIR/filenameGetExtension.fish";
+source "$SDIR/filenameRemoveExtension.fish";
+
 not type -q 'filenameAddSuffix';
 and function filenameAddSuffix --argument-names filePath suffix
   if test -z "$filePath"

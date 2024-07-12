@@ -69,7 +69,7 @@ for zoomLevel in $processZoomLevels
   # debugPrint "numAxisTiles: $numAxisTiles";
   # debugPrint "axisEndIndex: $axisEndIndex";
   # debugPrint "currentExtFile: $currentExtFile";
-  
+
   if test \
         "$zoomLevel"  -gt "$zLLimit" \
     -a  "$forceBigJob" != 'true'
@@ -84,7 +84,7 @@ for zoomLevel in $processZoomLevels
   # or check if they have any files already.
   if test "$workFiles" = 'true'
     set dir '.';
-    
+
     find                        \
       "$dir"                    \
       -maxdepth 1               \
@@ -94,7 +94,7 @@ for zoomLevel in $processZoomLevels
     | read firstFile            \
     ;
     # debugPrint "firstFile: $firstFile";
-    
+
   	if test -n "$firstFile" -a "$force" != "true"
   		echo 'Current zoom level already contains at least 1 file, and force has not been specified; skipping...';
       set -e firstFile;
@@ -103,10 +103,10 @@ for zoomLevel in $processZoomLevels
       echo 'Current zoom level does not contain any files, or force has been specified; continuing...';
   	end
   else
-  
+
   	echo "Processing zoom level \"$zoomLevel\"...";
     # debugPrint "zoomLevel: $zoomLevel";
-  
+
     if test \
           "$outputAxisFolders" = "true" \
     	-o  "$outputZoomFolders" = "true"
@@ -162,7 +162,7 @@ for zoomLevel in $processZoomLevels
       ;
     end
     # debugPrint "firstFile: $firstFile";
-    
+
   	if test -n "$firstFile" -a "$force" != "true"
   		echo 'Current zoom level already contains at least 1 file, and force has not been specified; skipping...';
       set -e firstFile;
@@ -176,16 +176,16 @@ for zoomLevel in $processZoomLevels
     printf "$tileFileNamePattern" "$zoomLevel"
   );
   # debugPrint "tileFileName: $tileFileName";
-  
+
   set timeFilePath (printf "$timeFilePattern" "$zoomLevel");
   # debugPrint "timeFilePath: $timeFilePath";
-  
+
   if test "$rows" = 'true'
     set cropOpt x{$tileSize}            ;
   else
     set cropOpt {$tileSize}x{$tileSize} ;
   end
-  
+
   if test -n "$currentExtFilesJSON"
     set currentExtFiles (
       echo "$currentExtFilesJSON" \
@@ -200,7 +200,7 @@ for zoomLevel in $processZoomLevels
       errorPrint 'altPushd outWorkDir; exiting...';
       return 5;
     end
-    
+
     if test \
             "$reduceJob" = 'true' \
       -a -d "$currentExtFilesDir"
@@ -213,9 +213,9 @@ for zoomLevel in $processZoomLevels
       );
     end
     # debugPrint "currentExtFiles: $currentExtFiles";
-    
+
     popd;
-    
+
     if test -z "$currentExtFiles"
       set currentExtFiles "$currentExtFile";
     end
@@ -223,25 +223,25 @@ for zoomLevel in $processZoomLevels
   # debugPrint "currentExtFiles: $currentExtFiles";
   # debugPrint "count currentExtFiles: "(count $currentExtFiles);
   # debugPrint "head 150 currentExtFiles: "(echo "$currentExtFiles" | head -c 150);
-  
+
   if test -z "$currentExtFile" -a ! -f "$currentExtFile"
     errorPrint 'Padded image file and cut rows do not exist to source from; exiting...';
     return 6;
   end
-  
+
   if test "$dryRun" = 'true'
     echo 'Skipping execution and timing due to dry run setting being enabled...';
     return;
   end
-  
+
   echo;
   echo 'Cutting padded image into tile sections...';
-  
+
   timerStart;
   for currentExtFile in $currentExtFiles
     echo "Processing padded file \"$currentExtFile\"...";
-    
-    magick                                      \
+
+    "$imageProg"                                        \
       $monitorOpts                                      \
   		"$outWorkDir/$currentExtFile"                     \
   		-crop "$cropOpt"                                  \
@@ -263,9 +263,9 @@ for zoomLevel in $processZoomLevels
     | wc -l
   );
   # debugPrint "createdFilesCount: $createdFilesCount";
-  
+
   if test -z "$createdFilesCount" -o "$createdFilesCount" -lt '1'
-    errorPrint 'Could not create cropped images; unknown Image Magick error.';
+    errorPrint 'Could not create cropped images; unknown Magick error.';
     errorPrint "createdFilesCount: $createdFilesCount";
   end
 

@@ -39,13 +39,13 @@ for coord in $coordNames
       end
     end
   end
-  
+
   # debugPrint "\$\$coord: $$coord";
   if test -z "$$coord"
     errorPrint "$coord must be provided as an argument; exiting...";
     return 2;
   end
-  
+
   # set coordIndex (echo "$coordIndex + 1" | bc);
 end
 
@@ -86,20 +86,20 @@ if test "$dryRun" != 'true'
     echo "Tile \"$tileFileName\" already exists; exiting...";
     return 4;
   end
-  
+
   echo "Cropping tile \"$tileFileName\"...";
-  
+
   timerStart;
-  magick              \
+  "$imageProg"        \
     "$currentExtFile" \
     -crop {$tileSize}x{$tileSize}"+$xOffset+$yOffset" \
     "$tileFileName"   \
   ;
   timerStop;
   timerDurationReportAndSave "$timeFilePath";
-    
+
   if test ! -e "$tileFileName"
-    errorPrint 'Could not crop tile; unknown Image Magick error.';
+    errorPrint 'Could not crop tile; unknown Magick error.';
     errorPrint "tileFileName: $tileFileName";
   end
 else

@@ -16,7 +16,7 @@ set isPHType (
   if begin
     test "$generatePHTiles" = 'true'
     or echo "$srcFile" | grep -qP \
-      '<((placeholder)|(fake)|(test)|(debug)|(sample example))>' \
+      '<((placeholder)|(fake)|(test)|(debug)|(sample)|(example))>' \
     ;
   end
     echo 'true' ;

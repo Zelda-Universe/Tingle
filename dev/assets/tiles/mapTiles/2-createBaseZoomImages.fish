@@ -34,29 +34,7 @@ begin
   set timeFilePattern "$outTrialsDir/%s/%s";
   # debugPrint "timeFilePattern: $timeFilePattern";
 
-  if test -z "$zoomLevels"
-    errorPrint 'Detected zoomLevels for the image is empty; exiting...';
-    return 3;
-  end
-  set availableZoomLevels (seq 0 1 $zoomLevels);
-  # debugPrint "availableZoomLevels: $availableZoomLevels";
-  # debugPrint "count availableZoomLevels: "(count $availableZoomLevels);
-
-  test -z "$processZoomLevels" -o "$processZoomLevels" = '*';
-  and set processZoomLevels $availableZoomLevels;
-  # debugPrint "processZoomLevels: $processZoomLevels";
-  # debugPrint "count processZoomLevels: "(count $processZoomLevels);
-
-  ## After Derived/Cleaned / Other Input Validation?
-  # May have just fixed a bug here where it never would have been triggered originally.
-  for zoomLevel in $processZoomLevels
-    if not echo "$availableZoomLevels" | grep -q "\b$zoomLevel\b"
-    echo "Error: Zoom Level \"$zoomLevel\" not valid.";
-      echo 'Valid choices for this source image: "'(string join '", "' $availableZoomLevels)'"';
-      echo 'Exiting...';
-      exit;
-    end
-  end
+  source "$SDIR/resolveWildcard.fish";
 end
 
 # Root debug information
@@ -83,11 +61,11 @@ for zoomLevel in $processZoomLevels
 	# Iteration debug information
   # debugPrint "zoomLevel     : $zoomLevel"     ;
   # debugPrint "numAxisTiles  : $numAxisTiles"  ;
-  debugPrint "scale         : $scale"         ;
+  # debugPrint "scale         : $scale"         ;
   # debugPrint "tileSize      : $tileSize"      ;
   # debugPrint "zoomDim       : $zoomDim"       ;
   # debugPrint "zoomDims      : $zoomDims"      ;
-  debugPrint "currentExtFile: $currentExtFile";
+  # debugPrint "currentExtFile: $currentExtFile";
 
 	# Create base square image to cut.
   # https://legacy.imagemagick.org/Usage/thumbnails/#fit_summery
@@ -184,8 +162,6 @@ for zoomLevel in $processZoomLevels
     set -x outDir                     "$folder"               ;
     set -x processZoomLevels          "$zoomLevel"            ;
     set -x rows                       'true'                  ;
-    set -x tileFileNamePatternCoords  '%[fx:page.y/256]'      ;
-    set -x tileFileNamePattern        "%%[filename:tile].png" ;
     set -x workFiles                  'true'                  ;
 
     "$SDIR/3-cropTiles.fish";

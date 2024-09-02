@@ -12,5 +12,5 @@ and function altPushd
     set path $argv;
   end
 
-  pushd $argv;
+  pushd $path;
 end

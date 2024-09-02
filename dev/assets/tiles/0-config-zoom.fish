@@ -9,19 +9,23 @@ set -l SDIR (readlink -f (dirname (status filename)));
 source "$SDIR/../../scripts/common/debugPrint.fish";
 source "$SDIR/../../scripts/common/errorPrint.fish";
 
+test -z "$allowWildcardZoomLevel";
+and set allowWildcardZoomLevel 'true';
+
 ## Input Validation
 
 if test -z "$processZoomLevels"
   if test                         \
         -z "$processZoomLevel"    \
     -a  -z "$processZoomLevelMax"
-    errorPrint 'None of the following variables specified; exiting...';
-    errorPrint "processZoomLevels   : $processZoomLevels"   ;
-    errorPrint "processZoomLevel    : $processZoomLevel"    ;
-    errorPrint "processZoomLevelMax : $processZoomLevelMax" ;
-    exit 3;
+    # errorPrint 'None of the following variables specified; exiting...';
+    # errorPrint "processZoomLevels   : $processZoomLevels"   ;
+    # errorPrint "processZoomLevel    : $processZoomLevel"    ;
+    # errorPrint "processZoomLevelMax : $processZoomLevelMax" ;
+    # exit 3;
+    set processZoomLevel '*';
   end
-  
+
   ## Input cleaning?
   # Eliminates a mostly empty processZoomLevels value?
   # How would that happen though?..  Bad input array parsing/transforming?
@@ -47,14 +51,14 @@ if test -z "$processZoomLevels"
     end
     set processZoomLevels (seq 0 1 "$processZoomLevelMax");
   end
-  
+
   # debugPrint "zoomLevels: $zoomLevels";
   test -z "$processZoomLevels";
   and read -P 'Zoom Levels to process: ';
 else
   # Processing conditions that only appear from user input,
   # not the above autofill/derivation.
-  
+
   # Space and comma separate a single value into multiple values.
   if begin
     test (count $processZoomLevels) -eq 1;
@@ -69,7 +73,7 @@ else
   end
   # debugPrint "processZoomLevels: $processZoomLevels";
   # debugPrint "count processZoomLevels: "(count $processZoomLevels);
-  
+
   # Wild card and range processing.
   for processZoomLevel in $processZoomLevels
     if test "$processZoomLevel" = '*'
@@ -99,6 +103,7 @@ else
   set processZoomLevels $newProcessZoomLevels;
   # debugPrint "newProcessZoomLevels: $newProcessZoomLevels";
 end
+# debugPrint "processZoomLevels: $processZoomLevels";
 
 # debugPrint "processZoomLevels: $processZoomLevels";
 # debugPrint "count processZoomLevels: "(count $processZoomLevels);
@@ -109,6 +114,10 @@ if test -z "$processZoomLevels"
   return 4;
 else
   # set -x processZoomLevelsJSON (echo "$processZoomLevels" | jq -s);
-  set -x processZoomLevelsJSON (string join \n $processZoomLevels | jq -s);
+  set -x processZoomLevelsJSON (
+    string join \n $processZoomLevels \
+    | sed 's|*|"*"|'\
+    | jq -s
+  );
   # debugPrint "processZoomLevelsJSON: $processZoomLevelsJSON";
 end

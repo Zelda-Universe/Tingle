@@ -40,7 +40,7 @@ if test \
         -z "$outDir" \
   -o !  -e "$outDir" \
   -o !  -d "$outDir"
-  errorPrint "Output directory must be provided as the first argument, exist, and be a directory; exiting...";
+  errorPrint "Output directory must be provided as the second argument, exist, and be a directory; exiting...";
   return 4;
 end
 

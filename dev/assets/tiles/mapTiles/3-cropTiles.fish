@@ -24,7 +24,11 @@ end
 if test "$workFiles" = 'true'
   set timeFilePattern "$outTrialsDir/%s/3b - Row Cutting.txt";
 else
-  set timeFilePattern "$outTrialsDir/%s/4 - Cutting.txt";
+  if test "$imageProgGM" = 'true'
+    set timeFilePattern "$outTrialsDir/%s/4a - Cutting.txt";
+  else
+    set timeFilePattern "$outTrialsDir/%s/4 - Cutting.txt";
+  end
 end
 # debugPrint "timeFilePattern: $timeFilePattern";
 
@@ -42,23 +46,45 @@ if test -z "$tileFileNamePatternCoords"
     set tFNPCXYDelim '_';
   end
 
-  set -x tileFileNamePatternCoords \
-    "%[fx:page.x/$tileSize]$tFNPCXYDelim%[fx:page.y/$tileSize]" \
-  ;
+  if test imageProgIM = 'true'
+    set tileFileNamePatternCoords \
+      "%[fx:page.x/$tileSize]$tFNPCXYDelim%[fx:page.y/$tileSize]" \
+    ;
+  end
 end
 # debugPrint "tileFileNamePatternCoords: $tileFileNamePatternCoords";
 
+test -z "$tileFileNamePattern"
+and set tileFileNamePattern '';
+test -z "$tFNPCZDelim"
+and set tFNPCZDelim '';
 if test -z "$tileFileNamePattern"
   if test \
         "$outputAxisFolders" = 'true' \
     -o  "$outputZoomFolders" = 'true'
     set tFNPCZDelim '/';
   else
-    set tFNPZDelim '_';
+    set tFNPCZDelim '_';
   end
+  # debugPrint "tFNPCZDelim: $tFNPCZDelim";
 end
-set -x tileFileNamePattern "%s$tFNPCZDelim%%[filename:tile].png";
 # debugPrint "tileFileNamePattern: $tileFileNamePattern";
+
+test -z "$tFNPCOpts";
+and set tFNPCOpts '';
+if test "$imageProgIM" = 'true'
+  set tileFileNamePattern "%s$tFNPCZDelim%%[filename:tile].png";
+  set tFNPCOpts     \
+    -set            \
+    'filename:tile' \
+    "$tileFileNamePatternCoords" \
+  ;
+else if test "$imageProgGM" = 'true'
+  set tileFileNamePattern "%s$tFNPCZDelim%%02d.png";
+end
+# debugPrint "tileFileNamePattern: $tileFileNamePattern";
+
+source "$SDIR/resolveWildcard.fish";
 
 for zoomLevel in $processZoomLevels
   echo;
@@ -71,7 +97,7 @@ for zoomLevel in $processZoomLevels
   # debugPrint "currentExtFile: $currentExtFile";
 
   if test \
-        "$zoomLevel"  -gt "$zLLimit" \
+        "$zoomLevel" -gt "$zLLimit" \
     -a  "$forceBigJob" != 'true'
     echo "Skipping zoom level \"$zoomLevel\" since it is greater than the recommended limit of \"$zLLimit\"...";
     continue;
@@ -82,8 +108,10 @@ for zoomLevel in $processZoomLevels
 
   # Make output (Z) subdirs, if they do not exist and setting is enabled,
   # or check if they have any files already.
+  # debugPrint "workFiles: $workFiles";
   if test "$workFiles" = 'true'
     set dir '.';
+    # debugPrint "dir: $dir";
 
     find                        \
       "$dir"                    \
@@ -96,14 +124,13 @@ for zoomLevel in $processZoomLevels
     # debugPrint "firstFile: $firstFile";
 
   	if test -n "$firstFile" -a "$force" != "true"
-  		echo 'Current zoom level already contains at least 1 file, and force has not been specified; skipping...';
+  		echo 'Current zoom level already contains at least 1 tile file, and force has not been specified; skipping producing them...';
       set -e firstFile;
   		continue;
     else
-      echo 'Current zoom level does not contain any files, or force has been specified; continuing...';
+      echo 'Current zoom level does not contain any existing tile files, or force has been specified; continuing to produce them...';
   	end
   else
-
   	echo "Processing zoom level \"$zoomLevel\"...";
     # debugPrint "zoomLevel: $zoomLevel";
 
@@ -169,6 +196,9 @@ for zoomLevel in $processZoomLevels
   		continue;
     else
       echo 'Current zoom level does not contain any files, or force has been specified; continuing...';
+      if test "$imageProgGM" = 'true'
+        set dir "$zoomLevel";
+      end
   	end
   end
 
@@ -186,6 +216,7 @@ for zoomLevel in $processZoomLevels
     set cropOpt {$tileSize}x{$tileSize} ;
   end
 
+  # debugPrint "currentExtFilesJSON: $currentExtFilesJSON";
   if test -n "$currentExtFilesJSON"
     set currentExtFiles (
       echo "$currentExtFilesJSON" \
@@ -211,14 +242,11 @@ for zoomLevel in $processZoomLevels
           -iname  '*.png'       \
         | sort -n -t'-' -k'3.7'
       );
-    end
-    # debugPrint "currentExtFiles: $currentExtFiles";
-
-    popd;
-
-    if test -z "$currentExtFiles"
+    else
       set currentExtFiles "$currentExtFile";
     end
+
+    popd;
   end
   # debugPrint "currentExtFiles: $currentExtFiles";
   # debugPrint "count currentExtFiles: "(count $currentExtFiles);
@@ -234,6 +262,11 @@ for zoomLevel in $processZoomLevels
     return;
   end
 
+  if test -z "$imageProg"
+    errorPrint 'Image program not set; exiting...';
+    return 1;
+  end
+
   echo;
   echo 'Cutting padded image into tile sections...';
 
@@ -241,18 +274,49 @@ for zoomLevel in $processZoomLevels
   for currentExtFile in $currentExtFiles
     echo "Processing padded file \"$currentExtFile\"...";
 
-    "$imageProg"                                        \
-      $monitorOpts                                      \
-  		"$outWorkDir/$currentExtFile"                     \
-  		-crop "$cropOpt"                                  \
-  		-set 'filename:tile' "$tileFileNamePatternCoords" \
-  		+adjoin                                           \
-  		"$tileFileName"                                   \
-      2>&1 | grep -v 'geometry does not contain image'  \
-    ;
+    set -e headerOpts;
+    if test -z "$headerOpts"
+      if test -n "$monitorOpts"
+        set -a headerOpts $monitorOpts;
+      end
+      set -a headerOpts "$outWorkDir/$currentExtFile";
+    end
+    if test -z "$middleOpts"
+      set -a middleOpts -crop "$cropOpt";
+      if test -n "$tFNPCOpts"
+        set -a middleOpts $tFNPCOpts;
+      end
+    end
+
+    if test "$DRY_RUN" = 'true'
+      echo "$imageProg"   \
+        convert           \
+        $headerOpts       \
+    		$middleOpts       \
+    		+adjoin           \
+    		"$tileFileName"   \
+        2>&1              \
+      ;
+    else
+      "$imageProg"        \
+        convert           \
+        $headerOpts       \
+    		$middleOpts       \
+    		+adjoin           \
+    		"$tileFileName"   \
+        2>&1              \
+      ;
+    end
+    # 2>&1 | grep -v 'geometry does not contain image'  \
+    set statusSaved "$status";
   end
   timerStop;
   timerDurationReportAndSave "$timeFilePath";
+
+  if test "$statusSaved" -gt '0'
+    errorPrint 'Creating base file; exiting...';
+    return 1;
+  end
 
   set createdFilesCount (
     find              \
@@ -265,8 +329,36 @@ for zoomLevel in $processZoomLevels
   # debugPrint "createdFilesCount: $createdFilesCount";
 
   if test -z "$createdFilesCount" -o "$createdFilesCount" -lt '1'
-    errorPrint 'Could not create cropped images; unknown Magick error.';
+    errorPrint 'Could not create cropped images; unknown error.';
     errorPrint "createdFilesCount: $createdFilesCount";
+  else
+    if test "$imageProgGM" = 'true'
+      pushd "$dir";
+      set x '0';
+      set y '0';
+      timerStart;
+      find              \
+        -maxdepth 1     \
+        -type f         \
+        -iname "*.png"  \
+        -printf '%f\n'  \
+      | sort -n         \
+      | while read filePath
+        if test "$outputAxisFolders" = "true" -a ! -e "$x"
+          mkdir "$x";
+        end
+        mv -n "$filePath" "$x$tFNPCXYDelim$y.png";
+        if test "$x" = "$axisEndIndex"
+          set x '0';
+          set y (echo "$y + 1" | bc);
+        else
+          set x (echo "$x + 1" | bc);
+        end
+      end
+      popd;
+      timerStop;
+      timerDurationReportAndSave "$outTrialsDir/$zoomLevel/4b - Sorting.txt";
+    end
   end
 
 	userWaitConditional;

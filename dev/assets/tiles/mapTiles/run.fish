@@ -6,6 +6,19 @@
 
 # Dependencies: gm/GraphicsMagick or magick/ImageMagick, bc, ...
 
+# Useful defaults updates:
+# - outputAxisFolders: true
+
+# Useful development configurations:
+# - srcFile
+# - outDir
+# - manualStep
+# - processSteps
+# - processZoomLevel
+# - processZoomLevels
+# - processZoomLevelMax
+# - allowWildcardZoomLevel 'false'
+
 set -l SDIR (readlink -f (dirname (status filename)));
 
 
@@ -25,9 +38,13 @@ begin
   test -z "$outputAxisFolders"; and set outputAxisFolders "false"   ;
 
   # Direct (Required) Input
+  # debugPrint "srcFile: $srcFile";
+  # debugPrint "outDir: $outDir";
   test -z "$srcFile"    ;       and set -x srcFile        "$argv[1]";
   test -z "$outDir"     ;       and set -x outDir         "$argv[2]";
   test -z "$cleanFirst" ;       and set cleanFirst        "$argv[3]";
+  # debugPrint "srcFile: $srcFile";
+  # debugPrint "outDir: $outDir";
   # debugPrint "cleanFirst: $cleanFirst";
   test -z "$cleanFirst" ;       and set cleanFirst        "false"   ;
 
@@ -50,6 +67,7 @@ begin
     set availableSteps "2" "3" "createBaseZoomImages" "cropTiles";
     # "listFinishedGames" # ?
   end
+  set -a availableSteps 'none' 'exit' 'quit';
 
   test -z "$processSteps";
   and set processSteps $availableSteps;
@@ -69,7 +87,14 @@ begin
     end
   end
 
-  if test -z "$imageProgGM"
+  test -z "$imageProgGM";
+  and set -x imageProgGM '';
+  test -z "$imageProgIM";
+  and set -x imageProgIM '';
+  test -z "$imageProg";
+  and set -x imageProg '';
+
+  if test -z "$imageProg" -a -z "$imageProgGM"
     if type -q 'gm'
       set -x imageProgGM 'true'  ;
       if test -z "$imageProg"
@@ -79,8 +104,9 @@ begin
       set -x imageProgGM 'false' ;
     end
   end
+  # debugPrint "imageProgGM: $imageProgGM";
 
-  if test -z "$imageProgIM"
+  if test -z "$imageProg" -a -z "$imageProgIM"
     if type -q 'magick'
       set -x imageProgIM 'true'  ;
       if test -z "$imageProg"
@@ -90,12 +116,15 @@ begin
       set imageProgIM 'false' ;
     end
   end
+  # debugPrint "imageProgIM: $imageProgIM";
+  # debugPrint "imageProg: $imageProg";
 
-  set srcFileDir (dirName "$srcFile");
+
+  set srcFileDir (dirname "$srcFile");
   set mapInfoJSONFile "$srcFileDir/mappingInfo.json";
   # debugPrint "mapInfoJSONFile: $mapInfoJSONFile";
   if test -f "$mapInfoJSONFile"
-    set mapInfoJSON     (cat "$mapInfoJSONFile");
+    set mapInfoJSON (cat "$mapInfoJSONFile");
     # debugPrint "mapInfoJSON: $mapInfoJSON";
 
     set -x zoomLevels    (echo "$mapInfoJSON" | jq -r '.zoomLevels'  );
@@ -155,7 +184,7 @@ if test -z "$zoomLevels"
       .numAxisTiles=$numAxisTiles |
       .zoomDim=$zoomDim
     ' \
-    > "$mapInfoJSONFile"                \
+    | tee "$mapInfoJSONFile" >/dev/null \
   ;
   userWaitConditional;
 end

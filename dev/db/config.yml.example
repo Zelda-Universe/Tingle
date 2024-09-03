@@ -1,9 +1,10 @@
 defaults: &DEFAULTS
-  adapter: mysql2
+  adapter : mysql2
   database: zeldamaps
-  username: zeldamaps-manage
   encoding: utf8
-  socket: /var/run/mysqld/mysqld.sock
+  port-disabled: 3306
+  socket  : /var/run/mysqld/mysqld.sock
+  username: zeldamaps-manage
 
 development:
   <<: *DEFAULTS

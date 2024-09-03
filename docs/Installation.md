@@ -50,6 +50,7 @@
             * Remove test database: `y`
             * Reload privs: `y`
       * Perform specific project database set-up tasks:
+        * `alias -s js-yaml (readlink -e node_modules/.bin/js-yaml)`
         * `dev/db/prepare.fish install`
           * Create the database using a root account.
           * Create a dedicated basic account

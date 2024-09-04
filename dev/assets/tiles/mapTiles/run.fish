@@ -87,38 +87,7 @@ begin
     end
   end
 
-  test -z "$imageProgGM";
-  and set -x imageProgGM '';
-  test -z "$imageProgIM";
-  and set -x imageProgIM '';
-  test -z "$imageProg";
-  and set -x imageProg '';
-
-  if test -z "$imageProg" -a -z "$imageProgGM"
-    if type -q 'gm'
-      set -x imageProgGM 'true'  ;
-      if test -z "$imageProg"
-        set -x imageProg 'gm'    ;
-      end
-    else
-      set -x imageProgGM 'false' ;
-    end
-  end
-  # debugPrint "imageProgGM: $imageProgGM";
-
-  if test -z "$imageProg" -a -z "$imageProgIM"
-    if type -q 'magick'
-      set -x imageProgIM 'true'  ;
-      if test -z "$imageProg"
-        set -x imageProg 'magick';
-      end
-    else
-      set imageProgIM 'false' ;
-    end
-  end
-  # debugPrint "imageProgIM: $imageProgIM";
-  # debugPrint "imageProg: $imageProg";
-
+  source "$SDIR/setImageProg.fish";
 
   set srcFileDir (dirname "$srcFile");
   set mapInfoJSONFile "$srcFileDir/mappingInfo.json";

@@ -11,25 +11,41 @@ source "$SDIR/../../../scripts/common/errorPrint.fish";
 
 source "$SDIR/../../../scripts/common/filenameAddSuffix.fish";
 
-# debugPrint "srcFile: $srcFile"
-if test -z "$srcFile"
-  if not read -P 'Source file: ' srcFile
-    return 1;
+if test "$isPHType" != 'true'
+  # debugPrint "srcFile: $srcFile"
+  if test -z "$srcFile"
+    if not read -P 'Source file: ' srcFile
+      return 1;
+    end
+  else
+    if echo "$srcFile" | grep -qP '\w\\\\\w'
+      set srcFile (
+        echo "$srcFile" \
+        | sed 's|\\\\|\\\\\\\\|g'
+      );
+    end
   end
-end
-# debugPrint "srcFile: $srcFile"
-if test \
-        -z "$srcFile" \
-  -o !  -e "$srcFile" \
-  -o !  -f "$srcFile"
-  errorPrint "Source file must be provided as the first argument, exist, and be a file; exiting...";
-  return 2;
+  # debugPrint "srcFile: $srcFile"
+  if test \
+          -z "$srcFile" \
+    -o !  -e "$srcFile" \
+    -o !  -f "$srcFile"
+    errorPrint "Source file must be provided as the first argument, exist, and be a file; exiting...";
+    return 2;
+  end
 end
 
 # debugPrint "outDir: $outDir"
 if test -z "$outDir"
   if not read -P 'Output Directory: ' outDir
     return 3;
+  end
+else
+  if echo "$outDir" | grep -qP '\w\\\\\w'
+    set outDir (
+      echo "$outDir" \
+      | sed 's|\\\\|\\\\\\\\|g'
+    );
   end
 end
 # debugPrint "outDir: $outDir"

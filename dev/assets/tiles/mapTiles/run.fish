@@ -13,7 +13,7 @@
 # - srcFile
 # - outDir
 # - manualStep
-# - processSteps
+# - processTasks
 # - processZoomLevel
 # - processZoomLevels
 # - processZoomLevelMax
@@ -62,26 +62,26 @@ begin
   and set -x tileSize "256";
 
   if test "$isPHType" = 'true'
-    set availableSteps "2" "generateTiles";
+    set availableTasks "2" "generateTiles";
   else
-    set availableSteps "2" "3" "createBaseZoomImages" "cropTiles";
+    set availableTasks "2" "3" "createBaseZoomImages" "cropTiles";
     # "listFinishedGames" # ?
   end
-  set -a availableSteps 'none' 'exit' 'quit';
+  set -a availableTasks 'none' 'exit' 'quit';
 
-  test -z "$processSteps";
-  and set processSteps $availableSteps;
+  test -z "$processTasks";
+  and set processTasks $availableTasks;
   if begin
-    test (count $processSteps) -eq 1;
-    and echo "$processSteps" | grep -q " ";
+    test (count $processTasks) -eq 1;
+    and echo "$processTasks" | grep -q " ";
   end
-    set processSteps (echo "$processSteps" | tr ' ' '\n');
+    set processTasks (echo "$processTasks" | tr ' ' '\n');
   end
 
-  for step in $processSteps
-    if not echo "$availableSteps" | grep -q "\b$step\b"
+  for step in $processTasks
+    if not echo "$availableTasks" | grep -q "\b$step\b"
       echo "Error: Step \"$step\" not valid.";
-      echo "Valid choices are: \""(string join "\", \"" $availableSteps)"\"";
+      echo "Valid choices are: \""(string join "\", \"" $availableTasks)"\"";
       echo "Exiting...";
       return 3;
     end
@@ -160,19 +160,19 @@ end
 # debugPrint "zoomLevels: $zoomLevels";
 
 if test "$isPHType" = 'true'
-  if echo "$processSteps" | grep -qP "((2)|(generateTiles))";
+  if echo "$processTasks" | grep -qP "((2)|(generateTiles))";
     "$SDIR/../generatePHTiles/TLOrigin.fish";
     userWaitConditional;
   end
 else
-  if echo "$processSteps" | grep -qP "((2)|(createBaseZoomImages))";
+  if echo "$processTasks" | grep -qP "((2)|(createBaseZoomImages))";
     if not "$SDIR/2-createBaseZoomImages.fish"
       return;
     end
     userWaitConditional;
   end
 
-  if echo "$processSteps" | grep -qP "((3)|(cropTiles))";
+  if echo "$processTasks" | grep -qP "((3)|(cropTiles))";
     if not "$SDIR/3-cropTiles.fish"
       return;
     end

@@ -32,6 +32,8 @@ else
 end
 # debugPrint "timeFilePattern: $timeFilePattern";
 
+echo;
+echo;
 echo 'Cropping tiles...';
 
 if not altPushd "$outDir"
@@ -46,7 +48,7 @@ if test -z "$tileFileNamePatternCoords"
     set tFNPCXYDelim '_';
   end
 
-  if test imageProgIM = 'true'
+  if test "$imageProgIM" = 'true'
     set tileFileNamePatternCoords \
       "%[fx:page.x/$tileSize]$tFNPCXYDelim%[fx:page.y/$tileSize]" \
     ;
@@ -80,7 +82,8 @@ if test "$imageProgIM" = 'true'
     "$tileFileNamePatternCoords" \
   ;
 else if test "$imageProgGM" = 'true'
-  set tileFileNamePattern "%s$tFNPCZDelim%%02d.png";
+  # set tileFileNamePattern "%s$tFNPCZDelim%%02d.png";
+  set tileFileNamePattern "%s$tFNPCZDelim%%d.png";
 end
 # debugPrint "tileFileNamePattern: $tileFileNamePattern";
 
@@ -196,9 +199,6 @@ for zoomLevel in $processZoomLevels
   		continue;
     else
       echo 'Current zoom level does not contain any files, or force has been specified; continuing...';
-      if test "$imageProgGM" = 'true'
-        set dir "$zoomLevel";
-      end
   	end
   end
 
@@ -270,6 +270,7 @@ for zoomLevel in $processZoomLevels
   echo;
   echo 'Cutting padded image into tile sections...';
 
+  # debugPrint "currentExtFiles: $currentExtFiles";
   timerStart;
   for currentExtFile in $currentExtFiles
     echo "Processing padded file \"$currentExtFile\"...";
@@ -318,46 +319,72 @@ for zoomLevel in $processZoomLevels
     return 1;
   end
 
-  set createdFilesCount (
-    find              \
-      "$dir"          \
-      -maxdepth 1     \
-      -type f         \
-      -iname "*.png"  \
-    | wc -l
-  );
-  # debugPrint "createdFilesCount: $createdFilesCount";
-
-  if test -z "$createdFilesCount" -o "$createdFilesCount" -lt '1'
-    errorPrint 'Could not create cropped images; unknown error.';
-    errorPrint "createdFilesCount: $createdFilesCount";
+  if test "$DRY_RUN" = 'true'
+    echo 'Files would be created now, if no errors, and the actual command were executed.';
   else
-    if test "$imageProgGM" = 'true'
-      pushd "$dir";
-      set x '0';
-      set y '0';
-      timerStart;
+    if test "$outputZoomFolders" = "true"
+      set dir "$zoomLevel";
+    else if test "$outputAxisFolders" = "true"
+      if test "$imageProgGM" = 'true'
+        set dir "$zoomLevel";
+      else
+        set dir "$zoomLevel/0";
+      end
+    else
+      set dir '.';
+    end
+    # debugPrint "dir: $dir";
+
+    set createdFilesCount (
       find              \
+        "$dir"          \
         -maxdepth 1     \
         -type f         \
         -iname "*.png"  \
-        -printf '%f\n'  \
-      | sort -n         \
-      | while read filePath
-        if test "$outputAxisFolders" = "true" -a ! -e "$x"
-          mkdir "$x";
-        end
-        mv -n "$filePath" "$x$tFNPCXYDelim$y.png";
-        if test "$x" = "$axisEndIndex"
-          set x '0';
-          set y (echo "$y + 1" | bc);
+      | wc -l
+    );
+    # debugPrint "createdFilesCount: $createdFilesCount";
+
+    if test -z "$createdFilesCount" -o "$createdFilesCount" -lt '1'
+      errorPrint 'Could not create cropped images; unknown error.';
+      errorPrint "createdFilesCount: $createdFilesCount";
+    else
+      if test "$imageProgGM" = 'true'
+        if test "$outputAxisFolders" = "true"
+          set tFNPCXYDelim2 '/';
         else
-          set x (echo "$x + 1" | bc);
+          set tFNPCXYDelim2 '_';
         end
+        set x '0';
+        set y '0';
+        pushd "$dir";
+        echo;
+        echo 'Sorting resulting tile files since Graphics Magick is being used, and it does not support naming based on coordinates...';
+        timerStart;
+        find              \
+          -maxdepth 1     \
+          -type f         \
+          -iname "*.png"  \
+          -printf '%f\n'  \
+        | sort -n         \
+        | while read filePath
+          if test "$outputAxisFolders" = "true" -a ! -e "$x"
+            mkdir "$x";
+          end
+
+          mv -n "$filePath" "$zoomLevel$tFNPCXYDelim$x$tFNPCXYDelim2$y.png";
+
+          if test "$x" = "$axisEndIndex"
+            set x '0';
+            set y (echo "$y + 1" | bc);
+          else
+            set x (echo "$x + 1" | bc);
+          end
+        end
+        timerStop;
+        timerDurationReportAndSave "$outTrialsDir/$zoomLevel/4b - Sorting.txt";
+        popd;
       end
-      popd;
-      timerStop;
-      timerDurationReportAndSave "$outTrialsDir/$zoomLevel/4b - Sorting.txt";
     end
   end
 

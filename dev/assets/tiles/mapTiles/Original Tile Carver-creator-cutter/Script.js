@@ -20,7 +20,8 @@
 var HighestZoomLevel = 0; // Enter the highest zoom level we are creating tiles for (should be less than OrgZoom; technically the script should be able to handle values larger as well, but your image quality will suffer)
 var LowestZoomLevel = 0; // Enter the last zoom level we want to create tiles for (must be <= HighestZoomLevel for the script to do anything)
 
-var FolderPath = "D:/Documents/Programming/Others/Internet/Games/Tools/Nintendo/Zelda/Zelda-Maps-Website/tiles/botw/hyrule-tc/";  //<-- path to where we will save our tiles
+// var FolderPath = "C:/Users/crist/Downloads/TILES/";  //<-- path to where we will save our tiles
+var FolderPath = ".../botw/hyrule/tiles/";  //<-- path to where we will save our tiles
 
 // We start with the coordinates, zoom, and width of an upper left corner tile and generate everything from there
 // We can calculate new tile values from these values for any zoom level without having to look up these details for each.
@@ -34,6 +35,18 @@ var PixelHeight = 256;
 var saveJPEG = false;
 var savePNG = true;
 var saveGIF = false;
+
+$.writeln('HighestZoomLevel     : '+HighestZoomLevel   );
+$.writeln('LowestZoomLevel      : '+LowestZoomLevel    );
+$.writeln('FolderPath           : '+LowestZoomLevel    );
+$.writeln('OrgX                 : '+OrgX               );
+$.writeln('OrgY                 : '+OrgY               );
+$.writeln('OrgZoomLevel         : '+OrgZoomLevel       );
+$.writeln('PixelWidth           : '+PixelWidth         );
+$.writeln('PixelHeight          : '+PixelHeight        );
+$.writeln('saveJPEG             : '+saveJPEG           );
+$.writeln('savePNG              : '+savePNG            );
+$.writeln('saveGIF              : '+saveGIF            );
 
 // Note (by Nate): I've dramatically increased the speed of the transparent path. It's even faster than the old transparency=false  path now. Taking unnecessary snapshots was slowing the transparent path down quite a bit. Now the main speed limiter is saving each tile out to disk, and I doubt there's a way to speed that up.
 
@@ -151,6 +164,14 @@ var CurrentY = OrgY;
 takeSnapshot();
 var InitialSnapshotID = getLastSnapshotID();
 
+$.writeln();
+$.writeln('visibleLayers        : '+visibleLayers      );
+$.writeln('ZoomLevel            : '+ZoomLevel          );
+$.writeln('LastZoomLevel        : '+LastZoomLevel      );
+$.writeln('CurrentX             : '+CurrentX           );
+$.writeln('CurrentY             : '+CurrentY           );
+$.writeln('InitialSnapshotID    : '+InitialSnapshotID  );
+
 // Do the following for each zoom level the user wants
 while (ZoomLevel >= LowestZoomLevel)
 {
@@ -166,16 +187,31 @@ while (ZoomLevel >= LowestZoomLevel)
 	var XTilesNeeded = CurrentX - NewX;
 	var YTilesNeeded = CurrentY - NewY;
 
+  $.writeln();
+  $.writeln('ExpectedX            : '+ExpectedX        );
+  $.writeln('NewX                 : '+NewX             );
+  $.writeln('ExpectedY            : '+InitialSnapshotID);
+  $.writeln('NewY                 : '+NewY             );
+  $.writeln('XTilesNeeded         : '+NewY             );
+  $.writeln('YTilesNeeded         : '+NewY             );
+
 	// Now add padding for the extra tiles needed
 	currentDocument.resizeCanvas(currentDocument.width.value + (XTilesNeeded * PixelWidth), currentDocument.height.value + (YTilesNeeded * PixelHeight), AnchorPosition.BOTTOMRIGHT);
 
 	CurrentX = ExpectedX;
 	CurrentY = ExpectedY;
 
+  $.writeln();
+  $.writeln('CurrentX             : '+CurrentX         );
+  $.writeln('CurrentX             : '+CurrentX         );
+
 	// Ensure total width and height of canvas is a multiple of PixelWidth and PixelHeight respectively
 	var BottomPaddingNeeded = (Math.ceil(currentDocument.height.value / PixelHeight) * PixelHeight) - currentDocument.height.value;
 	var RightPaddingNeeded = (Math.ceil(currentDocument.width.value / PixelWidth) * PixelWidth) - currentDocument.width.value;
 	currentDocument.resizeCanvas(currentDocument.width.value + RightPaddingNeeded, currentDocument.height.value + BottomPaddingNeeded, AnchorPosition.MIDDLECENTER);
+  $.writeln();
+  $.writeln('BottomPaddingNeeded  : '+BottomPaddingNeeded  );
+  $.writeln('RightPaddingNeeded   : '+RightPaddingNeeded   );
 
 	// Add padding to make number of tiles divisible by 2^(LastZoomLevel - DesiredZoom)
 	var NumXTiles = currentDocument.width.value / PixelWidth;
@@ -187,11 +223,21 @@ while (ZoomLevel >= LowestZoomLevel)
 	currentDocument.resizeCanvas(currentDocument.width.value + (NumXTilesNeeded * PixelWidth), currentDocument.height.value + (NumYTilesNeeded * PixelHeight), AnchorPosition.MIDDLECENTER);
 	NumXTiles = NumXTiles + NumXTilesNeeded;
 	NumYTiles = NumYTiles + NumYTilesNeeded;
+  $.writeln();
+  $.writeln('NumXTiles            : '+NumXTiles          );
+  $.writeln('NumYTiles            : '+NumYTiles          );
+  $.writeln('NumXTilesNeeded      : '+NumXTilesNeeded    );
+  $.writeln('NumYTilesNeeded      : '+NumYTilesNeeded    );
+  $.writeln('NumXTiles            : '+NumXTiles          );
+  $.writeln('NumYTiles            : '+NumYTiles          );
+
 
 	// Now resize the canvas and image by .5^(LastZoomLevel - ZoomLevel) (Decrease size by 50% for each zoom level)
 	if (ZoomLevel < LastZoomLevel)
 	{
 		var ResizeFactor = Math.pow(0.5, (LastZoomLevel - ZoomLevel));
+    $.writeln();
+    $.writeln('ResizeFactor         : '+ResizeFactor       );
 		currentDocument.resizeImage(currentDocument.width.value * ResizeFactor, currentDocument.height.value * ResizeFactor);
 	}
 
@@ -214,6 +260,19 @@ while (ZoomLevel >= LowestZoomLevel)
 	var TileX = StartX; //<-- Set out first Google X value - later used in file name
 	var TileY = StartY; //<-- Set out first Google Y value - later used in file name
 
+  $.writeln();
+  $.writeln('ZoomLevelSnapshotID  : '+ZoomLevelSnapshotID);
+  $.writeln('StartX               : '+StartX             );
+  $.writeln('StartY               : '+StartY             );
+  $.writeln('xTiles               : '+xTiles             );
+  $.writeln('yTiles               : '+yTiles             );
+  $.writeln('TotalTiles           : '+TotalTiles         );
+  $.writeln('xm                   : '+xm                 );
+  $.writeln('ym                   : '+ym                 );
+  $.writeln('TileX                : '+TileX              );
+  $.writeln('TileY                : '+TileY              );
+
+
 	// Cut 'em up
 	// For each tile we need to make, we repeat each step in this loop
 	for (n=1; n<TotalTiles+1; n++)
@@ -228,6 +287,11 @@ while (ZoomLevel >= LowestZoomLevel)
 			ym = 0;  //<-- Reset the y value to 0 so we start back at the top of our new column
 			TileX += 1; //<-- Increase our Google X value for our file name
 			TileY = StartY;  //We reset our Google Y value for out file name everytime we change columns
+
+      $.writeln('xm                 : '+xm                 );
+      $.writeln('ym                 : '+ym                 );
+      $.writeln('TileX              : '+TileX              );
+      $.writeln('TileY              : '+TileY              );
 		}
 
 		// Based on our our TileWidth and TileHeight and the column we are on we determine our selection origin and area values
@@ -235,6 +299,12 @@ while (ZoomLevel >= LowestZoomLevel)
 		MyXL = xm*(PixelWidth)+(PixelWidth);
 		MyYO = ym*(PixelHeight);
 		MyYL = ym*(PixelHeight)+(PixelHeight);
+
+    $.writeln();
+    $.writeln('MyXO                 : '+MyXO               );
+    $.writeln('MyXL                 : '+MyXL               );
+    $.writeln('MyYO                 : '+MyYO               );
+    $.writeln('MyYL                 : '+MyYL               );
 
 		//try {
 			currentDocument.crop(Array(MyXO, MyYO, MyXL, MyYL));
@@ -291,10 +361,18 @@ while (ZoomLevel >= LowestZoomLevel)
 
 		//Advance Google Y value for next image name
 		TileY += 1;
+
+    $.writeln();
+    $.writeln('ym                   : '+ym                 );
+    $.writeln('TileY                : '+TileY              );
 	}
 	//revertToLastSnapshot();
 	LastZoomLevel = ZoomLevel;
 	ZoomLevel--;
+
+  $.writeln();
+  $.writeln('LastZoomLevel        : '+LastZoomLevel      );
+  $.writeln('ZoomLevel            : '+ZoomLevel          );
 }
 // Leave the document as we opened it
 revertToSnapshot(InitialSnapshotID);

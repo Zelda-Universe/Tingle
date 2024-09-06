@@ -40,6 +40,8 @@ end
 # Root debug information
 # debugPrint "force: $force";
 
+echo;
+echo;
 echo 'Creating base zoom images...';
 
 ## Main execution

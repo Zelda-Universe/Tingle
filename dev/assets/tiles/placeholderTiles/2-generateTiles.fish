@@ -13,16 +13,16 @@ source "$SDIR/../../../scripts/common/debugPrint.fish";
 source "$SDIR/../../../scripts/common/errorPrint.fish";
 
 if test -n "$zoomLevelsJSON"
-  set zoomLevels (
+  set processZoomLevels (
     echo "$zoomLevelsJSON" \
     | jq -r '.[]' \
     | tr -d '\r'
   );
-  # debugPrint "zoomLevels: $zoomLevels";
-  # debugPrint -n "count zoomLevels: "; and debugPrint (count $zoomLevels);
+  # debugPrint "processZoomLevels: $processZoomLevels";
+  # debugPrint -n "count processZoomLevels: "; and debugPrint (count $zoomLevels);
 end
 
-if test -z "$zoomLevels"
+if test -z "$processZoomLevels"
   if test \
         -z "$zStart" \
     -o  -z "$zEnd"
@@ -33,7 +33,7 @@ if test -z "$zoomLevels"
     exit 1;
   end
 
-  set zoomLevels (seq "$zStart" "$zEnd");
+  set processZoomLevels (seq "$zStart" "$zEnd");
 end
 
 set scriptGT (readlink -f "$SDIR/3-generateTile.fish");
@@ -54,7 +54,7 @@ altPushd "$outDir";
 
 # debugPrint "zStart: $zStart";
 # debugPrint "zEnd: $zEnd";
-for z in $zoomLevels
+for z in $processZoomLevels
   # debugPrint "z: $z";
 
   if test \( \
@@ -66,12 +66,12 @@ for z in $zoomLevels
   else
     # debugPrint 'no mkdir z';
   end
-  
+
   set numAxisTiles (echo "2 ^ $z"             | bc);
   set axisEndIndex (echo "$numAxisTiles" - 1  | bc);
   # debugPrint "numAxisTiles: $numAxisTiles";
   # debugPrint "axisEndIndex: $axisEndIndex";
-  
+
   test -n         "$xStartOrig"   ;
   and set xStart  "$xStartOrig"   ;
   or  set xStart  '0'             ;
@@ -84,7 +84,7 @@ for z in $zoomLevels
   test -n         "$yEndOrig"     ;
   and set yEnd    "$yEndOrig"     ;
   or  set yEnd    "$axisEndIndex" ;
-  
+
   # debugPrint "xStart: $xStart";
   # debugPrint "xEnd  : $xEnd"  ;
   # debugPrint "yStart: $yStart";

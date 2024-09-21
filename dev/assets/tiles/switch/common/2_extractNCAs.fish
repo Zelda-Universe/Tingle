@@ -8,6 +8,11 @@ set -l SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/../../../../scripts/common/filenameRemoveExtension.fish";
 
+if test (count $argv) -lt '1'
+  errorPrint 'Must provide NSP path as arugment; exiting...';
+  exit 1;
+end
+
 set nspPath   "$argv[1]"                          ;
 set nspSubDir (filenameRemoveExtension "$nspPath");
 
@@ -17,6 +22,7 @@ set nspSubDir (filenameRemoveExtension "$nspPath");
 #   -f "$nspPath"   \
 # ;
 
-# or hactool pfs i think
-# this one??
-hactool -t'xci' --securedir="$nspSubDir" "$nspPath"
+hactool --disablekeywarns \
+  --pfs0dir="$nspSubDir"'_pfs0' \
+  -t'pfs0' -x "$nspPath" \
+;

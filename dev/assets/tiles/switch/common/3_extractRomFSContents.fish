@@ -41,9 +41,12 @@ if test -n "$tikFile"
 end
 
 hactool                       \
+  --disablekeywarns           \
+  -t'pfs0'                    \
   $titlekeyOption             \
-  --exefsdir="$ncaName/exefs" \
-  --romfsdir="$ncaName/romfs" \
+  --romfsdir="$ncaName"'_romfs' \
   --extract                   \
   "$ncaPath"                  \
 ;
+
+# --exefsdir="$ncaName"'_exefs' \

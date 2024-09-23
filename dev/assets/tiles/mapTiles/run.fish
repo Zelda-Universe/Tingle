@@ -115,12 +115,12 @@ begin
   if test "$cleanFirst" = "true"
   	echo "Cleaning the output (not work sub-) directory and exiting...";
   	find "$outDir" -maxdepth 1 -type f -iname "*.png" -delete;
-  	find "$outDir" \
-      -regextype posix-extended \
-      -maxdepth 1 \
-      -type d \
-      -iregex '.*?/[0-9]+$' \
-      -exec rm -rf '{}' \; \
+  	find "$outDir"                \
+      -regextype 'posix-extended' \
+      -maxdepth 1                 \
+      -type d                     \
+      -iregex '.*?/[0-9]+$'       \
+      -exec rm -rf '{}' \;        \
     ;
   	userWaitConditional;
   end

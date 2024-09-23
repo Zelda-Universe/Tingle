@@ -51,6 +51,7 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
     1. `git clone https://github.com/aboood40091/SARC-Tool`
     1. `pip install SarcLib`
   1. `pip install libyaz0`
+  1. `pip install -r .../nsz/requirements.txt`
   1. Decompress nsp from nsz: `./dev/tiles/switch/common/1_decompress.fish <nsz_path>`.
   1. Extract the ncas from the nsp: `./dev/tiles/switch/common/2_extractNCAs.fish <nsp_path>`.
   1. Use `hactool` to decrypt & extract the romfs from the ncas: `./dev/tiles/switch/common/3_extractRomFSContents.fish <nca_path>`.  You probably only need to do this for the single biggest nca file for any game.

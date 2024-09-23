@@ -140,6 +140,7 @@ for zoomLevel in $processZoomLevels
     if test \
           "$outputAxisFolders" = "true" \
     	-o  "$outputZoomFolders" = "true"
+
   		if test -d "$zoomLevel"
   			# echo "Current zoom level folder already exists, and force has not been specified; skipping...";
   			# continue;
@@ -355,9 +356,12 @@ for zoomLevel in $processZoomLevels
         else
           set tFNPCXYDelim2 '_';
         end
+
         set x '0';
         set y '0';
+
         pushd "$dir";
+
         echo;
         echo 'Sorting resulting tile files since Graphics Magick is being used, and it does not support naming based on coordinates...';
         timerStart;
@@ -372,7 +376,7 @@ for zoomLevel in $processZoomLevels
             mkdir "$x";
           end
 
-          mv -n "$filePath" "$zoomLevel$tFNPCXYDelim$x$tFNPCXYDelim2$y.png";
+          mv -n "$filePath" "$x$tFNPCXYDelim2$y.png";
 
           if test "$x" = "$axisEndIndex"
             set x '0';

@@ -86,16 +86,15 @@ for zoomLevel in $processZoomLevels
     end
     echo '; generating...';
 
-    set srcFileOpts "";
   	if test "$zoomLevel" -lt "$zoomLevels"
       echo "Not the max zoom level; resizing and padding...";
   		set srcFileOpts     \
         -define "jpeg:size=$zoomDims" \
         "$srcFile"        \
-        # -density '72'         \
-        -set density '72'         \
+        -set density '72' \
         -scale "$scale%"  \
       ;
+      # -density '72'         \
       set timeFileName "3 - Resizing & Padding.txt";
   	else if test "$zoomLevel" -eq "$zoomLevels"
       echo "Max zoom level; padding..."   ;

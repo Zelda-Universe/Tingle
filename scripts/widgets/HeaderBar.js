@@ -26,6 +26,7 @@ HeaderBar.prototype._initSettings = function(opts) {
   // component code locations, rather than creating the form now and hiding
   // it later on, but hey
   this.accountButton = getSetOrDefaultValue(opts.accountButton, !zMap.getUser());
+  this.classNameParent = getSetOrDefaultValue(opts.classNameParent, '');
   this.isolated = getSetOrDefaultValue(opts.isolated, false);
   this.largerSearchArea = getSetOrDefaultValue(opts.largerSearchArea, !this.accountButton);
 
@@ -41,6 +42,7 @@ HeaderBar.prototype._initDOMElements = function(opts) {
     headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', parentDiv);
   } else {
     parentDiv = headerDiv = L.DomUtil.create('div', 'row vertical-divider row-header', this.parent);
+    L.DomUtil.create('div', this.classNameParent + '-separator', this.parent);
   }
   this.domNode = parentDiv;
 

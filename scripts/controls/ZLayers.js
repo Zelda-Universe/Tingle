@@ -261,6 +261,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       }
       this.headerBar = new HeaderBar({
         categories: this.zMap.categories,
+        classNameParent: this.options.className,
         isolated: this.viewStyleBottomSlide,
         mapControl: this,
         name: this.zMap.mapOptions.name,
@@ -351,7 +352,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       $(headerMenu).append(this._gamesButton.domNode);
     }
 
-    this._separator = L.DomUtil.create('div', this.options.className + '-separator', form1);
+    L.DomUtil.create('div', this.options.className + '-separator', form1);
 
     // Contents
     {

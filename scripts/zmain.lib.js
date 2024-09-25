@@ -256,10 +256,8 @@ function getMarkers(categories) {
 
 function finalLoad() {
   zMap.goTo({
-      marker: ZConfig.getConfig('marker')
-    },
-    ZConfig.getConfig('zoom')
-  );
+    marker: ZConfig.getConfig('marker')
+  });
 };
 
 // Get value of parameters

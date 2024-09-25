@@ -9,7 +9,7 @@
 
   function debug_log($message) {
     global $debugLoggingMode, $debugLog;
-    $formattedMessage = 'DEBUG: '.$message."\n";
+    $formattedMessage = 'DEBUG: '.$message;
 
     if($debugLoggingMode == 'errorLog') {
       error_log($formattedMessage);

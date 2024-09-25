@@ -94,14 +94,14 @@
     $dbsocket     = get_config("DBSOCKET"   , 'string'                );
     $map_prefix   = get_config("PREFIX"     , 'string'                );
 
-    // debug_log('dbms: '.$dbms);
-    // debug_log('dbhost: '.$dbhost);
-    // debug_log('dbuser: '.$dbuser);
-    // debug_log('dbpasswd: '.$dbpasswd);
-    // debug_log('dbname: '.$dbname);
-    // debug_log('dbport: '.$dbport);
-    // debug_log('dbsocket: '.$dbsocket);
-    // debug_log('map_prefix: '.$map_prefix);
+    // debug_log('dbms       : '.$dbms       );
+    // debug_log('dbhost     : '.$dbhost     );
+    // debug_log('dbuser     : '.$dbuser     );
+    // debug_log('dbpasswd   : '.$dbpasswd   );
+    // debug_log('dbname     : '.$dbname     );
+    // debug_log('dbport     : '.$dbport     );
+    // debug_log('dbsocket   : '.$dbsocket   );
+    // debug_log('map_prefix : '.$map_prefix );
   }
 
   # System features

@@ -1,10 +1,23 @@
 #!/usr/bin/env fish
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-# Dependencies: magick/ImageMagick, bc, ...
+# Dependencies: gm/GraphicsMagick or magick/ImageMagick, bc, ...
+
+# Useful defaults updates:
+# - outputAxisFolders: true
+
+# Useful development configurations:
+# - srcFile
+# - outDir
+# - manualStep
+# - processTasks
+# - processZoomLevel
+# - processZoomLevels
+# - processZoomLevelMax
+# - allowWildcardZoomLevel 'false'
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
@@ -25,9 +38,13 @@ begin
   test -z "$outputAxisFolders"; and set outputAxisFolders "false"   ;
 
   # Direct (Required) Input
+  # debugPrint "srcFile: $srcFile";
+  # debugPrint "outDir: $outDir";
   test -z "$srcFile"    ;       and set -x srcFile        "$argv[1]";
   test -z "$outDir"     ;       and set -x outDir         "$argv[2]";
   test -z "$cleanFirst" ;       and set cleanFirst        "$argv[3]";
+  # debugPrint "srcFile: $srcFile";
+  # debugPrint "outDir: $outDir";
   # debugPrint "cleanFirst: $cleanFirst";
   test -z "$cleanFirst" ;       and set cleanFirst        "false"   ;
 
@@ -41,32 +58,51 @@ begin
     return 2;
   end
 
-  test -z "$tileSize"; and set -x tileSize "256";
+  test -z "$tileSize";
+  and set -x tileSize "256";
 
   if test "$isPHType" = 'true'
-    set availableSteps "2" "generateTiles";
+    set availableTasks "2" "generateTiles";
   else
-    set availableSteps "2" "3" "createBaseZoomImages" "cropTiles";
+    set availableTasks "2" "3" "createBaseZoomImages" "cropTiles";
     # "listFinishedGames" # ?
   end
+  set -a availableTasks 'none' 'exit' 'quit';
 
-  test -z "$processSteps"; and set processSteps $availableSteps;
-  if begin;
-    test (count $processSteps) -eq 1;
-    and echo "$processSteps" | grep -q " ";
+  test -z "$processTasks";
+  and set processTasks $availableTasks;
+  if begin
+    test (count $processTasks) -eq 1;
+    and echo "$processTasks" | grep -q " ";
   end
-    set processSteps (echo "$processSteps" | tr ' ' '\n');
+    set processTasks (echo "$processTasks" | tr ' ' '\n');
   end
 
-  for step in $processSteps
-    if not echo "$availableSteps" | grep -q "\b$step\b"
+  for step in $processTasks
+    if not echo "$availableTasks" | grep -q "\b$step\b"
       echo "Error: Step \"$step\" not valid.";
-      echo "Valid choices are: \""(string join "\", \"" $availableSteps)"\"";
+      echo "Valid choices are: \""(string join "\", \"" $availableTasks)"\"";
       echo "Exiting...";
       return 3;
     end
   end
 
+  source "$SDIR/setImageProg.fish";
+
+  set srcFileDir (dirname "$srcFile");
+  set mapInfoJSONFile "$srcFileDir/mappingInfo.json";
+  # debugPrint "mapInfoJSONFile: $mapInfoJSONFile";
+  if test -f "$mapInfoJSONFile"
+    set mapInfoJSON (cat "$mapInfoJSONFile");
+    # debugPrint "mapInfoJSON: $mapInfoJSON";
+
+    set -x zoomLevels    (echo "$mapInfoJSON" | jq -r '.zoomLevels'  );
+    set -x numAxisTiles  (echo "$mapInfoJSON" | jq -r '.numAxisTiles');
+    set -x zoomDim       (echo "$mapInfoJSON" | jq -r '.zoomDim'     );
+    # debugPrint "zoomLevels  : $zoomLevels"  ;
+    # debugPrint "numAxisTiles: $numAxisTiles";
+    # debugPrint "zoomDim     : $zoomDim"     ;
+  end
   # Settings debug information
   # debugPrint "force: $force";
   # debugPrint "manualStep: $manualStep";
@@ -79,12 +115,12 @@ begin
   if test "$cleanFirst" = "true"
   	echo "Cleaning the output (not work sub-) directory and exiting...";
   	find "$outDir" -maxdepth 1 -type f -iname "*.png" -delete;
-  	find "$outDir" \
-      -regextype posix-extended \
-      -maxdepth 1 \
-      -type d \
-      -iregex '.*?/[0-9]+$' \
-      -exec rm -rf '{}' \; \
+  	find "$outDir"                \
+      -regextype 'posix-extended' \
+      -maxdepth 1                 \
+      -type d                     \
+      -iregex '.*?/[0-9]+$'       \
+      -exec rm -rf '{}' \;        \
     ;
   	userWaitConditional;
   end
@@ -103,28 +139,40 @@ mkdir -p "$outTrialsDir";
 
 # Maybe make step 1 optional only if the user provided a custom argument for it,
 # but it's several....
-if test -z "$zoomLevels";
+if test -z "$zoomLevels"
   if not source "$SDIR/1-determineMaxDim.fish"
     return;
   end
+
+  jq -M -n                              \
+    --arg zoomLevels    "$zoomLevels"   \
+    --arg numAxisTiles  "$numAxisTiles" \
+    --arg zoomDim       "$zoomDim"      \
+    '
+      .zoomLevels=$zoomLevels     |
+      .numAxisTiles=$numAxisTiles |
+      .zoomDim=$zoomDim
+    ' \
+    | tee "$mapInfoJSONFile" >/dev/null \
+  ;
   userWaitConditional;
 end
 # debugPrint "zoomLevels: $zoomLevels";
 
 if test "$isPHType" = 'true'
-  if echo "$processSteps" | grep -qP "((2)|(generateTiles))";
+  if echo "$processTasks" | grep -qP "((2)|(generateTiles))";
     "$SDIR/../generatePHTiles/TLOrigin.fish";
     userWaitConditional;
   end
 else
-  if echo "$processSteps" | grep -qP "((2)|(createBaseZoomImages))";
+  if echo "$processTasks" | grep -qP "((2)|(createBaseZoomImages))";
     if not "$SDIR/2-createBaseZoomImages.fish"
       return;
     end
     userWaitConditional;
   end
 
-  if echo "$processSteps" | grep -qP "((3)|(cropTiles))";
+  if echo "$processTasks" | grep -qP "((3)|(cropTiles))";
     if not "$SDIR/3-cropTiles.fish"
       return;
     end

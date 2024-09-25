@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
 set -l SDIR (readlink -f (dirname (status filename)));
@@ -30,82 +30,107 @@ end
 begin
   ## Database connection Details
   begin
-    while test -z "$dbUser"
-      if test -z "$dbConStr"
-        if test -z "$dbUser"
-          set dbUser (
-            js-yaml "$SDIR/config.yml" \
-            | jq -r '.development.username'
-          );
-          # debugPrint "dbUser: $dbUser";
-        end
-        if test -z "$dbUser"
-          read -P "Database Username: " dbUser;
-          echo;
-        end
-      end
+    if test (uname -o) = 'Cygwin'
+      set cYmlPath (cygpath -m "$SDIR/config.yml");
+    else
+      set cYmlPath "$SDIR/config.yml";
     end
-    # debugPrint "dbUser: $dbUser";
-
-    # Only asks once as optional if no other connection information is provided first.
-    if test -z "$dbPassword"
-      if test -z "$dbConStr"
-        if test -z "$dbPassword"
-          # dbPassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
-          set dbPassword (
-            js-yaml "$SDIR/config.yml" \
-            | jq -r '.development.password'
-          );
-          # debugPrint "dbPassword: $dbPassword";
-        end
-        if test -z "$dbPassword"
-          # echo "$dbConStr" | grep -vq " -p" && \
-          # echo "$dbConStr" | grep -vq " --password"; then
-          read -s -P "Database Password: " dbPassword;
-          echo;
-        end
-      end
-    # else
-      #dbPassword="$(echo "$dbPassword" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
-    end
-    # debugPrint "dbPassword: $dbPassword";
-
-    # echo "$dbPassword"
-    # echo "$dbPassword" | sed -r "s|([\`'\"\$])|\\\\\1|g";
-    # dbPassword="$(echo "$dbPassword" | sed -r "s|([\`'\"\$\\])|\\\\\1|g")";
-    set dbPassword (
-      echo "$dbPassword" \
-      | sed -r "s|([\"\$\\])|\\\\\1|g"
-    );
-    # debugPrint "dbPassword: $dbPassword";
 
     if test -z "$dbConStr"
-      # set -a dbConStr             \
-      #   $dbOthConnOpts            \
-      #   --user="$dbUser"          \
-      #   --password="$dbPassword"  \
-      # ;
-      set -a dbConStr --user=$dbUser --password=$dbPassword
-      # debugPrint "dbConStr: $dbConStr";
-      # debugPrint -n 'dbConStr: '; and count $dbConStr;
+      # Prepare input values
+      begin
+        # Host
+        begin
+          if test -z "$dbHost"
+            set dbHost '127.0.0.1';
+            # `localhost` was causing errors with sockets on Linux,
+            # even though I had see that directly recommended,
+            # so just use the loopback IP instead,
+            # with the explicit protocol switch too.
+          end
+        end
 
-      if test -n "$dbHost"
-        set -a dbConStr     \
-          --host="$dbHost"  \
-        ;
+        # Username
+        begin
+          while test -z "$dbUser"
+            if test -z "$dbUser"
+              set dbUser (
+                js-yaml "$cYmlPath" \
+                | jq -r '.development.username'
+              );
+            end
+            if test -z "$dbUser"
+              read -P "Database Username: " dbUser;
+              echo;
+            end
+          end
+        end
+
+        # Password
+        begin
+          # Only asks once since possibly being optional(?).
+          if test -z "$dbPassword"
+            set dbPassword (
+              js-yaml "$cYmlPath" \
+              | jq -r '.development.password'
+            );
+          end
+          if test -z "$dbPassword"
+            read -s -P "Database Password: " dbPassword;
+            echo;
+          end
+
+          set dbPassword (
+            echo "$dbPassword" \
+            | sed -r "s|([\"\$\\])|\\\\\1|g"
+          );
+        end
+
+        # Socket
+        begin
+          if test -z "$dbSocket"
+            set dbSocket (
+              js-yaml "$cYmlPath" \
+              | jq -r '.development.socket // ""'
+            );
+          end
+        end
+
+        # Port
+        begin
+          # Prefer sockets for security and performance.
+          if test -z "$dbSocket" -a -z "$dbPort"
+            set dbPort (
+              js-yaml "$cYmlPath" \
+              | jq -r '.development.port // ""'
+            );
+          end
+        end
       end
-      if test -n "$dbSocket"
-        set -a dbConStr         \
-          --protocol=socket     \
-          --socket="$dbSocket"  \
+
+      # Build connection string, both statically for required values,
+      # and dynamically for optional settings.
+      begin
+        set dbConStr              \
+          --host="$dbHost"        \
+          --password=$dbPassword  \
+          --user=$dbUser          \
         ;
-      else if test -n "$dbPort"
-        set dbConStr     \
-          --port="$dbPort"  \
-        ;
+
+        # Prefer sockets for security and performance.
+        if test -n "$dbSocket"
+          set -a dbConStr         \
+            --protocol='socket'   \
+            --socket="$dbSocket"  \
+          ;
+        else if test -n "$dbPort"
+          set -a dbConStr     \
+            --protocol='tcp'  \
+            --port="$dbPort"  \
+          ;
+        end
       end
     end
-    # debugPrint "dbConStr: $dbConStr";
   end
 
   if test "$dbDump" = 'true'
@@ -149,4 +174,6 @@ end
 
 if test "$dryRun" = 'false'
   $command $argv;
+else
+  echo $command $argv;
 end

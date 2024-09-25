@@ -1,0 +1,19 @@
+zMapInit
+  zMap.constructor
+  getLang
+  getMapCategories
+    getMaps
+      getMarkers
+        zMap.buildMap
+          addMapControl
+        ...
+        getUserInfo
+          updateAdState
+          checkChangelog
+        zMap.addMarkers
+        zMap.refreshMap
+        finalLoad
+          zMap.goTo
+  getGames
+    zMap.addGame
+  bgcolors

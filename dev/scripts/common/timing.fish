@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
 set -l SDIR (readlink -f (dirname (status filename)));
@@ -24,6 +24,7 @@ and function timerStart --argument-names scope
     set timeStart (date "+%s");
     # set -S timeStart
   end
+  echo -n 'Timing started: ';
   date;
 end
 
@@ -34,6 +35,7 @@ and function timerStop --argument-names scope
   else
     set timeEnd (date "+%s");
   end
+  echo -n 'Timing stopped: ';
   date;
 end
 
@@ -64,10 +66,11 @@ and function timerDuration --argument-names scope
 end
 
 not type -q 'timerDurationReportAndSave';
-and function timerDurationReportAndSave --argument-names outputfile
-  # debugPrint "timerDuration: "(timerDuration);
-  echo 'Took '(timerDuration)' seconds to process.';
-  # test -e "$outputfile";
-  # and rm "$outputfile";
-  altWrite "$outputfile" timerDuration;
+and function timerDurationReportAndSave --argument-names outputFile
+  set timerDurationAmount (timerDuration);
+  # debugPrint "timerDurationAmount: "(timerDurationAmount);
+  echo "Took $timerDurationAmount seconds to process.";
+  # test -e "$outputFile";
+  # and rm "$outputFile";
+  altWrite "$outputFile" "$timerDurationAmount";
 end

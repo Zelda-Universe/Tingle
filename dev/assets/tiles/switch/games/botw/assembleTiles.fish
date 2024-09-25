@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
 ## Info
@@ -23,7 +23,7 @@ set -l SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/../../../../../scripts/common/altPushd.fish"    ;
 source "$SDIR/../../../../../scripts/common/debugPrint.fish"  ;
-source "$SDIR/../../../../../scripts/common/timing.fish";
+source "$SDIR/../../../../../scripts/common/timing.fish"      ;
 
 function setupTemplateFiles --argument-names outDir fileName numXTiles numYTiles tileWidth tileHeight
   set totalDimensions (expr "$tileWidth" '*' "$numXTiles")x(expr "$tileHeight" '*' "$numYTiles");
@@ -121,19 +121,19 @@ function createMagickScript --argument-names tilePrefix tileSuffix folderPathAnd
   set srcGenericScript "$folderPathAndName/Script.txt";
   if test ! -e "$srcGenericScript" -o "$force" = "true"
     timerStart;
-    echo '#!/usr/bin/env magick-script' > "$srcGenericScript";
-    echo >> "$srcGenericScript";
-    echo '-define png:color-type=6' >> "$srcGenericScript";
-    echo >> "$srcGenericScript";
+    echo '#!/usr/bin/env magick-script' | tee "$srcGenericScript" > /dev/null;
+    echo | tee -a "$srcGenericScript";
+    echo '-define png:color-type=6' | tee -a "$srcGenericScript" > /dev/null;
+    echo | tee -a "$srcGenericScript";
 
     for vertialIndex in (seq 0 1 9)
       echo '( '(
         for horizontalIndex in $indiciesHorizontal
           echo -n "$tilePrefix$horizontalIndex-$vertialIndex$tileSuffix.png ";
         end
-      )'+append ) -append' >> "$srcGenericScript";
+      )'+append ) -append' | tee -a "$srcGenericScript" > /dev/null;
     end
-    echo '+repage' >> "$srcGenericScript";
+    echo '+repage' | tee -a "$srcGenericScript" > /dev/null;
     timerStop;
     timerDurationReportAndSave "$trialsDir/1 - Scripting.txt";
   end
@@ -166,7 +166,7 @@ function assembleMapAtOnce --argument-names tilePrefix tileSuffix outDir folderN
   # recognized from the transient command line....
   set tempUniqueScript (mktemp);
   cp "$srcGenericScript" "$tempUniqueScript";
-  echo "-write \"$workingFile\"" >> "$tempUniqueScript";
+  echo "-write \"$workingFile\"" | tee -a "$tempUniqueScript" > /dev/null;
 
   echo "Generating result file \"$completedFile\"...";
   timerStart;
@@ -183,11 +183,12 @@ function assembleMapAtOnce --argument-names tilePrefix tileSuffix outDir folderN
   rm "$tempUniqueScript";
 end
 
-## Step Function Library
+## Task Function Library
 
-function step1
+# Sort by resolution
+function task1
   echo;
-  echo 'Step 1 - Sort to MapTex-suffixed resolution level folders';
+  echo 'Task 1 - Sort to MapTex-suffixed resolution level folders';
   for resLevel in $processResLevels
     echo "Processing resolution level \"$resLevel\"...";
 
@@ -200,21 +201,42 @@ function step1
     end
 
     mkdir "$folderName";
-    set resultOutputPath "$outputPath/$resLevel";
-    mkdir -p "$resultoutputBaseDir";
+    set resultOutputBaseDir "$outputBaseDir/$resLevel";
+    mkdir -p "$resultOutputBaseDir";
     set outTrialsDir "$outputBaseDir/$resLevel/Trials/1 - Sorting";
     mkdir -p "$outTrialsDir";
 
     timerStart;
-    find -maxdepth 1 -type f -name "$folderName""_*" -exec mv -t "$folderName/" '{}' +;
+    find -maxdepth 1 -type f -name "$folderName"'_*' -exec mv -t "$folderName/" '{}' +;
     timerStop;
-    timerDurationReportAndSave "$trialsDir/1 - By Res Level.txt";
+    timerDurationReportAndSave "$trialsDir/1a - By Res Level.txt";
+
+    timerStart;
+    pushd "$folderName";
+    rename "$folderName"'_' '' *;
+    popd;
+    timerStop;
+    timerDurationReportAndSave "$trialsDir/1b - Removing redundant prefix.txt";
+
+    # Alternative for later renaming:
+    # set dirRoot (cygpath (gc)); echo $dirRoot;
+    # if test -n "$dirRoot" -a -d "$dirRoot"
+    #   if pushd "$dirRoot"
+    #     for rL in '' '1' '2' '3'
+    #       find -type f -iname "MapTex$rL"'_*' \
+    #       | while read path
+    #       mv "$path" (echo "$path" | sed "s|/MapTex$rL"'_|/|');
+    #       end
+    #     end
+    #   end
+    # end
   end
 end
 
-function step2
+# Sort by state
+function task2
   echo;
-  echo 'Step 2 - Sort map tiles type/state by category folder suffix';
+  echo 'Task 2 - Sort map tiles type/state by category folder suffix';
   for resLevel in $processResLevels
     echo "Processing resolution level \"$resLevel\"...";
     test $resLevel = "0"; and set folderSuffix ''; or set folderSuffix "$resLevel";
@@ -265,9 +287,10 @@ function step2
   end
 end
 
-function step3 --argument-names outputBaseDir
+# Assemble into larger image
+function task3 --argument-names outputBaseDir
   echo;
-  echo 'Step 3 - Create single large images in each complete category'
+  echo 'Task 3 - Create single large images in each complete category'
   for resLevel in $processResLevels
     echo "Processing resolution level \"$resLevel\"...";
     test $resLevel = "0"; and set resName ''; or set resName "$resLevel";
@@ -281,8 +304,8 @@ function step3 --argument-names outputBaseDir
       mkdir -p "$outTrialsDir";
 
       test $category = "Default"; and set tileSuffix ''; or set tileSuffix "_$category";
-      set resultOutputPath "$outputPath/$resLevel";
-      mkdir -p "$resultoutputBaseDir";
+      set resultOutputBaseDir "$outputBaseDir/$resLevel";
+      mkdir -p "$resultOutputBaseDir";
 
       # set nextIndex (expr "$resLevel" + 1);
       # time assembleMapIndividually \
@@ -305,9 +328,9 @@ end
 set -l SDIR (readlink -f (dirname (status filename)));
 
 set indiciesHorizontal  "Z" "A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K";
-set tileDims            "3000"   "840"  "300"  "135"  ;
+set tileDims            "3000"  "840"   "300"  "135"  ;
 set totalWidths         "36000" "10080" "3600" "1620" ;
-set totalHeights        "30000"  "8400" "3000" "1350" ;
+set totalHeights        "30000" "8400"  "3000" "1350" ;
 set folderPrefix        "MapTex"                      ;
 
 # Direct (Required) Input
@@ -317,10 +340,10 @@ test -z "$srcDir"; and set srcDir "$argv[1]";
 test -z "$force"; and set force "false";
 
 # Other Settings
-set defaultSteps      "1" "2" "3"     ;
+set defaultTasks      "1" "2" "3"     ;
 set defaultResLevels  "0" "1" "2" "3" ;
 set defaultCategories "Default" "0"   ;
-test -z "$processSteps"     ; and set processSteps      $defaultSteps     ;
+test -z "$processTasks"     ; and set processTasks      $defaultTasks     ;
 test -z "$processResLevels" ; and set processResLevels  $defaultResLevels ;
 test -z "$processCategories"; and set processCategories $defaultCategories;
 test -z "$outputBaseDir"    ; and set outputBaseDir     "$SDIR/Maps"      ;
@@ -358,8 +381,8 @@ end
 
 altPushd "$srcDir";
 
-echo "$processSteps" | grep -qE "\b1\b"; and step1;
-echo "$processSteps" | grep -qE "\b2\b"; and step2;
-echo "$processSteps" | grep -qE "\b3\b"; and step3 "$outputBaseDir";
+echo "$processTasks" | grep -qE '\b1\b'; and task1;
+echo "$processTasks" | grep -qE '\b2\b'; and task2;
+echo "$processTasks" | grep -qE '\b3\b'; and task3 "$outputBaseDir";
 
 popd;

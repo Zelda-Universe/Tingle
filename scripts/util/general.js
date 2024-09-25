@@ -11,10 +11,23 @@ function getSetOrDefaultValue(value, defaultValue) {
 };
 
 function getSetOrDefaultValues(arrayOfValues, defaultValue, addlCondition) {
-  return arrayOfValues.find(function(value) {
-    return getSetOrDefaultValue(value)
+  var valueFound;
+
+  arrayOfValues.some(function(value) {
+    var valueProcessed = getSetOrDefaultValue(value);
+
+    if (
+      valueProcessed !== undefined
+      && valueProcessed !== null
+      && valueProcessed !== ''
       && ((addlCondition) ? addlCondition(value) : true)
-  }) || defaultValue;
+    ) {
+      valueFound = valueProcessed;
+      return true;
+    }
+  });
+
+  return getSetOrDefaultValue(valueFound, defaultValue);
 };
 
 // https://stackoverflow.com/a/31689499/1091943
@@ -69,4 +82,30 @@ function generateHighlightedText(text, regions) {
   content += text.substring(nextUnhighlightedRegionStartingIndex);
 
   return content;
+};
+
+function recurseTree(callback, tree) {
+  Object
+  .entries(tree)
+  .forEach(
+    function([treeChildId, treeChild]) {
+      recurseTreeAction.call(this, callback, treeChild);
+    },
+    this
+  );
+};
+
+function recurseTreeAction(callback, treeChild) {
+  callback.call(this, treeChild);
+
+  if(treeChild.children) {
+    Object
+    .entries(treeChild.children)
+    .forEach(
+      function([treeChildId, treeChild]) {
+        recurseTreeAction.call(this, callback, treeChild);
+      },
+      this
+    );
+  }
 };

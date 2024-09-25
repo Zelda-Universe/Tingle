@@ -1,21 +1,33 @@
 server {
-  set   $project_location /path/to/Zelda-Maps;
-  root  $project_location;
+  set $project_location /path/to/Zelda-Maps;
+	root $project_location;
 
-  #error_log  /var/log/nginx/error.log        ;
-  #error_log  /var/log/nginx/error.log  debug ;
-  #error_log  /var/log/nginx/error.log  notice;
-  #error_log  /var/log/nginx/error.log  info  ;
+  #error_log /var/log/nginx/error.log       ;
+  #error_log /var/log/nginx/error.log debug ;
+  #error_log /var/log/nginx/error.log notice;
+  #error_log /var/log/nginx/error.log info  ;
 
   listen       80       ;
   listen  [::]:80       ;
-  server_name  zeldamaps;
+  #listen      443 ssl  ;
+  #server_name zeldamaps;
+
+  #    ssl_certificate      cert.pem;
+  #    ssl_certificate      nginx.crt;
+  #    ssl_certificate_key  nginx.key;
+
+  #    ssl_session_cache    shared:SSL:1m;
+  #    ssl_session_timeout  5m;
+
+  #    ssl_ciphers  HIGH:!aNULL:!MD5;
+  #    ssl_prefer_server_ciphers  on;
 
   location / {
-    index   index.html index.htm;
+    index index.html index.htm;
   }
 
   # https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/
+  #location ~ \.php$ {
   #location ~ [^/]\.php(/|$) {
   #  fastcgi_split_path_info ^(.+?\.php)(/.*)$;
   #  if (!-f $document_root$fastcgi_script_name) {
@@ -26,7 +38,7 @@ server {
   #  fastcgi_param HTTP_PROXY "";
   #
   #  #fastcgi_pass 127.0.0.1:9000;
-  #  fastcgi_pass unix:/var/run/php/php-cgi7.4.33.sock;
+  #  #fastcgi_pass unix:/var/run/php/php-cgi7.4.33.sock;
   #  fastcgi_index index.php;
   #
   #  # include the fastcgi_param setting
@@ -36,6 +48,13 @@ server {
   #  #  the script name. If it is not set in fastcgi_params file,
   #  # i.e. /etc/nginx/fastcgi_params or in the parent contexts,
   #  # please comment off following line:
-  #  fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+  #  fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+  #}
+
+  # deny access to .htaccess files, if Apache's document root
+  # concurs with nginx's one
+  #
+  #location ~ /\.ht {
+  #    deny  all;
   #}
 }

@@ -26,8 +26,6 @@ L.Control.InfoBox.Location = L.Control.InfoBox.extend({
   },
 
   onAdd: function(map) {
-    this._map = map;
-
     var container = L.Control.InfoBox.prototype.onAdd.call(this);
     $(container).addClass("location");
 
@@ -40,6 +38,18 @@ L.Control.InfoBox.Location = L.Control.InfoBox.extend({
 	// onRemove: function() {
 	// 	locationInfo.destroy();
 	// };
+
+  _buildActionGroup: function(parent) {
+    var actionGroup = L.DomUtil.create('div', 'action-group');
+
+    var copyLink = new CopyLink({ content: this.generateLink.bind(this) });
+    $(actionGroup).append(copyLink.domNode);
+
+    var link = new Link({ content: this.generateLink.bind(this) });
+    $(actionGroup).append(link.domNode);
+
+    $(parent).append(actionGroup);
+  },
 
   createRow: function(titleText, parent) {
     var row = L.DomUtil.create('div', 'row', parent);

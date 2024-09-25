@@ -1,0 +1,62 @@
+HighestZoomLevel     : 0
+LowestZoomLevel      : 0
+FolderPath           : 0
+OrgX                 : 0
+OrgY                 : 0
+OrgZoomLevel         : 8
+PixelWidth           : 256
+PixelHeight          : 256
+saveJPEG             : false
+savePNG              : true
+saveGIF              : false
+
+visibleLayers        : 0
+ZoomLevel            : 0
+LastZoomLevel        : 8
+CurrentX             : 0
+CurrentY             : 0
+InitialSnapshotID    : 1
+
+ExpectedX            : 0
+NewX                 : 0
+ExpectedY            : 1
+NewY                 : 0
+XTilesNeeded         : 0
+YTilesNeeded         : 0
+
+CurrentX             : 0
+CurrentX             : 0
+
+BottomPaddingNeeded  : 208
+RightPaddingNeeded   : 96
+
+NumXTiles            : 256
+NumYTiles            : 256
+NumXTilesNeeded      : 115
+NumYTilesNeeded      : 138
+NumXTiles            : 256
+NumYTiles            : 256
+
+ResizeFactor         : 0.00390625
+
+ZoomLevelSnapshotID  : 2
+StartX               : 0
+StartY               : 0
+xTiles               : 1
+yTiles               : 1
+TotalTiles           : 1
+xm                   : 0
+ym                   : 0
+TileX                : 0
+TileY                : 0
+
+MyXO                 : 0
+MyXL                 : 256
+MyYO                 : 0
+MyYL                 : 256
+
+ym                   : 1
+TileY                : 1
+
+LastZoomLevel        : 0
+ZoomLevel            : -1

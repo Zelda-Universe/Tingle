@@ -10,7 +10,6 @@ L.Control.Basemaps = L.Control.extend({
     },
     basemap: null,
     onAdd: function(map) {
-        this._map = map;
         var container = L.DomUtil.create("div", "basemaps leaflet-control closed");
 
         // disable events
@@ -49,13 +48,13 @@ L.Control.Basemaps = L.Control.extend({
 
                 if (d instanceof L.TileLayer.WMS) {
                     // d may not yet be initialized, yet functions below expect ._map to be set
-                    d._map = map;
+                    d._map = this.map;
 
                     // unfortunately, calling d.getTileUrl() does not work due to scope issues
                     // have to replicate some of the logic from L.TileLayer.WMS
 
                     // adapted from L.TileLayer.WMS::onAdd
-                    var crs = d.options.crs || map.options.crs;
+                    var crs = d.options.crs || this.map.options.crs;
                     var wmsParams = L.extend({}, d.wmsParams);
                     var wmsVersion = parseFloat(wmsParams.version);
                     var projectionKey = wmsVersion >= 1.3 ? "crs" : "srs";
@@ -108,10 +107,10 @@ L.Control.Basemaps = L.Control.extend({
 
                     //if different, remove previous basemap, and add new one
                     if (d != this.basemap) {
-                        map.removeLayer(this.basemap);
-                        map.addLayer(d);
+                        this._map.removeLayer(this.basemap);
+                        this._map.addLayer(d);
                         d.bringToBack();
-                        map.fire("baselayerchange", d);
+                        this._map.fire("baselayerchange", d);
                         this.basemap = d;
 
                         L.DomUtil.removeClass(container.getElementsByClassName("basemap active")[0], "active");

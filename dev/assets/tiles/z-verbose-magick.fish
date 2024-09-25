@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
 if test "$includedZVerboseMagick" = 'true'
@@ -10,7 +10,7 @@ end
 set includedZVerboseMagick 'true';
 
 if test                         \
-  "$gm" != 'true'               \
+  "$imageProgGM" != 'true'      \
   -a \(                         \
         "$monitor"    = 'true'  \
     -o  "$verbose"    = 'true'  \

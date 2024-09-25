@@ -1,13 +1,18 @@
 {
-  "dependencies": {},
   "devDependencies": {
     "fuse.js": "^6.6.2",
     "jest": "^29.5.0",
     "jest-environment-jsdom": "^29.5.0",
     "jquery": "^3.7.0",
-    "node-notifier": "^10.0.1"
+    "leaflet": "^1.9.4",
+    "node-notifier": "^10.0.1",
+    "tinymce": "^7.0.1",
+    "toastr": "^2.1.4"
   },
   "scripts": {
     "test": "jest"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
   }
 }

@@ -1,37 +1,52 @@
 <?php
-   $path = __DIR__;
+  $path = __DIR__;
+   
+  if (!isset($_GET["game"]) || empty($_GET["game"])) {
+    echo json_encode(array(
+      "success" => false,
+      "msg"     => "Must provide the game parameter with an integer!"
+    ));
+    return;
+  }
 
-   if (file_exists("$path/ajax/static/categories_" . $_GET["game"] . ".json")) {
-	   readfile("$path/ajax/static/categories_" . $_GET["game"] . ".json");
-	   return;
-   }
+  if (file_exists("$path/ajax/static/categories_{$_GET["game"]}.json")) {
+	  readfile("$path/ajax/static/categories_{$_GET["game"]}.json");
+	  return;
+  }
 
-   $map = $_GET["game"];
+  $map = $_GET["game"];
 
-	$query = 'select id
-				      , parent_id               as parentId
-			         , name
-			         , default_checked         as checked
-			         , img
-                  , color
-                  , marker_category_type_id as markerCategoryTypeId
-                  , visible_zoom            as visibleZoom
-               from ' . $map_prefix . 'marker_category mc
-              where mc.container_id = ' . $map . '
-			       and mc.visible = 1
-              order by parent_id desc, id asc;
-   ';
-   //echo $query;
-   $result = @$mysqli->query($query);
+	$query = "
+    SELECT *
+    FROM `{$map_prefix}marker_category`
+    WHERE `container_id` = '$map'
+    ORDER BY
+      `parent_id` ASC,
+      `id` ASC
+    ;
+  ";
+  //echo $query;
+  $result = @$mysqli->query($query);
 
 	if(!$result) {
 		print($mysqli->error);
 		return;
 	}
 
-   $res = array();
-   while($row = $result->fetch_assoc()) {
-        $res[] = $row;
-   }
-   echo json_encode($res);
+  $res = array();
+  while($row = $result->fetch_assoc()) {
+    $booleanFieldNames = [
+      'default_checked',
+      'visible'
+    ];
+    foreach($booleanFieldNames as $booleanFieldName) {
+      if($row[$booleanFieldName] == '1') {
+        $row[$booleanFieldName] = true  ;
+      } else {
+        $row[$booleanFieldName] = false ;
+      }
+    }
+    $res[] = $row;
+  }
+  echo json_encode($res);
 ?>

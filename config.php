@@ -94,21 +94,24 @@
     $dbsocket     = get_config("DBSOCKET"   , 'string'                );
     $map_prefix   = get_config("PREFIX"     , 'string'                );
 
-    // debug_log('dbms: '.$dbms);
-    // debug_log('dbhost: '.$dbhost);
-    // debug_log('dbuser: '.$dbuser);
-    // debug_log('dbpasswd: '.$dbpasswd);
-    // debug_log('dbname: '.$dbname);
-    // debug_log('dbport: '.$dbport);
-    // debug_log('dbsocket: '.$dbsocket);
-    // debug_log('map_prefix: '.$map_prefix);
+    // debug_log('dbms       : '.$dbms       );
+    // debug_log('dbhost     : '.$dbhost     );
+    // debug_log('dbuser     : '.$dbuser     );
+    // debug_log('dbpasswd   : '.$dbpasswd   );
+    // debug_log('dbname     : '.$dbname     );
+    // debug_log('dbport     : '.$dbport     );
+    // debug_log('dbsocket   : '.$dbsocket   );
+    // debug_log('map_prefix : '.$map_prefix );
   }
 
   # System features
-  $minify       = get_config("minify"     , 'boolean', ['true'  ]);
-  $enableTests  = get_config("enableTests", 'boolean', ['false' ]);
-  // debug_log('minify: '.$minify); # Boolean values are misleading to print simply still..
-  // debug_log('enableTests: '.$enableTests);
+  $enableTests  = get_config('enableTests', 'boolean', ['false' ]);
+  $minify       = get_config('minify'     , 'boolean', ['true'  ]);
+  $softDelete   = get_config('softDelete' , 'boolean', ['true'  ]);
+  # Boolean values are misleading to print simply still..
+  // debug_log('enableTests : '.$enableTests);
+  // debug_log('minify      : '.$minify     );
+  // debug_log('softDelete  : '.$softDelete );
 
   # User features
 

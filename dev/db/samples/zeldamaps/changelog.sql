@@ -30,7 +30,7 @@ CREATE TABLE `changelog` (
   `hidden` tinyint(1) NOT NULL DEFAULT '0',
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -82,7 +82,12 @@ INSERT INTO `changelog` VALUES
   (40,0,8,0,0,'<b>5,182 markers added!</b> We are still 8 Koroks short, so let us know if you find them!'),
   (41,0,8,1,0,'<b>Region Labels added!</b> Should make your life easy on your quest for 100%'),
   (42,0,8,1,0,'<span color=\"red\"><b>Did you know?</b></span> On Desktop, you can press ESC key to hide the category menu! Also, logged in users don\'t see ads!'),
-  (43,0,8,1,0,'<span color=\"red\"><b>Any feedback?</b></span> Please send a tweet to our dev: https://twitter.com/ninzel !')
+  (43,0,8,1,0,'<span color=\"red\"><b>Any feedback?</b></span> Please send a tweet to our dev: https://twitter.com/ninzel !'),
+  (44,0,8,4,0,'Fixed marker link automatic map viewing.'),
+  (45,0,9,0,0,'Added ability to specify selected categories.'),
+  (46,0,9,1,0,'Added links to control category selection.'),
+  (47,0,9,2,0,'Fixed marker form complete icon presence.'),
+  (48,0,10,0,0,'Add account deletion capability.')
 ;
 /*!40000 ALTER TABLE `changelog` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -96,4 +101,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-30 21:07:28
+-- Dump completed on 2024-06-03 19:10:00

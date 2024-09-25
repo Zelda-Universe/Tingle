@@ -115,24 +115,60 @@
 
 ## Update Sample Database Data
 
-  We will store somewhat of the mined, active, production data snapshot in the `dev/db/tingle.sql` file so developers and others can start using the project faster, and at all.
+  We will store somewhat of the mined, active, production data exports as SQL files in the `dev/db/zeldamaps` directory so developers and others can start using the project faster, and at all.
 
   We have a separate method below about migrations for modifying data, including production's, to include new fixes and feature data.
 
   If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/db/createSampleDatabaseExport.sh`.  Then you can review any changes/updates to commit in place of that file.
-  - Use of the MySQL login path system is recommended, for any project-related database work, especially when contacting different servers.
-  - If a connection requires an SSH tunnel, the login path can bet set to a localhost with matching ports, and a command like this can be used:
-    - `ssh -nNTL <local_port_or_socket>:/var/run/mysqld/mysqld.sock <username>@zm-p-db`
-      - https://www.howtogeek.com/howto/ubuntu/access-your-mysql-server-remotely-over-ssh/
-  - Production: `env MYSQL_USER="<username>" MYSQL_CONNECTION_STRING="--login-path=tingle-prod-db '-p(read -s)"'" CONVERGE_SQL="true" ./dev/db/createSampleDatabaseExport.sh`.
-  - Development: `env DB_NAME="tingle" MYSQL_USER="root" CONVERGE_SQL="true" ./dev/db/createSampleDatabaseExport.sh`.
-    - Then enter the password for the script prompt, or else you will have to do so for every MySQL(Dump) prompt step thereafter.
-    - Not using the manage role made for database migrations since it doesn't have the `PROCESS` privilege and I think this type of action should be kept separate since it relates to the entire database.
-  - Refreshing the data may involve these statements:
-    - ``echo 'DROP DATABASE `zeldamaps`' | mysql --login-path=local``
-    - `mysql --login-path=local < "dev/db/zeldamaps.sql";`
+  - Database access:
+    - General
+      - New Advice: Use the `dev/db/command.fish` script now.
+        - That script has now been created since MariaDB completely does not support the method of using stored credentials being referenced by profile name that MySQL had.
+      - Old Advice: Use of the MySQL login path system is recommended, for any project-related database work, especially when contacting different servers.
+      - Not using the `Manage` role made for database migrations since it doesn't have the `PROCESS` privilege and I think this type of action should be kept separate since it relates to the entire database.
+      - If a connection requires an SSH tunnel, the login path can be set to `localhost` with matching ports, and a command like this can be used:
+        - `ssh -nNTL <local_port_or_socket>:/var/run/mysqld/mysqld.sock <username>@zm-p-db`
+        - https://www.howtogeek.com/howto/ubuntu/access-your-mysql-server-remotely-over-ssh/
+    - Sample Exports
+      - Feature updating
+        - `dev/db/createSampleDatabaseExport/update.fish`
+      - Complete
+        - Production
+          - New: ```
+            test   -n "$databaseUserProd"
+                -a -n "$databasePasswordProd";
+            and env                                           \
+                  databaseUser="$databaseUserProd"            \
+              databasePassword="$databasePasswordProd"        \
+                databaseSocket="/var/run/mysqld/mysqld.sock"  \
+                  ignoreTables=''                             \
+              ./dev/db/createSampleDatabaseExport/run.sh      \
+            ;
+            or echo -e "dUP: $databaseUserProd\ndPP: $databasePasswordProd\nNot provided; exiting...";
+          ```
+          - Old: `env MYSQL_USER="<username>" MYSQL_CONNECTION_STRING="--login-path=zmaps-prod-db '-p(read -s)"'" ./dev/db/createSampleDatabaseExport/run.sh`.
+        - Development
+          - New: `./dev/db/createSampleDatabaseExport/run.sh`
+          - Older: `env DB_NAME="zeldamaps" MYSQL_USER="root" ./dev/db/createSampleDatabaseExport/run.sh`.
+            - Then enter the password for the script prompt, or else you will have to do so for every MySQL(Dump) prompt step thereafter.
+      - Note
+        - This will export the structure, but not the content for the 'user' tables, as this may contain more sensitive information we do not want to store in the code repository.  Instead, we capture the useful ids with associated information, then sanitize and generate test data for the other fields.
+    - Refreshing active data from samples
+      - New: ```
+        echo 'DROP DATABASE IF EXISTS `zeldamaps`' \
+        | command.fish;
 
-  This will export the structure, but not the content for the 'user' tables, as this may contain more sensitive information we do not want to store in the code repository.  Instead, we capture the useful ids with associated information, then sanitize and generate test data for the other fields.
+        if test -n "$tableNames"
+          pushd 'dev/db';
+          for tableName in tableNames;
+            command.fish < "samples/zeldamaps/$tableName"'.sql';
+          end;
+          popd;
+        end`
+      ```
+      - Old
+        - ``echo 'DROP DATABASE `zeldamaps`' | mysql --login-path=local``
+        - `mysql --login-path=local < "dev/db/zeldamaps.sql";`
 
   Our export format guidelines:
   - It's usually better to print one insert per line for easier diffing.

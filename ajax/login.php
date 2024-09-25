@@ -8,25 +8,26 @@
 		return;
 	}
 
-   $username = $mysqli->real_escape_string($_POST['user']);
-   $password = $mysqli->real_escape_string($_POST['password']);
-   $passwordUnescaped = $_POST['password'];
-   $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
+  $username = $mysqli->real_escape_string($_POST['user']);
+  $password = $mysqli->real_escape_string($_POST['password']);
+  $passwordUnescaped = $_POST['password'];
+  $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
 
   $query = "
     SELECT
-      `id`,
-      `username`,
-      `password`,
-      `level`,
-      `seen_version_major` AS v1,
-      `seen_version_minor` AS v2,
-      `seen_version_patch` AS v3
+      `id`                        ,
+      `username`                  ,
+      `password`                  ,
+      `level`                     ,
+      `seen_version_major` AS `v1`,
+      `seen_version_minor` AS `v2`,
+      `seen_version_patch` AS `v3`
     FROM
       `{$map_prefix}user`
-    WHERE
-      `username` = '{$username}'
-	  or `email` = '{$username}'
+    WHERE (
+          `username` = '{$username}'
+	    OR  `email`    = '{$username}'
+    ) AND `deleted` IS NULL
     ;
   ";
 	$result = $mysqli->query($query);

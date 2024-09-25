@@ -1,5 +1,5 @@
 <?php
-   $path = __DIR__;
+  $path = __DIR__;
 
 	start_session("zmap");
 	begin();

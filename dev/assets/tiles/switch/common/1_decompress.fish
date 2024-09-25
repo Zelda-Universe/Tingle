@@ -1,7 +1,10 @@
 #!/usr/bin/env fish
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
-nsz -D ("$argv[1]" | tr -d '\r');
+nsz -D (echo "$argv[1]" | tr -d '\r');
+
+# Sample creation/compression command:
+# nsz -m 4 -C -l 22 -o (dirname "$nsp")'.nsz' "$nsp"

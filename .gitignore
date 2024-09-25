@@ -40,3 +40,4 @@ node_modules
 /dev/db/samples/zeldamaps-*
 /dev/db/samples/tingle-*
 *.sublime-workspace
+*.bak

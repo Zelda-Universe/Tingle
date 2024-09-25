@@ -1,4 +1,11 @@
 <?php
+  http_response_code(501);
+  echo json_encode(array(
+    "success" => false,
+    "msg"     => "Feature not implemented."
+  ));
+  return;
+
   $path = __DIR__;
 
 	begin();

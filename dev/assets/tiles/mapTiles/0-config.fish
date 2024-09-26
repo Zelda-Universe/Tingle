@@ -90,4 +90,7 @@ mkdir -p "$outWorkDir"  ;
 mkdir -p "$outTrialsDir";
 
 test -z "$zLLimit"  ;
-and set zLLimit '7' ; # 128 axis tile amount
+and set zLLimit '6' ; # 64 axis tile amount
+
+test -z "$workFiles"        ;
+and set -x workFiles 'true' ;

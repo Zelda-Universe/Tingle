@@ -567,8 +567,9 @@ a.icon-close2 {
 	margin-top: 32px;
 }
 
-.category-menu-marker-setting-area .button-completed-visibility {
-  margin-top: 16px;
+.category-menu-marker-setting-area .button-completed-visibility.infoWindowIcn {
+  margin-bottom: 0px;
+  margin-top: 8px;
 }
 
 .infoWindowIcn:last-of-type {

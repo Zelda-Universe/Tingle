@@ -1538,7 +1538,7 @@ ZMap.prototype.getUserCompletedMarkers = function() {
             if (markers[i].id == marker.markerId) {
                completedMarkers.push(marker.markerId);
 
-               this.categories[markers[i].categoryId].complete++;
+               _this.categories[markers[i].categoryId].complete++;
                _this._doSetMarkerDoneIcon(markers[i], true);
                break;
             }
@@ -1590,7 +1590,7 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
         if (data.success) {
           completedMarkers.push(vMarker.id);
           _this._doSetMarkerDoneIcon(vMarker, true);
-          this.categories[vMarker.categoryId].complete++;
+          _this.categories[vMarker.categoryId].complete++;
         } else {
           toastr.error(_this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg));
         }
@@ -1599,7 +1599,7 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
   } else {
     completedMarkers.push(vMarker.id);
     _this._doSetMarkerDoneIcon(vMarker, true);
-    this.categories[vMarker.categoryId].complete++;
+    _this.categories[vMarker.categoryId].complete++;
     setCookie('completedMarkers', JSON.stringify(completedMarkers));
     if (!userWarnedAboutLogin) {
       toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
@@ -1627,7 +1627,7 @@ ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
           vMIdx = completedMarkers.indexOf(vMarker.id);
           if (vMIdx >= 0) completedMarkers.splice(vMIdx, 1);
           _this._doSetMarkerDoneIcon(vMarker, false);
-          this.categories[vMarker.categoryId].complete--;
+          _this.categories[vMarker.categoryId].complete--;
         } else {
           toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
         }
@@ -1638,7 +1638,7 @@ ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
     if (vMIdx >= 0) completedMarkers.splice(vMIdx, 1);
     _this._doSetMarkerDoneIcon(vMarker, false);
     setCookie('completedMarkers', JSON.stringify(completedMarkers));
-    this.categories[vMarker.categoryId].complete--;
+    _this.categories[vMarker.categoryId].complete--;
     if (!userWarnedAboutLogin) {
       toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
       userWarnedAboutLogin = true;
@@ -2111,11 +2111,11 @@ ZMap.prototype._createAccountForm = function(user) {
            '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
-           '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
          '</div>' +
       '</div>' +
     '</div>',
     'accountPage'
+    // '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
   );
 
   $("#account_clear_completed_btn").click(function(e) {
@@ -2137,10 +2137,10 @@ ZMap.prototype._createAccountForm = function(user) {
      e.preventDefault();
   });
 
-  $("#account_delete_btn").click(function(e) {
-     _this._createAccountDeleteForm();
-     e.preventDefault();
-  });
+  // $("#account_delete_btn").click(function(e) {
+  //    _this._createAccountDeleteForm();
+  //    e.preventDefault();
+  // });
 
   $("#log_out_btn").click(function(e) {
     _this.logout();

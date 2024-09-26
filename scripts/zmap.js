@@ -2111,11 +2111,11 @@ ZMap.prototype._createAccountForm = function(user) {
            '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
-           '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
          '</div>' +
       '</div>' +
     '</div>',
     'accountPage'
+    // '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
   );
 
   $("#account_clear_completed_btn").click(function(e) {
@@ -2137,10 +2137,10 @@ ZMap.prototype._createAccountForm = function(user) {
      e.preventDefault();
   });
 
-  $("#account_delete_btn").click(function(e) {
-     _this._createAccountDeleteForm();
-     e.preventDefault();
-  });
+  // $("#account_delete_btn").click(function(e) {
+  //    _this._createAccountDeleteForm();
+  //    e.preventDefault();
+  // });
 
   $("#log_out_btn").click(function(e) {
     _this.logout();

@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
 # debugPrint "included0Detect: $included0Detect";
@@ -16,7 +16,7 @@ set isPHType (
   if begin
     test "$generatePHTiles" = 'true'
     or echo "$srcFile" | grep -qP \
-      '<((placeholder)|(fake)|(test)|(debug)|(sample example))>' \
+      '<((placeholder)|(fake)|(test)|(debug)|(sample)|(example))>' \
     ;
   end
     echo 'true' ;

@@ -230,7 +230,16 @@ main {
 
 .category-selector {
 	display: inline-block;
+  overflow: clip;
+  text-align: center;
 	vertical-align: top;
+	width: 25%;
+}
+
+.category-selector:nth-of-type(7)::after {
+	display: block;
+	content: " ";
+	height: 8px;
 }
 
 .category-selection-list>.category-selector>.category-button>.label {
@@ -256,15 +265,8 @@ main {
 .category-selection-list {
 }
 
-.category-selector {
-	width: 25%;
-	text-align: center;
-}
-
-.category-selector:nth-of-type(7)::after {
-	display: block;
-	content: " ";
-	height: 8px;
+a.category-button.disabled {
+  cursor: initial;
 }
 
 .category-button.toggledOn {
@@ -273,15 +275,6 @@ main {
 
 .category-button.toggledOff {
 	opacity: 0.35;
-}
-
-.category-icon {
-	position: relative;
-	font-size: 36px;
-}
-
-.icon-background {
-	color: white;
 }
 
 .category-button.toggledOn>.label>.completed-label-hide {
@@ -298,6 +291,15 @@ main {
 
 .category-button.toggledOff>.label>.completed-label-show {
 	display: inherit;
+}
+
+.category-icon {
+	position: relative;
+	font-size: 36px;
+}
+
+.icon-background {
+	color: white;
 }
 
 .main-content>p {}
@@ -322,11 +324,13 @@ main {
 	position: sticky;
 }
 
-.leaflet-control-layers-toggle {
+a.button.leaflet-control-layers-toggle {
 	background-image: url('images/zmaps_white_small.png') !important;
-   background-size: 26px 26px;
-	width: 36px;
-	height: 36px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: 26px 26px;
+	height: 44px;
+  width: 44px;
 }
 
 
@@ -434,6 +438,10 @@ main {
 
 /*** MARKER CONTENT ***/
 
+#menu-cat-content {
+	min-height: 35px;
+}
+
 .menu-cat-content-inner {
 	min-width: 360px;
 }
@@ -463,29 +471,36 @@ main {
 	height: auto;
 }
 
+.popupContent .icon-checkmark,
 .popupContent .icon-checkbox-checked,
 .popupContent .icon-checkbox-unchecked,
 .popupContent .fa-link  {
 	margin-right: 6px !important;
 }
 
+.popupContent .icon-checkmark,
 .popupContent .icon-checkbox-checked,
 .popupContent .icon-checkbox-unchecked {
 	position: relative;
 	top: -3px;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 a.button {
-	padding: 0px;
-	border: none;
-	text-align: center;
-	width: 18px;
-	height: 14px;
-    font-family: "BrandonText", sans-serif;
-	color: #c3c3c3;
-	text-decoration: none;
+  background: transparent;
+  border: none;
+  color: #c3c3c3;
+  cursor: pointer;
+  font-family: "BrandonText", sans-serif;
 	font-weight: bold;
-	background: transparent;
+	height: 14px;
+	padding: 0px;
+	text-align: center;
+  text-decoration: none;
+	width: 18px;
 }
 
 a.button:hover {
@@ -511,11 +526,27 @@ a.icon-close2 {
 .back-button {
 	height: initial;
 	float: left;
-	position: sticky;
+	position: absolute;
 	margin-top: 3px;
 	margin-left: 5px;
 	z-index: 100;
 	font-size: 21px;
+}
+
+.leaflet-control-layers #menu-cat-content .menu-cat-content-inner .action-group {
+	/* height: initial; */
+	/* float: right; */
+  /* position: absolute; */
+	/* position: fixed; */
+	/* margin-top: 3px; */
+	/* margin-left: 5px; */
+  margin-right: 5px;
+  /* top: 3px; */
+  /* right: 5px; */
+	/* z-index: 100; */
+  /* font-size: 21px; */
+	font-size: 12px;
+  text-align: right;
 }
 
 .infoWindowIcn {
@@ -534,6 +565,11 @@ a.icon-close2 {
 
 .infoWindowIcn:first-of-type {
 	margin-top: 32px;
+}
+
+.category-menu-marker-setting-area .button-completed-visibility.infoWindowIcn {
+  margin-bottom: 0px;
+  margin-top: 8px;
 }
 
 .infoWindowIcn:last-of-type {
@@ -908,6 +944,10 @@ a.icon-close2 {
 
 .modal-footer div {
 	margin: -8px;
+}
+
+#menu-cat-content .menu-cat-content-inner #account .modal-footer div {
+	margin: 0px;
 }
 
 .modal-footer .infoWindowIcn {
@@ -1459,4 +1499,29 @@ li.list-group-item  p {
 
 p.subtitle {
 	text-align: center
+}
+
+.bad {
+  background-color: red;
+}
+
+.menu-cat-content-inner h1,
+.menu-cat-content-inner h2,
+.menu-cat-content-inner h3,
+.menu-cat-content-inner h4,
+.menu-cat-content-inner h5,
+.menu-cat-content-inner h6 {
+  margin-top: 10px;
+}
+
+.menu-cat-content-inner #account p {
+  margin-bottom: 0px;
+}
+
+.menu-cat-content-inner #account .infoWindowIcn:first-of-type {
+  margin-top: 0px;
+}
+
+.menu-cat-content-inner #account .infoWindowIcn:last-of-type {
+  margin-bottom: 8px;
 }

@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
 set -l SDIR (readlink -f (dirname (status filename)));
@@ -9,25 +9,43 @@ set -l SDIR (readlink -f (dirname (status filename)));
 source "$SDIR/../../../scripts/common/debugPrint.fish";
 source "$SDIR/../../../scripts/common/errorPrint.fish";
 
-# debugPrint "srcFile: $srcFile"
-if test -z "$srcFile"
-  if not read -P 'Source file: ' srcFile
-    return 1;
+source "$SDIR/../../../scripts/common/filenameAddSuffix.fish";
+
+if test "$isPHType" != 'true'
+  # debugPrint "srcFile: $srcFile"
+  if test -z "$srcFile"
+    if not read -P 'Source file: ' srcFile
+      return 1;
+    end
+  else
+    if echo "$srcFile" | grep -qP '\w\\\\\w'
+      set srcFile (
+        echo "$srcFile" \
+        | sed 's|\\\\|\\\\\\\\|g'
+      );
+    end
   end
-end
-# debugPrint "srcFile: $srcFile"
-if test \
-        -z "$srcFile" \
-  -o !  -e "$srcFile" \
-  -o !  -f "$srcFile"
-  errorPrint "Source file must be provided as the first argument, exist, and be a file; exiting...";
-  return 2;
+  # debugPrint "srcFile: $srcFile"
+  if test \
+          -z "$srcFile" \
+    -o !  -e "$srcFile" \
+    -o !  -f "$srcFile"
+    errorPrint "Source file must be provided as the first argument, exist, and be a file; exiting...";
+    return 2;
+  end
 end
 
 # debugPrint "outDir: $outDir"
 if test -z "$outDir"
   if not read -P 'Output Directory: ' outDir
     return 3;
+  end
+else
+  if echo "$outDir" | grep -qP '\w\\\\\w'
+    set outDir (
+      echo "$outDir" \
+      | sed 's|\\\\|\\\\\\\\|g'
+    );
   end
 end
 # debugPrint "outDir: $outDir"
@@ -38,7 +56,7 @@ if test \
         -z "$outDir" \
   -o !  -e "$outDir" \
   -o !  -d "$outDir"
-  errorPrint "Output directory must be provided as the first argument, exist, and be a directory; exiting...";
+  errorPrint "Output directory must be provided as the second argument, exist, and be a directory; exiting...";
   return 4;
 end
 

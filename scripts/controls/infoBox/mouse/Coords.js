@@ -36,7 +36,7 @@ L.Control.InfoBox.Coords.Move = L.Control.InfoBox.Coords.extend({
          //var mouse = this._map.getMouse();
          this.latValueCell.text(pad(mouse.lng.toFixed(this.options.precision), 4) + " | " + pad(mouse.lat.toFixed(this.options.precision), 4));
       } else {
-         this.latValueCell.text(pad(map.getCenter().lng, 4) + " | " + pad(map.getCenter().lat, 4));
+         this.latValueCell.text(pad(this._map.getCenter().lng, 4) + " | " + pad(this._map.getCenter().lat, 4));
       }
   }
 });

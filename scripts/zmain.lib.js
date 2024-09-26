@@ -12,7 +12,6 @@ if (navigator.appVersion.indexOf("X11"  )!=-1) OSName="UNIX"    ;
 if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux"   ;
 
 function getUrlParam(vParam) {
-
    vParam = vParam.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
 
    var regexS = "[\\?&]"+vParam+"=([^&#]*)";
@@ -22,7 +21,7 @@ function getUrlParam(vParam) {
    if (vResults == null) {
       return "";
    } else {
-      return vResults[1];
+      return decodeURIComponent(vResults[1]);
    }
 
 };
@@ -80,56 +79,66 @@ function zMapInit(vResults) {
   }
 
   $.each(vResults, function(i, vContainer) {
-    vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
-    vContainer.collapsed                  = getUrlParamValue('collapsed', L.Browser.mobile);
-    vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
-    if (getCookie('isCategoryOpen') == '') {
-       setCookie('isCategoryOpen',"true");
-    }
-    vContainer.showCategoryControlOpened  = getUrlParamValue('showCategoryControlOpened', getCookie('isCategoryOpen')=="true");//vContainer.showCategoryControl);
-    vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
+    // Settings
+    {
+      vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
+      vContainer.collapsed                  = getUrlParamValue('collapsed', L.Browser.mobile);
+      vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
+      if (getCookie('isCategoryOpen') == '') {
+         setCookie('isCategoryOpen',"true");
+      }
+      vContainer.showCategoryControlOpened  = getUrlParamValue('showCategoryControlOpened', getCookie('isCategoryOpen')=="true");//vContainer.showCategoryControl);
+      vContainer.showZoomControl            = getUrlParamValue('showZoomControl', vContainer.showZoomControl);
 
-    vContainer.zoom                       = getUrlParamValue('zoom', vContainer.defaultZoom);
-    vContainer.zoomSnap                   = parseFloat(getUrlParamValue('zoomSnap', 1)); /*@TODO: Check if there is a zoomSnap parameter. If not, use the one we got from the DB*/
-    vContainer.zoomDelta                  = parseFloat(getUrlParamValue('zoomDelta', 1)); /*@TODO: Check if there is a zoomDelta parameter. If not, use the one we got from the DB*/
-    if (vContainer.zoom > vContainer.maxZoom) {
-       vContainer.zoom = vContainer.maxZoom;
-    }
-    vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
-    vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
-    vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
-    vContainer.showInfoControls           = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
+      vContainer.zoom                       = getUrlParamValue('zoom', vContainer.defaultZoom);
+      vContainer.zoomSnap                   = parseFloat(getUrlParamValue('zoomSnap', 1)); /*@TODO: Check if there is a zoomSnap parameter. If not, use the one we got from the DB*/
+      vContainer.zoomDelta                  = parseFloat(getUrlParamValue('zoomDelta', 1)); /*@TODO: Check if there is a zoomDelta parameter. If not, use the one we got from the DB*/
+      if (vContainer.zoom > vContainer.maxZoom) {
+         vContainer.zoom = vContainer.maxZoom;
+      }
+      vContainer.centerX                    = getUrlParamValue('x', vContainer.centerX);
+      vContainer.centerY                    = getUrlParamValue('y', vContainer.centerY);
+      vContainer.bgColor                    = getUrlParamValue('bgColor', vContainer.bgColor);
+      vContainer.showInfoControls           = getUrlParamValue('showInfoControls', vContainer.showInfoControls);
 
-    /* startArea entered as a csv to display/fit an area of the map on load */
-  // @TODO: Validate this logic. It was breaking mobile + bad hardcode
-    //vContainer.startArea                  = getUrlParamValue('startArea', "-168,102,-148,122");
+      if (vContainer.startArea) {
+        vContainer.startArea = parseBounds(vContainer.startArea);
+      }
 
-    if (vContainer.startArea) {
-      vContainer.startArea = parseBounds(vContainer.startArea);
-    }
+      vContainer.help                       = getUrlParamValue('help', true);
 
-    vContainer.help                       = getUrlParamValue('help', true);
-
-    var showCompleted = getCookie('showCompleted');
-    if (showCompleted == '') {
-       setCookie('showCompleted',"true");
-       vContainer.showCompleted = true;
-    } else {
-       vContainer.showCompleted = (showCompleted == 'true');
+      var showCompleted = getCookie('showCompleted');
+      if (showCompleted == '') {
+         setCookie('showCompleted',"true");
+         vContainer.showCompleted = true;
+      } else {
+         vContainer.showCompleted = (showCompleted == 'true');
+      }
     }
 
     zMap.constructor(vContainer);
-	
-	getLang(vContainer.shortName);
+
+    // TODO: Remove when proper lang files are added for the other games,
+    // or when a proper detection mechanism is added, probably another
+    // container field boolean value, since a head XHR request,
+    // if we can manage it might still produce a 404 console error message..
+    if(vContainer.shortName === 'TotK') {
+	    getLang(vContainer.shortName);
+    }
 
     gameId = vContainer.id;
 
-    getMapCategories();
-
-    if (vContainer.showCategoryControl) {
-       getMapCategoriesTree();
+    var categoriesSelectedIds = JSON.parse(
+      ZConfig.getConfig('categoriesSelectedIds') || '[]'
+    );
+    if (categoriesSelectedIds && categoriesSelectedIds.length > 0) {
+      var categoriesSelectedIdPairsObject = Object.fromEntries(
+        categoriesSelectedIds.map((id) => [id, true])
+      );
+      zMap.categoriesSelectedIdPairsObject = categoriesSelectedIdPairsObject;
     }
 
+    getMapCategories(categoriesSelectedIdPairsObject);
 
     var completedMarkers = getCookie('completedMarkers');
     if (completedMarkers != undefined && completedMarkers != null && completedMarkers != "") {
@@ -137,30 +146,36 @@ function zMapInit(vResults) {
     }
 
     getGames();
-    getMaps();
 
-    $("#map").css("background-color", vContainer.bgColor);
-    $("body").css("background-color", vContainer.bgColor);
-    $("html").css("background-color", vContainer.bgColor);
+    [ '#map', 'body', 'html' ].forEach(function (selector) {
+      $(selector).css('background-color', vContainer.bgColor);
+    });
  });
 }
 
-function getMapCategories() {
+function getMapCategories(categoriesSelectedIdPairsObject) {
+  $.getJSON(
+    "ajax.php?command=get_categories&game=" + gameId,
+    function(vResults) {
+      $.each(vResults, function(i, category) {
+        zMap.addCategory(category);
 
-   $.getJSON("ajax.php?command=get_categories&game=" + gameId, function(vResults){
-      $.each(vResults, function(i,category){
-         zMap.addCategory(category);
+        if (categoriesSelectedIdPairsObject) {
+          category.checked = !!categoriesSelectedIdPairsObject[category.id];
+        }
       });
-   });
 
-};
+      for(categoryRoot of zMap.categoryRootsArr) {
+        if(categoryRoot.checked) {
+          for(categoryChild of categoryRoot.childrenArr) {
+            categoryChild.checked = true;
+          }
+        }
+      }
 
-function getMapCategoriesTree() {
-
-   $.getJSON("ajax.php?command=get_category_tree&game=" + gameId, function(vResults){
-      zMap.buildCategoryMenu(vResults);
-   });
-
+      getMaps();
+    }
+  );
 };
 
 function getGames() {
@@ -182,7 +197,7 @@ function getMaps() {
       zMap.addMap(map);
     });
 
-    if (maps.length > 0) getMarkers();
+    getMarkers();
   });
 };
 
@@ -219,7 +234,7 @@ function showLoginControls() {
   searchBoxParent.addClass("col-xs-8");
 }
 
-function getMarkers() {
+function getMarkers(categories) {
   $.getJSON(
     "ajax.php?command=get_markers&game=" + gameId,
     function(gameId, vResults) {
@@ -229,10 +244,11 @@ function getMarkers() {
       }
 
       zMap.buildMap(gameId);
+
       getUserInfo();
       zMap.addMarkers(vResults);
       zMap.refreshMap();
-      
+
       finalLoad();
     }.bind(this, gameId)
   );
@@ -240,10 +256,8 @@ function getMarkers() {
 
 function finalLoad() {
   zMap.goTo({
-      marker: ZConfig.getConfig('marker')
-    },
-    ZConfig.getConfig('zoom')
-  );
+    marker: ZConfig.getConfig('marker')
+  });
 };
 
 // Get value of parameters
@@ -318,9 +332,9 @@ function parseBounds(input) {
 function updateAdState() {
   var authenticated = !!user;
   var mobileAds = document.getElementById("mobileAds");
-  if(mobileAds) $(mobileAds).toggleClass("hidden", (!mapControl.isMobile() || authenticated));
+  if(mobileAds) $(mobileAds).toggleClass("hidden", (!zMap.mapControl.isMobile || authenticated));
   var desktopAds = document.getElementById("desktopAds");
-  if(desktopAds) $(desktopAds).toggleClass("hidden", (mapControl.isMobile() || authenticated));
+  if(desktopAds) $(desktopAds).toggleClass("hidden", (zMap.mapControl.isMobile || authenticated));
 };
 
 

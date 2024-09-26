@@ -14,6 +14,7 @@ function MarkerListEntry(marker, opts) {
 
 MarkerListEntry.prototype._initSettings = function(marker, opts) {
   this.marker = marker;
+  this.categories = opts.categories;
 };
 
 MarkerListEntry.prototype._initDOMElements = function(marker) {
@@ -32,7 +33,9 @@ MarkerListEntry.prototype._initDOMElements = function(marker) {
     '</li>'
   );
 
-  this.categoryIcon = new CategoryIcon(categories[(marker.categoryId || marker.markerCategoryId)]);
+  this.categoryIcon = new CategoryIcon(
+    this.categories[(marker.categoryId || marker.markerCategoryId)]
+  );
   this.iconNode = this.domNode.find('.icon');
   this.iconNode.append(this.categoryIcon.domNode);
 };

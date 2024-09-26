@@ -3,23 +3,11 @@
 // https://choosealicense.com/licenses/mit/
 
 // Config:
+// Prefix: codeTrace-
 // - targetClasses (Array)    : Class names to hook methods in.
 // - methodsToIgnore (Object) : Keys of class names, with values being lists of function names.
 
-// Example:
-// 
-// codetrace-targetClasses: [ "ZMap" ]
-// methodsToIgnore        : {
-//  "ZMap": [
-//    "addCategory"             ,
-//    "addMarker"               ,
-//    "addMarkers"              ,
-//    "addMarkerToCategoryCache",
-//    "_createMarkerIcon"       ,
-//    "_shouldShowMarker"       ,
-//    "_updateMarkerPresence"   ,
-//    "_updateMarkersPresence"
-//  ] }
+// Examples in relevant class files.
 
 var callLevel = 0;
 
@@ -30,13 +18,13 @@ function debugPrint() {
 }
 
 function startTracing() {
-  var targetClasses = JSON.parse(ZConfig.getConfig("codetrace-targetClasses") || '[]');
+  var targetClasses = JSON.parse(ZConfig.getConfig("codeTrace-targetClasses") || '[]');
   // var targetClasses = [
   //   L.Control.ZLayers,
   //   L.Control.ZLayersBottom
   // ];
 
-  var methodsToIgnore = JSON.parse(ZConfig.getConfig("codetrace-methodsToIgnore") || '{}');
+  var methodsToIgnore = JSON.parse(ZConfig.getConfig("codeTrace-methodsToIgnore") || '{}');
   // var methodsToIgnore = {
   //   "L.Control.ZLayersBottom": [
   //     "_animate",
@@ -59,7 +47,7 @@ function startTracing() {
 
 function applyFunctionTraceToClasses(classesToTrace, options) {
   classesToTrace.forEach(function(classToTrace) {
-    inject(window[classToTrace], logFnCall, options);
+    inject(Object.dig(window, classToTrace.split('.')), logFnCall, options);
   });
 }
 
@@ -73,7 +61,7 @@ function inject(object, extraFn, options = {}) {
     object._className ||
     object._debugName ||
     object.displayName ||
-    object.name
+    object.name // NewClass during Leaflet construction....
   );
 
   for (let propName of Object.getOwnPropertyNames(objectPrototype)) {
@@ -112,7 +100,7 @@ function inject(object, extraFn, options = {}) {
   }
 }
 
-function logFnCall(before, className, fnName, options = {}, args) {  
+function logFnCall(before, className, fnName, options = {}, args) {
   if(options.abbvFn === undefined) options.abbvFn = true;
   if(options.argNewLines === undefined) options.argNewLines = false;
   if(options.colors === undefined) options.colors = true;
@@ -149,13 +137,17 @@ function logFnCall(before, className, fnName, options = {}, args) {
 
   if(before) callLevel++;
 
-  let headerString = '' +
-    '(' + callLevel + ') ' +
-    positionText + ' ' +
-    '%c' + objectName + ': ' +
-    '%c' + className + '.' +
-    '%c' + fnName + '%c('
-  ;
+  // let headerString = '' +
+  //   '(' + callLevel + ') ' +
+  //   positionText + ' ' +
+  //   '%c' + objectName + ': ' +
+  //   '%c' + className + '.' +
+  //   '%c' + fnName + '%c('
+  // ;
+  // let headerString = `\
+  //   (${callLevel}) ${positionText} %c${objectName}: %c${className}.%c${fnName}%c(\
+  // `;
+  let headerString = `(${callLevel}) ${positionText} %c${objectName}: %c${className}.%c${fnName}%c(`;
   colorList = colorList.concat([
     colors.obj,
     colors.class,

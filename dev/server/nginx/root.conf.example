@@ -1,29 +1,37 @@
+#user  nobody; # Windows # Leave commented out.
+#user  nginx; # Linux
+#worker_processes auto; # Linux
+#worker_processes 1; # Windows
 
-user  nginx;
-worker_processes  auto;
+# Windows
+#error_log logs/error.log;
+#error_log logs/error.log debug;
+#error_log logs/error.log notice; # Default
+#error_log logs/error.log info;
 
-#error_log  /var/log/nginx/error.log;
-#error_log  /var/log/nginx/error.log  debug;
-error_log  /var/log/nginx/error.log  notice; # Default
-#error_log  /var/log/nginx/error.log  info;
+# Linux
+#error_log  log/nginx/error.log;
+#error_log  log/nginx/error.log debug;
+#error_log  /nginx/error.log notice; # Default
+#error_log  /nginx/error.log info;
 
-pid        /var/run/nginx.pid;
-
+#pid        logs/nginx.pid; # Windows
+#pid        run/nginx.pid; # Linux
 
 events {
     worker_connections  1024;
 }
 
-
 http {
-    include       /etc/nginx/mime.types;
+    include       mime.types;
     default_type  application/octet-stream;
 
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                      '$status $body_bytes_sent "$http_referer" '
-                      '"$http_user_agent" "$http_x_forwarded_for"';
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log  /var/log/nginx/access.log main;
+    #access_log  log/nginx/access.log; # Linux
+    #access_log  logs/access.log; # Windows
 
     sendfile        on;
     #tcp_nopush     on;
@@ -32,5 +40,5 @@ http {
 
     #gzip  on;
 
-    include /etc/nginx/conf.d/*.conf;
+    include conf.d/*.conf;
 }

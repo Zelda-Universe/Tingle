@@ -8,6 +8,13 @@
 //   - seenChangelogVersion: [String] The last version viewed, in a situation where this cannot be extracted from the user object, like unauthenticated users from a saved cookie.
 //   - version: [String] - The semver to use when setting the newly read changelog.
 
+// Problem at least when code version is higher than highest changelog entries.
+// Surmise storing/updating last seen version in user metadata from changelog
+// entries, not reported code version.
+// Not updating the code to switch update data source.
+// Instead wanting changelog entries to be added.
+// TODO: Could add knowledge and force by code reporting this discrepancy.
+
 var seenChangelogVersionCookieName = "seenChangelogVersion";
 
 function ChangelogHandler(opts) {

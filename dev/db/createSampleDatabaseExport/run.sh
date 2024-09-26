@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
 # Uses the database client and dump executables with provided SQL
@@ -766,6 +766,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         "$tableName" \
       ; then
         altPrint "Skipping table \"$tableName\" as it is set to be ignored...";
+        altPrint;
         continue;
       fi
 

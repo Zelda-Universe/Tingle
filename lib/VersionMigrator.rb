@@ -1,5 +1,5 @@
 # MIT Licensed
-# Copyright (c) 2023 Pysis(868)
+# by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
 # Usage:

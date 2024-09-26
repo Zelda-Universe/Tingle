@@ -50,6 +50,7 @@
             * Remove test database: `y`
             * Reload privs: `y`
       * Perform specific project database set-up tasks:
+        * `alias -s js-yaml (readlink -e node_modules/.bin/js-yaml)`
         * `dev/db/prepare.fish install`
           * Create the database using a root account.
           * Create a dedicated basic account
@@ -59,8 +60,8 @@
           * Specific schema privileges
           * or all (not recommended).
           * Possibly do the same for a development DB management account too.
-      * Import the sample database files, hopefully using the specific management account.
-    * Set-up web server
+          * Import the sample database files, hopefully using the specific management account.
+    * Set-up web server & PHP
       * Linux:
         * Nginx:
           * Creation:
@@ -167,21 +168,48 @@
           * `php-fpm --prefix /usr/local`
         * Tell the Mac OS to "Allow network connections" when the dialog automatically appears.
       * Windows:
-        * nginx or [WAMP](wampserver.com/en/)
-        * https://nginx.org/en/docs/windows.html
-        * Manual Install:
-          * https://nginx.org/en/download.html
-          * Probably recommend stable instead of mainline/latest/development.
-            * https://smarttechnicalworld.com/how-to-install-nginx-on-windows/
-        * Generate SSL certificates: `openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout <nginx_app_dir_path>/conf/nginx.key -out <nginx_app_dir_path>/conf/nginx.crt`
-        * `mv <nginx_app_dir_path>/conf/nginx.conf <nginx_app_dir_path>/conf/nginx.conf.orig`
-        * `cp dev/server/nginx/root.conf <nginx_app_dir_path>/conf/nginx.conf`
-        * `cmd /C mklink /H "<nginx_app_dir_path>\conf\servers\Tingle.conf" (cygpath -w (readlink -f site.conf))`
-        * Enable PHP FastCGI
-          * Install PHP NTS zip
+        * Manual Install
+          * nginx
+            * Use the official site, as Cygwin's package was very old.
+              * https://nginx.org/en/docs/windows.html
+              * https://nginx.org/en/download.html
+                * Possibly recommend stable instead of mainline/latest/development.
+                  * Although more current may contain more security fixes.
+                * https://web.archive.org/web/20220702175400/https://smarttechnicalworld.com/how-to-install-nginx-on-windows/
+              * `set nginxAppDirPath (cygpath -w (dirname (type -p nginx)))`
+              * Generate SSL certificates
+                * `openssl req -x509 -nodes -days 36500 -newkey rsa:2048 -keyout "$nginxAppDirPath/conf/nginx.key" -out "$nginxAppDirPath/conf/nginx.crt"`
+              * Prepare project website configuration
+                * `mv "$nginxAppDirPath/conf/nginx.conf" "$nginxAppDirPath/conf/nginx.conf.orig"`
+                * `cp 'dev/server/nginx/root.conf.example' 'dev/server/nginx/root.conf'` & edit.
+                  * Choose `log`, `user`, and `worker_processes` directive lines, per OS.
+                * `mkdir "$nginxAppDirPath/conf/conf.d"`
+                * `cp 'dev/server/nginx/root.conf.example' "$nginxAppDirPath/conf/nginx.conf"`
+                * `cmd /C mklink /H "$nginxAppDirPath\\conf\\nginx.conf" (cygpath -w (readlink -f 'dev/server/nginx/root.conf'))`
+                * `cp 'dev/server/nginx/site.conf.example' 'dev/server/nginx/site.conf'` & edit.
+                  * Set `project_location`, choose an `access_log` directive line, per OS, and choose a `fastcgi_pass` directive.
+                * `cmd /C mklink /H "$nginxAppDirPath\\conf\\conf.d\\zeldamaps.conf" (cygpath -w (readlink -f 'dev/server/nginx/site.conf'))`
+              * Tell the Windows OS to "Allow network connections" when the dialog automatically appears.
+              * Add nginx nginx_app_dir_path to PATH variable.
+              * Cannot add as a service
+                * As admin: `sc create Nginx binPath="$nginxAppDirPath\\nginx.exe"`
+                * Error: Process did not respond in a timely fashion, or successfully respond to the start or control request.
+                  * https://nginx.org/en/docs/windows.html
+                    * Possible future enhancements
+                    * https://stackoverflow.com/questions/40846356/run-nginx-as-windows-service
+                * As admin: `sc delete Nginx`
+              * Common commands
+                * `tasklist | grep -iP 'nginx' | grep -v 'grep'`
+                * `nginx -p "$nginxAppDirPath" -s reload;`
+                * `nginx -p "$nginxAppDirPath" -s stop;`
+          * Install & Enable PHP FastCGI/FPM
             * https://windows.php.net/download/
-          * `php-cgi -b 127.0.0.1:9999`
-        * Tell the Windows OS to "Allow network connections" when the dialog automatically appears.
+              * For this FastCGI scenario, I retrieved a NTS build.
+              * For production compatibility, when version 8.3/4 is available, I retrieved version 7.4.9.
+            * Set-up `php.ini`.
+            * `php-cgi -b 127.0.0.1:9000`
+            * Tell the Windows OS to "Allow network connections" when the dialog automatically appears.
+        * or [WAMP](wampserver.com/en/)
     * PHP dependencies
       * Mysqli
         * Docker
@@ -189,7 +217,8 @@
             * https://hub.docker.com/_/php/#How_to_install_more_PHP_extensions
         * Manual
           * Now the mysqlnd package?
-          * (Old?) Make sure it is enabled in `php.ini`.  Just uncomment the extension line most likely.
+          * Make sure it is enabled in `php.ini`.
+            * Uncomment the `extension=mysqli` and `extension_dir = "ext"` lines.
       * Optional: Install php zend extension xdebug
         * https://xdebug.org/wizard
         * https://stackify.com/php-debugging-guide/

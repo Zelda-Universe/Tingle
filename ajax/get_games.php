@@ -1,13 +1,16 @@
 <?php
   $path = __DIR__;
 
-  $query = "select c.id
-                  , c.short_name as shortName
-                  , c.name
-                  , c.icon
-               from ${map_prefix}container c
-              where c.visible = 1
-             order by c.id
+  $query = "
+    SELECT c.id
+      , c.short_name as shortName
+      , c.name
+      , c.icon
+    FROM ${map_prefix}container c
+    WHERE
+        c.visible = 1
+    AND c.enabled = 1
+    ORDER BY c.id
   ;";
   //echo $query;
 

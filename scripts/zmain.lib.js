@@ -238,7 +238,7 @@ function getMarkers(categories) {
   $.getJSON(
     "ajax.php?command=get_markers&game=" + gameId,
     function(gameId, vResults) {
-      if (vResults.success === false || vResults.length == 0) {
+      if (vResults.success === false) {
         zLogger.error('No markers provided to show!');
         return 5;
       }
@@ -332,10 +332,25 @@ function parseBounds(input) {
 function updateAdState() {
   var authenticated = !!user;
   var mobileAds = document.getElementById("mobileAds");
-  if(mobileAds) $(mobileAds).toggleClass("hidden", (!zMap.mapControl.isMobile || authenticated));
+  if(mobileAds) {
+    $(mobileAds).toggleClass("hidden", (
+      !isMobile() || authenticated
+    ));
+  }
   var desktopAds = document.getElementById("desktopAds");
-  if(desktopAds) $(desktopAds).toggleClass("hidden", (zMap.mapControl.isMobile || authenticated));
+  if(desktopAds) {
+    $(desktopAds).toggleClass("hidden", (
+      isMobile() || authenticated
+    ));
+  }
 };
+
+function isMobile() {
+  return (
+    L.Browser.mobile
+    && window.innerWidth < 768
+  )
+}
 
 
 

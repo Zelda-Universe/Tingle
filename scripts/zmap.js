@@ -1173,7 +1173,7 @@ ZMap.prototype.toggleCompleted = function() {
 };
 
 ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
-  if(!this.userWarnedAboutMarkerQty) {
+  if(!this.userWarnedAboutMarkerQty && this.mapControl) {
     var checksReport = this.mapControl._categoryMenu.computeChecks();
     if(
          checksReport.checked > 5

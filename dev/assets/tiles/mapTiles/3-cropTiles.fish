@@ -12,13 +12,21 @@ source "$SDIR/../../../scripts/common/errorPrint.fish"              ;
 source "$SDIR/../../../scripts/common/filenameRemoveExtension.fish" ;
 source "$SDIR/../../../scripts/common/timing.fish"                  ;
 source "$SDIR/../../../scripts/common/userWaitConditional.fish"     ;
-source "$SDIR/../z-verbose-magick.fish"                             ;
+source "$SDIR/../z-verbose-magick.fish";
 
-if not source "$SDIR/0-config.fish"
+# debugPrint 'Entering 3-cropTiles.fish...';
+
+# debugPrint "imageProg: $imageProg";
+if test -z "$imageProg"
+  errorPrint 'imageProg empty; exiting...';
   return 1;
 end
-if not source "$SDIR/../0-config-zoom.fish"
+
+if not source "$SDIR/0-config.fish"
   return 2;
+end
+if not source "$SDIR/../0-config-zoom.fish"
+  return 3;
 end
 
 if test "$workFiles" = 'true'
@@ -152,7 +160,9 @@ for zoomLevel in $processZoomLevels
     ## Axis (X) sub dir iteration, if setting is enabled,
     # to make if they don't exist, or if they do, check if they
     # already contain files to skip processing.
+    # debugPrint "outputAxisFolders: $outputAxisFolders";
     if test "$outputAxisFolders" = "true"
+      # debugPrint 'Check axis folders to create, or exist, but are empty, to continue tiling.';
       for x in (seq 0 1 $axisEndIndex)
         # debugPrint "x: $x";
 
@@ -281,6 +291,9 @@ for zoomLevel in $processZoomLevels
       if test -n "$monitorOpts"
         set -a headerOpts $monitorOpts;
       end
+      if test "$imageProgGM" = 'true'
+        set -a headerOpts convert;
+      end
       set -a headerOpts "$outWorkDir/$currentExtFile";
     end
     if test -z "$middleOpts"
@@ -292,7 +305,6 @@ for zoomLevel in $processZoomLevels
 
     if test "$DRY_RUN" = 'true'
       echo "$imageProg"   \
-        convert           \
         $headerOpts       \
     		$middleOpts       \
     		+adjoin           \
@@ -301,7 +313,6 @@ for zoomLevel in $processZoomLevels
       ;
     else
       "$imageProg"        \
-        convert           \
         $headerOpts       \
     		$middleOpts       \
     		+adjoin           \
@@ -396,3 +407,5 @@ for zoomLevel in $processZoomLevels
 end
 
 popd;
+
+# debugPrint 'Leaving 3-cropTiles.fish...';

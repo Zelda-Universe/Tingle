@@ -9,6 +9,8 @@ set -l SDIR (readlink -f (dirname (status filename)));
 source "$SDIR/../../../scripts/common/debugPrint.fish";
 source "$SDIR/../../../scripts/common/errorPrint.fish";
 
+# debugPrint 'Entering 1-determineMaxDim.fish...';
+
 # Step 1 - Determine Maximum Dimensions
 # Always required / internal step.
 # Determines the max zoom level dimensions that fit around the source image.
@@ -16,6 +18,11 @@ source "$SDIR/../placeholderTiles/detect.fish";
 source "$SDIR/0-config.fish";
 
 echo 'Determining image\'s maximum zoom level values...';
+
+if test -z "$imageProg"
+  errorPrint 'imageProg empty; exiting...';
+  exit 1;
+end
 
 # debugPrint "srcFile: $srcFile";
 
@@ -61,3 +68,5 @@ export zoomLevels numAxisTiles zoomDim;
 echo "Max zoom level matched          : $zoomLevels"  ;
 echo "Max zoom level axis tiles amount: $numAxisTiles";
 echo "Max zoom level dimension        : $zoomDim"     ;
+
+# debugPrint 'Leaving 1-determineMaxDim.fish...';

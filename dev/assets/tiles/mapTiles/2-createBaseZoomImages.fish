@@ -24,11 +24,22 @@ begin
   source "$SDIR/../../../scripts/common/timing.fish"                  ;
   source "$SDIR/../z-verbose-magick.fish"                             ;
 
-  if not source "$SDIR/0-config.fish"
+  # debugPrint 'Entering 2-createBaseZoomImages.fish...';
+
+  # debugPrint "imageProg: $imageProg";
+  if test -z "$imageProg"
+    errorPrint 'imageProg empty; exiting...';
+    # debugPrint 'Leaving 2-createBaseZoomImages.fish (1)...';
     return 1;
   end
-  if not source "$SDIR/../0-config-zoom.fish"
+
+  if not source "$SDIR/0-config.fish"
+    # debugPrint 'Leaving 2-createBaseZoomImages.fish (2)...';
     return 2;
+  end
+  if not source "$SDIR/../0-config-zoom.fish"
+    # debugPrint 'Leaving 2-createBaseZoomImages.fish (3)...';
+    return 3;
   end
 
   set timeFilePattern "$outTrialsDir/%s/%s";
@@ -76,6 +87,7 @@ for zoomLevel in $processZoomLevels
 
   if test "$dryRun" = 'true'
     echo 'Skipping execution and timing due to dry run setting being enabled...';
+    # debugPrint 'Leaving 2-createBaseZoomImages.fish (0)...';
     return;
   end
 	if test ! -e "$currentExtFile" -o "$force" = "true"
@@ -107,10 +119,17 @@ for zoomLevel in $processZoomLevels
     set timeFilePath (printf "$timeFilePattern" "$zoomLevel" "$timeFileName");
     # debugPrint "timeFilePath: $timeFilePath";
 
+    if test -n "$monitorOpts"
+      set -a headerOpts $monitorOpts;
+    end
+    if test "$imageProgGM" = 'true'
+      set -a headerOpts convert;
+    end
+    set -a headerOpts -background "transparent";
+
     timerStart;
-    "$imageProg" convert            \
-      $monitorOpts                  \
-      -background "transparent"     \
+    "$imageProg"                    \
+      $headerOpts                   \
       $srcFileOpts                  \
       -gravity    "center"          \
       -extent     "$zoomDims"       \
@@ -124,7 +143,7 @@ for zoomLevel in $processZoomLevels
       errorPrint 'Could not create base image; unknown Magick error.';
       errorPrint "status: $status";
       errorPrint "currentExtFile: $currentExtFile";
-
+      # debugPrint 'Leaving 2-createBaseZoomImages.fish (4)...';
       return 4;
     end
   else
@@ -133,6 +152,7 @@ for zoomLevel in $processZoomLevels
 
   if test ! -e "$currentExtFile"
     errorPrint 'Base padded file still does not exist; exiting...';
+    # debugPrint 'Leaving 2-createBaseZoomImages.fish (5)...';
     return 5;
   end
 
@@ -168,3 +188,5 @@ for zoomLevel in $processZoomLevels
     "$SDIR/3-cropTiles.fish";
   end
 end
+
+# debugPrint 'Leaving 2-createBaseZoomImages.fish...';

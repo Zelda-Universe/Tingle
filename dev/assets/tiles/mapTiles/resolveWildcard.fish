@@ -4,6 +4,8 @@
 # by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
+# debugPrint 'Entering resolveWildcard.fish...';
+
 # debugPrint "zoomLevels: $zoomLevels";
 if test -z "$zoomLevels"
   errorPrint 'Detected zoomLevels for the image is empty; exiting...';
@@ -38,3 +40,5 @@ for zoomLevel in $processZoomLevels
     exit;
   end
 end
+
+# debugPrint 'Leaving resolveWildcard.fish...';

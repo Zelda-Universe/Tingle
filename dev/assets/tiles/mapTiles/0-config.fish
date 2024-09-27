@@ -11,10 +11,13 @@ source "$SDIR/../../../scripts/common/errorPrint.fish";
 
 source "$SDIR/../../../scripts/common/filenameAddSuffix.fish";
 
+# debugPrint 'Entering 0-config.fish...';
+
 if test "$isPHType" != 'true'
   # debugPrint "srcFile: $srcFile"
   if test -z "$srcFile"
     if not read -P 'Source file: ' srcFile
+      # debugPrint 'Leaving 0-config.fish (1)...';
       return 1;
     end
   else
@@ -31,6 +34,7 @@ if test "$isPHType" != 'true'
     -o !  -e "$srcFile" \
     -o !  -f "$srcFile"
     errorPrint "Source file must be provided as the first argument, exist, and be a file; exiting...";
+    # debugPrint 'Leaving 0-config.fish (2)...';
     return 2;
   end
 end
@@ -38,6 +42,7 @@ end
 # debugPrint "outDir: $outDir"
 if test -z "$outDir"
   if not read -P 'Output Directory: ' outDir
+    # debugPrint 'Leaving 0-config.fish (3)...';
     return 3;
   end
 else
@@ -57,10 +62,12 @@ if test \
   -o !  -e "$outDir" \
   -o !  -d "$outDir"
   errorPrint "Output directory must be provided as the second argument, exist, and be a directory; exiting...";
+  # debugPrint 'Leaving 0-config.fish (4)...';
   return 4;
 end
 
-test -z "$tileSize"; and set -x tileSize "256";
+test -z "$tileSize";
+and set -x tileSize "256";
 # debugPrint "tileSize: $tileSize";
 
 set srcFileDir (dirname "$srcFile");
@@ -92,5 +99,9 @@ mkdir -p "$outTrialsDir";
 test -z "$zLLimit"  ;
 and set zLLimit '6' ; # 64 axis tile amount
 
-test -z "$workFiles"        ;
-and set -x workFiles 'true' ;
+# test -z "$workFiles"        ;
+# and set -x workFiles 'true' ;
+
+fish -c 'exit \'0\';';
+
+# debugPrint 'Leaving 0-config.fish...';

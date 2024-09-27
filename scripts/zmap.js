@@ -1016,15 +1016,7 @@ ZMap.prototype.buildMap = function(gameId) {
 
   _this._buildContextMenu();
 
-  if(
-       this.categories
-    && Object.keys(zMap.categories).length > 0
-    && this.maps
-    && this.maps.length > 0
-    && this.map
-  ) {
-    this.addMapControl();
-  }
+  this.addMapControl();
 };
 
 ZMap.prototype.addMapControl = function(gameId) {

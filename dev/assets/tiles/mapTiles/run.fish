@@ -27,7 +27,7 @@ set -l SDIR (readlink -f (dirname (status filename)));
 source "$SDIR/../../../scripts/common/debugPrint.fish";
 source "$SDIR/../../../scripts/common/userWaitConditional.fish";
 
-
+# debugPrint 'Entering run.fish...';
 
 ## Set-up
 begin
@@ -62,15 +62,22 @@ begin
   and set -x tileSize "256";
 
   if test "$isPHType" = 'true'
-    set availableTasks "2" "generateTiles";
+    set availableTasks '1' '2' 'generateTiles';
   else
-    set availableTasks "2" "3" "createBaseZoomImages" "cropTiles";
+    set availableTasks        \
+      '1' \
+      '2' \
+      '3' \
+      'determineMaxDim'       \
+      'createBaseZoomImages'  \
+      'cropTiles'             \
+    ;
     # "listFinishedGames" # ?
   end
   set -a availableTasks 'none' 'exit' 'quit';
 
   test -z "$processTasks";
-  and set processTasks $availableTasks;
+  and set processTasks '1' '2' '3';
   if begin
     test (count $processTasks) -eq 1;
     and echo "$processTasks" | grep -q " ";
@@ -88,6 +95,7 @@ begin
   end
 
   source "$SDIR/setImageProg.fish";
+  # debugPrint "imageProg: $imageProg";
 
   set srcFileDir (dirname "$srcFile");
   set mapInfoJSONFile "$srcFileDir/mappingInfo.json";
@@ -140,8 +148,13 @@ mkdir -p "$outTrialsDir";
 # Maybe make step 1 optional only if the user provided a custom argument for it,
 # but it's several....
 if test -z "$zoomLevels"
-  if not source "$SDIR/1-determineMaxDim.fish"
-    return;
+  if echo "$processTasks" | grep -qP "((1)|(determineMaxDim))";
+    if not source "$SDIR/1-determineMaxDim.fish"
+      return;
+    end
+    userWaitConditional;
+  else
+    # debugPrint '1-determineMaxDim task not processed.';
   end
 
   jq -M -n                              \
@@ -159,23 +172,33 @@ if test -z "$zoomLevels"
 end
 # debugPrint "zoomLevels: $zoomLevels";
 
+# debugPrint "processTasks: $processTasks";
+
 if test "$isPHType" = 'true'
   if echo "$processTasks" | grep -qP "((2)|(generateTiles))";
     "$SDIR/../generatePHTiles/TLOrigin.fish";
     userWaitConditional;
+  else
+    # debugPrint '2-generateTiles task not processed.';
   end
 else
-  if echo "$processTasks" | grep -qP "((2)|(createBaseZoomImages))";
+  if echo "$processTasks" | grep -qP "((2)|(createBaseZoomImages))"
     if not "$SDIR/2-createBaseZoomImages.fish"
       return;
     end
     userWaitConditional;
+  else
+    # debugPrint '2-createBaseZoomImages task not processed.';
   end
 
-  if echo "$processTasks" | grep -qP "((3)|(cropTiles))";
+  if echo "$processTasks" | grep -qP "((3)|(cropTiles))"
     if not "$SDIR/3-cropTiles.fish"
       return;
     end
     userWaitConditional;
+  else
+    # debugPrint '3-cropTiles task not processed.';
   end
 end
+
+# debugPrint 'Leaving run.fish...';

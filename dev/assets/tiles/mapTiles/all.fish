@@ -8,6 +8,8 @@ set -l SDIR (readlink -f (dirname (status filename)));
 
 source "$SDIR/../../../scripts/common/errorPrint.fish";
 
+# debugPrint 'Entering all.fish...';
+
 test -z "$tilesBasePath";
 and set tilesBasePath (
   readlink -e "$SDIR/../../../../tiles"
@@ -19,8 +21,7 @@ test -n "$outDir" ; and set -e outDir ;
 test -z "$resLevelChoice" ;
 and set resLevelChoice '0';
 
-set availableGames  'botw' 'lafs' 'la_rmk' 'totk';
-# set availableGames  'botw' 'lafs' 'la_rmk' 'totk' 'eow';
+set availableGames  'botw' 'lafs' 'la_rmk' 'totk' 'eow';
 set defaultGames    '';
 test -z "$processGames";
 and set processGames $defaultGames;
@@ -106,16 +107,16 @@ end
     for mapType in $mapTypes
       # debugPrint "mapType: $mapType";
 
-      set mapSubPath "$game/Maps/$area/$mapType";
+      set mapSubPath "$game/Maps/$area/$mapType"  ;
       set mapPath (
         readlink -e "$SDIR/../switch/games/$mapSubPath/Map.png"
       );
-      set tilesSubPath "$game/$area/$mapType";
+      set tilesSubPath "$game/$area"              ;
       set tilesPath "$tilesBasePath/$tilesSubPath";
-      # debugPrint "mapSubPath: $mapSubPath";
-      # debugPrint "mapPath: $mapPath";
+      # debugPrint "mapSubPath  : $mapSubPath"  ;
+      # debugPrint "mapPath     : $mapPath"     ;
       # debugPrint "tilesSubPath: $tilesSubPath";
-      # debugPrint "tilesPath: $tilesPath";
+      # debugPrint "tilesPath   : $tilesPath"   ;
 
       if test ! -e "$mapPath"
         errorPrint 'Map does not exist; skipping...';
@@ -140,5 +141,46 @@ end
   end # area
 end # if game lafs
 
-# if echo "$processGames" | grep -qE "\beow\b"
-# end # if game eow
+if echo "$processGames" | grep -qE "\beow\b"
+  echo 'Processing Echoes of Wisdom...';
+  ## EoW
+  set game  'eow'       ;
+  set areas 'Overworld' ;
+
+  for area in $areas
+    set areaLower (echo "$area" | tr '[A-Z]' '[a-z]');
+    set mapSubPath "$game/Maps/$area";
+    set mapPath (
+      readlink -e "$SDIR/../switch/games/$mapSubPath/Map.png"
+    );
+    set tilesSubPath "$game/$areaLower";
+    set tilesPath "$tilesBasePath/$tilesSubPath";
+    # debugPrint "areaLower: $areaLower";
+    # debugPrint "mapSubPath: $mapSubPath";
+    # debugPrint "mapPath: $mapPath";
+    # debugPrint "tilesSubPath: $tilesSubPath";
+    # debugPrint "tilesPath: $tilesPath";
+
+    if test ! -e "$mapPath"
+      errorPrint 'Map does not exist; skipping...';
+      errorPrint "mapPath: $mapPath";
+      break;
+    end
+
+    if test -e "$tilesSubPath"
+      if test -L "$tilesSubPath"
+        errorPrint 'Tile directory already exists, and is a link; unlink before executing this script; exiting...';
+        exit 1;
+      end
+    else
+      mkdir -p "$tilesSubPath";
+    end
+
+    "$SDIR/run.fish"  \
+      "$mapPath"      \
+      "$tilesPath"    \
+    ;
+  end # area
+end # if game eow
+
+# debugPrint 'Leaving all.fish...';

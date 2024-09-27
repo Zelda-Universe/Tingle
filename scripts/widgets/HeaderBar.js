@@ -26,6 +26,7 @@ HeaderBar.prototype._initSettings = function(opts) {
   // component code locations, rather than creating the form now and hiding
   // it later on, but hey
   this.accountButton = getSetOrDefaultValue(opts.accountButton, !zMap.getUser());
+  this.actuallyCreateSearchArea = getSetOrDefaultValue(opts.actuallyCreateSearchArea, false);
   this.classNameParent = getSetOrDefaultValue(opts.classNameParent, '');
   this.isolated = getSetOrDefaultValue(opts.isolated, false);
   this.largerSearchArea = getSetOrDefaultValue(opts.largerSearchArea, !this.accountButton);
@@ -64,7 +65,12 @@ HeaderBar.prototype._initDOMElements = function(opts) {
     ),
     headerDiv
   );
-  this.createSearchArea(headerDivMid, opts.name, opts.categories);
+  if(this.actuallyCreateSearchArea) {
+    this.createSearchArea(headerDivMid, opts.name, opts.categories);
+  } else {
+    var sdEl = L.DomUtil.create('div', 'search-disabled', headerDivMid);
+    sdEl.innerText = 'Search Disabled';
+  }
 
   if(this.shrinkButton) {
    var headerDivRight = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
@@ -116,5 +122,7 @@ HeaderBar.prototype.createShrinkButton = function(parent) {
 };
 
 HeaderBar.prototype.focus = function() {
-  this.searchArea.focus();
+  if(this.searchArea) {
+    this.searchArea.focus();
+  }
 };

@@ -239,14 +239,16 @@ function getMarkers(categories) {
     "ajax.php?command=get_markers&game=" + gameId,
     function(gameId, vResults) {
       if (vResults.success === false) {
-        zLogger.error('No markers provided to show!');
+        zLogger.error('Error retrieving markers.');
         return 5;
       }
 
       zMap.buildMap(gameId);
 
       getUserInfo();
-      zMap.addMarkers(vResults);
+      if(vResults && vResults.length > 0) {
+        zMap.addMarkers(vResults);
+      }
       zMap.refreshMap();
 
       finalLoad();

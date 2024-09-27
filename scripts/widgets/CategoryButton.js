@@ -96,7 +96,8 @@ CategoryButton.prototype._initSettings = function(opts) {
   this.icon = opts.icon;
   this.iconClass = getSetOrDefaultValues([
     opts.iconClass,
-    this.category.img // Move to separate specific category class
+    this.category.img, // Move to separate specific category class
+    'cross' // ideally wanted 'question-mark'
   ]);
   if(opts.iconURLFn) { // For iconURL
     this.iconURL = opts.iconURLFn();

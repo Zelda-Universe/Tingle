@@ -260,6 +260,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         headerBarParent = form1;
       }
       this.headerBar = new HeaderBar({
+        actuallyCreateSearchArea: this.zMap.categoryCount > 0,
         categories: this.zMap.categories,
         classNameParent: this.options.className,
         isolated: this.viewStyleBottomSlide,
@@ -377,6 +378,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
         afterToggle: zMap.toggleCompleted,
         toggledOn: this.zMap.mapOptions.showCompleted
       });
+      if(!this.zMap.markers) {
+        completedButtonBlock.domNode.addClass('hidden');
+        this.zMap.addHandler('markersAdded', function() {
+          completedButtonBlock.domNode.removeClass('hidden');
+        })
+      }
       this._categoryMenuMarkerSettingArea.append(completedButtonBlock.domNode);
 
       this._categoryMenu = this.createCategoryMenu();
@@ -503,7 +510,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   createCategoryMenu: function() {
     return new CategoryMenu({
-      buildActionGroup: true,
+      buildActionGroup: this.zMap.categoryCount > 0,
       categories: this.zMap.categories,
       categoryTree: this.zMap.categoryRoots,
       categorySelectionMethod: this.options.categorySelectionMethod,

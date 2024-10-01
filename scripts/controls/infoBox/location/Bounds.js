@@ -8,8 +8,9 @@
 
 L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
   options: {
-    title: "Bounds Coordinates",
-    className: "bounds"
+    boundsFn: null,
+    className: 'bounds',
+    title: 'Bounds Coordinates'
   },
 
   _initSettings: function() {
@@ -43,7 +44,12 @@ L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
   },
 
   _updateCoordsInfo: function() {
-    var bounds = this._map.getBounds();
+    var bounds;
+    if(this.options.boundsFn) {
+      bounds = this.options.boundsFn();
+    } else {
+      bounds = this._map.getBounds();
+    }
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
 

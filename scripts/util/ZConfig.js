@@ -30,6 +30,7 @@ ZConfig.setDefault('collapsed'                , 'false' );
 ZConfig.setDefault('contextmenu'              , 'true'  );
 ZConfig.setDefault('contextmenuWidth'         , '140'   );
 
+ZConfig.setDefault('enforceMaxBounds'         , 'true'  );
 ZConfig.setDefault('errorTileUrl'             , ''      );
 ZConfig.setDefault('hideOthers'               , 'false' );
 ZConfig.setDefault('hidePin'                  , 'false' );
@@ -100,7 +101,7 @@ ZConfig.setDefault('x'                        , ''      ); // Also suffix with `
 ZConfig.setDefault('y'                        , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('zLogger.gui'              , 'true'  ); // Enabled default for simple usage as this is can inform users of problems during regular application operation.
 ZConfig.setDefault('zLogger.tui'              , 'false' ); // Disabled default for simple usage as this is mainly a development pathway.
-ZConfig.setDefault('zoom'                     , '0'     ); // Also suffix with `-${gameId}`
+// ZConfig.setDefault('zoom'                     , '0'     ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('zoomControl'              , 'false' );
 ZConfig.setDefault('zoomDelta'                , '1'     );
 ZConfig.setDefault('zoomSnap'                 , '1'     );

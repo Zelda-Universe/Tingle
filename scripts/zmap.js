@@ -1061,13 +1061,15 @@ ZMap.prototype.addMapControl = function(gameId) {
     L.control.infoBox.location. center(posBL).addTo(this.map);
     L.control.infoBox.location. bounds(posBL).addTo(this.map);
 
-    L.control.infoBox.location.bounds({
-      boundsFn: function() {
-        return  this.map.options.maxBounds;
-      }.bind(this),
-      position: 'bottomleft',
-      title: 'Max Bounds Coordinates'
-    }).addTo(this.map);
+    if (this.map.options.maxBounds) {
+      L.control.infoBox.location.bounds({
+        boundsFn: function() {
+          return  this.map.options.maxBounds;
+        }.bind(this),
+        position: 'bottomleft',
+        title: 'Max Bounds Coordinates'
+      }).addTo(this.map);
+    }
   }
 
   //@TODO: REDO!

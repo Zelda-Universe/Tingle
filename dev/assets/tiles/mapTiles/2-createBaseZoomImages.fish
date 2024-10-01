@@ -131,7 +131,6 @@ for zoomLevel in $processZoomLevels
     "$imageProg"                    \
       $headerOpts                   \
       $srcFileOpts                  \
-      -gravity    "center"          \
       -extent     "$zoomDims"       \
       +repage                       \
       "$currentExtFile"             \

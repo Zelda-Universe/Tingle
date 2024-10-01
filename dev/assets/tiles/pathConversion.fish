@@ -21,20 +21,27 @@ and set tilesDir "$argv[1]" ;
 test -z "$tilesDir";
 and return 1;
 
-test -z "$reverse"      ;
-and set reverse 'false' ;
+if test -z "$reverse" -o "$reverse" != 'true'
+  set reverse 'false';
+  set depth '1';
+else
+  # Only from axis for now..
+  set depth '3';
+end
+# debugPrint "depth: $depth";
+# debugPrint "reverse: $reverse";
 
 altPushd "$tilesDir";
 
 echo "Processing \"$tilesDir\"...";
 
 # -printf "%f\n" \
-find              \
-  -mindepth 1     \
-  -maxdepth 1     \
-  -type f         \
-  -iname '*.png'  \
-| while read file;
+find                  \
+  -mindepth "$depth"  \
+  -maxdepth "$depth"  \
+  -type f             \
+  -iname '*.png'      \
+| while read file
   # debugPrint "file: $file";
 
   # debugPrint (
@@ -69,39 +76,42 @@ find              \
 
   # altPushd "$subDir";
 
-  if test \
-        "$outputZoomFolders" = 'true' \
-    -o  "$outputAxisFolders" = 'true'
-
-    if test "$reverse" != 'true'
-      test ! -d "$z";
-      and mkdir "$z";
-    end
-
-    if test "$outputAxisFolders" = 'true'
-
-      if test "$reverse" = 'true'
-        set newFilePath {$z}_{$x}_{$y};
-        # debugPrint "newFilePath: $newFilePath";
-      else
-        test ! -d "$z/$x";
-        and mkdir "$z/$x";
-
-        set newFilePath {$z}/{$x}/{$y};
-        # debugPrint "newFilePath: $newFilePath";
-      end
-    else
-      set newFilePath {$z}/{$x}_{$y};
-      # debugPrint "newFilePath: $newFilePath";
-    end
+  if test "$reverse" = 'true'
+    # Only to root for now..
+    # When improving, could add delim vars for efficiency
+    set newFilePath {$z}_{$x}_{$y};
+    # debugPrint "newFilePath: $newFilePath";
   else
-    # set newFilePath {$z}_{$x}_{$y}; # Rest NIY..
+    if test \
+          "$outputZoomFolders" = 'true' \
+      -o  "$outputAxisFolders" = 'true'
+
+      if test "$reverse" != 'true'
+        test ! -d "$z";
+        and mkdir "$z";
+
+        if test "$outputAxisFolders" = 'true'
+          test ! -d "$z/$x";
+          and mkdir "$z/$x";
+
+          set newFilePath {$z}/{$x}/{$y};
+          # debugPrint "newFilePath: $newFilePath";
+        else
+          set newFilePath {$z}/{$x}_{$y};
+          # debugPrint "newFilePath: $newFilePath";
+        end
+      end
+    end
   end
   set newFilePath "$newFilePath.png";
   # debugPrint "newFilePath: $newFilePath";
 
-  # echo mv "$subDir/$fileName" "$newFilePath";
-  mv "$file" "$newFilePath";
+  # echo mv "$file" "$newFilePath";
+
+  if not mv -n "$file" "$newFilePath"
+    errorPrint 'Move operation failed; preventing possible further problems with other files; exiting...';
+    return 2;
+  end
 	echo -n '.';
 
   # popd;

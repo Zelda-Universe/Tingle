@@ -257,9 +257,21 @@ function getMarkers(categories) {
 };
 
 function finalLoad() {
-  zMap.goTo({
-    marker: ZConfig.getConfig('marker')
-  });
+  var marker = ZConfig.getConfig('marker');
+  if(marker) {
+    zMap.goTo({ marker: marker });
+    return;
+  }
+
+  var zoom = (
+    ZConfig.getConfig('zoom')
+    || ZConfig.getConfig(`zoom-${gameId}`)
+  );
+
+  if(zoom) {
+    zMap.map.setZoom(zoom);
+    return;
+  }
 };
 
 // Get value of parameters

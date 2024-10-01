@@ -926,13 +926,13 @@ ZMap.prototype.buildMap = function(gameId) {
         ZConfig.getConfig('maxBoundsViscosity')
       ),
       zoom:         Number.parseInt(
-            this.mapOptions.zoom
-	    || ZConfig.getConfig('zoom')
+           this.mapOptions.zoom
+	      || ZConfig.getConfig('zoom')
         || ZConfig.getConfig(`zoom-${gameId}`)
       ),
       zoomControl:  ZConfig.getConfig('zoomControl' ) == 'true',
-      zoomDelta:    Number.parseInt(ZConfig.getConfig('zoomDelta' )),
-      zoomSnap:     Number.parseInt(ZConfig.getConfig('zoomSnap'  ))
+      zoomDelta:    Number.parseFloat(ZConfig.getConfig('zoomDelta' )),
+      zoomSnap:     Number.parseFloat(ZConfig.getConfig('zoomSnap'  ))
     }
   );
 
@@ -950,24 +950,26 @@ ZMap.prototype.buildMap = function(gameId) {
       ||  this.mapOptions.centerX
     )
   );
-  this.mapOptions.maxBounds = new L.LatLngBounds(
-    new L.LatLng(
-          ZConfig.getConfig('boundTopX')
-      ||  ZConfig.getConfig(`boundTopX-${gameId}`)
-      ||  this.mapOptions.boundTopX,
-          ZConfig.getConfig('boundTopY')
-      ||  ZConfig.getConfig(`boundTopY-${gameId}`)
-      ||  this.mapOptions.boundTopY
-    ),
-    new L.LatLng(
-          ZConfig.getConfig('boundBottomX')
-      ||  ZConfig.getConfig(`boundBottomX-${gameId}`)
-      ||  this.mapOptions.boundBottomX,
-          ZConfig.getConfig('boundBottomY')
-      ||  ZConfig.getConfig(`boundBottomY-${gameId}`)
-      ||  this.mapOptions.boundBottomY
-    )
-  );
+  if(ZConfig.getConfig('enforceMaxBounds') != 'false') {
+    this.mapOptions.maxBounds = new L.LatLngBounds(
+      new L.LatLng(
+            ZConfig.getConfig('boundTopX')
+        ||  ZConfig.getConfig(`boundTopX-${gameId}`)
+        ||  this.mapOptions.boundTopX,
+            ZConfig.getConfig('boundTopY')
+        ||  ZConfig.getConfig(`boundTopY-${gameId}`)
+        ||  this.mapOptions.boundTopY
+      ),
+      new L.LatLng(
+            ZConfig.getConfig('boundBottomX')
+        ||  ZConfig.getConfig(`boundBottomX-${gameId}`)
+        ||  this.mapOptions.boundBottomX,
+            ZConfig.getConfig('boundBottomY')
+        ||  ZConfig.getConfig(`boundBottomY-${gameId}`)
+        ||  this.mapOptions.boundBottomY
+      )
+    );
+  }
 
   this.map = L.map(mainEl, this.mapOptions);
 
@@ -980,7 +982,10 @@ ZMap.prototype.buildMap = function(gameId) {
   //map.addLayer(markerCluster);
 
   // Change visible region to that specified by the corner coords if relevant query strings are present
-  this.mapOptions.startArea = ZConfig.getConfig('startArea');
+  this.mapOptions.startArea = (
+        ZConfig.getConfig('startArea')
+    ||  ZConfig.getConfig(`startArea-${gameId}`)
+  );
   if (this.mapOptions.startArea) {
     var boundsArr = this.mapOptions.startArea.split(',');
     if (boundsArr.length === 4) {
@@ -1055,6 +1060,14 @@ ZMap.prototype.addMapControl = function(gameId) {
     L.control.infoBox.mouse.      move(posBL).addTo(this.map);
     L.control.infoBox.location. center(posBL).addTo(this.map);
     L.control.infoBox.location. bounds(posBL).addTo(this.map);
+
+    L.control.infoBox.location.bounds({
+      boundsFn: function() {
+        return  this.map.options.maxBounds;
+      }.bind(this),
+      position: 'bottomleft',
+      title: 'Max Bounds Coordinates'
+    }).addTo(this.map);
   }
 
   //@TODO: REDO!

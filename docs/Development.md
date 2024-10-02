@@ -112,6 +112,10 @@
       - Copy the CSS file into the `styles` directory.
         - Remove the first change that sets a new random query parameter for each font file link.
         - I don't think this is necessary yet.  Client caches should hopefully be invalidated by normal web server file timestamp comparison.
+      - Alphabetize
+        - `grep -oP '^(?=\\.icon-)[^: {]+' "$file" | sed -r 's|^.icon-||' | xio`
+        - `grep -oP '^(?=\\.icon-)[^: {]+' "$file" | sed -r 's|^.icon-||' | sort xio`
+        - Diff
 
 ## Update Sample Database Data
 

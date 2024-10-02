@@ -148,7 +148,7 @@ mkdir -p "$outTrialsDir";
 # Maybe make step 1 optional only if the user provided a custom argument for it,
 # but it's several....
 if test -z "$zoomLevels"
-  if echo "$processTasks" | grep -qP "((1)|(determineMaxDim))";
+  if echo "$processTasks" | grep -qP "((1)|(determineMaxDim))"
     if not source "$SDIR/1-determineMaxDim.fish"
       return;
     end

@@ -144,8 +144,8 @@ end # if game lafs
 if echo "$processGames" | grep -qE "\beow\b"
   echo 'Processing Echoes of Wisdom...';
   ## EoW
-  set game  'eow'       ;
-  set areas 'Overworld' ;
+  set game  'eow'   ;
+  set areas 'Hyrule';
 
   for area in $areas
     set areaLower (echo "$area" | tr '[A-Z]' '[a-z]');

@@ -14,8 +14,9 @@ set included0Detect 'true';
 # debugPrint "srcFile: $srcFile";
 set isPHType (
   if begin
-    test "$generatePHTiles" = 'true'
-    or echo "$srcFile" | grep -qP \
+    test "$generatePHTiles" = 'true';
+    or echo "$srcFile" \
+    | grep -qP \
       '<((placeholder)|(fake)|(test)|(debug)|(sample)|(example))>' \
     ;
   end

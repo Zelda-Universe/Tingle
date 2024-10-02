@@ -20,15 +20,21 @@ L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
     this.sw = {};
   },
 
-  getContent: function(parent) {
-    this._buildActionGroup(parent);
+  onAdd: function(map) {
+    var container = L.Control.InfoBox.Location.prototype.onAdd.call(this, map);
 
-    this.createColumn("South West", this.sw, parent);
-    this.createColumn("North East", this.ne, parent);
+    this._buildActionGroup(container);
+
+    this.createColumn("South West", this.sw, container);
+    this.createColumn("North East", this.ne, container);
+
+    this._updateCoordsInfo();
+
+    return container;
   },
 
-  createColumn: function(titleText, rootObject, parent) {
-    var column = L.DomUtil.create('div', 'column', parent);
+  createColumn: function(titleText, rootObject, container) {
+    var column = L.DomUtil.create('div', 'column', container);
 
     if(titleText) {
       var header = L.DomUtil.create('div', 'row header', column);

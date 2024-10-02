@@ -688,7 +688,7 @@ a.icon-close2 {
 	border-left: 1px solid rgba(221, 221, 221, 0.2);
 }
 
-.infobox.location.bounds .action-group {
+.infobox .action-group {
 	position: absolute;
 	right: 10px;
 	top: 5px;

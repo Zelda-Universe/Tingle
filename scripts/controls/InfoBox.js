@@ -17,28 +17,31 @@ L.Control.InfoBox = L.Control.extend({
     L.setOptions(this, opts);
   },
 
-  onAdd: function() {
-    var parent = L.DomUtil.create(
+  onAdd: function(map) {
+    var container = L.DomUtil.create(
       'span',
       "infobox " + (this.options.className || "")
     );
-    if(this.options.title) {
-      var header = L.DomUtil.create('div', 'row header', parent);
+    if(this.options.title && !this.options.hideTitle) {
+      var header = L.DomUtil.create('div', 'row header', container);
       header.append(this.options.title);
+
+      L.DomUtil.create('div', 'infobox-separator', container);
     }
 
-    L.DomUtil.create('div', 'infobox-separator', parent);
-
-    this.getContent(parent);
-
-    return parent;
+    return container;
   },
 
-  getContent: function() {}
+  createRow: function(titleText, container) {
+    var row = L.DomUtil.create('div', 'row', container);
 
-	// onRemove: function() {
-	// 	locationInfo.destroy();
-	// };
+    var titleCell = L.DomUtil.create('span', 'title', row);
+    titleCell.append(titleText);
+
+    var valueCell = L.DomUtil.create('span', 'value', row);
+
+    return row;
+  }
 });
 
 L.Control.InfoBox.prototype._className = "L.Control.InfoBox";

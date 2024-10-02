@@ -482,19 +482,19 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.pos = markers.length - 1;
 
    marker.on('click', function() {
-      if (_this.mapControl.options.collapsed) {
-         this.mapControl.toggle();
-      }
+    if (_this.mapControl.options.collapsed) {
+      _this.mapControl.toggle();
+    }
 
-      if (newMarker == null || (newMarker.markerId != marker.id)) {
-         _this._createMarkerPopup(marker);
+    if (newMarker == null || (newMarker.markerId != marker.id)) {
+      _this._createMarkerPopup(marker);
 
-         _this._closeNewMarker();
-         newMarker = L.marker(marker._latlng).addTo(_this.map);
-         newMarker.markerId = marker.id;
-         newMarker.markerPos = marker.pos;
-         //map.panTo(marker.getLatLng());
-      }
+      _this._closeNewMarker();
+      newMarker = L.marker(marker._latlng).addTo(_this.map);
+      newMarker.markerId = marker.id;
+      newMarker.markerPos = marker.pos;
+      //map.panTo(marker.getLatLng());
+    }
    });
 
    marker.on('contextmenu',function(e){
@@ -1045,21 +1045,29 @@ ZMap.prototype.addMapControl = function(gameId) {
   );
   if(!this.mapControl.isMobile) {
     var posBR = { position: 'bottomright' };
-    L.control.                zoom(posBR).addTo(this.map);
-    L.control.infoBox.coords. move(posBR).addTo(this.map);
+    L.control.zoom(posBR).addTo(this.map);
+    if(this.mapControl.isMobile) {
+      L.control.infoBox.location.center(posBR).addTo(this.map);
+    } else {
+      L.control.infoBox.mouseCoords({
+        mode    : 'mini'        ,
+        position: 'bottomright'
+      }).addTo(this.map);
+    }
   }
 
   if (
         this.mapOptions.showInfoControls
     ||  ZConfig.getConfig("showInfoControls") == 'true'
   ) {
-    $('.leaflet-container').css('cursor','crosshair');
+    $('.leaflet-container').css('cursor', 'crosshair');
 
     var posBL = { position: 'bottomleft' };
-    L.control.infoBox.mouse. clickhist(posBL).addTo(this.map);
-    L.control.infoBox.mouse.      move(posBL).addTo(this.map);
-    L.control.infoBox.location. center(posBL).addTo(this.map);
-    L.control.infoBox.location. bounds(posBL).addTo(this.map);
+    L.control.infoBox.mouseClickHist(posBL).addTo(this.map);
+    if(!this.mapControl.isMobile) {
+      L.control.infoBox.location.center(posBL).addTo(this.map);
+    }
+    L.control.infoBox.location.bounds(posBL).addTo(this.map);
 
     if (this.map.options.maxBounds) {
       L.control.infoBox.location.bounds({

@@ -26,20 +26,16 @@ L.Control.InfoBox.Location = L.Control.InfoBox.extend({
   },
 
   onAdd: function(map) {
-    var container = L.Control.InfoBox.prototype.onAdd.call(this);
+    var container = L.Control.InfoBox.prototype.onAdd.call(this, map);
+
     $(container).addClass("location");
 
-    this._updateCoordsInfo(map);
     this._addMapHandler(map);
 
     return container;
   },
 
-	// onRemove: function() {
-	// 	locationInfo.destroy();
-	// };
-
-  _buildActionGroup: function(parent) {
+  _buildActionGroup: function(container) {
     var actionGroup = L.DomUtil.create('div', 'action-group');
 
     var copyLink = new CopyLink({ content: this.generateLink.bind(this) });
@@ -48,28 +44,13 @@ L.Control.InfoBox.Location = L.Control.InfoBox.extend({
     var link = new Link({ content: this.generateLink.bind(this) });
     $(actionGroup).append(link.domNode);
 
-    $(parent).append(actionGroup);
-  },
-
-  createRow: function(titleText, parent) {
-    var row = L.DomUtil.create('div', 'row', parent);
-
-    var titleCell = L.DomUtil.create('span', 'title', row);
-    titleCell.append(titleText);
-
-    var valueCell = L.DomUtil.create('span', 'value', row);
-
-    return row;
+    $(container).append(actionGroup);
   },
 
   _addMapHandler: function(map) {
     L.DomEvent.on(map, 'move', function(event) {
       this._updateCoordsInfo(event.target);
     }.bind(this));
-  },
-
-  _updateCoordsInfo: function() {
-    console.error(this._debugName + ": Superclass method `" + this.prototype._className + "._updateCoordsInfo` not overridden.");
   }
 });
 

@@ -122,7 +122,7 @@ function zMapInit(vResults) {
     // or when a proper detection mechanism is added, probably another
     // container field boolean value, since a head XHR request,
     // if we can manage it might still produce a 404 console error message..
-    if(vContainer.shortName === 'TotK') {
+    if(vContainer.shortName === 'TotK' || vContainer.shortName === 'EoW') {
 	    getLang(vContainer.shortName);
     }
 

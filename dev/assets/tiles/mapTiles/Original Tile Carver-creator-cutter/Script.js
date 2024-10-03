@@ -208,7 +208,7 @@ while (ZoomLevel >= LowestZoomLevel)
 	// Ensure total width and height of canvas is a multiple of PixelWidth and PixelHeight respectively
 	var BottomPaddingNeeded = (Math.ceil(currentDocument.height.value / PixelHeight) * PixelHeight) - currentDocument.height.value;
 	var RightPaddingNeeded = (Math.ceil(currentDocument.width.value / PixelWidth) * PixelWidth) - currentDocument.width.value;
-	currentDocument.resizeCanvas(currentDocument.width.value + RightPaddingNeeded, currentDocument.height.value + BottomPaddingNeeded, AnchorPosition.MIDDLECENTER);
+	currentDocument.resizeCanvas(currentDocument.width.value + RightPaddingNeeded, currentDocument.height.value + BottomPaddingNeeded, AnchorPosition.TOPLEFT);
   $.writeln();
   $.writeln('BottomPaddingNeeded  : '+BottomPaddingNeeded  );
   $.writeln('RightPaddingNeeded   : '+RightPaddingNeeded   );

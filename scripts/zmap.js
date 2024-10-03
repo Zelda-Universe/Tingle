@@ -1130,10 +1130,14 @@ ZMap.prototype.addMapControl = function(gameId) {
 
   this.map.on('moveend', function(e) {
     _this.refreshMap();
-    if (newMarker != null && newMarker.markerPos != null && !this.map.hasLayer(markers[newMarker.markerPos])) {
-         _this._closeNewMarker();
-         this.mapControl.resetContent();
-      }
+    if (
+      newMarker != null
+      && newMarker.markerPos != null
+      && !_this.map.hasLayer(markers[newMarker.markerPos])
+    ) {
+      _this._closeNewMarker();
+      _this.mapControl.resetContent();
+    }
 
     if (
           ZConfig.getConfig('autoUpdateUrl'     ) != 'false'
@@ -1213,34 +1217,34 @@ ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
 //*************                                                  *************//
 //****************************************************************************//
 ZMap.prototype.deleteMarker = function(vMarkerId) {
-   $.ajax({
-           type: "POST",
-           url: "ajax/del_marker.php",
-           data: {markerId: vMarkerId, userId: user.id},
-           success: function(data) {
-               data = jQuery.parseJSON(data);
-               if (data.success) {
-                  for (var i = 0; i < markers.length; i++) {
-                     // Just hide the marker on the marker array ... on reaload, query won't get it.
-                     if (markers[i].id == vMarkerId) {
-                        markers[i].visible = 0;
-                        markers[i].categoryId = -1;
-                        toastr.success(_this.langMsgs.MARKER_DEL_SUCCESS.format(markers[i].id));
-                        if (this.mapControl.isMobile) {
-                           this.mapControl.closeDrawer();
-                        } else {
-                           this.mapControl.resetContent();
-                        }
-                        _this.refreshMap();
-                        break;
-                     }
-                  }
-               } else {
-                  toastr.error(_this.langMsgs.MARKER_DEL_ERROR.format(data.msg));
-                  //alert(data.msg);
-               }
-           }
-         });
+  $.ajax({
+    type: "POST",
+    url: "ajax/del_marker.php",
+    data: {markerId: vMarkerId, userId: user.id},
+    success: function(data) {
+      data = jQuery.parseJSON(data);
+      if (data.success) {
+        for (var i = 0; i < markers.length; i++) {
+          // Just hide the marker on the marker array ... on reaload, query won't get it.
+          if (markers[i].id == vMarkerId) {
+            markers[i].visible = 0;
+            markers[i].categoryId = -1;
+            toastr.success(_this.langMsgs.MARKER_DEL_SUCCESS.format(markers[i].id));
+            if (_this.mapControl.isMobile) {
+              _this.mapControl.closeDrawer();
+            } else {
+              _this.mapControl.resetContent();
+            }
+            _this.refreshMap();
+            break;
+          }
+        }
+      } else {
+        toastr.error(_this.langMsgs.MARKER_DEL_ERROR.format(data.msg));
+        //alert(data.msg);
+      }
+    }
+  });
 }
 
 ZMap.prototype.editMarker = function(vMarkerId) {
@@ -1433,46 +1437,46 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
 
    $("#newMarkerForm").submit(function(e) {
       $.ajax({
-              type: "POST",
-              url: "ajax.php?command=add_marker",
-              data: $("#newMarkerForm").serialize(), // serializes the form's elements.
-              success: function(data) {
-                  //data = jQuery.parseJSON(data);
-                  if (data.success) {
-                     if (user.level < 5) {
-                        tinymce.remove();
-                        this.mapControl.resetContent();
-                        toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS_RESTRICTED);
-                     } else {
-                        marker = jQuery.parseJSON(data.marker)[0];
-                        tinymce.remove();
+        type: "POST",
+        url: "ajax.php?command=add_marker",
+        data: $("#newMarkerForm").serialize(), // serializes the form's elements.
+        success: function(data) {
+          //data = jQuery.parseJSON(data);
+          if (data.success) {
+            if (user.level < 5) {
+              tinymce.remove();
+              _this.mapControl.resetContent();
+              toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS_RESTRICTED);
+            } else {
+              marker = jQuery.parseJSON(data.marker)[0];
+              tinymce.remove();
 
-                        if (data.action == "ADD") {
-                           _this.addMarker(marker);
-                        } else {
-                           for (var i = 0; i < markers.length; i++) {
-                              // Just hide the marker on the marker array ... on reaload, query won't get it.
-                              if (markers[i].id == marker.id) {
-                                 markers[i].id = -1;
-                                 markers[i].visible = 0;
-                                 markers[i].categoryId = -1;
-                              }
-                           }
-                           _this.addMarker(marker);
-                        }
-                        this.map.addLayer(markers[markers.length - 1]);
-                        _this._createMarkerPopup(markers[markers.length - 1]);
-                        toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS.format(marker.id));
-                     }
-                  } else {
-                     console.log(data.msg);
-                     toastr.error(_this.langMsgs.MARKER_ADD_ERROR.format(data.msg));
-                  }
+              if (data.action == "ADD") {
+                 _this.addMarker(marker);
+              } else {
+                 for (var i = 0; i < markers.length; i++) {
+                    // Just hide the marker on the marker array ... on reaload, query won't get it.
+                    if (markers[i].id == marker.id) {
+                       markers[i].id = -1;
+                       markers[i].visible = 0;
+                       markers[i].categoryId = -1;
+                    }
+                 }
+                 _this.addMarker(marker);
               }
-            });
+              _this.map.addLayer(markers[markers.length - 1]);
+              _this._createMarkerPopup(markers[markers.length - 1]);
+              toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS.format(marker.id));
+            }
+          } else {
+            console.log(data.msg);
+            toastr.error(_this.langMsgs.MARKER_ADD_ERROR.format(data.msg));
+          }
+        }
+      });
 
-       e.preventDefault(); // avoid to execute the actual submit of the form.
-   });
+      e.preventDefault(); // avoid to execute the actual submit of the form.
+  });
 }
 //****************************************************************************//
 //*************                                                  *************//
@@ -1626,7 +1630,7 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
     // If we need to hide completed markers, remove the pin on top of the marker and reset the content of the map control
     // Issue: https://github.com/Zelda-Universe/Zelda-Maps/issues/231
     _this._closeNewMarker();
-    this.mapControl.resetContent();
+    _this.mapControl.resetContent();
     _this.refreshMap();
   }
 }
@@ -1660,7 +1664,7 @@ ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
     }
   }
   vMarker.complete = false;
-  if (!this.mapOptions.showCompleted) {
+  if (!_this.mapOptions.showCompleted) {
     _this.refreshMap();
   }
 }
@@ -1714,23 +1718,22 @@ ZMap.prototype.undoMarkerComplete = function() {
 //****************************************************************************//
 ZMap.prototype._buildContextMenu = function() {
 
-   // Check if map and/or context was built
-   if (this.map == null || this.map.contextmenu == null) {
-      return;
-   }
+  // Check if map and/or context was built
+  if (this.map == null || this.map.contextmenu == null) {
+    return;
+  }
 
-   function addMarker(e) {
+  function addMarker(e) {
+    _this.map.closePopup(); // Safe coding
 
-      this.map.closePopup(); // Safe coding
-
-      if (newMarker != null) {
-         this.map.removeLayer(newMarker);
-      }
-      newMarker = new L.marker(e.latlng).addTo(this.map);
-      this.map.contextmenu.hide();
-      this.map.panTo(e.latlng);
-      _this._createMarkerForm(null, e.latlng);
-   }
+    if (newMarker != null) {
+      _this.map.removeLayer(newMarker);
+    }
+    newMarker = new L.marker(e.latlng).addTo(this.map);
+    _this.map.contextmenu.hide();
+    _this.map.panTo(e.latlng);
+    _this._createMarkerForm(null, e.latlng);
+  }
 
    function login() {
       _this._createLoginForm();
@@ -1753,21 +1756,21 @@ ZMap.prototype._buildContextMenu = function() {
       }];
    }
 
-   contextMenu.push({
-         text: 'Center map here',
-         callback: function(e) { this.map.panTo(e.latlng); }
-      }, '-', {
-         text: 'Zoom in',
-         //icon: 'images/zoom-in.png',
-         callback: function() {this.map.zoomIn()}
-      }, {
-         text: 'Zoom out',
-         //icon: 'images/zoom-out.png',
-         callback: function() {this.map.zoomOut()}
-      });
+  contextMenu.push({
+    text: 'Center map here',
+    callback: function(e) { _this.map.panTo(e.latlng); }
+  }, '-', {
+    text: 'Zoom in',
+    //icon: 'images/zoom-in.png',
+    callback: function() { _this.map.zoomIn(); }
+  }, {
+    text: 'Zoom out',
+    //icon: 'images/zoom-out.png',
+    callback: function() { _this.map.zoomOut(); }
+  });
 
-   if (user != null) {
-      contextMenu.push('-', {
+  if (user != null) {
+    contextMenu.push('-', {
          text: 'Change Password',
          callback: function() {
             zMap._createChangePasswordForm();
@@ -1776,13 +1779,13 @@ ZMap.prototype._buildContextMenu = function() {
          text: 'Log Out',
          callback: this.logout.bind(this)
       });
-   }
+  }
 
    // Rebuild Context Menu by removing all items and adding them back together
-   this.map.contextmenu.removeAllItems();
-   for (var i = 0; i < contextMenu.length; i++) {
-      this.map.contextmenu.addItem(contextMenu[i]);
-   }
+  this.map.contextmenu.removeAllItems();
+  for (var i = 0; i < contextMenu.length; i++) {
+    this.map.contextmenu.addItem(contextMenu[i]);
+  }
 }
 
 ZMap.prototype.logout = function() {

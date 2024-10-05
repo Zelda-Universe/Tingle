@@ -404,7 +404,7 @@ ZMap.prototype.addMarker = function(vMarker) {
 
    var marker;
    if (vMarker.markerCategoryTypeId != 3) {
-      marker = new L.Marker([vMarker.y,vMarker.x], { title: vMarker.name
+      marker = new L.Marker([vMarker.y,vMarker.x], { title: (_this.lang[vMarker.name + "_Name"] != null) ? _this.lang[vMarker.name + "_Name"] : vMarker.name
                                                    , icon: _this._createMarkerIcon(vMarker.markerCategoryId)
                                                    });
    } else {
@@ -413,7 +413,7 @@ ZMap.prototype.addMarker = function(vMarker) {
    }
 
    marker.id              = vMarker.id;
-   marker.title           = vMarker.name;
+   marker.title           = (_this.lang[vMarker.name + "_Name"] != null) ? _this.lang[vMarker.name + "_Name"] : vMarker.name;
    marker.description     = vMarker.description;
    marker.categoryId      = vMarker.markerCategoryId;
    marker.categoryTypeId  = vMarker.markerCategoryTypeId;

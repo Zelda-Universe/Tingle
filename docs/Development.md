@@ -40,7 +40,7 @@
       - Example: `dev/db/migrate/20230406031615_submap_add_tot_k_overworld_submaps.rb`
   - Update sample SQL data files in a focused style.
     - `set -x tableNames (read)`
-    - `./dev/db/createSampleDatabaseExport/run.sh`
+    - `./dev/db/export/run.sh`
   - Update game support list in readme file.
   - Optional:
     - Change default game parameter for container in index page script block, and any other specific SEO data in the head section.
@@ -123,7 +123,7 @@
 
   We have a separate method below about migrations for modifying data, including production's, to include new fixes and feature data.
 
-  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/db/createSampleDatabaseExport.sh`.  Then you can review any changes/updates to commit in place of that file.
+  If there is important data you would like to add to this file and check it in, you can issue the following command: `dev/db/export.sh`.  Then you can review any changes/updates to commit in place of that file.
   - Database access:
     - General
       - New Advice: Use the `dev/db/command.fish` script now.
@@ -135,7 +135,7 @@
         - https://www.howtogeek.com/howto/ubuntu/access-your-mysql-server-remotely-over-ssh/
     - Sample Exports
       - Feature updating
-        - `dev/db/createSampleDatabaseExport/update.fish`
+        - `dev/db/export/update.fish`
       - Complete
         - Production
           - New: ```
@@ -146,14 +146,14 @@
               databasePassword="$databasePasswordProd"        \
                 databaseSocket="/var/run/mysqld/mysqld.sock"  \
                   ignoreTables=''                             \
-              ./dev/db/createSampleDatabaseExport/run.sh      \
+              ./dev/db/export/run.sh      \
             ;
             or echo -e "dUP: $databaseUserProd\ndPP: $databasePasswordProd\nNot provided; exiting...";
           ```
-          - Old: `env MYSQL_USER="<username>" MYSQL_CONNECTION_STRING="--login-path=zmaps-prod-db '-p(read -s)"'" ./dev/db/createSampleDatabaseExport/run.sh`.
+          - Old: `env MYSQL_USER="<username>" MYSQL_CONNECTION_STRING="--login-path=zmaps-prod-db '-p(read -s)"'" ./dev/db/export/run.sh`.
         - Development
-          - New: `./dev/db/createSampleDatabaseExport/run.sh`
-          - Older: `env DB_NAME="zeldamaps" MYSQL_USER="root" ./dev/db/createSampleDatabaseExport/run.sh`.
+          - New: `./dev/db/export/run.sh`
+          - Older: `env DB_NAME="zeldamaps" MYSQL_USER="root" ./dev/db/export/run.sh`.
             - Then enter the password for the script prompt, or else you will have to do so for every MySQL(Dump) prompt step thereafter.
       - Note
         - This will export the structure, but not the content for the 'user' tables, as this may contain more sensitive information we do not want to store in the code repository.  Instead, we capture the useful ids with associated information, then sanitize and generate test data for the other fields.

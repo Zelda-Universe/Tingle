@@ -11,7 +11,6 @@ scripts/widgets/Link.js
 scripts/widgets/CopyLink.js
 scripts/widgets/CategoryIcon.js
 scripts/widgets/CategoryIconCompleted.js
-scripts/widgets/GameMenu.js
 scripts/widgets/CategoryMenu.js
 scripts/widgets/CategoryButton.js
 scripts/widgets/CategoryParentButton.js
@@ -47,6 +46,5 @@ scripts/widgets/CategoryButtonCompletedBlock.js
 scripts/widgets/CategoryButtonMap.js
 scripts/widgets/GameButton.js
 scripts/widgets/MapButton.js
-scripts/widgets/MapsMenu.js
 scripts/util/leaflet.polylineDecorator.js
 scripts/util/trace.js

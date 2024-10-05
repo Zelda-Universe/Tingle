@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?98cmcy');
-  src:  url('fonts/icomoon.eot?98cmcy#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?98cmcy') format('truetype'),
-    url('fonts/icomoon.woff?98cmcy') format('woff'),
-    url('fonts/icomoon.svg?98cmcy#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?xz2wpa');
+  src:  url('fonts/icomoon.eot?xz2wpa#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?xz2wpa') format('truetype'),
+    url('fonts/icomoon.woff?xz2wpa') format('woff'),
+    url('fonts/icomoon.svg?xz2wpa#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,7 +25,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-Echoes-of-Wisdom-icon:before {
+.icon-Echoes-of-Wisdom:before {
   content: "\e93c";
   color: #fff;
 }

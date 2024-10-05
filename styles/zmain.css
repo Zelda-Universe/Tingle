@@ -1541,7 +1541,7 @@ p.subtitle {
     background-blend-mode: color-dodge;
 }
 
-div:has(>.icon-EoW_MightCrystal) {
+div.circle:has(>.icon-EoW_MightCrystal) {
     background-image: url(images/icons/eow/WorldGlobePiece.png);
     background-blend-mode: color-dodge;
     background-size: contain;
@@ -1553,7 +1553,7 @@ div:has(>.icon-EoW_MightCrystal) {
     background-blend-mode: color-dodge;
 }
 
-div:has(>.icon-EoW_Waypoint) {
+div.circle:has(>.icon-EoW_Waypoint) {
     background-image: url(images/icons/eow/Warp.png);
     background-blend-mode: color-dodge;
     background-size: contain;
@@ -1565,7 +1565,7 @@ div:has(>.icon-EoW_Waypoint) {
     background-blend-mode: color-dodge;
 }
 
-div:has(>.icon-EoW_Stamp) {
+div.circle:has(>.icon-EoW_Stamp) {
     background-image: url(images/icons/eow/StampTable.png);
     background-blend-mode: color-dodge;
     background-size: contain;
@@ -1577,7 +1577,7 @@ div:has(>.icon-EoW_Stamp) {
     background-blend-mode: color-dodge;
 }
 
-div:has(>.icon-EoW_Echo) {
+div.circle:has(>.icon-EoW_Echo) {
     background-image: url(images/icons/eow/Echo.png);
     background-blend-mode: color-dodge;
     background-size: contain;

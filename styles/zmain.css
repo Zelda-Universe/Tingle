@@ -1533,3 +1533,52 @@ p.subtitle {
 .menu-cat-content-inner #account .infoWindowIcn:last-of-type {
   margin-bottom: 8px;
 }
+
+/* Temporary till we have SVGs */
+.icon-EoW_MightCrystal {
+	background-image: url(images/icons/eow/WorldGlobePiece.png);
+    background-size: contain;
+    background-blend-mode: color-dodge;
+}
+
+div:has(>.icon-EoW_MightCrystal) {
+    background-image: url(images/icons/eow/WorldGlobePiece.png);
+    background-blend-mode: color-dodge;
+    background-size: contain;
+}
+
+.icon-EoW_Waypoint {
+	background-image: url(images/icons/eow/Warp.png);
+    background-size: contain;
+    background-blend-mode: color-dodge;
+}
+
+div:has(>.icon-EoW_Waypoint) {
+    background-image: url(images/icons/eow/Warp.png);
+    background-blend-mode: color-dodge;
+    background-size: contain;
+}
+
+.icon-EoW_Stamp {
+	background-image: url(images/icons/eow/StampTable.png);
+    background-size: contain;
+    background-blend-mode: color-dodge;
+}
+
+div:has(>.icon-EoW_Stamp) {
+    background-image: url(images/icons/eow/StampTable.png);
+    background-blend-mode: color-dodge;
+    background-size: contain;
+}
+
+.icon-EoW_Echo {
+	background-image: url(images/icons/eow/Echo.png);
+    background-size: contain;
+    background-blend-mode: color-dodge;
+}
+
+div:has(>.icon-EoW_Echo) {
+    background-image: url(images/icons/eow/Echo.png);
+    background-blend-mode: color-dodge;
+    background-size: contain;
+}

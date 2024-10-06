@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?9n4aky');
-  src:  url('fonts/icomoon.eot?9n4aky#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?9n4aky') format('truetype'),
-    url('fonts/icomoon.woff?9n4aky') format('woff'),
-    url('fonts/icomoon.svg?9n4aky#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?xz2wpa');
+  src:  url('fonts/icomoon.eot?xz2wpa#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?xz2wpa') format('truetype'),
+    url('fonts/icomoon.woff?xz2wpa') format('woff'),
+    url('fonts/icomoon.svg?xz2wpa#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -25,8 +25,64 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-bars:before {
-  content: "\f0c9";
+.icon-Echoes-of-Wisdom:before {
+  content: "\e93c";
+  color: #fff;
+}
+.icon-TotK_Dragon:before {
+  content: "\e91e";
+}
+.icon-BotW_Icon_Talus:before {
+  content: "\e937";
+  color: #fff;
+}
+.icon-BotW_Icon_Molduga:before {
+  content: "\e938";
+  color: #fff;
+}
+.icon-BotW_Bomb:before {
+  content: "\e939";
+  color: #fff;
+}
+.icon-Tears-of-the-Kingdom:before {
+  content: "\e932";
+  color: #fff;
+}
+.icon-TotK_AncientTablet:before {
+  content: "\e936";
+}
+.icon-TotK_CherryTree:before {
+  content: "\e933";
+}
+.icon-TotK_Lightroot:before {
+  content: "\e934";
+}
+.icon-TotK_Dispenser:before {
+  content: "\e935";
+}
+.icon-TotK_Well:before {
+  content: "\e92a";
+}
+.icon-General_Cave:before {
+  content: "\e92b";
+}
+.icon-General_Map:before {
+  content: "\e928";
+}
+.icon-Links-Awakening:before {
+  content: "\e927";
+}
+.icon-Breath-of-the-Wild:before {
+  content: "\e92e";
+}
+.icon-General_Bottle:before {
+  content: "\e92f";
+}
+.icon-LA_Secret-Seashell:before {
+  content: "\e930";
+}
+.icon-General_Key:before {
+  content: "\e931";
 }
 .icon-BotW_Armor:before {
   content: "\e901";
@@ -37,21 +93,11 @@
 .icon-BotW_Blupee:before {
   content: "\e903";
 }
-.icon-BotW_Bomb:before {
-  content: "\e939";
-  color: #fff;
-}
-.icon-BotW_Book:before {
-  content: "\e921";
-}
 .icon-BotW_Boss:before {
   content: "\e904";
 }
 .icon-BotW_Bow-n-Arrows:before {
   content: "\e905";
-}
-.icon-BotW_Cooking_Pot:before {
-  content: "\e922";
 }
 .icon-BotW_Dungeon:before {
   content: "\e906";
@@ -71,9 +117,6 @@
 .icon-BotW_Food-n-Materials:before {
   content: "\e90b";
 }
-.icon-BotW_Goddess_Statue:before {
-  content: "\e923";
-}
 .icon-BotW_Great-Fairy:before {
   content: "\e90c";
 }
@@ -83,17 +126,6 @@
 .icon-BotW_Herbs:before {
   content: "\e90e";
 }
-.icon-BotW_Hinox:before {
-  content: "\e924";
-}
-.icon-BotW_Icon_Molduga:before {
-  content: "\e938";
-  color: #fff;
-}
-.icon-BotW_Icon_Talus:before {
-  content: "\e937";
-  color: #fff;
-}
 .icon-BotW_Items:before {
   content: "\e90f";
 }
@@ -102,9 +134,6 @@
 }
 .icon-BotW_Locations:before {
   content: "\e911";
-}
-.icon-BotW_Lynel:before {
-  content: "\e925";
 }
 .icon-BotW_Memories:before {
   content: "\e912";
@@ -145,86 +174,26 @@
 .icon-BotW_Weapons:before {
   content: "\e91f";
 }
-.icon-BotW_Wizzrobe:before {
-  content: "\e926";
-}
-.icon-Breath-of-the-Wild:before {
-  content: "\e92e";
-}
-.icon-checkbox-checked2:before {
-  content: "\ea52";
-}
-.icon-checkbox-unchecked:before {
-  content: "\ea11";
-}
-.icon-checkbox-unchecked2:before {
-  content: "\ea53";
-}
-.icon-checkmark:before {
-  content: "\ea10";
-}
-.icon-copy:before {
-  content: "\f0c5";
-}
-.icon-cross:before {
-  content: "\ea0f";
-}
-.icon-embed2:before {
-  content: "\ea80";
-}
-.icon-fa-envelope:before {
-  content: "\f0e0";
-}
-.icon-fa-lock:before {
-  content: "\f023";
-}
-.icon-fa-user:before {
-  content: "\f007";
-}
-.icon-General_Bottle:before {
-  content: "\e92f";
-}
-.icon-General_Cave:before {
-  content: "\e92b";
-}
-.icon-General_Compass:before {
-  content: "\e94a";
-}
-.icon-General_Heart:before {
-  content: "\f004";
-}
-.icon-General_House:before {
-  content: "\e92d";
-}
-.icon-General_Info:before {
-  content: "\ea0c";
-}
-.icon-General_Key:before {
-  content: "\e931";
-}
-.icon-General_Map:before {
-  content: "\e928";
-}
-.icon-General_Store:before {
-  content: "\e900";
-}
-.icon-go:before {
-  content: "\f08b";
-}
-.icon-LA_Portal:before {
-  content: "\e929";
-}
-.icon-LA_Secret-Seashell:before {
-  content: "\e930";
-}
-.icon-link:before {
-  content: "\e9cb";
-}
-.icon-Links-Awakening:before {
-  content: "\e927";
-}
 .icon-pencil:before {
   content: "\e920";
+}
+.icon-BotW_Book:before {
+  content: "\e921";
+}
+.icon-BotW_Cooking_Pot:before {
+  content: "\e922";
+}
+.icon-BotW_Goddess_Statue:before {
+  content: "\e923";
+}
+.icon-BotW_Hinox:before {
+  content: "\e924";
+}
+.icon-BotW_Lynel:before {
+  content: "\e925";
+}
+.icon-BotW_Wizzrobe:before {
+  content: "\e926";
 }
 .icon-search:before {
   content: "\e986";
@@ -232,46 +201,81 @@
 .icon-shrink:before {
   content: "\e98c";
 }
-.icon-Tears-of-the-Kingdom:before {
-  content: "\e932";
-  color: #fff;
+.icon-link:before {
+  content: "\e9cb";
 }
-.icon-TotK_AncientTablet:before {
-  content: "\e936";
+.icon-cross:before {
+  content: "\ea0f";
+}
+.icon-checkmark:before {
+  content: "\ea10";
+}
+.icon-checkbox-unchecked:before {
+  content: "\ea11";
+}
+.icon-checkbox-checked2:before {
+  content: "\ea52";
+}
+.icon-checkbox-unchecked2:before {
+  content: "\ea53";
+}
+.icon-fa-user:before {
+  content: "\f007";
+}
+.icon-fa-lock:before {
+  content: "\f023";
+}
+.icon-go:before {
+  content: "\f08b";
+}
+.icon-copy:before {
+  content: "\f0c5";
+}
+.icon-bars:before {
+  content: "\f0c9";
+}
+.icon-fa-envelope:before {
+  content: "\f0e0";
 }
 .icon-TotK_Bargainer_Statue:before {
   content: "\e93b";
 }
-.icon-TotK_Battery:before {
-  content: "\f241";
-}
-.icon-TotK_Bubbulfrog:before {
-  content: "\f069";
+.icon-TotK_Forge_Construct:before {
+  content: "\e93a";
 }
 .icon-TotK_Chasm:before {
   content: "\e92c";
 }
-.icon-TotK_CherryTree:before {
-  content: "\e933";
-}
-.icon-TotK_Dispenser:before {
-  content: "\e935";
-}
-.icon-TotK_Dragon:before {
-  content: "\e91e";
-}
-.icon-TotK_Forge_Construct:before {
-  content: "\e93a";
-}
-.icon-TotK_Lightroot:before {
-  content: "\e934";
+.icon-TotK_Bubbulfrog:before {
+  content: "\f069";
 }
 .icon-TotK_Sages-Will:before {
   content: "\f111";
 }
+.icon-TotK_Battery:before {
+  content: "\f241";
+}
 .icon-TotK_SignNpc:before {
   content: "\f277";
 }
-.icon-TotK_Well:before {
-  content: "\e92a";
+.icon-General_Heart:before {
+  content: "\f004";
+}
+.icon-LA_Portal:before {
+  content: "\e929";
+}
+.icon-General_House:before {
+  content: "\e92d";
+}
+.icon-General_Compass:before {
+  content: "\e94a";
+}
+.icon-General_Info:before {
+  content: "\ea0c";
+}
+.icon-embed2:before {
+  content: "\ea80";
+}
+.icon-General_Store:before {
+  content: "\e900";
 }

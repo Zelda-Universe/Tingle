@@ -549,5 +549,10 @@
 "ItemMachineUnlock03_Name": "Prismatic Music Box",
 "WarpOpener_Name": "Waypoint",
 "Obj_200_Name": "Waypoint",
-"Enemy_555_Name": "Lanmola"
+"Enemy_555_Name": "Lanmola",
+"MedicineRed_Name": "Red Potion",
+"MedicineYellow_Name": "Purple Potion",
+"MedicineBlue_Name": "Blue Potion",
+"ZoraSeaVillageShop_Name": "Sea Zora Village Shop",
+"GoronVillageShop_Name": "Goron City Shop"
 }

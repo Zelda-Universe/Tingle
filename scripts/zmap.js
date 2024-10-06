@@ -577,6 +577,30 @@ ZMap.prototype._createMarkerPopup = function(marker) {
 			content = content + "<p><img src=\"data/" + this.mapOptions.shortName + "/gallery/" + marker.gameData.actor + ".png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\"><img src=\"data/" + this.mapOptions.shortName + "/item/" + marker.gameData.actor + ".png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\"><img src=\"data/" + this.mapOptions.shortName + "/gallery/" + marker.gameData.actor + "_Icon.png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\">" + _this.lang[marker.gameData.actor + "_Caption"] + "</p>";
         }
 
+		if (marker.gameData.shop != null) {
+			var shop = marker.gameData.shop;
+			console.log(shop);
+			//content = content + "<ul class=\"list-group\">";
+			content = content + "<div><table class=\"table shop\"><tr><th style=\"border-top: 0px;\"><span class=\"item-text\">Items</span></th>"
+			if (shop[0].stock != undefined) {
+				content = content + "<th style=\"border-top: 0px;\"><span class=\"item-text\">Stock</span></th>";
+			}
+			content = content +  "<th style=\"border-top: 0px;\"><span class=\"item-text\" style=\"text-align:center; width: 100px; display: inline-block;\">Price</span></th></tr>";			
+			for (var i = 0; i < shop.length; i++) {
+				content = content + "<tr>";
+				content = content + "<td><img src=\"data/" + this.mapOptions.shortName + "/item/" + shop[i].item + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"><span class=\"item-text\">" + _this.lang[shop[i].item + "_Name"] + "</span></td>";
+				if (shop[i].stock != null) {
+					content = content + "<td><span class=\"item-text\">" + shop[i].stock + "</span></td>"
+				}
+				content = content + "<td><img src=\"data/" + this.mapOptions.shortName + "/" +shop[i].currency +".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"><span class=\"item-text\">" + shop[i].price + "</span></td>"
+				content = content + "</tr>";
+				//content = content + "<li class=\"list-group-item\"><img src=\"data/" + mapOptions.shortName + "/item/" + shop[i].item + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"> <span class=\"item-text\">" + _this.lang[shop[i].item + "_Name"] + "</span>";
+				//content = content + "</li>";
+			}
+			//content = content + "</ul>";
+			content = content + "</table><div>";
+		}
+
 		content = content + this._createMarkerContentList(marker.gameData.rewards);
 		content = content + this._createMarkerContentList(marker.gameData.equip);
 		//content = content + this._createMarkerContentList(marker.gameData.carry);

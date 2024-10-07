@@ -404,7 +404,7 @@ ZMap.prototype.addMarker = function(vMarker) {
 
    var marker;
    if (vMarker.markerCategoryTypeId != 3) {
-      marker = new L.Marker([vMarker.y,vMarker.x], { title: vMarker.name
+      marker = new L.Marker([vMarker.y,vMarker.x], { title: (_this.lang[vMarker.name + "_Name"] != null) ? _this.lang[vMarker.name + "_Name"] : vMarker.name
                                                    , icon: _this._createMarkerIcon(vMarker.markerCategoryId)
                                                    });
    } else {
@@ -413,7 +413,7 @@ ZMap.prototype.addMarker = function(vMarker) {
    }
 
    marker.id              = vMarker.id;
-   marker.title           = vMarker.name;
+   marker.title           = (_this.lang[vMarker.name + "_Name"] != null) ? _this.lang[vMarker.name + "_Name"] : vMarker.name;
    marker.description     = vMarker.description;
    marker.categoryId      = vMarker.markerCategoryId;
    marker.categoryTypeId  = vMarker.markerCategoryTypeId;
@@ -536,11 +536,19 @@ ZMap.prototype._createMarkerContentList = function(list) {
 	if (list != null) {
 		content = content + "<ul class=\"list-group\">";
 		for (var i = 0; i < list.length; i++) {
-			content = content + "<li class=\"list-group-item\"><img src=\"data/" + this.mapOptions.shortName + "/item/" + list[i] + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"> <span class=\"item-text\">" + _this.lang[list[i] + "_Name"] + "</span>";
-			if (list.length == 1 && _this.lang[list[0] + "_Caption"] != null) {
-				content = content + "<p style=\"margin-top: 10px;\">" + _this.lang[list[0] + "_Caption"] + "</p>";
+			if (list[i].name != undefined) {
+				content = content + "<li class=\"list-group-item\"><img src=\"data/" + this.mapOptions.shortName + "/item/" + list[i].name + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"> <span class=\"item-text\">" + _this.lang[list[i].name + "_Name"] + "</span><span class=\"badge badge-primary badge-pill\">" + list[i].condition + "</span>";
+				if (list.length == 1 && _this.lang[list[0].name + "_Caption"] != null) {
+					content = content + "<p style=\"margin-top: 10px;\">" + _this.lang[list[0].name + "_Caption"] + "</p>";
+				}
+				content = content + "</li>";
+			} else {
+				content = content + "<li class=\"list-group-item\"><img src=\"data/" + this.mapOptions.shortName + "/item/" + list[i] + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"> <span class=\"item-text\">" + _this.lang[list[i] + "_Name"] + "</span>";
+				if (list.length == 1 && _this.lang[list[0] + "_Caption"] != null) {
+					content = content + "<p style=\"margin-top: 10px;\">" + _this.lang[list[0] + "_Caption"] + "</p>";
+				}
+				content = content + "</li>";
 			}
-			content = content + "</li>";
 		}
 		content = content + "</ul>";
 	}
@@ -566,8 +574,32 @@ ZMap.prototype._createMarkerPopup = function(marker) {
         }
 
         if (marker.gameData.actor != null && _this.lang[marker.gameData.actor + "_Caption"] != null && marker.gameData.rewards == null) {
-			content = content + "<p><img src=\"data/" + this.mapOptions.shortName + "/item/" + marker.gameData.actor + ".png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\"><img src=\"data/" + this.mapOptions.shortName + "/gallery/" + marker.gameData.actor + "_Icon.png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\">" + _this.lang[marker.gameData.actor + "_Caption"] + "</p>";
+			content = content + "<p><img src=\"data/" + this.mapOptions.shortName + "/gallery/" + marker.gameData.actor + ".png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\"><img src=\"data/" + this.mapOptions.shortName + "/item/" + marker.gameData.actor + ".png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\"><img src=\"data/" + this.mapOptions.shortName + "/gallery/" + marker.gameData.actor + "_Icon.png\" style=\"border-radius: 10%; width: 100px; float: left; margin-right: 10px;\" onerror=\"this.style.display='none'\">" + _this.lang[marker.gameData.actor + "_Caption"] + "</p>";
         }
+
+		if (marker.gameData.shop != null) {
+			var shop = marker.gameData.shop;
+			console.log(shop);
+			//content = content + "<ul class=\"list-group\">";
+			content = content + "<div><table class=\"table shop\"><tr><th style=\"border-top: 0px;\"><span class=\"item-text\">Items</span></th>"
+			if (shop[0].stock != undefined) {
+				content = content + "<th style=\"border-top: 0px;\"><span class=\"item-text\">Stock</span></th>";
+			}
+			content = content +  "<th style=\"border-top: 0px;\"><span class=\"item-text\" style=\"text-align:center; width: 100px; display: inline-block;\">Price</span></th></tr>";			
+			for (var i = 0; i < shop.length; i++) {
+				content = content + "<tr>";
+				content = content + "<td><img src=\"data/" + this.mapOptions.shortName + "/item/" + shop[i].item + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"><span class=\"item-text\">" + _this.lang[shop[i].item + "_Name"] + "</span></td>";
+				if (shop[i].stock != null) {
+					content = content + "<td><span class=\"item-text\">" + shop[i].stock + "</span></td>"
+				}
+				content = content + "<td><img src=\"data/" + this.mapOptions.shortName + "/" +shop[i].currency +".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"><span class=\"item-text\">" + shop[i].price + "</span></td>"
+				content = content + "</tr>";
+				//content = content + "<li class=\"list-group-item\"><img src=\"data/" + mapOptions.shortName + "/item/" + shop[i].item + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"> <span class=\"item-text\">" + _this.lang[shop[i].item + "_Name"] + "</span>";
+				//content = content + "</li>";
+			}
+			//content = content + "</ul>";
+			content = content + "</table><div>";
+		}
 
 		content = content + this._createMarkerContentList(marker.gameData.rewards);
 		content = content + this._createMarkerContentList(marker.gameData.equip);

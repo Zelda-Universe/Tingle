@@ -754,6 +754,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
     echo;
 
+
+    ## Main task set
     for tableName in $tableNames; do
       # debugPrint "Table Start";
       # debugPrint "tableName: $tableName";
@@ -786,7 +788,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
       issueStepConvergePrepareConditional "$resultFile";
 
-      # Detect and execute fixing the AI value for each applicable table using a more complex process, or not, and just use the simpler, direct, single-step process.
+      # Detect and execute fixing the AI value for each applicable table using a
+      # more complex process, or not, and just use the simpler, direct,
+      # single-step process.
       if includes \
         "$removeAITables" \
         "$tableName" \

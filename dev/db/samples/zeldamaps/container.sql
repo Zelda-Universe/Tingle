@@ -1,13 +1,14 @@
--- MySQL dump 10.16  Distrib 10.1.21-MariaDB, for debian-linux-gnu (x86_64)
+/*!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19  Distrib 10.11.8-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: localhost
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.1.21-MariaDB-1~jessie
+-- Server version	10.11.8-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -54,7 +55,8 @@ CREATE TABLE `container` (
   `scaleN` float NOT NULL DEFAULT '-1',
   `offsetX` float NOT NULL DEFAULT '0',
   `offsetY` float NOT NULL DEFAULT '0',
-  `visible` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'If map can be viewed',
+  `visible` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'If map can be discovered.',
+  `enabled` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'If map can be accessed.',
   `default_zoom` int(11) NOT NULL DEFAULT '3',
   PRIMARY KEY (`id`),
   UNIQUE KEY `map_id_UNIQUE` (`id`),
@@ -69,26 +71,26 @@ CREATE TABLE `container` (
 LOCK TABLES `container` WRITE;
 /*!40000 ALTER TABLE `container` DISABLE KEYS */;
 INSERT INTO `container` VALUES
-  (1,'TLoZ','The Legend of Zelda','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (2,'AoL','Zelda 2: Adventure of Link','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (3,'ALttP','A Link to the Past','markers/','png','#000000','',0,1,1,0,1,128,-128,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (4,'LA','Link\'s Awakening','markers/','png','#000000','Links-Awakening',0,1,1,0,1,128,-128,-50,-80,-226,306,6,4,30,256,23,23,16,16,-1,1,-1,0,0,1,3),
-  (5,'OoT','Ocarina Of Time','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (6,'MM','Majora\'s Mask','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (7,'OoS','Oracle of Seasons','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (8,'OoA','Oracle of Ages','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (9,'TWW','The Wind Waker','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (10,'FSS','Four Swords','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (11,'FSA','Four Swords Adventures','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (12,'TMC','The Minish Cap','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (13,'TP','Twilight Princess','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (14,'PH','Phantom Hourglass','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (15,'ST','Spirit Tracks','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (16,'SS','Skyward Sword','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (17,'ALBW','A Link Between Worlds','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (18,'TFH','Tri Force Heroes','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,3),
-  (19,'BotW','Breath of the Wild','markers/','png','#000000','Breath-of-the-Wild',0,1,1,0,1,112,-159,-49.875,34.25,-206,221,8,9,50,256,23,23,16,16,5,1,-1,0,0,1,5),
-  (21,'TotK','Tears of the Kingdom','/markers/','png','#000000','Tears-of-the-Kingdom',0,1,1,0,1,378.665,-1335.99,7000,-8000,-7000,8000,8,9,50,256,23,23,16,16,5,0.0117188,-0.0117188,70.3125,58.5938,1,5)
+  (1,'TLoZ','The Legend of Zelda','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (2,'AoL','Zelda 2: Adventure of Link','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (3,'ALttP','A Link to the Past','markers/','png','#000000','',0,1,1,0,1,128,-128,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (4,'LA','Link\'s Awakening','markers/','png','#000000','Links-Awakening',0,1,1,0,1,128,-128,-50,-80,-226,306,6,4,30,256,23,23,16,16,-1,1,-1,0,0,1,1,3),
+  (5,'OoT','Ocarina Of Time','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (6,'MM','Majora\'s Mask','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (7,'OoS','Oracle of Seasons','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (8,'OoA','Oracle of Ages','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (9,'TWW','The Wind Waker','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (10,'FSS','Four Swords','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (11,'FSA','Four Swords Adventures','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (12,'TMC','The Minish Cap','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (13,'TP','Twilight Princess','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (14,'PH','Phantom Hourglass','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (15,'ST','Spirit Tracks','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (16,'SS','Skyward Sword','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (17,'ALBW','A Link Between Worlds','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (18,'TFH','Tri Force Heroes','markers/','png','#000000','',0,1,1,0,1,0,0,0,0,-256,256,6,4,30,256,23,23,16,16,5,1,-1,0,0,0,0,3),
+  (19,'BotW','Breath of the Wild','markers/','png','#000000','Breath-of-the-Wild',0,1,1,0,1,112,-159,-49.875,34.25,-206,221,8,9,50,256,23,23,16,16,5,1,-1,0,0,1,1,5),
+  (21,'TotK','Tears of the Kingdom','/markers/','png','#000000','Tears-of-the-Kingdom',0,1,1,0,1,378.665,-1335.99,7000,-8000,-7000,8000,8,9,50,256,23,23,16,16,5,0.0117188,-0.0117188,70.3125,58.5938,1,1,5)
 ;
 /*!40000 ALTER TABLE `container` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -102,4 +104,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-30 21:07:29
+-- Dump completed on 2024-10-08 15:04:49

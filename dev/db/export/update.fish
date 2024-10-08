@@ -16,12 +16,13 @@ set dbExportFilePathsChanged (
 
 if test -n "$dbExportFilePathsChanged"
   echo 'Database export files changed before script run; process manually; exiting...';
-  string join \n "$dbExportFilePathsChanged";
+  string join \n $dbExportFilePathsChanged;
   exit;
 end
 # debugPrint "dbExportFilePathsChanged: $dbExportFilePathsChanged";
 
 "$SDIR/run.sh";
+
 echo 'Determine which files need to be changed.'
 echo 'Remove any not wanted for later.';
 if not pause

@@ -49,20 +49,20 @@ begin
 
   ## Credentials
 
-  if test -z "$dbRootUser"
-    set dbRootUser 'root';
-  end
-
-  if test -z "$dbRootPP"
-    if not read -s -P 'Database root passphrase: ' dbRootPP
-      errorPrint "Reading canceled; exiting...";
-      return 4;
-    end
-    if test -z "$dbRootPP"
-      errorPrint "Input still not provided, or is empty; exiting...";
-      return 5;
-    end
-  end
+  # if test -z "$dbRootUser"
+  #   set dbRootUser 'root';
+  # end
+  #
+  # if test -z "$dbRootPP"
+  #   if not read -s -P 'Database root passphrase: ' dbRootPP
+  #     errorPrint "Reading canceled; exiting...";
+  #     return 4;
+  #   end
+  #   if test -z "$dbRootPP"
+  #     errorPrint "Input still not provided, or is empty; exiting...";
+  #     return 5;
+  #   end
+  # end
 
   if test -z "$dbBasicPP"
     set dbBasicPP (
@@ -203,7 +203,8 @@ begin
     for sqlQuery in $sqlQueries
       echo 'sqlQuery: '\n"$sqlQuery";
 
-      if not echo "$sqlQuery" | mariadb -u"$dbRootUser" -p"$dbRootPP" $options
+      # if not echo "$sqlQuery" | mariadb -u"$dbRootUser" -p"$dbRootPP" $options
+      if not echo "$sqlQuery" | mariadb -u"$dbRootUser" -p"$dbAdvPP" $options
         errorPrint 'Last query execution failed; skipping remaining queries...';
         exit 4;
       else

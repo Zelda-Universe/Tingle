@@ -199,6 +199,8 @@
     Thought it would be easy to utilize other projects' existing mechanisms, and I have been using Ruby on Rails lately that seems to do a good job of it.
     https://github.com/thuss/standalone-migrations
 
+    Other mentions include potentially using LiquidBase.
+
     Now that only accomplishes half of the responsibility.  In order to operate on that actual database content data, we don't have ActiveRecord objects to use as an API, so we just implement raw SQL for these, and make sure that both of the `up` and `down` methods are made as appropriate as possible, if both methods possible for that certain situation.
 
     It seems we must only pass a single SQL statement per block to avoid a security risk, otherwise it keeps receiving a syntax error only when sent through the migration framework.. https://stackoverflow.com/questions/14856856/how-to-write-sql-in-a-migration-in-rails#comment86794302_42991237
@@ -208,9 +210,8 @@
 
   - Common Commands:
     - Create a new migration:
-      - `rake db:new_migration name=(read -P 'Migration Proper Name: ' | tr -d ' ')`
-        - Change name subshell to read `read | tr ' ' '_'` on Windows to prevent carriage return characters causing problems.
-      - Then edit content with your features' details.
+      - `dev/db/createMigration.fish`
+      - Then edit the content of that new file with the intended new database changes' details.
     - To apply your newest migration:
       - `rake db:migrate`
     - To migrate to a specific version (for example to rollback)

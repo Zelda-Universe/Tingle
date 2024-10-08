@@ -68,7 +68,7 @@ GEM
     minitest (5.20.0)
     mutex_m (0.2.0)
     mysql2 (0.5.5)
-    nokogiri (1.15.4-x86_64-linux)
+    nokogiri (1.16.7-x86_64-linux)
       racc (~> 1.4)
     pry (0.14.2)
       coderay (~> 1.1)
@@ -126,4 +126,4 @@ DEPENDENCIES
   standalone_migrations!
 
 BUNDLED WITH
-   2.4.20
+   2.5.21

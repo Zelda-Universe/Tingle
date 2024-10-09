@@ -6,5 +6,6 @@
 
 not type -q 'errorPrint';
 and function errorPrint
-  altPrint "ERROR: $argv";
+  altPrint -n 'ERROR: ';
+  altPrint $argv;
 end

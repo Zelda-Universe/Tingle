@@ -9,10 +9,10 @@ source "$SDIR/altPrint.fish";
 
 not type -q 'debugPrint';
 and function debugPrint
-  # echo "DEBUG __DEBUG__: $__DEBUG__";
-  if test "$__DEBUG__" = "true"
+  # echo "DEBUG: __DEBUG__: $__DEBUG__";
+  if test "$__DEBUG__" = 'true'
     # altPrint "DEBUG: $argv";
-    altPrint -n "DEBUG: ";
+    altPrint -n 'DEBUG: ';
     altPrint $argv;
   end
 end

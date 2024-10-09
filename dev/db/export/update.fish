@@ -3,9 +3,12 @@
 set -l SDIR (readlink -f (dirname (status filename)));
 
 # For Testing
-# set -x tableNames changelog schema_migrations user;
+# set -x tableNames changelog user;
 
 set -x convergeInPlace 'true';
+
+not set -q tableNames                     ;
+and set -a tableNames 'schema_migrations' ;
 
 set dbExportFilePathsChanged (
   git status --porcelain                          \

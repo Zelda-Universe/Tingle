@@ -6,18 +6,30 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-
-if test                       \
-  \(                          \
-        -z "$dbUser"          \
-    -a  -z "$dbUserProd"      \
-  \) -o \(                    \
-        -z "$dbPassword"      \
-    -a  -z "$dbPasswordProd"  \
+if test                         \
+  \(                            \
+        -z "$dbUser"            \
+    -a  -z "$dbUserProd"        \
+  \) -o \(                      \
+        -z "$dbPassword"        \
+    -a  -z "$dbPasswordProd"    \
+  \) -o \(                      \
+    \(                          \
+          -z "$dbPortProd"      \
+      -a  -z "$dbPortProd"      \
+    \) -a \(                    \
+          -z "$dbSocketProd"    \
+      -a  -z "$dbSocketProd"    \
+    \)                          \
   \)
-  errorPrint 'Missing any of these:';
-  errorPrint "dbUserProd: $dbUserProd";
-  errorPrint "dbPasswordProd: $dbPasswordProd";
+
+  errorPrint 'Missing all of these:'          ;
+  errorPrint "dbUserProd    : $dbUserProd"    ;
+  errorPrint -n 'dbPasswordProd (wc -l): '    ; and altPrint (echo "$dbPasswordProd" | wc -c);
+  errorPrint;
+  errorPrint 'Missing any of these:'          ;
+  errorPrint "dbPortProd    : $dbPortProd"    ;
+  errorPrint "dbSocketProd  : $dbSocketProd"  ;
 
   return 1;
 end
@@ -32,7 +44,16 @@ and set -x dbPassword \
   "$dbPasswordProd"   \
 ;
 
-not set -q ignoreTables;
-and set -x ignoreTables 'schema_migrations';
+set -a ignoreTables 'schema_migrations';
+
+    set -q dbPortProd             ;
+and set -x dbSocket "$dbPortProd" ;
+
+    set -q dbSocketProd             ;
+and set -x dbSocket "$dbSocketProd" ;
+
+set -x convergeInPlace 'true';
 
 "$SDIR/run.sh";
+
+set -e convergeInPlace;

@@ -38,7 +38,7 @@ CREATE TABLE `marker` (
   `jump_marker_id` int(11) NOT NULL DEFAULT '0',
   `global` tinyint(1) DEFAULT '0',
   `path` text NOT NULL,
-  `game_data` text,
+  `game_data` text DEFAULT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '0',
   `last_updated` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -19216,4 +19216,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-08 15:10:38
+-- Dump completed on 2024-10-09 13:14:46

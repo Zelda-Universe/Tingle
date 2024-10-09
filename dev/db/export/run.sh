@@ -45,6 +45,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     echo "$text${NC}";
   }
 
+  # Prints to stderr
   statusPrint() {
     [[ "$quiet" != "true" ]] && echo -en $* 1>&2;
   }
@@ -100,6 +101,13 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint 'issueStep End';
   }
 
+  issueStepLocal() {
+    remoteHostSaved="$remoteHost";
+    remoteHost='';
+    issueStep "$1" "$2" "$3";
+    remoteHost="$remoteHostSaved";
+  }
+
   issueCommand() {
     # debugPrint 'issueCommand Start';
     commandString="$1";
@@ -110,7 +118,22 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint "commandString: $commandString";
 
     if [[ "$dryRun" == 'false' || "$force" == 'true' ]]; then
-      eval "$commandString";
+      if [[ -n "$remoteHost" ]]; then
+        # commandString="echo '$commandString' | ssh -T '$remoteHost'";
+        commandString="
+          echo \"$(
+            echo "$commandString" \
+            | sed "s/\"/\\\\\"/g"
+          )\" \
+          | ssh -T '$remoteHost'
+        ";
+      fi
+      # debugPrint "commandString: $commandString";
+      # debugPrint -n 'commandString | xxd: ' && debugPrint "$(echo "$commandString" | xxd)";
+
+      eval $commandString;
+      # eval "$commandString";
+      # $commandString;
       commandStatus="$?";
       # debugPrint "commandStatus: $commandStatus";
       if [[ "$commandStatus" -eq '0' ]]; then
@@ -316,7 +339,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
     if [[ "$converge" == "true" ]]; then
       if [[ "$convergeInPlace" == "true" ]]; then
-        issueStep \
+        issueStepLocal \
           "Converging database SQL formats by replacing less important details with those from the previous file." \
           "
             sed -r -i 's|^-- Dump completed on (.+)?\$|$bakStrDumpCompl|' '$filePath';
@@ -326,7 +349,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
           " \
         ;
       else
-        issueStep \
+        issueStepLocal \
           "Converging database SQL formats by eliminating less important details." \
           "sed -r -f                \
             '$convergeSedFilePath'  \
@@ -353,22 +376,23 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
 ## Main Environment Configuration
 {
-  [[ -z "$briefMessages"    ]] &&       briefMessages="true"        ;
-  [[ -z "$cleanOnFailure"   ]] &&      cleanOnFailure="true"        ;
-  [[ -z "$converge"         ]] &&            converge="false"       ;
-  [[ -z "$convergeInPlace"  ]] &&     convergeInPlace="false"       ;
-  [[ -z "$dbName"           ]] &&              dbName="zeldamaps"   ;
-  [[ -z "$dbClientExe"      ]] &&         dbClientExe="mariadb"     ;
-  [[ -z "$dbDumpExe"        ]] &&           dbDumpExe="mariadb-dump";
-  [[ -z "$dryRun"           ]] &&              dryRun="false"       ;
-  [[ -z "$failFast"         ]] &&            failFast="true"        ;
-  [[ -z "$keepIntFiles"     ]] &&        keepIntFiles="false"       ;
-  [[ -z "$oneFile"          ]] &&             oneFile="false"       ;
-  [[ -z "$outputName"       ]] &&          outputName="zeldamaps"   ;
-  [[ -z "$pause"            ]] &&               pause="false"       ;
-  [[ -z "$quiet"            ]] &&               quiet="false"       ;
-  [[ -z "$tableNames"       ]] &&          tableNames=""            ;
-  [[ -z "$verbose"          ]] &&             verbose="false"       ;
+  [[ -z "$briefMessages"    ]] &&       briefMessages='true'        ;
+  [[ -z "$cleanOnFailure"   ]] &&      cleanOnFailure='true'        ;
+  [[ -z "$converge"         ]] &&            converge='false'       ;
+  [[ -z "$convergeInPlace"  ]] &&     convergeInPlace='false'       ;
+  [[ -z "$dbName"           ]] &&              dbName='zeldamaps'   ;
+  [[ -z "$dbClientExe"      ]] &&         dbClientExe='mariadb'     ;
+  [[ -z "$dbDumpExe"        ]] &&           dbDumpExe='mariadb-dump';
+  [[ -z "$dryRun"           ]] &&              dryRun='false'       ;
+  [[ -z "$failFast"         ]] &&            failFast='true'        ;
+  [[ -z "$keepIntFiles"     ]] &&        keepIntFiles='false'       ;
+  [[ -z "$oneFile"          ]] &&             oneFile='false'       ;
+  [[ -z "$outputName"       ]] &&          outputName='zeldamaps'   ;
+  [[ -z "$pause"            ]] &&               pause='false'       ;
+  [[ -z "$quiet"            ]] &&               quiet='false'       ;
+  [[ -z "$remoteHost"       ]] &&          remoteHost=''            ;
+  [[ -z "$tableNames"       ]] &&          tableNames=''            ;
+  [[ -z "$verbose"          ]] &&             verbose='false'       ;
 
   # debugPrint "dbUser: $dbUser";
   # debugPrint "dbPassword: $([[ -n "$dbPassword" ]] && echo 'Set' || echo 'Not Set').";
@@ -441,12 +465,25 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # echo "$dbPassword"
     # echo "$dbPassword" | sed -r "s|([\`'\"\$])|\\\\\1|g";
     # dbPassword="$(echo "$dbPassword" | sed -r "s|([\`'\"\$\\])|\\\\\1|g")";
-    dbPassword="$(echo "$dbPassword" | sed -r "s|([\`\"\$\\])|\\\\\1|g")";
+    dbPassword="$(
+      echo "$dbPassword" \
+      | sed -r "s|([\`\"\$\\])|\\\\\1|g"
+    )";
     # debugPrint "dbPassword: $dbPassword";
+
+    if [[ "$remoteCommand" == 'true' ]]; then
+      if [[ -z "$remoteHost" ]]; then
+        errorPrint 'remoteCommand specified, but no remoteHost; exiting...';
+        return 1;
+      fi
+    fi
 
     # [[ -z "$otherConnectionOptions" ]] && otherConnectionOptions="";
     if [[ -z "$dbConnectionString" ]]; then
       dbConnectionString="$otherConnectionOptions --user='$dbUser' --password=\"$dbPassword\"";
+      if [[ "$remoteCommand" == 'true' ]]; then
+        dbConnectionString="$dbConnectionString";
+      fi
       if [[ -n "$dbHost" ]]; then
         dbConnectionString+=" --host='$dbHost'";
       fi
@@ -472,7 +509,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     verboseString="";
   fi
 
-  [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]] && dbDumpCommonOptions="--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
+  if [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]]; then
+    dbDumpCommonOptions="--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
+  fi
   dbDumpCommonOptions="$dbDumpCommonOptions $dbConnectionString";
   dbDumpCommonOptions="$dbDumpCommonOptions $dbName";
 
@@ -634,16 +673,18 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   ## Basic Preliminary Tests
   {
-    issueStep \
+    issueStep     \
       'Test executing database client.' \
-      "type -t "$dbClientExe" > /dev/null" \
-      'true' \
-      ;
-    issueStep \
+      "type -t '$dbClientExe'" \
+      'true'      \
+      > /dev/null \
+    ;
+    issueStep     \
       'Test executing database dump.' \
-      "type -t "$dbDumpExe" > /dev/null" \
-      'true' \
-      ;
+      "type -t '$dbDumpExe'" \
+      > /dev/null \
+      'true'      \
+    ;
     issueStep \
       'Test client connection to database.' \
       "echo                     \
@@ -653,6 +694,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       "       \
       'true'  \
     ;
+
     # Remove or change to better / more efficient test command.
     # Probably freezing due to a lot of data..
     # issueStep \
@@ -737,16 +779,18 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ## Read list of available tables, at least for validation,
     ## but also to process for export if none are explicitly selected.
     {
-      issueStep \
-        'Reading and storing list of tables...' \
-        "defaultTableNames=\"\$(  \
-          '$dbClientExe'          \
-          $dbClientCommonOptionsNoVerbose \
-          -e 'SHOW TABLES'        \
-          --batch                 \
-          --skip-column-names     \
-        ;)\"
-      ";
+      defaultTableNames="$(
+        issueStep \
+          'Reading and storing list of tables...' \
+          "
+            '$dbClientExe'          \
+            $dbClientCommonOptionsNoVerbose \
+            -e 'SHOW TABLES'        \
+            --batch                 \
+            --skip-column-names
+          " \
+        ;
+      )";
     }
 
     if [[ -z "$defaultTableNames" ]]; then
@@ -908,9 +952,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
             $dbDumpCommonOptions    \
             $tableName              \
             | $orgExtInsCmd         \
-            > '$resultFile'         \
             $errorRedirectionString \
           " \
+          > "$resultFile" \
         ;
 
         # debugPrint "Not removeAITable End";
@@ -924,17 +968,17 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         "$resultConvergedFilePath"  \
       ;
 
-      issueStep \
+      issueStepLocal \
         'Cleaning unwanted SQL constructs that cannot be disabled with any native commands, such as the duplicate "INSERT" statements with matching preceding semicolons and absence of trailing commas when breaking the extended syntax data clause list.' \
         "fish '$SDIR/cleanSQL.fish' '$resultFile'"      \
       ;
 
-      issueStep \
+      issueStepLocal \
         'Make "DEFAULT" values in field definition consistent.' \
         "sed -i -r \"/DEFAULT NULL/!  s|(DEFAULT )([^', =]+)([, ])|\\1'\\2'\\3|\" '$resultFile'" \
       ;
 
-      issueStep \
+      issueStepLocal \
         'Re-add "COLLATE" term if missing from table definition.' \
         "fish '$SDIR/addCollate.fish' '$resultFile'" \
       ;

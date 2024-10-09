@@ -13,23 +13,11 @@ if test                         \
   \) -o \(                      \
         -z "$dbPassword"        \
     -a  -z "$dbPasswordProd"    \
-  \) -o \(                      \
-    \(                          \
-          -z "$dbPortProd"      \
-      -a  -z "$dbPortProd"      \
-    \) -a \(                    \
-          -z "$dbSocketProd"    \
-      -a  -z "$dbSocketProd"    \
-    \)                          \
   \)
 
   errorPrint 'Missing all of these:'          ;
   errorPrint "dbUserProd    : $dbUserProd"    ;
-  errorPrint -n 'dbPasswordProd (wc -l): '    ; and altPrint (echo "$dbPasswordProd" | wc -c);
-  errorPrint;
-  errorPrint 'Missing any of these:'          ;
-  errorPrint "dbPortProd    : $dbPortProd"    ;
-  errorPrint "dbSocketProd  : $dbSocketProd"  ;
+  errorPrint -n 'dbPasswordProd (wc -l): '    ; and altPrint (echo -n "$dbPasswordProd" | wc -c);
 
   return 1;
 end
@@ -45,12 +33,6 @@ and set -x dbPassword \
 ;
 
 set -a ignoreTables 'schema_migrations';
-
-    set -q dbPortProd             ;
-and set -x dbSocket "$dbPortProd" ;
-
-    set -q dbSocketProd             ;
-and set -x dbSocket "$dbSocketProd" ;
 
 set -x convergeInPlace 'true';
 

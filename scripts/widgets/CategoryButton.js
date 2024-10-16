@@ -108,7 +108,8 @@ CategoryButton.prototype._initSettings = function(opts) {
   ]);
   this.showProgress = getSetOrDefaultValues([
     opts.showProgress,
-    true
+    this.category.complete !== undefined
+    // && this.category.total > 0
   ]);
   this.toggledOn = getSetOrDefaultValues(
     [
@@ -231,7 +232,9 @@ CategoryButton.prototype._setupUserInputListener = function() {
   this.domNode.on('mouseenter', function(e) {
     if (!this.disabled) {
       e.preventDefault();
-      if(this.showProgress) this.mouseEnter.call(this);
+      if(this.showProgress && this.category.total > 0) {
+        this.mouseEnter.call(this)
+      };
     }
   }.bind(this));
   this.domNode.on('mouseleave', function(e) {
@@ -305,12 +308,19 @@ CategoryButton.prototype.clear = function() {
 
 
 CategoryButton.prototype.mouseEnter = function() {
-  this.labelNode.html(this.categoryMenu._categories[this.category.id].complete+'/'+this.categoryMenu._categories[this.category.id].total + (this.labelNode[0].clientHeight == 24 ? "<BR><BR>" : ""));
+  let complete  = this.category.complete;
+  let total     = this.category.total;
+
+  this.labelNode.html(
+    complete+'/'+total + (
+      this.labelNode[0].clientHeight == 24 ? "<BR><BR>" : ""
+    )
+  );
 
 };
 
 CategoryButton.prototype.mouseLeave = function() {
-  this.labelNode.text(this.categoryMenu._categories[this.category.id].name);
+  this.labelNode.text(this.category.name);
 };
 
 CategoryButton.prototype._className = "CategoryButton";

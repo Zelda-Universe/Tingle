@@ -585,7 +585,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
 			if (shop[0].stock != undefined) {
 				content = content + "<th style=\"border-top: 0px;\"><span class=\"item-text\">Stock</span></th>";
 			}
-			content = content +  "<th style=\"border-top: 0px;\"><span class=\"item-text\" style=\"text-align:center; width: 100px; display: inline-block;\">Price</span></th></tr>";			
+			content = content +  "<th style=\"border-top: 0px;\"><span class=\"item-text\" style=\"text-align:center; width: 100px; display: inline-block;\">Price</span></th></tr>";
 			for (var i = 0; i < shop.length; i++) {
 				content = content + "<tr>";
 				content = content + "<td><img src=\"data/" + this.mapOptions.shortName + "/item/" + shop[i].item + ".png\" class=\"item-image\"  onerror=\"this.style.display='none'\"><span class=\"item-text\">" + _this.lang[shop[i].item + "_Name"] + "</span></td>";
@@ -773,6 +773,7 @@ ZMap.prototype._updateMarkersPresence = function(markers) {
   markers.forEach(function(marker) {
     this._updateMarkerPresence(marker);
   }, this);
+  verboseFirst = true;
 };
 
 ZMap.prototype._updateMarkerPresence = function(marker) {
@@ -1632,26 +1633,34 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
     return;
   }
 
-  if (user != null || user != undefined) {
+  if (user && user.id) {
     $.ajax({
       type: "POST",
       url: "ajax.php?command=add_complete_marker",
       data: { markerId: vMarker.id, userId: user.id },
       success: function(data) {
         if (data.success) {
-          completedMarkers.push(vMarker.id);
-          _this._doSetMarkerDoneIcon(vMarker, true);
-          _this.categories[vMarker.categoryId].complete++;
+          _this._completeSetMarkerDoneAndCookie(vMarker);
         } else {
-          toastr.error(_this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg));
+          toastr.error(
+            _this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg)
+          );
         }
       }
     });
   } else {
-    completedMarkers.push(vMarker.id);
-    _this._doSetMarkerDoneIcon(vMarker, true);
-    _this.categories[vMarker.categoryId].complete++;
+    this._completeSetMarkerDoneAndCookie(vMarker);
+  }
+}
+
+ZMap.prototype._completeSetMarkerDoneAndCookie = function(vMarker) {
+  completedMarkers.push(vMarker.id);
+  _this._doSetMarkerDoneIcon(vMarker, true);
+  _this.categories[vMarker.categoryId].complete++;
+
+  if (user === null || user === undefined) {
     setCookie('completedMarkers', JSON.stringify(completedMarkers));
+
     if (!userWarnedAboutLogin) {
       toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
       userWarnedAboutLogin = true;

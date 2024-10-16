@@ -96,7 +96,6 @@ ZConfig.setDefault('toastr', JSON.stringify({
   timeOut         : 0
 }));
 ZConfig.setDefault('verbose'                  , 'false' );
-ZConfig.setDefault('verboseFirst'             , 'false' );
 ZConfig.setDefault('x'                        , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('y'                        , ''      ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('zLogger.gui'              , 'true'  ); // Enabled default for simple usage as this is can inform users of problems during regular application operation.

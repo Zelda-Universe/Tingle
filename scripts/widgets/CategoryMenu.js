@@ -116,7 +116,7 @@ CategoryMenu.prototype._initSettings = function(opts) {
         }
 
         if(verbose) verboseFirst = true;
-        zMap.refreshMap(category);
+        zMap.refreshMap(affectedCategories);
       };
       handlersUCS.push(updateCategoryFn);
 
@@ -348,10 +348,13 @@ CategoryMenu.prototype.updateCategorySelectionFocus = function(categoryButton) {
 
     var affectedCategories = [ categoryButton.category ];
     if(categoryButton.category.childrenArr.length > 0) {
-      affectedCategories.push(categoryButton.category.childrenArr);
+      categoryButton.category.childrenArr.forEach(function(category) {
+        category.checked = true;
+        affectedCategories.push(category);
+      });
     }
 
-    zMap.refreshMap(categoryButton.category);
+    zMap.refreshMap(affectedCategories);
   }
 
   return false;

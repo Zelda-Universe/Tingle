@@ -6,7 +6,7 @@
 
 # Uses the database client and dump executables with provided SQL
 # statements and shell commands to create a customized backup and sample
-# database data file to use to operate the project.
+# data files to import locally to another environment for operating the project.
 
 SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
@@ -45,6 +45,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     echo "$text${NC}";
   }
 
+  # Prints to stderr
   statusPrint() {
     [[ "$quiet" != "true" ]] && echo -en $* 1>&2;
   }
@@ -64,15 +65,35 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     fi
     # debugPrint "issueStep commandString: $commandString";
 
+    if [[ -n "$remoteHost" ]]; then
+      # commandString="echo '$commandString' | ssh -T '$remoteHost'";
+      commandString="
+        echo \"$(
+          echo "$commandString" \
+          | sed "s/\"/\\\\\"/g"
+        )\" \
+        | ssh -T '$remoteHost'
+      ";
+    fi
+    # debugPrint "commandString: $commandString";
+    # debugPrint -n 'commandString | xxd: ' && debugPrint "$(echo "$commandString" | xxd)";
+
     if [[ "$verbose" == "true" ]]; then
       # statusPrint "\n${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$(
       #   echo "$commandString" \
       #   | sed -r "s|(-p(assword=)?)['\"]?[^ \t\n]+['\"]? |\1...|g"
       # )${NC}\n";
       # debugPrint "issueStep commandString: $commandString";
-      statusPrint "${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$(
-        echo "$commandString"
-      )${NC}\n";
+      commandStringRedacted="$(
+        echo "$commandString" \
+        | sed -r "s/((-p ?['\"]?)|(--password=\\\\?['\"]?))[^'\"\\ ]*(\\\\?['\" ])/\3...\4/"
+        # could have added extra param to use more global variable to improve
+        # performance, but =/
+      )";
+
+      # debugPrint "commandStringRedacted: $commandStringRedacted";
+
+      statusPrint "${BROWN_ORANGE}Command${NC}: ${DARK_GREY}${commandStringRedacted}${NC}\n";
     fi
 
     issueCommand        \
@@ -97,6 +118,13 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint 'issueStep End';
   }
 
+  issueStepLocal() {
+    remoteHostSaved="$remoteHost";
+    remoteHost='';
+    issueStep "$1" "$2" "$3";
+    remoteHost="$remoteHostSaved";
+  }
+
   issueCommand() {
     # debugPrint 'issueCommand Start';
     commandString="$1";
@@ -107,7 +135,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint "commandString: $commandString";
 
     if [[ "$dryRun" == 'false' || "$force" == 'true' ]]; then
-      eval "$commandString";
+
+      eval $commandString;
+      # eval "$commandString";
+      # $commandString;
       commandStatus="$?";
       # debugPrint "commandStatus: $commandStatus";
       if [[ "$commandStatus" -eq '0' ]]; then
@@ -194,9 +225,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         $dbDumpCommonOptions    \
         $structureOnlyOptions   \
         $tableNames             \
-        > '$toRemoveAIFilePath' \
-        $errorRedirectionString \
-      " \
+      "                         \
+      > '$toRemoveAIFilePath'   \
+      $errorRedirectionString   \
     ;
 
     issueStep \
@@ -313,7 +344,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
     if [[ "$converge" == "true" ]]; then
       if [[ "$convergeInPlace" == "true" ]]; then
-        issueStep \
+        issueStepLocal \
           "Converging database SQL formats by replacing less important details with those from the previous file." \
           "
             sed -r -i 's|^-- Dump completed on (.+)?\$|$bakStrDumpCompl|' '$filePath';
@@ -323,7 +354,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
           " \
         ;
       else
-        issueStep \
+        issueStepLocal \
           "Converging database SQL formats by eliminating less important details." \
           "sed -r -f                \
             '$convergeSedFilePath'  \
@@ -350,25 +381,26 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
 ## Main Environment Configuration
 {
-  [[ -z "$briefMessages"    ]] &&       briefMessages="true"        ;
-  [[ -z "$cleanOnFailure"   ]] &&      cleanOnFailure="true"        ;
-  [[ -z "$converge"         ]] &&            converge="false"       ;
-  [[ -z "$convergeInPlace"  ]] &&     convergeInPlace="false"       ;
-  [[ -z "$databaseName"     ]] &&        databaseName="zeldamaps"   ;
-  [[ -z "$dbClientExe"      ]] &&         dbClientExe="mariadb"     ;
-  [[ -z "$dbDumpExe"        ]] &&           dbDumpExe="mariadb-dump";
-  [[ -z "$dryRun"           ]] &&              dryRun="false"       ;
-  [[ -z "$failFast"         ]] &&            failFast="true"        ;
-  [[ -z "$keepIntFiles"     ]] &&        keepIntFiles="false"       ;
-  [[ -z "$oneFile"          ]] &&             oneFile="false"       ;
-  [[ -z "$outputName"       ]] &&          outputName="zeldamaps"   ;
-  [[ -z "$pause"            ]] &&               pause="false"       ;
-  [[ -z "$quiet"            ]] &&               quiet="false"       ;
-  [[ -z "$tableNames"       ]] &&          tableNames=""            ;
-  [[ -z "$verbose"          ]] &&             verbose="false"       ;
+  [[ -z "$briefMessages"    ]] &&       briefMessages='true'        ;
+  [[ -z "$cleanOnFailure"   ]] &&      cleanOnFailure='true'        ;
+  [[ -z "$converge"         ]] &&            converge='false'       ;
+  [[ -z "$convergeInPlace"  ]] &&     convergeInPlace='false'       ;
+  [[ -z "$dbName"           ]] &&              dbName='zeldamaps'   ;
+  [[ -z "$dbClientExe"      ]] &&         dbClientExe='mariadb'     ;
+  [[ -z "$dbDumpExe"        ]] &&           dbDumpExe='mariadb-dump';
+  [[ -z "$dryRun"           ]] &&              dryRun='false'       ;
+  [[ -z "$failFast"         ]] &&            failFast='true'        ;
+  [[ -z "$keepIntFiles"     ]] &&        keepIntFiles='false'       ;
+  [[ -z "$oneFile"          ]] &&             oneFile='false'       ;
+  [[ -z "$outputName"       ]] &&          outputName='zeldamaps'   ;
+  [[ -z "$pause"            ]] &&               pause='false'       ;
+  [[ -z "$quiet"            ]] &&               quiet='false'       ;
+  [[ -z "$remoteHost"       ]] &&          remoteHost=''            ;
+  [[ -z "$tableNames"       ]] &&          tableNames=''            ;
+  [[ -z "$verbose"          ]] &&             verbose='false'       ;
 
-  # debugPrint "databaseUser: $databaseUser";
-  # debugPrint "databasePassword: $([[ -n "$databasePassword" ]] && echo 'Set' || echo 'Not Set').";
+  # debugPrint "dbUser: $dbUser";
+  # debugPrint "dbPassword: $([[ -n "$dbPassword" ]] && echo 'Set' || echo 'Not Set').";
   # debugPrint "quiet: $quiet";
   # debugPrint "verbose: $verbose";
   # debugPrint "briefMessages: $briefMessages";
@@ -379,7 +411,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   # debugPrint "converge: $converge";
   # debugPrint "convergeInPlace: $convergeInPlace";
   # debugPrint "oneFile: $oneFile";
-  # debugPrint "databaseName: $databaseName";
+  # debugPrint "dbName: $dbName";
   # debugPrint "outputName: $outputName";
   # debugPrint "dbDumpExe: $dbDumpExe";
   # debugPrint "dbClientExe: $dbClientExe";
@@ -391,17 +423,17 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   ## Database connection Details
   {
-    while [[ -z "$databaseUser" ]]; do
-      if [[ -z "$databaseConnectionString" ]]; then
-        if [[ -z "$databaseUser" ]]; then
+    while [[ -z "$dbUser" ]]; do
+      if [[ -z "$dbConnectionString" ]]; then
+        if [[ -z "$dbUser" ]]; then
           # Use the admin/management user, at least for the lock tables permission.
           if type -t 'js-yaml' >/dev/null; then
-            databaseUser="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.username')";
-            # debugPrint "databaseUser: $databaseUser";
+            dbUser="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.username')";
+            # debugPrint "dbUser: $dbUser";
           fi
-          # databaseUser="$(grep -P '^DBUSER=' "$SDIR/../../../.env" | cut -d'=' -f2-)";
+          # dbUser="$(grep -P '^DBUSER=' "$SDIR/../../../.env" | cut -d'=' -f2-)";
         fi
-        if [[ -z "$databaseUser" ]]; then
+        if [[ -z "$dbUser" ]]; then
           read -p "Database Username: " databaseUser;
           echo;
         fi
@@ -409,51 +441,69 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     done
 
     # Only asks once as optional if no other connection information is provided first.
-    if [[ -z "$databasePassword" ]]; then
-      if [[ -z "$databaseConnectionString" ]]; then
-        if [[ -z "$databasePassword" ]]; then
+    if [[ -z "$dbPassword" ]]; then
+      if [[ -z "$dbConnectionString" ]]; then
+        if [[ -z "$dbPassword" ]]; then
           # Use the admin/management user, at least for the lock tables permission.
           if type -t 'js-yaml' >/dev/null; then
-            databasePassword="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.password')";
-            # debugPrint "databasePassword: $databasePassword";
+            dbPassword="$(js-yaml "$SDIR/../config.yml" | jq -r '.development.password')";
+            # debugPrint "dbPassword: $dbPassword";
           fi
-          # databasePassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
-          # databasePassword="$(grep -P '^DBPASSWD=' "$SDIR/../../../.env" | cut -d'=' -f2-)";
-          # if echo "$databasePassword" | grep -qP '^"'; then
-          #   databasePassword="$(echo "$databasePassword" | sed -r -e 's|(^")\|("$)||g' -e 's|\\"|"|g')";
+          # dbPassword="$(grep 'DBPASSWD=' "$SDIR/../../../.env" | sed 's|\\"|"|g' | cut -d'=' -f2 | head -c -2 | tail -c +2)";
+          # dbPassword="$(grep -P '^DBPASSWD=' "$SDIR/../../../.env" | cut -d'=' -f2-)";
+          # if echo "$dbPassword" | grep -qP '^"'; then
+          #   dbPassword="$(echo "$dbPassword" | sed -r -e 's|(^")\|("$)||g' -e 's|\\"|"|g')";
           # fi
         fi
-        if [[ -z "$databasePassword" ]]; then
-          # echo "$databaseConnectionString" | grep -vq " -p" && \
-          # echo "$databaseConnectionString" | grep -vq " --password"; then
+        if [[ -z "$dbPassword" ]]; then
+          # echo "$dbConnectionString" | grep -vq " -p" && \
+          # echo "$dbConnectionString" | grep -vq " --password"; then
           read -s -p "Database Password: " databasePassword;
           echo;
         fi
       fi
     # else
-      #databasePassword="$(echo "$databasePassword" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
+      #dbPassword="$(echo "$dbPassword" | sed -e 's|)|\\\)|g' -e 's|\x27|\\\\x27|g')";
     fi
 
-    # debugPrint "databasePassword: $databasePassword";
-    # echo "$databasePassword"
-    # echo "$databasePassword" | sed -r "s|([\`'\"\$])|\\\\\1|g";
-    # databasePassword="$(echo "$databasePassword" | sed -r "s|([\`'\"\$\\])|\\\\\1|g")";
-    databasePassword="$(echo "$databasePassword" | sed -r "s|([\`\"\$\\])|\\\\\1|g")";
-    # debugPrint "databasePassword: $databasePassword";
+    # debugPrint "dbPassword: $dbPassword";
+    # echo "$dbPassword"
+    # echo "$dbPassword" | sed -r "s|([\`'\"\$])|\\\\\1|g";
+    # dbPassword="$(echo "$dbPassword" | sed -r "s|([\`'\"\$\\])|\\\\\1|g")";
+    dbPassword="$(
+      echo "$dbPassword" \
+      | sed -r "s|([\`\"\$\\])|\\\\\1|g"
+    )";
+    # debugPrint "dbPassword: $dbPassword";
+
+    if [[ "$remoteCommand" == 'true' ]]; then
+      if [[ -z "$remoteHost" ]]; then
+        errorPrint 'remoteCommand specified, but no remoteHost; exiting...';
+        return 1;
+      fi
+    fi
 
     # [[ -z "$otherConnectionOptions" ]] && otherConnectionOptions="";
-    if [[ -z "$databaseConnectionString" ]]; then
-      databaseConnectionString="$otherConnectionOptions --user='$databaseUser' --password=\"$databasePassword\"";
-      if [[ -n "$databaseHost" ]]; then
-        databaseConnectionString+=" --host='$databaseHost'";
+    if [[ -z "$dbConnectionString" ]]; then
+      dbConnectionString="$otherConnectionOptions --user='$dbUser' --password=\"$dbPassword\"";
+      if [[ "$remoteCommand" == 'true' ]]; then
+        dbConnectionString="$dbConnectionString";
       fi
-      if [[ -n "$databaseSocket" ]]; then
-        databaseConnectionString+=" --protocol=socket --socket='$databaseSocket'";
-      elif [[ -n "$databasePort" ]]; then
-        databaseConnectionString+=" --port='$databasePort'";
+      if [[ -n "$dbHost" ]]; then
+        dbConnectionString+=" --host='$dbHost'";
+      fi
+      if [[ -n "$dbSocket" ]]; then
+        dbConnectionString+=" --protocol=socket --socket='$dbSocket'";
+      elif [[ -n "$dbPort" ]]; then
+        dbConnectionString+=" --port='$dbPort'";
       fi
     fi
-    # debugPrint "databaseConnectionString: $databaseConnectionString"
+    # dbConnectionStringNoPw="$(
+    #   echo "$dbConnectionString" \
+    #   | sed -r "s/((-p ?['\"]?)|(--password=['\"]?))[^'\" ]*(['\" ])/\3...\4/"
+    # )";
+    # debugPrint "dbConnectionString: $dbConnectionString"
+    # debugPrint "dbConnectionStringNoPw: $dbConnectionStringNoPw"
   }
 
   if [[ "$verbose" == 'true' ]]; then
@@ -464,13 +514,15 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     verboseString="";
   fi
 
-  [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]] && dbDumpCommonOptions="--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
-  dbDumpCommonOptions="$dbDumpCommonOptions $databaseConnectionString";
-  dbDumpCommonOptions="$dbDumpCommonOptions $databaseName";
+  if [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]]; then
+    dbDumpCommonOptions="--column-statistics=0"; # This a fix for using the plain, or also the dump, mysql client exes to connect to a Maria Server right?
+  fi
+  dbDumpCommonOptions="$dbDumpCommonOptions $dbConnectionString";
+  dbDumpCommonOptions="$dbDumpCommonOptions $dbName";
 
   if [[ -z "$dbClientCommonOptions" ]]; then
-    dbClientCommonOptions="$dbClientCommonOptions $databaseConnectionString";
-    dbClientCommonOptions="$dbClientCommonOptions --database=$databaseName";
+    dbClientCommonOptions="$dbClientCommonOptions $dbConnectionString";
+    dbClientCommonOptions="$dbClientCommonOptions --database=$dbName";
     dbClientCommonOptionsNoVerbose="$dbClientCommonOptions";
     dbClientCommonOptions="$dbClientCommonOptions $verboseString";
   fi
@@ -490,10 +542,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   # Preparation for DB client ignores.
   ignoreTablesOptions='';
   for table in $ignoreTables; do
-    ignoreTablesOptions+="--ignore-table='$databaseName.$table' ";
+    ignoreTablesOptions+="--ignore-table='$dbName.$table' ";
   done
   for table in $removeAITables; do
-    ignoreTablesOptions+="--ignore-table='$databaseName.$table' ";
+    ignoreTablesOptions+="--ignore-table='$dbName.$table' ";
   done
 
   # For the more involved remove AI process.
@@ -601,7 +653,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     echo -e "\tconvergeInPlace:  $(pTWSC "$convergeInPlace" )";
     echo -e "\tdbClientExe    :  $dbClientExe"                ;
     echo -e "\tdbDumpExe      :  $dbDumpExe"                  ;
-    echo -e "\tdatabaseName   :  $databaseName"               ;
+    echo -e "\tdbName         :  $dbName"                     ;
     echo -e "\tdryRun         :  $(pTWSC "$dryRun"          )";
     echo -e "\tfailFast       :  $(pTWSC "$failFast"        )";
     echo -e "\toneFile        :  $(pTWSC "$oneFile"         )";
@@ -623,19 +675,22 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   # debugPrint "Script Start";
 
   echo 'Initializing...';
+  echo;
 
   ## Basic Preliminary Tests
   {
-    issueStep \
+    issueStep     \
       'Test executing database client.' \
-      "type -t "$dbClientExe" > /dev/null" \
-      'true' \
-      ;
-    issueStep \
+      "type -t '$dbClientExe'" \
+      'true'      \
+      > /dev/null \
+    ;
+    issueStep     \
       'Test executing database dump.' \
-      "type -t "$dbDumpExe" > /dev/null" \
-      'true' \
-      ;
+      "type -t '$dbDumpExe'" \
+      > /dev/null \
+      'true'      \
+    ;
     issueStep \
       'Test client connection to database.' \
       "echo                     \
@@ -645,6 +700,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       "       \
       'true'  \
     ;
+
     # Remove or change to better / more efficient test command.
     # Probably freezing due to a lot of data..
     # issueStep \
@@ -729,16 +785,18 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ## Read list of available tables, at least for validation,
     ## but also to process for export if none are explicitly selected.
     {
-      issueStep \
-        'Reading and storing list of tables...' \
-        "defaultTableNames=\"\$(  \
-          '$dbClientExe'          \
-          $dbClientCommonOptionsNoVerbose \
-          -e 'SHOW TABLES'        \
-          --batch                 \
-          --skip-column-names     \
-        ;)\"
-      ";
+      defaultTableNames="$(
+        issueStep \
+          'Reading and storing list of tables...' \
+          "
+            '$dbClientExe'          \
+            $dbClientCommonOptionsNoVerbose \
+            -e 'SHOW TABLES'        \
+            --batch                 \
+            --skip-column-names
+          " \
+        ;
+      )";
     }
 
     if [[ -z "$defaultTableNames" ]]; then
@@ -754,6 +812,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
     echo;
 
+
+    ## Main task set
     for tableName in $tableNames; do
       # debugPrint "Table Start";
       # debugPrint "tableName: $tableName";
@@ -786,7 +846,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
       issueStepConvergePrepareConditional "$resultFile";
 
-      # Detect and execute fixing the AI value for each applicable table using a more complex process, or not, and just use the simpler, direct, single-step process.
+      # Detect and execute fixing the AI value for each applicable table using a
+      # more complex process, or not, and just use the simpler, direct,
+      # single-step process.
       if includes \
         "$removeAITables" \
         "$tableName" \
@@ -896,9 +958,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
             $dbDumpCommonOptions    \
             $tableName              \
             | $orgExtInsCmd         \
-            > '$resultFile'         \
             $errorRedirectionString \
           " \
+          > "$resultFile" \
         ;
 
         # debugPrint "Not removeAITable End";
@@ -912,17 +974,17 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         "$resultConvergedFilePath"  \
       ;
 
-      issueStep \
+      issueStepLocal \
         'Cleaning unwanted SQL constructs that cannot be disabled with any native commands, such as the duplicate "INSERT" statements with matching preceding semicolons and absence of trailing commas when breaking the extended syntax data clause list.' \
         "fish '$SDIR/cleanSQL.fish' '$resultFile'"      \
       ;
 
-      issueStep \
+      issueStepLocal \
         'Make "DEFAULT" values in field definition consistent.' \
         "sed -i -r \"/DEFAULT NULL/!  s|(DEFAULT )([^', =]+)([, ])|\\1'\\2'\\3|\" '$resultFile'" \
       ;
 
-      issueStep \
+      issueStepLocal \
         'Re-add "COLLATE" term if missing from table definition.' \
         "fish '$SDIR/addCollate.fish' '$resultFile'" \
       ;

@@ -3,9 +3,12 @@
 set -l SDIR (readlink -f (dirname (status filename)));
 
 # For Testing
-# set -x tableNames changelog schema_migrations user;
+# set -x tableNames changelog user;
 
 set -x convergeInPlace 'true';
+
+not set -q tableNames                     ;
+and set -a tableNames 'schema_migrations' ;
 
 set dbExportFilePathsChanged (
   git status --porcelain                          \
@@ -16,12 +19,13 @@ set dbExportFilePathsChanged (
 
 if test -n "$dbExportFilePathsChanged"
   echo 'Database export files changed before script run; process manually; exiting...';
-  string join \n "$dbExportFilePathsChanged";
+  string join \n $dbExportFilePathsChanged;
   exit;
 end
 # debugPrint "dbExportFilePathsChanged: $dbExportFilePathsChanged";
 
 "$SDIR/run.sh";
+
 echo 'Determine which files need to be changed.'
 echo 'Remove any not wanted for later.';
 if not pause

@@ -1,13 +1,14 @@
--- MySQL dump 10.16  Distrib 10.1.21-MariaDB, for debian-linux-gnu (x86_64)
+/*!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19  Distrib 10.11.8-MariaDB, for Linux (x86_64)
 --
--- Host: localhost    Database: localhost
+-- Host: localhost    Database: zeldamaps
 -- ------------------------------------------------------
--- Server version	10.1.21-MariaDB-1~jessie
+-- Server version	10.11.8-MariaDB
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -3259,4 +3260,4 @@ VALUES
   ('227816', 'test227816', '$2y$13$6X4RYJqepBi2Te1pY1nq5.oGtUMY7aB6SOTO2lTEOx7lUTlNwOfqS', 'test227816', 'test227816@test.com', '2018-01-02 02:40:51', '127.0.0.1', '2018-01-02 02:40:51', '1', '1', '0', '5', '0', '0')
 ;
 
--- Dump completed on 2024-06-03 19:10:01
+-- Dump completed on 2024-10-08 15:10:43

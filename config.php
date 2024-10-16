@@ -14,6 +14,8 @@
   include_once(__DIR__."/lib/common/log.php");
 
   // debug_log('Config START');
+  // error_log('error: Config START');
+  // print('print: Config START');
 
   # Defaults should be production-ready.
 
@@ -175,8 +177,7 @@
       'cacheFolder',
       'string',
       [
-        sys_get_temp_dir(),
-        __DIR__.'/tmp'
+        sys_get_temp_dir()
       ]
     );
 

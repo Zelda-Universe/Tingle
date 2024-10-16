@@ -6,18 +6,18 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-
-if test                       \
-  \(                          \
-        -z "$dbUser"          \
-    -a  -z "$dbUserProd"      \
-  \) -o \(                    \
-        -z "$dbPassword"      \
-    -a  -z "$dbPasswordProd"  \
+if test                         \
+  \(                            \
+        -z "$dbUser"            \
+    -a  -z "$dbUserProd"        \
+  \) -o \(                      \
+        -z "$dbPassword"        \
+    -a  -z "$dbPasswordProd"    \
   \)
-  errorPrint 'Missing any of these:';
-  errorPrint "dbUserProd: $dbUserProd";
-  errorPrint "dbPasswordProd: $dbPasswordProd";
+
+  errorPrint 'Missing all of these:'          ;
+  errorPrint "dbUserProd    : $dbUserProd"    ;
+  errorPrint -n 'dbPasswordProd (wc -l): '    ; and altPrint (echo -n "$dbPasswordProd" | wc -c);
 
   return 1;
 end
@@ -32,7 +32,8 @@ and set -x dbPassword \
   "$dbPasswordProd"   \
 ;
 
-not set -q ignoreTables;
-and set -x ignoreTables 'schema_migrations';
+set -a ignoreTables 'schema_migrations';
+
+set -x convergeInPlace 'true';
 
 "$SDIR/run.sh";

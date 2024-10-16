@@ -44,7 +44,5 @@ scripts/zmain.js
 scripts/widgets/Button.js
 scripts/widgets/CategoryButtonCompletedBlock.js
 scripts/widgets/CategoryButtonMap.js
-scripts/widgets/GameButton.js
-scripts/widgets/MapButton.js
 scripts/util/leaflet.polylineDecorator.js
 scripts/util/trace.js

@@ -37,5 +37,3 @@ set -a ignoreTables 'schema_migrations';
 set -x convergeInPlace 'true';
 
 "$SDIR/run.sh";
-
-set -e convergeInPlace;

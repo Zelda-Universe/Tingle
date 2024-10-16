@@ -65,18 +65,35 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     fi
     # debugPrint "issueStep commandString: $commandString";
 
+    if [[ -n "$remoteHost" ]]; then
+      # commandString="echo '$commandString' | ssh -T '$remoteHost'";
+      commandString="
+        echo \"$(
+          echo "$commandString" \
+          | sed "s/\"/\\\\\"/g"
+        )\" \
+        | ssh -T '$remoteHost'
+      ";
+    fi
+    # debugPrint "commandString: $commandString";
+    # debugPrint -n 'commandString | xxd: ' && debugPrint "$(echo "$commandString" | xxd)";
+
     if [[ "$verbose" == "true" ]]; then
       # statusPrint "\n${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$(
       #   echo "$commandString" \
       #   | sed -r "s|(-p(assword=)?)['\"]?[^ \t\n]+['\"]? |\1...|g"
       # )${NC}\n";
       # debugPrint "issueStep commandString: $commandString";
-      statusPrint "${BROWN_ORANGE}Command${NC}: ${DARK_GREY}$(
+      commandStringRedacted="$(
         echo "$commandString" \
-        | sed -r "s/((-p ?['\"]?)|(--password=['\"]?))[^'\" ]*(['\" ])/\3...\4/"
+        | sed -r "s/((-p ?['\"]?)|(--password=\\\\?['\"]?))[^'\"\\ ]*(\\\\?['\" ])/\3...\4/"
         # could have added extra param to use more global variable to improve
         # performance, but =/
-      )${NC}\n";
+      )";
+
+      # debugPrint "commandStringRedacted: $commandStringRedacted";
+
+      statusPrint "${BROWN_ORANGE}Command${NC}: ${DARK_GREY}${commandStringRedacted}${NC}\n";
     fi
 
     issueCommand        \
@@ -118,18 +135,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint "commandString: $commandString";
 
     if [[ "$dryRun" == 'false' || "$force" == 'true' ]]; then
-      if [[ -n "$remoteHost" ]]; then
-        # commandString="echo '$commandString' | ssh -T '$remoteHost'";
-        commandString="
-          echo \"$(
-            echo "$commandString" \
-            | sed "s/\"/\\\\\"/g"
-          )\" \
-          | ssh -T '$remoteHost'
-        ";
-      fi
-      # debugPrint "commandString: $commandString";
-      # debugPrint -n 'commandString | xxd: ' && debugPrint "$(echo "$commandString" | xxd)";
 
       eval $commandString;
       # eval "$commandString";
@@ -220,9 +225,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         $dbDumpCommonOptions    \
         $structureOnlyOptions   \
         $tableNames             \
-        > '$toRemoveAIFilePath' \
-        $errorRedirectionString \
-      " \
+      "                         \
+      > '$toRemoveAIFilePath'   \
+      $errorRedirectionString   \
     ;
 
     issueStep \
@@ -670,6 +675,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   # debugPrint "Script Start";
 
   echo 'Initializing...';
+  echo;
 
   ## Basic Preliminary Tests
   {

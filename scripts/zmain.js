@@ -1,6 +1,6 @@
 var breaktime     = ZConfig.getConfig('breaktime'   ) == 'true';
 var verbose       = ZConfig.getConfig('verbose'     ) == 'true';
-var verboseFirst  = ZConfig.getConfig('verboseFirst') == 'true';
+var verboseFirst  = true;
 
 zMap = new ZMap();
 var gameId = getUrlParam("game");

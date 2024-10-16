@@ -6,6 +6,11 @@
 // - opts: [Object]
 //   - precision: [Number]
 
+// Example - Fast link generation:
+// bounds = new L.Control.InfoBox.Location.Bounds(zMap.map);
+// bounds._map = zMap.map;
+// bounds.generateLink();
+
 L.Control.InfoBox.Location.Bounds = L.Control.InfoBox.Location.extend({
   options: {
     boundsFn: null,

@@ -108,7 +108,7 @@ CategoryButton.prototype._initSettings = function(opts) {
   ]);
   this.showProgress = getSetOrDefaultValues([
     opts.showProgress,
-    false
+    true
   ]);
   this.toggledOn = getSetOrDefaultValues(
     [

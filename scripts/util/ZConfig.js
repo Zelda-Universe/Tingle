@@ -18,8 +18,8 @@ ZConfig.setDefault('breaktime'                , 'false' ); // For development in
 ZConfig.setDefault('categoriesSelectedIds'    , '[]'    );
 // "exact", "focus" (ZU default)
 ZConfig.setDefault('categorySelectionMethod'  , 'focus' );
-ZConfig.setDefault('centerX'                  , ''      ); // Also suffix with `-${gameId}`
-ZConfig.setDefault('centerY'                  , ''      ); // Also suffix with `-${gameId}`
+ZConfig.setDefault('centerX'                  , ''      ); // Also suffix with `-${gameId}` // DB: `default_pos_x`
+ZConfig.setDefault('centerY'                  , ''      ); // Also suffix with `-${gameId}` // DB: `default_pos_y`
 ZConfig.setDefault('changelog'                , 'true'  );
 ZConfig.setDefault('changelogForce'           , 'false' );
 ZConfig.setDefault('codetrace-methodsToIgnore', '{}'    );

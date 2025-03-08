@@ -66,7 +66,7 @@ begin
   test -z "$id";
   and read -P 'Id: ' id;
 
-  set timestamp "$(date '+%s')";
+  set timestamp (date '+%s');
 
   if not mysql -B               \
     -u"$dbusername"             \

@@ -11,12 +11,16 @@
 begin
   test -z "$dbusername";
   and read -P 'dbusername: ' dbusername;
+  or exit;
   test -z "$dbpw";
   and read -s -P 'dbpw: ' dbpw;
+  or exit;
   test -z "$databaseName";
   and read -s -P 'databaseName: ' databaseName;
+  or exit;
   test -z "$databaseName";
   and set databaseName 'zeldamaps';
+  or exit;
 
   test -n "$connStr";
   and set connStr (echo $connStr | tr ' ' '\n');
@@ -24,7 +28,7 @@ begin
   and read -P 'usernameTarget: ' usernameTarget;
 
   if test -z "$usernameTarget"
-    return;
+    exit;
   end
 end
 
@@ -41,7 +45,7 @@ if not mysql -B                 \
     ;"  \
   ;
 
-  return 1;
+  exit 1;
 end
 
 # Confirm deletion
@@ -53,7 +57,7 @@ begin
   echo;
 
   if test "$choice" != 'y'
-    return;
+    exit;
   end
 end
 
@@ -79,7 +83,7 @@ begin
         `ip`        = '<deleted>'
       WHERE `id`    = '$id'
     ;"
-    return 2;
+    exit 2;
   end
 end
 

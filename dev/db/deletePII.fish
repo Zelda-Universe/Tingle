@@ -7,20 +7,31 @@
 # Check for user entry, confirm deletion, manually read id,
 # then erase specified field values, and print data completed.
 
+# Incompatibilites (Example: fish shell 2.2.0 < 3.7.0):
+# read -P
+
 # Input & Validation
 begin
-  test -z "$dbusername";
-  and read -P 'dbusername: ' dbusername;
-  or exit;
-  test -z "$dbpw";
-  and read -s -P 'dbpw: ' dbpw;
-  or exit;
-  test -z "$databaseName";
-  and read -s -P 'databaseName: ' databaseName;
-  or exit;
-  test -z "$databaseName";
-  and set databaseName 'zeldamaps';
-  or exit;
+  if test -z "$dbusername"
+    if not read -P 'dbusername: ' dbusername
+      return;
+    end
+  end
+  if test -z "$dbpw"
+    if not read -s -P 'dbpw: ' dbpw
+      return;
+    end
+  end
+  if test -z "$databaseName"
+    if not read -s -P 'databaseName: ' databaseName;
+      return;
+    end
+  end
+  if test -z "$databaseName"
+    if not set databaseName 'zeldamaps';
+      return;
+    end
+  end
 
   test -n "$connStr";
   and set connStr (echo $connStr | tr ' ' '\n');
@@ -33,19 +44,30 @@ begin
 end
 
 # Print found records.
-if not mysql -B                 \
-    -u"$dbusername"             \
-    -p"$dbpw"                   \
-    --database="$databaseName"  \
-    $connStr                    \
-    -e "
-      SELECT *
-      FROM `user`
-      WHERE `username` = '$usernameTarget'
-    ;"  \
-  ;
+begin
+  set records (
+    if not mysql -B                 \
+        -u"$dbusername"             \
+        -p"$dbpw"                   \
+        --database="$databaseName"  \
+        $connStr                    \
+        -e "
+          SELECT *
+          FROM `user`
+          WHERE `username` = '$usernameTarget'
+        ;"  \
+      ;
 
-  exit 1;
+      exit 1;
+    end
+  );
+  string join \n $records;
+  # debugPrint 'records (20c): '(echo "$records" | head -c 20);
+  # debugPrint 'records (amt): '(count $records);
+  if test -z "$records"
+    echo 'No records found; exiting...';
+    exit;
+  end
 end
 
 # Confirm deletion

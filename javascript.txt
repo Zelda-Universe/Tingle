@@ -25,7 +25,6 @@ scripts/widgets/AccountButton.js
 scripts/widgets/HeaderBar.js
 scripts/widgets/Logo.js
 scripts/controls/InfoBox.js
-scripts/controls/infoBox/Categories.js
 scripts/controls/infoBox/Location.js
 scripts/controls/infoBox/location/Bounds.js
 scripts/controls/infoBox/location/Center.js
@@ -36,13 +35,9 @@ scripts/handlers/SearchMarkerHandler.js
 scripts/handlers/ChangelogHandler.js
 scripts/leaflet.contextmenu.js
 scripts/controls/ZLayers.js
-scripts/controls/ZMobileHeaderBar.js
-scripts/controls/ZLayers.Bottom.js
 scripts/zmap.js
 scripts/zmain.lib.js
 scripts/zmain.js
-scripts/widgets/Button.js
 scripts/widgets/CategoryButtonCompletedBlock.js
-scripts/widgets/CategoryButtonMap.js
 scripts/util/leaflet.polylineDecorator.js
 scripts/util/trace.js

@@ -7,6 +7,7 @@
 
   $debugLog = '';
 
+  #function debug_log($message='') { # PHP8
   function debug_log($message) {
     global $debugLoggingMode, $debugLog;
     $formattedMessage = 'DEBUG: '.$message;

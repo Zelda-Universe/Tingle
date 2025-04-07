@@ -14,7 +14,11 @@ source "$SDIR/../../../scripts/common/timing.fish"    ;
 # debugPrint "argv: $argv";
 
 if not source "$SDIR/0-config.fish"
-  return 1;
+  exit 1;
+end
+
+if not source "$SDIR/setImageProg.fish"
+  exit 2;
 end
 
 # set coordIndex '1';
@@ -25,9 +29,11 @@ string join \n $argv | read -L $coordNames;
 # end
 
 for coord in $coordNames
-  # debugPrint "coord: $coord";
+  debugPrint "coord: $coord";
+  debugPrint "\$\$coord: $$coord";
+  pause;
+  set | less;
   # debugPrint "coordIndex: $coordIndex";
-  # debugPrint "\$\$coord: $$coord";
   if test -z "$$coord"
     # debugPrint "argv[$coordIndex]: $argv[$coordIndex]"
     # debugPrint "argv[$coordIndex]: "(eval "echo \$argv[$coordIndex]");
@@ -35,7 +41,7 @@ for coord in $coordNames
     # debugPrint "\$\$coord: $$coord";
     if test -z "$$coord"
       if not read -P "$coord: " $coord
-        return 1;
+        exit;
       end
     end
   end
@@ -43,7 +49,7 @@ for coord in $coordNames
   # debugPrint "\$\$coord: $$coord";
   if test -z "$$coord"
     errorPrint "$coord must be provided as an argument; exiting...";
-    return 2;
+    exit 3;
   end
 
   # set coordIndex (echo "$coordIndex + 1" | bc);
@@ -56,7 +62,7 @@ set yOffset (echo "$y * $tileSize" | bc);
 
 if not altPushd "$outDir"
   errorPrint "Could not enter output directory \"$outDir\"; exiting...";
-  return 3;
+  exit 4;
 end
 
 if test "$outputAxisFolders" = "true"
@@ -84,7 +90,7 @@ set currentExtFile (printf "$tmpFitFileMask" "$z");
 if test "$dryRun" != 'true'
   if test -e "$tileFileName"
     echo "Tile \"$tileFileName\" already exists; exiting...";
-    return 4;
+    exit 5;
   end
 
   echo "Cropping tile \"$tileFileName\"...";

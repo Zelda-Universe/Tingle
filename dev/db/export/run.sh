@@ -54,8 +54,8 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     [[ "$pause" == "true" ]] && read -s -n 1;
   }
 
-  issueStep() {
-    # debugPrint 'issueStep Start';
+  issueTask() {
+    # debugPrint 'issueTask Start';
     if [[ "$#" -eq "1" ]]; then
       commandString="$1";
     elif [[ "$#" -gt "1" ]]; then
@@ -63,7 +63,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       commandString="$2";
       force="$3";
     fi
-    # debugPrint "issueStep commandString: $commandString";
+    # debugPrint "issueTask commandString: $commandString";
 
     if [[ -n "$remoteHost" ]]; then
       # commandString="echo '$commandString' | ssh -T '$remoteHost'";
@@ -83,7 +83,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       #   echo "$commandString" \
       #   | sed -r "s|(-p(assword=)?)['\"]?[^ \t\n]+['\"]? |\1...|g"
       # )${NC}\n";
-      # debugPrint "issueStep commandString: $commandString";
+      # debugPrint "issueTask commandString: $commandString";
       commandStringRedacted="$(
         echo "$commandString" \
         | sed -r "s/((-p ?['\"]?)|(--password=\\\\?['\"]?))[^'\"\\ ]*(\\\\?['\" ])/\3...\4/"
@@ -112,16 +112,16 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     pauseWhenEnabled;
 
     if [[ "$commandStatus" -gt '0' ]]; then
-      # debugPrint 'issueStep exitAndMaybeClean';
+      # debugPrint 'issueTask exitAndMaybeClean';
       exitAndMaybeClean;
     fi
-    # debugPrint 'issueStep End';
+    # debugPrint 'issueTask End';
   }
 
-  issueStepLocal() {
+  issueTaskLocal() {
     remoteHostSaved="$remoteHost";
     remoteHost='';
-    issueStep "$1" "$2" "$3";
+    issueTask "$1" "$2" "$3";
     remoteHost="$remoteHostSaved";
   }
 
@@ -165,30 +165,30 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # statusPrint "\n";
 
     if [[ "$cleanOnFailure" == "true" ]]; then
-      issueStepClean;
+      issueTaskClean;
     fi
 
     statusPrint "Exiting...";
     exit "$exitStatusToApply";
   }
 
-  issueStepClean() {
+  issueTaskClean() {
     [[ "$keepIntFiles" = 'true' ]] && return;
 
     # [[ -n "$allIntermediateDirPaths" ]] && \
-    # issueStep \
+    # issueTask \
     #   "Cleaning the no longer needed intermediate directories for SQL files." \
     #   "rmdir $allIntermediateDirPaths" \
     # ;
     [[ -n "$allIntermediateFilePaths" ]] && \
-    issueStep \
+    issueTask \
       "Cleaning the no longer needed intermediate SQL files." \
       "rm -f $allIntermediateFilePaths" \
     ;
   }
 
   # dos2unix
-  issueStepD2UConditional() {
+  issueTaskD2UConditional() {
     file="$1";
 
     detectedOS="$(uname)";
@@ -196,14 +196,14 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
           "$detectedOS" == 'Windows' \
       ||  "$detectedOS" == 'Cygwin' \
     ]]; then
-      issueStep \
+      issueTask \
         "Converting result to Unix-style LF-only line endings." \
         "dos2unix '$file' 2> /dev/null" \
       ;
     fi
   }
 
-  issueStepsRemoveAIValue() {
+  issueTasksRemoveAIValue() {
     # Other variables are common/global between any route.
     # Also even if the variable naming is consistent, the values won't be.
     # Might not matter in the code, but wanted to make this explicitly obvious at least, when understanding the statements for any future coding.
@@ -219,18 +219,18 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       descPrefixAIRemove='Removing auto increment value in this sensitive data table';
     fi
 
-    issueStep \
+    issueTask \
       "$descPrefixToRemoveAI, with no way to immediately remove the auto increment values to match not having the same data later on." \
       "'$dbDumpExe'             \
         $dbDumpCommonOptions    \
         $structureOnlyOptions   \
         $tableNames             \
       "                         \
-      > '$toRemoveAIFilePath'   \
+      > "$toRemoveAIFilePath"   \
       $errorRedirectionString   \
     ;
 
-    issueStep \
+    issueTask \
       "$descPrefixAIRemove, since it will be auto-generated later when data is inserted." \
       "sed -r \
         's| AUTO_INCREMENT=[[:digit:]]+||g' \
@@ -240,15 +240,15 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ;
   }
 
-  issueStepsUserSanAndGen() {
-    # debugPrint 'issueStepsUserSanAndGen Start';
+  issueTasksUserSanAndGen() {
+    # debugPrint 'issueTasksUserSanAndGen Start';
     # Other variables are common/global between any route.
     # Also even if the variable naming is consistent, the values won't be.
     # Might not matter in the code, but wanted to make this explicitly obvious at least, when understanding the statements for any future coding.
     sanitizedPartialUserDataFilePath="$1";
         generatedDevUserDataFilePath="$2";
 
-    issueStep \
+    issueTask \
       "Exporting and sanitizing only the required user records by id, with their visiblity and level data for later use in development so that all markers can be displayed." \
       "'$dbClientExe'                         \
         $dbClientCommonOptionsNoVerbose       \
@@ -264,7 +264,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       echo "$dbClientExe" | grep -Pq '^mysql' \
       && [[ "$verbose" == "true" ]] \
     ; then
-      issueStep \
+      issueTask \
         "Removing embedded verbose query." \
         "sed -i '1,27d' \
           '$sanitizedPartialUserDataFilePath' \
@@ -272,7 +272,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       ;
     fi
 
-    issueStep \
+    issueTask \
       "Preparing the generated user data into a SQL format." \
       "sed -i -r -f \
         '$sqlizeSedFilePath'                \
@@ -280,12 +280,12 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       " \
     ;
 
-    issueStep \
+    issueTask \
       "Writing SQL INSERT header." \
       "echo -n 'INSERT INTO \`user\`' > '$generatedDevUserDataFilePath'" \
     ;
 
-    issueStep \
+    issueTask \
       "Writing header data fields." \
       "head -n 1                            \
         '$sanitizedPartialUserDataFilePath' \
@@ -294,11 +294,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       sed -i '1 s|\`  (\`|\` (\`|' '$generatedDevUserDataFilePath';
       " \
     ;
-    issueStep \
+    issueTask \
       "Writing intermediate VALUES term." \
       "echo 'VALUES' >> '$generatedDevUserDataFilePath'" \
     ;
-    issueStep \
+    issueTask \
       "Writing data fields." \
       "tail -n +2                           \
         '$sanitizedPartialUserDataFilePath' \
@@ -307,22 +307,22 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ;
 
     #   "tail -n +2 dev/db/userLevels.txt | sed -r 's|([[:digit:]]+)\s+([[:digit:]]+)\s+([[:digit:]]+)|\(\1, \'test\1\', \'test\1\', \2, \3\)|g'";
-    issueStep \
+    issueTask \
       "Writing terminating colon." \
       "echo ';' >> '$generatedDevUserDataFilePath'" \
     ;
 
-    # debugPrint 'issueStepsUserSanAndGen End';
+    # debugPrint 'issueTasksUserSanAndGen End';
   }
 
-  issueStepConvergePrepareConditional() {
+  issueTaskConvergePrepareConditional() {
     filePath="$1";
 
     if [[                             \
         "$converge" == "true"         \
     &&  "$convergeInPlace" == "true"  \
     ]]; then
-      issueStep \
+      issueTask \
         "Preparing existing data for later converging replacement." \
         "
            bakStrDumpCompl=\"\$(grep -P '^-- Dump completed on (.+)?\$'     '$filePath')\";
@@ -338,13 +338,13 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     fi
   }
 
-  issueStepConvergeConditional() {
+  issueTaskConvergeConditional() {
     filePath="$1";
     convergedFilePath="$2";
 
     if [[ "$converge" == "true" ]]; then
       if [[ "$convergeInPlace" == "true" ]]; then
-        issueStepLocal \
+        issueTaskLocal \
           "Converging database SQL formats by replacing less important details with those from the previous file." \
           "
             sed -r -i 's|^-- Dump completed on (.+)?\$|$bakStrDumpCompl|' '$filePath';
@@ -354,7 +354,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
           " \
         ;
       else
-        issueStepLocal \
+        issueTaskLocal \
           "Converging database SQL formats by eliminating less important details." \
           "sed -r -f                \
             '$convergeSedFilePath'  \
@@ -507,11 +507,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   }
 
   if [[ "$verbose" == 'true' ]]; then
-    errorRedirectionString="";
-    verboseString="-v";
+    errorRedirectionString='';
+    verboseString='-v';
   else
-    errorRedirectionString="2>/dev/null";
-    verboseString="";
+    errorRedirectionString='2>/dev/null';
+    verboseString='';
   fi
 
   if [[ -z "$dbDumpCommonOptions" && "$dbDumpExe" = 'mysqldump' ]]; then
@@ -605,6 +605,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       -e 's|(VALUES) |\1|g'         \
       -e 's|\);\$|)\n;|g'           \
   ";
+  orgExtInsCmdInPlace="$(
+    echo "$orgExtInsCmd" \
+    | sed 's/sed -r/sed -r -i/'
+  )";
 
   # debugPrint "samplesDir: $samplesDir";
   # debugPrint "removeAITables: $removeAITables";
@@ -625,20 +629,20 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     echo 'Usage: $0 [-h|--help]';
     echo;
     echo 'Configuration:';
-    echo -e "\tbriefMessages  - Condenses verbose step command description messages to fit withing a single line of terminal width (hopefully..). (Current: $briefMessages)";
-    echo -e "\tcleanOnFailure - Removes result files when an error occurs with a step command. (Current: $cleanOnFailure)";
+    echo -e "\tbriefMessages  - Condenses verbose task command description messages to fit withing a single line of terminal width (hopefully..). (Current: $briefMessages)";
+    echo -e "\tcleanOnFailure - Removes result files when an error occurs with a task command. (Current: $cleanOnFailure)";
     echo -e "\tconverge    - Enables mode to further process resultant SQL data so that it can be more efficiently compared. (Current: $converge)";
     echo -e "\tconvergeInPlace - Like converge, but does not alter the result file name, and runs an alternate, more limited, set of pattern replacements to better show only content changes with the primary samples. Do not store this!! (Current: $convergeInPlace)";
     echo -e "\tdbClientExe    - The executable to use when issuing certain custom commands to the database server. (Current: $dbClientExe)";
     echo -e "\tdbDumpExe      - The executable to use when exporting data from the database server. (Current: $dbDumpExe)";
     echo -e "\tdatabaseName   - The name of the database schema to work with. (Current: $databaseName)";
-    echo -e "\tdryRun         - Output step commands, but do not execute them. (Current: $dryRun)";
-    echo -e "\tfailFast       - Stop when a single step encounters a problem. (Current: $failFast)";
+    echo -e "\tdryRun         - Output task commands, but do not execute them. (Current: $dryRun)";
+    echo -e "\tfailFast       - Stop when a single task encounters a problem. (Current: $failFast)";
     echo -e "\toneFile        - Enables the mode to output result data in a single file in the root directory, versus separate ones in a respective subdirectory. (Current: $oneFile)";
     echo -e "\toutputName     - Customizable name for the result directory or single file. (Current: $outputName)";
-    echo -e "\tpause          - Wait for the user to press the enter key to execute each step. (Current: $pause)";
+    echo -e "\tpause          - Wait for the user to press the enter key to execute each task. (Current: $pause)";
     echo -e "\tquiet          - Do not output anything. (Current: $quiet)";
-    echo -e "\tverbose        - Output more messages, such as the step commands being executed. (Current: $verbose)";
+    echo -e "\tverbose        - Output more messages, such as the task commands being executed. (Current: $verbose)";
     exit;
   fi
 }
@@ -679,19 +683,19 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
   ## Basic Preliminary Tests
   {
-    issueStep     \
+    issueTask     \
       'Test executing database client.' \
       "type -t '$dbClientExe'" \
       'true'      \
       > /dev/null \
     ;
-    issueStep     \
+    issueTask     \
       'Test executing database dump.' \
       "type -t '$dbDumpExe'" \
       > /dev/null \
       'true'      \
     ;
-    issueStep \
+    issueTask \
       'Test client connection to database.' \
       "echo                     \
       | '$dbClientExe'          \
@@ -703,7 +707,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 
     # Remove or change to better / more efficient test command.
     # Probably freezing due to a lot of data..
-    # issueStep \
+    # issueTask \
     #   'Test dump connection to database.' \
     #   "'$dbDumpExe'             \
     #     $dbDumpCommonOptions    \
@@ -721,9 +725,9 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ## Export to a single, ultimate combined file.
     # debugPrint "oneFile Start";
 
-    issueStepConvergePrepareConditional "$completeFilePath";
+    issueTaskConvergePrepareConditional "$completeFilePath";
 
-    issueStep \
+    issueTask \
       "Exporting majority of the database structure, keeping the auto increment values to match the data later on." \
       "'$dbDumpExe'             \
         $dbDumpCommonOptions    \
@@ -735,12 +739,12 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       " \
     ;
 
-    issueStepsRemoveAIValue \
+    issueTasksRemoveAIValue \
       "$toRemoveAIFilePath" \
       "$aiRemovedFilePath"  \
     ;
 
-    issueStep \
+    issueTask \
       "Exporting majority of the database data, ignoring certain tables with more sensitive user or otherwise less useful data for development." \
       "'$dbDumpExe'             \
         $dbDumpCommonOptions    \
@@ -752,12 +756,12 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       " \
     ;
 
-    issueStepsUserSanAndGen \
+    issueTasksUserSanAndGen \
       "$sanitizedPartialUserDataFilePath" \
       "$generatedDevUserDataFilePath" \
     ;
 
-    issueStep \
+    issueTask \
       "Combining intermediate SQL files into a single convenient script for later import and version control." \
       "cat \
         '$keepAIFilePath' \
@@ -768,10 +772,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       " \
     ;
 
-    issueStepD2UConditional "$completeFilePath";
+    issueTaskD2UConditional "$completeFilePath";
 
     ## Converge Action
-    issueStepConvergeConditional    \
+    issueTaskConvergeConditional    \
       "$completeFilePath"           \
       "$completeConvergedFilePath"  \
     ;
@@ -786,7 +790,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     ## but also to process for export if none are explicitly selected.
     {
       defaultTableNames="$(
-        issueStep \
+        issueTask \
           'Reading and storing list of tables...' \
           "
             '$dbClientExe'          \
@@ -844,11 +848,11 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
       # debugPrint "resultFile: $resultFile";
       # break # Testing
 
-      issueStepConvergePrepareConditional "$resultFile";
+      issueTaskConvergePrepareConditional "$resultFile";
 
       # Detect and execute fixing the AI value for each applicable table using a
       # more complex process, or not, and just use the simpler, direct,
-      # single-step process.
+      # single-task process.
       if includes \
         "$removeAITables" \
         "$tableName" \
@@ -864,7 +868,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
           '$aiRemovedFilePath'     \
         ";
 
-        issueStepsRemoveAIValue \
+        issueTasksRemoveAIValue \
           "$toRemoveAIFilePath" \
           "$aiRemovedFilePath"  \
           "$tableName"          \
@@ -876,7 +880,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
         ; then
           # debugPrint "No Data Table Start";
 
-          issueStep \
+          issueTask \
             "Simply using the only intermediate SQL file as the individual table script for later, more specific and efficient, import and version control." \
             "mv \
               '$aiRemovedFilePath'  \
@@ -898,20 +902,20 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
             '$lastFilePath'                     \
           ";
 
-          issueStepsUserSanAndGen               \
+          issueTasksUserSanAndGen               \
             "$sanitizedPartialUserDataFilePath" \
             "$generatedDevUserDataFilePath"     \
           ;
 
           patternTimestamp='^-- Dump completed on .+?$';
-          issueStep \
+          issueTask \
             'Saving timestamp from structure export to add as final data in assembled file.'  \
             "exportTimestamp=\$(
               grep -P '$patternTimestamp' '$aiRemovedFilePath'
             );"               \
           ;
 
-          issueStep \
+          issueTask \
             'Removing timestamp and extra newline from structure export so it does not exist before the assembled data.' \
             "fish -c \"
               editLines '$toRemoveAIFilePath' '$patternTimestamp' 'd';
@@ -924,7 +928,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
             " \
           ;
 
-          issueStep \
+          issueTask \
             'Adding timestamp to last intermediate file.' \
             "
               echo > '$lastFilePath'                    ;
@@ -932,7 +936,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
             "   \
           ;
 
-          issueStep   \
+          issueTask   \
             "Combining intermediate SQL files into the individual table script for later, more specific and efficient, import and version control." \
             "cat                              \
               '$aiRemovedFilePath'            \
@@ -945,46 +949,56 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
           # debugPrint "Data Table End";
         fi
 
-        issueStepClean;
+        issueTaskClean;
 
         # debugPrint "removeAITable End";
       else
         # debugPrint "Not removeAITable Start";
 
         ## Handle tables that don't require transforming data with the same AI value.
-        issueStep     \
-          "Exporting complete table to an individual completed result file, keeping the auto increment values to match the data later on."  \
+        # TODO: Success when error..
+        # mariadb-dump: Couldn't execute 'select column_name, extra, generation_expression, data_type from information_schema.columns where table_schema=database() and table_name='changelog' order by ordinal_position': Unknown column 'generation_expression' in 'field list' (1054)
+        # [Success] > Exporting complete table to an individual completed result file,...
+        # 0 ($? and $PIPESTATUS........)
+
+        issueTask     \
+          'Exporting complete table to an individual completed result file, keeping the auto increment values to match the data later on.'  \
           "'$dbDumpExe'             \
             $dbDumpCommonOptions    \
             $tableName              \
-            | $orgExtInsCmd         \
-            $errorRedirectionString \
           " \
           > "$resultFile" \
+          ;
+        issueTask     \
+          'Processing table export file to better organize the SQL format' \
+          "$orgExtInsCmdInPlace   \
+          $resultFile             \
+          $errorRedirectionString \
+        " \
         ;
 
         # debugPrint "Not removeAITable End";
       fi
 
-      issueStepD2UConditional "$resultFile";
+      issueTaskD2UConditional "$resultFile";
 
       ## Converge Action
-      issueStepConvergeConditional  \
+      issueTaskConvergeConditional  \
         "$resultFile"               \
         "$resultConvergedFilePath"  \
       ;
 
-      issueStepLocal \
+      issueTaskLocal \
         'Cleaning unwanted SQL constructs that cannot be disabled with any native commands, such as the duplicate "INSERT" statements with matching preceding semicolons and absence of trailing commas when breaking the extended syntax data clause list.' \
         "fish '$SDIR/cleanSQL.fish' '$resultFile'"      \
       ;
 
-      issueStepLocal \
+      issueTaskLocal \
         'Make "DEFAULT" values in field definition consistent.' \
         "sed -i -r \"/DEFAULT NULL/!  s|(DEFAULT )([^', =]+)([, ])|\\1'\\2'\\3|\" '$resultFile'" \
       ;
 
-      issueStepLocal \
+      issueTaskLocal \
         'Re-add "COLLATE" term if missing from table definition.' \
         "fish '$SDIR/addCollate.fish' '$resultFile'" \
       ;

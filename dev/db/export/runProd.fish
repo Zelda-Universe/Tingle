@@ -17,7 +17,8 @@ if test                         \
 
   errorPrint 'Missing all of these:'          ;
   errorPrint "dbUserProd    : $dbUserProd"    ;
-  errorPrint -n 'dbPasswordProd (wc -l): '    ; and altPrint (echo -n "$dbPasswordProd" | wc -c);
+  errorPrint -n 'dbPasswordProd (wc -l): '    ;
+  and altPrint (echo -n "$dbPasswordProd" | wc -c);
 
   return 1;
 end
@@ -35,5 +36,9 @@ and set -x dbPassword \
 set -a ignoreTables 'schema_migrations';
 
 set -x convergeInPlace 'true';
+
+if test -z "$dbSocketProd"
+  echo 'dbSocketProd not set; continuing if network connection is used instead...';
+end
 
 "$SDIR/run.sh";

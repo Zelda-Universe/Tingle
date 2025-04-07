@@ -113,8 +113,7 @@ CategoryButton.prototype._initSettings = function(opts) {
   ]);
   this.toggledOn = getSetOrDefaultValues(
     [
-      opts.toggledOn,
-      this.category.checkedUser // Move to separate specific category sclass
+      opts.toggledOn
     ],
     false
   );

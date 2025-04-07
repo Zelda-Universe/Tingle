@@ -9,7 +9,6 @@ codeTrace-targetClasses  : [ "CategoryMenu" ]
 codeTrace-methodsToIgnore: {
   "CategoryMenu": [
     "_addCategoryEntry"   ,
-    "computeHasUserCheck" ,
     "_initDOMElements"    ,
     "_initSettings"       ,
     "_setDebugNames"      ,
@@ -245,7 +244,7 @@ CategoryMenu.prototype._addCategoryEntry = function(category) {
   return categoryButton;
 };
 
-CategoryMenu.prototype.computeChecks = function() {
+CategoryMenu.prototype.computeAndGetChecks = function() {
   var counts = {
     checked: 0,
     unchecked: 0
@@ -279,15 +278,6 @@ CategoryMenu.prototype.computeHasUncheck = function() {
   );
   // return this._categoryTreeArr.some(
   //   ([categoryId, category]) => !category.checked
-  // );
-};
-
-CategoryMenu.prototype.computeHasUserCheck = function() {
-  return this._categoryTreeArr.some(
-    (category) => category.checkedUser
-  );
-  // return Object.entries(this._categories).some(
-  //   ([categoryId, category]) => category.checkedUser
   // );
 };
 

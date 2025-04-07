@@ -79,7 +79,6 @@ function ZMap() {
 
    this.user;
 
-   this.hasUserCheck;
    this.userWarnedAboutMarkerQty;
    this.userWarnedAboutLogin;
 
@@ -144,7 +143,6 @@ function ZMap() {
 ZMap.prototype.constructor = function(vMapOptions) {
   _this = this;
 
-  this.hasUserCheck = false;
   this.userWarnedAboutMarkerQty = false;
   userWarnedAboutLogin = false;
   this.mapOptions = {};
@@ -220,7 +218,6 @@ ZMap.prototype.constructor = function(vMapOptions) {
 // Add a map category
 ZMap.prototype.addCategory = function(category) {
   category.checkedDefault = Object.pop(category, 'default_checked');
-  // category.checkedUser = false;
 
   if(this.mapOptions.categorySelectionMethod == 'focus') {
     category.checked = category.checkedDefault;
@@ -821,7 +818,6 @@ ZMap.prototype._shouldShowMarker = function(marker) {
     console.log(`  - id                : ${marker.categoryId}`          );
     console.log(`  - type id           : ${marker.categoryTypeId}`      );
     console.log(`  - checked           : ${markerCategory.checked}`     );
-    // console.log(`  - checked by user   : ${markerCategory.checkedUser}` );
     console.log(`  - visible zoom level: ${markerCategory.visible_zoom}`);
     console.log();
 
@@ -902,7 +898,6 @@ ZMap.prototype._shouldShowMarker = function(marker) {
                )
             )
         )
-     // || this.categories[marker.categoryId].checkedUser
       ) // Check if we should show for the category, and at this zoom level
       && (
         this.mapOptions.showCompleted == true || (
@@ -1226,7 +1221,7 @@ ZMap.prototype.toggleCompleted = function() {
 
 ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
   if(!this.userWarnedAboutMarkerQty && this.mapControl) {
-    var checksReport = this.mapControl._categoryMenu.computeChecks();
+    var checksReport = this.mapControl._categoryMenu.computeAndGetChecks();
     if(
          checksReport.checked > 5
       && (

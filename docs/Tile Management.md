@@ -157,7 +157,7 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
 
 # Tile Cutting
 
-## Main
+## All
 
   - Command: `dev/assets/tiles/mapTiles/all.fish`
   - Options:
@@ -167,7 +167,7 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
     - `processZoomLevelsMax`:
       - Type: `int`
       - Possible Values: `<0-maxZoomLevelForImage>`
-    - `processSteps`
+    - `processTasks`
       - Type: `SSL int|string`
       - Possible Values:
         - Mode `Placeholder`:
@@ -205,6 +205,54 @@ https://github.com/ImageMagick/ImageMagick/issues/6264
   https://stackoverflow.com/questions/17757114/imagemagick-to-verify-image-integrity#comment134216470_17764714
 
   You can clean up these files by running this command: `dev/assets/tiles/mapTiles/cleanBadFiles.fish`.
+
+## Individual
+
+  - Command: `dev/assets/tiles/mapTiles/all.fish`
+  - Options:
+    - `srcFile`:
+      - Type: `Path`/`Text`
+      - Possible Values: `D:\...\Zelda-Maps-Website\dev\assets\tiles\<platform>\games\<game>\Maps\<map>\Overworld.png`
+    - `outDir`:
+      - Type: `Path`/`Text`
+      - Possible Values: `D:\...\Zelda-Maps-Website\tiles\<game>\Maps\overworld`
+    - `processZoomLevels`:
+      - Type: `SSL int`
+      - Possible Values: `<0-maxZoomLevelForImage> ...`
+    - `processZoomLevelsMax`:
+      - Type: `int`
+      - Possible Values: `<0-maxZoomLevelForImage>`
+    - `processTasks`
+      - Type: `SSL int|string`
+      - Possible Values:
+        - Mode `Placeholder`:
+          - `2`
+          - `generateTiles`
+        - Mode `Real`:
+          - `2|3`
+          - `createBaseZoomImages`
+          - `cropTiles`
+      - Default:
+        - Mode `Placeholder`:
+          - `2 generateTiles`
+        - Mode `Real`:
+          - `2 3 createBaseZoomImages cropTiles`
+    - `outputZoomFolders`:
+      - Type: `boolean`
+      - Default: `false`
+      - Superseded by: `outputAxisFolders`
+    - `outputAxisFolders`:
+      - Type: `boolean`
+      - Default: `false`
+      - My Default: `true`
+    - `resLevelChoice`:
+      - Modes: `botw`
+      - Type: `int`
+      - Possible Values: `(0|1|2|3)`
+      - Default: `0`
+
+
+
 
 ## History
 

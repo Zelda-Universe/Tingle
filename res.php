@@ -55,8 +55,6 @@
     $update = false;
     // debug_log("update                 : ".var_export($update, true));
     // debug_log('');
-
-    header("Content-Type: $mtype");
   }
 
   ## Validation
@@ -309,6 +307,7 @@
     $output = $debugLog;
     $output .= file_get_contents("$cacheDestFile");
     $output .= "\n";
+    header("Content-Type: $mtype");
     header("X-Updated: ".(($update) ? 'true' : 'false'));
     header("Content-Length: ".strlen($output));
     print($output);

@@ -22,33 +22,37 @@ if not source "$SDIR/setImageProg.fish"
 end
 
 # set coordIndex '1';
-set coordNames 'z' 'x' 'y';
-string join \n $argv | read -L $coordNames;
-# for coordName in $coordNames
-#   debugPrint "$coordName: $$coordName";
-# end
 
-for coord in $coordNames
-  debugPrint "coord: $coord";
-  debugPrint "\$\$coord: $$coord";
-  pause;
-  set | less;
+set coordNames 'z' 'x' 'y';
+
+for coordName in $coordNames
+  # debugPrint "$coordName: $$coordName";
+  if test -n "$argv[1]"
+    set $coordName "$argv[1]";
+    set -e argv[1];
+    # debugPrint "$coordName: $$coordName";
+  end
+end
+
+for coordName in $coordNames
+  # debugPrint "coordName: $coordName";
+  # debugPrint "coord: $$coordName";
   # debugPrint "coordIndex: $coordIndex";
-  if test -z "$$coord"
+  if test -z "$$coordName"
     # debugPrint "argv[$coordIndex]: $argv[$coordIndex]"
     # debugPrint "argv[$coordIndex]: "(eval "echo \$argv[$coordIndex]");
     # set $coord "$argv[$coordIndex]";
-    # debugPrint "\$\$coord: $$coord";
-    if test -z "$$coord"
-      if not read -P "$coord: " $coord
+    # debugPrint "coord: $$coordName";
+    if test -z "$$coordName"
+      if not read -P "$coordName: " $coordName
         exit;
       end
     end
   end
 
   # debugPrint "\$\$coord: $$coord";
-  if test -z "$$coord"
-    errorPrint "$coord must be provided as an argument; exiting...";
+  if test -z "$$coordName"
+    errorPrint "$coordName must be provided as an argument; exiting...";
     exit 3;
   end
 

@@ -26,26 +26,29 @@ begin
 
   # debugPrint 'Entering 2-createBaseZoomImages.fish...';
 
-  # debugPrint "imageProg: $imageProg";
-  if test -z "$imageProg"
-    errorPrint 'imageProg empty; exiting...';
-    # debugPrint 'Leaving 2-createBaseZoomImages.fish (1)...';
-    return 1;
-  end
-
   if not source "$SDIR/0-config.fish"
     # debugPrint 'Leaving 2-createBaseZoomImages.fish (2)...';
-    return 2;
+    exit 1;
   end
   if not source "$SDIR/../0-config-zoom.fish"
     # debugPrint 'Leaving 2-createBaseZoomImages.fish (3)...';
-    return 3;
+    exit 2;
+  end
+
+  if not source "$SDIR/setImageProg.fish"
+    exit 3;
+  end
+
+  if not source "$SDIR/1-determineMaxDim.fish"
+    exit 4;
   end
 
   set timeFilePattern "$outTrialsDir/%s/%s";
   # debugPrint "timeFilePattern: $timeFilePattern";
 
-  source "$SDIR/resolveWildcard.fish";
+  if not source "$SDIR/resolveWildcard.fish"
+    exit 5;
+  end
 end
 
 # Root debug information
@@ -88,7 +91,7 @@ for zoomLevel in $processZoomLevels
   if test "$dryRun" = 'true'
     echo 'Skipping execution and timing due to dry run setting being enabled...';
     # debugPrint 'Leaving 2-createBaseZoomImages.fish (0)...';
-    return;
+    exit;
   end
 	if test ! -e "$currentExtFile" -o "$force" = "true"
     if test ! -e "$currentExtFile"
@@ -143,7 +146,7 @@ for zoomLevel in $processZoomLevels
       errorPrint "status: $status";
       errorPrint "currentExtFile: $currentExtFile";
       # debugPrint 'Leaving 2-createBaseZoomImages.fish (4)...';
-      return 4;
+      exit 6;
     end
   else
     echo 'Padded file already exists and force not specified; skipping generation...';
@@ -152,7 +155,7 @@ for zoomLevel in $processZoomLevels
   if test ! -e "$currentExtFile"
     errorPrint 'Base padded file still does not exist; exiting...';
     # debugPrint 'Leaving 2-createBaseZoomImages.fish (5)...';
-    return 5;
+    exit 7;
   end
 
   if test \

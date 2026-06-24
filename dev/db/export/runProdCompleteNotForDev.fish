@@ -6,10 +6,11 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-set -x -a ignoreTables '';
+set -x converge         'false';
+set -x convergeInPlace  'false';
 
-set -x convergeInPlace 'false';
-
-set -x dbSocket "$dbSocketProd";
+if test -z "$ignoreTables"
+  set -x ignoreTables   '';
+end
 
 "$SDIR/runProd.fish";

@@ -392,6 +392,7 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
   [[ -z "$failFast"         ]] &&            failFast='true'        ;
   [[ -z "$keepIntFiles"     ]] &&        keepIntFiles='false'       ;
   [[ -z "$oneFile"          ]] &&             oneFile='false'       ;
+  [[ -z "$otherConnectionOptions" ]] && otherConnectionOptions='';
   [[ -z "$outputName"       ]] &&          outputName='zeldamaps'   ;
   [[ -z "$pause"            ]] &&               pause='false'       ;
   [[ -z "$quiet"            ]] &&               quiet='false'       ;
@@ -629,27 +630,27 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     echo 'Usage: $0 [-h|--help]';
     echo;
     echo 'Configuration:';
-    echo -e "\tbriefMessages  - Condenses verbose task command description messages to fit withing a single line of terminal width (hopefully..). (Current: $briefMessages)";
-    echo -e "\tcleanOnFailure - Removes result files when an error occurs with a task command. (Current: $cleanOnFailure)";
-    echo -e "\tconverge    - Enables mode to further process resultant SQL data so that it can be more efficiently compared. (Current: $converge)";
-    echo -e "\tconvergeInPlace - Like converge, but does not alter the result file name, and runs an alternate, more limited, set of pattern replacements to better show only content changes with the primary samples. Do not store this!! (Current: $convergeInPlace)";
-    echo -e "\tdbClientExe    - The executable to use when issuing certain custom commands to the database server. (Current: $dbClientExe)";
-    echo -e "\tdbDumpExe      - The executable to use when exporting data from the database server. (Current: $dbDumpExe)";
-    echo -e "\tdatabaseName   - The name of the database schema to work with. (Current: $databaseName)";
-    echo -e "\tdryRun         - Output task commands, but do not execute them. (Current: $dryRun)";
-    echo -e "\tfailFast       - Stop when a single task encounters a problem. (Current: $failFast)";
-    echo -e "\toneFile        - Enables the mode to output result data in a single file in the root directory, versus separate ones in a respective subdirectory. (Current: $oneFile)";
-    echo -e "\toutputName     - Customizable name for the result directory or single file. (Current: $outputName)";
-    echo -e "\tpause          - Wait for the user to press the enter key to execute each task. (Current: $pause)";
-    echo -e "\tquiet          - Do not output anything. (Current: $quiet)";
-    echo -e "\tverbose        - Output more messages, such as the task commands being executed. (Current: $verbose)";
+    echo -e "\tbriefMessages    - Condenses verbose task command description messages to fit withing a single line of terminal width (hopefully..). (Current: $briefMessages)";
+    echo -e "\tcleanOnFailure   - Removes result files when an error occurs with a task command. (Current: $cleanOnFailure)";
+    echo -e "\tconverge         - Enables mode to further process resultant SQL data so that it can be more efficiently compared. (Current: $converge)";
+    echo -e "\tconvergeInPlace  - Like converge, but does not alter the result file name, and runs an alternate, more limited, set of pattern replacements to better show only content changes with the primary samples. Do not store this!! (Current: $convergeInPlace)";
+    echo -e "\tdbClientExe      - The executable to use when issuing certain custom commands to the database server. (Current: $dbClientExe)";
+    echo -e "\tdbDumpExe        - The executable to use when exporting data from the database server. (Current: $dbDumpExe)";
+    echo -e "\tdatabaseName     - The name of the database schema to work with. (Current: $databaseName)";
+    echo -e "\tdryRun           - Output task commands, but do not execute them. (Current: $dryRun)";
+    echo -e "\tfailFast         - Stop when a single task encounters a problem. (Current: $failFast)";
+    echo -e "\toneFile          - Enables the mode to output result data in a single file in the root directory, versus separate ones in a respective subdirectory. (Current: $oneFile)";
+    echo -e "\toutputName       - Customizable name for the result directory or single file. (Current: $outputName)";
+    echo -e "\tpause            - Wait for the user to press the enter key to execute each task. (Current: $pause)";
+    echo -e "\tquiet            - Do not output anything. (Current: $quiet)";
+    echo -e "\tverbose          - Output more messages, such as the task commands being executed. (Current: $verbose)";
     exit;
   fi
 }
 
 ## Config message (condensed)
 {
-  if [[ "$1" == '-c' || "$1" == '--config' ]]; then
+  if [[ "$1" == '-c' || "$1" == '--config' || "$verbose" == 'true' ]]; then
     echo 'Configuration:'                                     ;
     echo -e "\tbriefMessages  :  $(pTWSC "$briefMessages"   )";
     echo -e "\tcleanOnFailure :  $(pTWSC "$cleanOnFailure"  )";
@@ -665,7 +666,10 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     echo -e "\tpause          :  $(pTWSC "$pause"           )";
     echo -e "\tquiet          :  $(pTWSC "$quiet"           )";
     echo -e "\tverbose        :  $(pTWSC "$verbose"         )";
-    exit;
+
+    if [[ "$1" == '-c' || "$1" == '--config' ]]; then
+      exit;
+    fi
   fi
 }
 
@@ -815,7 +819,6 @@ SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
     # debugPrint "tableNames: $tableNames";
 
     echo;
-
 
     ## Main task set
     for tableName in $tableNames; do

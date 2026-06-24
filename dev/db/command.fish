@@ -4,6 +4,10 @@
 # by Pysis(868)
 # https://choosealicense.com/licenses/mit/
 
+# Dependencies:
+# - NPM:
+#   - js-yaml
+
 set -l SDIR (readlink -f (dirname (status filename)));
 
 ## Function Library
@@ -13,17 +17,19 @@ end
 
 ## Main Environment Configuration
 begin
-  test -z "$dbDump"       ; and        set dbDump "false"       ;
-  test -z "$dbHost"       ; and        set dbHost ""            ;
-  test -z "$dbName"       ; and        set dbName "zeldamaps"   ;
-  # test -z "$dbOthConnOpts"; and set dbOthConnOpts ""            ;
-  test -z "$dbPort"       ; and        set dbPort ""            ;
-  test -z "$dbSocket"     ; and      set dbSocket ""            ;
-  # test -z "$dbConStr"     ; and      set dbConStr ""            ;
-  test -z "$dryRun"       ; and        set dryRun "false"       ;
-  test -z "$dbClientExe"  ; and   set dbClientExe "mariadb"     ;
-  test -z "$dbDumpExe"    ; and     set dbDumpExe "mariadb-dump";
-  test -z "$verbose"      ; and       set verbose "false"       ;
+  test -z "$dbDump"       ; and set dbDump 'false'          ;
+  test -z "$dbHost"       ; and set dbHost ''               ;
+  test -z "$dbUser"       ; and set dbUser ''               ;
+  test -z "$dbPassword"   ; and set dbPassword ''           ;
+  test -z "$dbName"       ; and set dbName 'zeldamaps'      ;
+  # test -z "$dbOthConnOpts"; and set dbOthConnOpts ''        ; # Indicates used later, without wanting it to be actually defined.
+  test -z "$dbPort"       ; and set dbPort ''               ;
+  test -z "$dbSocket"     ; and set dbSocket ''             ;
+  # test -z "$dbConStr"     ; and set dbConStr ''             ; # Indicates used later, without wanting it to be actually defined.
+  test -z "$dryRun"       ; and set dryRun 'false'          ;
+  test -z "$dbClientExe"  ; and set dbClientExe 'mariadb'   ;
+  test -z "$dbDumpExe"    ; and set dbDumpExe 'mariadb-dump';
+  test -z "$verbose"      ; and set verbose 'false'         ;
 end
 
 ## Derived Configuration & Internal Variables
@@ -44,7 +50,7 @@ begin
           if test -z "$dbHost"
             set dbHost '127.0.0.1';
             # `localhost` was causing errors with sockets on Linux,
-            # even though I had see that directly recommended,
+            # even though I had seen that directly recommended,
             # so just use the loopback IP instead,
             # with the explicit protocol switch too.
           end
@@ -53,14 +59,16 @@ begin
         # Username
         begin
           while test -z "$dbUser"
-            if test -z "$dbUser"
+            if test -z "$dbUser" -a -f "$cYmlPath"
               set dbUser (
                 js-yaml "$cYmlPath" \
                 | jq -r '.development.username'
               );
             end
             if test -z "$dbUser"
-              read -P "Database Username: " dbUser;
+              if not read -P "Database Username: " dbUser
+                exit 1;
+              end
               echo;
             end
           end
@@ -69,14 +77,16 @@ begin
         # Password
         begin
           # Only asks once since possibly being optional(?).
-          if test -z "$dbPassword"
+          if test -z "$dbPassword" -a -f "$cYmlPath"
             set dbPassword (
               js-yaml "$cYmlPath" \
               | jq -r '.development.password'
             );
           end
           if test -z "$dbPassword"
-            read -s -P "Database Password: " dbPassword;
+            if not read -s -P "Database Password: " dbPassword
+              exit 1;
+            end
             echo;
           end
 
@@ -88,7 +98,7 @@ begin
 
         # Socket
         begin
-          if test -z "$dbSocket"
+          if test -z "$dbSocket" -a -f "$cYmlPath"
             set dbSocket (
               js-yaml "$cYmlPath" \
               | jq -r '.development.socket // ""'
@@ -99,7 +109,7 @@ begin
         # Port
         begin
           # Prefer sockets for security and performance.
-          if test -z "$dbSocket" -a -z "$dbPort"
+          if test -z "$dbSocket" -a -z "$dbPort" -a -f "$cYmlPath"
             set dbPort (
               js-yaml "$cYmlPath" \
               | jq -r '.development.port // ""'

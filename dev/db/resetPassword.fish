@@ -1,21 +1,21 @@
-#!/usr/bin/env bash
+#!/usr/bin/env fish
 
 # MIT Licensed
 # by Pysis(868)
 # https://choosealicense.com/licenses/mit/
-
-SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+return 254; # NYI
+set -l SDIR (readlink -f (dirname (status filename)));
 
 # Currently this script may require interaction to use the a database account.
 
-[[ -z "$dbClientExe" ]] && dbClientExe="mariadb";
+test -z "$dbClientExe" ; and set dbClientExe 'mariadb';
 
-[[ -z "$DRY_RUN" ]] && DRY_RUN="false";
+test -z "$DRY_RUN" ; and set DRY_RUN 'false';
 
-[[ -z "$databaseName" ]] && databaseName='zeldamaps';
-[[ -z "$databaseOtherConnectionOptions" ]] && databaseOtherConnectionOptions="";
-[[ -z "$databaseConnectionString" ]] &&
-databaseConnectionString="$databaseOtherConnectionOptions --user='$databaseUser' --password=\"$databasePassword\" '$databaseName'";
+test -z "$databaseName" ; and set databaseName 'zeldamaps';
+test -z "$databaseOtherConnectionOptions" ; and set databaseOtherConnectionOptions '';
+test -z "$databaseConnectionString" ; and
+set databaseConnectionString "$databaseOtherConnectionOptions --user='$databaseUser' --password=\"$databasePassword\" '$databaseName'";
 # echo "databaseConnectionString: $databaseConnectionString";
 
 # Source: https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
@@ -26,28 +26,33 @@ GREEN='\033[0;32m';
 RED='\033[0;31m';
 NC='\033[0m'; # No Color
 
-[[ -z "$email" ]] && email="$1";
+test -z "$email" ; and email="$argv[1]";
 
-# Test database connection first.
 echo $dbClientExe $databaseConnectionString
 echo | $dbClientExe $databaseConnectionString || exit 1;
 
-while
-  while
-    while [[ -z "$email" ]]; do read -p "Email: " email; done;
+while begin
+  while begin
+    while test -z "$email"; read -p "Email: " email; end
 
     echo -e "\nOpening MySQL connection to query for the user account...";
-    userRecord="$(bash -c "'$dbClientExe' $databaseConnectionString --vertical -e \"SELECT * FROM \\\`user\\\` WHERE \\\`email\\\` = '$email'\"";)";
+    set userRecord (
+      '$dbClientExe' \
+      $databaseConnectionString \
+      --vertical \
+      -e "SELECT * FROM `user` WHERE `email` = '$email'"
+    );
 
-    if [[ "$?" -gt "0" ]]; then
+    if test "$status" -gt "0"
       echo -e "${RED}Database error has occurred; exiting...${NC}";
       exit 1;
-    fi
+    end
 
-    [[ -z "$userRecord" ]]; do
-      email=;
-      echo -e "${BROWN_ORANGE}No user records found; prompting again...${NC}";
-  done
+    test -z "$userRecord";
+  end
+    set -e email;
+    echo -e "${BROWN_ORANGE}No user records found; prompting again...${NC}";
+  end
 
   echo -e "\nFound this user record:\n\n${DARK_GREY}$userRecord${NC}\n";
   read -p "Is there only 1 record, and is it the one you expected? (y/n): " confirmation;
@@ -56,9 +61,9 @@ while
     email=;
     echo -e "\n${BROWN_ORANGE}User record not confirmed; prompting again...${NC}\n";
     confirmation=;
-done
+end
 
-if [[ -z "$newPasswordHash" ]]; then
+if test -z "$newPasswordHash" ]]; then
   # Various random character
     # head -c 100 /dev/urandom | shasum -b -a 256 | head --bytes=-3
     # head -c 100 /dev/urandom | tr -dc [:graph:] | head -c 40 # gibberish chars

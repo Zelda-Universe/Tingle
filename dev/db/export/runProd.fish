@@ -6,39 +6,41 @@
 
 set -l SDIR (readlink -f (dirname (status filename)));
 
-if test                         \
-  \(                            \
-        -z "$dbUser"            \
-    -a  -z "$dbUserProd"        \
-  \) -o \(                      \
-        -z "$dbPassword"        \
-    -a  -z "$dbPasswordProd"    \
-  \)
-
-  errorPrint 'Missing all of these:'          ;
-  errorPrint "dbUserProd    : $dbUserProd"    ;
-  errorPrint -n 'dbPasswordProd (wc -l): '    ;
+if test -z "$dbUserProd" -o  -z "$dbPasswordProd"
+  errorPrint 'Missing any of these:';
+  errorPrint "dbUserProd    : $dbUserProd" ;
+  errorPrint -n 'dbPasswordProd (wc -l): ' ;
   and altPrint (echo -n "$dbPasswordProd" | wc -c);
 
   return 1;
 end
 
-test -z "$dbUser";
-and set -x dbUser \
-  "$dbUserProd"   \
-;
-
-test -z "$dbPassword";
-and set -x dbPassword \
-  "$dbPasswordProd"   \
-;
-
-set -a ignoreTables 'schema_migrations';
-
-set -x convergeInPlace 'true';
-
-if test -z "$dbSocketProd"
-  echo 'dbSocketProd not set; continuing if network connection is used instead...';
+if test -z "$dbSocketProd" -a -z "$dbPortProd"
+  echo 'dbSocketProd and dbPortProd both not set; exiting...';
+  return 2;
 end
+
+set -x dbUser   \
+  "$dbUserProd" \
+;
+
+set -x dbPassword   \
+  "$dbPasswordProd" \
+;
+
+if test -n "$dbSocketProd"
+  set -x dbSocket "$dbSocketProd";
+end
+if test -n "$dbPortProd"
+  set -x dbPort "$dbPortProd";
+end
+
+if test -z "$convergeInPlace"
+  set -x convergeInPlace 'true';
+end
+if not set -q ignoreTables
+  set -x -a ignoreTables 'schema_migrations';
+end
+set -x otherConnectionOptions '--skip-ssl';
 
 "$SDIR/run.sh";

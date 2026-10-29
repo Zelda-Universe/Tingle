@@ -25,6 +25,23 @@
 
     $cmd = $_GET["command"];
     $cmd = preg_replace("#[^a-zA-Z_]#","",$cmd);
+    // --- Request hardening (added during cPanel migration) ---
+    // Every endpoint interpolates request values straight into SQL,
+    // so constrain the types here, once, before dispatch.
+    $harden = function (array &$req) {
+        foreach (['userId', 'markerId', 'newMarkerId', 'submapId', 'categoryId', 'gameId'] as $p) {
+            if (isset($req[$p])) { $req[$p] = (int) $req[$p]; }
+        }
+        foreach (['lng', 'lat'] as $p) {
+            if (isset($req[$p])) { $req[$p] = (float) $req[$p]; }
+        }
+        if (isset($req['game'])) {   // numeric id or short_name; no SQL metacharacters either way
+            $req['game'] = preg_replace('/[^A-Za-z0-9_-]/', '', (string) $req['game']);
+        }
+    };
+    $harden($_GET);
+    $harden($_POST);
+    unset($harden);    
     $path = __DIR__;
     $cmdpath = "$path/ajax/$cmd.php";
     if(!file_exists($cmdpath)) {

@@ -1,9 +1,52 @@
-RewriteEngine on
-RewriteCond %{DOCUMENT_ROOT}%{REQUEST_URI} !-f
-# For Development Purposes
-#RewriteRule ^images/(.*)$ http://maps.zelda.com.br/v2/images/$1 [P,L]
-#RewriteRule ^ajax/(.*)$ http://maps.zelda.com.br/v2/ajax/$1 [P,L]
+RewriteEngine On
 
-<Files ".env">
-  Require all denied
+# Everything -> https://zeldamaps.com (replaces the two redirect vhosts).
+# /.well-known/ is exempt so AutoSSL's HTTP validation still works.
+RewriteCond %{REQUEST_URI} !^/\.well-known/
+RewriteCond %{HTTPS} !=on [OR]
+RewriteCond %{HTTP_HOST} !^zeldamaps\.com$ [NC]
+RewriteRule ^ https://zeldamaps.com%{REQUEST_URI} [R=301,L]
+
+# Any dotfile or dot-directory except .well-known/ is a 404.
+# Covers .env, .env.example, .git/, .gitignore, .github/, .editorconfig, .standalone_migrations.
+RewriteRule (^|/)\.(?!well-known/) - [R=404,L]
+
+
+# Missing BotW tile -> blank.png two directories up.
+# nginx did this as a 302; this is an internal rewrite, same result minus a round trip.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(tiles/botw(?:/.*)?)/[^/]+/[^/]+\.(?:jpe?g|gif|png)$ /$1/blank.png [NC,L]
+
+# Chrome private prefetch proxy advice file.
+<Files "traffic-advice">
+    ForceType "application/trafficadvice+json; charset=utf-8"
 </Files>
+
+# Cache policy, mirroring the nginx expires map:
+# html -> no-cache, css/js/images -> 1 month, everything else -> no header.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css                "access plus 1 month"
+    ExpiresByType application/javascript  "access plus 1 month"
+    ExpiresByType text/javascript         "access plus 1 month"
+    ExpiresByType image/png               "access plus 1 month"
+    ExpiresByType image/jpeg              "access plus 1 month"
+    ExpiresByType image/gif               "access plus 1 month"
+    ExpiresByType image/webp              "access plus 1 month"
+    ExpiresByType image/svg+xml           "access plus 1 month"
+    ExpiresByType image/x-icon            "access plus 1 month"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|php)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php83” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php83 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit

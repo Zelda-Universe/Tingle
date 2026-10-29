@@ -42,10 +42,10 @@
       , offsetX as offsetX
       , offsetY as offsetY
       , visible as visible
-    FROM ${map_prefix}container c
+    FROM {$map_prefix}container c
     WHERE (
-      c.id = '${map}'
-      OR c.short_name = '${map}'
+      c.id = '{$map}'
+      OR c.short_name = '{$map}'
     )
     AND c.enabled = 1;
   ";

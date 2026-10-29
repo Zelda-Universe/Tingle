@@ -10,6 +10,7 @@
 /dev/db/samples/*-04-devUserData.sql
 /dev/assets/tiles/**/*.png
 /dev/assets/tiles/**/Trials
+/.htaccess
 
 # Cached Files / Runtime-updated Files
 /ajax/libs

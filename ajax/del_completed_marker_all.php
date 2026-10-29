@@ -3,10 +3,17 @@
 
 	begin();
 
-	if (!isset($_POST['gameId']) && !isset($_POST['userId'])) {
+	if (!isset($_POST['gameId']) || !isset($_POST['userId'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));
 		return;
 	}
+
+   start_session("zmap");
+   if (empty($_SESSION['user_id']) || $_SESSION['user_id'] != $_POST['userId']) {
+      echo json_encode(array("success"=>false, "msg"=>"Not logged or session expired!"));
+      return;
+   }
+   session_write_close();
 
 	if (!is_numeric($_POST['gameId']) && !is_numeric($_POST['userId'])) {
 		echo json_encode(array("success"=>false, "msg"=>"Not Logged!"));

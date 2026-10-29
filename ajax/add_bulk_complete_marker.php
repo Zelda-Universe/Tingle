@@ -16,7 +16,7 @@
 	}
    session_write_close();
 
-   $markerList = json_decode($_POST['markerList'], true);
+   $markerList = array_values(array_map('intval', (array) json_decode($_POST['markerList'] ?? '', true)));
 
    if (count($markerList) > 0) {
       $query = "insert into " . $map_prefix . "user_completed_marker (

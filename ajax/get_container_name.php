@@ -23,7 +23,7 @@
 
   $query = "
     SELECT `name`
-    FROM `${map_prefix}container` `c`
+    FROM `{$map_prefix}container` `c`
     WHERE (
             `c`.`id`          = '$game'
         OR  `c`.`short_name`  = '$game'

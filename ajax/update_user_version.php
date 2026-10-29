@@ -8,8 +8,12 @@
 		echo json_encode(array("success"=>false, "msg"=>"Ops, something went wrong..."));
 		return;
 	}
+   if (empty($_SESSION['user_id']) || $_SESSION['user_id'] != $_POST['userId']) {
+      echo json_encode(array("success"=>false, "msg"=>"Not logged or session expired!"));
+      return;
+   }
    $userId = $_POST['userId'];
-   $version = explode(".", $_POST['version'], 3);
+   $version = array_map('intval', explode(".", (string) $_POST['version'], 3)) + [0, 0, 0];
 
   $query = "
     UPDATE `{$map_prefix}user`

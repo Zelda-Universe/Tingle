@@ -28,7 +28,7 @@
 	$query = "SET SESSION group_concat_max_len = 4294967295";
 	$result = @$mysqli->query($query);
 
-   $search =  str_replace(' ', '%', $_GET['q']);
+   $search = $mysqli->real_escape_string(str_replace(' ', '%', $_GET['q'] ?? ''));	
 
    $query = 'select m.id
                   , m.marker_category_id         as markerCategoryId

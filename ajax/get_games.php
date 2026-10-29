@@ -6,7 +6,7 @@
       , c.short_name as shortName
       , c.name
       , c.icon
-    FROM ${map_prefix}container c
+    FROM {$map_prefix}container c
     WHERE
         c.visible = 1
     AND c.enabled = 1

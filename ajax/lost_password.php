@@ -1,6 +1,11 @@
 <?php
   $path = __DIR__;
 
+  // Protects against a bug where the password reset will still run without emailing user
+  if (empty($mailEnabled)) {
+    echo json_encode(array("success"=>false, "msg"=>"Password reset is temporarily unavailable."));
+    return;
+  }
 	begin();
 
 	if (!isset($_POST['email'])) {

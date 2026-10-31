@@ -1011,6 +1011,22 @@ ZMap.prototype.buildMap = function(gameId) {
   }
 
   this.map = L.map(mainEl, this.mapOptions);
+  var map = this.map;
+  var invalidateMapSize = function() {
+    window.requestAnimationFrame(function() {
+      if(this.map === map) map.invalidateSize({ pan: false });
+    }.bind(this));
+  }.bind(this);
+  window.addEventListener('resize', invalidateMapSize);
+  if(window.visualViewport) {
+    window.visualViewport.addEventListener('resize', invalidateMapSize);
+  }
+  if(window.ResizeObserver) {
+    this._mapSizeObserver = new window.ResizeObserver(invalidateMapSize);
+    this._mapSizeObserver.observe(mainEl);
+  }
+  invalidateMapSize();
+
   if(ZConfig.getConfig('trackpadGestures') != 'false') {
     this.trackpadGestureHandler = new TrackpadGestureHandler(this.map);
   }

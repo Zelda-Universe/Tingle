@@ -37,7 +37,7 @@ L.Control.Settings = L.Control.extend({
     L.DomEvent.disableScrollPropagation(container);
     L.DomEvent.on(toggle, 'click', this.togglePanel, this);
 
-    this.addCheckbox('Hide Completed', !this.zMap.mapOptions.showCompleted, function(checked) {
+    this.addCheckbox('Hide Completed Markers', !this.zMap.mapOptions.showCompleted, function(checked) {
       this.zMap.mapOptions.showCompleted = !checked;
       setCookie('showCompleted', !checked);
       this.zMap.refreshMapCompleted();

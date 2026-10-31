@@ -105,7 +105,7 @@ ZConfig.setDefault('zLogger.tui'              , 'false' ); // Disabled default f
 // ZConfig.setDefault('zoom'                     , '0'     ); // Also suffix with `-${gameId}`
 ZConfig.setDefault('zoomControl'              , 'false' );
 ZConfig.setDefault('zoomDelta'                , '1'     );
-ZConfig.setDefault('zoomSnap'                 , '1'     );
+ZConfig.setDefault('zoomSnap'                 , '0'     );
 
 // debugPrint('ZConfig.defaults:');
 // debugPrint(JSON.stringify(ZConfig.defaults, null, 2));

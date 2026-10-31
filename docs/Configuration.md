@@ -7,7 +7,7 @@ Map Viewer URL-only Query Parameters:
 - marker: `integer`, default: `null`
 
 - zoom: `integer`, default: `<container defaultZoom setting>`, `4`
-- zoomSnap: `integer`, default: `1`
+- zoomSnap: `number`, default: `0` (disable zoom level snapping)
 - zoomDelta: `integer`, default: `1`
 - x (centerX): `integer`, default: `<container centerX setting>`
 - y (centerY): `integer`, default: `<container centerY setting>`

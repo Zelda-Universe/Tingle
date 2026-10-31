@@ -92,7 +92,7 @@ function ZMap() {
       LOGOUT_SUCCESS : "May the Goddess smile upon you, %1!",
       LOGOUT_ERROR   : "I AM ERROR! Could not log out. Please try clearing your cache and restarting your browser to safely log out.",
 
-      LOGIN_WELCOME  : "Hey, listen! Welcome back!",
+      LOGIN_WELCOME  : "Hey, listen!<br />Welcome back!",
       LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
       LOGIN_ERROR   : "I AM ERROR. %1",
 

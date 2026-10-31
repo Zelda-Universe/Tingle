@@ -74,7 +74,7 @@ L.Control.InfoBox.MouseCoords = L.Control.InfoBox.extend({
       }
 
       if (coords && $.isNumeric(coords.lng) && $.isNumeric(coords.lat)) {
-        this.latValueCell.text(pad(coords.lng.toFixed(this.options.precision), 4) + " | " + pad(coords.lat.toFixed(this.options.precision), 4));
+        this.latValueCell.text(pad(coords.lng.toFixed(this.options.precision), 4) + ", " + pad(coords.lat.toFixed(this.options.precision), 4));
       }
     }
   }

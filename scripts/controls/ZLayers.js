@@ -404,6 +404,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
         if(window.visualViewport) {
           window.visualViewport.addEventListener('resize', refreshMobileLayout);
         }
+      } else {
+        this._refreshDesktopDrawerLayout();
+        window.addEventListener('resize', this._refreshDesktopDrawerLayout.bind(this));
       }
     }
 
@@ -525,15 +528,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
   },
 
-  updateContentsHeight: function() {
-    this._contents.style.maxHeight = (
-      this._viewportHeight() -
-      this.options.openTo -
-      this.options.headerHeight -
-      this._safeAreaBottom() -
-      40 // Paddings, margins, and things.  Mostly from '.category-selection-list'?
+  _refreshDesktopDrawerLayout: function() {
+    if(this.viewStyleBottomSlide || !this._contents || !this._map) return;
+    this._contents.style.maxHeight = Math.max(
+      this._map.getSize().y - 250,
+      250
     ) + 'px';
-    this._contents.style.minHeight = this._contents.style.maxHeight;
+  },
+
+  updateContentsHeight: function() {
+    var contentsTop = this._contents.getBoundingClientRect().top;
+    var drawerBottom = this._container.getBoundingClientRect().bottom;
+    var availableHeight = Math.max(0, drawerBottom - contentsTop);
+    this._contents.style.maxHeight = availableHeight + 'px';
+    this._contents.style.minHeight = availableHeight + 'px';
   },
 
   rebuildMapsMenu: function () {
@@ -758,7 +766,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // console.log(`_expand`);
     this._triggerHandler("before_expand");
     if (this._contents != undefined) {
-      this._contents.style.maxHeight = ZConfig.getConfig("layersHeight");
+      if(this.viewStyleBottomSlide) {
+        this._contents.style.maxHeight = ZConfig.getConfig("layersHeight");
+      } else {
+        this._refreshDesktopDrawerLayout();
+      }
     }
 
     this.options.collapsed = false;

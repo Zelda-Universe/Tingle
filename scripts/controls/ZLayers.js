@@ -268,6 +268,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       });
 
       var headerMenu = L.DomUtil.create('header', 'ex1', form1);
+      this._drawerHeader = headerMenu;
       headerMenu.style.height = (this.options.headerHeight - 2) + 'px'; // Need to remove 2px because of the separator
     }
 
@@ -317,7 +318,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
           } else {
             // console.log('_mapsButton - afterToggle - !this.toggledOn');
             if(_thisLayer.viewStyleBottomSlide) {
-              _thisLayer.closeDrawer();
+              if(
+                _thisLayer._preserveContentOnClose &&
+                !_thisLayer._open &&
+                _thisLayer._contentType === 'maps'
+              ) {
+                this._toggle(true);
+                _thisLayer.openDrawerLarge();
+              } else {
+                _thisLayer.closeDrawer();
+              }
             } else {
               _thisLayer.resetContent();
             }
@@ -338,7 +348,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
             _thisLayer.openDrawerLarge();
           } else {
             if(_thisLayer.viewStyleBottomSlide) {
-              _thisLayer.closeDrawer();
+              if(
+                _thisLayer._preserveContentOnClose &&
+                !_thisLayer._open &&
+                _thisLayer._contentType === 'games'
+              ) {
+                this._toggle(true);
+                _thisLayer.openDrawerLarge();
+              } else {
+                _thisLayer.closeDrawer();
+              }
             } else {
               _thisLayer.resetContent();
             }
@@ -426,6 +445,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _drawerStart: function(e) {
     var point = e.type.startsWith('touch') ? e.touches[0] : e;
+    this._clearDrawerClickSuppression();
     if(this._drawerClosing) {
       if(this._drawerAnimationTimeout) {
         window.clearTimeout(this._drawerAnimationTimeout);
@@ -485,12 +505,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
 
     if(this._drawerDragging) {
+      this._suppressNextDrawerClick();
       var currentTop = this.drawerTop();
       if(currentTop < this._drawerStartTop) {
         this.openDrawerManual(this.options.openTo);
       } else if(currentTop > this._drawerStartTop) {
-        if(this._open) this.closeDrawer();
-        else this._setDrawerState(false, this._startPosition);
+        this.closeDrawer(true);
       }
     }
     this._drawerXDown = null;
@@ -498,6 +518,43 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._drawerStartTop = null;
     this._drawerDragging = false;
     this._drawerPointerId = null;
+  },
+
+  _clearDrawerClickSuppression: function() {
+    var header = this._drawerHeader;
+    if(header && this._drawerClickSuppressHandler) {
+      header.removeEventListener('click', this._drawerClickSuppressHandler, true);
+      this._drawerClickSuppressHandler = null;
+    }
+    if(this._drawerClickSuppressTimeout) {
+      window.clearTimeout(this._drawerClickSuppressTimeout);
+      this._drawerClickSuppressTimeout = null;
+    }
+  },
+
+  _suppressNextDrawerClick: function() {
+    var header = this._drawerHeader;
+    if(!header) return;
+
+    this._clearDrawerClickSuppression();
+    var suppressClick = function(e) {
+      var target = e.target;
+      var button = target && target.closest
+        ? target.closest('.category-button')
+        : null;
+      if(!button || !header.contains(button)) return;
+
+      this._clearDrawerClickSuppression();
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }.bind(this);
+
+    this._drawerClickSuppressHandler = suppressClick;
+    header.addEventListener('click', suppressClick, true);
+    this._drawerClickSuppressTimeout = window.setTimeout(function() {
+      this._clearDrawerClickSuppression();
+    }.bind(this), 500);
   },
 
   _safeAreaBottom: function() {
@@ -511,9 +568,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _applyMobileDrawerViewport: function(top) {
+    var currentTop = Number.parseFloat(this._container.style.top) || 0;
+    var baseScreenTop = Number.isFinite(this._mobileDrawerBaseTop)
+      ? this._mobileDrawerBaseTop
+      : this._container.getBoundingClientRect().top - currentTop;
+    var viewportBottom = this._map.getContainer().getBoundingClientRect().bottom;
     var availableHeight = Math.max(
       0,
-      this._viewportHeight() - top - this._safeAreaBottom()
+      viewportBottom - this._safeAreaBottom() - baseScreenTop - top
     );
     this._container.style.height = availableHeight + 'px';
     this._container.style.maxHeight = 'none';
@@ -527,10 +589,17 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.options.softOpenTo = this.options.height - this.options.softOpenBottom;
     var collapsedHeight = this._form.getBoundingClientRect().height || this.options.headerHeight + 20;
     var currentTop = this.drawerTop();
-    var desiredTop = this._viewportHeight() - collapsedHeight - this._safeAreaBottom();
+    var mapRect = this._map.getContainer().getBoundingClientRect();
+    var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
+    var containerRect = this._container.getBoundingClientRect();
+    var contentsRect = this._contents.getBoundingClientRect();
+    this._mobileDrawerBaseTop = containerRect.top - currentCssTop;
+    this._mobileDrawerContentsOffset = contentsRect.top - containerRect.top;
+    var baseScreenTop = this._mobileDrawerBaseTop;
+    var desiredTop = mapRect.bottom - collapsedHeight
+      - this._safeAreaBottom() - baseScreenTop;
     this._container.style.top = desiredTop + 'px';
-    var actualTop = this._container.getBoundingClientRect().top;
-    this._startPosition = desiredTop + (desiredTop - actualTop);
+    this._startPosition = desiredTop;
     if(!this._open && !this._drawerDragging) {
       this._container.style.top = this._startPosition + 'px';
       this._container.style.height = collapsedHeight + 'px';
@@ -552,13 +621,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   updateContentsHeight: function(targetTop) {
-    var containerTop = this._container.getBoundingClientRect().top;
-    var contentsTop = this._contents.getBoundingClientRect().top;
-    if(Number.isFinite(targetTop)) contentsTop += targetTop - containerTop;
-    var usableBottom = this._viewportHeight() - this._safeAreaBottom();
+    var containerRect = this._container.getBoundingClientRect();
+    var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
+    var baseScreenTop = Number.isFinite(this._mobileDrawerBaseTop)
+      ? this._mobileDrawerBaseTop
+      : containerRect.top - currentCssTop;
+    var contentsOffset = Number.isFinite(this._mobileDrawerContentsOffset)
+      ? this._mobileDrawerContentsOffset
+      : this._contents.getBoundingClientRect().top - containerRect.top;
+    var drawerTop = Number.isFinite(targetTop) ? targetTop : currentCssTop;
+    var contentsTop = baseScreenTop + drawerTop + contentsOffset;
+    var usableBottom = this._map.getContainer().getBoundingClientRect().bottom - this._safeAreaBottom();
     var drawerBottom = Number.isFinite(targetTop)
       ? usableBottom
-      : Math.min(this._container.getBoundingClientRect().bottom, usableBottom);
+      : Math.min(containerRect.bottom, usableBottom);
     var availableHeight = Math.max(0, drawerBottom - contentsTop);
     this._contents.style.maxHeight = availableHeight + 'px';
     this._contents.style.minHeight = availableHeight + 'px';
@@ -915,6 +991,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(animationId !== this._drawerAnimationId) return;
     // console.log(`_animate(${menu}, ${from}, ${to}, ${isOpen})`);
     this._drawerClosing = !isOpen;
+    if(isOpen) this._preserveContentOnClose = false;
     if ((isOpen && from < to) || (!isOpen && from > to)) {
       from = to;
     }
@@ -956,9 +1033,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _finishDrawerClose: function() {
     this._drawerClosing = false;
-    this._gamesButton.clear();
-    this._mapsButton.clear();
-    this.resetContent();
+    if(!this._preserveContentOnClose) {
+      this._gamesButton.clear();
+      this._mapsButton.clear();
+      this.resetContent();
+    }
   },
 
   _setDrawerState: function(newState, newPosition) {
@@ -978,8 +1057,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   drawerTop: function() {
-    var mapTop = this._map.getContainer().getBoundingClientRect().top;
-    return this._container.getBoundingClientRect().top - mapTop;
+    return parseInt(this._container.style.top.replace('px',''));
   },
 
   openDrawerSmall: function() {
@@ -999,9 +1077,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._setDrawerState(true, newPosition);
   },
 
-  closeDrawer: function() {
+  closeDrawer: function(preserveContent) {
     // console.log(`closeDrawer`);
-    if(this._open) {
+    this._preserveContentOnClose = !!preserveContent || (
+      this._drawerClosing && this._preserveContentOnClose
+    );
+    if(this._open || this.drawerTop() < this._startPosition) {
       this._setDrawerState(false, this._startPosition);
     }
   }

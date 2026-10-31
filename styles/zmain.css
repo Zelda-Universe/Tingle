@@ -71,8 +71,8 @@ body {
 	top: 0;
 	left: 0;
 	width: 100vw;
-	height: 100vh;
-	height: 100dvh;
+	height: calc(100vh + env(safe-area-inset-bottom, 0px));
+	height: calc(100dvh + env(safe-area-inset-bottom, 0px));
 	background-color: #565656;
 	overflow: hidden;
 	position: fixed;
@@ -208,6 +208,12 @@ main {
 	.leaflet-top > .leaflet-control {
 		-webkit-backdrop-filter: none;
 		backdrop-filter: none;
+	}
+
+	.mobile-header-bar,
+	.settings-control-mobile-floating .settings-control-toggle {
+		-webkit-backdrop-filter: none !important;
+		backdrop-filter: none !important;
 	}
 
 	.leaflet-top > .leaflet-control.leaflet-control-layers-mobile {
@@ -995,8 +1001,8 @@ a.button.back-button:hover {
 	-webkit-backdrop-filter: none;
 	backdrop-filter: none;
 	border-radius: 50% !important;
-	overflow: hidden;
-	box-shadow: none !important;
+	overflow: visible;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 }
 
 .settings-control.leaflet-control {
@@ -1005,6 +1011,7 @@ a.button.back-button:hover {
 	height: 44px;
 	padding: 0;
 	border-radius: 50% !important;
+	box-shadow: 0 16px 32px rgba(0, 0, 0, .6) !important;
 }
 
 .settings-control:not(.settings-control-mobile-floating).leaflet-control {

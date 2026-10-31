@@ -538,7 +538,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   updateContentsHeight: function() {
     var contentsTop = this._contents.getBoundingClientRect().top;
-    var drawerBottom = this._container.getBoundingClientRect().bottom;
+    var usableBottom = this._viewportHeight() - this._safeAreaBottom();
+    var drawerBottom = Math.min(
+      this._container.getBoundingClientRect().bottom,
+      usableBottom
+    );
     var availableHeight = Math.max(0, drawerBottom - contentsTop);
     this._contents.style.maxHeight = availableHeight + 'px';
     this._contents.style.minHeight = availableHeight + 'px';

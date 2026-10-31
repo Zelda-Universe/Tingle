@@ -399,7 +399,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
         window.requestAnimationFrame(function() {
           this._refreshMobileDrawerLayout();
         }.bind(this));
-        window.addEventListener('resize', this._refreshMobileDrawerLayout.bind(this));
+        var refreshMobileLayout = this._refreshMobileDrawerLayout.bind(this);
+        window.addEventListener('resize', refreshMobileLayout);
+        if(window.visualViewport) {
+          window.visualViewport.addEventListener('resize', refreshMobileLayout);
+        }
       }
     }
 
@@ -443,7 +447,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var xDelta = point.clientX - this._drawerXDown;
     var yDelta = point.clientY - this._drawerYDown;
     if(!this._drawerDragging && Math.abs(xDelta) > Math.abs(yDelta)) return;
-    if(Math.abs(yDelta) < 3) return;
+    if(yDelta === 0) return;
 
     this._drawerDragging = true;
     var nextTop = Math.max(
@@ -468,10 +472,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     if(this._drawerDragging) {
       var currentTop = this.drawerTop();
-      var midpoint = (this.options.openTo + this._startPosition) / 2;
-      if(currentTop < midpoint) this.openDrawerLarge();
-      else if(this._open) this.closeDrawer();
-      else this._setDrawerState(false, this._startPosition);
+      if(currentTop < this._drawerStartTop) {
+        this.openDrawerManual(this.options.openTo);
+      } else if(currentTop > this._drawerStartTop) {
+        if(this._open) this.closeDrawer();
+        else this._setDrawerState(false, this._startPosition);
+      }
     }
     this._drawerXDown = null;
     this._drawerYDown = null;
@@ -487,7 +493,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _viewportHeight: function() {
-    return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    return this._map.getContainer().getBoundingClientRect().height || window.innerHeight;
   },
 
   _applyMobileDrawerViewport: function(top) {
@@ -499,6 +505,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _refreshMobileDrawerLayout: function() {
     if(!this.viewStyleBottomSlide || !this._form) return;
+    this._map.invalidateSize({ pan: false });
+    this.options.height = this._viewportHeight();
+    this.options.softOpenTo = this.options.height - this.options.softOpenBottom;
     var collapsedHeight = this._form.getBoundingClientRect().height || this.options.headerHeight + 20;
     var currentTop = this.drawerTop();
     var desiredTop = this._viewportHeight() - collapsedHeight - this._safeAreaBottom();

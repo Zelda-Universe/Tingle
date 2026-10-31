@@ -42,9 +42,11 @@ AccountButton.prototype.click = function(opts) {
   }
 
   if(opts.mapControl.isMobile) {
-    // The account button lives in the mobile drawer header. Always show its
-    // associated content and open the drawer instead of treating it as a
-    // desktop content toggle.
+    if(opts.mapControl._open && opts.mapControl._contentType === contentType) {
+      opts.mapControl.closeDrawer();
+      return;
+    }
+
     if(opts.mapControl._contentType !== contentType) {
       setContent();
     }

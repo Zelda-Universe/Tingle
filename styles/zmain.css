@@ -70,9 +70,10 @@ html,
 body,
 main {
 	top: 0;
-	right: 0;
-	bottom: 0;
 	left: 0;
+	width: 100vw;
+	height: 100vh;
+	height: 100dvh;
 	background-color: #565656;
 	overflow: hidden;
 	position: fixed;
@@ -188,6 +189,16 @@ main {
 
 .settings-control-mobile-floating {
 	border-radius: 50% !important;
+}
+
+@media only screen and (max-width: 600px) {
+	.leaflet-top {
+		top: env(safe-area-inset-top, 0px);
+	}
+
+	.mobile-header-bar {
+		margin-top: 10px !important;
+	}
 }
 
 .settings-managed-category {

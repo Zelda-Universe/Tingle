@@ -279,8 +279,9 @@ ZMap.prototype.addMap = function(vMap) {
         , opacity           : vMap.subMap[0].opacity
         , noWrap            : true
         , tileSize          : this.mapOptions.tileSize
-        , updateWhenIdle    : true
-        , updateWhenZooming : false
+        , updateWhenIdle    : false
+        , updateWhenZooming : true
+        , keepBuffer        : 4
         , label             : vMap.name
         , iconURL           : this.defaultIconURL
           + vMap.subMap[0].tileURL
@@ -306,8 +307,9 @@ ZMap.prototype.addMap = function(vMap) {
                                            , { maxZoom:           vMap.maxZoom
                                              , noWrap:            true
                                              , tileSize:          this.mapOptions.tileSize
-                                             , updateWhenIdle:    true
-                                             , updateWhenZooming: false
+                                             , updateWhenIdle:    false
+                                             , updateWhenZooming: true
+                                             , keepBuffer:        4
                                              , label:             vMap.name
                                              , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
                                              }
@@ -327,8 +329,9 @@ ZMap.prototype.addMap = function(vMap) {
                                             , opacity:           vMap.subMap[i].opacity
                                             , noWrap:            true
                                             , tileSize:          this.mapOptions.tileSize
-                                            , updateWhenIdle:    true
-                                            , updateWhenZooming: false
+                                            , updateWhenIdle:    false
+                                            , updateWhenZooming: true
+                                            , keepBuffer:        4
                                             , label:             vMap.name
                                             , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                           }
@@ -357,7 +360,8 @@ ZMap.prototype.addMap = function(vMap) {
                                                                        , tileSize:          this.mapOptions.tileSize
                                                                        , opacity:           submap.opacity
                                                                        , updateWhenIdle:    false
-                                                                       , updateWhenZooming: false
+                                                                       , updateWhenZooming: true
+                                                                       , keepBuffer:        4
                                                                        , label:             vMap.name
                                                                        , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
                                                                        });
@@ -666,8 +670,12 @@ ZMap.prototype._createMarkerPopup = function(marker) {
   this.mapControl.openDrawerSmall();
 }
 
+ZMap.prototype._getDisplayZoom = function() {
+   return Math.round(this.map.getZoom());
+}
+
 ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
-   if (this.map.getZoom() > this.mapOptions.switchIconsAtZoom) {
+   if (this._getDisplayZoom() > this.mapOptions.switchIconsAtZoom) {
       return new markerIconMedium({className: 'map-icon-svg'
                             ,html: "<div class='circle circleMap-medium ' style='background-color: " + this.categories[vCatId].color + "; "
                                                                       + "border-color: " + this.categories[vCatId].color + "'>"
@@ -791,7 +799,9 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
   }
 
   if(this._shouldShowMarker(marker)) {
-    marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
+    if(marker.categoryTypeId != 3) {
+      marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
+    }
     this.map.addLayer(marker);
 
     if (marker.path != undefined && marker.path != null && marker.path != "") {
@@ -855,7 +865,7 @@ ZMap.prototype._shouldShowMarker = function(marker) {
       'is marker category zoom level\n' +
       'below or equal to the map\'s\n' +
       `current                      : ${
-        markerCategory.visible_zoom <= this.map.getZoom()
+        markerCategory.visible_zoom <= this._getDisplayZoom()
     }`);
     console.log(
       'show incomplete marker if\n' +
@@ -868,12 +878,13 @@ ZMap.prototype._shouldShowMarker = function(marker) {
 
   if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
     return marker.visible
+    && this.mapOptions.showPoiLabels !== false
     && markerCategory.checked
     && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
     && (
       this.mapOptions.categorySelectionMethod != "focus"
       || !this.mapControl._categoryMenu.modeAutomatic
-      || markerCategory.visible_zoom <= this.map.getZoom()
+      || markerCategory.visible_zoom <= this._getDisplayZoom()
     ) // Check if we should show for the category, and at this zoom level, for focus modes
     && (
       this.mapOptions.showCompleted == true || (
@@ -888,13 +899,13 @@ ZMap.prototype._shouldShowMarker = function(marker) {
       && (
         (
          this.mapOptions.categorySelectionMethod == "focus"
-         && this.categories[marker.categoryId].visible_zoom <= this.map.getZoom()
+         && this.categories[marker.categoryId].visible_zoom <= this._getDisplayZoom()
          && (
                (
-               (marker.categoryId == 2163 && this.map.getZoom() <= 3)
-               || (marker.categoryId == 2164 && this.map.getZoom() > 3 && this.map.getZoom() <= 5)
-               || (marker.categoryId == 2165 && this.map.getZoom() > 5 && this.map.getZoom() <= 6)
-               || (marker.categoryId == 2166 && this.map.getZoom() > 6 && this.map.getZoom() <= 8)
+               (marker.categoryId == 2163 && this._getDisplayZoom() <= 3)
+               || (marker.categoryId == 2164 && this._getDisplayZoom() > 3 && this._getDisplayZoom() <= 5)
+               || (marker.categoryId == 2165 && this._getDisplayZoom() > 5 && this._getDisplayZoom() <= 6)
+               || (marker.categoryId == 2166 && this._getDisplayZoom() > 6 && this._getDisplayZoom() <= 8)
                )
             )
         )
@@ -953,7 +964,7 @@ ZMap.prototype.buildMap = function(gameId) {
       maxBoundsViscosity: Number.parseFloat(
         ZConfig.getConfig('maxBoundsViscosity')
       ),
-      zoom:         Number.parseInt(
+      zoom:         Number.parseFloat(
            this.mapOptions.zoom
 	      || ZConfig.getConfig('zoom')
         || ZConfig.getConfig(`zoom-${gameId}`)
@@ -1000,6 +1011,9 @@ ZMap.prototype.buildMap = function(gameId) {
   }
 
   this.map = L.map(mainEl, this.mapOptions);
+  if(ZConfig.getConfig('trackpadGestures') != 'false') {
+    this.trackpadGestureHandler = new TrackpadGestureHandler(this.map);
+  }
 
   // Get all the base maps
   this.baseMaps = {};
@@ -1027,9 +1041,9 @@ ZMap.prototype.buildMap = function(gameId) {
   this.map.on(
     'zoomend',
     function() {
-      if (this.map.getZoom() > 5 && currentIcon == 'Small') {
+      if (this._getDisplayZoom() > 5 && currentIcon == 'Small') {
         currentIcon = 'Medium';
-      } else if (this.map.getZoom() > 5 && currentIcon == 'Small') {
+      } else if (this._getDisplayZoom() <= 5 && currentIcon == 'Medium') {
         currentIcon = 'Small';
       } else {
         return;
@@ -1115,6 +1129,11 @@ ZMap.prototype.addMapControl = function(gameId) {
   );
   this.mapControl.setCurrentMapLayer(this.maps[0]);
   this.mapControl.addTo(this.map);
+  this.settingsControl = L.control.settings({
+    zMap: this,
+    mapControl: this.mapControl
+  }).addTo(this.map);
+  this._setupDroppedPinGesture();
 
   // TODO keyboard accessibility
 
@@ -1176,6 +1195,94 @@ ZMap.prototype.addMapControl = function(gameId) {
   });
 };
 
+ZMap.prototype._setupDroppedPinGesture = function() {
+  var container = this.map.getContainer();
+  var press = null;
+  var holdDelay = 650;
+  var movementTolerance = 9;
+
+  function clearPress() {
+    if(press && press.timer) window.clearTimeout(press.timer);
+    press = null;
+  }
+
+  L.DomEvent.on(container, 'pointerdown', function(e) {
+    if(e.button !== undefined && e.button !== 0) return;
+    if(e.isPrimary === false) return;
+    if($(e.target).closest('.leaflet-control, .leaflet-marker-icon, .leaflet-tooltip, .leaflet-popup').length) return;
+
+    clearPress();
+    press = {
+      pointerId: e.pointerId,
+      x: e.clientX,
+      y: e.clientY
+    };
+    press.timer = window.setTimeout(function() {
+      if(!press) return;
+      var rect = container.getBoundingClientRect();
+      var point = L.point(press.x - rect.left, press.y - rect.top);
+      var latlng = this.map.containerPointToLatLng(point);
+      clearPress();
+      this._openDroppedPin(latlng);
+    }.bind(this), holdDelay);
+  }, this);
+
+  L.DomEvent.on(container, 'pointermove', function(e) {
+    if(!press || e.pointerId !== press.pointerId) return;
+    if(Math.abs(e.clientX - press.x) > movementTolerance || Math.abs(e.clientY - press.y) > movementTolerance) {
+      clearPress();
+    }
+  });
+  L.DomEvent.on(container, 'pointerup pointercancel pointerleave', clearPress);
+};
+
+ZMap.prototype._createDroppedPinLink = function(latlng) {
+  var url = new URL(window.location.href);
+  url.searchParams.delete('marker');
+  url.searchParams.set('map', this.mapControl.getCurrentMap().mapId);
+  url.searchParams.set('subMap', this.mapControl.getCurrentMap().subMapId);
+  url.searchParams.set('zoom', this.map.getZoom());
+  url.searchParams.set('x', latlng.lng.toFixed(4));
+  url.searchParams.set('y', latlng.lat.toFixed(4));
+  url.searchParams.set('droppedPin', 'true');
+  return url.toString();
+};
+
+ZMap.prototype._openDroppedPin = function(latlng) {
+  this._closeNewMarker();
+  newMarker = L.marker(latlng).addTo(this.map);
+  newMarker.droppedPin = true;
+
+  var x = latlng.lng.toFixed(2);
+  var y = latlng.lat.toFixed(2);
+  var link = this._createDroppedPinLink(latlng);
+  var content = '' +
+    '<div class="dropped-pin-page">' +
+      '<h3 class="text-center">Dropped Pin</h3>' +
+      '<p class="dropped-pin-coordinates"><strong>Coordinates</strong><br>X: ' + x + '<br>Y: ' + y + '</p>' +
+      '<button id="copy_dropped_pin_link" type="button" class="infoWindowIcn form-action-button">' +
+        '<i class="fas fa-link" aria-hidden="true"></i> Copy Link to Pin' +
+      '</button>' +
+      '<p id="dropped_pin_copy_status" class="dropped-pin-copy-status" role="status" aria-live="polite"></p>' +
+    '</div>';
+
+  this.mapControl.setContent(content, 'droppedPin-' + L.Util.stamp(newMarker));
+  this.mapControl.openDrawerSmall();
+
+  $('#copy_dropped_pin_link').on('click', function() {
+    var status = $('#dropped_pin_copy_status');
+    if(navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).then(function() {
+        status.text('Link copied.');
+      }).catch(function() {
+        window.prompt('Copy this link:', link);
+      });
+    } else {
+      window.prompt('Copy this link:', link);
+    }
+  });
+};
+
 ZMap.prototype.goToStart = function() {
   this.map.setView(
     new L.LatLng(
@@ -1220,19 +1327,8 @@ ZMap.prototype.toggleCompleted = function() {
 };
 
 ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
-  if(!this.userWarnedAboutMarkerQty && this.mapControl) {
-    var checksReport = this.mapControl._categoryMenu.computeAndGetChecks();
-    if(
-         checksReport.checked > 5
-      && (
-           this.mapOptions.categorySelectionMethod != 'focus'
-        || checksReport.checked < this.categoryCount
-      )
-    ) {
-      toastr.warning('Combining a lot of categories might impact performance.');
-      this.userWarnedAboutMarkerQty = true;
-    }
-  }
+  // Category selections are intentionally unrestricted. Tile and marker
+  // buffering now handle larger selections without interrupting the user.
 };
 
 //************* CATEGORY MENU *************//
@@ -1391,12 +1487,12 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
                '</div>'+
                '<div class="form-group">'+
                   '<div>'+
-                     '<button id="add_field_button" type="button" class="btn btn-link">Add more</button>'+
+                     '<button id="add_field_button" type="button" class="infoWindowIcn form-action-button">Add more</button>'+
                   '</div>'+
                '</div>'+
                '<div class="modal-footer">'+
                   '<div>'+
-                     '<button type="submit" class="btn btn-primary btn-lg btn-block">Submit</button>'+
+                     '<button type="submit" class="infoWindowIcn form-action-button">Submit</button>'+
                   '</div>'+
                '</div>'
    ;
@@ -1887,7 +1983,8 @@ ZMap.prototype._createRegisterForm = function() {
 
                               '<div class="modal-footer">'+
                                  '<div>'+
-                                    '<button type="submit" class="btn btn-primary btn-lg btn-block">Register</button>'+
+                                    '<button type="submit" class="infoWindowIcn form-action-button">Register</button>'+
+                                    '<button id="register_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>'+
                                  '</div>'+
                                '</div>'+
                         '</form>'+
@@ -1904,8 +2001,9 @@ ZMap.prototype._createRegisterForm = function() {
         success: function(data) {
             //data = jQuery.parseJSON(data);
             if (data.success) {
-               toastr.success(_this.langMsgs.REGISTER_SUCCESS.format($("#user")[0].value));
-               _this._createLoginForm();
+               var successMessage = _this.langMsgs.REGISTER_SUCCESS.format($("#user")[0].value)
+                 + " Please log in.";
+               _this._createLoginForm(successMessage);
             } else {
                console.log(data.msg);
                toastr.error(_this.langMsgs.REGISTER_ERROR.format(data.msg));
@@ -1913,6 +2011,11 @@ ZMap.prototype._createRegisterForm = function() {
         }
       });
 
+      e.preventDefault();
+   });
+
+   $("#register_back_btn").click(function(e) {
+      _this._createLoginForm();
       e.preventDefault();
    });
 }
@@ -1938,7 +2041,8 @@ ZMap.prototype._createLostPasswordForm = function() {
                           '</div>'+
                           '<div class="modal-footer">'+
                                  '<div>'+
-                                    '<button type="submit" class="btn btn-primary btn-lg btn-block">Reset Password</button>'+
+                                    '<button type="submit" class="infoWindowIcn form-action-button">Reset Password</button>'+
+                                    '<button id="lost_password_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>'+
                                  '</div>'+
                                '</div>'+
                         '</form>'+
@@ -1965,6 +2069,15 @@ ZMap.prototype._createLostPasswordForm = function() {
 
       e.preventDefault();
    });
+
+   $("#lost_password_back_btn").click(function(e) {
+      if(user) {
+         _this._createAccountForm(user);
+      } else {
+         _this._createLoginForm();
+      }
+      e.preventDefault();
+   });
 }
 
 ZMap.prototype._createChangePasswordForm = function() {
@@ -1989,7 +2102,8 @@ ZMap.prototype._createChangePasswordForm = function() {
                           '</div>'+
                           '<div class="modal-footer">'+
                              '<div>'+
-                                '<button type="submit" class="btn btn-primary btn-lg btn-block">Change Password</button>'+
+                                '<button type="submit" class="infoWindowIcn form-action-button">Change Password</button>'+
+                                '<button id="change_password_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>'+
                              '</div>'+
                            '</div>'+
                         '</form>'+
@@ -2016,12 +2130,22 @@ ZMap.prototype._createChangePasswordForm = function() {
 
       e.preventDefault();
    });
+
+   $("#change_password_back_btn").click(function(e) {
+      _this._createAccountForm(user);
+      e.preventDefault();
+   });
 }
 
 ZMap.prototype._createAccountDeleteForm = function() {
   this.mapControl.setContent(
     '<div id="deleteaccount">' +
       '<h3 class="text-center">' + this.langMsgs.DELETE_ACCOUNT_WELCOME + '</h3>' +
+      '<div class="alert alert-danger delete-account-warning" role="alert">' +
+        '<strong>This action is permanent.</strong> ' +
+        'Deleting your account will remove all of your user data from Zelda Maps. ' +
+        'If you wish to save your maps data again, you will need to create a new account.' +
+      '</div>' +
       '<form class="leaflet-control-layers-list" role="deleteaccountform" id="deleteaccountform" enctype="multipart/form-data">' +
         '<div class="form-group">' +
            '<div class="cols-sm-10">' +
@@ -2035,7 +2159,8 @@ ZMap.prototype._createAccountDeleteForm = function() {
         '</div>' +
         '<div class="modal-footer">' +
            '<div>' +
-              '<button type="submit" class="btn btn-primary btn-lg btn-block bad">Delete Account</button>' +
+              '<button type="submit" class="infoWindowIcn form-action-button bad">Permanently Delete Account</button>' +
+              '<button id="delete_account_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>' +
            '</div>' +
          '</div>' +
       '</form>' +
@@ -2044,6 +2169,11 @@ ZMap.prototype._createAccountDeleteForm = function() {
   );
 
   var _this = this;
+
+  $("#delete_account_back_btn").click(function(e) {
+    _this._createAccountForm(user);
+    e.preventDefault();
+  });
 
   $("#deleteaccountform").submit(function(e) {
     $.ajax({
@@ -2069,10 +2199,12 @@ ZMap.prototype._createAccountDeleteForm = function() {
   });
 }
 
-ZMap.prototype._createLoginForm = function() {
+ZMap.prototype._createLoginForm = function(successMessage) {
    this.mapControl.setContent('<div id="login">'+
                            '<h3 class="text-center">' + this.langMsgs.LOGIN_WELCOME + '</h3>'+
                            '<form class="leaflet-control-layers-list" role="loginform" id="loginform" enctype="multipart/form-data">'+
+                           '<div id="login-success" class="alert alert-success login-message" role="status" aria-live="polite" hidden></div>'+
+                           '<div id="login-error" class="alert alert-danger login-error" role="alert" aria-live="assertive" hidden></div>'+
                            '<div class="form-group">'+
                               '<div class="cols-sm-10">'+
                                  '<div class="input-group">'+
@@ -2097,17 +2229,32 @@ ZMap.prototype._createLoginForm = function() {
                            '</div>'+
                            '<div class="modal-footer">'+
                               '<div>'+
-                                 '<button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>'+
+                                 '<button type="submit" class="infoWindowIcn form-action-button">Login</button>'+
                               '</div>'+
                               '<div>'+
-                                '<button id="login_lost_btn" type="button" class="btn btn-link" disabled="true">Lost Password?</button>'+
-                                '<button id="login_register_btn" type="button" class="btn btn-link">Register</button>'+
+                                '<button id="login_lost_btn" type="button" class="infoWindowIcn form-action-button" disabled="true">Lost Password?</button>'+
+                                '<button id="login_register_btn" type="button" class="infoWindowIcn form-action-button">Register</button>'+
                               '</div>'+
                            '</div>'+
                            '</form>'+
                         '</div>', 'loginForm');
 
+   if(successMessage) {
+      $("#login-success").text(successMessage).removeAttr("hidden");
+   }
+
+   function showLoginError(message) {
+      $("#login-error")
+        .text(_this.langMsgs.LOGIN_ERROR.format(message || "Unable to log in. Please try again."))
+        .removeAttr("hidden");
+   }
+
+   function clearLoginError() {
+      $("#login-error").attr("hidden", true).text("");
+   }
+
    $("#loginform").submit(function(e) {
+      clearLoginError();
       var result = false;
       $.ajax({
         type: "POST",
@@ -2128,12 +2275,18 @@ ZMap.prototype._createLoginForm = function() {
               _this.mapControl.resetContent();
             }
           } else {
-            toastr.error(_this.langMsgs.LOGIN_ERROR.format(data.msg));
+            showLoginError(data.msg);
           }
+        },
+        error: function(data) {
+          var message = data.responseJSON && data.responseJSON.msg;
+          showLoginError(message);
         }
       });
       e.preventDefault();
    });
+
+   $("#loginform input").on("input", clearLoginError);
 
    $("#login_register_btn").click(function(e) {
       _this._createRegisterForm();
@@ -2165,11 +2318,11 @@ ZMap.prototype._createAccountForm = function(user) {
            '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
+           '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
          '</div>' +
       '</div>' +
     '</div>',
     'accountPage'
-    // '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
   );
 
   $("#account_clear_completed_btn").click(function(e) {
@@ -2191,10 +2344,10 @@ ZMap.prototype._createAccountForm = function(user) {
      e.preventDefault();
   });
 
-  // $("#account_delete_btn").click(function(e) {
-  //    _this._createAccountDeleteForm();
-  //    e.preventDefault();
-  // });
+  $("#account_delete_btn").click(function(e) {
+     _this._createAccountDeleteForm();
+     e.preventDefault();
+  });
 
   $("#log_out_btn").click(function(e) {
     _this.logout();

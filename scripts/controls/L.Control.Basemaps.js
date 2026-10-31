@@ -97,8 +97,8 @@ L.Control.Basemaps = L.Control.extend({
                 basemapNode,
                 "click",
                 function() {
-                    // intercept open click on mobile devices and show options
-                    if (this.options.basemaps.length > 2 && L.Browser.mobile) {
+                    // At compact widths, open the options before selecting one.
+                    if (this.options.basemaps.length > 2 && isMobile()) {
                         if (L.DomUtil.hasClass(container, "closed")) {
                             L.DomUtil.removeClass(container, "closed");
                             return;
@@ -127,7 +127,7 @@ L.Control.Basemaps = L.Control.extend({
             );
         }, this);
 
-        if (this.options.basemaps.length > 2 && !L.Browser.mobile) {
+        if (this.options.basemaps.length > 2 && !isMobile()) {
             L.DomEvent.on(
                 container,
                 "mouseenter",

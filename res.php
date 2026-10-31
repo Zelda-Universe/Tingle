@@ -165,6 +165,15 @@
         }
       }
 
+      // Refresh a changed manifest before parsing it for this response.
+      // Otherwise the first rebuilt bundle can omit newly listed files.
+      if(
+            $cacheRegistryFileExists
+        &&  $localRegistryFileMTime > $cacheRegistryFileMTime
+      ) {
+        $update = true;
+      }
+
       if(!$cacheRegistryFileExists || $update) {
         // debug_log('Registry file not currectly cached; copying over, inifying, and prompting an update...');
         $update = true;

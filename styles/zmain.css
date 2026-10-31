@@ -77,8 +77,119 @@ main {
 	font-family: "BrandonText", sans-serif !important;
 }
 
+:root {
+	--safe-area-bottom: env(safe-area-inset-bottom, 0px);
+}
+
 .relativeContainer {
 	position: relative;
+}
+
+.settings-control {
+	position: relative;
+	font-family: "BrandonText", sans-serif;
+}
+
+.settings-control-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	color: #c3c3c3;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.settings-control-toggle:hover,
+.settings-control.open .settings-control-toggle {
+	background: transparent;
+	color: #c3c3c3;
+}
+
+.settings-control-panel {
+	display: none;
+	position: absolute;
+	top: 0;
+	right: 52px;
+	width: 245px;
+	padding: 10px;
+	background: rgba(0,0,0,.8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	border-radius: 16px;
+	box-shadow: 0 16px 32px rgba(0,0,0,.6);
+	color: white;
+}
+
+.settings-control.open .settings-control-panel {
+	display: block;
+}
+
+.settings-control-panel h3 {
+	margin: 0 0 8px;
+	font-size: 18px;
+	text-align: center;
+}
+
+.settings-control-option {
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	margin: 0;
+	padding: 7px 8px;
+	border-radius: 7px;
+	font-size: 15px;
+	font-weight: 400;
+	cursor: pointer;
+}
+
+.settings-control-option:hover {
+	background: rgba(255,255,255,.12);
+}
+
+.settings-control-option.child {
+	padding-left: 24px;
+	font-size: 14px;
+}
+
+.settings-control-option input {
+	margin: 0;
+}
+
+.settings-control-mobile-floating .settings-control-toggle {
+	line-height: 1;
+	border-radius: 50% !important;
+}
+
+.settings-control-mobile-floating .settings-control-toggle i {
+	display: block;
+	line-height: 1;
+}
+
+.settings-control.open .settings-control-toggle {
+	background-color: rgba(255,255,255,.2);
+	border-radius: 16px;
+	color: white;
+}
+
+.settings-control-mobile-floating .settings-control-panel {
+	top: 52px;
+	right: 0;
+	width: calc(100vw - 20px);
+}
+
+.settings-control-mobile-floating {
+	border-radius: 50% !important;
+}
+
+.settings-managed-category {
+	display: none !important;
 }
 
 .highlight {
@@ -99,6 +210,174 @@ main {
 #toast-container {
 	width: 450px !important;
 	padding: 16px !important;
+}
+
+.login-message,
+.login-error {
+	margin: 0 0 16px;
+	padding: 12px 14px;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.4;
+	text-align: center;
+}
+
+#loginform .form-control {
+	font-size: 16px;
+}
+
+.menu-cat-content-inner form .input-group {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+	overflow: hidden;
+	background: rgba(255,255,255,.2);
+	border-radius: 0;
+	transition: background-color .2s, box-shadow .2s;
+}
+
+.menu-cat-content-inner form > .form-group {
+	margin: 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.menu-cat-content-inner form > .form-group + .form-group .input-group {
+	border-top: 1px solid rgba(255,255,255,.12);
+}
+
+.menu-cat-content-inner form > .form-group:first-child .input-group,
+.menu-cat-content-inner form > :not(.form-group) + .form-group .input-group {
+	border-radius: 10px 10px 0 0;
+}
+
+.menu-cat-content-inner form > .form-group:not(:has(+ .form-group)) {
+	margin-bottom: 16px;
+}
+
+.menu-cat-content-inner form > .form-group:not(:has(+ .form-group)) .input-group {
+	border-radius: 0 0 10px 10px;
+}
+
+.menu-cat-content-inner form > .form-group:first-child:not(:has(+ .form-group)) .input-group,
+.menu-cat-content-inner form > :not(.form-group) + .form-group:not(:has(+ .form-group)) .input-group {
+	border-radius: 10px;
+}
+
+.menu-cat-content-inner form .input-group:focus-within {
+	background: rgba(255,255,255,.3);
+}
+
+.menu-cat-content-inner form .input-group .form-control {
+	order: 2;
+	flex: 1 1 auto;
+	width: 1%;
+	height: 44px;
+	padding: 10px 14px 10px 8px;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	color: inherit;
+}
+
+.menu-cat-content-inner form .input-group .input-group-addon {
+	order: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	padding: 0 8px 0 12px;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	color: inherit;
+}
+
+.menu-cat-content-inner form .input-group .form-control:focus {
+	box-shadow: none;
+}
+
+.menu-cat-content-inner form .input-group .form-control::placeholder {
+	color: rgba(255,255,255,.75);
+}
+
+.modal-footer .form-action-button.infoWindowIcn {
+	margin-top: 0;
+}
+
+.menu-cat-content-inner form .modal-footer > div {
+	margin: 0;
+}
+
+.form-action-button.infoWindowIcn:disabled {
+	cursor: not-allowed;
+	opacity: .5;
+}
+
+#loginform .checkbox {
+	width: 100%;
+	box-sizing: border-box;
+	margin: 0 0 24px;
+	padding: 6px 10px;
+	background: rgba(255,255,255,.2);
+	border-top: 1px solid rgba(255,255,255,.12);
+	border-radius: 0 0 10px 10px;
+	font-size: 14px;
+}
+
+#loginform > .form-group:not(:has(+ .form-group)) {
+	margin-bottom: 0;
+}
+
+#loginform > .form-group:not(:has(+ .form-group)) .input-group {
+	border-radius: 0;
+}
+
+#loginform .checkbox label {
+	display: flex;
+	align-items: center;
+	margin: 0;
+	padding: 0;
+	cursor: pointer;
+}
+
+#loginform .checkbox input[type="checkbox"] {
+	position: static;
+	margin: 0 8px 0 0;
+}
+
+.delete-account-warning {
+	font-size: 16px;
+	line-height: 1.5;
+	text-align: center;
+}
+
+.dropped-pin-page {
+	padding: 0 24px 24px;
+}
+
+.dropped-pin-coordinates {
+	margin: 24px 0;
+	padding: 14px 16px !important;
+	background: rgba(255,255,255,.12);
+	border-radius: 10px;
+	font-size: 16px !important;
+	line-height: 1.5;
+	text-align: center;
+}
+
+.dropped-pin-page .infoWindowIcn {
+	width: 100%;
+	box-sizing: border-box;
+	margin: 0;
+}
+
+.dropped-pin-copy-status {
+	min-height: 20px;
+	margin: 8px 0 0;
+	padding: 0 !important;
+	text-align: center;
 }
 
 @media only screen and (max-width: 600px) {
@@ -456,7 +735,19 @@ a.button.leaflet-control-layers-toggle {
 }
 
 .menu-cat-content-inner form {
-	padding: 16px 24px 24px 24px;
+	box-sizing: border-box;
+	padding: 16px 24px 24px;
+}
+
+.menu-cat-content-inner form .modal-footer .infoWindowIcn {
+	width: 100%;
+	box-sizing: border-box;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.menu-cat-content-inner form .modal-footer > div:last-child .infoWindowIcn:last-child {
+	margin-bottom: 0;
 }
 
 .popupTitle {
@@ -832,6 +1123,8 @@ a.icon-close2 {
 	margin-top: max(10px, env(safe-area-inset-top)) !important;
 	overflow: hidden;
 	height: 44px;
+	width: calc(100vw - 74px);
+	box-sizing: border-box;
 }
 
 @media not all and (min-resolution:.001dpcm) {
@@ -862,6 +1155,14 @@ a.icon-close2 {
 .mobile-header-bar>.row {
 	margin-left: 0;
 	margin-right: 0;
+}
+
+.mobile-header-bar .row-header > div:first-child {
+	border-right: 1px solid rgba(255,255,255,.2);
+}
+
+.mobile-header-bar .row-header > div:last-child {
+	border-left: 0;
 }
 
 .leaflet-touch .leaflet-bar a {
@@ -1031,7 +1332,17 @@ a.icon-close2 {
 
 .row.vertical-divider div[class^="col-"]:last-child {
 	border-right: none;
-	border-left: 1px solid rgba(255, 255, 255, .2);
+	border-left: none;
+}
+
+.row-header .account-button-container {
+	width: 60px;
+	min-width: 60px;
+	max-width: 60px;
+}
+
+.row-header .account-button-container + .header-search-container {
+	width: calc(100% - 60px);
 }
 
 /* Drawer Header Stuff */
@@ -1094,6 +1405,7 @@ a.icon-close2 {
 
 header.ex1 {
 	height: 99px !important;
+	touch-action: none;
 }
 
 .logo {
@@ -1317,7 +1629,7 @@ header.ex1 {
     transition: .2s;
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 601px) {
    .completed-button.toggledOff:hover {
       /*opacity: .8;*/
    }
@@ -1336,7 +1648,7 @@ header.ex1 {
     transition: .2s;
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 601px) {
    .completed-button.toggledOff:hover .icon-General_Map {
        background-color: rgba(255, 0, 0, .7);
        border-color: rgba(255, 0, 0, .7);
@@ -1356,6 +1668,57 @@ header.ex1 {
     background-color: red !important;
     border-color: red !important;
     transition: .2s;
+}
+
+/* Drawer map/game controls use the same neutral states as the account control. */
+.menu-header-button,
+.menu-header-button:hover,
+.menu-header-button.toggledOff {
+	background: transparent;
+}
+
+.menu-header-button.toggledOn {
+	background-color: transparent !important;
+	background-image: none !important;
+	opacity: 1 !important;
+}
+
+.menu-header-button .category-icon,
+.menu-header-button.toggledOff .category-icon,
+.menu-header-button.toggledOn .category-icon,
+.menu-header-button.toggledOff .icon-General_Map,
+.menu-header-button.toggledOn .icon-General_Map {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: 64px;
+	height: 64px;
+	line-height: 1;
+	background: transparent !important;
+	border: 2px solid rgba(255,255,255,.3) !important;
+	color: rgba(255,255,255,.55);
+}
+
+.menu-header-button:hover .category-icon,
+.menu-header-button.toggledOn .category-icon,
+.menu-header-button:hover .icon-General_Map,
+.menu-header-button.toggledOn .icon-General_Map {
+	background: transparent !important;
+	border-color: rgba(255,255,255,.8) !important;
+	color: white;
+}
+
+.menu-header-button:hover .label,
+.menu-header-button.toggledOn .label {
+	color: rgba(255,255,255,.8);
+}
+
+.menu-header-button.toggledOn .category-icon,
+.menu-header-button.toggledOn .icon-General_Map {
+	background-color: rgba(255,255,255,.2) !important;
+	border: 0 !important;
+	color: white;
 }
 
 

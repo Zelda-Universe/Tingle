@@ -82,7 +82,7 @@ function zMapInit(vResults) {
     // Settings
     {
       vContainer.showMapControl             = getUrlParamValue('showMapControl', vContainer.showMapControl);
-      vContainer.collapsed                  = getUrlParamValue('collapsed', L.Browser.mobile);
+      vContainer.collapsed                  = getUrlParamValue('collapsed', isMobile());
       vContainer.showCategoryControl        = getUrlParamValue('showCategoryControl', true);//vContainer.showCategoryControl);
       if (getCookie('isCategoryOpen') == '') {
          setCookie('isCategoryOpen',"true");
@@ -263,6 +263,14 @@ function finalLoad() {
     return;
   }
 
+  if(ZConfig.getConfig('droppedPin') == 'true') {
+    var pinX = Number.parseFloat(ZConfig.getConfig('x'));
+    var pinY = Number.parseFloat(ZConfig.getConfig('y'));
+    if(Number.isFinite(pinX) && Number.isFinite(pinY)) {
+      zMap._openDroppedPin(new L.LatLng(pinY, pinX));
+    }
+  }
+
   var zoom = (
     ZConfig.getConfig('zoom')
     || ZConfig.getConfig(`zoom-${gameId}`)
@@ -358,15 +366,6 @@ function updateAdState() {
     ));
   }
 };
-
-function isMobile() {
-  return (
-    L.Browser.mobile
-    && window.innerWidth < 768
-  )
-}
-
-
 
 /**** LANG *****/
 function getLang(shortName) {

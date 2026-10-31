@@ -30,15 +30,29 @@ AccountButton.prototype._setupUserInputListener = function(opts) {
 };
 
 AccountButton.prototype.click = function(opts) {
+  var contentType;
+  var setContent;
+
   if(user) {
-    opts.mapControl.toggleContent(
-      "accountPage",
-      zMap._createAccountForm.bind(zMap, user)
-    )
+    contentType = "accountPage";
+    setContent = zMap._createAccountForm.bind(zMap, user);
+  } else {
+    contentType = "loginForm";
+    setContent = zMap._createLoginForm.bind(zMap);
+  }
+
+  if(opts.mapControl.isMobile) {
+    // The account button lives in the mobile drawer header. Always show its
+    // associated content and open the drawer instead of treating it as a
+    // desktop content toggle.
+    if(opts.mapControl._contentType !== contentType) {
+      setContent();
+    }
+    opts.mapControl.openDrawerLarge();
   } else {
     opts.mapControl.toggleContent(
-      "loginForm",
-      zMap._createLoginForm.bind(zMap)
-    )
+      contentType,
+      setContent
+    );
   }
 };

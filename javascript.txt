@@ -33,8 +33,10 @@ scripts/controls/infoBox/MouseCoords.js
 scripts/services/SearcherFuse.js
 scripts/handlers/SearchMarkerHandler.js
 scripts/handlers/ChangelogHandler.js
+scripts/handlers/TrackpadGestureHandler.js
 scripts/leaflet.contextmenu.js
 scripts/controls/ZLayers.js
+scripts/controls/SettingsControl.js
 scripts/zmap.js
 scripts/zmain.lib.js
 scripts/zmain.js

@@ -65,14 +65,9 @@
          $user['level'] = $row['level'];
          $user['seen_version'] = $row['v1'] . '.' . $row['v2'] . '.' . $row['v3'];
 
-         $hash = password_hash($username . $row['password'], PASSWORD_DEFAULT, ['cost' => 13]);
-
-         if (isset($_POST['remember'])) {
-            setcookie('user_id', $user['id'], strtotime( '+30 days' ), "/", "", "", TRUE);
-            setcookie('username', $user['username'], strtotime( '+30 days' ), "/", "", "", TRUE);
-         }
-
-         start_session("zmap");
+         $rememberLifetime = isset($_POST['remember']) ? 60 * 60 * 24 * 30 : 0;
+         start_session("zmap", $rememberLifetime);
+         session_regenerate_id(true);
 
          $_SESSION['username'] = $user['username'];
          $_SESSION['user_id'] = $user['id'];
@@ -80,6 +75,7 @@
          $_SESSION['v1'] = $row['v1'];
          $_SESSION['v2'] = $row['v2'];
          $_SESSION['v3'] = $row['v3'];
+         $_SESSION['remember'] = $rememberLifetime > 0;
 
          session_write_close();
 

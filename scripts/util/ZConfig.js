@@ -29,6 +29,7 @@ ZConfig.setDefault('collapsed'                , 'false' );
 
 ZConfig.setDefault('contextmenu'              , 'true'  );
 ZConfig.setDefault('contextmenuWidth'         , '140'   );
+ZConfig.setDefault('droppedPin'               , 'false' );
 
 ZConfig.setDefault('enforceMaxBounds'         , 'true'  );
 ZConfig.setDefault('errorTileUrl'             , ''      );
@@ -79,6 +80,7 @@ ZConfig.setDefault('subMap'                   , ''      ); // Also suffix with `
 ZConfig.setDefault('tileAxisDirectories'      , 'false' );
 ZConfig.setDefault('tilesBaseURL'             , 'https://zeldamaps.com/tiles/');
 ZConfig.setDefault('tileZoomDirectories'      , 'false' );
+ZConfig.setDefault('trackpadGestures'          , 'true'  );
 ZConfig.setDefault('tileNameFormat'           , (
   (ZConfig.getConfig('tileAxisDirectories') == 'true')
   ? '{z}/{x}/{y}'

@@ -48,7 +48,7 @@ HeaderBar.prototype._initDOMElements = function(opts) {
   this.domNode = parentDiv;
 
   if(this.accountButton) {
-    var headerDivLeft = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container', headerDiv);
+    var headerDivLeft = L.DomUtil.create('div', 'col-xs-2 full-icon-space-container account-button-container', headerDiv);
     this.createAccountButton(headerDivLeft);
   }
 
@@ -65,6 +65,7 @@ HeaderBar.prototype._initDOMElements = function(opts) {
     ),
     headerDiv
   );
+  L.DomUtil.addClass(headerDivMid, 'header-search-container');
   if(this.actuallyCreateSearchArea) {
     this.createSearchArea(headerDivMid, opts.name, opts.categories);
   } else {

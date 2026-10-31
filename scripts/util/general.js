@@ -2,6 +2,40 @@
 // by Pysis(868)
 // https://choosealicense.com/licenses/mit/
 
+// Phone-sized viewports use the mobile drawer. All current iPad viewports,
+// including the 744px-wide iPad mini in portrait, use the desktop layout.
+var MOBILE_LAYOUT_BREAKPOINT = 600;
+
+function getMobileLayoutMediaQuery() {
+  return window.matchMedia(
+    '(max-width: ' + MOBILE_LAYOUT_BREAKPOINT + 'px)'
+  );
+};
+
+function isMobile() {
+  return (
+    ZConfig.getConfig('forceMobile') == 'true'
+    || getMobileLayoutMediaQuery().matches
+  );
+};
+
+function watchMobileLayoutBreakpoint() {
+  var mediaQuery = getMobileLayoutMediaQuery();
+  var reloadLayout = function() {
+    if(ZConfig.getConfig('forceMobile') != 'true') {
+      window.location.reload();
+    }
+  };
+
+  if(mediaQuery.addEventListener) {
+    mediaQuery.addEventListener('change', reloadLayout);
+  } else {
+    mediaQuery.addListener(reloadLayout);
+  }
+};
+
+watchMobileLayoutBreakpoint();
+
 function getSetOrDefaultValue(value, defaultValue) {
   return (
     (value === undefined)

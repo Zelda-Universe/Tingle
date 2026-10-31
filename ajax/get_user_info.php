@@ -10,14 +10,7 @@
 		return;
 	};
 
-   if (!isset($_COOKIE['user_id']) || !isset($_COOKIE['username'])) {
-		echo json_encode(array("success"=>false, "msg"=>"Cookie - Not Logged!"));
-		return;
-   }
-
-
-   if ($_SESSION['user_id'] == $_COOKIE['user_id']
-         && $_SESSION['username'] == $_COOKIE['username']) {
+	   {
          $query = "
             SELECT CONCAT(
               `version_major`, '.',
@@ -65,7 +58,5 @@
          commit();
 
          echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));
-	} else {
-      echo json_encode(array("success"=>false, "msg"=>"Oops, something went wrong..."));
-   }
+		}
 ?>

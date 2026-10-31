@@ -51,11 +51,15 @@
     ob_start();
     try {
       require($cmdpath);
-    } catch(Exception $ex) {
-      print_r($ex);
-      $error=$ex;
-      // Source: https://stackoverflow.com/questions/3258634/php-how-to-send-http-response-code
-      // http_response_code(503); // Service Unavailable
+    } catch(Throwable $ex) {
+      // Log the detail server-side only. Never emit exception objects or
+      // traces to the client: traces carry call arguments, which here can
+      // include SQL with user input and composed e-mails.
+      error_log(sprintf(
+        'ajax.php [%s]: %s: %s at %s:%d',
+        $cmd, get_class($ex), $ex->getMessage(), $ex->getFile(), $ex->getLine()
+      ));
+      $error = new Exception("Internal error", 500);
     }
     $output = ob_get_clean();
     $res = "$output";
@@ -72,7 +76,11 @@
     }
 
     if($error!==false) {
-      $data = array("success"=>false,"code"=>$error->getCode(),"msg"=>$error->getMessage(),"output"=>$res);
+      if($error->getCode() === 10) {
+        // Endpoint produced non-JSON output; keep it in the log, not the response.
+        error_log(sprintf('ajax.php [%s]: invalid JSON output: %s', $cmd, substr($res, 0, 500)));
+      }
+      $data = array("success"=>false,"code"=>$error->getCode(),"msg"=>$error->getMessage());
     }
 
     $flags = 0;

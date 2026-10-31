@@ -184,6 +184,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(this.viewStyleBottomSlide) {
       container.style.margin = 0;
       container.style.border = 0;
+      L.DomUtil.addClass(container, 'leaflet-control-layers-mobile');
       if (this.options.showMapControl) {
         container.style.top = this._startPosition + 'px';
       }

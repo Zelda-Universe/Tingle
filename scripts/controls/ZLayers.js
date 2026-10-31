@@ -118,13 +118,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._initHandlers();
     this._attachHandlers();
 
-    this.isMobile = ( L.Browser.mobile && window.innerWidth < 768 );
-    this.isMobileForced = ( ZConfig.getConfig('forceMobile') == 'true' );
-    if(this.isMobile || this.isMobileForced) {
-      this.viewStyleBottomSlide = true;
-    } else {
-      this.viewStyleBottomSlide = false;
-    }
+    this.isMobile = isMobile();
+    this.viewStyleBottomSlide = this.isMobile;
+    this._drawerAnimationId = 0;
 
     if(this.viewStyleBottomSlide) {
       this._open = false;
@@ -267,7 +263,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         mapControl: this,
         name: this.zMap.mapOptions.name,
         parent: headerBarParent,
-        shrinkButton: !this.viewStyleBottomSlide
+        shrinkButton: false
       });
 
       var headerMenu = L.DomUtil.create('header', 'ex1', form1);
@@ -292,8 +288,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       } else {
         // console.log('Adding drawer touch event monitoring...');
         L.DomEvent
-          .on(headerMenu, 'touchstart', this._drawerStart , this)
-          .on(headerMenu, 'touchmove' , this._drawerMove  , this)
+          .on(headerMenu, 'touchstart', this._drawerStart, this)
         ;
       }
     }
@@ -373,19 +368,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
         '<div class="category-menu-marker-setting-area"></div>'
       );
 
-      var completedButtonBlock = new CategoryButtonCompletedBlock({ //rename..
-        addlClasses: 'button-completed-visibility',
-        afterToggle: zMap.toggleCompleted,
-        toggledOn: this.zMap.mapOptions.showCompleted
-      });
-      if(!this.zMap.markers) {
-        completedButtonBlock.domNode.addClass('hidden');
-        this.zMap.addHandler('markersAdded', function() {
-          completedButtonBlock.domNode.removeClass('hidden');
-        })
-      }
-      this._categoryMenuMarkerSettingArea.append(completedButtonBlock.domNode);
-
       this._categoryMenu = this.createCategoryMenu();
       this._categoryMenuMarkerSettingArea.append(this._categoryMenu.domNode);
 
@@ -411,6 +393,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   		container.appendChild(form1);
   		container.appendChild(this._contents);
+
+      if(this.viewStyleBottomSlide) {
+        window.requestAnimationFrame(function() {
+          this._refreshMobileDrawerLayout();
+        }.bind(this));
+        window.addEventListener('resize', this._refreshMobileDrawerLayout.bind(this));
+      }
     }
 
     // Collapse or (keep) open
@@ -426,79 +415,112 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _drawerStart: function(e) {
-    if (e.type.startsWith('touch')) {
-      this._drawerXDown = e.touches[0].clientX;
-      this._drawerYDown = e.touches[0].clientY;
+    var point = e.type.startsWith('touch') ? e.touches[0] : e;
+    this._drawerXDown = point.clientX;
+    this._drawerYDown = point.clientY;
+    this._drawerStartTop = this.drawerTop();
+    this._drawerDragging = false;
+    this._drawerAnimationId++;
+
+    if(e.type.startsWith('touch')) {
+      L.DomEvent
+        .on(document.documentElement, 'touchmove', this._drawerMove, this)
+        .on(document.documentElement, 'touchend touchcancel', this._drawerEnd, this);
     } else {
-      // console.log('Adding drawer pointer up event monitoring...');
+      this._drawerPointerId = e.pointerId;
       L.DomEvent
         .on(document.documentElement, 'pointermove', this._drawerMove, this)
-      ;
-      this._drawerXDown = e.clientX;
-      this._drawerYDown = e.clientY;
+        .on(document.documentElement, 'pointerup pointercancel', this._drawerEnd, this);
     }
-    // console.log('xDown: ' + this._drawerXDown);
-    // console.log('yDown: ' + this._drawerYDown);
   },
 
   _drawerMove: function(e) {
-    if (e.type.startsWith('pointer')) {
-      // console.log('Removing drawer pointer up event monitoring...');
+    if(this._drawerYDown === null) return;
+    if(e.type.startsWith('pointer') && e.pointerId !== this._drawerPointerId) return;
+
+    var point = e.type.startsWith('touch') ? e.touches[0] : e;
+    var xDelta = point.clientX - this._drawerXDown;
+    var yDelta = point.clientY - this._drawerYDown;
+    if(!this._drawerDragging && Math.abs(xDelta) > Math.abs(yDelta)) return;
+    if(Math.abs(yDelta) < 3) return;
+
+    this._drawerDragging = true;
+    var nextTop = Math.max(
+      this.options.openTo,
+      Math.min(this._startPosition, this._drawerStartTop + yDelta)
+    );
+    this._container.style.top = nextTop + 'px';
+    this._applyMobileDrawerViewport(nextTop);
+    if(e.cancelable) e.preventDefault();
+  },
+
+  _drawerEnd: function(e) {
+    if(e.type.startsWith('touch')) {
       L.DomEvent
-        .off(document.documentElement, 'pointermove', this._drawerMove)
-      ;
-    }
-    // console.log('xDown: ' + this._drawerXDown);
-    // console.log('yDown: ' + this._drawerYDown);
-    if ( ! this._drawerXDown || ! this._drawerYDown ) {
-      // console.log('return - ! xDown || ! yDown');
-      return;
-    }
-
-    var xUp = null;
-    var yUp = null;
-    if (e.type.startsWith('touch')) {
-      var xUp = e.touches[0].clientX;
-      var yUp = e.touches[0].clientY;
+        .off(document.documentElement, 'touchmove', this._drawerMove, this)
+        .off(document.documentElement, 'touchend touchcancel', this._drawerEnd, this);
     } else {
-      var xUp = e.clientX;
-      var yUp = e.clientY;
-    }
-    // console.log('xUp: ' + xUp);
-    // console.log('yUp: ' + yUp);
-
-    var xDiff = this._drawerXDown - xUp;
-    var yDiff = this._drawerYDown - yUp;
-    // console.log('xDiff: ' + xDiff);
-    // console.log('yDiff: ' + yDiff);
-
-    // ensures y movement is more significant
-    if ( Math.abs( xDiff ) < Math.abs( yDiff ) ) {
-       if ( yDiff > 0 ) { // swipe up
-          // console.log('swipe up');
-
-          this.openDrawerLarge();
-          this.updateContentsHeight();
-       } else { // swipe down
-          // console.log('swipe down');
-          // console.log('this._open: ' + this._open);
-          if(this._open) {
-            this.closeDrawer();
-            //TODO reset contents
-          }
-       }
+      L.DomEvent
+        .off(document.documentElement, 'pointermove', this._drawerMove, this)
+        .off(document.documentElement, 'pointerup pointercancel', this._drawerEnd, this);
     }
 
-    /* reset values */
+    if(this._drawerDragging) {
+      var currentTop = this.drawerTop();
+      var midpoint = (this.options.openTo + this._startPosition) / 2;
+      if(currentTop < midpoint) this.openDrawerLarge();
+      else if(this._open) this.closeDrawer();
+      else this._setDrawerState(false, this._startPosition);
+    }
     this._drawerXDown = null;
     this._drawerYDown = null;
+    this._drawerStartTop = null;
+    this._drawerDragging = false;
+    this._drawerPointerId = null;
+  },
+
+  _safeAreaBottom: function() {
+    return Number.parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue('--safe-area-bottom')
+    ) || 0;
+  },
+
+  _viewportHeight: function() {
+    return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  },
+
+  _applyMobileDrawerViewport: function(top) {
+    var actualTop = this._container.getBoundingClientRect().top;
+    var availableHeight = Math.max(0, this._viewportHeight() - actualTop - this._safeAreaBottom());
+    this._container.style.maxHeight = availableHeight + 'px';
+    this._container.style.overflow = 'hidden';
+  },
+
+  _refreshMobileDrawerLayout: function() {
+    if(!this.viewStyleBottomSlide || !this._form) return;
+    var collapsedHeight = this._form.getBoundingClientRect().height || this.options.headerHeight + 20;
+    var currentTop = this.drawerTop();
+    var desiredTop = this._viewportHeight() - collapsedHeight - this._safeAreaBottom();
+    this._container.style.top = desiredTop + 'px';
+    var actualTop = this._container.getBoundingClientRect().top;
+    this._startPosition = desiredTop + (desiredTop - actualTop);
+    if(!this._open && !this._drawerDragging) {
+      this._container.style.top = this._startPosition + 'px';
+      this._container.style.maxHeight = collapsedHeight + 'px';
+      this._container.style.overflow = 'hidden';
+    } else {
+      this._container.style.top = currentTop + 'px';
+      this._applyMobileDrawerViewport(this.drawerTop());
+      this.updateContentsHeight();
+    }
   },
 
   updateContentsHeight: function() {
     this._contents.style.maxHeight = (
-      window.innerHeight -
+      this._viewportHeight() -
       this.options.openTo -
       this.options.headerHeight -
+      this._safeAreaBottom() -
       40 // Paddings, margins, and things.  Mostly from '.category-selection-list'?
     ) + 'px';
     this._contents.style.minHeight = this._contents.style.maxHeight;
@@ -842,17 +864,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
   _animateStart: function(menu, from, to, isOpen) {
     // console.log(`_animateStart(${menu}, ${from}, ${to}, ${isOpen})`);
     this._triggerHandler("before_animateStart", menu, from, to, isOpen);
-    this._animate(menu, from, to, isOpen);
+    var animationId = ++this._drawerAnimationId;
+    this._animate(menu, from, to, isOpen, animationId);
     this._triggerHandler("after_animateStart", menu, from, to, isOpen);
   },
 
-  _animate: function(menu, from, to, isOpen) {
+  _animate: function(menu, from, to, isOpen, animationId) {
+    if(animationId !== this._drawerAnimationId) return;
     // console.log(`_animate(${menu}, ${from}, ${to}, ${isOpen})`);
     if ((isOpen && from < to) || (!isOpen && from > to)) {
       from = to;
     }
 
     menu.style.top = from + "px";
+    if(this.viewStyleBottomSlide) this._applyMobileDrawerViewport(from);
 
     if (from == to) {
       if (!isOpen) {
@@ -870,7 +895,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       if (isOpen && from < to) {
         value = to;
       }
-      zlayers._animate(zlayers._container, value, to, isOpen);
+      zlayers._animate(zlayers._container, value, to, isOpen, animationId);
     }, this.options.delay, this);
   },
 

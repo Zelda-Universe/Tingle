@@ -68,11 +68,7 @@ body {
 
 html,
 body {
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: calc(100vh + env(safe-area-inset-bottom, 0px));
-	height: calc(100dvh + env(safe-area-inset-bottom, 0px));
+	inset: 0;
 	background-color: #565656;
 	overflow: hidden;
 	position: fixed;
@@ -80,11 +76,7 @@ body {
 }
 
 main {
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: calc(100vh + env(safe-area-inset-bottom, 0px));
-	height: calc(100dvh + env(safe-area-inset-bottom, 0px));
+	inset: 0;
 	background-color: #565656;
 	overflow: hidden;
 	position: fixed;
@@ -212,8 +204,8 @@ main {
 
 	.mobile-header-bar,
 	.settings-control-mobile-floating .settings-control-toggle {
-		-webkit-backdrop-filter: none !important;
-		backdrop-filter: none !important;
+		-webkit-backdrop-filter: blur(10px) !important;
+		backdrop-filter: blur(10px) !important;
 	}
 
 	.leaflet-top > .leaflet-control.leaflet-control-layers-mobile {
@@ -222,7 +214,7 @@ main {
 	}
 
 	.settings-control-mobile-floating {
-		margin-top: max(10px, env(safe-area-inset-top, 0px)) !important;
+		margin-top: calc(env(safe-area-inset-top, 0px) + 10px) !important;
 	}
 }
 
@@ -1271,7 +1263,7 @@ a.button.back-button:hover {
 	color: white;
 	float: none;
 	margin-right: 10px;
-	margin-top: max(10px, env(safe-area-inset-top)) !important;
+	margin-top: calc(env(safe-area-inset-top, 0px) + 10px) !important;
 	overflow: hidden;
 	height: 44px;
 	width: calc(100vw - 74px);

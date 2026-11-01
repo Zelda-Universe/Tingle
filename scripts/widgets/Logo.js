@@ -14,4 +14,5 @@ function Logo(opts) {
 Logo.prototype._initDOMElements = function(opts) {
   var logoDiv = L.DomUtil.create('img', 'logo', opts.parent);
   logoDiv.src  = 'images/zmaps_white.png';
+  logoDiv.draggable = false;
 };

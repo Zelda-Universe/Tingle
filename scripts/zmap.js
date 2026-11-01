@@ -1012,7 +1012,23 @@ ZMap.prototype.buildMap = function(gameId) {
 
   this.map = L.map(mainEl, this.mapOptions);
   var map = this.map;
+  var updateMobileMapHeight = function() {
+    if(!isMobile()) {
+      document.documentElement.style.removeProperty('--mobile-map-height');
+      return;
+    }
+
+    var viewportTop = window.visualViewport
+      ? window.visualViewport.offsetTop
+      : 0;
+    var height = Math.max(
+      window.innerHeight,
+      window.screen.height - viewportTop
+    );
+    document.documentElement.style.setProperty('--mobile-map-height', height + 'px');
+  };
   var invalidateMapSize = function() {
+    updateMobileMapHeight();
     window.requestAnimationFrame(function() {
       if(this.map === map) map.invalidateSize({ pan: false });
     }.bind(this));

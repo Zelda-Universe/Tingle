@@ -181,6 +181,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
 	_initLayout: function () {
     var container = this._container;
 
+    // The drawer is application chrome, not draggable page content. Prevent
+    // images (especially the Zelda Maps logo) and labels from starting native
+    // browser drag operations while leaving drawer gestures and controls intact.
+    L.DomEvent.on(container, 'dragstart', L.DomEvent.preventDefault);
+
     if(this.viewStyleBottomSlide) {
       container.style.margin = 0;
       container.style.border = 0;
@@ -243,7 +248,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     // form style width
     if(this.viewStyleBottomSlide) {
-      form1.style.width = this.options.width + 'px';
+      form1.style.width = '100%';
     } else {
       form1.style.width = '360px';
     }
@@ -370,7 +375,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
       $(headerMenu).append(this._gamesButton.domNode);
     }
 
-    L.DomUtil.create('div', this.options.className + '-separator', form1);
+    this._drawerHeaderSeparator = L.DomUtil.create(
+      'div',
+      this.options.className + '-separator',
+      form1
+    );
 
     // Contents
     {
@@ -454,6 +463,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._finishDrawerClose();
     }
     this._container.style.transition = 'none';
+    if(this._contents) this._contents.style.transition = 'none';
+    if(this._drawerHeaderSeparator) {
+      this._drawerHeaderSeparator.style.transition = 'none';
+    }
     this._drawerXDown = point.clientX;
     this._drawerYDown = point.clientY;
     this._drawerStartTop = this.drawerTop();
@@ -564,7 +577,63 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _viewportHeight: function() {
-    return this._map.getContainer().getBoundingClientRect().height || window.innerHeight;
+    return window.visualViewport
+      ? window.visualViewport.height
+      : window.innerHeight;
+  },
+
+  _viewportBottom: function() {
+    return window.visualViewport
+      ? window.visualViewport.offsetTop + window.visualViewport.height
+      : window.innerHeight;
+  },
+
+  _mobileDrawerProgress: function(top) {
+    var travel = this._startPosition - this.options.openTo;
+    if(!Number.isFinite(travel) || travel <= 0) return this._open ? 1 : 0;
+    return Math.max(0, Math.min(1, (this._startPosition - top) / travel));
+  },
+
+  _updateMobileDrawerPresentation: function(top) {
+    if(!this.viewStyleBottomSlide) return;
+
+    var progress = this._mobileDrawerProgress(top);
+    var edgeInset = 12 * (1 - progress);
+    var topRadius = 22 + (6 * (1 - progress));
+    var bottomRadius = 28 * (1 - progress);
+    var fullWidth = this.options.width || window.innerWidth;
+    var contentProgress = Math.max(0, Math.min(1, (progress - 0.08) / 0.42));
+
+    this._container.style.left = edgeInset + 'px';
+    this._container.style.width = Math.max(0, fullWidth - (edgeInset * 2)) + 'px';
+    this._container.style.borderRadius =
+      topRadius + 'px ' + topRadius + 'px ' +
+      bottomRadius + 'px ' + bottomRadius + 'px';
+
+    if(this._contents) {
+      this._contents.style.opacity = contentProgress;
+      this._contents.style.transform =
+        'translateY(' + (8 * (1 - contentProgress)) + 'px)';
+      this._contents.style.pointerEvents = contentProgress > 0.95 ? '' : 'none';
+    }
+    if(this._drawerHeaderSeparator) {
+      this._drawerHeaderSeparator.style.opacity = Math.max(
+        0,
+        Math.min(1, (progress - 0.18) / 0.32)
+      );
+    }
+  },
+
+  _mobileDrawerSurfaceBottom: function(top) {
+    var visibleBottom = this._viewportBottom() - this._safeAreaBottom();
+    var mapBottom = this._map.getContainer().getBoundingClientRect().bottom;
+    var progress = this._mobileDrawerProgress(top);
+    var bottomGap = 10 * (1 - progress);
+
+    // The compact sheet floats above browser chrome. As it opens, only the
+    // sheet surface grows behind the controls to the physical map edge; the
+    // scrollable content remains constrained to visibleBottom below.
+    return visibleBottom + ((mapBottom - visibleBottom) * progress) - bottomGap;
   },
 
   _applyMobileDrawerViewport: function(top) {
@@ -572,31 +641,38 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var baseScreenTop = Number.isFinite(this._mobileDrawerBaseTop)
       ? this._mobileDrawerBaseTop
       : this._container.getBoundingClientRect().top - currentTop;
-    var viewportBottom = this._map.getContainer().getBoundingClientRect().bottom;
+    var surfaceBottom = this._mobileDrawerSurfaceBottom(top);
     var availableHeight = Math.max(
       0,
-      viewportBottom - this._safeAreaBottom() - baseScreenTop - top
+      surfaceBottom - baseScreenTop - top
     );
     this._container.style.height = availableHeight + 'px';
     this._container.style.maxHeight = 'none';
     this._container.style.overflow = 'hidden';
+    this._updateMobileDrawerPresentation(top);
   },
 
   _refreshMobileDrawerLayout: function() {
     if(!this.viewStyleBottomSlide || !this._form) return;
     this._map.invalidateSize({ pan: false });
+    this.options.width = this._map.getContainer().getBoundingClientRect().width || window.innerWidth;
+    // Use the measured map width instead of a percentage. The Leaflet corner
+    // wrapper is shrink-to-fit, so a percentage creates a circular width
+    // calculation when the expanded drawer is resized.
+    this._container.style.width = this.options.width + 'px';
+    this._form.style.width = '100%';
+    if(this._contents) this._contents.style.width = '100%';
     this.options.height = this._viewportHeight();
     this.options.softOpenTo = this.options.height - this.options.softOpenBottom;
     var collapsedHeight = this._form.getBoundingClientRect().height || this.options.headerHeight + 20;
     var currentTop = this.drawerTop();
-    var mapRect = this._map.getContainer().getBoundingClientRect();
     var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
     var containerRect = this._container.getBoundingClientRect();
     var contentsRect = this._contents.getBoundingClientRect();
     this._mobileDrawerBaseTop = containerRect.top - currentCssTop;
     this._mobileDrawerContentsOffset = contentsRect.top - containerRect.top;
     var baseScreenTop = this._mobileDrawerBaseTop;
-    var desiredTop = mapRect.bottom - collapsedHeight
+    var desiredTop = this._viewportBottom() - collapsedHeight - 10
       - this._safeAreaBottom() - baseScreenTop;
     this._container.style.top = desiredTop + 'px';
     this._startPosition = desiredTop;
@@ -605,6 +681,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._container.style.height = collapsedHeight + 'px';
       this._container.style.maxHeight = collapsedHeight + 'px';
       this._container.style.overflow = 'hidden';
+      this._updateMobileDrawerPresentation(this._startPosition);
     } else {
       this._container.style.top = currentTop + 'px';
       this._applyMobileDrawerViewport(this.drawerTop());
@@ -631,13 +708,19 @@ L.Control.ZLayers = L.Control.Layers.extend({
       : this._contents.getBoundingClientRect().top - containerRect.top;
     var drawerTop = Number.isFinite(targetTop) ? targetTop : currentCssTop;
     var contentsTop = baseScreenTop + drawerTop + contentsOffset;
-    var usableBottom = this._map.getContainer().getBoundingClientRect().bottom - this._safeAreaBottom();
+    var bottomGap = 10 * (1 - this._mobileDrawerProgress(drawerTop));
+    var visibleBottom = this._viewportBottom() - this._safeAreaBottom() - bottomGap;
+    var surfaceBottom = this._mobileDrawerSurfaceBottom(drawerTop);
     var drawerBottom = Number.isFinite(targetTop)
-      ? usableBottom
-      : Math.min(containerRect.bottom, usableBottom);
+      ? surfaceBottom
+      : Math.min(containerRect.bottom, surfaceBottom);
     var availableHeight = Math.max(0, drawerBottom - contentsTop);
+    var scrollEndInset = Math.max(0, surfaceBottom - visibleBottom);
+    if(scrollEndInset > 0) scrollEndInset += 16;
     this._contents.style.maxHeight = availableHeight + 'px';
     this._contents.style.minHeight = availableHeight + 'px';
+    this._contents.style.paddingBottom = scrollEndInset + 'px';
+    this._contents.style.scrollPaddingBottom = scrollEndInset + 'px';
   },
 
   rebuildMapsMenu: function () {
@@ -1002,6 +1085,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
 
     menu.style.transition = 'none';
+    if(this.viewStyleBottomSlide && this._contents) {
+      this._contents.style.transition = 'none';
+    }
+    if(this.viewStyleBottomSlide && this._drawerHeaderSeparator) {
+      this._drawerHeaderSeparator.style.transition = 'none';
+    }
     menu.style.top = from + "px";
     if(this.viewStyleBottomSlide) this._applyMobileDrawerViewport(from);
 
@@ -1015,7 +1104,25 @@ L.Control.ZLayers = L.Control.Layers.extend({
     void menu.offsetHeight;
     window.requestAnimationFrame(function() {
       if(animationId !== this._drawerAnimationId) return;
-      menu.style.transition = 'top 300ms ease, height 300ms ease';
+      var reducedMotion = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var duration = reducedMotion ? 1 : 360;
+      var timing = 'cubic-bezier(0.32, 0.72, 0, 1)';
+      menu.style.transition =
+        'top ' + duration + 'ms ' + timing + ', ' +
+        'height ' + duration + 'ms ' + timing + ', ' +
+        'left ' + duration + 'ms ' + timing + ', ' +
+        'width ' + duration + 'ms ' + timing + ', ' +
+        'border-radius ' + duration + 'ms ' + timing;
+      if(this.viewStyleBottomSlide && this._contents) {
+        this._contents.style.transition =
+          'opacity ' + Math.min(duration, 240) + 'ms ease-out, ' +
+          'transform ' + duration + 'ms ' + timing;
+      }
+      if(this.viewStyleBottomSlide && this._drawerHeaderSeparator) {
+        this._drawerHeaderSeparator.style.transition =
+          'opacity ' + Math.min(duration, 200) + 'ms ease-out';
+      }
       menu.style.top = to + 'px';
       if(this.viewStyleBottomSlide) {
         this._applyMobileDrawerViewport(to);
@@ -1024,10 +1131,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._drawerAnimationTimeout = window.setTimeout(function() {
         if(animationId !== this._drawerAnimationId) return;
         menu.style.transition = '';
+        if(this._contents) this._contents.style.transition = '';
+        if(this._drawerHeaderSeparator) {
+          this._drawerHeaderSeparator.style.transition = '';
+        }
         this._drawerAnimationTimeout = null;
         if(isOpen) this.updateContentsHeight();
         else this._finishDrawerClose();
-      }.bind(this), 320);
+      }.bind(this), duration + 20);
     }.bind(this));
   },
 

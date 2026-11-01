@@ -1,0 +1,17 @@
+{
+  "name": "Zelda Maps",
+  "short_name": "Zelda Maps",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#565656",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "images/apple-touch-icon-precomposed.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

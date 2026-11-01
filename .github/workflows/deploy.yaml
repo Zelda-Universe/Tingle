@@ -21,4 +21,6 @@ jobs:
           key: ${{ secrets.CPANEL_SSH_KEY }}
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-            git pull origin ${{ github.ref_name }}
+            git fetch origin ${{ github.ref_name }}
+            git switch ${{ github.ref_name }}
+            git pull --ff-only origin ${{ github.ref_name }}

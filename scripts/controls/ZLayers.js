@@ -641,17 +641,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _mobileDrawerSurfaceBottom: function(top) {
-    var visibleBottom = this._viewportBottom() - this._safeAreaBottom();
+    var viewportBottom = this._viewportBottom();
+    var collapsedBottom = viewportBottom - this._safeAreaBottom();
     var mapBottom = this._map.getContainer().getBoundingClientRect().bottom;
     var progress = this._mobileDrawerProgress(top);
     var bottomGap = 10 * (1 - progress);
     var isStandalone = document.documentElement.classList.contains('zm-standalone');
-    var expandedBottom = isStandalone ? mapBottom : visibleBottom;
+    var expandedBottom = isStandalone ? mapBottom : viewportBottom;
 
     // Standalone sheets grow to the physical device edge. In Safari, stop at
     // the current visual viewport so browser chrome cannot make the sheet
     // appear to continue far below the usable page.
-    return visibleBottom + ((expandedBottom - visibleBottom) * progress) - bottomGap;
+    return collapsedBottom + ((expandedBottom - collapsedBottom) * progress) - bottomGap;
   },
 
   _applyMobileDrawerViewport: function(top) {

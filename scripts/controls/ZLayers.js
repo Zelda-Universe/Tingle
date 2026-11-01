@@ -645,11 +645,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var mapBottom = this._map.getContainer().getBoundingClientRect().bottom;
     var progress = this._mobileDrawerProgress(top);
     var bottomGap = 10 * (1 - progress);
+    var isStandalone = document.documentElement.classList.contains('zm-standalone');
+    var expandedBottom = isStandalone ? mapBottom : visibleBottom;
 
-    // The compact sheet floats above browser chrome. As it opens, only the
-    // sheet surface grows behind the controls to the physical map edge; the
-    // scrollable content remains constrained to visibleBottom below.
-    return visibleBottom + ((mapBottom - visibleBottom) * progress) - bottomGap;
+    // Standalone sheets grow to the physical device edge. In Safari, stop at
+    // the current visual viewport so browser chrome cannot make the sheet
+    // appear to continue far below the usable page.
+    return visibleBottom + ((expandedBottom - visibleBottom) * progress) - bottomGap;
   },
 
   _applyMobileDrawerViewport: function(top) {

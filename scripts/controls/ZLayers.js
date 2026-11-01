@@ -644,14 +644,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var visibleBottom = this._viewportBottom() - this._safeAreaBottom();
     var mapBottom = this._map.getContainer().getBoundingClientRect().bottom;
     var progress = this._mobileDrawerProgress(top);
-    var bottomGap = 10 * (1 - progress);
-    var isStandalone = document.documentElement.classList.contains('zm-standalone');
-    var expandedBottom = isStandalone ? mapBottom : visibleBottom;
+    var bottomGapProgress = Math.min(1, progress * 4);
+    var bottomGap = 10 * (1 - bottomGapProgress);
 
-    // Standalone sheets grow to the physical device edge. In Safari, stop at
-    // the current visual viewport so browser chrome cannot make the sheet
-    // appear to continue far below the usable page.
-    return visibleBottom + ((expandedBottom - visibleBottom) * progress) - bottomGap;
+    // The compact sheet floats while closed, then grows to the physical edge
+    // in both Safari and standalone mode. Remove the floating gap early in
+    // the gesture so it cannot remain visible beneath a partially open sheet.
+    return visibleBottom + ((mapBottom - visibleBottom) * progress) - bottomGap;
   },
 
   _applyMobileDrawerViewport: function(top) {
@@ -726,7 +725,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       : this._contents.getBoundingClientRect().top - containerRect.top;
     var drawerTop = Number.isFinite(targetTop) ? targetTop : currentCssTop;
     var contentsTop = baseScreenTop + drawerTop + contentsOffset;
-    var bottomGap = 10 * (1 - this._mobileDrawerProgress(drawerTop));
+    var bottomGapProgress = Math.min(1, this._mobileDrawerProgress(drawerTop) * 4);
+    var bottomGap = 10 * (1 - bottomGapProgress);
     var visibleBottom = this._viewportBottom() - this._safeAreaBottom() - bottomGap;
     var surfaceBottom = this._mobileDrawerSurfaceBottom(drawerTop);
     var drawerBottom = Number.isFinite(targetTop)
@@ -734,6 +734,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       : Math.min(containerRect.bottom, surfaceBottom);
     var availableHeight = Math.max(0, drawerBottom - contentsTop);
     var scrollEndInset = Math.max(0, surfaceBottom - visibleBottom);
+    if(scrollEndInset > 0) scrollEndInset += 16;
     this._contents.style.maxHeight = availableHeight + 'px';
     this._contents.style.minHeight = availableHeight + 'px';
     this._contents.style.paddingBottom = scrollEndInset + 'px';

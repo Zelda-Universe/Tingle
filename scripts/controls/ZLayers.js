@@ -577,16 +577,34 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _deviceBottomCornerRadius: function() {
-    var isIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent) ||
-      (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
-    var isStandalone = document.documentElement.classList.contains('zm-standalone');
-    if(!isStandalone && !isIOS) return 0;
+    if(!this._usesPhysicalMobileScreen()) return 0;
 
     // Browsers do not expose the physical screen radius. The home-indicator
     // safe area scales with the rounded device enclosure and is the closest
-    // per-device measurement available to iOS Safari and installed web apps.
+    // per-device measurement available to mobile browsers and installed apps.
+    // Some Simulator Safari versions expose a desktop user agent and no touch
+    // points, so this must follow the mobile drawer rather than UA detection.
     var safeAreaBottom = this._safeAreaBottom() || 34;
     return Math.max(28, Math.min(52, safeAreaBottom * 1.4));
+  },
+
+  _safariPageTopInset: function() {
+    var screenHeight = window.screen.height;
+    if(!Number.isFinite(screenHeight)) return 0;
+    if(screenHeight >= 852) return 59;
+    if(screenHeight >= 812) return 47;
+    return 20;
+  },
+
+  _usesPhysicalMobileScreen: function() {
+    if(document.documentElement.classList.contains('zm-standalone')) return true;
+
+    var navigator = window.navigator;
+    var hasIOSStandaloneAPI = typeof navigator.standalone === 'boolean';
+    var touchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+    var simulatorSafari = navigator.vendor === 'Apple Computer, Inc.' &&
+      window.screen.width <= 600 && window.screen.height <= 1000;
+    return hasIOSStandaloneAPI || touchMac || simulatorSafari;
   },
 
   _viewportHeight: function() {
@@ -642,17 +660,17 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _mobileDrawerSurfaceBottom: function(top) {
     var visibleBottom = this._viewportBottom() - this._safeAreaBottom();
-    var mapBottom = this._map.getContainer().getBoundingClientRect().bottom;
     var progress = this._mobileDrawerProgress(top);
-    var bottomGapProgress = Math.min(1, progress * 4);
-    var bottomGap = 10 * (1 - bottomGapProgress);
-    var screenBottom = Number.isFinite(window.screen.height)
-      ? Math.max(this._viewportBottom(), window.screen.height)
-      : mapBottom;
-    var expandedBottom = Math.min(mapBottom, screenBottom);
+    var bottomGap = 10 * (1 - progress);
+    var isStandalone = document.documentElement.classList.contains('zm-standalone');
+    var usesPhysicalScreen = this._usesPhysicalMobileScreen();
+    var expandedBottom = usesPhysicalScreen && Number.isFinite(window.screen.height)
+      ? window.screen.height - (isStandalone ? 0 : this._safariPageTopInset())
+      : this._viewportBottom();
 
-    // The map can be taller than the physical screen in Safari. Grow the
-    // sheet to the device edge, but never follow the map beyond that edge.
+    // iPhone Safari and standalone apps extend behind system chrome to the
+    // device edge. Other narrow/desktop-emulated browsers stop at their
+    // viewport edge. The exterior floating gap tracks the opening gesture.
     // Remove the floating gap early so it cannot remain beneath an open sheet.
     return visibleBottom + ((expandedBottom - visibleBottom) * progress) - bottomGap;
   },
@@ -729,20 +747,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
       : this._contents.getBoundingClientRect().top - containerRect.top;
     var drawerTop = Number.isFinite(targetTop) ? targetTop : currentCssTop;
     var contentsTop = baseScreenTop + drawerTop + contentsOffset;
-    var bottomGapProgress = Math.min(1, this._mobileDrawerProgress(drawerTop) * 4);
-    var bottomGap = 10 * (1 - bottomGapProgress);
-    var visibleBottom = this._viewportBottom() - this._safeAreaBottom() - bottomGap;
     var surfaceBottom = this._mobileDrawerSurfaceBottom(drawerTop);
     var drawerBottom = Number.isFinite(targetTop)
       ? surfaceBottom
       : Math.min(containerRect.bottom, surfaceBottom);
     var availableHeight = Math.max(0, drawerBottom - contentsTop);
-    var scrollEndInset = Math.max(0, surfaceBottom - visibleBottom);
-    if(scrollEndInset > 0) scrollEndInset += 16;
     this._contents.style.maxHeight = availableHeight + 'px';
     this._contents.style.minHeight = availableHeight + 'px';
-    this._contents.style.paddingBottom = scrollEndInset + 'px';
-    this._contents.style.scrollPaddingBottom = scrollEndInset + 'px';
+    this._contents.style.paddingBottom = '0px';
+    this._contents.style.scrollPaddingBottom = '0px';
   },
 
   rebuildMapsMenu: function () {

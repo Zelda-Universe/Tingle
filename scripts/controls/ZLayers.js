@@ -577,11 +577,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _deviceBottomCornerRadius: function() {
-    if(!document.documentElement.classList.contains('zm-standalone')) return 0;
+    var isIOS = /iPad|iPhone|iPod/.test(window.navigator.userAgent) ||
+      (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);
+    var isStandalone = document.documentElement.classList.contains('zm-standalone');
+    if(!isStandalone && !isIOS) return 0;
 
     // Browsers do not expose the physical screen radius. The home-indicator
     // safe area scales with the rounded device enclosure and is the closest
-    // per-device measurement available to an installed web app.
+    // per-device measurement available to iOS Safari and installed web apps.
     var safeAreaBottom = this._safeAreaBottom() || 34;
     return Math.max(28, Math.min(52, safeAreaBottom * 1.4));
   },

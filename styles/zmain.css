@@ -100,7 +100,7 @@ main {
 
 @media (display-mode: standalone) and (max-width: 600px) {
 	:root {
-		--mobile-control-top: calc(env(safe-area-inset-top, 0px) + 14px);
+		--mobile-control-top: calc(max(env(safe-area-inset-top, 0px), 54px) + 14px);
 	}
 }
 

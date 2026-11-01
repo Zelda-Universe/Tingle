@@ -147,9 +147,10 @@ function zMapInit(vResults) {
 
     getGames();
 
-    [ '#map', 'body', 'html' ].forEach(function (selector) {
-      $(selector).css('background-color', vContainer.bgColor);
-    });
+    // Keep each game's loading color on the map canvas. Painting the document
+    // root black also colors iOS Safari's safe-area/browser-chrome backdrop,
+    // creating black bands above and below an otherwise edge-to-edge map.
+    $('#map').css('background-color', vContainer.bgColor);
  });
 }
 

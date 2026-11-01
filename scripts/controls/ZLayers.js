@@ -576,6 +576,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
     ) || 0;
   },
 
+  _deviceBottomCornerRadius: function() {
+    if(!document.documentElement.classList.contains('zm-standalone')) return 0;
+
+    // Browsers do not expose the physical screen radius. The home-indicator
+    // safe area scales with the rounded device enclosure and is the closest
+    // per-device measurement available to an installed web app.
+    var safeAreaBottom = this._safeAreaBottom() || 34;
+    return Math.max(28, Math.min(52, safeAreaBottom * 1.4));
+  },
+
   _viewportHeight: function() {
     return window.visualViewport
       ? window.visualViewport.height
@@ -600,7 +610,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var progress = this._mobileDrawerProgress(top);
     var edgeInset = 12 * (1 - progress);
     var topRadius = 22 + (6 * (1 - progress));
-    var bottomRadius = 28 * (1 - progress);
+    var expandedBottomRadius = this._deviceBottomCornerRadius();
+    var bottomRadius = expandedBottomRadius > 0
+      ? 28 + ((expandedBottomRadius - 28) * progress)
+      : 28 * (1 - progress);
     var fullWidth = this.options.width || window.innerWidth;
     var contentProgress = Math.max(0, Math.min(1, (progress - 0.08) / 0.42));
 

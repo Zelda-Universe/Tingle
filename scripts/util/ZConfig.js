@@ -42,7 +42,6 @@ ZConfig.setDefault(
     delay: 0,
     //openTo: 78,
     openTo: 150,
-    softOpenBottom: 250,
     softOpenTo: 0 // REVERSE
 }));
 ZConfig.setDefault('layersBottomHeightOptionsOverrides', '{}');

@@ -99,14 +99,85 @@ HeaderBar.prototype.createAccountButton = function(parent) {
 };
 
 HeaderBar.prototype.createSearchArea = function(parent, name, categories) {
+  if(this.mapControl.viewStyleBottomSlide) {
+    this.mobileSearchResultsPanel = L.DomUtil.create(
+      'div',
+      'mobile-search-results-panel',
+      this.parent
+    );
+    this.mobileSearchResultsPanel.setAttribute('aria-label', 'Search results');
+    L.DomEvent.disableClickPropagation(this.mobileSearchResultsPanel);
+    L.DomEvent.disableScrollPropagation(this.mobileSearchResultsPanel);
+    L.DomEvent.on(
+      this.mobileSearchResultsPanel,
+      'touchstart touchmove',
+      L.DomEvent.stopPropagation
+    );
+  }
+
   this.searchArea = new SearchArea({
     parent: parent,
     markerListViewBuiltHandler: function(markerListView) {
-      this.mapControl.setContent(markerListView.domNode, 'search');
+      if(this.mapControl.viewStyleBottomSlide) {
+        this.showMobileSearchResults(markerListView);
+      } else {
+        this.mapControl.setContent(markerListView.domNode, 'search');
+      }
     }.bind(this),
+    markerSearchClick: this.selectSearchMarker.bind(this),
+    resultsFocusedHandler: this.reopenMobileSearchResults.bind(this),
+    resultsClearedHandler: this.hideMobileSearchResults.bind(this),
     name: name,
     categories: categories
   });
+};
+
+HeaderBar.prototype.showMobileSearchResults = function(markerListView) {
+  if(!this.mobileSearchResultsPanel) return;
+  if(markerListView.domNode[0].parentNode !== this.mobileSearchResultsPanel) {
+    $(this.mobileSearchResultsPanel).empty().append(markerListView.domNode);
+  }
+  L.DomUtil.addClass(this.mobileSearchResultsPanel, 'open');
+};
+
+HeaderBar.prototype.reopenMobileSearchResults = function() {
+  if(
+    !this.mobileSearchResultsPanel ||
+    !this.searchArea.markerSearchField._getQuery().trim() ||
+    !this.mobileSearchResultsPanel.querySelector('.marker-list-entry')
+  ) return;
+  L.DomUtil.addClass(this.mobileSearchResultsPanel, 'open');
+};
+
+HeaderBar.prototype.hideMobileSearchResults = function() {
+  if(!this.mobileSearchResultsPanel) return;
+  L.DomUtil.removeClass(this.mobileSearchResultsPanel, 'open');
+};
+
+HeaderBar.prototype.selectSearchMarker = function(marker) {
+  this.hideMobileSearchResults();
+  if(this.searchArea) this.searchArea.markerSearchField.searchInput.blur();
+
+  zMap.goTo({ marker: marker.id }, true);
+  if(!this.mapControl.viewStyleBottomSlide) return;
+
+  this.mapControl.openDrawerSmall();
+  window.setTimeout(function() {
+    var mapRect = zMap.map.getContainer().getBoundingClientRect();
+    var drawerRect = this.mapControl._container.getBoundingClientRect();
+    var visibleBottom = Math.max(0, Math.min(mapRect.height, drawerRect.top - mapRect.top));
+    if(visibleBottom <= 0) return;
+
+    var mapMarker = zMap.cachedMarkersById[marker.id];
+    if(!mapMarker) return;
+
+    var markerPoint = zMap.map.latLngToContainerPoint(mapMarker.getLatLng());
+    var desiredY = visibleBottom / 2;
+    zMap.map.panBy([0, markerPoint.y - desiredY], {
+      animate: true,
+      duration: 0.25
+    });
+  }.bind(this), 380);
 };
 
 HeaderBar.prototype.createShrinkButton = function(parent) {

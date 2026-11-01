@@ -5,10 +5,6 @@
 // SearchMarkerListEntry
 // - searchEntry: [Object] The search entry with subject marker and metadata
 //   - item: [Object] The subject marker object to render.
-// - opts: [Object]
-//   - showScoreNearIcon: [Boolean]
-//   - showScoreInDetails: [Boolean]
-
 function SearchMarkerListEntry(searchEntry, opts) {
   opts = opts || {};
   this.searchEntry = searchEntry;
@@ -18,26 +14,87 @@ function SearchMarkerListEntry(searchEntry, opts) {
 SearchMarkerListEntry.prototype = Object.create(MarkerListEntry.prototype);
 SearchMarkerListEntry.prototype.constructor = SearchMarkerListEntry;
 
-SearchMarkerListEntry.prototype._initSettings = function(marker, opts) {
-  MarkerListEntry.prototype._initSettings.call(this, marker, opts);
-  this.showScoreNearIcon = getSetOrDefaultValue(opts.showScoreNearIcon, true);
-  this.showScoreInDetails = getSetOrDefaultValue(opts.showScoreInDetails, true);
-};
+var markerAreaLabelsCache = Object.create(null);
+var markerLocationNameCache = Object.create(null);
 
 SearchMarkerListEntry.prototype._initDOMElements = function(marker) {
   MarkerListEntry.prototype._initDOMElements.call(this, marker);
+  this.domNode.addClass('search-marker-list-entry');
+  if(marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
+    var labelCategory = this.categories[marker.categoryId || marker.markerCategoryId];
+    var labelGroup = labelCategory && this.categories[labelCategory.parent_id];
+    this.categoryIcon = new CategoryIcon({
+      iconClass: (labelCategory && labelCategory.img) || (labelGroup && labelGroup.img) || 'General_Map',
+      color: (labelCategory && labelCategory.color) || (labelGroup && labelGroup.color)
+    });
+    this.iconNode.empty().append(this.categoryIcon.domNode);
+  }
 
   this.detailsNode = this.domNode.find('.details');
   this.nameNode = this.detailsNode.find('.name');
   this.descriptionNode = this.detailsNode.find('.description');
+  this.locationNode = $('<div class="location"></div>').appendTo(this.detailsNode);
+  this.locationNode.text(getMarkerLocationName(marker));
 
   this._addHighlighting();
-
-  // Inverting the score reasoning:
-  // Assuming people think the bigger number/closer to 1 is the better / more similar/accurate match.
-  // Also treating as a percentage to help convey that same feeling more strongly.
-  this._addSearchScoreDOMElements((1 - this.searchEntry.score) * 100);
 };
+
+function getMarkerLocationName(marker) {
+  if(Object.prototype.hasOwnProperty.call(markerLocationNameCache, marker.id)) {
+    return markerLocationNameCache[marker.id];
+  }
+
+  var markerMap = zMap.maps.find(function(map) {
+    return map.originalId == marker.mapId;
+  });
+  var mapName = markerMap ? markerMap.title : '';
+  var multipleMaps = zMap.maps.length > 1;
+
+  if(marker.markerCategoryTypeId == 3) {
+    return markerLocationNameCache[marker.id] = multipleMaps ? mapName : '';
+  }
+
+  var areaName = getNearestMarkerAreaName(marker);
+  var locationParts = [];
+  if(multipleMaps && mapName) locationParts.push(mapName);
+  if(areaName && areaName.toLowerCase() !== mapName.toLowerCase()) {
+    locationParts.push(areaName);
+  }
+
+  return markerLocationNameCache[marker.id] = locationParts.join(' - ');
+}
+
+function getNearestMarkerAreaName(marker) {
+  var mapMarker = zMap.cachedMarkersById[marker.id];
+  if(!mapMarker) return '';
+  var markerPosition = mapMarker.getLatLng();
+  var cacheKey = marker.mapId + ':' + marker.submapId;
+  var labels = markerAreaLabelsCache[cacheKey];
+  if(!labels) {
+    labels = markerAreaLabelsCache[cacheKey] = zMap.getMarkers()
+      .filter(function(candidate) {
+        return (
+          candidate.categoryTypeId == 3 &&
+          candidate.mapId == marker.mapId &&
+          candidate.submapId == marker.submapId &&
+          candidate.title
+        );
+      });
+  }
+
+  var nearestLabel = labels.reduce(function(nearest, candidate) {
+    var position = candidate.getLatLng();
+    var distance = Math.hypot(
+      position.lng - markerPosition.lng,
+      position.lat - markerPosition.lat
+    );
+    return !nearest || distance < nearest.distance
+      ? { title: candidate.title, distance: distance }
+      : nearest;
+  }, null);
+
+  return nearestLabel ? nearestLabel.title : '';
+}
 
 SearchMarkerListEntry.prototype._addHighlighting = function() {
   var fieldMatchGroups = groupObjects({
@@ -49,27 +106,4 @@ SearchMarkerListEntry.prototype._addHighlighting = function() {
 
   this.nameNode.html(generateHighlightedText(this.marker.name, fieldMatchGroups["name"]));
   this.descriptionNode.html(generateHighlightedText(this.marker.description, fieldMatchGroups["description"]));
-};
-
-SearchMarkerListEntry.prototype._addSearchScoreDOMElements = function(score) {
-  this.searchScoreNodeTemplate = '' +
-    '<div class="searchScore">' +
-    '</div>' +
-  '';
-
-  if(this.showScoreNearIcon) {
-    this.iconNode.addClass('relativeContainer');
-    this.iconNode.append(
-      $(this.searchScoreNodeTemplate).append(new ProgressBar({
-        progressPercentage: score
-      }).domNode)
-    );
-  }
-
-  if(this.showScoreInDetails) {
-    this.detailsNode.addClass('relativeContainer');
-    this.detailsNode.append(
-      $(this.searchScoreNodeTemplate).text(Number.roundDecimal(score, 1) + "%")
-    );
-  }
 };

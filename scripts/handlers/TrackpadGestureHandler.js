@@ -41,7 +41,8 @@ function isInteractiveUiEvent(event, container) {
 
   return target.closest(
     '.leaflet-control, .leaflet-popup, .leaflet-tooltip, '
-    + 'button, input, select, textarea, a, [contenteditable="true"]'
+    + '.mobile-search-results-panel, button, input, select, textarea, a, '
+    + '[contenteditable="true"]'
   ) !== null;
 };
 

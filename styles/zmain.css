@@ -643,7 +643,7 @@ main {
 /* Category Selection List */
 
 .category-selection-list {
-	margin-top: 0px;
+	margin: 0;
 	padding: 12px 8px 0 8px;
 }
 

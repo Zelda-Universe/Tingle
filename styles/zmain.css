@@ -104,6 +104,12 @@ main {
 	}
 }
 
+@media only screen and (max-width: 600px) {
+	html.zm-standalone {
+		--mobile-control-top: calc(max(env(safe-area-inset-top, 0px), 54px) + 14px);
+	}
+}
+
 .relativeContainer {
 	position: relative;
 }

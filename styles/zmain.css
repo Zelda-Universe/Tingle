@@ -98,6 +98,12 @@ main {
 	--mobile-map-height: 100lvh;
 }
 
+@media (display-mode: standalone) and (max-width: 600px) {
+	:root {
+		--mobile-control-top: calc(env(safe-area-inset-top, 0px) + 14px);
+	}
+}
+
 .relativeContainer {
 	position: relative;
 }

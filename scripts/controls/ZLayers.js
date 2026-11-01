@@ -734,7 +734,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
       : Math.min(containerRect.bottom, surfaceBottom);
     var availableHeight = Math.max(0, drawerBottom - contentsTop);
     var scrollEndInset = Math.max(0, surfaceBottom - visibleBottom);
-    if(scrollEndInset > 0) scrollEndInset += 16;
     this._contents.style.maxHeight = availableHeight + 'px';
     this._contents.style.minHeight = availableHeight + 'px';
     this._contents.style.paddingBottom = scrollEndInset + 'px';

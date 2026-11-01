@@ -20,7 +20,13 @@ jobs:
           username: ${{ secrets.CPANEL_USERNAME }}
           key: ${{ secrets.CPANEL_SSH_KEY }}
           script: |
+            echo "DEPLOY_VERIFY_START"
             cd ${{ secrets.DEPLOY_PATH }}
             git fetch origin ${{ github.ref_name }}
             git switch ${{ github.ref_name }}
             git pull --ff-only origin ${{ github.ref_name }}
+            echo "DEPLOY_BRANCH=$(git branch --show-current)"
+            echo "DEPLOY_COMMIT=$(git rev-parse HEAD)"
+            test "$(git branch --show-current)" = "${{ github.ref_name }}"
+            test "$(git rev-parse HEAD)" = "${{ github.sha }}"
+            echo "DEPLOY_VERIFY_COMPLETE"

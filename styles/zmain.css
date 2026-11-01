@@ -946,6 +946,20 @@ a.button.leaflet-control-layers-toggle {
 	font-weight: normal;
 }
 
+.popupTitle .poi-title-icon {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	margin-right: 8px;
+	font-size: .8em;
+	line-height: 1;
+	vertical-align: middle;
+}
+
+.popupTitle .poi-title-text {
+	min-width: 0;
+}
+
 .leaflet-control-layers-mobile .menu-cat-content-inner > .popupTitle {
 	box-sizing: border-box;
 	display: flex;

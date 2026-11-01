@@ -10,10 +10,13 @@
     && $_GET["allSince"] == 'true'
   );
 
+  // Note: when the version comes from the session, the original code compared
+  // against an unset variable (i.e. ''), returning the latest changelog
+  // regardless of what the user had seen. That behaviour is preserved here
+  // on purpose; the frontend relies on get_user_info's seen_version instead.
+  $sinceVersion = '';
   if(isset($_GET["sinceVersion"])) {
-    $sinceVersion = $mysqli->real_escape_string($_GET["sinceVersion"]);
-    $sinceVersionParts = explode('.', $sinceVersion, 3);
-    // $resDebug['sinceVersionParts-GET'] = $sinceVersionParts;
+    $sinceVersion = (string) $_GET["sinceVersion"];
   } else {
     start_session("zmap");
 
@@ -22,13 +25,6 @@
       & isset($_SESSION['v2'])
       & isset($_SESSION['v3'])
     ) {
-      $sinceVersionParts = array(
-        $_SESSION['v1'],
-        $_SESSION['v2'],
-        $_SESSION['v3']
-      );
-      // $resDebug['sinceVersionParts-SESSION'] = $sinceVersionParts;
-
       session_write_close();
     } else {
       echo json_encode(
@@ -55,11 +51,9 @@
     $sqlSelectUnseenVersion = "SELECT MAX($sqlVersionFieldsConcat) `version`";
     $sqlGroup               = "";
   }
-  // $resDebug['_GET["allSince"]'] = $_GET["allSince"];
-  if(!$settingIncludeHidden) {
-    $sqlHiddenPredicate = "AND `hidden` = '0'";
-  }
-  $query = "
+  $sqlHiddenPredicate = $settingIncludeHidden ? "" : "AND `hidden` = '0'";
+
+  $res = $db->fetchAllAssociative("
     SELECT `id`
           , `version_major` AS `v1`
           , `version_minor` AS `v2`
@@ -68,8 +62,8 @@
     FROM `{$map_prefix}changelog`
         , (
             $sqlSelectUnseenVersion
-            FROM `changelog`
-            WHERE $sqlVersionFieldsConcat > '{$sinceVersion}'
+            FROM `{$map_prefix}changelog`
+            WHERE $sqlVersionFieldsConcat > ?
             $sqlGroup
           ) `unseenVersions`
     WHERE
@@ -79,28 +73,7 @@
         `version_major` ASC
       , `version_minor` ASC
       , `version_patch` ASC
-    ;
-  ";
+  ", [$sinceVersion]);
 
-  // $resDebug['map_prefix']  = $map_prefix;
-  // $resDebug['query']       = $query;
-
-  $result = @$mysqli->query($query);
-
-  if(!$result) {
-    print($mysqli->error);
-    return;
-  }
-
-  if(isset($resDebug)) {
-    $res = $resDebug;
-  } else {
-    $res = array();
-    // if(isset($resDebug)) $res['__DEBUG__'] = $resDebug;
-    // Source: https://stackoverflow.com/a/9785685/1091943
-    while($row = $result->fetch_assoc()) {
-      $res[] = $row;
-    }
-  }
   echo json_encode($res);
 ?>

@@ -3,15 +3,19 @@
 
   $path = __DIR__;
 
-  if (file_exists("$path/ajax/static/container_" . $_GET["game"] . ".json")) {
-	  readfile("$path/ajax/static/container_" . $_GET["game"] . ".json");
-	  return;
+  $map = $_GET["game"] ?? '';
+  if ($map === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $map)) {
+    echo json_encode(array());
+    return;
   }
-
-  $map = $_GET["game"];
   // debug_log("map: $map");
 
-  $query = "
+  if (file_exists("$path/ajax/static/container_{$map}.json")) {
+    readfile("$path/ajax/static/container_{$map}.json");
+    return;
+  }
+
+  $res = $db->fetchAllAssociative("
     SELECT id
       , name
       , short_name as shortName
@@ -44,24 +48,11 @@
       , visible as visible
     FROM {$map_prefix}container c
     WHERE (
-      c.id = '{$map}'
-      OR c.short_name = '{$map}'
+      c.id = ?
+      OR c.short_name = ?
     )
-    AND c.enabled = 1;
-  ";
-  //echo $query;
-  $result = @$mysqli->query($query);
-
-  if(!$result) {
-    print($mysqli->error);
-    return;
-  }
-
-  $res = array();
-
-  while($row = $result->fetch_assoc()) {
-    $res[] = $row;
-  }
+    AND c.enabled = 1
+  ", [$map, $map]);
 
   echo json_encode($res);
 

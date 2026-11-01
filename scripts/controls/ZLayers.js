@@ -646,11 +646,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var progress = this._mobileDrawerProgress(top);
     var bottomGapProgress = Math.min(1, progress * 4);
     var bottomGap = 10 * (1 - bottomGapProgress);
+    var screenBottom = Number.isFinite(window.screen.height)
+      ? Math.max(this._viewportBottom(), window.screen.height)
+      : mapBottom;
+    var expandedBottom = Math.min(mapBottom, screenBottom);
 
-    // The compact sheet floats while closed, then grows to the physical edge
-    // in both Safari and standalone mode. Remove the floating gap early in
-    // the gesture so it cannot remain visible beneath a partially open sheet.
-    return visibleBottom + ((mapBottom - visibleBottom) * progress) - bottomGap;
+    // The map can be taller than the physical screen in Safari. Grow the
+    // sheet to the device edge, but never follow the map beyond that edge.
+    // Remove the floating gap early so it cannot remain beneath an open sheet.
+    return visibleBottom + ((expandedBottom - visibleBottom) * progress) - bottomGap;
   },
 
   _applyMobileDrawerViewport: function(top) {

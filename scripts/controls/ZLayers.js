@@ -121,6 +121,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.isMobile = isMobile();
     this.viewStyleBottomSlide = this.isMobile;
     this._drawerAnimationId = 0;
+    this._partialDrawerMode = false;
 
     if(this.viewStyleBottomSlide) {
       this._open = false;
@@ -193,8 +194,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
       if (this.options.showMapControl) {
         container.style.top = this._startPosition + 'px';
       }
-
-      this.options.softOpenTo = this.options.height - this.options.softOpenBottom;
     }
 
     if (!this.options.showMapControl) {
@@ -453,6 +452,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _drawerStart: function(e) {
+    if(e.target.closest && e.target.closest('.marker-actions-segmented')) return;
+
     var point = e.type.startsWith('touch') ? e.touches[0] : e;
     this._clearDrawerClickSuppression();
     if(this._drawerClosing) {
@@ -630,13 +631,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     var progress = this._mobileDrawerProgress(top);
     var edgeInset = 12 * (1 - progress);
-    var topRadius = 22 + (6 * (1 - progress));
+    var topRadius = this._partialDrawerMode
+      ? 28
+      : 22 + (6 * (1 - progress));
     var expandedBottomRadius = this._deviceBottomCornerRadius();
-    var bottomRadius = expandedBottomRadius > 0
-      ? 28 + ((expandedBottomRadius - 28) * progress)
-      : 28 * (1 - progress);
+    var bottomRadius = this._partialDrawerMode
+      ? 28
+      : (
+          expandedBottomRadius > 0
+            ? 28 + ((expandedBottomRadius - 28) * progress)
+            : 28 * (1 - progress)
+        );
     var fullWidth = this.options.width || window.innerWidth;
-    var contentProgress = Math.max(0, Math.min(1, (progress - 0.08) / 0.42));
+    var contentProgress = this._partialDrawerMode
+      ? 1
+      : Math.max(0, Math.min(1, (progress - 0.08) / 0.42));
 
     this._container.style.left = edgeInset + 'px';
     this._container.style.width = Math.max(0, fullWidth - (edgeInset * 2)) + 'px';
@@ -660,6 +669,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _mobileDrawerSurfaceBottom: function(top) {
     var visibleBottom = this._viewportBottom() - this._safeAreaBottom();
+    if(this._partialDrawerMode) return visibleBottom - 10;
+
     var progress = this._mobileDrawerProgress(top);
     var bottomGap = 10 * (1 - progress);
     var isStandalone = document.documentElement.classList.contains('zm-standalone');
@@ -691,6 +702,49 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._updateMobileDrawerPresentation(top);
   },
 
+  _mobileDrawerPeekHeight: function() {
+    if(!this._contents) return null;
+
+    var content = this._contents.querySelector('.menu-cat-content-inner');
+    if(!content) return null;
+
+    var title = content.querySelector('.popupTitle, h1, h2, h3, h4, h5, h6');
+    var actions = content.querySelectorAll('.infoWindowIcn');
+    if(!title || !actions.length) return null;
+
+    var actionCount = Math.min(3, actions.length);
+    var lastAction = actions[actionCount - 1];
+    var containerTop = this._container.getBoundingClientRect().top;
+    var lastActionBottom = lastAction.getBoundingClientRect().bottom;
+    if(lastActionBottom <= containerTop) return null;
+
+    return Math.max(
+      this._form.getBoundingClientRect().height,
+      lastActionBottom - containerTop + 10
+    );
+  },
+
+  _mobileDrawerMaxPartialHeight: function() {
+    return this._viewportHeight() * 0.5;
+  },
+
+  _updateMobileDrawerSoftOpenTo: function(baseScreenTop) {
+    var peekHeight = this._mobileDrawerPeekHeight();
+    if(!peekHeight) {
+      peekHeight = (this._form.getBoundingClientRect().height || this.options.headerHeight) + 180;
+    }
+    peekHeight = Math.min(peekHeight, this._mobileDrawerMaxPartialHeight());
+
+    this.options.softOpenTo = Math.max(
+      this.options.openTo,
+      this._viewportBottom() -
+        this._safeAreaBottom() -
+        10 -
+        peekHeight -
+        baseScreenTop
+    );
+  },
+
   _refreshMobileDrawerLayout: function() {
     if(!this.viewStyleBottomSlide || !this._form) return;
     this._map.invalidateSize({ pan: false });
@@ -702,7 +756,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._form.style.width = '100%';
     if(this._contents) this._contents.style.width = '100%';
     this.options.height = this._viewportHeight();
-    this.options.softOpenTo = this.options.height - this.options.softOpenBottom;
     var collapsedHeight = this._form.getBoundingClientRect().height || this.options.headerHeight + 20;
     var currentTop = this.drawerTop();
     var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
@@ -711,6 +764,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._mobileDrawerBaseTop = containerRect.top - currentCssTop;
     this._mobileDrawerContentsOffset = contentsRect.top - containerRect.top;
     var baseScreenTop = this._mobileDrawerBaseTop;
+    this._updateMobileDrawerSoftOpenTo(baseScreenTop);
     var desiredTop = this._viewportBottom() - collapsedHeight - 10
       - this._safeAreaBottom() - baseScreenTop;
     this._container.style.top = desiredTop + 'px';
@@ -940,6 +994,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   reset: function() {
+    var wasPartiallyOpen = this.viewStyleBottomSlide && this._partialDrawerMode;
     // Open
     this.resetContent();
     // Issue 232 https://github.com/Zelda-Universe/Zelda-Maps/issues/232
@@ -948,6 +1003,28 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.headerBar.searchArea.markerSearchField.clear();
     this._mapsButton.clear();
     this._gamesButton.clear();
+    if(wasPartiallyOpen) this.openDrawerDefaultPartial();
+  },
+
+  openDrawerDefaultPartial: function() {
+    var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
+    var containerTop = this._container.getBoundingClientRect().top;
+    var baseScreenTop = Number.isFinite(this._mobileDrawerBaseTop)
+      ? this._mobileDrawerBaseTop
+      : containerTop - currentCssTop;
+    var desiredHeight = this._mobileDrawerMaxPartialHeight();
+    var targetTop = Math.max(
+      this.options.openTo,
+      this._viewportBottom() -
+        this._safeAreaBottom() -
+        10 -
+        desiredHeight -
+        baseScreenTop
+    );
+
+    this._contents.scrollTop = 0;
+    this._partialDrawerMode = true;
+    this.openDrawerManual(targetTop);
   },
 
   // Sets it to the default category selector scene,
@@ -1107,10 +1184,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _animate: function(menu, from, to, isOpen, animationId) {
     if(animationId !== this._drawerAnimationId) return;
+    var opensFullyFromPartial = (
+      this.viewStyleBottomSlide &&
+      isOpen &&
+      this._partialDrawerMode &&
+      to <= this.options.openTo
+    );
     // console.log(`_animate(${menu}, ${from}, ${to}, ${isOpen})`);
     this._drawerClosing = !isOpen;
     if(isOpen) this._preserveContentOnClose = false;
-    if ((isOpen && from < to) || (!isOpen && from > to)) {
+    var resizingPartialDrawer = this.viewStyleBottomSlide &&
+      isOpen &&
+      this._partialDrawerMode &&
+      to > this.options.openTo;
+    if ((isOpen && from < to && !resizingPartialDrawer) || (!isOpen && from > to)) {
       from = to;
     }
 
@@ -1130,6 +1217,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(this.viewStyleBottomSlide) this._applyMobileDrawerViewport(from);
 
     if(from === to) {
+      if(opensFullyFromPartial) this._partialDrawerMode = false;
       menu.style.transition = '';
       if(isOpen) this.updateContentsHeight();
       else this._finishDrawerClose();
@@ -1158,6 +1246,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         this._drawerHeaderSeparator.style.transition =
           'opacity ' + Math.min(duration, 200) + 'ms ease-out';
       }
+      if(opensFullyFromPartial) this._partialDrawerMode = false;
       menu.style.top = to + 'px';
       if(this.viewStyleBottomSlide) {
         this._applyMobileDrawerViewport(to);
@@ -1171,6 +1260,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           this._drawerHeaderSeparator.style.transition = '';
         }
         this._drawerAnimationTimeout = null;
+        if(!isOpen) this._partialDrawerMode = false;
         if(isOpen) this.updateContentsHeight();
         else this._finishDrawerClose();
       }.bind(this), duration + 20);
@@ -1208,8 +1298,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   openDrawerSmall: function() {
     // console.log(`openDrawerSmall`);
-    if(this.drawerTop() >= this.options.softOpenTo)
+    var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
+    var containerTop = this._container.getBoundingClientRect().top;
+    var baseScreenTop = Number.isFinite(this._mobileDrawerBaseTop)
+      ? this._mobileDrawerBaseTop
+      : containerTop - currentCssTop;
+    this._updateMobileDrawerSoftOpenTo(baseScreenTop);
+    if(this._partialDrawerMode || this.drawerTop() >= this.options.softOpenTo) {
+      this._partialDrawerMode = true;
       this.openDrawerManual(this.options.softOpenTo);
+    }
   },
 
   openDrawerLarge: function() {

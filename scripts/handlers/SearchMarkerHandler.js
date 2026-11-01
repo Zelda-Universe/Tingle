@@ -18,6 +18,7 @@ function SearchMarkerHandler(opts) {
 SearchMarkerHandler.prototype._initSettings = function(opts) {
   this.markerSearchField = opts.markerSearchField;
   this.markerListView = opts.markerListView;
+  this.categories = opts.categories || {};
 
   this.showSearchStats = getSetOrDefaultValue(opts.showSearchStats, false);
 
@@ -72,9 +73,10 @@ SearchMarkerHandler.prototype.createSearcher = function() {
     endIndex = markers.length - 1;
   }
 
+  this.searchableMarkers = this.markers.slice(startIndex, endIndex);
   this.searcher = new SearcherFuse({
     name: 'markers',
-    targetSearchMaterial: this.markers.slice(startIndex, endIndex)
+    targetSearchMaterial: this.searchableMarkers
   });
 };
 
@@ -83,7 +85,7 @@ SearchMarkerHandler.prototype._setupUIInteraction = function() {
 };
 
 SearchMarkerHandler.prototype._displayResults = function(e, query) {
-  var results = this.searcher.search(query);
+  var results = this._deduplicateSearchResults(this.searcher.search(query));
   if (!this.showSearchStats) results = results.map(function(entry) { return entry.item; });
   this.markerListView.showMarkers(query, results);
   this.handlers["markerListViewBuilt"].forEach(function(handler) {
@@ -91,7 +93,81 @@ SearchMarkerHandler.prototype._displayResults = function(e, query) {
   }, this);
 };
 
+SearchMarkerHandler.prototype._deduplicateSearchResults = function(results) {
+  var searchableMarkers = this.searchableMarkers;
+  var categories = this.categories;
+  var standardLabelsByNameAndMap = Object.create(null);
+  var resultIndexesByLocation = Object.create(null);
+  var deduplicatedResults = [];
+
+  function getMarker(result) {
+    return result.item || result;
+  }
+
+  function getName(marker) {
+    return (marker.name || marker.title || '').trim().toLowerCase();
+  }
+
+  function isCloseLabel(marker) {
+    var category = categories[marker.categoryId || marker.markerCategoryId];
+    return category && / - Close$/i.test(category.name);
+  }
+
+  searchableMarkers.forEach(function(marker) {
+    if(
+      (marker.categoryTypeId == 3 || marker.markerCategoryTypeId == 3) &&
+      !isCloseLabel(marker)
+    ) {
+      standardLabelsByNameAndMap[JSON.stringify([marker.mapId, getName(marker)])] = true;
+    }
+  });
+
+  function hasStandardLabel(marker) {
+    return !!standardLabelsByNameAndMap[
+      JSON.stringify([marker.mapId, getName(marker)])
+    ];
+  }
+
+  results.forEach(function(result) {
+    var marker = getMarker(result);
+    var isLabel = marker.categoryTypeId == 3 || marker.markerCategoryTypeId == 3;
+    if(isLabel && isCloseLabel(marker) && hasStandardLabel(marker)) return;
+
+    var position = typeof marker.getLatLng === 'function' ? marker.getLatLng() : marker._latlng;
+    var latitude = position ? position.lat : marker.y;
+    var longitude = position ? position.lng : marker.x;
+    var hasPosition = Number.isFinite(Number(latitude)) && Number.isFinite(Number(longitude));
+    var locationKey = hasPosition
+      ? [
+          getName(marker),
+          marker.mapId,
+          Number(latitude).toFixed(3),
+          Number(longitude).toFixed(3)
+        ].join(':')
+      : marker.id;
+    var existingIndex = resultIndexesByLocation[locationKey];
+
+    if(existingIndex === undefined) {
+      resultIndexesByLocation[locationKey] = deduplicatedResults.length;
+      deduplicatedResults.push(result);
+      return;
+    }
+
+    var existingMarker = getMarker(deduplicatedResults[existingIndex]);
+    var existingIsLabel = existingMarker.categoryTypeId == 3 || existingMarker.markerCategoryTypeId == 3;
+    if(existingIsLabel && !isLabel) deduplicatedResults[existingIndex] = result;
+  });
+
+  return deduplicatedResults;
+};
+
 // TODO: Make this a generic mixin, probably automatically included in all widgets, or even use a JS framework that does this already!!
 SearchMarkerHandler.prototype.addHandler = function(eventName, handleFunction) {
   this.handlers[eventName].push(handleFunction);
 };
+
+if(typeof module !== 'undefined') {
+  module.exports = {
+    SearchMarkerHandler: SearchMarkerHandler
+  };
+}

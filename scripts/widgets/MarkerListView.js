@@ -73,7 +73,13 @@ MarkerListView.prototype._addEntries = function(markers) {
       categories: this.categories
     });
     this.markerListDomNode.append(entry.domNode);
-    this.markerListDomNode.append($(this.separatorDomNodeTemplate));
+    if(entry.domNode.hasClass('search-marker-list-entry')) {
+      this.markerListDomNode.append(
+        $(this.separatorDomNodeTemplate).addClass('search-result-separator')
+      );
+    } else {
+      this.markerListDomNode.append($(this.separatorDomNodeTemplate));
+    }
   }, this);
 };
 

@@ -11,6 +11,14 @@ describe('isInteractiveUiEvent', () => {
     expect(control.closest).toHaveBeenCalledWith(expect.stringContaining('.leaflet-control'));
   });
 
+  test('leaves mobile search result panel wheel events to the panel', () => {
+    const panel = {closest: jest.fn(() => panel)};
+    expect(isInteractiveUiEvent({target: panel}, {})).toBe(true);
+    expect(panel.closest).toHaveBeenCalledWith(
+      expect.stringContaining('.mobile-search-results-panel')
+    );
+  });
+
   test('allows gestures directly on the map canvas', () => {
     const mapTarget = {closest: jest.fn(() => null)};
     expect(isInteractiveUiEvent({target: mapTarget}, {})).toBe(false);

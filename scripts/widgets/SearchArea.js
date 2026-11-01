@@ -14,8 +14,11 @@ function SearchArea(opts) {
 };
 
 SearchArea.prototype._initState = function(opts) {
+  this.resultsFocusedHandler = opts.resultsFocusedHandler;
+  this.resultsClearedHandler = opts.resultsClearedHandler;
   this.markerSearchField = new MarkerSearchField({
     incrementalSearch: true,
+    showProgressBar: false,
     updateProgressTotalStepsAmount: 15,
     name: opts.name
   });
@@ -25,7 +28,7 @@ SearchArea.prototype._initState = function(opts) {
     markerSearchField: this.markerSearchField,
     showSearchStats: true,
     categories: opts.categories,
-    markerSearchClick: function(marker, e) {
+    markerSearchClick: opts.markerSearchClick || function(marker, e) {
       zMap.goTo({ marker: marker.id }, true);
     }
   });
@@ -40,6 +43,26 @@ SearchArea.prototype._initState = function(opts) {
 
   L.DomEvent.disableClickPropagation(opts.parent);
   L.DomEvent.on(opts.parent, 'click', L.DomEvent.stopPropagation);
+
+  this.markerSearchField.searchInput.on('focus', function() {
+    if(this.resultsFocusedHandler) this.resultsFocusedHandler();
+  }.bind(this));
+  this.markerSearchField.searchInput.on('input', function() {
+    if(
+      this.markerSearchField._getQuery().length < this.markerSearchField.minMatchCharLength &&
+      this.resultsClearedHandler
+    ) {
+      this.resultsClearedHandler();
+    }
+  }.bind(this));
+  this.markerSearchField.clearSearchButton.on('click', function() {
+    if(this.resultsClearedHandler) this.resultsClearedHandler();
+  }.bind(this));
+  this.markerSearchField.searchInput.on('keydown', function(e) {
+    if(e.key === 'Escape' && this.resultsClearedHandler) {
+      this.resultsClearedHandler();
+    }
+  }.bind(this));
 };
 
 SearchArea.prototype.focus = function() {

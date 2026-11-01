@@ -112,12 +112,19 @@
     <!-- First-Party Code & Style -->
 
       <script>
-        if (
+        var isStandalone =
           window.navigator.standalone === true ||
-          window.matchMedia('(display-mode: standalone)').matches
-        ) {
+          window.matchMedia('(display-mode: standalone)').matches;
+        var isIOSSafari = window.navigator.standalone === false &&
+          /Safari/.test(window.navigator.userAgent) &&
+          !/(CriOS|FxiOS|EdgiOS|OPiOS)/.test(window.navigator.userAgent);
+
+        if (isStandalone) {
           document.documentElement.classList.add('zm-standalone');
           document.documentElement.style.setProperty('--mobile-control-top', '89px');
+        } else if (isIOSSafari) {
+          document.documentElement.classList.add('zm-ios-safari');
+          document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }
       </script>
       <script type="text/javascript" src="res.php?type=javascript&amp;v=20261101-device-corners-18"></script>

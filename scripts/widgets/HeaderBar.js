@@ -161,23 +161,8 @@ HeaderBar.prototype.selectSearchMarker = function(marker) {
   zMap.goTo({ marker: marker.id }, true);
   if(!this.mapControl.viewStyleBottomSlide) return;
 
-  this.mapControl.openDrawerSmall();
-  window.setTimeout(function() {
-    var mapRect = zMap.map.getContainer().getBoundingClientRect();
-    var drawerRect = this.mapControl._container.getBoundingClientRect();
-    var visibleBottom = Math.max(0, Math.min(mapRect.height, drawerRect.top - mapRect.top));
-    if(visibleBottom <= 0) return;
-
-    var mapMarker = zMap.cachedMarkersById[marker.id];
-    if(!mapMarker) return;
-
-    var markerPoint = zMap.map.latLngToContainerPoint(mapMarker.getLatLng());
-    var desiredY = visibleBottom / 2;
-    zMap.map.panBy([0, markerPoint.y - desiredY], {
-      animate: true,
-      duration: 0.25
-    });
-  }.bind(this), 380);
+  this.mapControl.openDrawerSmall(true);
+  zMap._panMarkerIntoVisibleMapArea(marker, false);
 };
 
 HeaderBar.prototype.createShrinkButton = function(parent) {

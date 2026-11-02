@@ -494,6 +494,7 @@ ZMap.prototype.addMarker = function(vMarker) {
       newMarker = L.marker(marker._latlng).addTo(_this.map);
       newMarker.markerId = marker.id;
       newMarker.markerPos = marker.pos;
+      _this._panMarkerIntoVisibleMapArea(marker, true);
       //map.panTo(marker.getLatLng());
     }
    });
@@ -530,6 +531,48 @@ ZMap.prototype._closeNewMarker = function() {
       newMarker = null;
    }
 }
+
+ZMap.prototype._panMarkerIntoVisibleMapArea = function(marker, onlyIfObscured, delay) {
+   if (!this.mapControl.viewStyleBottomSlide) return;
+
+   var attempts = 0;
+   var panWhenDrawerSettled = function() {
+      if (this.mapControl.getContentType() != 'm' + marker.id) return;
+
+      if (
+         attempts++ < 20 &&
+         this.mapControl._drawerAnimationTimeout
+      ) {
+         window.setTimeout(panWhenDrawerSettled, 100);
+         return;
+      }
+
+      var mapRect = this.map.getContainer().getBoundingClientRect();
+      var drawerRect = this.mapControl._container.getBoundingClientRect();
+      var visibleBottom = Math.max(
+         0,
+         Math.min(mapRect.height, drawerRect.top - mapRect.top)
+      );
+      if (visibleBottom <= 0) return;
+
+      var mapMarker = this.cachedMarkersById[marker.id];
+      if (!mapMarker) return;
+
+      var markerPoint = this.map.latLngToContainerPoint(mapMarker.getLatLng());
+      if (onlyIfObscured && markerPoint.y <= visibleBottom) return;
+
+      var mapIsPanning = this.map._panAnim && this.map._panAnim._inProgress;
+      this.map.panBy([0, markerPoint.y - (visibleBottom / 2)], {
+         animate: !mapIsPanning,
+         duration: 0.25
+      });
+   }.bind(this);
+
+   window.setTimeout(
+      panWhenDrawerSettled,
+      delay == null ? 380 : delay
+   );
+};
 
 
 ZMap.prototype._createMarkerContentList = function(list) {
@@ -583,7 +626,21 @@ ZMap.prototype._createMarkerPopup = function(marker) {
     }
 
     var content = "<h2 class='popupTitle'>" + title + "</h2>" +
-      "<p class='marker-coordinate-pill'>" + coordinateText + "</p>";
+      "<p class='marker-coordinate-pill'>" + coordinateText + "</p>" +
+      "<div class='marker-actions-row'>" +
+        "<button type='button' id='check" + marker.id + "' class='marker-action-button infoWindowIcn " + (!marker.complete ? "unchecked" : "checked") + "' onclick=\"var button = document.getElementById('check" + marker.id + "'); var complete = button.classList.contains('unchecked'); button.classList.toggle('unchecked', !complete); button.classList.toggle('checked', complete); _this._setMarkerDone(" + marker.id + ", complete); return false\">" +
+          "<span class='marker-action-icon'><i class='icon-" + (!marker.complete ? "checkbox-unchecked" : "checkmark") + "'></i></span>" +
+          "<span class='marker-action-label'>" + (!marker.complete ? "Mark Complete" : "Completed") + "</span>" +
+        "</button>" +
+        "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboard(" + marker.id + "); return false'>" +
+          "<span class='marker-action-icon'><i class='fas fa-link'></i></span>" +
+          "<span class='marker-action-label'>Copy Link</span>" +
+        "</button>" +
+        "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboardEmbed(" + marker.id + "); return false'>" +
+          "<span class='marker-action-icon'><i class='icon-embed2'></i></span>" +
+          "<span class='marker-action-label'>Embed Code</span>" +
+        "</button>" +
+      "</div>";
     content = content + "<div class='popupContent'>";
 
     if (marker.gameData != null) {
@@ -662,29 +719,9 @@ ZMap.prototype._createMarkerPopup = function(marker) {
          content +=  "<p style='text-align: left; float:left; margin-right: 10px;'>Marker ID no. " + marker.id + "</p>"
                    + "<p style='text-align: right; float: right'>Added by " + marker.userName + "</p>"
                    + "<br style='height:0pt; clear:both;'>"
-                   + "<div class=\"marker-actions-segmented\">"
-                   + "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><span class=\"marker-action-icon\"><i class=\"icon-" + ((!marker.complete)?"checkbox-unchecked":"checkmark") + "\"></i></span>" + (!marker.complete?"Mark Complete":"Completed") + "</span>"
-                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><span class=\"marker-action-icon\"><i class=\"fas fa-link\"></i></span> Copy Link</span>"
-                   + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><span class=\"marker-action-icon\"><i class=\"icon-embed2\"></i></span> Embed Code</span>"
-                   + "</div>"
                      + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
-                     + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>"
-                + "</div>";
-      } else {
-         content += "<div class=\"marker-actions-segmented\">"
-                  + "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><span class=\"marker-action-icon\"><i class=\"icon-" + ((!marker.complete)?"checkbox-unchecked":"checkmark") + "\"></i></span>" + (!marker.complete?"Mark Complete":"Completed") + "</span>"
-                     + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><span class=\"marker-action-icon\"><i class=\"fas fa-link\"></i></span> Copy Link</span>"
-                     + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><span class=\"marker-action-icon\"><i class=\"icon-embed2\"></i></span> Embed Code</span>"
-                     + "</div>"
-                + "</div>";
+                     + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>";
       }
-   } else {
-      content += "<div class=\"marker-actions-segmented\">"
-               + "<span id='check" + marker.id + "' class=\"" + (!marker.complete?"un":"") + "checked infoWindowIcn\" onclick=\"var span = document.getElementById('check" + marker.id + "'); if (span.className == 'unchecked infoWindowIcn') { span.className = 'checked infoWindowIcn'; _this._setMarkerDone("+marker.id+", true); } else { span.className = 'unchecked infoWindowIcn'; _this._setMarkerDone("+marker.id+", false); }; return false\"><span class=\"marker-action-icon\"><i class=\"icon-" + ((!marker.complete)?"checkbox-unchecked":"checkmark") + "\"></i></span>" + (!marker.complete?"Mark Complete":"Completed") + "</span>"
-                  + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboard("+marker.id+"); return false\"><span class=\"marker-action-icon\"><i class=\"fas fa-link\"></i></span> Copy Link</span>"
-                  + "<span class=\"infoWindowIcn\" onclick=\"_this._copyToClipboardEmbed("+marker.id+"); return false\"><span class=\"marker-action-icon\"><i class=\"icon-embed2\"></i></span> Embed Code</span>"
-                  + "</div>"
-             + "</div>";
    }
 
 
@@ -1756,17 +1793,16 @@ ZMap.prototype._setMarkerDone = function(vID, vComplete) {
     _this._doSetMarkerUndoneAndCookie(zMap.cachedMarkersById[vID]);
   }
 
-  var buttonComplete = this.mapControl._contents
-    .querySelector(
-      `.popupContent [id="check${vID}"].infoWindowIcn`
-    )
-  ;
+  var buttonComplete = this.mapControl._contents.querySelector(
+    `.marker-actions-row [id="check${vID}"].marker-action-button`
+  );
   var iconContainer = buttonComplete.querySelector('.marker-action-icon');
   iconContainer.innerHTML = '';
   iconContainer.append(
     $(`<i class="icon-${((!vComplete)?"checkbox-unchecked":"checkmark")}"></i>`)[0]
   );
-  buttonComplete.lastChild.textContent = vComplete ? "Completed" : "Mark Complete";
+  buttonComplete.querySelector('.marker-action-label').textContent =
+    vComplete ? "Completed" : "Mark Complete";
 }
 
 ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
@@ -2442,7 +2478,7 @@ ZMap.prototype.goTo = function(vGoTo, notByInput) {
       vGoTo.marker,
       vGoTo.zoom,
       !vGoTo.hidePin,
-      true,
+      vGoTo.panTo !== false,
       notByInput
     );
     // Open Marker already does a change map, so it takes precedence
@@ -2522,6 +2558,12 @@ ZMap.prototype.getMarkers = function() {
 
 ZMap.prototype.updateUrl = function() {
    var url = new URL(window.location.toString());
+   var markerContent = /^m(\d+)$/.exec(this.mapControl.getContentType() || '');
+   if (markerContent) {
+      url.searchParams.set("marker", markerContent[1]);
+   } else {
+      url.searchParams.delete("marker");
+   }
    url.searchParams.set("map", this.mapControl.getCurrentMap().mapId);
    url.searchParams.set("subMap", this.mapControl.getCurrentMap().subMapId);
    url.searchParams.set("zoom", this.map.getZoom());

@@ -952,9 +952,94 @@ a.button.leaflet-control-layers-toggle {
 	align-items: center;
 	justify-content: center;
 	min-height: 44px;
-	margin: 12px 16px 16px;
+	margin: 12px 16px 8px;
 	padding: 0 64px;
 	font-size: 24px;
+}
+
+.leaflet-control-layers-mobile .switch-menu > .switch-menu-title {
+	font-family: "BrandonText", sans-serif;
+	font-weight: 500;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	margin: 12px 16px 8px;
+	padding: 0 64px;
+	font-size: 24px;
+}
+
+.leaflet-control-layers-mobile .maps-menu > .category-selection-list {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 16px;
+	padding: 8px 16px 16px;
+}
+
+.leaflet-control-layers-mobile .maps-menu > .category-selection-list > .category-selector {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 0;
+	overflow: visible;
+}
+
+.leaflet-control-layers-mobile .maps-menu > .category-selection-list > .category-selector > .category-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 0;
+	padding: 0;
+	border-radius: 0;
+	background: transparent;
+	text-align: center;
+}
+
+.leaflet-control-layers-mobile .maps-menu > .category-selection-list > .category-selector > .category-button:hover {
+	background: transparent;
+}
+
+.leaflet-control-layers-mobile .maps-menu > .category-selection-list > .category-selector > .category-button.disabled {
+	opacity: 1;
+}
+
+.leaflet-control-layers-mobile .maps-menu .category-button .icon-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	flex: 0 0 auto;
+	width: 100%;
+	aspect-ratio: 1;
+	margin: 0 0 6px;
+	padding: 1px;
+	border: 2px solid rgba(255,255,255,0);
+	border-radius: 12px;
+}
+
+.leaflet-control-layers-mobile .maps-menu .category-button .icon-container img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.leaflet-control-layers-mobile .maps-menu .category-button.disabled .icon-container {
+	border-color: rgba(255,255,255,.8);
+}
+
+.leaflet-control-layers-mobile .maps-menu .category-button:not(.disabled):hover .icon-container {
+	border-color: rgba(255,255,255,.2);
+}
+
+.leaflet-control-layers-mobile .maps-menu .category-button .label {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	font-size: 12px;
 }
 
 .leaflet-control-layers-mobile .menu-cat-content-inner > .marker-coordinate-pill {
@@ -980,16 +1065,18 @@ a.button.leaflet-control-layers-toggle {
 	overscroll-behavior-y: contain;
 }
 
-.leaflet-control-layers-mobile .marker-actions-segmented {
+.leaflet-control-layers-mobile .marker-actions-row {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 8px;
 	margin: 16px 16px 8px;
-	overflow: hidden;
-	background: transparent;
-	border-radius: 12px;
 }
 
-.leaflet-control-layers-mobile .marker-actions-segmented .infoWindowIcn {
+.leaflet-control-layers-mobile .popupContent {
+	padding-bottom: 8px;
+}
+
+.leaflet-control-layers-mobile .marker-actions-row .marker-action-button {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -999,21 +1086,20 @@ a.button.leaflet-control-layers-toggle {
 	min-height: 72px;
 	margin: 0;
 	padding: 8px 4px 12px;
-	border-radius: 0;
+	border: 0;
+	border-radius: 12px;
+	background: rgba(255,255,255,.2);
+	color: white;
 	font-size: 12px;
 	line-height: 1.2;
 	gap: 6px;
 }
 
-.leaflet-control-layers-mobile .marker-actions-segmented .infoWindowIcn + .infoWindowIcn {
-	border-left: 1px solid rgba(255,255,255,.18);
-}
-
-.leaflet-control-layers-mobile .marker-actions-segmented .infoWindowIcn:hover {
+.leaflet-control-layers-mobile .marker-actions-row .marker-action-button:hover {
 	background: rgba(255,255,255,.3);
 }
 
-.leaflet-control-layers-mobile .marker-actions-segmented .marker-action-icon {
+.leaflet-control-layers-mobile .marker-actions-row .marker-action-icon {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1022,7 +1108,7 @@ a.button.leaflet-control-layers-toggle {
 	height: 36px;
 }
 
-.leaflet-control-layers-mobile .marker-actions-segmented .marker-action-icon i {
+.leaflet-control-layers-mobile .marker-actions-row .marker-action-icon i {
 	display: block;
 	width: 20px;
 	height: 20px;
@@ -1033,12 +1119,12 @@ a.button.leaflet-control-layers-toggle {
 	position: static;
 }
 
-.leaflet-control-layers-mobile .marker-actions-segmented .marker-action-icon .icon-checkmark,
-.leaflet-control-layers-mobile .marker-actions-segmented .marker-action-icon .icon-checkbox-unchecked {
+.leaflet-control-layers-mobile .marker-actions-row .marker-action-icon .icon-checkmark,
+.leaflet-control-layers-mobile .marker-actions-row .marker-action-icon .icon-checkbox-unchecked {
 	top: 0;
 }
 
-.leaflet-control-layers-mobile .marker-actions-segmented .marker-action-icon svg {
+.leaflet-control-layers-mobile .marker-actions-row .marker-action-icon svg {
 	width: 20px;
 	height: 20px;
 	flex: 0 0 20px;
@@ -1113,10 +1199,11 @@ a.icon-close2 {
 a.button.back-button {
 	position: absolute;
 	top: 12px;
-	left: 24px;
+	left: 16px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	box-sizing: border-box;
 	width: 44px;
 	height: 44px;
 	padding: 0;
@@ -1132,6 +1219,7 @@ a.button.back-button i {
 	display: block;
 	margin: 0;
 	line-height: 1;
+	transform: translateX(-2px);
 }
 
 a.button.back-button:hover {

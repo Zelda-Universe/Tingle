@@ -260,7 +260,11 @@ function getMarkers(categories) {
 function finalLoad() {
   var marker = ZConfig.getConfig('marker');
   if(marker) {
-    zMap.goTo({ marker: marker });
+    zMap.goTo({ marker: marker, panTo: false });
+    var selectedMarker = zMap.cachedMarkersById[marker];
+    if(selectedMarker) {
+      zMap._panMarkerIntoVisibleMapArea(selectedMarker, false, 700);
+    }
     return;
   }
 

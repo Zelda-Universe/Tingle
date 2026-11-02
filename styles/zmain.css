@@ -274,6 +274,10 @@ main {
 		scrollbar-width: none;
 	}
 
+	html.zm-standalone .mobile-search-results-panel {
+		top: calc(var(--mobile-control-top) + 60px);
+	}
+
 	.mobile-search-results-panel.open {
 		display: block;
 	}

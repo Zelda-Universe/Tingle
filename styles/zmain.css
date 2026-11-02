@@ -654,6 +654,14 @@ main {
 	text-align: center;
 }
 
+#account #account_delete_btn {
+	margin-top: 24px;
+}
+
+#account #log_out_btn {
+	margin-bottom: 0;
+}
+
 .menu-cat-content-inner > #account > h3:first-child,
 .menu-cat-content-inner > #account_information > h3:first-child {
 	margin-top: 12px;

@@ -2514,9 +2514,9 @@ ZMap.prototype._createAccountForm = function(user) {
       '<div class="modal-footer">' +
          '<div>' +
            '<button id="account_information_btn" type="button" class="infoWindowIcn">Account Information</button>' +
-           '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn">Reset Completed Markers</button>' +
            '<button id="account_offline_maps_btn" type="button" class="infoWindowIcn">Download Offline Maps</button>' +
-           '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
+           '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn">Reset Completed Markers</button>' +
+           '<button id="log_out_btn" type="button" class="infoWindowIcn">Log Out</button>' +
            '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
          '</div>' +
       '</div>' +
@@ -2779,7 +2779,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
   this.mapControl.setContent(
     '<div id="offline_maps" class="offline-maps-page">' +
       '<h3 class="text-center">Download Offline Maps</h3>' +
-      '<p class="offline-maps-intro">Save complete maps to this device for use without an internet connection. Downloads can be large and may be removed by your browser when storage is low.</p>' +
+      '<p class="offline-maps-intro">Save maps to this device for use without an internet connection. Downloads may be removed by your browser when storage is low.</p>' +
       '<div id="offline_maps_list" class="offline-maps-list">' +
         '<p class="offline-maps-loading">Calculating download sizes…</p>' +
       '</div>' +

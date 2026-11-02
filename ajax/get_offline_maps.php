@@ -79,11 +79,13 @@
     $cacheFile = $cacheDirectory . '/' . preg_replace('/[^A-Za-z0-9_-]/', '', $gameId) . '.json';
     if (is_file($cacheFile) && filemtime($cacheFile) > time() - $cacheLifetime) {
       $cachedManifest = json_decode(file_get_contents($cacheFile), true);
-      if (is_array($cachedManifest)) return $cachedManifest;
+      if (is_array($cachedManifest) && count($cachedManifest) > 0) return $cachedManifest;
     }
 
     $manifest = buildOfflineManifest($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL);
-    @file_put_contents($cacheFile, json_encode($manifest), LOCK_EX);
+    if (count($manifest) > 0) {
+      @file_put_contents($cacheFile, json_encode($manifest), LOCK_EX);
+    }
     return $manifest;
   }
 

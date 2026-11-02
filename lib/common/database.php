@@ -6,16 +6,13 @@
    *
    * Sets $db, a Doctrine\DBAL\Connection. Every query goes through it with
    * bound parameters; nothing from the request is ever concatenated into SQL.
-   *
-   * The legacy $mysqli handle is kept alive until the remaining (write)
-   * endpoints are converted. Both handles point at the same server and
-   * database. begin()/commit()/rollback() still operate on $mysqli for the
-   * same reason, so an endpoint must not mix the two inside one transaction.
+   * Query failures throw; ajax.php turns an uncaught exception into a logged
+   * "Internal error" response.
    *
    * Returns 0 on success, 1 on failure (ajax.php checks the return value).
    */
   function open() {
-    global $db, $mysqli, $dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket;
+    global $db, $dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket;
 
     $params = [
       'driver'   => 'pdo_mysql',
@@ -46,9 +43,6 @@
       // Connect now rather than lazily, so a bad configuration fails here
       // with "No database connection!" instead of inside an endpoint.
       $db->getNativeConnection();
-
-      $mysqli = new mysqli($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket);
-      $mysqli->set_charset('utf8');
     } catch (\Throwable $e) {
       debug_log('Database connection error: ' . $e->getMessage());
       return 1;
@@ -58,17 +52,21 @@
   }
 
   function begin() {
-    global $mysqli;
-    return $mysqli->query("BEGIN");
+    global $db;
+    $db->beginTransaction();
   }
 
   function commit() {
-    global $mysqli;
-    return $mysqli->query("COMMIT");
+    global $db;
+    if ($db->isTransactionActive()) {
+      $db->commit();
+    }
   }
 
   function rollback() {
-    global $mysqli;
-    return $mysqli->query("ROLLBACK");
+    global $db;
+    if ($db->isTransactionActive()) {
+      $db->rollBack();
+    }
   }
 ?>

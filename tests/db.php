@@ -12,10 +12,6 @@
 
   print('Continuing with tests...<br>');
 
-  # Direct settings
-  $testdbsocket = '/var/run/mysqld/mysql.sock';
-  // $testdbsocket = '/var/lib/mysql/mysql.sock';
-
   # dbpassword should always use the db config variable.
   # Never include it directly to this SCM-tracked file.
 
@@ -23,11 +19,6 @@
 
   print('Checking database...<br>');
   print('<br>');
-
-  print('Using database library open method...<br>');
-
-  // $openRetCode = open();
-  // print("openRetCode: $openRetCode<br>" );
 
   print("dbms       : $dbms<br>"    );
   print("dbhost     : $dbhost<br>"  );
@@ -38,81 +29,15 @@
   print("dbsocket   : $dbsocket<br>");
   print('<br>');
 
-  print('Using PHP library mysqli construction method directly...<br>');
-  print('Variant 1 - Variables');
-  print('<br>');
+  print('Using database library open method...<br>');
+  $openRetCode = open();
+  print("openRetCode: $openRetCode<br>");
 
-  $mysqli = @new mysqli(
-    $dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket
-  );
-  print_r($mysqli); unset($mysqli);
-  print('<hr>');
-
-
-
-  print('Using PHP library mysqli construction method directly...<br>');
-  print('Variant 2 - Literals - IP, Port 0');
-  print('<br>');
-
-  $mysqli = @new mysqli(
-    '127.0.0.1'   ,
-    'zeldamaps'   ,
-    $dbpasswd     ,
-    'zeldamaps'   ,
-    0             ,
-    $testdbsocket
-  );
-  print_r($mysqli); unset($mysqli);
-  print('<hr>');
-
-
-
-  print('Using PHP library mysqli construction method directly...<br>');
-  print('Variant 2 - Literals - Hostname, Port 0');
-  print('<br>');
-
-  $mysqli = @new mysqli(
-    'localhost'   ,
-    'zeldamaps'   ,
-    $dbpasswd     ,
-    'zeldamaps'   ,
-    0             ,
-    $testdbsocket
-  );
-  print_r($mysqli); unset($mysqli);
-  print('<hr>');
-
-
-
-  print('Using PHP library mysqli construction method directly...<br>');
-  print('Variant 2 - Literals - IP, Port NULL');
-  print('<br>');
-
-  $mysqli = @new mysqli(
-    '127.0.0.1'   ,
-    'zeldamaps'   ,
-    $dbpasswd     ,
-    'zeldamaps'   ,
-    NULL          ,
-    $testdbsocket
-  );
-  print_r($mysqli); unset($mysqli);
-  print('<hr>');
-
-
-
-  print('Using PHP library mysqli construction method directly...<br>');
-  print('Variant 2 - Literals - Hostname, Port NULL');
-  print('<br>');
-
-  $mysqli = @new mysqli(
-    'localhost'   ,
-    'zeldamaps'   ,
-    $dbpasswd     ,
-    'zeldamaps'   ,
-    NULL          ,
-    $testdbsocket
-  );
-  print_r($mysqli); unset($mysqli);
-  print('<hr>');
+  if ($openRetCode === 0) {
+    $serverVersion = $db->fetchOne('SELECT VERSION()');
+    print("Connected. Server version: $serverVersion<br>");
+    print('Tables: ' . count($db->fetchFirstColumn('SHOW TABLES')) . '<br>');
+  } else {
+    print('Connection failed; see the debug log / PHP error log.<br>');
+  }
 ?>

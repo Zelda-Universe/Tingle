@@ -318,7 +318,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
           if (this.toggledOn) {
             // console.log('_mapsButton - afterToggle - this.toggledOn');
             _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
-            _thisLayer.openDrawerLarge();
+            if(_thisLayer.viewStyleBottomSlide) {
+              _thisLayer.openDrawerDefaultPartial();
+            } else {
+              _thisLayer.openDrawerLarge();
+            }
           } else {
             // console.log('_mapsButton - afterToggle - !this.toggledOn');
             if(_thisLayer.viewStyleBottomSlide) {
@@ -328,7 +332,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
                 _thisLayer._contentType === 'maps'
               ) {
                 this._toggle(true);
-                _thisLayer.openDrawerLarge();
+                _thisLayer.openDrawerDefaultPartial();
               } else {
                 _thisLayer.closeDrawer();
               }
@@ -338,7 +342,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           }
         },
         iconClass: 'General_Map',
-        label: 'Switch Maps',
+        label: 'Switch Map',
         toggledOn: false
       });
 
@@ -349,7 +353,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
         afterToggle: function() {
           if (this.toggledOn) {
             _thisLayer.setContent(_thisLayer._gameMenu.domNode, "games");
-            _thisLayer.openDrawerLarge();
+            if(_thisLayer.viewStyleBottomSlide) {
+              _thisLayer.openDrawerDefaultPartial();
+            } else {
+              _thisLayer.openDrawerLarge();
+            }
           } else {
             if(_thisLayer.viewStyleBottomSlide) {
               if(
@@ -358,7 +366,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
                 _thisLayer._contentType === 'games'
               ) {
                 this._toggle(true);
-                _thisLayer.openDrawerLarge();
+                _thisLayer.openDrawerDefaultPartial();
               } else {
                 _thisLayer.closeDrawer();
               }
@@ -368,7 +376,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           }
         },
         iconClass: this.zMap.mapOptions.icon,
-        label: 'Switch Games',
+        label: 'Switch Game',
         toggledOn: false
       });
       $(headerMenu).append(this._gamesButton.domNode);
@@ -452,7 +460,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _drawerStart: function(e) {
-    if(e.target.closest && e.target.closest('.marker-actions-segmented')) return;
+    if(e.target.closest && e.target.closest('.marker-actions-row')) return;
 
     var point = e.type.startsWith('touch') ? e.touches[0] : e;
     this._clearDrawerClickSuppression();
@@ -631,9 +639,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     var progress = this._mobileDrawerProgress(top);
     var edgeInset = 12 * (1 - progress);
-    var topRadius = this._partialDrawerMode
-      ? 28
-      : 22 + (6 * (1 - progress));
+    var topRadius = 28;
     var expandedBottomRadius = this._deviceBottomCornerRadius();
     var bottomRadius = this._partialDrawerMode
       ? 28
@@ -709,18 +715,39 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(!content) return null;
 
     var title = content.querySelector('.popupTitle, h1, h2, h3, h4, h5, h6');
-    var actions = content.querySelectorAll('.infoWindowIcn');
+    var actions = content.querySelectorAll('.marker-actions-row .marker-action-button');
     if(!title || !actions.length) return null;
 
     var actionCount = Math.min(3, actions.length);
     var lastAction = actions[actionCount - 1];
     var containerTop = this._container.getBoundingClientRect().top;
-    var lastActionBottom = lastAction.getBoundingClientRect().bottom;
-    if(lastActionBottom <= containerTop) return null;
+    var popupContent = content.querySelector('.popupContent');
+    var contentBottom = Math.max(
+      lastAction.getBoundingClientRect().bottom,
+      popupContent ? popupContent.getBoundingClientRect().bottom : containerTop
+    );
+    if(contentBottom <= containerTop) return null;
 
     return Math.max(
       this._form.getBoundingClientRect().height,
-      lastActionBottom - containerTop + 10
+      contentBottom - containerTop
+    );
+  },
+
+  _mobileDrawerContentHeight: function() {
+    if(!this._contents || !this._form) return null;
+
+    var content = this._contents.querySelector('.menu-cat-content-inner');
+    if(!content) return null;
+
+    var contentsOffset = Number.isFinite(this._mobileDrawerContentsOffset)
+      ? this._mobileDrawerContentsOffset
+      : this._contents.getBoundingClientRect().top -
+        this._container.getBoundingClientRect().top;
+
+    return Math.max(
+      this._form.getBoundingClientRect().height,
+      contentsOffset + content.offsetTop + content.scrollHeight
     );
   },
 
@@ -828,7 +855,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   createGameMenu: function() {
-    return new CategoryMenu({
+    var gameMenu = new CategoryMenu({
       categories: games,
       categorySelectionMethod: this.options.categorySelectionMethod,
       defaultToggledState: true,
@@ -849,6 +876,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
       },
       updateCategorySelectionFn: function() {}
    });
+    gameMenu.domNode.addClass('switch-menu');
+    gameMenu.domNode.prepend(
+      '<h2 class="popupTitle switch-menu-title">Switch Game</h2>'
+    );
+    return gameMenu;
   },
 
   createMapsMenu: function() {
@@ -859,7 +891,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       return true;
     };
 
-    return new CategoryMenu({
+    var mapsMenu = new CategoryMenu({
       categoryButtonOptions: {
         afterToggle: function () {
           layers._map.removeLayer(layers.currentMapLayer);
@@ -868,7 +900,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
           layers.currentMapLayer.bringToBack();
           layers._map.fire("baselayerchange", layers.currentMapLayer);
 
-          layers.reset();
+          layers._mapsMenu.updateCategorySelectionFn.call(
+            layers._mapsMenu,
+            this
+          );
+          if(layers.viewStyleBottomSlide) {
+            layers.openDrawerDefaultPartial();
+          }
 
           return true;
         },
@@ -903,6 +941,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
       categories: this._maps,
       defaultToggledState: true
    });
+    mapsMenu.domNode.addClass('switch-menu maps-menu');
+    mapsMenu.domNode.prepend(
+      '<h2 class="popupTitle switch-menu-title">Switch Map</h2>'
+    );
+    return mapsMenu;
   },
 
   setDefaultFocus: function() {
@@ -923,9 +966,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   setContent: function(vContent, vType) {
+    var previousContentType = this._contentType;
     this._triggerHandler("beforeSetContent", vContent, vType);
     this._setContent(vContent, vType);
     this._triggerHandler("afterSetContent", vContent, vType);
+    if(
+      /^m\d+$/.test(previousContentType || '') ||
+      /^m\d+$/.test(vType || '')
+    ) {
+      this.zMap.updateUrl();
+    }
   },
 
   // To be used directly by internal functions and avoid
@@ -1013,7 +1063,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var baseScreenTop = Number.isFinite(this._mobileDrawerBaseTop)
       ? this._mobileDrawerBaseTop
       : containerTop - currentCssTop;
-    var desiredHeight = this._mobileDrawerMaxPartialHeight();
+    var desiredHeight = Math.min(
+      this._mobileDrawerContentHeight() || this._mobileDrawerMaxPartialHeight(),
+      this._mobileDrawerMaxPartialHeight()
+    );
     var targetTop = Math.max(
       this.options.openTo,
       this._viewportBottom() -
@@ -1297,7 +1350,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     return parseInt(this._container.style.top.replace('px',''));
   },
 
-  openDrawerSmall: function() {
+  openDrawerSmall: function(forcePartial) {
     // console.log(`openDrawerSmall`);
     var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
     var containerTop = this._container.getBoundingClientRect().top;
@@ -1305,7 +1358,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       ? this._mobileDrawerBaseTop
       : containerTop - currentCssTop;
     this._updateMobileDrawerSoftOpenTo(baseScreenTop);
-    if(this._partialDrawerMode || this.drawerTop() >= this.options.softOpenTo) {
+    if(forcePartial || this._partialDrawerMode || this.drawerTop() >= this.options.softOpenTo) {
       this._partialDrawerMode = true;
       this.openDrawerManual(this.options.softOpenTo);
     }

@@ -1350,7 +1350,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     return parseInt(this._container.style.top.replace('px',''));
   },
 
-  openDrawerSmall: function(forcePartial) {
+  openDrawerSmall: function(forcePartial, immediate) {
     // console.log(`openDrawerSmall`);
     var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
     var containerTop = this._container.getBoundingClientRect().top;
@@ -1360,7 +1360,29 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._updateMobileDrawerSoftOpenTo(baseScreenTop);
     if(forcePartial || this._partialDrawerMode || this.drawerTop() >= this.options.softOpenTo) {
       this._partialDrawerMode = true;
-      this.openDrawerManual(this.options.softOpenTo);
+      if(immediate) {
+        this._drawerAnimationId++;
+        if(this._drawerAnimationTimeout) {
+          window.clearTimeout(this._drawerAnimationTimeout);
+          this._drawerAnimationTimeout = null;
+        }
+        this._container.style.transition = 'none';
+        this._contents.style.transition = 'none';
+        this._drawerHeaderSeparator.style.transition = 'none';
+        this._container.style.top = this.options.softOpenTo + 'px';
+        this._open = true;
+        this._drawerClosing = false;
+        this._preserveContentOnClose = false;
+        this._applyMobileDrawerViewport(this.options.softOpenTo);
+        this.updateContentsHeight(this.options.softOpenTo);
+        window.requestAnimationFrame(function() {
+          this._container.style.transition = '';
+          this._contents.style.transition = '';
+          this._drawerHeaderSeparator.style.transition = '';
+        }.bind(this));
+      } else {
+        this.openDrawerManual(this.options.softOpenTo);
+      }
     }
   },
 

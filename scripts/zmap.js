@@ -533,8 +533,6 @@ ZMap.prototype._closeNewMarker = function() {
 }
 
 ZMap.prototype._panMarkerIntoVisibleMapArea = function(marker, onlyIfObscured, delay) {
-   if (!this.mapControl.viewStyleBottomSlide) return;
-
    var attempts = 0;
    var panWhenDrawerSettled = function() {
       if (this.mapControl.getContentType() != 'm' + marker.id) return;
@@ -548,21 +546,58 @@ ZMap.prototype._panMarkerIntoVisibleMapArea = function(marker, onlyIfObscured, d
       }
 
       var mapRect = this.map.getContainer().getBoundingClientRect();
-      var drawerRect = this.mapControl._container.getBoundingClientRect();
-      var visibleBottom = Math.max(
-         0,
-         Math.min(mapRect.height, drawerRect.top - mapRect.top)
-      );
-      if (visibleBottom <= 0) return;
-
       var mapMarker = this.cachedMarkersById[marker.id];
       if (!mapMarker) return;
 
       var markerPoint = this.map.latLngToContainerPoint(mapMarker.getLatLng());
-      if (onlyIfObscured && markerPoint.y <= visibleBottom) return;
+      var panOffset;
+
+      if(this.mapControl.viewStyleBottomSlide) {
+         var drawerRect = this.mapControl._container.getBoundingClientRect();
+         var visibleBottom = Math.max(
+            0,
+            Math.min(mapRect.height, drawerRect.top - mapRect.top)
+         );
+         if (visibleBottom <= 0) return;
+         if (onlyIfObscured && markerPoint.y <= visibleBottom) return;
+
+         panOffset = [
+            0,
+            markerPoint.y - (visibleBottom / 2)
+         ];
+      } else {
+         var drawer = this.mapControl._container;
+         var drawerRect = drawer.getBoundingClientRect();
+         var drawerVisible = window.getComputedStyle(drawer).display !== 'none';
+         var drawerOnLeft = this.mapControl.options.position.endsWith('left');
+         var visibleLeft = 0;
+         var visibleRight = mapRect.width;
+         if(drawerVisible) {
+            var drawerWidth = Math.min(
+               mapRect.width,
+               Math.max(drawerRect.width, this.mapControl.options.width || 0)
+            );
+            var drawerEdge = drawerOnLeft
+               ? drawerRect.left - mapRect.left
+               : drawerRect.right - mapRect.left;
+            visibleLeft = drawerOnLeft ? drawerEdge + drawerWidth : 0;
+            visibleRight = drawerOnLeft ? mapRect.width : drawerEdge - drawerWidth;
+         }
+         if (visibleRight <= visibleLeft) return;
+         if (
+            onlyIfObscured &&
+            markerPoint.x >= visibleLeft &&
+            markerPoint.x <= visibleRight
+         ) return;
+
+         panOffset = [
+            markerPoint.x - ((visibleLeft + visibleRight) / 2),
+            markerPoint.y - (mapRect.height / 2)
+         ];
+      }
 
       var mapIsPanning = this.map._panAnim && this.map._panAnim._inProgress;
-      this.map.panBy([0, markerPoint.y - (visibleBottom / 2)], {
+      this.map.panBy(panOffset, {
          animate: !mapIsPanning,
          duration: 0.25
       });
@@ -599,7 +634,7 @@ ZMap.prototype._createMarkerContentList = function(list) {
 	return content;
 }
 
-ZMap.prototype._createMarkerPopup = function(marker) {
+ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
     var title = marker.title;
     if (marker.gameData != null && marker.gameData.actor != null && _this.lang[marker.gameData.actor + "_Name"] != null) {
        title = _this.lang[marker.gameData.actor + "_Name"]
@@ -726,7 +761,14 @@ ZMap.prototype._createMarkerPopup = function(marker) {
 
 
   this.mapControl.setContent(content, 'm'+marker.id);
-  this.mapControl.openDrawerSmall();
+  var openImmediatelyMobile = (
+    !!openDrawerImmediately &&
+    this.mapControl.viewStyleBottomSlide
+  );
+  this.mapControl.openDrawerSmall(
+    openImmediatelyMobile,
+    openImmediatelyMobile
+  );
 }
 
 ZMap.prototype._getDisplayZoom = function() {
@@ -1793,16 +1835,19 @@ ZMap.prototype._setMarkerDone = function(vID, vComplete) {
     _this._doSetMarkerUndoneAndCookie(zMap.cachedMarkersById[vID]);
   }
 
-  var buttonComplete = this.mapControl._contents.querySelector(
-    `.marker-actions-row [id="check${vID}"].marker-action-button`
-  );
-  var iconContainer = buttonComplete.querySelector('.marker-action-icon');
-  iconContainer.innerHTML = '';
-  iconContainer.append(
-    $(`<i class="icon-${((!vComplete)?"checkbox-unchecked":"checkmark")}"></i>`)[0]
-  );
-  buttonComplete.querySelector('.marker-action-label').textContent =
-    vComplete ? "Completed" : "Mark Complete";
+  var buttonComplete = document.getElementById('check' + vID);
+  if(
+    buttonComplete &&
+    this.mapControl._contents.contains(buttonComplete)
+  ) {
+    var iconContainer = buttonComplete.querySelector('.marker-action-icon');
+    iconContainer.innerHTML = '';
+    iconContainer.append(
+      $(`<i class="icon-${((!vComplete)?"checkbox-unchecked":"checkmark")}"></i>`)[0]
+    );
+    buttonComplete.querySelector('.marker-action-label').textContent =
+      vComplete ? "Completed" : "Mark Complete";
+  }
 }
 
 ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
@@ -2479,7 +2524,8 @@ ZMap.prototype.goTo = function(vGoTo, notByInput) {
       vGoTo.zoom,
       !vGoTo.hidePin,
       vGoTo.panTo !== false,
-      notByInput
+      notByInput,
+      !!vGoTo.centerInVisibleArea
     );
     // Open Marker already does a change map, so it takes precedence
 
@@ -2501,7 +2547,8 @@ ZMap.prototype._openMarker = function(
   vZoom,
   vPin = ZConfig.getConfig('hidePin') == 'true',
   vPanTo = false,
-  notByInput
+  notByInput,
+  centerInVisibleArea = false
 ) {
   var marker = this.cachedMarkersById[vMarkerId];
   if (marker) {
@@ -2530,8 +2577,12 @@ ZMap.prototype._openMarker = function(
       6 = 4
      */
      var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
-     this.map.setView(latlng, vZoom);
-     _this._createMarkerPopup(marker);
+     _this._createMarkerPopup(marker, centerInVisibleArea);
+     if(centerInVisibleArea) {
+       this._setViewAtMarkerInVisibleArea(marker, vZoom);
+     } else {
+       this.map.setView(latlng, vZoom);
+     }
      if (vPin) {
          newMarker = L.marker(marker._latlng).addTo(this.map);
      }
@@ -2545,6 +2596,56 @@ ZMap.prototype._openMarker = function(
 
    toastr.error(_this.langMsgs.GO_TO_MARKER_ERROR.format(vMarkerId));
 }
+
+ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom) {
+  var mapRect = this.map.getContainer().getBoundingClientRect();
+  var mapSize = this.map.getSize();
+  var visibleLeft = 0;
+  var visibleRight = mapRect.width;
+  var visibleTop = 0;
+  var visibleBottom = mapRect.height;
+
+  if(this.mapControl.viewStyleBottomSlide) {
+    var mobileDrawerRect = this.mapControl._container.getBoundingClientRect();
+    visibleBottom = Math.max(
+      0,
+      Math.min(mapRect.height, mobileDrawerRect.top - mapRect.top)
+    );
+  } else if(
+    window.getComputedStyle(this.mapControl._container).display !== 'none'
+  ) {
+    var desktopDrawerRect = this.mapControl._container.getBoundingClientRect();
+    var drawerWidth = Math.min(
+      mapRect.width,
+      Math.max(
+        desktopDrawerRect.width,
+        this.mapControl.options.width || 0
+      )
+    );
+    var drawerEdge = this.mapControl.options.position.endsWith('left')
+      ? desktopDrawerRect.left - mapRect.left
+      : desktopDrawerRect.right - mapRect.left;
+    if(this.mapControl.options.position.endsWith('left')) {
+      visibleLeft = drawerEdge + drawerWidth;
+    } else {
+      visibleRight = drawerEdge - drawerWidth;
+    }
+  }
+
+  if(visibleRight <= visibleLeft || visibleBottom <= visibleTop) return;
+
+  var visibleCenter = L.point(
+    (visibleLeft + visibleRight) / 2,
+    (visibleTop + visibleBottom) / 2
+  );
+  var mapCenter = L.point(mapSize.x / 2, mapSize.y / 2);
+  var markerPoint = this.map.project(marker.getLatLng(), zoom);
+  var centerPoint = markerPoint.add(mapCenter).subtract(visibleCenter);
+
+  this.map.setView(this.map.unproject(centerPoint, zoom), zoom, {
+    animate: false
+  });
+};
 
 ZMap.prototype.getMarkers = function() {
   return markers;

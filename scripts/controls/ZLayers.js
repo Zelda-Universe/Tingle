@@ -989,7 +989,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     this._clearContent();
 
-    if(vType != 'category') {
+    if(
+      vType != 'category' &&
+      !(vType == 'search' && !this.viewStyleBottomSlide)
+    ) {
       var closeButton = L.DomUtil.create('a', 'button back-button', this._contents);
       closeButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
       L.DomEvent

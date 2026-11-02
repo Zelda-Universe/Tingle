@@ -877,6 +877,14 @@ a.button.leaflet-control-layers-toggle {
 .search-marker-list-entry .name {
 	height: auto;
 	margin-bottom: 4px;
+	font-size: 16px;
+}
+
+.search-marker-list-entry .details {
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: center;
+	vertical-align: top;
 }
 
 .search-marker-list-entry .location {
@@ -1930,12 +1938,31 @@ header.ex1 {
 	touch-action: none;
 }
 
+@media only screen and (min-width: 601px) {
+	header.ex1 {
+		display: flex;
+		align-items: center;
+	}
+
+	header.ex1 > .menu-header-button:first-of-type {
+		margin-left: auto;
+	}
+
+	.menu-header-button .label {
+		box-sizing: border-box;
+		width: 100%;
+		padding-left: 0;
+		padding-right: 0;
+		text-align: center;
+	}
+}
+
 .logo {
 	float: none;
 	box-sizing: content-box;
 	text-align: left;
-	height: 66px !important;
-	padding: 17px 0px 17px 12px!important;
+	height: 62px !important;
+	padding: 15px 0px 15px 12px!important;
     margin-left: 0;
 	margin-right: 0;
 }
@@ -2139,7 +2166,7 @@ header.ex1 {
 }
 
 .menu-header-button {
-    width:86px;
+    width:80px;
 }
 
 .completed-button.toggledOff {
@@ -2208,14 +2235,15 @@ header.ex1 {
 .menu-header-button .category-icon,
 .menu-header-button.toggledOff .category-icon,
 .menu-header-button.toggledOn .category-icon,
+.menu-header-button .icon-General_Map,
 .menu-header-button.toggledOff .icon-General_Map,
 .menu-header-button.toggledOn .icon-General_Map {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	box-sizing: border-box;
-	width: 64px;
-	height: 64px;
+	width: 60px;
+	height: 60px;
 	line-height: 1;
 	background: transparent !important;
 	border: 2px solid rgba(255,255,255,.3) !important;

@@ -1,8 +1,6 @@
 <?php
   $path = __DIR__;
 
-	begin();
-
   $fieldNamesInts = [
     'categoryId'        ,
     'game'              ,
@@ -12,216 +10,183 @@
     'submapId'
   ];
   $fieldNamesStrs = [
-//    'level'             ,
     'markerTitle'       ,
     'markerDescription' ,
     'tabText'
   ];
 
-  $fieldNamesAll = array_merge($fieldNamesInts, $fieldNamesStrs);
-
-  foreach ($fieldNamesAll as $fieldName) {
+  foreach (array_merge($fieldNamesInts, $fieldNamesStrs) as $fieldName) {
     if (!isset($_POST[$fieldName])) {
-  		echo json_encode(array(
+      echo json_encode(array(
         "success" => false,
         "msg"     => "Need all relevant marker data!"
       ));
-  		return;
-  	}
+      return;
+    }
   }
 
   foreach ($fieldNamesInts as $fieldName) {
     if (!is_numeric($_POST[$fieldName])) {
-  		echo json_encode(array(
+      echo json_encode(array(
         "success" => false,
         "msg"     => "Need all marker data to be properly formatted!"
       ));
-  		return;
-  	}
+      return;
+    }
   }
 
   start_session("zmap");
-
-	if (
+  if (
         !isset($_SESSION['user_id'])
     ||  $_SESSION['user_id'] != $_POST['userId']
   ) {
-		echo json_encode(array(
+    echo json_encode(array(
       "success" => false,
       "msg"     => "Not logged!"
     ));
-		return;
-	}
-
-   // If it`s an update
-  if (isset($_POST['markerId'])) {
-    // Validate the rank of the user
-    if (
-          $_SESSION['level'] < 5
-      ||  (
-            $_SESSION['level'] < 10
-        &&  (
-          $_SESSION['user_id'] != $_POST['userId']
-        )
-      ) // @TODO: Improve this to get actual marker user, since they can change the POST data
-      ) {
-         echo json_encode(array(
-           "success"  => false,
-           "msg"      => "You can't add this marker!"
-         ));
-         return;
-      }
-  } else {
-    // Ok, anyone can add marker :)
+    return;
   }
+  $sessionUserId = (int) $_SESSION['user_id'];
+  $sessionLevel  = (int) ($_SESSION['level'] ?? 0);
+  session_write_close();
 
+  $isUpdate   = isset($_POST['markerId']) && is_numeric($_POST['markerId']);
+  $userId     = $sessionUserId;
+  $submapId   = (int) $_POST['submapId'];
+  $categoryId = (int) $_POST['categoryId'];
+  $x          = (float) $_POST['lng'];
+  $y          = (float) $_POST['lat'];
+  $isGlobal   = isset($_POST['isGlobal']) ? 1 : 0;
 
-  //----------------------------------------------------------//
-  if (!isset($_POST['markerId'])) {
-  $visible = 0;
-    if ($_SESSION['level'] >= 5) {
-      $visible = 1;
-    }
+  // Stored entity-encoded; get_markers decodes on the way out.
+  // stripslashes() predates the removal of magic quotes and is kept for parity.
+  $name        = htmlentities(stripslashes($_POST['markerTitle']),       ENT_QUOTES, "UTF-8");
+  $description = htmlentities(stripslashes($_POST['markerDescription']), ENT_QUOTES, "UTF-8");
 
-    $query = "insert into " . $map_prefix . "marker (
-                                          id
-                                        , submap_id
-                                        , marker_status_id
-                                        , marker_category_id
-                                        , user_id
-                                        , name
-                                        , description
-                                        , x
-                                        , y
-                                        , global
-                                        , visible
-                                        , last_updated
-                                  ) VALUES (
-                                          null
-                                        , ".$_POST['submapId']."
-                                        , 2
-                                        , ".$_POST['categoryId']."
-                                        , ".$_POST['userId']."
-                                        , '" . addslashes(htmlentities(stripslashes($_POST['markerTitle']), ENT_QUOTES, "UTF-8")) . "'
-                                        , '" . addslashes(htmlentities(stripslashes($_POST['markerDescription']), ENT_QUOTES, "UTF-8")) . "'
-                                        , ".$_POST['lng']."
-                                        , ".$_POST['lat']."
-                                        , " . (isset($_POST['isGlobal'])?1:0) . "
-                                        , " . $visible . "
-                                        , now()
-                                  )";
-  } else {
-    $query = "update " . $map_prefix . "marker
-                   set submap_id = ".$_POST['submapId']."
-                     , marker_category_id = ".$_POST['categoryId']."
-                     , name = '" . addslashes(htmlentities(stripslashes($_POST['markerTitle']), ENT_QUOTES, "UTF-8")) . "'
-                     , description = '" . addslashes(htmlentities(stripslashes($_POST['markerDescription']), ENT_QUOTES, "UTF-8")) . "'
-                     , x = ".$_POST['lng']."
-                     , y = ".$_POST['lat']."
-                     , global = " . (isset($_POST['isGlobal'])?1:0) . "
-                     , last_updated = now()
-               ";
-    if ($_SESSION['level'] >= 10) {
-    $query = $query . "
-                   , visible = " . (isset($_POST['isVisible'])?1:0);
-    }
+  if ($isUpdate) {
+    $markerId = (int) $_POST['markerId'];
 
-    $query = $query . "
-               where id = " . $_POST['markerId'];
-   }
-   session_write_close();
+    // Authorisation is decided by who owns the marker in the database, not by
+    // the userId the client sends. Level 10+ may edit any marker; level 5-9
+    // only their own.
+    $ownerId = $db->fetchOne("
+      SELECT user_id
+        FROM {$map_prefix}marker
+       WHERE id = ?
+    ", [$markerId]);
 
-	//echo $query;
-  //error_log($query);
-  //die();
-  $result = @$mysqli->query($query); // or die(mysql_error());
-  $num = $result->num_rows;
-
-  if ($result) {
-      if (!isset($_POST['markerId'])) {
-         $marker_id = $mysqli->insert_id;
-      } else {
-         $marker_id = $_POST['markerId'];
-
-         $query = "update " . $map_prefix . "marker_tab set visible = 0 where visible = 1 and marker_id = " . $marker_id;
-         //echo $query;
-			$result = @$mysqli->query($query); // or die($mysqli->error());
-      }
-
-    	for ($i = 0; $i < strlen($_POST['tabText']); $i++) {
-				if (/*!isset($_POST['tabTitle'][$i]) || */!isset($_POST['tabText'][$i])) {
-					continue;
-				} else if (/*$_POST['tabTitle'][$i] == "" || */$_POST['tabText'][$i] == "") {
-               continue;
-            } else {
-					$tab_id = "null";
-					$tab_text = $_POST['tabText'][$i];
-
-               $tab_text = preg_replace('/<p>\\s*?(<a .*?><img.*?><\\/a>|<img.*?>)?\\s*<\\/p>/s', '\1', $tab_text);
-               //$tab_text = str_replace('100%px', '100%', $tab_text);
-
-				}
-
-
-			//----------------------------------------------------------//
-			$query = "insert into " . $map_prefix . "marker_tab (
-											   marker_id
-											 , marker_tab_id
-											 , marker_tab_status_id
-											 , user_id
-											 , tab_title
-											 , tab_text
-											 , tab_order
-											 , visible)
-									   VALUES (
-											   ".$marker_id."
-											 , ".$tab_id."
-											 , 1
-											 , ".$_POST['userId']."
-											 , ''
-											 , '" . addslashes(htmlentities(stripslashes($tab_text), ENT_QUOTES, "UTF-8")) . "'
-											 , 1
-											 , 1)";
-			//echo $query;
-			$result = @$mysqli->query($query); // or die(mysql_error());
-			$num = $result->num_rows;
-
-			if (!$result) {
-				break;
-			}
-    }
-
-		if ($result) {
-			//echo json_encode(array("success"=>true, "msg"=>"Marker inserted!", "markerId"=>$marker_id));
-         //@TODO: IMPROVE THIS TO GET FROM PHP FILE
-         commit();
-         $_GET['newMarkerId'] = $marker_id;
-         $_GET['game'] = $_POST['game'];
-         ob_start();
-         include("$path/get_markers.php");
-         $output = ob_get_clean();
-
-         echo json_encode(array(
-           "success"  => true,
-           "action"   =>  (
-             !isset($_POST['markerId']) ? "ADD" : "UPDATE"
-           ),
-           "marker" =>  $output));
-		} else {
-			echo json_encode(array(
-        "success" => false,
-        "msg"     => $mysqli->error
-      ));
-			rollback();
-		}
-  } else {
+    if ($ownerId === false) {
       echo json_encode(array(
         "success" => false,
-        "msg"=> $mysqli->error
+        "msg"     => "Marker not found!"
       ));
-	  rollback();
+      return;
+    }
+
+    if (
+          $sessionLevel < 5
+      ||  ($sessionLevel < 10 && (int) $ownerId !== $sessionUserId)
+    ) {
+      echo json_encode(array(
+        "success"  => false,
+        "msg"      => "You can't add this marker!"
+      ));
+      return;
+    }
+  }
+  // Otherwise anyone logged in can add a marker; it stays hidden until a
+  // level 5+ user adds it, or an admin makes it visible.
+
+  begin();
+
+  if (!$isUpdate) {
+    $visible = ($sessionLevel >= 5) ? 1 : 0;
+
+    $db->executeStatement("
+      INSERT INTO {$map_prefix}marker (
+          submap_id
+        , marker_status_id
+        , marker_category_id
+        , user_id
+        , name
+        , description
+        , x
+        , y
+        , global
+        , visible
+        , last_updated
+      ) VALUES (?, 2, ?, ?, ?, ?, ?, ?, ?, ?, now())
+    ", [$submapId, $categoryId, $userId, $name, $description, $x, $y, $isGlobal, $visible]);
+
+    $markerId = (int) $db->lastInsertId();
+  } else {
+    $sql = "
+      UPDATE {$map_prefix}marker
+         SET submap_id          = ?
+           , marker_category_id = ?
+           , name               = ?
+           , description        = ?
+           , x                  = ?
+           , y                  = ?
+           , global             = ?
+           , last_updated       = now()
+    ";
+    $params = [$submapId, $categoryId, $name, $description, $x, $y, $isGlobal];
+
+    if ($sessionLevel >= 10) {
+      $sql     .= "   , visible = ?\n";
+      $params[] = isset($_POST['isVisible']) ? 1 : 0;
+    }
+
+    $sql     .= " WHERE id = ?";
+    $params[] = $markerId;
+
+    $db->executeStatement($sql, $params);
+
+    // Replace the marker's tabs: hide the current ones, insert the submitted ones.
+    $db->executeStatement("
+      UPDATE {$map_prefix}marker_tab
+         SET visible = 0
+       WHERE visible = 1
+         AND marker_id = ?
+    ", [$markerId]);
   }
 
+  // The form posts tabText[]; a single string is accepted for older clients.
+  $tabTexts = is_array($_POST['tabText']) ? $_POST['tabText'] : [$_POST['tabText']];
+  foreach ($tabTexts as $tabText) {
+    if (!is_string($tabText) || $tabText === '') {
+      continue;
+    }
 
-   commit();
+    // Unwrap an image that the editor wrapped in an otherwise empty paragraph.
+    $tabText = preg_replace('/<p>\s*?(<a .*?><img.*?><\/a>|<img.*?>)?\s*<\/p>/s', '\1', $tabText);
+
+    $db->executeStatement("
+      INSERT INTO {$map_prefix}marker_tab (
+          marker_id
+        , marker_tab_status_id
+        , user_id
+        , tab_title
+        , tab_text
+        , tab_order
+        , visible
+      ) VALUES (?, 1, ?, '', ?, 1, 1)
+    ", [$markerId, $userId, htmlentities(stripslashes($tabText), ENT_QUOTES, "UTF-8")]);
+  }
+
+  commit();
+
+  // Return the marker exactly as get_markers renders it.
+  $_GET['newMarkerId'] = $markerId;
+  $_GET['game']        = $_POST['game'];
+  ob_start();
+  include("$path/get_markers.php");
+  $output = ob_get_clean();
+
+  echo json_encode(array(
+    "success" => true,
+    "action"  => ($isUpdate ? "UPDATE" : "ADD"),
+    "marker"  => $output
+  ));
 ?>

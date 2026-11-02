@@ -15,7 +15,7 @@
       $cacheRegistryDataCount = count($cacheRegistryData);
       // debug_log("cacheRegistryDataCount: $cacheRegistryDataCount");
       // // debug_log("cacheRegistryData      : ".var_export($cacheRegistryData, true)); // Big
-      if($cacheRegistryDataCount = 0) {
+      if($cacheRegistryDataCount == 0) {
         // debug_log('Cache registry file empty, or could not be parsed as INI data; returning...');
         return false;
       }
@@ -43,7 +43,7 @@
 
     function inifyFileToFile($fromFile, $toFile) {
     $fromFileData = file_get_contents($fromFile);
-    $fromFileDataInified = preg_replace('/\n/', "=\n", $fromFileData);
+    $fromFileDataInified = preg_replace('/\r?\n/', "=\n", $fromFileData);
     file_put_contents($toFile, $fromFileDataInified);
   }
   }

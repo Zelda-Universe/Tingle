@@ -1,150 +1,118 @@
 <?php
    $path = __DIR__;
 
-   if (file_exists("$path/ajax/static/map_" . $_GET["game"] . ".json")) {
-	   readfile("$path/ajax/static/map_" . $_GET["game"] . ".json");
-	   return;
+   $map = $_GET["game"] ?? '';
+   if ($map === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $map)) {
+     echo json_encode(array());
+     return;
    }
-   
-   $map = $_GET["game"];
 
-   $query = "select m.id
-                  , m.name
+   if (file_exists("$path/ajax/static/map_{$map}.json")) {
+     readfile("$path/ajax/static/map_{$map}.json");
+     return;
+   }
 
-                  , m.default_zoom                     as defaultZoom
-                  , coalesce(m.max_zoom, c.max_zoom)   as maxZoom
-                  , map_copyright                      as mapCopyright
+   // The "Map by <mapper>" credit line, shared by submaps and submap layers.
+   $sqlMapperCredit = "
+      case when m.id is not null then
+         CONCAT(
+            %s.name,
+            ' Map by ',
+            case when m.email is not null then
+               CONCAT('<a href=mailto:', m.email, '>', m.name, '</a>')
+            else
+               m.name
+            end,
+            case when m.site_name is not null and m.name is not null then
+               CONCAT(' (<a href=', m.site_url, '>', m.site_name, '</a>)')
+            else
+               CONCAT('<a href=', m.site_url, '>', m.site_name, '</a>')
+            end
+         )
+      end as mapMapper
+   ";
 
-               from " . $map_prefix . "map m
-                  , " . $map_prefix . "container c
-              where c.id = '" . $map . "'
-                and c.id = m.container_id
-                and m.visible = 1
-             order by m.map_order
-                    , m.id
-   ;";
-   //echo $query;
+   $maps = $db->fetchAllAssociative("
+      select m.id
+           , m.name
 
-   $result = @$mysqli->query($query);
+           , m.default_zoom                     as defaultZoom
+           , coalesce(m.max_zoom, c.max_zoom)   as maxZoom
+           , map_copyright                      as mapCopyright
 
-	if(!$result) {
-		print($mysqli->error);
-		return;
-	}
+        from {$map_prefix}map m
+           , {$map_prefix}container c
+       where c.id = ?
+         and c.id = m.container_id
+         and m.visible = 1
+       order by m.map_order
+             , m.id
+   ", [$map]);
 
    $res = array();
 
-   while ($row = $result->fetch_assoc()) {
+   foreach ($maps as $row) {
+      $submaps = $db->fetchAllAssociative("
+         select sm.id
+              , sm.name
 
-      $query = "select sm.id
-                     , sm.name
+              , smt.name           as mapTypeName
+              , google_default     as googleDefault
 
-                     , smt.name           as mapTypeName
-                     , google_default     as googleDefault
+              , tile_url           as tileURL
+              , tile_ext           as tileExt
 
-                     , tile_url           as tileURL
-                     , tile_ext           as tileExt
+              , img404             as img404
+              , empty_map          as emptyMap
 
-                     , img404             as img404
-                     , empty_map          as emptyMap
+              , " . sprintf($sqlMapperCredit, 'sm') . "
 
-                     , case when m.id is not null then
-                        CONCAT(
-                           sm.name,
-                           ' Map by ',
-                           case when m.email is not null then
-                              CONCAT('<a href=mailto:', m.email, '>', m.name, '</a>')
-                           else
-                              m.name
-                           end,
-                           case when m.site_name is not null and m.name is not null then
-                              CONCAT(' (<a href=', m.site_url, '>', m.site_name, '</a>)')
-                           else
-                              CONCAT('<a href=', m.site_url, '>', m.site_name, '</a>')
-                           end
-                        )
-                       end
-                       as mapMapper
+              , is_default         as isDefault
 
-                     , is_default         as isDefault
+              , opacity
 
-                     , opacity
+           from {$map_prefix}submap sm
+           left outer join {$map_prefix}mapper m
+             on sm.mapper_id = m.id
+              , {$map_prefix}map_type smt
+          where sm.map_id = ?
+            and sm.visible = 1
+            and sm.map_type_id = smt.id
+          order by sm.submap_order
+                 , sm.id
+      ", [$row['id']]);
 
-                  from " . $map_prefix . "submap sm
-                  left outer join " . $map_prefix . "mapper m
-                    on sm.mapper_id = m.id
-                     , " . $map_prefix . "map_type smt
-                 where sm.map_id = " . $row['id'] . "
-                   and sm.visible = 1
-                   and sm.map_type_id = smt.id
-                 order by sm.submap_order
-                        , sm.id
-               ";
-      //echo $query;
+      $arr_child = array();
+      foreach ($submaps as $row2) {
+         $row2['submapLayer'] = $db->fetchAllAssociative("
+            select sml.id
+                 , sml.name
+                 , sml.tile_url           as tileURL
+                 , sml.tile_ext           as tileExt
 
-      $result2 = $mysqli->query($query);
+                 , sml.img404             as img404
 
-      if ($result2) {
+                 , " . sprintf($sqlMapperCredit, 'sml') . "
 
-         $arr_child = array();
-         while ($row2 = $result2->fetch_assoc()) {
+                 , sml.control_visible    as controlVisible
+                 , sml.control_checked    as controlChecked
 
-            $query = "select sml.id
-                           , sml.name
-                           , sml.tile_url           as tileURL
-                           , sml.tile_ext           as tileExt
+                 , sml.type
+                 , sml.opacity
 
-                           , sml.img404             as img404
+              from {$map_prefix}submap_layer sml
+              left outer join {$map_prefix}mapper m
+                on (sml.mapper_id = m.id)
+             where sml.submap_id = ?
+               and sml.visible = 1
+             order by layer_order
+                    , sml.id
+         ", [$row2['id']]);
 
-                           , case when m.id is not null then
-                              CONCAT(
-                                 sml.name,
-                                 ' Map by ',
-                                 case when m.email is not null then
-                                    CONCAT('<a href=mailto:', m.email, '>', m.name, '</a>')
-                                 else
-                                    m.name
-                                 end,
-                                 case when m.site_name is not null and m.name is not null then
-                                    CONCAT(' (<a href=', m.site_url, '>', m.site_name, '</a>)')
-                                 else
-                                    CONCAT('<a href=', m.site_url, '>', m.site_name, '</a>')
-                                 end
-                              )
-                             end
-                             as mapMapper
-
-                           , sml.control_visible    as controlVisible
-                           , sml.control_checked    as controlChecked
-
-                           , sml.type
-                           , sml.opacity
-
-                        from " . $map_prefix . "submap_layer sml
-                        left outer join " . $map_prefix . "mapper m
-                          on (sml.mapper_id = m.id)
-                       where sml.submap_id = " . $row2['id'] . "
-                         and sml.visible = 1
-                       order by layer_order
-                              , sml.id
-            ";
-
-            //echo $query;
-            $result3 = $mysqli->query($query);
-
-            if ($result3) {
-               $arr_layer = array();
-               while ($row3 = $result3->fetch_assoc()) {
-                  array_push($arr_layer, $row3);
-               }
-               $row2['submapLayer'] = $arr_layer;
-            }
-
-            array_push($arr_child, $row2);
-         }
-         $row['subMap'] = $arr_child;
+         $arr_child[] = $row2;
       }
-      array_push($res, $row);
+      $row['subMap'] = $arr_child;
+      $res[] = $row;
    }
    echo json_encode($res);
 ?>

@@ -747,6 +747,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _refreshMobileDrawerLayout: function() {
     if(!this.viewStyleBottomSlide || !this._form) return;
+    if(document.activeElement && document.activeElement.matches('.marker-search')) return;
     this._map.invalidateSize({ pan: false });
     this.options.width = this._map.getContainer().getBoundingClientRect().width || window.innerWidth;
     // Use the measured map width instead of a percentage. The Leaflet corner

@@ -582,12 +582,7 @@ ZMap.prototype._createMarkerPopup = function(marker) {
         this.pad(Math.round(latlng.lat), 4);
     }
 
-    var markerCategory = this.categories[marker.categoryId];
-    var titleIcon = markerCategory && markerCategory.img === "TotK_Npc"
-      ? "<span class='poi-title-icon icon-TotK_Npc' aria-hidden='true'></span>"
-      : "";
-    var content = "<h2 class='popupTitle'>" + titleIcon +
-      "<span class='poi-title-text'>" + title + "</span></h2>" +
+    var content = "<h2 class='popupTitle'>" + title + "</h2>" +
       "<p class='marker-coordinate-pill'>" + coordinateText + "</p>";
     content = content + "<div class='popupContent'>";
 

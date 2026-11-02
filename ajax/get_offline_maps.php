@@ -1,7 +1,19 @@
 <?php
-  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests';
+  start_session('zmap');
+  if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(array('success' => false, 'msg' => 'Please log in to download offline maps.'));
+    return;
+  }
+  session_write_close();
+
+  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v2';
   $manifestCacheLifetime = 6 * 60 * 60;
   $tileRoot = realpath(dirname(__DIR__) . '/tiles');
+  $tilePublicBaseURL = rtrim(
+    get_config('tilesBaseURL', 'string', array('https://zeldamaps.com/tiles/')),
+    '/'
+  ) . '/';
 
   function encodeOfflineTilePath($path) {
     return implode('/', array_map('rawurlencode', explode('/', str_replace('\\', '/', $path))));
@@ -35,7 +47,7 @@
     return array_values(array_unique($directories));
   }
 
-  function buildOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot) {
+  function buildOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL) {
     $tilesByPath = array();
     if (!$tileRoot) return array();
 
@@ -54,7 +66,7 @@
         if (!$absolutePath || strpos($absolutePath, $tileRoot . DIRECTORY_SEPARATOR) !== 0) continue;
         $relativePath = substr($absolutePath, strlen($tileRoot) + 1);
         $tilesByPath[$relativePath] = array(
-          'url' => '/tiles/' . encodeOfflineTilePath($relativePath),
+          'url' => $tilePublicBaseURL . encodeOfflineTilePath($relativePath),
           'size' => $file->getSize()
         );
       }
@@ -64,7 +76,7 @@
     return array_values($tilesByPath);
   }
 
-  function getOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot, $cacheDirectory, $cacheLifetime) {
+  function getOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL, $cacheDirectory, $cacheLifetime) {
     if (!is_dir($cacheDirectory)) @mkdir($cacheDirectory, 0755, true);
     $cacheFile = $cacheDirectory . '/' . preg_replace('/[^A-Za-z0-9_-]/', '', $gameId) . '.json';
     if (is_file($cacheFile) && filemtime($cacheFile) > time() - $cacheLifetime) {
@@ -72,7 +84,7 @@
       if (is_array($cachedManifest)) return $cachedManifest;
     }
 
-    $manifest = buildOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot);
+    $manifest = buildOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL);
     @file_put_contents($cacheFile, json_encode($manifest), LOCK_EX);
     return $manifest;
   }
@@ -96,7 +108,7 @@
       return;
     }
     $manifest = getOfflineManifest(
-      $mysqli, $map_prefix, $requestedGame, $tileRoot,
+      $mysqli, $map_prefix, $requestedGame, $tileRoot, $tilePublicBaseURL,
       $manifestCacheDirectory, $manifestCacheLifetime
     );
     $offset = max(0, isset($_GET['offset']) ? (int) $_GET['offset'] : 0);
@@ -115,7 +127,7 @@
   $games = array();
   foreach ($gameRows as $gameRow) {
     $manifest = getOfflineManifest(
-      $mysqli, $map_prefix, $gameRow['shortName'], $tileRoot,
+      $mysqli, $map_prefix, $gameRow['shortName'], $tileRoot, $tilePublicBaseURL,
       $manifestCacheDirectory, $manifestCacheLifetime
     );
     $games[] = array(

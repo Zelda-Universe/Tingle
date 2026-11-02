@@ -34,8 +34,7 @@ const PUBLIC_DATA_COMMANDS = new Set([
   'get_container_name',
   'get_games',
   'get_map',
-  'get_markers',
-  'get_offline_maps'
+  'get_markers'
 ]);
 
 const TRUSTED_ASSET_HOSTS = new Set([
@@ -179,7 +178,7 @@ self.addEventListener('fetch', event => {
   }
 
   if (isTileRequest(url, request)) {
-    if (request.headers.get('X-ZeldaMaps-Offline-Pack') === '1') {
+    if (request.redirect === 'manual') {
       event.respondWith(fetch(request));
       return;
     }

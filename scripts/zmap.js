@@ -2603,7 +2603,8 @@ ZMap.prototype._createOfflineMapsForm = function() {
 
   function readPackRecord(gameId) {
     try {
-      return localStorage.getItem(packStorageKey(gameId));
+      var value = localStorage.getItem(packStorageKey(gameId));
+      return value ? JSON.parse(value) : null;
     } catch(error) {
       return null;
     }
@@ -2623,18 +2624,23 @@ ZMap.prototype._createOfflineMapsForm = function() {
     } catch(error) {}
   }
 
-  function setDownloadedState(card, game, downloaded) {
+  function setPackState(card, game, packState) {
     var downloadButton = card.find('.offline-map-download');
     var deleteButton = card.find('.offline-map-delete');
     var status = card.find('.offline-map-status');
-    if(downloaded) {
+    status.removeClass('success error');
+    if(packState === 'downloaded') {
       downloadButton.text('Downloaded').prop('disabled', true).addClass('downloaded');
       deleteButton.show();
       status.text(formatBytes(game.size) + ' saved on this device.').addClass('success');
+    } else if(packState === 'partial') {
+      downloadButton.text('Resume').prop('disabled', false).removeClass('downloaded');
+      deleteButton.show();
+      status.text('Download paused. Resume to continue with the remaining tiles.');
     } else {
       downloadButton.text('Download').prop('disabled', !game.available).removeClass('downloaded');
       deleteButton.hide();
-      status.text(game.available ? '' : 'Map files are not available for download.').removeClass('success error');
+      status.text(game.available ? '' : 'Map files are not available for download.');
     }
   }
 
@@ -2648,6 +2654,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
     var completedBytes = 0;
     var totalTiles = game.tileCount;
     var totalBytes = game.size;
+    var existingRecord = readPackRecord(game.id);
 
     downloadButton.prop('disabled', true).text('Downloading…');
     progress.attr('max', Math.max(totalBytes, 1)).val(0).show();
@@ -2674,13 +2681,29 @@ ZMap.prototype._createOfflineMapsForm = function() {
         if(index >= tiles.length) return Promise.resolve();
         var tile = tiles[index++];
         var absoluteURL = new URL(tile.url, window.location.origin).href;
-        return fetch(absoluteURL, {
-          headers: { 'X-ZeldaMaps-Offline-Pack': '1' },
-          credentials: 'same-origin'
-        }).then(function(response) {
-          if(!response.ok) throw new Error('A map tile could not be downloaded.');
-          return cache.put(absoluteURL, response.clone()).then(function() {
+        var sameOrigin = new URL(absoluteURL).origin === window.location.origin;
+        var fetchOptions = sameOrigin
+          ? {
+              credentials: 'same-origin',
+              redirect: 'manual'
+            }
+          : {
+              mode: 'no-cors',
+              credentials: 'omit',
+              redirect: 'manual'
+            };
+        return cache.match(absoluteURL).then(function(cachedResponse) {
+          if(cachedResponse) {
             updateProgress(tile.size);
+            return;
+          }
+          return fetch(absoluteURL, fetchOptions).then(function(response) {
+            if(!response.ok && response.type !== 'opaque') {
+              throw new Error('A map tile could not be downloaded.');
+            }
+            return cache.put(absoluteURL, response.clone()).then(function() {
+              updateProgress(tile.size);
+            });
           });
         }).then(worker);
       }
@@ -2691,7 +2714,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
     function downloadPage(cache, offset) {
       return fetch(
         'ajax.php?command=get_offline_maps&mode=manifest&game=' +
-        encodeURIComponent(game.id) + '&offset=' + offset + '&limit=100'
+        encodeURIComponent(game.id) + '&offset=' + offset + '&limit=250'
       ).then(function(response) {
         if(!response.ok) throw new Error('The map manifest could not be loaded.');
         return response.json();
@@ -2716,30 +2739,57 @@ ZMap.prototype._createOfflineMapsForm = function() {
     });
 
     storageCheck.then(function(estimate) {
-      if(estimate && estimate.quota && estimate.usage + totalBytes * 1.1 > estimate.quota) {
+      if(
+        (!existingRecord || existingRecord.status !== 'partial') &&
+        estimate && estimate.quota && estimate.usage + totalBytes * 1.1 > estimate.quota
+      ) {
         throw new Error('This device does not have enough available browser storage for this map.');
       }
-      return caches.delete(cacheName);
-    }).then(function() {
       return caches.open(cacheName);
     }).then(function(cache) {
+      writePackRecord(game.id, {
+        status: 'partial',
+        size: totalBytes,
+        tileCount: totalTiles,
+        updatedAt: Date.now()
+      });
       return downloadPage(cache, 0);
     }).then(function() {
       writePackRecord(game.id, {
+        status: 'downloaded',
         size: totalBytes,
         tileCount: totalTiles,
         downloadedAt: Date.now()
       });
       progress.hide();
       progressLabel.hide();
-      setDownloadedState(card, game, true);
+      setPackState(card, game, 'downloaded');
     }).catch(function(error) {
-      caches.delete(cacheName);
-      removePackRecord(game.id);
       progress.hide();
       progressLabel.hide();
-      setDownloadedState(card, game, false);
-      status.addClass('error').text(error.message || 'The map download could not be completed.');
+      caches.open(cacheName).then(function(cache) {
+        return cache.keys();
+      }).then(function(cachedTiles) {
+        if(cachedTiles.length > 0) {
+          writePackRecord(game.id, {
+            status: 'partial',
+            size: totalBytes,
+            tileCount: totalTiles,
+            updatedAt: Date.now()
+          });
+          setPackState(card, game, 'partial');
+          status.addClass('error').text(
+            (error.message || 'The map download was interrupted.') + ' Tap Resume to continue.'
+          );
+        } else {
+          caches.delete(cacheName);
+          removePackRecord(game.id);
+          setPackState(card, game, null);
+          status.addClass('error').text(
+            error.message || 'The map download could not be started.'
+          );
+        }
+      });
     });
   }
 
@@ -2769,11 +2819,18 @@ ZMap.prototype._createOfflineMapsForm = function() {
     actions.append(downloadButton, deleteButton);
     card.append(actions);
 
-    var hasPackRecord = !!readPackRecord(game.id);
-    setDownloadedState(card, game, false);
+    var packRecord = readPackRecord(game.id);
+    setPackState(card, game, null);
     caches.has(packCacheName(game.id)).then(function(hasCache) {
-      if(hasPackRecord && hasCache) {
-        setDownloadedState(card, game, true);
+      if(packRecord && hasCache) {
+        setPackState(
+          card,
+          game,
+          (
+            packRecord.status === 'downloaded' ||
+            (!packRecord.status && packRecord.downloadedAt)
+          ) ? 'downloaded' : 'partial'
+        );
       } else {
         removePackRecord(game.id);
         if(hasCache) caches.delete(packCacheName(game.id));
@@ -2787,7 +2844,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
       if(!window.confirm('Remove the downloaded ' + game.name + ' maps from this device?')) return;
       caches.delete(packCacheName(game.id)).then(function() {
         removePackRecord(game.id);
-        setDownloadedState(card, game, false);
+        setPackState(card, game, null);
       });
     });
     return card;

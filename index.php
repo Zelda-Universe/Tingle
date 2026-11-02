@@ -1,3 +1,47 @@
+<?php
+  $gameKey = isset($_GET['game']) ? strtolower((string) $_GET['game']) : 'totk';
+  $gameAliases = [
+    'la' => 'LA',
+    'linksawakening' => 'LA',
+    'botw' => 'BotW',
+    'totk' => 'TotK',
+    'eow' => 'EoW'
+  ];
+  $gameId = $gameAliases[$gameKey] ?? 'TotK';
+  $gameMetadata = [
+    'LA' => [
+      'name' => "Link's Awakening",
+      'description' => "Explore Koholint Island with the Zelda Maps interactive map for The Legend of Zelda: Link's Awakening.",
+      'image' => 'social-la.png',
+      'themeColor' => '#43a047'
+    ],
+    'BotW' => [
+      'name' => 'Breath of the Wild',
+      'description' => 'Explore Hyrule with the Zelda Maps interactive map for The Legend of Zelda: Breath of the Wild.',
+      'image' => 'social-botw.png',
+      'themeColor' => '#67c6e8'
+    ],
+    'TotK' => [
+      'name' => 'Tears of the Kingdom',
+      'description' => 'Explore the Surface, Sky, and Depths with the Zelda Maps interactive map for The Legend of Zelda: Tears of the Kingdom.',
+      'image' => 'social-totk.png',
+      'themeColor' => '#67b9ad'
+    ],
+    'EoW' => [
+      'name' => 'Echoes of Wisdom',
+      'description' => 'Explore Hyrule with the Zelda Maps interactive map for The Legend of Zelda: Echoes of Wisdom.',
+      'image' => 'social-eow.png',
+      'themeColor' => '#d4a738'
+    ]
+  ];
+  $metadata = $gameMetadata[$gameId];
+  $pageTitle = 'Zelda Maps - ' . $metadata['name'] . ' Interactive Map';
+  $canonicalUrl = 'https://zeldamaps.com/?game=' . rawurlencode($gameId);
+  $socialImageUrl = 'https://zeldamaps.com/images/' . $metadata['image'];
+  function metadataEscape($value) {
+    return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+  }
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -12,9 +56,7 @@
         />
         <link rel="manifest" href="manifest.webmanifest" />
 
-        <title>
-          Zelda Maps - Echoes of Wisdom Interactive Map
-        </title>
+        <title><?= metadataEscape($pageTitle) ?></title>
 
         <meta charset="utf-8" />
 
@@ -24,9 +66,9 @@
           content="en-us"
         />
 
-        <meta name="description" content="Interactive map of Hyrule from The Legend of Zelda: Echoes of Wisdom.">
+        <meta name="description" content="<?= metadataEscape($metadata['description']) ?>">
         <meta name="application-name" content="Zelda Maps" />
-        <meta name="theme-color" content="#f5f5f7" />
+        <meta name="theme-color" content="<?= metadataEscape($metadata['themeColor']) ?>" />
         <meta
           name="keywords"
           content="Zelda, eow interactive map, totk interactive map, echoes of wisdom interactive map, tears of the kingdom interactive map, botw interactive map, breath of the wild interactive map, interactive map, map, eow, EoW, botw, BotW, totk, TotK, Echoes of Wisdom, Breath of the Wild, Tears of the Kingdom, Zelda Maps, echoes of wisdom map, tears of the kingdom map, eow map, totk map, breath of the wild map, botw map, Hyrule, hyrule map, eow guide, botw guide, totk guide"
@@ -53,24 +95,29 @@
 
       <!-- OpenGraph (OG) / Facebook/Meta Tags -->
 
-        <meta property="og:description"       content="Interactive map of Hyrule from The Legend of Zelda: Echoes of Wisdom.">
+        <meta property="og:description" content="<?= metadataEscape($metadata['description']) ?>">
         <meta property="og:locale"  content="en_US" />
         <meta property="og:locale:alternate"  content="en_US" />
-        <meta property="og:image"   content="https://zeldamaps.com/images/social.png">
+        <meta property="og:image" content="<?= metadataEscape($socialImageUrl) ?>">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="<?= metadataEscape($pageTitle) ?>">
         <meta property="og:site_name" content="Zelda Maps" />
-        <meta property="og:title"   content="Zelda Maps - Echoes of Wisdom Interactive Map">
+        <meta property="og:title" content="<?= metadataEscape($pageTitle) ?>">
         <meta property="og:type"    content="website">
-        <meta property="og:url"     content="https://zeldamaps.com">
+        <meta property="og:url" content="<?= metadataEscape($canonicalUrl) ?>">
+        <link rel="canonical" href="<?= metadataEscape($canonicalUrl) ?>">
 
 
       <!-- Twitter Meta Tags -->
 
         <meta name="twitter:card"     content="summary_large_image">
-        <meta name="twitter:description"  content="Interactive map of Hyrule from The Legend of Zelda: Echoes of Wisdom.">
+        <meta name="twitter:description" content="<?= metadataEscape($metadata['description']) ?>">
         <meta property="twitter:domain"   content="zeldamaps.com">
-        <meta name="twitter:image"    content="https://zeldamaps.com/images/social.png">
-        <meta name="twitter:title"    content="Zelda Maps - Echoes of Wisdom Interactive Map">
-        <meta property="twitter:url"  content="https://zeldamaps.com">
+        <meta name="twitter:image" content="<?= metadataEscape($socialImageUrl) ?>">
+        <meta name="twitter:image:alt" content="<?= metadataEscape($pageTitle) ?>">
+        <meta name="twitter:title" content="<?= metadataEscape($pageTitle) ?>">
+        <meta property="twitter:url" content="<?= metadataEscape($canonicalUrl) ?>">
 
 
 
@@ -127,8 +174,17 @@
           document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }
       </script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261102-ios-search-results-gap"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261102-ios-search-results-gap" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261102-offline-packs"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261102-offline-packs" />
+      <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('service-worker.js', { updateViaCache: 'none' }).catch(function(error) {
+              console.warn('Offline caching could not be enabled.', error);
+            });
+          });
+        }
+      </script>
 
       <!-- Auto-select default game when none other provided. -->
       <script>

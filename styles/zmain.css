@@ -616,6 +616,161 @@ main {
 	line-height: 40px;
 }
 
+.account-button-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+}
+
+.account-profile-picture {
+	display: block;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	user-select: none;
+	-webkit-user-drag: none;
+}
+
+.account-button.has-profile-picture {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.account-profile-section {
+	margin: 18px 0 24px;
+	text-align: center;
+}
+
+.account-profile-preview {
+	display: block;
+	width: 112px;
+	height: 112px;
+	margin: 0 auto 16px;
+	border-radius: 50%;
+	object-fit: cover;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+.account-profile-status {
+	min-height: 20px;
+	margin: 8px 0 0;
+	font-size: 14px;
+	text-align: center;
+}
+
+.account-profile-status.error {
+	color: #ff8c85;
+}
+
+.account-profile-status.success {
+	color: #77e2a8;
+}
+
+.offline-maps-intro {
+	margin: 0 0 20px;
+	color: rgba(255, 255, 255, .78);
+	line-height: 1.4;
+	text-align: center;
+}
+
+.offline-maps-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-bottom: 20px;
+}
+
+.offline-maps-loading {
+	padding: 24px 0;
+	color: rgba(255, 255, 255, .7);
+	text-align: center;
+}
+
+.offline-map-card {
+	padding: 16px;
+	border-radius: 18px;
+	background: rgba(255, 255, 255, .1);
+	box-shadow: 0 8px 20px rgba(0, 0, 0, .18);
+}
+
+.offline-map-heading {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.offline-map-heading h4 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.offline-map-size {
+	color: rgba(255, 255, 255, .7);
+	font-size: 14px;
+	white-space: nowrap;
+}
+
+.offline-map-progress {
+	display: block;
+	width: 100%;
+	height: 8px;
+	margin: 14px 0 8px;
+	border: 0;
+	border-radius: 8px;
+	overflow: hidden;
+	appearance: none;
+}
+
+.offline-map-progress::-webkit-progress-bar {
+	background: rgba(255, 255, 255, .16);
+}
+
+.offline-map-progress::-webkit-progress-value {
+	border-radius: 8px;
+	background: #42c9e9;
+}
+
+.offline-map-progress::-moz-progress-bar {
+	border-radius: 8px;
+	background: #42c9e9;
+}
+
+.offline-map-progress-label,
+.offline-map-status {
+	min-height: 18px;
+	margin: 8px 0 0;
+	font-size: 13px;
+	text-align: left;
+}
+
+.offline-map-status.success {
+	color: #77e2a8;
+}
+
+.offline-map-status.error {
+	color: #ff8c85;
+}
+
+.offline-map-actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+.offline-map-actions .infoWindowIcn {
+	flex: 1 1 0;
+	margin: 0;
+}
+
+.offline-map-download.downloaded {
+	color: #77e2a8;
+}
+
 .circle {
 	width: 64px;
 	height: 64px;
@@ -1662,6 +1817,11 @@ a.button.back-button:hover {
 .mobile-header-bar .full-icon-space {
 	height: 44px !important;
 	line-height: 44px !important;
+}
+
+.mobile-header-bar .account-profile-picture {
+	width: 34px;
+	height: 34px;
 }
 
 .mobile-header-bar .row-header,

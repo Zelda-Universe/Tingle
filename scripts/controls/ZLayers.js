@@ -999,7 +999,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
         .on(closeButton, 'click', L.DomEvent.stopPropagation)
         .on(closeButton, 'click', function(e) {
           e.preventDefault();
-          this.reset();
+          if(vType === 'offlineMapsPage' && this.zMap.getUser()) {
+            this.zMap._createAccountForm(this.zMap.getUser());
+          } else {
+            this.reset();
+          }
         }, this)
     }
 

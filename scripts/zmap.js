@@ -136,7 +136,8 @@ function ZMap() {
    }
 
    this.handlers = {
-     markersAdded: []
+     markersAdded: [],
+     userChanged: []
    };
 };
 
@@ -1429,6 +1430,7 @@ ZMap.prototype.goToStart = function() {
 ZMap.prototype.setUser = function(vUser) {
    user = vUser;
    _this._buildContextMenu();
+   this.notifyUserChanged();
 
    if (user != null) {
       // Transfer cookies completed markers to database
@@ -1440,6 +1442,12 @@ ZMap.prototype.setUser = function(vUser) {
       }
 
    }
+};
+
+ZMap.prototype.notifyUserChanged = function() {
+  this.handlers.userChanged.forEach(function(handler) {
+    handler(user);
+  });
 };
 
 ZMap.prototype.getUser = function() {
@@ -2063,9 +2071,8 @@ ZMap.prototype.logout = function() {
     success: function(data) {
       if(data.success) {
         toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
-        user = null;
+        _this.setUser(null);
         updateAdState();
-        _this._buildContextMenu();
         _this.mapControl.resetContent();
         showLoginControls();
       } else {
@@ -2438,6 +2445,7 @@ ZMap.prototype._createLoginForm = function(successMessage) {
 
 ZMap.prototype._createAccountForm = function(user) {
   var _this = this;
+  var profilePicture = user.profilePicture || 'images/default-avatar.svg';
 
   this.mapControl.setContent(
      '<div id="account">' +
@@ -2448,9 +2456,19 @@ ZMap.prototype._createAccountForm = function(user) {
         'Username: ' + user.username + '<br />' +
         ((user.level >= 5) ? 'Level: ' + user.level + '<br />' : "") +
       '</p>' +
+      '<div class="account-profile-section">' +
+        '<img id="account_profile_preview" class="account-profile-preview" src="' + profilePicture + '" alt="Your profile picture" />' +
+        '<form id="account_profile_form" enctype="multipart/form-data">' +
+          '<input id="account_profile_input" name="profile_picture" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />' +
+          '<button id="account_profile_choose" type="button" class="infoWindowIcn">Change Profile Picture</button>' +
+          '<button id="account_profile_save" type="submit" class="infoWindowIcn" style="display:none">Save Profile Picture</button>' +
+          '<p id="account_profile_status" class="account-profile-status" role="status" aria-live="polite"></p>' +
+        '</form>' +
+      '</div>' +
       '<div class="modal-footer">' +
          '<div>' +
            '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn">Reset Completed Markers</button>' +
+           '<button id="account_offline_maps_btn" type="button" class="infoWindowIcn">Download Offline Maps</button>' +
            '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
            '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
@@ -2460,6 +2478,58 @@ ZMap.prototype._createAccountForm = function(user) {
     '</div>',
     'accountPage'
   );
+
+  var selectedPreviewURL = null;
+  $('#account_profile_choose').click(function() {
+    $('#account_profile_input').trigger('click');
+  });
+
+  $('#account_profile_input').change(function() {
+    var file = this.files && this.files[0];
+    if(!file) return;
+    if(selectedPreviewURL) URL.revokeObjectURL(selectedPreviewURL);
+    selectedPreviewURL = URL.createObjectURL(file);
+    $('#account_profile_preview').attr('src', selectedPreviewURL);
+    $('#account_profile_save').show();
+    $('#account_profile_status').removeClass('error success').text(file.name);
+  });
+
+  $('#account_profile_form').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    var status = $('#account_profile_status');
+    status.removeClass('error success').text('Uploading…');
+    $('#account_profile_save').prop('disabled', true);
+
+    $.ajax({
+      type: 'POST',
+      url: 'ajax.php?command=update_profile_picture',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(data) {
+        if(!data.success) {
+          status.addClass('error').text(data.msg || 'The profile picture could not be updated.');
+          $('#account_profile_save').prop('disabled', false);
+          return;
+        }
+        if(selectedPreviewURL) {
+          URL.revokeObjectURL(selectedPreviewURL);
+          selectedPreviewURL = null;
+        }
+        user.profilePicture = data.profilePicture;
+        $('#account_profile_preview').attr('src', data.profilePicture);
+        $('#account_profile_save').hide().prop('disabled', false);
+        status.addClass('success').text(data.msg);
+        _this.notifyUserChanged();
+      },
+      error: function(data) {
+        var message = data.responseJSON && data.responseJSON.msg;
+        status.addClass('error').text(message || 'The profile picture could not be updated.');
+        $('#account_profile_save').prop('disabled', false);
+      }
+    });
+  });
 
   $("#account_clear_completed_btn").click(function(e) {
      _this._createDialogDeleteAllMarkers();
@@ -2472,6 +2542,11 @@ ZMap.prototype._createAccountForm = function(user) {
 
   $("#account_reset_btn").click(function(e) {
      _this._createLostPasswordForm();
+     e.preventDefault();
+  });
+
+  $("#account_offline_maps_btn").click(function(e) {
+     _this._createOfflineMapsForm();
      e.preventDefault();
   });
 
@@ -2490,6 +2565,252 @@ ZMap.prototype._createAccountForm = function(user) {
     e.preventDefault();
   });
 }
+
+ZMap.prototype._createOfflineMapsForm = function() {
+  var _this = this;
+  this.mapControl.setContent(
+    '<div id="offline_maps" class="offline-maps-page">' +
+      '<h3 class="text-center">Download Offline Maps</h3>' +
+      '<p class="offline-maps-intro">Save complete maps to this device for use without an internet connection. Downloads can be large and may be removed by your browser when storage is low.</p>' +
+      '<div id="offline_maps_list" class="offline-maps-list">' +
+        '<p class="offline-maps-loading">Calculating download sizes…</p>' +
+      '</div>' +
+      '<button id="offline_maps_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>' +
+    '</div>',
+    'offlineMapsPage'
+  );
+
+  $('#offline_maps_back_btn').click(function(e) {
+    _this._createAccountForm(user);
+    e.preventDefault();
+  });
+
+  function formatBytes(bytes) {
+    if(!bytes) return '0 MB';
+    var units = ['B', 'KB', 'MB', 'GB'];
+    var unitIndex = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    var value = bytes / Math.pow(1024, unitIndex);
+    return value.toFixed(unitIndex >= 2 && value < 10 ? 1 : 0) + ' ' + units[unitIndex];
+  }
+
+  function packCacheName(gameId) {
+    return 'zeldamaps-offline-' + gameId;
+  }
+
+  function packStorageKey(gameId) {
+    return 'zeldamapsOfflineMap-' + gameId;
+  }
+
+  function readPackRecord(gameId) {
+    try {
+      return localStorage.getItem(packStorageKey(gameId));
+    } catch(error) {
+      return null;
+    }
+  }
+
+  function writePackRecord(gameId, record) {
+    try {
+      localStorage.setItem(packStorageKey(gameId), JSON.stringify(record));
+    } catch(error) {
+      // CacheStorage remains authoritative if localStorage is unavailable.
+    }
+  }
+
+  function removePackRecord(gameId) {
+    try {
+      localStorage.removeItem(packStorageKey(gameId));
+    } catch(error) {}
+  }
+
+  function setDownloadedState(card, game, downloaded) {
+    var downloadButton = card.find('.offline-map-download');
+    var deleteButton = card.find('.offline-map-delete');
+    var status = card.find('.offline-map-status');
+    if(downloaded) {
+      downloadButton.text('Downloaded').prop('disabled', true).addClass('downloaded');
+      deleteButton.show();
+      status.text(formatBytes(game.size) + ' saved on this device.').addClass('success');
+    } else {
+      downloadButton.text('Download').prop('disabled', !game.available).removeClass('downloaded');
+      deleteButton.hide();
+      status.text(game.available ? '' : 'Map files are not available for download.').removeClass('success error');
+    }
+  }
+
+  function downloadTiles(game, card) {
+    var progress = card.find('.offline-map-progress');
+    var progressLabel = card.find('.offline-map-progress-label');
+    var status = card.find('.offline-map-status');
+    var downloadButton = card.find('.offline-map-download');
+    var cacheName = packCacheName(game.id);
+    var completedTiles = 0;
+    var completedBytes = 0;
+    var totalTiles = game.tileCount;
+    var totalBytes = game.size;
+
+    downloadButton.prop('disabled', true).text('Downloading…');
+    progress.attr('max', Math.max(totalBytes, 1)).val(0).show();
+    progressLabel.text('0%').show();
+    status.removeClass('success error').text('Preparing download…');
+
+    function updateProgress(tileSize) {
+      completedTiles += 1;
+      completedBytes += tileSize || 0;
+      var fraction = totalBytes > 0
+        ? completedBytes / totalBytes
+        : completedTiles / Math.max(totalTiles, 1);
+      var percent = Math.min(100, Math.round(fraction * 100));
+      progress.val(totalBytes > 0 ? completedBytes : completedTiles);
+      progress.attr('max', totalBytes > 0 ? totalBytes : Math.max(totalTiles, 1));
+      progressLabel.text(percent + '% · ' + completedTiles + ' of ' + totalTiles + ' tiles');
+    }
+
+    function downloadBatch(cache, tiles) {
+      var index = 0;
+      var workerCount = Math.min(6, tiles.length);
+      var workers = [];
+      function worker() {
+        if(index >= tiles.length) return Promise.resolve();
+        var tile = tiles[index++];
+        var absoluteURL = new URL(tile.url, window.location.origin).href;
+        return fetch(absoluteURL, {
+          headers: { 'X-ZeldaMaps-Offline-Pack': '1' },
+          credentials: 'same-origin'
+        }).then(function(response) {
+          if(!response.ok) throw new Error('A map tile could not be downloaded.');
+          return cache.put(absoluteURL, response.clone()).then(function() {
+            updateProgress(tile.size);
+          });
+        }).then(worker);
+      }
+      for(var i = 0; i < workerCount; i++) workers.push(worker());
+      return Promise.all(workers);
+    }
+
+    function downloadPage(cache, offset) {
+      return fetch(
+        'ajax.php?command=get_offline_maps&mode=manifest&game=' +
+        encodeURIComponent(game.id) + '&offset=' + offset + '&limit=100'
+      ).then(function(response) {
+        if(!response.ok) throw new Error('The map manifest could not be loaded.');
+        return response.json();
+      }).then(function(data) {
+        if(!data.success) throw new Error(data.msg || 'The map manifest could not be loaded.');
+        totalTiles = data.total;
+        totalBytes = data.totalBytes;
+        return downloadBatch(cache, data.tiles).then(function() {
+          var nextOffset = offset + data.tiles.length;
+          if(nextOffset < data.total) return downloadPage(cache, nextOffset);
+        });
+      });
+    }
+
+    var persistenceRequest = navigator.storage && navigator.storage.persist
+      ? navigator.storage.persist().catch(function() { return false; })
+      : Promise.resolve(false);
+    var storageCheck = persistenceRequest.then(function() {
+      return navigator.storage && navigator.storage.estimate
+        ? navigator.storage.estimate()
+        : null;
+    });
+
+    storageCheck.then(function(estimate) {
+      if(estimate && estimate.quota && estimate.usage + totalBytes * 1.1 > estimate.quota) {
+        throw new Error('This device does not have enough available browser storage for this map.');
+      }
+      return caches.delete(cacheName);
+    }).then(function() {
+      return caches.open(cacheName);
+    }).then(function(cache) {
+      return downloadPage(cache, 0);
+    }).then(function() {
+      writePackRecord(game.id, {
+        size: totalBytes,
+        tileCount: totalTiles,
+        downloadedAt: Date.now()
+      });
+      progress.hide();
+      progressLabel.hide();
+      setDownloadedState(card, game, true);
+    }).catch(function(error) {
+      caches.delete(cacheName);
+      removePackRecord(game.id);
+      progress.hide();
+      progressLabel.hide();
+      setDownloadedState(card, game, false);
+      status.addClass('error').text(error.message || 'The map download could not be completed.');
+    });
+  }
+
+  function renderGame(game) {
+    var card = $('<section>', { class: 'offline-map-card' });
+    var heading = $('<div>', { class: 'offline-map-heading' });
+    heading.append($('<h4>').text(game.name));
+    heading.append($('<span>', { class: 'offline-map-size' }).text(
+      game.available ? formatBytes(game.size) : 'Unavailable'
+    ));
+    card.append(heading);
+    card.append($('<progress>', { class: 'offline-map-progress', value: 0, max: 1 }).hide());
+    card.append($('<p>', { class: 'offline-map-progress-label' }).hide());
+    card.append($('<p>', { class: 'offline-map-status', role: 'status', 'aria-live': 'polite' }));
+
+    var actions = $('<div>', { class: 'offline-map-actions' });
+    var downloadButton = $('<button>', {
+      class: 'infoWindowIcn offline-map-download',
+      type: 'button',
+      text: 'Download'
+    });
+    var deleteButton = $('<button>', {
+      class: 'infoWindowIcn bad offline-map-delete',
+      type: 'button',
+      text: 'Delete'
+    }).hide();
+    actions.append(downloadButton, deleteButton);
+    card.append(actions);
+
+    var hasPackRecord = !!readPackRecord(game.id);
+    setDownloadedState(card, game, false);
+    caches.has(packCacheName(game.id)).then(function(hasCache) {
+      if(hasPackRecord && hasCache) {
+        setDownloadedState(card, game, true);
+      } else {
+        removePackRecord(game.id);
+        if(hasCache) caches.delete(packCacheName(game.id));
+      }
+    });
+
+    downloadButton.click(function() {
+      if(game.available) downloadTiles(game, card);
+    });
+    deleteButton.click(function() {
+      if(!window.confirm('Remove the downloaded ' + game.name + ' maps from this device?')) return;
+      caches.delete(packCacheName(game.id)).then(function() {
+        removePackRecord(game.id);
+        setDownloadedState(card, game, false);
+      });
+    });
+    return card;
+  }
+
+  if(!('caches' in window)) {
+    $('#offline_maps_list').html('<p class="offline-map-status error">Offline map downloads are not supported by this browser.</p>');
+    return;
+  }
+
+  $.getJSON('ajax.php?command=get_offline_maps', function(data) {
+    var list = $('#offline_maps_list').empty();
+    if(!data.success || !data.games || !data.games.length) {
+      list.append('<p class="offline-map-status error">No offline maps are currently available.</p>');
+      return;
+    }
+    data.games.forEach(function(game) {
+      list.append(renderGame(game));
+    });
+  }).fail(function() {
+    $('#offline_maps_list').html('<p class="offline-map-status error">Download sizes could not be loaded.</p>');
+  });
+};
 //****************************************************************************//
 //*************                                                  *************//
 //*************                END - CONTEXT MENU                *************//

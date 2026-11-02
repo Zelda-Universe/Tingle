@@ -72,6 +72,20 @@
   // ));
   // return 254;
 
+  $profilePicture = null;
+  $profileColumnResult = $mysqli->query(
+    "SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'profile_picture'"
+  );
+  $hasProfileColumn = $profileColumnResult && $profileColumnResult->num_rows > 0;
+  if ($hasProfileColumn) {
+    $profileResult = $mysqli->query(
+      "SELECT `profile_picture` FROM `{$map_prefix}user` WHERE `id` = '$user_id' LIMIT 1"
+    );
+    if ($profileResult && ($profileRow = $profileResult->fetch_assoc())) {
+      $profilePicture = $profileRow['profile_picture'];
+    }
+  }
+
   if($softDelete) {
     // debug_log('Using soft delete method...');
 
@@ -98,6 +112,14 @@
       WHERE `id` = '$user_id'
     ;";
   }
+  if ($hasProfileColumn) {
+    $query = preg_replace(
+      '/SET\s+/i',
+      'SET `profile_picture` = NULL, ',
+      $query,
+      1
+    );
+  }
   //echo $query;
   $result = $mysqli->query($query);
 
@@ -116,6 +138,21 @@
  }
 
   commit();
+
+  if ($profilePicture && preg_match('#^uploads/profile-pictures/[A-Za-z0-9._-]+$#', $profilePicture)) {
+    $profilePath = dirname(__DIR__) . '/' . $profilePicture;
+    if (is_file($profilePath)) {
+      @unlink($profilePath);
+    }
+  }
+  $profileFiles = glob(dirname(__DIR__) . '/uploads/profile-pictures/' . (int) $user_id . '-*.webp');
+  if ($profileFiles) {
+    foreach ($profileFiles as $profileFile) {
+      if (is_file($profileFile)) {
+        @unlink($profileFile);
+      }
+    }
+  }
 
   session_unset();
   session_destroy();

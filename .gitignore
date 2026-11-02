@@ -30,6 +30,8 @@ Thumbs.db
 node_modules
 /tiles
 /vendor
+/uploads/profile-pictures/*
+!/uploads/profile-pictures/index.html
 
 # Debug Files
 /php_errors.log

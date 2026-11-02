@@ -49,6 +49,33 @@
          $user['id'] = $_SESSION['user_id'];
          $user['username'] = $_SESSION['username'];
          $user['level'] = $_SESSION['level'];
+         $profileQuery = "
+           SELECT `profile_picture` AS `profilePicture`
+           FROM `{$map_prefix}user`
+           WHERE `id` = " . (int) $user['id'] . "
+           LIMIT 1
+         ";
+         $user['profilePicture'] = null;
+         $profileColumnResult = $mysqli->query(
+           "SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'profile_picture'"
+         );
+         if ($profileColumnResult && $profileColumnResult->num_rows > 0) {
+           $profileResult = $mysqli->query($profileQuery);
+           if ($profileResult && ($profileRow = $profileResult->fetch_assoc())) {
+             $user['profilePicture'] = $profileRow['profilePicture'];
+           }
+         }
+         if (!$user['profilePicture']) {
+           $profileFiles = glob(
+             dirname(__DIR__) . '/uploads/profile-pictures/' . (int) $user['id'] . '-*.webp'
+           );
+           if ($profileFiles) {
+             usort($profileFiles, function($a, $b) {
+               return filemtime($b) <=> filemtime($a);
+             });
+             $user['profilePicture'] = 'uploads/profile-pictures/' . basename($profileFiles[0]);
+           }
+         }
          session_write_close();
          $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
 

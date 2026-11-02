@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">Default Zelda Maps profile picture</title>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#44c9ea"/>
+      <stop offset="1" stop-color="#277da1"/>
+    </linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="64" fill="url(#background)"/>
+  <circle cx="64" cy="47" r="23" fill="#fff"/>
+  <path d="M21 112c4-25 20-39 43-39s39 14 43 39" fill="#fff"/>
+</svg>

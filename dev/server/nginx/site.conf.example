@@ -23,7 +23,7 @@ server {
   #    ssl_prefer_server_ciphers  on;
 
   location / {
-    index index.html index.htm;
+    index index.php index.html index.htm;
   }
 
   # https://www.nginx.com/resources/wiki/start/topics/examples/phpfcgi/

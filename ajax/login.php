@@ -15,6 +15,13 @@
   $password = $mysqli->real_escape_string($_POST['password']);
   $passwordUnescaped = $_POST['password'];
   $ip = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
+  $profilePictureSelect = 'NULL AS `profilePicture`';
+  $profileColumnResult = @$mysqli->query(
+    "SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'profile_picture'"
+  );
+  if ($profileColumnResult && $profileColumnResult->num_rows > 0) {
+    $profilePictureSelect = '`profile_picture` AS `profilePicture`';
+  }
 
   // $query = "
   //   SELECT
@@ -37,6 +44,7 @@
     SELECT
       `id`                        ,
       `username`                  ,
+      {$profilePictureSelect}     ,
       `password`                  ,
       `level`                     ,
       `seen_version_major` AS `v1`,
@@ -62,6 +70,18 @@
          ) {
          $user['id'] = $row['id'];
          $user['username'] = $row['username'];
+         $user['profilePicture'] = $row['profilePicture'];
+         if (!$user['profilePicture']) {
+            $profileFiles = glob(
+              dirname(__DIR__) . '/uploads/profile-pictures/' . (int) $row['id'] . '-*.webp'
+            );
+            if ($profileFiles) {
+              usort($profileFiles, function($a, $b) {
+                return filemtime($b) <=> filemtime($a);
+              });
+              $user['profilePicture'] = 'uploads/profile-pictures/' . basename($profileFiles[0]);
+            }
+         }
          $user['level'] = $row['level'];
          $user['seen_version'] = $row['v1'] . '.' . $row['v2'] . '.' . $row['v3'];
 

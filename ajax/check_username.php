@@ -11,11 +11,7 @@
   $valid = (bool) preg_match('/^[A-Za-z0-9][A-Za-z0-9_.-]{2,44}$/D', $username);
   $available = false;
   if ($valid) {
-    $check = $mysqli->prepare("SELECT id FROM `{$map_prefix}user` WHERE (username = ? OR email = ?) AND id <> ? LIMIT 1");
-    $check->bind_param('ssi', $username, $username, $userId);
-    $check->execute();
-    $check->store_result();
-    $available = $check->num_rows === 0;
+    $available = !$db->fetchOne("SELECT id FROM `{$map_prefix}user` WHERE (username = ? OR email = ?) AND id <> ? LIMIT 1", [$username, $username, $userId]);
   }
   echo json_encode(array('success' => true, 'valid' => $valid, 'available' => $available));
 ?>

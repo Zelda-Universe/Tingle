@@ -2,92 +2,66 @@
    if (!isset($_GET['newMarkerId'])) {
      $path = __DIR__;
    }
-   /*
-	session_start("zmap");
-   $query = 'select max(last_updated) as last_updated
-               from ' . $map_prefix . 'marker m
-			         , ' . $map_prefix . 'map mp
-              where m.map_id = mp.id
-				    and mp.container_id = ' . $_GET["game"] . '
-				    and m.last_updated > \'' . $_SESSION["last_updated"] . '\';
-    ';
 
-   $result = @$mysqli->query($query) or die(mysql_error());
+   $game = $_GET["game"] ?? '';
+   if ($game === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $game)) {
+     echo json_encode(array());
+     return;
+   }
 
-	$row = $mysqli->fetch_array($result, MYSQL_ASSOC);
+   $db->executeStatement("SET SESSION group_concat_max_len = 4294967295");
 
-	if ($row['last_updated'] != $_SESSION["last_updated"]
-			&& $row['last_updated'] != "") {
-		$temp = $row['last_updated'];
-	} else {
-		exit("[]");
-	}
-   $_SESSION["last_updated"]
-	*/
-   $last_update = $temp = '1800-01-01 00:00:00';
-	$query = "SET SESSION group_concat_max_len = 4294967295";
-	$result = @$mysqli->query($query);
+   // Spaces act as wildcards so "lost woods" matches "Lost ... Woods".
+   $search = '%' . str_replace(' ', '%', $_GET['q'] ?? '') . '%';
 
-   $search = $mysqli->real_escape_string(str_replace(' ', '%', $_GET['q'] ?? ''));	
-
-   $query = 'select m.id
-                  , m.marker_category_id         as markerCategoryId
-                  , m.name                       as title
-                  , m.x
-                  , m.y
-				   from ' . $map_prefix . 'marker m
-               left outer join (SELECT c.marker_tab_id
-				                         , c.tab_title
-									          , c.tab_text
-									          , c.user_id
-								         	 , u2.username
-								         	 , c.marker_id
-								          FROM ' . $map_prefix . 'marker_tab c
-								          LEFT OUTER JOIN ' . $map_prefix . 'user u2
-								            ON c.user_id = u2.id
-                                 WHERE c.visible = 1
-				      ) t
-                 on m.id = t.marker_id
-                  , ' . $map_prefix . 'marker_category mc
-				      , ' . $map_prefix . 'submap smp
-                  , ' . $map_prefix . 'map mp
-				      , ' . $map_prefix . 'user u
-              where m.marker_category_id = mc.id
-				    and m.submap_id = smp.id
-                and smp.map_id = mp.id
-				    and mp.container_id = ' . $_GET["game"] . '
-				    and m.user_id = u.id
-                and m.visible = 1
-
-                and (upper(tab_text) like upper(\'%' . $search . '%\') or m.name like upper(\'%' . $search . '%\'))
-                ';
-				    /*and ((m.visible = 1 and m.last_updated > \'' . $last_update . '\')
-				         OR  (m.visible = 0 and \'' . $last_update . '\' != \'1800-01-01 00:00:00\' and m.last_updated > \'' . $last_update . '\'))
-              /*and m.last_updated > \'' . $last_update . '\'*/
+   $sql = "
+     select m.id
+          , m.marker_category_id         as markerCategoryId
+          , m.name                       as title
+          , m.x
+          , m.y
+       from {$map_prefix}marker m
+       left outer join (SELECT c.marker_tab_id
+                             , c.tab_title
+                             , c.tab_text
+                             , c.user_id
+                             , u2.username
+                             , c.marker_id
+                          FROM {$map_prefix}marker_tab c
+                          LEFT OUTER JOIN {$map_prefix}user u2
+                            ON c.user_id = u2.id
+                         WHERE c.visible = 1
+                       ) t
+         on m.id = t.marker_id
+          , {$map_prefix}marker_category mc
+          , {$map_prefix}submap smp
+          , {$map_prefix}map mp
+          , {$map_prefix}user u
+      where m.marker_category_id = mc.id
+        and m.submap_id = smp.id
+        and smp.map_id = mp.id
+        and mp.container_id = ?
+        and m.user_id = u.id
+        and m.visible = 1
+        and (upper(tab_text) like upper(?) or m.name like upper(?))
+   ";
+   $params = [$game, $search, $search];
 
    if (isset($_GET['newMarkerId'])) {
-      $query .= 'and m.id = ' . $_GET['newMarkerId'];
+     $sql .= " and m.id = ?";
+     $params[] = (int) $_GET['newMarkerId'];
    }
-   $query .= '
-              group by m.id;
-    ';
-	//echo $query . "\n";
-   $result = @$mysqli->query($query);
+   $sql .= "
+      group by m.id
+   ";
 
-	if(!$result) {
-		print($mysqli->error);
-		return;
-	}
+   $rows = $db->fetchAllAssociative($sql, $params);
 
-	$res = array();
-	while ($row = $result->fetch_assoc()) {
-		$row["title"] = html_entity_decode($row["title"], ENT_QUOTES, "UTF-8");
-      $row["loc"] = array($row["y"],$row["x"]);
-      //$row["loc"]['id'] = $row["id"];
-		$res[] = $row;
-	}
+   $res = array();
+   foreach ($rows as $row) {
+     $row["title"] = html_entity_decode($row["title"], ENT_QUOTES, "UTF-8");
+     $row["loc"]   = array($row["y"], $row["x"]);
+     $res[] = $row;
+   }
    echo json_encode($res);
-
-	$_SESSION["last_updated"] = $temp;
-  session_write_close();
 ?>

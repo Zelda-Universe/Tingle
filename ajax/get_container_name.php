@@ -3,48 +3,32 @@
 
   $path = __DIR__;
 
-   if (file_exists("$path/ajax/static/container_name_" . $_GET["game"] . ".json")) {
-	   readfile("$path/ajax/static/container_name_" . $_GET["game"] . ".json");
-	   return;
-   }
-   
-
-	if(empty($_GET["game"])) {
+  $game = $_GET["game"] ?? '';
+  if ($game === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $game)) {
     print(json_encode(array(
       "success" => false,
       "result"  => 'No game parameter given.'
     )));
 
-		return 1;
-  } else {
-    $game = $_GET["game"];
-    // debug_log("game: $game");
-	}
+    return 1;
+  }
+  // debug_log("game: $game");
 
-  $query = "
+  if (file_exists("$path/ajax/static/container_name_{$game}.json")) {
+    readfile("$path/ajax/static/container_name_{$game}.json");
+    return;
+  }
+
+  $row = $db->fetchAssociative("
     SELECT `name`
     FROM `{$map_prefix}container` `c`
     WHERE (
-            `c`.`id`          = '$game'
-        OR  `c`.`short_name`  = '$game'
+            `c`.`id`          = ?
+        OR  `c`.`short_name`  = ?
       ) AND `c`.`visible`     = '1'
-    ;
-  ";
-  // debug_log("query: $query");
+  ", [$game, $game]);
 
-  $result = @$mysqli->query($query);
-  // debug_log('mysqli info: '.@$mysqli->info); // Not helpful..
-
-	if(!$result) {
-		print($mysqli->error);
-		return 2;
-	}
-
-  $row = $result->fetch_array();
-  // debug_log("empty(row): ".empty($row));
-  // debug_log("row: ".var_export($row, 1));
-  // debug_log("row num_rows: ${$row->num_rows}");
-  if(empty($row)) {
+  if (empty($row)) {
     print(json_encode(array(
       "success" => false,
       "result"  => 'No visible game container found.'

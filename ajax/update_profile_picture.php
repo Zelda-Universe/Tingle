@@ -95,17 +95,17 @@
   imagedestroy($outputImage);
 
   $profilePicture = 'uploads/profile-pictures/' . $fileName;
-  $profileColumnResult = @$mysqli->query(
-    "SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'profile_picture'"
-  );
-  $hasProfileColumn = $profileColumnResult && $profileColumnResult->num_rows > 0;
+  $hasProfileColumn = (bool) $db->fetchOne("SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'profile_picture'");
   if ($hasProfileColumn) {
-    $escapedProfilePicture = $mysqli->real_escape_string($profilePicture);
-    $updated = $mysqli->query(
-      "UPDATE {$map_prefix}user SET profile_picture = '{$escapedProfilePicture}' WHERE id = {$userId}"
-    );
-    if (!$updated) {
+    try {
+      $db->executeStatement("
+        UPDATE {$map_prefix}user
+           SET profile_picture = ?
+         WHERE id = ?
+      ", [$profilePicture, $userId]);
+    } catch (\Throwable $e) {
       @unlink($absolutePath);
+      error_log('update_profile_picture: ' . $e->getMessage());
       echo json_encode(array('success' => false, 'msg' => 'The profile picture could not be attached to your account.'));
       return;
     }

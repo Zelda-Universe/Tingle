@@ -17,24 +17,15 @@
     echo json_encode(array('success' => false, 'msg' => 'Enter a valid email address.'));
     return;
   }
-  $emailCheck = $mysqli->prepare("SELECT id FROM `{$map_prefix}user` WHERE (email = ? OR username = ?) AND id <> ? LIMIT 1");
-  $emailCheck->bind_param('ssi', $email, $email, $userId);
-  $emailCheck->execute();
-  $emailCheck->store_result();
-  if ($emailCheck->num_rows > 0) {
+  if ($db->fetchOne("SELECT id FROM `{$map_prefix}user` WHERE (email = ? OR username = ?) AND id <> ? LIMIT 1", [$email, $email, $userId])) {
     echo json_encode(array('success' => false, 'msg' => 'That email address is already in use.'));
     return;
   }
   $currentPassword = is_string($_POST['currentpassword'] ?? null) ? $_POST['currentpassword'] : '';
   $newPassword = is_string($_POST['newpassword'] ?? null) ? $_POST['newpassword'] : '';
   $changePassword = $currentPassword !== '' || $newPassword !== '';
-  $account = $mysqli->prepare("SELECT password FROM `{$map_prefix}user` WHERE id = ? AND deleted IS NULL");
-  $account->bind_param('i', $userId);
-  $account->execute();
-  $account->bind_result($storedPassword);
-  $foundAccount = $account->fetch();
-  $account->close();
-  if (!$foundAccount) {
+  $storedPassword = $db->fetchOne("SELECT password FROM `{$map_prefix}user` WHERE id = ? AND deleted IS NULL", [$userId]);
+  if (!$storedPassword) {
     echo json_encode(array('success' => false, 'msg' => 'Account not found.'));
     return;
   }
@@ -46,27 +37,19 @@
     echo json_encode(array('success' => false, 'field' => 'password', 'msg' => 'The new password must be at most 72 bytes.'));
     return;
   }
-  $check = $mysqli->prepare("SELECT id FROM `{$map_prefix}user` WHERE (username = ? OR email = ?) AND id <> ? LIMIT 1");
-  $check->bind_param('ssi', $username, $username, $userId);
-  $check->execute();
-  $check->store_result();
-  if ($check->num_rows > 0) {
+  if ($db->fetchOne("SELECT id FROM `{$map_prefix}user` WHERE (username = ? OR email = ?) AND id <> ? LIMIT 1", [$username, $username, $userId])) {
     echo json_encode(array('success' => false, 'msg' => 'That username is already in use.'));
     return;
   }
   try {
     if ($changePassword) {
       $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT, array('cost' => 13));
-      $update = $mysqli->prepare("UPDATE `{$map_prefix}user` SET username = ?, email = ?, password = ? WHERE id = ? AND deleted IS NULL");
-      $update->bind_param('sssi', $username, $email, $passwordHash, $userId);
+      $db->executeStatement("UPDATE `{$map_prefix}user` SET username = ?, email = ?, password = ? WHERE id = ? AND deleted IS NULL", [$username, $email, $passwordHash, $userId]);
     } else {
-      $update = $mysqli->prepare("UPDATE `{$map_prefix}user` SET username = ?, email = ? WHERE id = ? AND deleted IS NULL");
-      $update->bind_param('ssi', $username, $email, $userId);
+      $db->executeStatement("UPDATE `{$map_prefix}user` SET username = ?, email = ? WHERE id = ? AND deleted IS NULL", [$username, $email, $userId]);
     }
-    $update->execute();
-  } catch (mysqli_sql_exception $error) {
-    if ((int) $error->getCode() !== 1062) throw $error;
-    echo json_encode(array('success' => false, 'msg' => 'That username is already in use.'));
+  } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $error) {
+    echo json_encode(array('success' => false, 'msg' => 'That username or email is already in use.'));
     return;
   }
   $_SESSION['username'] = $username;

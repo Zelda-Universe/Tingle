@@ -1,67 +1,51 @@
 <?php
   $path = __DIR__;
 
-	begin();
-
   if (
-        !is_numeric($_POST['userId'])
-    ||  !is_numeric($_POST['markerId'])
+        !is_numeric($_POST['userId']   ?? null)
+    ||  !is_numeric($_POST['markerId'] ?? null)
   ) {
-		echo json_encode(array(
+    echo json_encode(array(
       "success" => false,
-      "msg" => "Not logged or session expired!"
+      "msg"     => "Not logged or session expired!"
     ));
-		return;
-	}
+    return;
+  }
 
   start_session("zmap");
-	if ($_SESSION['user_id'] != $_POST['userId']) {
-		echo json_encode(array(
+  if (empty($_SESSION['user_id']) || $_SESSION['user_id'] != $_POST['userId']) {
+    echo json_encode(array(
       "success" => false,
-      "msg" => "Not logged or session expired!"
+      "msg"     => "Not logged or session expired!"
     ));
-		return;
-	}
+    return;
+  }
   session_write_close();
-     $userId   = (int) $_POST['userId'];
-     $markerId = (int) $_POST['markerId'];
 
-  $query = "
+  $userId   = (int) $_POST['userId'];
+  $markerId = (int) $_POST['markerId'];
+
+  begin();
+
+  $db->executeStatement("
     DELETE FROM {$map_prefix}user_completed_marker
-    WHERE user_id = '{$userId}'
-    AND marker_id = '{$markerId}'
-  ";
+    WHERE user_id = ?
+      AND marker_id = ?
+  ", [$userId, $markerId]);
 
-  $result = @$mysqli->query($query);
-
-  $query = "
+  $db->executeStatement("
     INSERT INTO `{$map_prefix}user_completed_marker` (
         `user_id`
       , `marker_id`
       , `complete_date`
       , `visible`
-    ) VALUES (
-        '{$userId}'
-      , '{$markerId}'
-      , now()
-      , '1'
-    );"
-   ;
+    ) VALUES (?, ?, now(), 1)
+  ", [$userId, $markerId]);
 
-   $result = @$mysqli->query($query);
-   if ($result) {
-      echo json_encode(array(
-        "success" => true,
-        "msg"     => "Marker {$markerId} has been completed!"
-      ));
-   } else {
-      echo json_encode(array(
-        "success" => false,
-        "msg"     => $mysqli->error
-      ));
+  commit();
 
-      rollback();
-   }
-
-   commit();
+  echo json_encode(array(
+    "success" => true,
+    "msg"     => "Marker {$markerId} has been completed!"
+  ));
 ?>

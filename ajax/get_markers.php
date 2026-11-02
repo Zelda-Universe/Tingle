@@ -2,124 +2,100 @@
   if (!isset($_GET['newMarkerId'])) {
     $path = __DIR__;
   }
-   if (file_exists("$path/ajax/static/markers_" . $_GET["game"] . ".json")) {
-	   readfile("$path/ajax/static/markers_" . $_GET["game"] . ".json");
-	   return;
-   }
 
-   /*
-	session_start("zmap");
-   $query = 'select max(last_updated) as last_updated
-               from ' . $map_prefix . 'marker m
-			         , ' . $map_prefix . 'map mp
-              where m.map_id = mp.id
-				    and mp.container_id = ' . $_GET["game"] . '
-				    and m.last_updated > \'' . $_SESSION["last_updated"] . '\';
-    ';
+  $game = $_GET["game"] ?? '';
+  if ($game === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $game)) {
+    echo json_encode(array());
+    return;
+  }
 
-    $result = @$mysqli->query($query) or die(mysql_error());
+  if (file_exists("$path/ajax/static/markers_{$game}.json")) {
+    readfile("$path/ajax/static/markers_{$game}.json");
+    return;
+  }
 
-	   $row = $mysqli->fetch_array($result, MYSQL_ASSOC);
-
-  	if ($row['last_updated'] != $_SESSION["last_updated"]
-  			&& $row['last_updated'] != "") {
-  		$temp = $row['last_updated'];
-  	} else {
-  		exit("[]");
-  	}
-    $_SESSION["last_updated"]
-	*/
-  $visible = "1";
-  if (
+  // Hidden markers are included for the admin grid (grid.html) or on request.
+  // @TODO: this should require an admin-level session; see the review notes.
+  $includeHidden = (
     isset($_GET['all'])
     || (
-          isset ($_SERVER["HTTP_REFERER"])
+          isset($_SERVER["HTTP_REFERER"])
       &&  strpos($_SERVER["HTTP_REFERER"], '/grid.html') !== false
     )
-  ) {
-    $visible = "0,1";
+  );
+  $sqlVisible = $includeHidden ? 'm.visible in (0, 1)' : 'm.visible = 1';
+
+  $db->executeStatement("SET SESSION group_concat_max_len = 4294967295");
+
+  $sql = "
+    select m.id
+         , mp.id                        as mapId
+         , m.submap_id                  as submapId
+         , m.overlay_id                 as overlayId
+         , m.marker_category_id         as markerCategoryId
+         , mc.marker_category_type_id   as markerCategoryTypeId
+         , m.user_id                    as userId
+         , u.username                   as userName
+         , m.name
+         , m.description
+         , m.x
+         , m.y
+         , m.z
+         , m.jump_marker_id             as jumpMakerId
+         , GROUP_CONCAT(coalesce(t.marker_tab_id,'') ORDER BY t.marker_tab_id asc SEPARATOR '<|>') as tabId
+         , GROUP_CONCAT(coalesce(t.tab_title,'') ORDER BY t.marker_tab_id asc SEPARATOR '<|>')     as tabTitle
+         , GROUP_CONCAT(coalesce(t.tab_text, '') ORDER BY t.marker_tab_id asc SEPARATOR '<|>')     as tabText
+         , GROUP_CONCAT(coalesce(t.user_id, '') ORDER BY t.marker_tab_id asc SEPARATOR '<|>')      as tabUserId
+         , GROUP_CONCAT(coalesce(t.username, '') ORDER BY t.marker_tab_id asc SEPARATOR '<|>')     as tabUserName
+         , m.path
+         , m.game_data                  as gameData
+         , m.global                     as globalMarker
+         , m.visible
+      from {$map_prefix}marker m
+      left outer join (SELECT c.marker_tab_id
+                            , c.tab_title
+                            , c.tab_text
+                            , c.user_id
+                            , u2.username
+                            , c.marker_id
+                         FROM {$map_prefix}marker_tab c
+                         LEFT OUTER JOIN {$map_prefix}user u2
+                           ON c.user_id = u2.id
+                        WHERE c.visible = 1
+                      ) t
+        on m.id = t.marker_id
+         , {$map_prefix}marker_category mc
+         , {$map_prefix}submap smp
+         , {$map_prefix}map mp
+         , {$map_prefix}user u
+     where m.marker_category_id = mc.id
+       and m.submap_id = smp.id
+       and smp.map_id = mp.id
+       and mp.container_id = ?
+       and m.user_id = u.id
+       and {$sqlVisible}
+       and mc.visible = 1
+  ";
+  $params = [$game];
+
+  if (isset($_GET['newMarkerId'])) {
+    $sql .= " and m.id = ?";
+    $params[] = (int) $_GET['newMarkerId'];
   }
-  $last_update = $temp = '1800-01-01 00:00:00';
-	$query = "SET SESSION group_concat_max_len = 4294967295";
-	$result = @$mysqli->query($query);
+  $sql .= "
+     group by m.id
+     order by m.id desc
+  ";
 
-   $query = 'select m.id
-                  , mp.id                        as mapId
-                  , m.submap_id                  as submapId
-                  , m.overlay_id                 as overlayId
-                  , m.marker_category_id         as markerCategoryId
-                  , mc.marker_category_type_id   as markerCategoryTypeId
-                  , m.user_id                    as userId
-                  , u.username                   as userName
-                  , m.name
-                  , m.description
-                  , m.x
-                  , m.y
-				  , m.z
-                  , m.jump_marker_id             as jumpMakerId
-				      , GROUP_CONCAT(coalesce(t.marker_tab_id,\'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\') as tabId
-                  , GROUP_CONCAT(coalesce(t.tab_title,\'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabTitle
-                  , GROUP_CONCAT(coalesce(t.tab_text, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabText
-				  , GROUP_CONCAT(coalesce(t.user_id, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')      as tabUserId
-				  , GROUP_CONCAT(coalesce(t.username, \'\') ORDER BY t.marker_tab_id asc SEPARATOR \'<|>\')     as tabUserName
-			      , m.path
-				  , m.game_data                  as gameData
-				  , m.global                     as globalMarker
-				  , m.visible
-				   from ' . $map_prefix . 'marker m
-               left outer join (SELECT c.marker_tab_id
-				                         , c.tab_title
-									          , c.tab_text
-									          , c.user_id
-								         	 , u2.username
-								         	 , c.marker_id
-								          FROM ' . $map_prefix . 'marker_tab c
-								          LEFT OUTER JOIN ' . $map_prefix . 'user u2
-								            ON c.user_id = u2.id
-                                 WHERE c.visible = 1
-				      ) t
-                 on m.id = t.marker_id
-                  , ' . $map_prefix . 'marker_category mc
-				      , ' . $map_prefix . 'submap smp
-                  , ' . $map_prefix . 'map mp
-				      , ' . $map_prefix . 'user u
-              where m.marker_category_id = mc.id
-				    and m.submap_id = smp.id
-                and smp.map_id = mp.id
-				    and mp.container_id = ' . $_GET["game"] . '
-				    and m.user_id = u.id
-                and m.visible in (' . $visible . ')
-                and mc.visible = 1
-                ';
-				    /*and ((m.visible = 1 and m.last_updated > \'' . $last_update . '\')
-				         OR  (m.visible = 0 and \'' . $last_update . '\' != \'1800-01-01 00:00:00\' and m.last_updated > \'' . $last_update . '\'))
-              /*and m.last_updated > \'' . $last_update . '\'*/
+  $rows = $db->fetchAllAssociative($sql, $params);
 
-   if (isset($_GET['newMarkerId'])) {
-      $query .= 'and m.id = ' . $_GET['newMarkerId'];
-   }
-   $query .= '
-              group by m.id
-              order by m.id desc;
-    ';
-	//echo $query . "\n";
-   $result = @$mysqli->query($query);
-
-	if(!$result) {
-		print($mysqli->error);
-		return;
-	}
-
-	$res = array();
-	while ($row = $result->fetch_assoc()) {
-		$row["tabTitle"] = html_entity_decode($row["tabTitle"], ENT_QUOTES, "UTF-8");
-		$row["tabText"] = html_entity_decode($row["tabText"], ENT_QUOTES, "UTF-8");
-		$row["name"] = html_entity_decode($row["name"], ENT_QUOTES, "UTF-8");
-		$row["description"] = html_entity_decode($row["description"], ENT_QUOTES, "UTF-8");
-		$res[] = $row;
-	}
-   echo json_encode($res);
-
-	$_SESSION["last_updated"] = $temp;
-  session_write_close();
+  $res = array();
+  foreach ($rows as $row) {
+    $row["tabTitle"]    = html_entity_decode($row["tabTitle"],    ENT_QUOTES, "UTF-8");
+    $row["tabText"]     = html_entity_decode($row["tabText"],     ENT_QUOTES, "UTF-8");
+    $row["name"]        = html_entity_decode($row["name"],        ENT_QUOTES, "UTF-8");
+    $row["description"] = html_entity_decode($row["description"], ENT_QUOTES, "UTF-8");
+    $res[] = $row;
+  }
+  echo json_encode($res);
 ?>

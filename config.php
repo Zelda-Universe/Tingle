@@ -1,14 +1,6 @@
 <?php
-  # https://stackoverflow.com/questions/666811/how-to-solve-fatal-error-class-mysqli-not-found
-  if (
-    !extension_loaded('mysqli')
-  ) {
-    die('We don\'t have the "mysqli" extension!!!');
-  }
-  if (
-    !function_exists('mysqli_init')
-  ) {
-    die('We don\'t have the "mysqli_init" function!!!');
+  if (!extension_loaded('pdo_mysql')) {
+    die('The "pdo_mysql" PHP extension is required.');
   }
 
   include_once(__DIR__."/lib/common/log.php");

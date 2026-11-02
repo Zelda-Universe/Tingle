@@ -19,14 +19,13 @@
     return implode('/', array_map('rawurlencode', explode('/', str_replace('\\', '/', $path))));
   }
 
-  function getOfflineTileDirectories($mysqli, $map_prefix, $gameId) {
-    $escapedGameId = $mysqli->real_escape_string($gameId);
-    $query = "
+  function getOfflineTileDirectories($db, $map_prefix, $gameId) {
+    $rows = $db->fetchAllAssociative("
       SELECT DISTINCT `tile_url` AS `tileURL`
       FROM `{$map_prefix}submap` sm
       INNER JOIN `{$map_prefix}map` m ON m.id = sm.map_id
       INNER JOIN `{$map_prefix}container` c ON c.id = m.container_id
-      WHERE (c.short_name = '{$escapedGameId}' OR c.id = '{$escapedGameId}')
+      WHERE (c.short_name = ? OR c.id = ?)
         AND sm.visible = 1
       UNION
       SELECT DISTINCT sml.`tile_url` AS `tileURL`
@@ -34,12 +33,11 @@
       INNER JOIN `{$map_prefix}submap` sm ON sm.id = sml.submap_id
       INNER JOIN `{$map_prefix}map` m ON m.id = sm.map_id
       INNER JOIN `{$map_prefix}container` c ON c.id = m.container_id
-      WHERE (c.short_name = '{$escapedGameId}' OR c.id = '{$escapedGameId}')
+      WHERE (c.short_name = ? OR c.id = ?)
         AND sml.visible = 1
-    ";
-    $result = $mysqli->query($query);
+    ", [$gameId, $gameId, $gameId, $gameId]);
     $directories = array();
-    while ($result && ($row = $result->fetch_assoc())) {
+    foreach ($rows as $row) {
       if (!empty($row['tileURL']) && !preg_match('#^https?://#i', $row['tileURL'])) {
         $directories[] = trim($row['tileURL'], '/');
       }
@@ -47,11 +45,11 @@
     return array_values(array_unique($directories));
   }
 
-  function buildOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL) {
+  function buildOfflineManifest($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL) {
     $tilesByPath = array();
     if (!$tileRoot) return array();
 
-    foreach (getOfflineTileDirectories($mysqli, $map_prefix, $gameId) as $relativeDirectory) {
+    foreach (getOfflineTileDirectories($db, $map_prefix, $gameId) as $relativeDirectory) {
       $directory = realpath($tileRoot . '/' . $relativeDirectory);
       if (!$directory || strpos($directory, $tileRoot . DIRECTORY_SEPARATOR) !== 0) continue;
 
@@ -76,7 +74,7 @@
     return array_values($tilesByPath);
   }
 
-  function getOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL, $cacheDirectory, $cacheLifetime) {
+  function getOfflineManifest($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL, $cacheDirectory, $cacheLifetime) {
     if (!is_dir($cacheDirectory)) @mkdir($cacheDirectory, 0755, true);
     $cacheFile = $cacheDirectory . '/' . preg_replace('/[^A-Za-z0-9_-]/', '', $gameId) . '.json';
     if (is_file($cacheFile) && filemtime($cacheFile) > time() - $cacheLifetime) {
@@ -84,19 +82,18 @@
       if (is_array($cachedManifest)) return $cachedManifest;
     }
 
-    $manifest = buildOfflineManifest($mysqli, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL);
+    $manifest = buildOfflineManifest($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL);
     @file_put_contents($cacheFile, json_encode($manifest), LOCK_EX);
     return $manifest;
   }
 
   $gameRows = array();
-  $gameResult = $mysqli->query("
+  foreach ($db->fetchAllAssociative("
     SELECT `id`, `short_name` AS `shortName`, `name`
     FROM `{$map_prefix}container`
     WHERE `visible` = 1 AND `enabled` = 1
     ORDER BY `id`
-  ");
-  while ($gameResult && ($gameRow = $gameResult->fetch_assoc())) {
+  ") as $gameRow) {
     $gameRows[$gameRow['shortName']] = $gameRow;
   }
 
@@ -108,7 +105,7 @@
       return;
     }
     $manifest = getOfflineManifest(
-      $mysqli, $map_prefix, $requestedGame, $tileRoot, $tilePublicBaseURL,
+      $db, $map_prefix, $requestedGame, $tileRoot, $tilePublicBaseURL,
       $manifestCacheDirectory, $manifestCacheLifetime
     );
     $offset = max(0, isset($_GET['offset']) ? (int) $_GET['offset'] : 0);
@@ -127,7 +124,7 @@
   $games = array();
   foreach ($gameRows as $gameRow) {
     $manifest = getOfflineManifest(
-      $mysqli, $map_prefix, $gameRow['shortName'], $tileRoot, $tilePublicBaseURL,
+      $db, $map_prefix, $gameRow['shortName'], $tileRoot, $tilePublicBaseURL,
       $manifestCacheDirectory, $manifestCacheLifetime
     );
     $games[] = array(

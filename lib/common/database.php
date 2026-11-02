@@ -1,41 +1,72 @@
 <?php
+  use Doctrine\DBAL\DriverManager;
+
+  /**
+   * Open the application's database connection.
+   *
+   * Sets $db, a Doctrine\DBAL\Connection. Every query goes through it with
+   * bound parameters; nothing from the request is ever concatenated into SQL.
+   * Query failures throw; ajax.php turns an uncaught exception into a logged
+   * "Internal error" response.
+   *
+   * Returns 0 on success, 1 on failure (ajax.php checks the return value).
+   */
   function open() {
-    global $mysqli, $dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket;
-    # mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-    # TODO: Prepend hostname with "p:"? # https://www.php.net/manual/en/mysqli.construct.php
-    // debug_log('dbhost: '.$dbhost);
+    global $db, $dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket;
+
+    $params = [
+      'driver'   => 'pdo_mysql',
+      'user'     => $dbuser,
+      'password' => $dbpasswd,
+      'dbname'   => $dbname,
+      // Matches the SET NAMES 'utf8' the application has always issued.
+      'charset'  => 'utf8',
+      'driverOptions' => [
+        // mysqli returned every column as a string; keep the JSON responses
+        // byte-for-byte identical so nothing in the frontend changes type.
+        PDO::ATTR_STRINGIFY_FETCHES => true,
+        PDO::ATTR_EMULATE_PREPARES  => false,
+      ],
+    ];
+
+    if (!empty($dbsocket)) {
+      $params['unix_socket'] = $dbsocket;
+    } else {
+      $params['host'] = $dbhost;
+      if (!empty($dbport)) {
+        $params['port'] = (int) $dbport;
+      }
+    }
+
     try {
-      $mysqli = new mysqli($dbhost, $dbuser, $dbpasswd, $dbname, $dbport, $dbsocket);
-    } catch (Exception $e) {
-      debug_log('MySQL construction/connection error.');
-      debug_log($e);
+      $db = DriverManager::getConnection($params);
+      // Connect now rather than lazily, so a bad configuration fails here
+      // with "No database connection!" instead of inside an endpoint.
+      $db->getNativeConnection();
+    } catch (\Throwable $e) {
+      debug_log('Database connection error: ' . $e->getMessage());
       return 1;
     }
-    // debug_log('dbhost: '.$dbhost);
-    if (!$mysqli or $mysqli->errno) {
-      debug_log(print_r($mysqli));
-      debug_log('$mysqli->errno: '.$mysqli->errno);
-      throw new RuntimeException('mysqli error: ' . $mysqli->error);
-    }
-    $mysqli->query("SET NAMES 'utf8'");
-    $mysqli->query('SET character_set_connection=utf8');
-    $mysqli->query('SET character_set_client=utf8');
-    $mysqli->query('SET character_set_results=utf8');
-    # $mysqli->set_charset('utf8mb4');
+
+    return 0;
   }
 
   function begin() {
-    global $mysqli;
-    return $mysqli->query("BEGIN");
+    global $db;
+    $db->beginTransaction();
   }
 
   function commit() {
-    global $mysqli;
-    return $mysqli->query("COMMIT");
+    global $db;
+    if ($db->isTransactionActive()) {
+      $db->commit();
+    }
   }
 
-  function rollback()	{
-    global $mysqli;
-    return $mysqli->query("ROLLBACK");
+  function rollback() {
+    global $db;
+    if ($db->isTransactionActive()) {
+      $db->rollBack();
+    }
   }
 ?>

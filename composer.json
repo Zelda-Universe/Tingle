@@ -1,6 +1,16 @@
 {
     "require": {
+        "php": ">=8.2",
+        "ext-pdo_mysql": "*",
+        "doctrine/dbal": "^4.2",
         "ircmaxell/random-lib": "^1.2",
         "swiftmailer/swiftmailer": "^5.4"
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "8.2.0"
+        }
     }
 }

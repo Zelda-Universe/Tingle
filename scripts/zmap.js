@@ -2275,7 +2275,7 @@ ZMap.prototype._createChangePasswordForm = function() {
    });
 
    $("#change_password_back_btn").click(function(e) {
-      _this._createAccountForm(user);
+      _this._createAccountInformationForm();
       e.preventDefault();
    });
 }
@@ -2443,6 +2443,55 @@ ZMap.prototype._createLoginForm = function(successMessage) {
 
 }
 
+ZMap.prototype.drawerPageRoutes = {
+  accountPage: 'account',
+  accountInformationPage: 'account-information',
+  offlineMapsPage: 'offline-maps',
+  loginForm: 'login',
+  registerForm: 'register',
+  lostPasswordForm: 'lost-password',
+  changePasswordForm: 'change-password',
+  deleteAccountForm: 'delete-account',
+  games: 'games',
+  maps: 'maps'
+};
+
+ZMap.prototype.syncDrawerPageURL = function(contentType) {
+  if(!this._drawerRoutingReady) return;
+  var url = new URL(window.location.href);
+  var page = this.drawerPageRoutes[contentType];
+  if(page) url.searchParams.set('page', page);
+  else url.searchParams.delete('page');
+  window.history.replaceState(window.history.state, '', url.href);
+};
+
+ZMap.prototype.restoreDrawerPage = function(page) {
+  this._drawerRoutingReady = true;
+  if(!page) return;
+  var authenticatedRoutes = {
+    account: '_createAccountForm',
+    'account-information': '_createAccountInformationForm',
+    'offline-maps': '_createOfflineMapsForm',
+    'change-password': '_createChangePasswordForm',
+    'delete-account': '_createAccountDeleteForm'
+  };
+  var publicRoutes = {
+    login: '_createLoginForm', register: '_createRegisterForm',
+    'lost-password': '_createLostPasswordForm'
+  };
+  if(authenticatedRoutes[page]) {
+    if(this.getUser()) this[authenticatedRoutes[page]](this.getUser());
+    else this._createLoginForm();
+  } else if(publicRoutes[page]) {
+    this[publicRoutes[page]]();
+  } else if(page === 'games' || page === 'maps') {
+    var menu = page === 'games' ? this.mapControl._gameMenu : this.mapControl._mapsMenu;
+    if(menu) this.mapControl.setContent(menu.domNode, page);
+  } else return;
+  if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
+  else this.mapControl._expand();
+};
+
 ZMap.prototype._createAccountForm = function(user) {
   var _this = this;
   var profilePicture = user.profilePicture || 'images/default-avatar.svg';
@@ -2452,25 +2501,21 @@ ZMap.prototype._createAccountForm = function(user) {
       '<h3 class="text-center">' +
         this.langMsgs.ACCOUNT_TITLE +
       '</h3>' +
-      '<p>' +
-        'Username: ' + user.username + '<br />' +
-        ((user.level >= 5) ? 'Level: ' + user.level + '<br />' : "") +
-      '</p>' +
       '<div class="account-profile-section">' +
+        '<div class="account-profile-preview-container">' +
         '<img id="account_profile_preview" class="account-profile-preview" src="' + profilePicture + '" alt="Your profile picture" />' +
+          '<button id="account_profile_choose" type="button" class="button account-profile-edit" aria-label="Change profile picture" title="Change profile picture"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>' +
+        '</div>' +
         '<form id="account_profile_form" enctype="multipart/form-data">' +
           '<input id="account_profile_input" name="profile_picture" type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" />' +
-          '<button id="account_profile_choose" type="button" class="infoWindowIcn">Change Profile Picture</button>' +
-          '<button id="account_profile_save" type="submit" class="infoWindowIcn" style="display:none">Save Profile Picture</button>' +
           '<p id="account_profile_status" class="account-profile-status" role="status" aria-live="polite"></p>' +
         '</form>' +
       '</div>' +
       '<div class="modal-footer">' +
          '<div>' +
+           '<button id="account_information_btn" type="button" class="infoWindowIcn">Account Information</button>' +
            '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn">Reset Completed Markers</button>' +
            '<button id="account_offline_maps_btn" type="button" class="infoWindowIcn">Download Offline Maps</button>' +
-           '<button id="account_reset_btn" type="button" class="infoWindowIcn">Reset Password</button>' +
-           '<button id="account_change_btn" type="button" class="infoWindowIcn">Change Password</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log out</button>' +
            '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
          '</div>' +
@@ -2480,6 +2525,9 @@ ZMap.prototype._createAccountForm = function(user) {
   );
 
   var selectedPreviewURL = null;
+  $('#account_information_btn').click(function() {
+    _this._createAccountInformationForm();
+  });
   $('#account_profile_choose').click(function() {
     $('#account_profile_input').trigger('click');
   });
@@ -2490,8 +2538,8 @@ ZMap.prototype._createAccountForm = function(user) {
     if(selectedPreviewURL) URL.revokeObjectURL(selectedPreviewURL);
     selectedPreviewURL = URL.createObjectURL(file);
     $('#account_profile_preview').attr('src', selectedPreviewURL);
-    $('#account_profile_save').show();
     $('#account_profile_status').removeClass('error success').text(file.name);
+    $('#account_profile_form').trigger('submit');
   });
 
   $('#account_profile_form').submit(function(e) {
@@ -2499,7 +2547,7 @@ ZMap.prototype._createAccountForm = function(user) {
     var formData = new FormData(this);
     var status = $('#account_profile_status');
     status.removeClass('error success').text('Uploading…');
-    $('#account_profile_save').prop('disabled', true);
+    $('#account_profile_choose, #account_profile_input').prop('disabled', true);
 
     $.ajax({
       type: 'POST',
@@ -2510,7 +2558,6 @@ ZMap.prototype._createAccountForm = function(user) {
       success: function(data) {
         if(!data.success) {
           status.addClass('error').text(data.msg || 'The profile picture could not be updated.');
-          $('#account_profile_save').prop('disabled', false);
           return;
         }
         if(selectedPreviewURL) {
@@ -2519,14 +2566,16 @@ ZMap.prototype._createAccountForm = function(user) {
         }
         user.profilePicture = data.profilePicture;
         $('#account_profile_preview').attr('src', data.profilePicture);
-        $('#account_profile_save').hide().prop('disabled', false);
         status.addClass('success').text(data.msg);
         _this.notifyUserChanged();
       },
       error: function(data) {
         var message = data.responseJSON && data.responseJSON.msg;
         status.addClass('error').text(message || 'The profile picture could not be updated.');
-        $('#account_profile_save').prop('disabled', false);
+      },
+      complete: function() {
+        $('#account_profile_choose, #account_profile_input').prop('disabled', false);
+        $('#account_profile_input').val('');
       }
     });
   });
@@ -2540,20 +2589,12 @@ ZMap.prototype._createAccountForm = function(user) {
      e.preventDefault();
   });
 
-  $("#account_reset_btn").click(function(e) {
-     _this._createLostPasswordForm();
-     e.preventDefault();
-  });
 
   $("#account_offline_maps_btn").click(function(e) {
      _this._createOfflineMapsForm();
      e.preventDefault();
   });
 
-  $("#account_change_btn").click(function(e) {
-     _this._createChangePasswordForm();
-     e.preventDefault();
-  });
 
   $("#account_delete_btn").click(function(e) {
      _this._createAccountDeleteForm();
@@ -2565,6 +2606,173 @@ ZMap.prototype._createAccountForm = function(user) {
     e.preventDefault();
   });
 }
+
+ZMap.prototype._createAccountInformationForm = function() {
+  var map = this;
+  this.mapControl.setContent(
+    '<div id="account_information">' +
+      '<h3 class="text-center">Account Information</h3>' +
+      '<form id="account_information_form">' +
+        '<label for="account_username">Username</label>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-user"></i></span>' +
+          '<input id="account_username" name="username" class="form-control" autocomplete="username" required minlength="3" maxlength="45" />' +
+          '<span id="username_validation_icon" aria-hidden="true"></span>' +
+        '</div></div>' +
+        '<p id="username_availability" role="status" aria-live="polite"></p>' +
+        '<label for="account_email">Email</label>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-envelope"></i></span>' +
+          '<input id="account_email" name="email" type="email" class="form-control" autocomplete="email" required maxlength="254" />' +
+        '</div></div>' +
+        '<label for="account_current_password">Change Password</label>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-lock"></i></span>' +
+          '<input id="account_current_password" name="currentpassword" type="password" class="form-control" autocomplete="current-password" placeholder="Current password" />' +
+          '<span class="password-validation-icon" aria-hidden="true"></span>' +
+        '</div></div>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-lock"></i></span>' +
+          '<input id="account_new_password" name="newpassword" type="password" class="form-control" autocomplete="new-password" placeholder="New password (optional)" />' +
+          '<span class="password-validation-icon" aria-hidden="true"></span>' +
+        '</div></div>' +
+        '<p id="account_password_error" role="status" aria-live="polite"></p>' +
+        '<button type="submit" class="infoWindowIcn form-action-button" disabled>Save Changes</button>' +
+        '<p id="account_information_status" class="account-profile-status" role="status" aria-live="polite"></p>' +
+      '</form>' +
+    '</div>', 'accountInformationPage'
+  );
+  $('#account_username').val(user.username);
+  $('#account_email').val(user.email || '');
+  var savingAccountInformation = false;
+  var usernameAvailable = true;
+  var usernameCheckTimer;
+  var usernameCheckVersion = 0;
+  var passwordValid = true;
+  var passwordCheckTimer;
+  var passwordCheckVersion = 0;
+  function updateSaveChangesState() {
+    var changed = $('#account_username').val().trim() !== user.username ||
+      $('#account_email').val().trim() !== (user.email || '') ||
+      $('#account_new_password').val() !== '';
+    $('#account_information_form button[type="submit"]').prop('disabled', savingAccountInformation || !changed || !usernameAvailable || !passwordValid);
+  }
+  $('#account_information_form input').on('input change', updateSaveChangesState);
+  $('#account_current_password, #account_new_password').on('input', function() {
+    var version = ++passwordCheckVersion;
+    clearTimeout(passwordCheckTimer);
+    $('#account_current_password, #account_new_password').removeAttr('aria-invalid').closest('.input-group').removeClass('password-invalid');
+    $('#account_current_password, #account_new_password').closest('.input-group').removeClass('password-valid');
+    $('.password-validation-icon').empty();
+    $('#account_password_error').removeClass('checking').text('');
+    var current = $('#account_current_password').val();
+    var next = $('#account_new_password').val();
+    passwordValid = next === '';
+    updateSaveChangesState();
+    if(passwordValid) return;
+    function passwordFeedback(valid, message) {
+      passwordValid = valid;
+      $('#account_current_password, #account_new_password').attr('aria-invalid', !valid).closest('.input-group').addClass(valid ? 'password-valid' : 'password-invalid');
+      $('.password-validation-icon').html(valid ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>');
+      $('#account_password_error').removeClass('checking').text(message);
+      updateSaveChangesState();
+    }
+    if(!current || !next) {
+      passwordFeedback(false, !current ? 'Enter your current password.' : 'Enter a new password.');
+      return;
+    }
+    if(new TextEncoder().encode(next).length > 72) {
+      passwordFeedback(false, 'The new password must be at most 72 bytes.');
+      return;
+    }
+    $('#account_password_error').addClass('checking').text('Checking password…');
+    passwordCheckTimer = window.setTimeout(function() {
+      $.ajax({ type: 'POST', url: 'ajax.php?command=check_account_password', data: { currentpassword: current } })
+        .done(function(data) {
+          if(version !== passwordCheckVersion) return;
+          passwordFeedback(!!(data.success && data.valid), data.valid ? '' : 'Current password is incorrect.');
+        }).fail(function() {
+          if(version !== passwordCheckVersion) return;
+          passwordFeedback(false, 'Unable to check password. Please try again.');
+        });
+    }, 500);
+  });
+  $('#account_username').on('input change', function() {
+    var name = this.value.trim();
+    var version = ++usernameCheckVersion;
+    clearTimeout(usernameCheckTimer);
+    var group = $(this).closest('.input-group').removeClass('username-valid username-invalid');
+    var message = $('#username_availability').text('').removeClass('success error');
+    var icon = $('#username_validation_icon').empty();
+    $(this).removeAttr('aria-invalid');
+    usernameAvailable = name === user.username;
+    updateSaveChangesState();
+    if(usernameAvailable) return;
+    if(!/^[A-Za-z0-9][A-Za-z0-9_.-]{2,44}$/.test(name)) {
+      group.addClass('username-invalid');
+      $(this).attr('aria-invalid', 'true');
+      message.addClass('error').text('Use 3–45 letters, numbers, periods, underscores, or hyphens.');
+      icon.html('<i class="fas fa-times"></i>');
+      return;
+    }
+    message.text('Checking username…');
+    usernameCheckTimer = window.setTimeout(function() {
+      $.getJSON('ajax.php?command=check_username', { username: name }).done(function(data) {
+        if(version !== usernameCheckVersion) return;
+        usernameAvailable = !!(data.success && data.valid && data.available);
+        group.addClass(usernameAvailable ? 'username-valid' : 'username-invalid');
+        $('#account_username').attr('aria-invalid', !usernameAvailable);
+        message.addClass(usernameAvailable ? 'success' : 'error').text(
+          data.success ? (usernameAvailable ? 'Username available' : 'Username unavailable') : 'Unable to check username.'
+        );
+        icon.html(usernameAvailable ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>');
+        updateSaveChangesState();
+      }).fail(function() {
+        if(version !== usernameCheckVersion) return;
+        message.addClass('error').text('Unable to check username. Please try again.');
+      });
+    }, 300);
+  });
+  $('#account_information_form').submit(function(event) {
+    event.preventDefault();
+    if($(this).find('button[type="submit"]').prop('disabled')) return;
+    savingAccountInformation = true;
+    var button = $(this).find('button[type="submit"]').prop('disabled', true);
+    var status = $('#account_information_status').removeClass('success error').text('Saving…');
+    var accountFormData = $(this).serializeArray();
+    if(!$('#account_new_password').val()) {
+      accountFormData = accountFormData.filter(function(field) {
+        return field.name !== 'currentpassword' && field.name !== 'newpassword';
+      });
+    }
+    $.ajax({
+      type: 'POST', url: 'ajax.php?command=change_username', data: accountFormData,
+      success: function(data) {
+        if(data.success) {
+          user.username = data.username;
+          user.email = data.email;
+          $('#account_current_password, #account_new_password').val('');
+          map.notifyUserChanged();
+          status.addClass('success').text(data.msg);
+        } else {
+          if(data.field === 'password') {
+            status.text('');
+            $('#account_current_password, #account_new_password').attr('aria-invalid', 'true').closest('.input-group').addClass('password-invalid');
+            $('.password-validation-icon').html('<i class="fas fa-times"></i>');
+            $('#account_password_error').text(data.msg);
+          } else {
+            status.addClass('error').text(data.msg || 'Account changes could not be saved.');
+          }
+        }
+      },
+      error: function() { status.addClass('error').text('Account changes could not be saved. Please try again.'); },
+      complete: function() {
+        savingAccountInformation = false;
+        updateSaveChangesState();
+      }
+    });
+  });
+};
 
 ZMap.prototype._createOfflineMapsForm = function() {
   var _this = this;

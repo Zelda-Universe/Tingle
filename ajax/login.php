@@ -45,6 +45,7 @@
       `id`                        ,
       `username`                  ,
       {$profilePictureSelect}     ,
+      `email`                     ,
       `password`                  ,
       `level`                     ,
       `seen_version_major` AS `v1`,
@@ -70,6 +71,7 @@
          ) {
          $user['id'] = $row['id'];
          $user['username'] = $row['username'];
+         $user['email'] = $row['email'];
          $user['profilePicture'] = $row['profilePicture'];
          if (!$user['profilePicture']) {
             $profileFiles = glob(

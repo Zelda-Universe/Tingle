@@ -122,7 +122,7 @@
 
   echo json_encode(array(
     'success' => true,
-    'msg' => 'Profile picture updated.',
+    'msg' => 'Profile picture updated!',
     'profilePicture' => $profilePicture . '?v=' . time()
   ));
 ?>

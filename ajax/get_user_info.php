@@ -49,6 +49,13 @@
          $user['id'] = $_SESSION['user_id'];
          $user['username'] = $_SESSION['username'];
          $user['level'] = $_SESSION['level'];
+         $emailQuery = $mysqli->prepare("SELECT email FROM `{$map_prefix}user` WHERE id = ?");
+         $emailQuery->bind_param('i', $user['id']);
+         $emailQuery->execute();
+         $emailQuery->bind_result($accountEmail);
+         $emailQuery->fetch();
+         $emailQuery->close();
+         $user['email'] = $accountEmail;
          $profileQuery = "
            SELECT `profile_picture` AS `profilePicture`
            FROM `{$map_prefix}user`

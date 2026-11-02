@@ -838,6 +838,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._contents.style.minHeight = availableHeight + 'px';
     this._contents.style.paddingBottom = '0px';
     this._contents.style.scrollPaddingBottom = '0px';
+    // Keep the scrolling surface behind Safari's translucent toolbar, but
+    // provide enough scroll-end room to lift the final row above it.
+    var safariScrollInset = document.documentElement.classList.contains('zm-ios-safari')
+      ? Math.max(0, drawerBottom - this._viewportBottom()) + 16
+      : 0;
+    this._contents.style.setProperty('--drawer-scroll-end-inset', safariScrollInset + 'px');
   },
 
   rebuildMapsMenu: function () {
@@ -970,6 +976,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._triggerHandler("beforeSetContent", vContent, vType);
     this._setContent(vContent, vType);
     this._triggerHandler("afterSetContent", vContent, vType);
+    if(this.zMap && this.zMap.syncDrawerPageURL) this.zMap.syncDrawerPageURL(vType);
     if(
       /^m\d+$/.test(previousContentType || '') ||
       /^m\d+$/.test(vType || '')
@@ -999,7 +1006,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
         .on(closeButton, 'click', L.DomEvent.stopPropagation)
         .on(closeButton, 'click', function(e) {
           e.preventDefault();
-          if(vType === 'offlineMapsPage' && this.zMap.getUser()) {
+          if(vType === 'changePasswordForm' && this.zMap.getUser()) {
+            this.zMap._createAccountInformationForm();
+          } else if(['offlineMapsPage', 'accountInformationPage'].includes(vType) && this.zMap.getUser()) {
             this.zMap._createAccountForm(this.zMap.getUser());
           } else {
             this.reset();

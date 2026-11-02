@@ -203,8 +203,10 @@ function getMaps() {
 };
 
 function getUserInfo() {
+   var requestedPage = getUrlParam('page');
    $.getJSON("ajax.php?command=get_user_info", function(vResults) {
     if(vResults.user) zMap.setUser(vResults.user);
+    zMap.restoreDrawerPage(requestedPage);
     updateAdState();
     if(ZConfig.getConfig("changelog") == 'true')
       checkChangelog(vResults.user);

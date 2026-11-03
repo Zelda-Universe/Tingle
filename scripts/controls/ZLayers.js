@@ -973,9 +973,92 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   setContent: function(vContent, vType) {
     var previousContentType = this._contentType;
+    var shouldSlide = this.viewStyleBottomSlide && previousContentType &&
+      previousContentType !== vType && this._open &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var outgoingPage;
+    var outgoingBounds;
+    if(shouldSlide && this._contents.animate) {
+      if(this._pageTransitionCleanup) this._pageTransitionCleanup();
+      outgoingBounds = {
+        top: this._contents.offsetTop,
+        left: this._contents.offsetLeft,
+        width: this._contents.getBoundingClientRect().width,
+        height: this._contents.getBoundingClientRect().height
+      };
+      outgoingPage = this._contents.cloneNode(true);
+      // Preserve ID-dependent styles before removing duplicate IDs. Otherwise
+      // the snapshot reflows into a different layout while it slides away.
+      var sourceNodes = [this._contents].concat(Array.from(this._contents.querySelectorAll('*')));
+      var snapshotNodes = [outgoingPage].concat(Array.from(outgoingPage.querySelectorAll('*')));
+      sourceNodes.forEach(function(source, index) {
+        var computed = window.getComputedStyle(source);
+        var snapshot = snapshotNodes[index];
+        for(var propertyIndex = 0; propertyIndex < computed.length; propertyIndex++) {
+          var property = computed[propertyIndex];
+          snapshot.style.setProperty(property, computed.getPropertyValue(property));
+        }
+        snapshot.style.transition = 'none';
+        snapshot.style.animation = 'none';
+        if(source.classList.contains('account-profile-preview-container')) {
+          snapshot.style.marginLeft = 'auto';
+          snapshot.style.marginRight = 'auto';
+        }
+      });
+      var outgoingScrollTop = this._contents.scrollTop;
+      outgoingPage.removeAttribute('id');
+      outgoingPage.querySelectorAll('[id]').forEach(function(node) { node.removeAttribute('id'); });
+      outgoingPage.setAttribute('aria-hidden', 'true');
+      outgoingPage.inert = true;
+      outgoingPage.scrollTop = this._contents.scrollTop;
+    }
     this._triggerHandler("beforeSetContent", vContent, vType);
     this._setContent(vContent, vType);
     this._triggerHandler("afterSetContent", vContent, vType);
+    if(outgoingPage) {
+      var depths = {
+        category: 0, games: 1, maps: 1, loginForm: 1, accountPage: 1,
+        registerForm: 2, lostPasswordForm: 2, accountInformationPage: 2,
+        offlineMapsPage: 2, deleteAccountForm: 2, changePasswordForm: 3
+      };
+      var backward = (depths[vType] || 0) < (depths[previousContentType] || 0);
+      var width = this._contents.getBoundingClientRect().width;
+      outgoingPage.style.position = 'absolute';
+      outgoingPage.style.top = outgoingBounds.top + 'px';
+      outgoingPage.style.left = outgoingBounds.left + 'px';
+      outgoingPage.style.boxSizing = 'border-box';
+      outgoingPage.style.margin = '0';
+      outgoingPage.style.width = outgoingBounds.width + 'px';
+      outgoingPage.style.height = outgoingBounds.height + 'px';
+      outgoingPage.style.minHeight = outgoingBounds.height + 'px';
+      outgoingPage.style.maxHeight = outgoingBounds.height + 'px';
+      outgoingPage.style.pointerEvents = 'none';
+      outgoingPage.style.zIndex = backward ? '2' : '0';
+      var previousZIndex = this._contents.style.zIndex;
+      this._contents.style.zIndex = '1';
+      this._contents.parentNode.appendChild(outgoingPage);
+      outgoingPage.scrollTop = outgoingScrollTop;
+      var timing = { duration: 400, easing: 'cubic-bezier(.35,.91,.33,.97)' };
+      var entering = this._contents.animate([
+        { transform: 'translateX(' + (backward ? -width * .3 : width) + 'px)', opacity: 1,
+          clipPath: backward ? 'inset(0 70% 0 0)' : 'inset(0 0 0 0)' },
+        { transform: 'translateX(0)', opacity: 1, clipPath: 'inset(0 0 0 0)' }
+      ], timing);
+      var leaving = outgoingPage.animate([
+        { transform: 'translateX(0)', opacity: 1, clipPath: 'inset(0 0 0 0)' },
+        { transform: 'translateX(' + (backward ? width : -width * .3) + 'px)', opacity: 0,
+          clipPath: backward ? 'inset(0 0 0 0)' : 'inset(0 70% 0 0)' }
+      ], timing);
+      var cleanup = function() {
+        entering.cancel();
+        leaving.cancel();
+        outgoingPage.remove();
+        this._contents.style.zIndex = previousZIndex;
+        if(this._pageTransitionCleanup === cleanup) this._pageTransitionCleanup = null;
+      }.bind(this);
+      this._pageTransitionCleanup = cleanup;
+      entering.onfinish = cleanup;
+    }
     if(this.zMap && this.zMap.syncDrawerPageURL) this.zMap.syncDrawerPageURL(vType);
     if(
       /^m\d+$/.test(previousContentType || '') ||

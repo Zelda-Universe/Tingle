@@ -656,10 +656,23 @@ main {
 
 #account #account_delete_btn {
 	margin-top: 24px;
+	color: #ff6b63;
+	background: transparent;
+}
+
+#account #account_delete_btn:hover,
+#account #account_delete_btn:active {
+	color: #ff8c85;
+	background: transparent;
 }
 
 #account #log_out_btn {
 	margin-bottom: 0;
+}
+
+#account #account_clear_completed_btn:disabled {
+	opacity: .5;
+	cursor: not-allowed;
 }
 
 .menu-cat-content-inner > #account > h3:first-child,
@@ -1643,8 +1656,19 @@ a.button.back-button:hover {
 	margin-bottom: 16px;
 }
 
-.infoWindowIcn:hover {
+.infoWindowIcn:not(:disabled):not(.disabled):not([aria-disabled="true"]):hover {
 	background: rgba(255,255,255,.3);
+}
+
+button:disabled,
+button.disabled,
+.button.disabled,
+.infoWindowIcn.disabled,
+[role="button"][aria-disabled="true"],
+button[aria-disabled="true"] {
+	pointer-events: none;
+	transition: none !important;
+	animation: none !important;
 }
 
 

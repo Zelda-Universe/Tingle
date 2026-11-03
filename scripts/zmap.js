@@ -121,7 +121,7 @@ function ZMap() {
       MARKER_COMPLETE_TRANSFER_ERROR : "I AM ERROR. There seems to be a problem moving your completed markers from cookies to our database. We'll automatically try again later. %1",
       MARKER_COMPLETE_TRANSFER_SUCCESS : "All of your completed markers were moved from cookies to our database and tied to your account.",
       MARKER_COMPLETE_TRANSFER_PARTIAL_SUCCESS : "We tried moving your completed markers from cookies to our database and tied to your account, but an error occurred. We try again the next time you login.",
-      MARKER_DEL_ALL_COMPLETE_SUCCESS : "You have an amazing wisdom and power! All completed markers have been successfully reset.",
+      MARKER_DEL_ALL_COMPLETE_SUCCESS : "Map markers reset successfully!",
       MARKER_DEL_ALL_COMPLETE_QUESTION : "Are you sure want to start a new quest? All completed markers for %1 will be reset.",
 
       MARKER_DEL_ERROR : "You’ve met with a terrible fate, haven’t you? There seems to be a problem and this marker couldn’t be deleted from our database.",
@@ -1762,6 +1762,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
 //*************                                                  *************//
 //****************************************************************************//
 ZMap.prototype.clearCompletedMarkers = function() {
+   var resetSucceeded = completedMarkers.length === 0;
    if (completedMarkers.length > 0) {
       $.ajax({
               type: "POST",
@@ -1772,7 +1773,7 @@ ZMap.prototype.clearCompletedMarkers = function() {
                   //data = jQuery.parseJSON(data);
                   if (data.success) {
                      completedMarkers = [];
-                     toastr.success(_this.langMsgs.MARKER_DEL_ALL_COMPLETE_SUCCESS);
+                     resetSucceeded = true;
                   } else {
                      toastr.error(_this.langMsgs.MARKER_DEL_ERROR.format(data.msg));
                      //alert(data.msg);
@@ -1781,10 +1782,16 @@ ZMap.prototype.clearCompletedMarkers = function() {
             });
    }
 
+   if(!resetSucceeded) return false;
+   this.categoriesArr.forEach(function(category) { category.complete = 0; });
+   setCookie('completedMarkers', '[]');
    for (var i = 0; i < markers.length; i++) {
       _this._doSetMarkerDoneIcon(markers[i], false);
    }
    _this.refreshMap();
+   window.alert(this.langMsgs.MARKER_DEL_ALL_COMPLETE_SUCCESS);
+   $('#account_clear_completed_btn').prop('disabled', true);
+   return true;
 };
 
 ZMap.prototype.transferCompletedMarkersToDB = function() {
@@ -2525,6 +2532,7 @@ ZMap.prototype._createAccountForm = function(user) {
   );
 
   var selectedPreviewURL = null;
+  $('#account_clear_completed_btn').prop('disabled', completedMarkers.length === 0);
   $('#account_information_btn').click(function() {
     _this._createAccountInformationForm();
   });
@@ -2582,10 +2590,6 @@ ZMap.prototype._createAccountForm = function(user) {
 
   $("#account_clear_completed_btn").click(function(e) {
      _this._createDialogDeleteAllMarkers();
-     _this.categoriesArr.forEach(function(category) {
-       category.complete = 0;
-     }, this);
-     _this.mapControl.resetContent();
      e.preventDefault();
   });
 

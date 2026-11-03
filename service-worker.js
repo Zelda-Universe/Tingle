@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261102-8';
+const CACHE_VERSION = '20261102-9';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -7,8 +7,8 @@ const MAX_TILE_ENTRIES = 500;
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261102-zoom-limit',
-  './res.php?type=css&v=20261102-zoom-limit',
+  './res.php?type=javascript&v=20261102-offline-cache-match',
+  './res.php?type=css&v=20261102-offline-cache-match',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -128,7 +128,17 @@ async function trimTileCache() {
 }
 
 async function cacheFirstTile(request) {
-  const cachedResponse = await caches.match(request);
+  // Explicit packs take priority over the rolling cache. These are static
+  // images; fetch() and <img> may send different Vary request headers.
+  const packNames = (await caches.keys()).filter(name =>
+    name.startsWith('zeldamaps-offline-') && name !== 'zeldamaps-offline-navigation'
+  );
+  for (const name of packNames) {
+    const pack = await caches.open(name);
+    const tile = await pack.match(request.url, { ignoreVary: true });
+    if (tile) return tile;
+  }
+  const cachedResponse = await caches.match(request, { ignoreVary: true });
   if (cachedResponse) return cachedResponse;
 
   const response = await fetch(request);

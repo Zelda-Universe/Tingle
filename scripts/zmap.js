@@ -2963,7 +2963,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
               credentials: 'omit',
               redirect: 'follow'
             };
-        return cache.match(absoluteURL).then(function(cachedResponse) {
+        return cache.match(absoluteURL, { ignoreVary: true }).then(function(cachedResponse) {
           if(cachedResponse) {
             updateProgress(tile.size);
             return;
@@ -3111,6 +3111,18 @@ ZMap.prototype._createOfflineMapsForm = function() {
     setPackState(card, game, null);
     caches.has(packCacheName(game.id)).then(function(hasCache) {
       if(packRecord && hasCache) {
+        caches.open(packCacheName(game.id)).then(function(cache) {
+          return cache.keys();
+        }).then(function(requests) {
+          var tileCount = requests.filter(function(request) {
+            return new URL(request.url).pathname.indexOf('/tiles/') !== -1;
+          }).length;
+          if(tileCount < packRecord.tileCount) {
+            packRecord.status = 'partial';
+            writePackRecord(game.id, packRecord);
+            setPackState(card, game, 'partial');
+          }
+        });
         setPackState(
           card,
           game,

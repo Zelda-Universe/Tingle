@@ -2514,56 +2514,51 @@ button[aria-disabled="true"] {
 
 /**** ADS ***/
 
-#mobileAds {
-	position: absolute !important;
-	z-index: 500 !important;
-	bottom: 160px !important;
-	left: 12px !important;
-	right: 12px !important;
-	height: 50px !important;
-	width: 100% !important;
-
-    min-width:300px !important;
-	max-width:450px !important;
-}
-
-#desktopAds {
-	position: absolute;
+/* Sized and placed by updateAdState() in scripts/zmain.lib.js: centred along
+   the bottom of the map on desktop, resting on the closed drawer on mobile. */
+#ads {
+	position: fixed;
 	z-index: 500;
 	bottom: 10px;
-	height: 90px;
-	left: 50%;
-	transform: translateX(-50%);
 	overflow: hidden;
-	width: 728px;
+	line-height: 0;
+	transition: opacity .2s ease;
 }
 
-@media only screen and (max-width: 728px) {
-  #desktopAds { width: 468px; height: 60px; }
-}
-@media only screen and (max-width: 468px) {
-  #desktopAds { width: 234px; height: 60px; }
+#ads:empty,
+#ads:has(ins[data-ad-status="unfilled"]) {
+	display: none;
 }
 
-@media (min-width: 3840px) {
-   .infeed {
-      height: 90px;
-   }
+#ads.ads-mobile {
+	bottom: auto;
 }
-@media (min-width: 728px) {
-   .infeed {
-      height: 90px;
-   }
+
+/* Out of the way while the drawer is lifted. */
+#ads.ads-lifted {
+	opacity: 0;
+	pointer-events: none;
 }
-@media (min-width: 468px) {
-   .infeed {
-      height: 60px;
-   }
+
+/* Auto ads AdSense placed before the user signed in. */
+body.ads-off ins.adsbygoogle,
+body.ads-off .google-auto-placed {
+	display: none !important;
 }
-@media (min-width: 234px) {
-   .infeed {
-      height: 60px;
-   }
+
+.ad-placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	border: 1px dashed rgba(255,255,255,.5);
+	border-radius: 8px;
+	background: rgba(0,0,0,.6);
+	color: rgba(255,255,255,.7);
+	font-size: 13px;
+	line-height: 1;
 }
 
 .offline-map-empty-message {

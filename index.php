@@ -252,58 +252,10 @@
     <main>
       <!--
         Note: Ads should be above the map/layers/tiles area,
-        and beneath the leaflet controls
+        and beneath the leaflet controls.
+        Filled and placed by updateAdState() in scripts/zmain.lib.js.
       -->
-      <div id="ads" align="center">
-	      <div id="mobileAds" >
-          <div class="googlePageAds">
-  	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      			<ins
-              class="adsbygoogle"
-      			  style="display:block"
-      			  data-ad-client="ca-pub-7269573247649351"
-      			  data-ad-slot="4512666333"
-      			></ins>
-      			<script>
-      			  (adsbygoogle = window.adsbygoogle || []).push({});
-      			</script>
-          </div>
-	      </div>
-	      <div id="desktopAds">
-          <!-- Dynamically resize this section-->
-	        <script>
-            var width = $(document).width();
-            var adsWidth = 0;
-            var adsHeight = 0;
-            if (width > 728) {
-              adsWidth = 728;
-              adsHeight = 90;
-            } else if (width > 468) {
-              adsWidth = 468;
-              adsHeight = 60;
-            } else {
-              adsWidth = 234;
-              adsHeight = 60;
-            }
-
-            var dtAdsStyle = document.getElementById('desktopAds').style
-            dtAdsStyle.width  = adsWidth  + 'px';
-            dtAdsStyle.height = adsHeight + 'px';
-	        </script>
-
-          <div class="googlePageAds">
-  	        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-      			<ins class="adsbygoogle infeed"
-      			     style="display:block;"
-      			     data-ad-client="ca-pub-7269573247649351"
-      			     data-ad-slot="4512666333"
-      			     data-ad-format="horizontal"></ins>
-       			<script>
-       			  (adsbygoogle = window.adsbygoogle || []).push({});
-       			</script>
-          </div>
-	      </div>
-      </div>
+      <div id="ads"></div>
 
       <!-- Zelda Maps -->
     </main>

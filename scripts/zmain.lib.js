@@ -383,20 +383,149 @@ function parseBounds(input) {
   return bounds;
 };
 
+/**** ADS *****/
+var AD_CLIENT = 'ca-pub-7269573247649351';
+var AD_SLOT = '4512666333';
+var AD_PRODUCTION_HOSTS = ['zeldamaps.com', 'www.zeldamaps.com'];
+var AD_GAP = 8;
+var adState = { key: null, observing: false, fallbackTimer: null };
+
+// "live" on the production site. Elsewhere "test" asks AdSense for test ads
+// and shows a placeholder when none are served, as on localhost.
+// Override with ?ads=live|test|placeholder|off.
+function getAdMode() {
+  var mode = ZConfig.getConfig('ads');
+  if(['live', 'test', 'placeholder', 'off'].indexOf(mode) > -1) return mode;
+  return AD_PRODUCTION_HOSTS.indexOf(location.hostname) > -1 ? 'live' : 'test';
+}
+
+// The strip along the bottom of the desktop map: right of the sidebar and
+// left of the bottom-right controls, centred on the visible map.
+function getDesktopAdArea() {
+  var panel = zMap.mapControl && zMap.mapControl._container;
+  var left = panel && panel.offsetParent ? panel.getBoundingClientRect().right : 0;
+  var controls = document.querySelector('.leaflet-bottom.leaflet-right');
+  var right = controls && controls.offsetHeight
+    ? controls.getBoundingClientRect().left : window.innerWidth;
+  return {
+    center: (left + window.innerWidth) / 2,
+    left: left + AD_GAP,
+    right: right - AD_GAP
+  };
+}
+
+// The largest banner that fits the layout, or null when none does.
+function getAdSize(mobile) {
+  if(mobile) return window.innerWidth >= 320 + AD_GAP * 2 ? { width: 320, height: 50 } : null;
+  var area = getDesktopAdArea();
+  return [{ width: 728, height: 90 }, { width: 468, height: 60 }].find(function(size) {
+    return size.width <= area.right - area.left;
+  }) || null;
+}
+
+// Centred on the map, nudged aside when it would cover the sidebar or controls.
+function getDesktopAdLeft(width) {
+  var area = getDesktopAdArea();
+  return Math.max(area.left, Math.min(area.center - width / 2, area.right - width));
+}
+
+function loadAdSense() {
+  if(document.getElementById('adsense-script')) return;
+  var script = document.createElement('script');
+  script.id = 'adsense-script';
+  script.async = true;
+  script.crossOrigin = 'anonymous';
+  script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + AD_CLIENT;
+  document.head.appendChild(script);
+}
+
+function showAdPlaceholder(ads, size) {
+  ads.innerHTML = '';
+  var placeholder = document.createElement('div');
+  placeholder.className = 'ad-placeholder';
+  placeholder.textContent = 'Test ad · ' + size.width + '×' + size.height;
+  ads.appendChild(placeholder);
+}
+
+function renderAd(ads, size, mode) {
+  ads.style.width = size.width + 'px';
+  ads.style.height = size.height + 'px';
+  if(mode == 'placeholder') return showAdPlaceholder(ads, size);
+
+  // A fixed-size slot, so AdSense serves exactly this banner size.
+  var slot = document.createElement('ins');
+  slot.className = 'adsbygoogle';
+  slot.style.display = 'inline-block';
+  slot.style.width = size.width + 'px';
+  slot.style.height = size.height + 'px';
+  slot.setAttribute('data-ad-client', AD_CLIENT);
+  slot.setAttribute('data-ad-slot', AD_SLOT);
+  if(mode == 'test') slot.setAttribute('data-adtest', 'on');
+  ads.appendChild(slot);
+  loadAdSense();
+  (window.adsbygoogle = window.adsbygoogle || []).push({});
+
+  if(mode == 'test') {
+    adState.fallbackTimer = window.setTimeout(function() {
+      if(slot.isConnected && slot.getAttribute('data-ad-status') != 'filled') {
+        showAdPlaceholder(ads, size);
+      }
+    }, 4000);
+  }
+}
+
+function positionAds() {
+  var ads = document.getElementById('ads');
+  if(!ads || !ads.firstChild) return;
+  var control = zMap.mapControl;
+  var width = parseInt(ads.style.width);
+  if(ads.classList.contains('ads-mobile')) {
+    var drawer = control._container;
+    ads.style.left = (window.innerWidth - width) / 2 + 'px';
+    ads.style.top = drawer.getBoundingClientRect().top
+      - parseInt(ads.style.height) - AD_GAP + 'px';
+    ads.classList.toggle('ads-lifted', control.drawerTop() < control._startPosition - 1);
+  } else {
+    ads.style.top = '';
+    ads.style.left = getDesktopAdLeft(width) + 'px';
+    ads.classList.remove('ads-lifted');
+  }
+}
+
+function observeAdLayout() {
+  if(adState.observing || !zMap.mapControl) return;
+  adState.observing = true;
+  var drawer = zMap.mapControl._container;
+  // The drawer moves by its inline top, so follow its style.
+  new MutationObserver(positionAds).observe(drawer, {
+    attributes: true,
+    attributeFilter: ['style', 'class']
+  });
+  if(window.ResizeObserver) new ResizeObserver(function() { updateAdState(); }).observe(drawer);
+  window.addEventListener('resize', function() { updateAdState(); });
+}
+
+// Called once the user is known and whenever they sign in or out. Ads are
+// never requested for signed-in users.
 function updateAdState() {
+  var ads = document.getElementById('ads');
+  if(!ads || !zMap.mapControl) return;
+  observeAdLayout();
   var authenticated = !!user;
-  var mobileAds = document.getElementById("mobileAds");
-  if(mobileAds) {
-    $(mobileAds).toggleClass("hidden", (
-      !isMobile() || authenticated
-    ));
+  var mobile = isMobile();
+  var mode = getAdMode();
+  var size = authenticated || mode == 'off' ? null : getAdSize(mobile);
+  document.body.classList.toggle('ads-off', !size);
+
+  var key = size ? [mode, mobile, size.width].join(':') : '';
+  if(key !== adState.key) {
+    adState.key = key;
+    window.clearTimeout(adState.fallbackTimer);
+    ads.innerHTML = '';
+    ads.className = size ? (mobile ? 'ads-mobile' : 'ads-desktop') : '';
+    if(size) renderAd(ads, size, mode);
   }
-  var desktopAds = document.getElementById("desktopAds");
-  if(desktopAds) {
-    $(desktopAds).toggleClass("hidden", (
-      isMobile() || authenticated
-    ));
-  }
+  positionAds();
 };
 
 /**** LANG *****/

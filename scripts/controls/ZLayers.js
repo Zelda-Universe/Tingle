@@ -973,8 +973,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   setContent: function(vContent, vType) {
     var previousContentType = this._contentType;
-    var shouldSlide = this.viewStyleBottomSlide && previousContentType &&
-      previousContentType !== vType && this._open &&
+    var shouldSlide = previousContentType && previousContentType !== vType &&
+      (!this.viewStyleBottomSlide || this._open) &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var outgoingPage;
     var outgoingBounds;
@@ -1017,11 +1017,17 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._triggerHandler("afterSetContent", vContent, vType);
     if(outgoingPage) {
       var depths = {
-        category: 0, games: 1, maps: 1, loginForm: 1, accountPage: 1,
+        category: 0, search: 1, games: 1, maps: 1, loginForm: 1, accountPage: 1,
         registerForm: 2, lostPasswordForm: 2, accountInformationPage: 2,
         offlineMapsPage: 2, deleteAccountForm: 2, changePasswordForm: 3
       };
-      var backward = (depths[vType] || 0) < (depths[previousContentType] || 0);
+      var pageDepth = function(type) {
+        if(depths[type] !== undefined) return depths[type];
+        // Marker detail pages sit above the category list and search results.
+        if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || type === 'newMarker') return 2;
+        return 0;
+      };
+      var backward = pageDepth(vType) < pageDepth(previousContentType);
       var width = this._contents.getBoundingClientRect().width;
       outgoingPage.style.position = 'absolute';
       outgoingPage.style.top = outgoingBounds.top + 'px';
@@ -1049,9 +1055,22 @@ L.Control.ZLayers = L.Control.Layers.extend({
         { transform: 'translateX(' + (backward ? width : -width * .3) + 'px)', opacity: 0,
           clipPath: backward ? 'inset(0 0 0 0)' : 'inset(0 70% 0 0)' }
       ], timing);
+      // The desktop panel sizes to its content, so ease between page heights
+      // rather than snapping and clipping the outgoing page.
+      var resizing;
+      if(!this.viewStyleBottomSlide) {
+        var incomingHeight = this._contents.getBoundingClientRect().height;
+        if(incomingHeight !== outgoingBounds.height) {
+          resizing = this._contents.animate([
+            { height: outgoingBounds.height + 'px' },
+            { height: incomingHeight + 'px' }
+          ], timing);
+        }
+      }
       var cleanup = function() {
         entering.cancel();
         leaving.cancel();
+        if(resizing) resizing.cancel();
         outgoingPage.remove();
         this._contents.style.zIndex = previousZIndex;
         if(this._pageTransitionCleanup === cleanup) this._pageTransitionCleanup = null;

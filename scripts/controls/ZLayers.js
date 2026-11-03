@@ -1876,6 +1876,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   closeDrawer: function(preserveContent) {
+    if(['accountPage', 'loginForm'].includes(this._contentType)) {
+      var closedPageURL = new URL(window.location.href);
+      closedPageURL.searchParams.delete('page');
+      window.history.replaceState(window.history.state, '', closedPageURL.href);
+    }
     this._gamesButton.clear();
     this._mapsButton.clear();
     $('.account-button').parent().removeClass('highlighted');

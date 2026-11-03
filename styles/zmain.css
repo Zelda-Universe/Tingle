@@ -116,6 +116,12 @@ main {
 		border-top-left-radius: 22px;
 		border-top-right-radius: 22px;
 	}
+
+	.zm-ios-safari main.leaflet-container,
+	.zm-ios-safari main.leaflet-container:focus,
+	.zm-ios-safari main.leaflet-container:focus-visible {
+		outline: none !important;
+	}
 }
 
 :root {

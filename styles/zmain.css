@@ -1074,7 +1074,9 @@ main.leaflet-container,
 	display: block;
 	padding: inherit;
 	font-weight: inherit;
-	white-space: nowrap;
+	line-height: 1.2;
+	white-space: normal;
+	overflow-wrap: break-word;
 	padding: 0 4px;
 	display: block;
 }

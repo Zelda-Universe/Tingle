@@ -660,9 +660,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
       bottomRadius + 'px ' + bottomRadius + 'px';
 
     if(this._contents) {
+      // Keep the contents at the fully open width, offset against the inset,
+      // so wrapped text doesn't reflow while the drawer edges widen.
+      this._contents.style.width = fullWidth + 'px';
       this._contents.style.opacity = contentProgress;
       this._contents.style.transform =
-        'translateY(' + (8 * (1 - contentProgress)) + 'px)';
+        'translate(' + (-edgeInset) + 'px, ' + (8 * (1 - contentProgress)) + 'px)';
       this._contents.style.pointerEvents = contentProgress > 0.95 ? '' : 'none';
     }
     if(this._drawerHeaderSeparator) {
@@ -782,7 +785,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // calculation when the expanded drawer is resized.
     this._container.style.width = this.options.width + 'px';
     this._form.style.width = '100%';
-    if(this._contents) this._contents.style.width = '100%';
     this.options.height = this._viewportHeight();
     var collapsedHeight = this._form.getBoundingClientRect().height || this.options.headerHeight + 20;
     var currentTop = this.drawerTop();

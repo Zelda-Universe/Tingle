@@ -11,7 +11,7 @@
   $manifestCacheLifetime = 6 * 60 * 60;
   $tileRoot = realpath(dirname(__DIR__) . '/tiles');
   $tilePublicBaseURL = rtrim(
-    get_config('tilesBaseURL', 'string', array('https://zeldamaps.com/tiles/')),
+    get_config('tilesBaseURL', 'string', array('/tiles/')),
     '/'
   ) . '/';
 

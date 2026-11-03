@@ -3124,10 +3124,15 @@ ZMap.prototype._showAlert = function(opts) {
   dialog.setAttribute('aria-labelledby', opts.id + '-title');
   dialog.setAttribute('aria-describedby', opts.id + '-description');
   dialog.innerHTML = '<h2 id="' + opts.id + '-title"></h2>' +
-    '<p id="' + opts.id + '-description"></p>' +
+    '<div id="' + opts.id + '-description"></div>' +
     '<div class="bookmark-registration-actions"></div>';
   dialog.querySelector('h2').textContent = opts.title;
-  dialog.querySelector('p').innerHTML = opts.description;
+  // One paragraph, or an array of them.
+  [].concat(opts.description).forEach(function(paragraph) {
+    var node = document.createElement('p');
+    node.innerHTML = paragraph;
+    dialog.querySelector('#' + opts.id + '-description').appendChild(node);
+  });
   dialog.addEventListener('close', function() {
     dialog.remove();
   });
@@ -3154,14 +3159,28 @@ ZMap.prototype._showAlert = function(opts) {
   };
 
   var actionsNode = dialog.querySelector('.bookmark-registration-actions');
+  // Focus Cancel when there is one, otherwise the first button, rather than a
+  // link in the text.
+  var focusAction = opts.actions.find(function(action) { return action.cancel; }) || opts.actions[0];
   opts.actions.forEach(function(action) {
     var button = document.createElement('button');
     button.type = 'button';
     button.className = action.className || 'infoWindowIcn';
+    button.autofocus = action === focusAction;
     if(action.cancel) button.setAttribute('data-action', 'cancel');
     button.textContent = action.label;
     button.addEventListener('click', function() { dismiss(action); });
     actionsNode.appendChild(button);
+  });
+  // Links in the text, <a data-action="name">, close the alert and then run
+  // opts.links[name].
+  dialog.querySelectorAll('p a[data-action]').forEach(function(link) {
+    var onSelect = opts.links && opts.links[link.getAttribute('data-action')];
+    if(!onSelect) return;
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      dismiss({ onSelect: onSelect });
+    });
   });
   dialog.addEventListener('cancel', function(e) { e.preventDefault(); dismiss(null); });
   document.body.appendChild(dialog);
@@ -3181,7 +3200,18 @@ ZMap.prototype._showWelcomeAlert = function() {
   this._showAlert({
     id: 'welcome-alert',
     title: 'Welcome to Zelda Maps!',
-    description: 'Your account is ready. Ads are gone, and your completed markers and bookmarks will now sync.',
+    description: [
+      'You\'re registered! Ads are gone, and we\'ve automatically imported any completed markers. ' +
+        'You can view your bookmarks and download maps for offline use from your ' +
+        '<a href="?page=account" data-action="account">Account Page</a>.',
+      'Happy exploring!'
+    ],
+    links: {
+      account: function() {
+        this._createAccountForm(this.getUser());
+        if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
+      }.bind(this)
+    },
     actions: [{ label: 'Let\'s go!' }]
   });
 };

@@ -1486,6 +1486,7 @@ a.button.leaflet-control-layers-toggle {
 .bookmark-registration-prompt::backdrop { background: rgba(0,0,0,.45); }
 .bookmark-registration-prompt h2 { margin: 0 0 12px; font-size: 20px; font-weight: 700; }
 .bookmark-registration-prompt p { margin: 0 0 24px; font-size: 16px; line-height: 1.4; }
+.bookmark-registration-prompt p:has(+ p) { margin-bottom: 12px; }
 .bookmark-registration-prompt p a { color: rgba(255,255,255,.7); transition: color .15s; }
 .bookmark-registration-prompt p a:hover,
 .bookmark-registration-prompt p a:focus-visible { color: #fff; }

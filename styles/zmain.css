@@ -1067,13 +1067,10 @@ main.leaflet-container,
 	margin: 0;
 }
 
-/* "Downloaded" is a state, not an action: plain dimmed text. */
-#offline_maps .offline-map-actions .offline-map-download.downloaded,
-#offline_maps .offline-map-actions .offline-map-download.downloaded:disabled {
-	background: transparent;
-	color: rgba(255, 255, 255, .6);
-	opacity: 1;
-	cursor: default;
+/* "Downloaded" and unavailable downloads use the usual disabled button style. */
+#offline_maps .offline-map-actions .infoWindowIcn:disabled {
+	cursor: not-allowed;
+	opacity: .5;
 }
 
 .offline-map-spinner {

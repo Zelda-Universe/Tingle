@@ -1018,8 +1018,78 @@ main.leaflet-container,
 	margin: 0;
 }
 
-.offline-map-download.downloaded {
-	color: #77e2a8;
+/* Scoped to the page so the drawer's general heading and paragraph spacing
+   doesn't apply inside the cards. */
+#offline_maps .offline-maps-list {
+	margin: 0 16px 16px;
+}
+
+#offline_maps .offline-map-card {
+	padding: 16px;
+}
+
+#offline_maps .offline-map-heading {
+	align-items: center;
+	gap: 12px;
+}
+
+#offline_maps .offline-map-heading h4 {
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0;
+	text-align: left;
+}
+
+#offline_maps .offline-map-game-icon {
+	display: inline-flex;
+	flex: 0 0 auto;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	font-size: 20px;
+	line-height: 1;
+}
+
+#offline_maps .offline-map-card p {
+	min-height: 0;
+	margin: 8px 0 0;
+	padding: 0;
+}
+
+#offline_maps .offline-map-card p:empty {
+	display: none;
+}
+
+#offline_maps .offline-map-actions .infoWindowIcn {
+	flex: 1 1 0;
+	margin: 0;
+}
+
+/* "Downloaded" is a state, not an action: plain dimmed text. */
+#offline_maps .offline-map-actions .offline-map-download.downloaded,
+#offline_maps .offline-map-actions .offline-map-download.downloaded:disabled {
+	background: transparent;
+	color: rgba(255, 255, 255, .6);
+	opacity: 1;
+	cursor: default;
+}
+
+.offline-map-spinner {
+	display: inline-block;
+	box-sizing: border-box;
+	width: 14px;
+	height: 14px;
+	border: 2px solid rgba(255, 255, 255, .25);
+	border-top-color: rgba(255, 255, 255, .8);
+	border-radius: 50%;
+	vertical-align: middle;
+	animation: offline-map-spin .8s linear infinite;
+}
+
+@keyframes offline-map-spin {
+	to { transform: rotate(360deg); }
 }
 
 .circle {

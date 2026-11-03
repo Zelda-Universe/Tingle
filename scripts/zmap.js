@@ -3556,6 +3556,11 @@ ZMap.prototype._createAccountInformationForm = function() {
           '<span id="username_validation_icon" aria-hidden="true"></span>' +
         '</div></div>' +
         '<p id="username_availability" role="status" aria-live="polite"></p>' +
+        '<label for="account_name">Full Name</label>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-id-card"></i></span>' +
+          '<input id="account_name" name="name" class="form-control" autocomplete="name" required maxlength="255" />' +
+        '</div></div>' +
         '<label for="account_email">Email</label>' +
         '<div class="form-group"><div class="input-group">' +
           '<span class="input-group-addon"><i class="fas fa-envelope"></i></span>' +
@@ -3579,6 +3584,7 @@ ZMap.prototype._createAccountInformationForm = function() {
     '</div>', 'accountInformationPage'
   );
   $('#account_username').val(user.username);
+  $('#account_name').val(user.name || '');
   $('#account_email').val(user.email || '');
   var savingAccountInformation = false;
   var usernameAvailable = true;
@@ -3588,10 +3594,12 @@ ZMap.prototype._createAccountInformationForm = function() {
   var passwordCheckTimer;
   var passwordCheckVersion = 0;
   function updateSaveChangesState() {
+    var name = $('#account_name').val().trim();
     var changed = $('#account_username').val().trim() !== user.username ||
+      name !== (user.name || '') ||
       $('#account_email').val().trim() !== (user.email || '') ||
       $('#account_new_password').val() !== '';
-    $('#account_information_form button[type="submit"]').prop('disabled', savingAccountInformation || !changed || !usernameAvailable || !passwordValid);
+    $('#account_information_form button[type="submit"]').prop('disabled', savingAccountInformation || !changed || !name || !usernameAvailable || !passwordValid);
   }
   $('#account_information_form input').on('input change', updateSaveChangesState);
   $('#account_current_password, #account_new_password').on('input', function() {
@@ -3686,6 +3694,7 @@ ZMap.prototype._createAccountInformationForm = function() {
       success: function(data) {
         if(data.success) {
           user.username = data.username;
+          user.name = data.name;
           user.email = data.email;
           $('#account_current_password, #account_new_password').val('');
           map.notifyUserChanged();
@@ -3717,17 +3726,11 @@ ZMap.prototype._createOfflineMapsForm = function() {
       '<h3 class="text-center">Offline Maps</h3>' +
       '<p class="offline-maps-intro">Save maps to this device for use without an internet connection. Downloads may be removed by your browser when storage is low.</p>' +
       '<div id="offline_maps_list" class="offline-maps-list">' +
-        '<p class="offline-maps-loading">Calculating download sizes…</p>' +
+        '<p class="offline-maps-loading">Loading maps…</p>' +
       '</div>' +
-      '<button id="offline_maps_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>' +
     '</div>',
     'offlineMapsPage'
   );
-
-  $('#offline_maps_back_btn').click(function(e) {
-    _this._createAccountForm(user);
-    e.preventDefault();
-  });
 
   function formatBytes(bytes) {
     if(!bytes) return '0 MB';
@@ -3772,11 +3775,14 @@ ZMap.prototype._createOfflineMapsForm = function() {
     var downloadButton = card.find('.offline-map-download');
     var deleteButton = card.find('.offline-map-delete');
     var status = card.find('.offline-map-status');
+    card.data('packState', packState);
     status.removeClass('success error');
     if(packState === 'downloaded') {
+      // The saved size is known even before this game's size has loaded.
+      var savedSize = game.size != null ? game.size : (readPackRecord(game.id) || {}).size;
       downloadButton.text('Downloaded').prop('disabled', true).addClass('downloaded');
       deleteButton.show();
-      status.text(formatBytes(game.size) + ' saved on this device.').addClass('success');
+      status.text(formatBytes(savedSize) + ' saved on this device.').addClass('success');
     } else if(packState === 'partial') {
       downloadButton.text('Resume').prop('disabled', false).removeClass('downloaded');
       deleteButton.show();
@@ -3784,7 +3790,8 @@ ZMap.prototype._createOfflineMapsForm = function() {
     } else {
       downloadButton.text('Download').prop('disabled', !game.available).removeClass('downloaded');
       deleteButton.hide();
-      status.text(game.available ? '' : 'Map files are not available for download.');
+      // Until the size loads, availability isn't known yet.
+      status.text(game.available === false ? 'Map files are not available for download.' : '');
     }
   }
 
@@ -3957,9 +3964,16 @@ ZMap.prototype._createOfflineMapsForm = function() {
   function renderGame(game) {
     var card = $('<section>', { class: 'offline-map-card' });
     var heading = $('<div>', { class: 'offline-map-heading' });
+    var gameInfo = Object.values(games || {}).find(function(entry) {
+      return entry.shortName == game.id;
+    });
+    if(gameInfo) {
+      heading.append(new CategoryIcon({ iconClass: gameInfo.img, color: gameInfo.color }).domNode
+        .addClass('offline-map-game-icon').attr('aria-hidden', 'true'));
+    }
     heading.append($('<h4>').text(game.name));
-    heading.append($('<span>', { class: 'offline-map-size' }).text(
-      game.available ? formatBytes(game.size) : 'Unavailable'
+    heading.append($('<span>', { class: 'offline-map-size' }).append(
+      $('<span>', { class: 'offline-map-spinner', role: 'status', 'aria-label': 'Loading size' })
     ));
     card.append(heading);
     card.append($('<progress>', { class: 'offline-map-progress', value: 0, max: 1 }).hide());
@@ -3975,7 +3989,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
     var deleteButton = $('<button>', {
       class: 'infoWindowIcn bad offline-map-delete',
       type: 'button',
-      text: 'Delete'
+      text: 'Remove'
     }).hide();
     actions.append(downloadButton, deleteButton);
     card.append(actions);
@@ -4010,6 +4024,21 @@ ZMap.prototype._createOfflineMapsForm = function() {
       }
     });
 
+    $.getJSON('ajax.php?command=get_offline_maps&game=' + encodeURIComponent(game.id), function(data) {
+      var size = card.find('.offline-map-size');
+      if(!data.success || !data.game) {
+        size.text('Size unavailable');
+        return;
+      }
+      game.size = data.game.size;
+      game.tileCount = data.game.tileCount;
+      game.available = data.game.available;
+      size.text(game.available ? formatBytes(game.size) : 'Unavailable');
+      setPackState(card, game, card.data('packState') || null);
+    }).fail(function() {
+      card.find('.offline-map-size').text('Size unavailable');
+    });
+
     downloadButton.click(function() {
       if(game.available) downloadTiles(game, card);
     });
@@ -4028,7 +4057,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
     return;
   }
 
-  $.getJSON('ajax.php?command=get_offline_maps', function(data) {
+  $.getJSON('ajax.php?command=get_offline_maps&mode=list', function(data) {
     var list = $('#offline_maps_list').empty();
     if(!data.success || !data.games || !data.games.length) {
       list.append('<p class="offline-map-status error">No offline maps are currently available.</p>');
@@ -4038,7 +4067,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
       list.append(renderGame(game));
     });
   }).fail(function() {
-    $('#offline_maps_list').html('<p class="offline-map-status error">Download sizes could not be loaded.</p>');
+    $('#offline_maps_list').html('<p class="offline-map-status error">Offline maps could not be loaded.</p>');
   });
 };
 //****************************************************************************//

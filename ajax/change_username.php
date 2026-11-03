@@ -21,6 +21,11 @@
     echo json_encode(array('success' => false, 'msg' => 'That email address is already in use.'));
     return;
   }
+  $name = is_string($_POST['name'] ?? null) ? trim($_POST['name']) : '';
+  if ($name === '' || mb_strlen($name) > 255) {
+    echo json_encode(array('success' => false, 'msg' => 'Enter your full name (up to 255 characters).'));
+    return;
+  }
   $currentPassword = is_string($_POST['currentpassword'] ?? null) ? $_POST['currentpassword'] : '';
   $newPassword = is_string($_POST['newpassword'] ?? null) ? $_POST['newpassword'] : '';
   $changePassword = $currentPassword !== '' || $newPassword !== '';
@@ -44,9 +49,9 @@
   try {
     if ($changePassword) {
       $passwordHash = password_hash($newPassword, PASSWORD_DEFAULT, array('cost' => 13));
-      $db->executeStatement("UPDATE `{$map_prefix}user` SET username = ?, email = ?, password = ? WHERE id = ? AND deleted IS NULL", [$username, $email, $passwordHash, $userId]);
+      $db->executeStatement("UPDATE `{$map_prefix}user` SET username = ?, name = ?, email = ?, password = ? WHERE id = ? AND deleted IS NULL", [$username, $name, $email, $passwordHash, $userId]);
     } else {
-      $db->executeStatement("UPDATE `{$map_prefix}user` SET username = ?, email = ? WHERE id = ? AND deleted IS NULL", [$username, $email, $userId]);
+      $db->executeStatement("UPDATE `{$map_prefix}user` SET username = ?, name = ?, email = ? WHERE id = ? AND deleted IS NULL", [$username, $name, $email, $userId]);
     }
   } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $error) {
     echo json_encode(array('success' => false, 'msg' => 'That username or email is already in use.'));
@@ -54,5 +59,5 @@
   }
   $_SESSION['username'] = $username;
   session_write_close();
-  echo json_encode(array('success' => true, 'username' => $username, 'email' => $email, 'msg' => 'Account information updated successfully!'));
+  echo json_encode(array('success' => true, 'username' => $username, 'name' => $name, 'email' => $email, 'msg' => 'Account information updated successfully!'));
 ?>

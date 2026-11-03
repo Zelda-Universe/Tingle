@@ -56,7 +56,9 @@
   $user['id']       = $_SESSION['user_id'];
   $user['username'] = $_SESSION['username'];
   $user['level']    = $_SESSION['level'];
-  $user['email'] = $db->fetchOne("SELECT email FROM `{$map_prefix}user` WHERE id = ?", [(int) $user['id']]);
+  $details = $db->fetchAssociative("SELECT email, name FROM `{$map_prefix}user` WHERE id = ?", [(int) $user['id']]);
+  $user['email'] = $details ? $details['email'] : null;
+  $user['name']  = $details ? $details['name']  : null;
 
   $user['profilePicture'] = null;
   $hasProfileColumn = (bool) $db->fetchOne("SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'profile_picture'");

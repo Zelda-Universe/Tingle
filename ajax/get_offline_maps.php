@@ -123,19 +123,43 @@
     return;
   }
 
-  $games = array();
-  foreach ($gameRows as $gameRow) {
+  // The games alone, so the page can list them before any sizes are known.
+  if ($mode === 'list') {
+    $games = array();
+    foreach ($gameRows as $gameRow) {
+      $games[] = array('id' => $gameRow['shortName'], 'name' => $gameRow['name']);
+    }
+    echo json_encode(array('success' => true, 'games' => $games));
+    return;
+  }
+
+  $summarizeGame = function($gameRow) use ($db, $map_prefix, $tileRoot, $tilePublicBaseURL, $manifestCacheDirectory, $manifestCacheLifetime) {
     $manifest = getOfflineManifest(
       $db, $map_prefix, $gameRow['shortName'], $tileRoot, $tilePublicBaseURL,
       $manifestCacheDirectory, $manifestCacheLifetime
     );
-    $games[] = array(
+    return array(
       'id' => $gameRow['shortName'],
       'name' => $gameRow['name'],
       'tileCount' => count($manifest),
       'size' => array_sum(array_column($manifest, 'size')),
       'available' => count($manifest) > 0
     );
+  };
+
+  // One game's size, so each can be loaded on its own.
+  if ($requestedGame !== '') {
+    if (!isset($gameRows[$requestedGame])) {
+      echo json_encode(array('success' => false, 'msg' => 'Unknown game.'));
+      return;
+    }
+    echo json_encode(array('success' => true, 'game' => $summarizeGame($gameRows[$requestedGame])));
+    return;
+  }
+
+  $games = array();
+  foreach ($gameRows as $gameRow) {
+    $games[] = $summarizeGame($gameRow);
   }
 
   echo json_encode(array('success' => true, 'games' => $games));

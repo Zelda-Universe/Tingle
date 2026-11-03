@@ -40,6 +40,7 @@
        `id`                        ,
        `username`                  ,
        `email`                     ,
+       `name`                      ,
        {$profilePictureSelect}     ,
        {$deletedSelect}            ,
        `password`                  ,
@@ -71,6 +72,7 @@
    $user['id']           = $row['id'];
    $user['username']     = $row['username'];
    $user['email']        = $row['email'];
+   $user['name']         = $row['name'];
    $user['profilePicture'] = $row['profilePicture'];
    if (!$user['profilePicture']) {
      $profileFiles = glob(

@@ -218,6 +218,9 @@ ZMap.prototype.constructor = function(vMapOptions) {
 
 // Add a map category
 ZMap.prototype.addCategory = function(category) {
+  if(category.name) category.name = category.name.replace(/\bside-quests\b/gi, function(label) {
+    return label.replace('-', ' ');
+  });
   if(String(category.container_id) === '19' && String(category.id) === '1915') {
     category.visible = true;
   }

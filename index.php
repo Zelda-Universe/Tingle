@@ -174,8 +174,8 @@
           document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }
       </script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261103-poi-categories"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261103-poi-categories" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261103-poi-close"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261103-poi-close" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

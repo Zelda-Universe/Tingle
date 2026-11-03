@@ -1650,6 +1650,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   closePage: function() {
+    if(/^m\d+$/.test(this._contentType || '')) {
+      this._dismissPOIOnClose = true;
+      this._preserveContentOnClose = false;
+      this._headerPageParent = this._mobileAccountParent = null;
+      this._desktopAccountReturnMarker = this._switchMenuReturnMarker = null;
+      this.zMap._closeNewMarker();
+      var url = new URL(window.location.href);
+      url.searchParams.delete('marker');
+      var state = Object.assign({}, window.history.state);
+      delete state.drawerReloadParent;
+      window.history.replaceState(state, '', url.href);
+    }
     if(!this.viewStyleBottomSlide) {
       this.reset();
       return;
@@ -2055,6 +2067,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._mapsButton.clear();
       this.resetContent();
     }
+    this._dismissPOIOnClose = false;
   },
 
   _setDrawerState: function(newState, newPosition) {
@@ -2145,8 +2158,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._mapsButton.clear();
     $('.account-button').parent().removeClass('highlighted');
     // console.log(`closeDrawer`);
-    var hasSelectedPOI = /^m\d+$/.test(this._contentType || '') ||
-      (this._headerPageParent && /^m\d+$/.test(this._headerPageParent.type || ''));
+    var hasSelectedPOI = !this._dismissPOIOnClose && (/^m\d+$/.test(this._contentType || '') ||
+      (this._headerPageParent && /^m\d+$/.test(this._headerPageParent.type || '')));
     this._preserveContentOnClose = !!preserveContent || !!hasSelectedPOI || (
       this._drawerClosing && this._preserveContentOnClose
     );

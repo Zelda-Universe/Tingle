@@ -309,7 +309,34 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
       // Add mobile grabber element
       if(this.viewStyleBottomSlide) {
-        L.DomUtil.create('div', 'grabber', headerMenu);
+        var grabber = L.DomUtil.create('div', 'grabber', headerMenu);
+        grabber.setAttribute('role', 'button');
+        grabber.setAttribute('tabindex', '0');
+        grabber.setAttribute('aria-label', 'Partially open drawer');
+        var grabberPress = null;
+        var advanceGrabber = function() {
+          if(!this._open) {
+            this.openDrawerSmall(true);
+          } else if(this.drawerTop() > this.options.openTo + 2) {
+            this.openDrawerLarge();
+          } else {
+            this.closeDrawer();
+          }
+        }.bind(this);
+        L.DomEvent.on(grabber, 'pointerdown', function(e) {
+          grabberPress = { x: e.clientX, y: e.clientY };
+        });
+        L.DomEvent.on(grabber, 'click', function(e) {
+          L.DomEvent.stop(e);
+          if(grabberPress && Math.hypot(e.clientX - grabberPress.x, e.clientY - grabberPress.y) >= 8) return;
+          advanceGrabber();
+        }, this);
+        L.DomEvent.on(grabber, 'keydown', function(e) {
+          if(e.key === 'Enter' || e.key === ' ') {
+            L.DomEvent.stop(e);
+            advanceGrabber();
+          }
+        }, this);
       }
 
       this._mapsButton = new CategoryButton({
@@ -317,9 +344,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
         afterToggle: function() {
           if (this.toggledOn) {
             // console.log('_mapsButton - afterToggle - this.toggledOn');
+            var drawerWasOpen = _thisLayer._open;
+            var previousDrawerTop = _thisLayer.drawerTop();
             _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
             if(_thisLayer.viewStyleBottomSlide) {
-              _thisLayer.openDrawerDefaultPartial();
+              if(drawerWasOpen) _thisLayer.openDrawerManual(previousDrawerTop);
+              else _thisLayer.openDrawerDefaultPartial();
             } else {
               _thisLayer.openDrawerLarge();
             }
@@ -334,10 +364,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
                 this._toggle(true);
                 _thisLayer.openDrawerDefaultPartial();
               } else {
-                _thisLayer.closeDrawer();
+                if(_thisLayer._switchMenuReturnMarker || _thisLayer._switchMenuReturnsToCategories) _thisLayer._returnFromSwitchMenu();
+                else _thisLayer.closeDrawer();
               }
             } else {
-              _thisLayer.resetContent();
+              _thisLayer._returnFromSwitchMenu();
             }
           }
         },
@@ -351,9 +382,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
         addlClasses: 'completed-button menu-header-button',
         afterToggle: function() {
           if (this.toggledOn) {
+            var drawerWasOpen = _thisLayer._open;
+            var previousDrawerTop = _thisLayer.drawerTop();
             _thisLayer.setContent(_thisLayer._gameMenu.domNode, "games");
             if(_thisLayer.viewStyleBottomSlide) {
-              _thisLayer.openDrawerDefaultPartial();
+              if(drawerWasOpen) _thisLayer.openDrawerManual(previousDrawerTop);
+              else _thisLayer.openDrawerDefaultPartial();
             } else {
               _thisLayer.openDrawerLarge();
             }
@@ -367,10 +401,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
                 this._toggle(true);
                 _thisLayer.openDrawerDefaultPartial();
               } else {
-                _thisLayer.closeDrawer();
+                if(_thisLayer._switchMenuReturnMarker || _thisLayer._switchMenuReturnsToCategories) _thisLayer._returnFromSwitchMenu();
+                else _thisLayer.closeDrawer();
               }
             } else {
-              _thisLayer.resetContent();
+              _thisLayer._returnFromSwitchMenu();
             }
           }
         },
@@ -511,7 +546,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var point = e.type.startsWith('touch') ? e.touches[0] : e;
     var xDelta = point.clientX - this._drawerXDown;
     var yDelta = point.clientY - this._drawerYDown;
-    if(!this._drawerDragging && Math.abs(xDelta) > Math.abs(yDelta)) return;
+    if(!this._drawerDragging) {
+      // Real touch taps contain a few pixels of movement. Do not consume
+      // their click or snap the drawer until an intentional vertical drag.
+      if(Math.abs(yDelta) < 8 || Math.abs(xDelta) > Math.abs(yDelta)) return;
+    }
     if(yDelta === 0) return;
 
     this._drawerDragging = true;
@@ -566,7 +605,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var velocity = performance.now() - this._drawerLastMoveTime > 80
       ? 0
       : this._drawerVelocity;
-    var projectedTop = currentTop + velocity * 200;
+    var travel = currentTop - this._drawerStartTop;
+    // Small, fast movements should not fling the drawer through detents.
+    var projectedTop = currentTop + (Math.abs(travel) >= 48
+      ? Math.max(-1.5, Math.min(1.5, velocity)) * 80 : 0);
 
     this._refreshMobileDrawerDetents();
     var partialTop = this.options.softOpenTo;
@@ -584,8 +626,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       return Math.abs(top - projectedTop) < Math.abs(best - projectedTop) ? top : best;
     });
     // Any drag moves at least one stop in its direction, never back.
-    var travel = currentTop - this._drawerStartTop;
-    if(Math.abs(target - this._drawerStartTop) < 1 || (target - this._drawerStartTop) * travel < 0) {
+    if(Math.abs(travel) >= 48 && (Math.abs(target - this._drawerStartTop) < 1 || (target - this._drawerStartTop) * travel < 0)) {
       var startTop = this._drawerStartTop;
       var ahead = detents.filter(function(top) {
         return travel < 0 ? top < startTop - 1 : top > startTop + 1;
@@ -968,6 +1009,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var safariScrollInset = document.documentElement.classList.contains('zm-ios-safari')
       ? Math.max(0, drawerBottom - this._viewportBottom()) + 16
       : 0;
+    if(['games', 'maps'].includes(this._contentType)) {
+      this._contents.style.setProperty('--drawer-scroll-end-inset', '0px');
+      var switchMenu = this._contents.querySelector('.switch-menu');
+      if(switchMenu && contentsTop + switchMenu.offsetTop + switchMenu.offsetHeight <= this._viewportBottom()) {
+        safariScrollInset = 0;
+      }
+    }
     this._contents.style.setProperty('--drawer-scroll-end-inset', safariScrollInset + 'px');
   },
 
@@ -1098,7 +1146,35 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   setContent: function(vContent, vType) {
     var previousContentType = this._contentType;
-    var shouldSlide = previousContentType && previousContentType !== vType &&
+    if(['accountPage', 'loginForm'].includes(vType) && previousContentType === 'category') {
+      this._accountReturnsToCategories = !this.viewStyleBottomSlide || this._open;
+      this._accountCategoryReturnTop = this.viewStyleBottomSlide ? this.drawerTop() : null;
+    }
+    if(!this.viewStyleBottomSlide && ['accountPage', 'loginForm'].includes(vType) &&
+      !['accountPage', 'loginForm', 'accountInformationPage', 'offlineMapsPage', 'bookmarksPage', 'games', 'maps', 'registerForm', 'lostPasswordForm', 'changePasswordForm', 'deleteAccountForm'].includes(previousContentType)) {
+      this._desktopAccountReturnMarker = /^m\d+$/.test(previousContentType || '') ? previousContentType.substring(1) : null;
+    }
+    if(['games', 'maps'].includes(vType) && !['games', 'maps'].includes(previousContentType)) {
+      this._switchMenuReturnAccount = previousContentType === 'accountPage';
+      this._switchMenuReturnLogin = previousContentType === 'loginForm';
+      this._switchMenuReturnsToCategories = this.viewStyleBottomSlide && this._open && ['category', 'accountPage', 'loginForm'].includes(previousContentType);
+      this._switchMenuReturnMarker = /^m\d+$/.test(previousContentType || '')
+        ? previousContentType.substring(1) : null;
+    }
+    var switchingBetweenPOIs = /^m\d+$/.test(previousContentType || '') && /^m\d+$/.test(vType || '');
+    if(switchingBetweenPOIs && this._pageTransitionCleanup) this._pageTransitionCleanup();
+    var switchingMenu = ['games', 'maps'].includes(previousContentType) || ['games', 'maps'].includes(vType);
+    var desktopMenuFromCategories = (!this.viewStyleBottomSlide || this._switchMenuReturnsToCategories) && previousContentType === 'category' && ['games', 'maps'].includes(vType);
+    var desktopMenuToCategories = (!this.viewStyleBottomSlide || this._switchMenuReturnsToCategories) && vType === 'category' && ['games', 'maps'].includes(previousContentType);
+    var desktopMenuPOINavigation = (
+      (['games', 'maps'].includes(vType) && /^m\d+$/.test(previousContentType || '')) ||
+      (['games', 'maps'].includes(previousContentType) && /^m\d+$/.test(vType || ''))
+    );
+    var accountSwitchNavigation =
+      (['accountPage', 'loginForm'].includes(previousContentType) && ['games', 'maps'].includes(vType)) ||
+      (['accountPage', 'loginForm'].includes(vType) && ['games', 'maps'].includes(previousContentType));
+    if(switchingMenu && this._pageTransitionCleanup) this._pageTransitionCleanup();
+    var shouldSlide = !this._restoringInitialPage && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs && previousContentType && previousContentType !== vType &&
       (!this.viewStyleBottomSlide || this._open) &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var outgoingPage;
@@ -1111,28 +1187,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
         width: this._contents.getBoundingClientRect().width,
         height: this._contents.getBoundingClientRect().height
       };
-      outgoingPage = this._contents.cloneNode(true);
-      // Preserve ID-dependent styles before removing duplicate IDs. Otherwise
-      // the snapshot reflows into a different layout while it slides away.
-      var sourceNodes = [this._contents].concat(Array.from(this._contents.querySelectorAll('*')));
-      var snapshotNodes = [outgoingPage].concat(Array.from(outgoingPage.querySelectorAll('*')));
-      sourceNodes.forEach(function(source, index) {
-        var computed = window.getComputedStyle(source);
-        var snapshot = snapshotNodes[index];
-        for(var propertyIndex = 0; propertyIndex < computed.length; propertyIndex++) {
-          var property = computed[propertyIndex];
-          snapshot.style.setProperty(property, computed.getPropertyValue(property));
-        }
-        snapshot.style.transition = 'none';
-        snapshot.style.animation = 'none';
-        if(source.classList.contains('account-profile-preview-container')) {
-          snapshot.style.marginLeft = 'auto';
-          snapshot.style.marginRight = 'auto';
-        }
-      });
       var outgoingScrollTop = this._contents.scrollTop;
+      // Reusable menus must stay available to their owning widgets. Other
+      // pages can move intact, preserving CSS and avoiding computed-style
+      // reads/writes for every descendant before the animation begins.
+      var reusableMenu = ['category', 'games', 'maps'].includes(previousContentType);
+      outgoingPage = this._contents.cloneNode(reusableMenu);
+      if(!reusableMenu) {
+        $(outgoingPage).append($(this._contents).children().detach());
+      }
       outgoingPage.removeAttribute('id');
-      outgoingPage.querySelectorAll('[id]').forEach(function(node) { node.removeAttribute('id'); });
       outgoingPage.setAttribute('aria-hidden', 'true');
       outgoingPage.inert = true;
       outgoingPage.scrollTop = this._contents.scrollTop;
@@ -1153,6 +1217,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
         return 0;
       };
       var backward = this._navigatingBack || pageDepth(vType) < pageDepth(previousContentType);
+      if(desktopMenuPOINavigation) backward = ['games', 'maps'].includes(previousContentType);
+      if(accountSwitchNavigation) backward = ['games', 'maps'].includes(previousContentType);
+      if(!this.viewStyleBottomSlide &&
+        ((/^m\d+$/.test(previousContentType || '') && ['accountPage', 'loginForm'].includes(vType)) ||
+         (/^m\d+$/.test(vType || '') && ['accountPage', 'loginForm'].includes(previousContentType)))) {
+        backward = /^m\d+$/.test(vType || '');
+      }
       var width = this._contents.getBoundingClientRect().width;
       outgoingPage.style.position = 'absolute';
       outgoingPage.style.top = outgoingBounds.top + 'px';
@@ -1231,6 +1302,22 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var closesPage = isMapPage || ['accountPage', 'games', 'maps'].includes(vType);
     // A POI or pin opened from a list (e.g. Bookmarks) can also go back to it.
     var returnsTo = null;
+    if(this.viewStyleBottomSlide && ['accountPage', 'loginForm'].includes(vType) && this._accountReturnsToCategories) {
+      var accountBackButton = L.DomUtil.create('a', 'button back-button', this._contents);
+      accountBackButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+      accountBackButton.setAttribute('aria-label', 'Back to categories');
+      L.DomEvent.on(accountBackButton, 'click', function(e) {
+        L.DomEvent.stop(e);
+        var currentTop = Number.isFinite(this._accountCategoryReturnTop)
+          ? this._accountCategoryReturnTop : this.drawerTop();
+        this._navigatingBack = true;
+        this.resetContent();
+        if(this.viewStyleBottomSlide) {
+          this._partialDrawerMode = currentTop > this.options.openTo + 1;
+          this.openDrawerManual(currentTop);
+        }
+      }, this);
+    }
     if(isMapPage) {
       returnsTo = this._nextPageReturnsTo;
       this._nextPageReturnsTo = null;
@@ -1249,21 +1336,37 @@ L.Control.ZLayers = L.Control.Layers.extend({
           if(this.viewStyleBottomSlide) this.openDrawerLarge();
         }, this);
     }
-    // On desktop a page returning to Bookmarks already has its back button.
-    if(closesPage && (this.viewStyleBottomSlide || !returnsTo)) {
+    if(closesPage) {
+      if(this.viewStyleBottomSlide && ['games', 'maps'].includes(vType) && this._switchMenuReturnsToCategories) {
+        var categoryBackButton = L.DomUtil.create('a', 'button back-button', this._contents);
+        categoryBackButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        categoryBackButton.setAttribute('aria-label', this._switchMenuReturnLogin ? 'Back to Login' : (this._switchMenuReturnAccount ? 'Back to Account' : 'Back to categories'));
+        L.DomEvent.on(categoryBackButton, 'click', function(e) {
+          L.DomEvent.stop(e);
+          this._returnFromSwitchMenu();
+        }, this);
+      }
+      var desktopAccountBack = !this.viewStyleBottomSlide && vType === 'accountPage';
+      var desktopSwitchBack = ['games', 'maps'].includes(vType) && (!this.viewStyleBottomSlide || !!this._switchMenuReturnMarker);
       var dismissButton = L.DomUtil.create(
         'a',
-        this.viewStyleBottomSlide ? 'button back-button close-button' : 'button back-button',
+        (desktopSwitchBack || desktopAccountBack) ? 'button back-button' : 'button back-button close-button',
         this._contents
       );
-      dismissButton.innerHTML = this.viewStyleBottomSlide
-        ? '<i class="fas fa-times"></i>'
-        : '<i class="fas fa-chevron-left"></i>';
-      dismissButton.setAttribute('aria-label', this.viewStyleBottomSlide ? 'Close' : 'Back');
+      dismissButton.innerHTML = (desktopSwitchBack || desktopAccountBack) ? '<i class="fas fa-chevron-left"></i>' : '<i class="fas fa-times"></i>';
+      dismissButton.setAttribute('aria-label', (desktopSwitchBack || desktopAccountBack) ? 'Back' : 'Close');
       L.DomEvent
         .on(dismissButton, 'click', L.DomEvent.stopPropagation)
         .on(dismissButton, 'click', function(e) {
           e.preventDefault();
+          if(desktopAccountBack) {
+            this._returnFromDesktopAccount();
+            return;
+          }
+          if(desktopSwitchBack) {
+            this._returnFromSwitchMenu();
+            return;
+          }
           this.closePage();
         }, this);
     } else if(!closesPage &&
@@ -1271,12 +1374,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
       !(vType == 'search' && !this.viewStyleBottomSlide)
     ) {
       var closeButton = L.DomUtil.create('a', 'button back-button', this._contents);
-      closeButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+      var isMobileLogin = this.viewStyleBottomSlide && vType === 'loginForm';
+      if(isMobileLogin) L.DomUtil.addClass(closeButton, 'close-button');
+      closeButton.innerHTML = isMobileLogin
+        ? '<i class="fas fa-times"></i>'
+        : '<i class="fas fa-chevron-left"></i>';
+      closeButton.setAttribute('aria-label', isMobileLogin ? 'Close login' : 'Back');
       L.DomEvent
         .on(closeButton, 'click', L.DomEvent.stopPropagation)
         .on(closeButton, 'click', function(e) {
           e.preventDefault();
-          if(vType === 'changePasswordForm' && this.zMap.getUser()) {
+          if(isMobileLogin) {
+            this.closeDrawer();
+          } else if(vType === 'loginForm') {
+            this._returnFromDesktopAccount();
+          } else if(vType === 'changePasswordForm' && this.zMap.getUser()) {
             this.zMap._createAccountInformationForm();
           } else if(['offlineMapsPage', 'accountInformationPage', 'bookmarksPage'].includes(vType) && this.zMap.getUser()) {
             this.zMap._createAccountForm(this.zMap.getUser());
@@ -1350,6 +1462,39 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   // Dismiss a top-level page (POI, dropped pin, account, game/map switcher): deselect it and, on
   // mobile, close the drawer; the category list is restored once it's closed.
+  _returnFromDesktopAccount: function() {
+    this._navigatingBack = true;
+    var marker = this._desktopAccountReturnMarker && this.zMap.cachedMarkersById[this._desktopAccountReturnMarker];
+    if(marker) this.zMap._createMarkerPopup(marker);
+    else this.resetContent();
+  },
+
+  _returnFromSwitchMenu: function() {
+    var currentDrawerTop = this.drawerTop();
+    if(this._switchMenuReturnLogin) {
+      this._navigatingBack = true;
+      this.zMap._createLoginForm();
+      if(this.viewStyleBottomSlide) this.openDrawerManual(currentDrawerTop);
+      return;
+    }
+    if(this._switchMenuReturnAccount && this.zMap.getUser()) {
+      this._navigatingBack = true;
+      this.zMap._createAccountForm(this.zMap.getUser());
+      if(this.viewStyleBottomSlide) this.openDrawerManual(currentDrawerTop);
+      return;
+    }
+    var marker = this._switchMenuReturnMarker && this.zMap.cachedMarkersById[this._switchMenuReturnMarker];
+    this._navigatingBack = true;
+    if(marker) {
+      this.zMap._createMarkerPopup(marker);
+      if(this.viewStyleBottomSlide) this.openDrawerSmall();
+    }
+    else {
+      this.resetContent();
+      if(this.viewStyleBottomSlide) this.openDrawerManual(currentDrawerTop);
+    }
+  },
+
   closePage: function() {
     if(!this.viewStyleBottomSlide) {
       this.reset();
@@ -1708,6 +1853,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   closeDrawer: function(preserveContent) {
+    this._gamesButton.clear();
+    this._mapsButton.clear();
+    $('.account-button').parent().removeClass('highlighted');
     // console.log(`closeDrawer`);
     this._preserveContentOnClose = !!preserveContent || (
       this._drawerClosing && this._preserveContentOnClose

@@ -174,14 +174,37 @@
           document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }
       </script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261102-poi-touch-tap"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261102-poi-touch-tap" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261102-navigation-refinement"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261102-navigation-refinement" />
       <script>
         if ('serviceWorker' in navigator) {
+          var hadServiceWorkerController = !!navigator.serviceWorker.controller;
+          var reloadingForWorker = false;
+          navigator.serviceWorker.addEventListener('controllerchange', function() {
+            if(!hadServiceWorkerController) {
+              hadServiceWorkerController = true;
+              return;
+            }
+            if(reloadingForWorker) return;
+            reloadingForWorker = true;
+            window.location.reload();
+          });
           window.addEventListener('load', function() {
-            navigator.serviceWorker.register('service-worker.js?v=20261102-poi-touch-tap', { updateViaCache: 'none' }).catch(function(error) {
+            var lastUpdateCheck = 0;
+            function checkAppUpdate() {
+              if(!navigator.onLine || document.visibilityState === 'hidden') return;
+              if(Date.now() - lastUpdateCheck < 60000) return;
+              lastUpdateCheck = Date.now();
+              navigator.serviceWorker.register('service-worker.php', { updateViaCache: 'none' })
+                .then(function(registration) { return registration.update(); })
+                .catch(function(error) {
               console.warn('Offline caching could not be enabled.', error);
-            });
+                });
+            }
+            checkAppUpdate();
+            window.addEventListener('online', checkAppUpdate);
+            window.addEventListener('pageshow', checkAppUpdate);
+            document.addEventListener('visibilitychange', checkAppUpdate);
           });
         }
       </script>

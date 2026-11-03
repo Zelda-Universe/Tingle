@@ -92,7 +92,7 @@ function ZMap() {
       LOGOUT_SUCCESS : "May the Goddess smile upon you, %1!",
       LOGOUT_ERROR   : "I AM ERROR! Could not log out. Please try clearing your cache and restarting your browser to safely log out.",
 
-      LOGIN_WELCOME  : "Welcome Back!",
+      LOGIN_WELCOME  : "Welcome back!",
       LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
       LOGIN_ERROR   : "I AM ERROR. %1",
 
@@ -2830,9 +2830,7 @@ ZMap.prototype.drawerPageRoutes = {
   registerForm: 'register',
   lostPasswordForm: 'lost-password',
   changePasswordForm: 'change-password',
-  deleteAccountForm: 'delete-account',
-  games: 'games',
-  maps: 'maps'
+  deleteAccountForm: 'delete-account'
 };
 
 ZMap.prototype.syncDrawerPageURL = function(contentType) {
@@ -2847,6 +2845,10 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
 ZMap.prototype.restoreDrawerPage = function(page) {
   this._drawerRoutingReady = true;
   if(!page) return;
+  if(page === 'games' || page === 'maps') {
+    this.syncDrawerPageURL(this.mapControl.getContentType());
+    return;
+  }
   var authenticatedRoutes = {
     account: '_createAccountForm',
     'account-information': '_createAccountInformationForm',
@@ -2864,9 +2866,6 @@ ZMap.prototype.restoreDrawerPage = function(page) {
     else this._createLoginForm();
   } else if(publicRoutes[page]) {
     this[publicRoutes[page]]();
-  } else if(page === 'games' || page === 'maps') {
-    var menu = page === 'games' ? this.mapControl._gameMenu : this.mapControl._mapsMenu;
-    if(menu) this.mapControl.setContent(menu.domNode, page);
   } else return;
   if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
   else this.mapControl._expand();

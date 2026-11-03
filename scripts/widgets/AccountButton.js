@@ -73,6 +73,10 @@ AccountButton.prototype.click = function(opts) {
     }
     opts.mapControl.openDrawerLarge();
   } else {
+    if(opts.mapControl._contentType === contentType) {
+      opts.mapControl._returnFromDesktopAccount();
+      return;
+    }
     opts.mapControl.toggleContent(
       contentType,
       setContent

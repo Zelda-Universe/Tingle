@@ -66,6 +66,12 @@ body {
 	overflow: hidden;
 }
 
+*,
+*::before,
+*::after {
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+}
+
 html,
 body {
 	width: 100%;
@@ -1993,6 +1999,23 @@ button[aria-disabled="true"] {
 	left: 50%;
 	margin-left: -18px;
 	border-radius: 100px;
+	cursor: pointer;
+}
+
+.grabber::before {
+	content: '';
+	position: absolute;
+	inset: -8px -12px;
+}
+
+@media (hover: hover) {
+	.grabber:hover {
+		background: rgba(255,255,255,.45);
+	}
+}
+
+.grabber:active {
+	background: rgba(255,255,255,.2);
 }
 
 .bottommenu span.infoWindowIcn {
@@ -2757,6 +2780,13 @@ header.ex1 {
 	color: rgba(255,255,255,.55);
 }
 
+.leaflet-control-layers-mobile .menu-header-button,
+.leaflet-control-layers-mobile .menu-header-button *,
+.leaflet-control-layers-mobile .logo,
+.leaflet-control-layers-mobile .logo * {
+	-webkit-tap-highlight-color: transparent;
+}
+
 .menu-header-button:hover .category-icon,
 .menu-header-button.toggledOn .category-icon,
 .menu-header-button:hover .icon-General_Map,
@@ -2789,6 +2819,18 @@ header.ex1 {
 	background-color: rgba(255,255,255,.2) !important;
 	border: 0 !important;
 	color: white;
+}
+
+@media (hover: none) {
+	.menu-header-button.toggledOff:hover .category-icon,
+	.menu-header-button.toggledOff:hover .icon-General_Map {
+		background: transparent !important;
+		border-color: rgba(255,255,255,.3) !important;
+		color: rgba(255,255,255,.55);
+	}
+	.menu-header-button.toggledOff:hover .category-icon::before {
+		color: rgba(255,255,255,.55);
+	}
 }
 
 

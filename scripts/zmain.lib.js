@@ -281,11 +281,16 @@ function getMarkers(categories) {
 function finalLoad() {
   var marker = ZConfig.getConfig('marker');
   if(marker) {
-    zMap.goTo({
+    zMap.mapControl._restoringInitialPage = true;
+    try {
+      zMap.goTo({
       marker: marker,
       panTo: false,
       centerInVisibleArea: true
-    });
+      });
+    } finally {
+      zMap.mapControl._restoringInitialPage = false;
+    }
     return;
   }
 

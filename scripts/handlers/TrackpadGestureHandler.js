@@ -71,7 +71,10 @@ function TrackpadGestureHandler(map) {
     passive: false
   });
 
-  if('ongesturestart' in window) {
+  // Safari exposes gesture events on iOS too. Capturing those there competes
+  // with Leaflet's touchscreen pinch/tap state; this override is for desktop
+  // trackpads only, not touchscreens (including desktop-layout iPads).
+  if('ongesturestart' in window && !(navigator.maxTouchPoints > 0)) {
     this.container.addEventListener('gesturestart', this.onGestureStart, {
       capture: true,
       passive: false

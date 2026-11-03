@@ -73,7 +73,9 @@ body {
 	height: 100lvh;
 	min-height: 100%;
 	min-height: 100lvh;
-	background-color: #f5f5f7;
+	background-color: #000;
+	background-image: url(images/zelda-maps-bg-tile.png);
+	background-repeat: repeat;
 	overflow: hidden;
 	font-family: "BrandonText", sans-serif !important;
 }
@@ -86,7 +88,9 @@ main {
 	width: 100vw;
 	height: 100vh;
 	height: 100lvh;
-	background-color: #565656;
+	background-color: #000;
+	background-image: url(images/zelda-maps-bg-tile.png);
+	background-repeat: repeat;
 	overflow: hidden;
 	position: absolute;
 	font-family: "BrandonText", sans-serif !important;
@@ -384,14 +388,12 @@ main {
 	font-weight: bold;
 }
 
-/* Bad attempt at applying the new bg tile, reenable later
-
-.leaflet-tile-container {
-	background-color: #565656;
-	background-image: url(images/zmaps-bg-tile.png);
-	background-size: 256px;
+main.leaflet-container,
+#map.leaflet-container {
+	background-color: #000 !important;
+	background-image: url(images/zelda-maps-bg-tile.png);
+	background-repeat: repeat;
 }
-*/
 
 /* Toast Notification Styling */
 

@@ -1118,6 +1118,7 @@ ZMap.prototype.buildMap = function(gameId) {
   }
 
   this.map = L.map(mainEl, this.mapOptions);
+  this._addMapGridBackground();
   var map = this.map;
   var updateMobileMapHeight = function() {
     if(!isMobile()) {
@@ -1420,6 +1421,50 @@ ZMap.prototype._openDroppedPin = function(latlng) {
       window.prompt('Copy this link:', link);
     }
   });
+};
+
+ZMap.prototype._addMapGridBackground = function() {
+  var map = this.map;
+  var pane = map.createPane('map-grid-background');
+  pane.style.zIndex = '190';
+  pane.style.pointerEvents = 'none';
+  var image = new Image();
+  var bounds = map.options.maxBounds ? L.latLngBounds(map.options.maxBounds) : null;
+  var gridCenter = bounds ? bounds.getCenter() : L.latLng(0, 0);
+  var minimumZoom = map.getMinZoom();
+  var maximumZoom = map.getMaxZoom();
+  var layer = L.gridLayer({
+    pane: 'map-grid-background', tileSize: 256,
+    minZoom: minimumZoom, maxZoom: maximumZoom,
+    updateWhenIdle: false, keepBuffer: 4
+  });
+  layer.createTile = function(coords) {
+    var tile = document.createElement('canvas');
+    tile.width = tile.height = 256;
+    var context = tile.getContext('2d');
+    context.fillStyle = '#000';
+    context.fillRect(0, 0, 256, 256);
+    if(image.complete && image.naturalWidth) {
+      // Place the texture's center on the map bounds' center at each zoom.
+      var center = map.project(gridCenter, coords.z);
+      var offsetX = ((coords.x * 256 - center.x + image.width / 2) % image.width + image.width) % image.width;
+      var offsetY = ((coords.y * 256 - center.y + image.height / 2) % image.height + image.height) % image.height;
+      context.translate(-offsetX, -offsetY);
+      context.fillStyle = context.createPattern(image, 'repeat');
+      context.fillRect(-image.width, -image.height, image.width * 2 + 256, image.height * 2 + 256);
+    }
+    return tile;
+  };
+  image.onload = function() {
+    layer.redraw();
+    mainElBackground();
+  };
+  function mainElBackground() {
+    map.getContainer().style.backgroundImage = 'none';
+  }
+  image.src = 'images/zelda-maps-bg-tile.png';
+  layer.addTo(map);
+  this._mapGridBackground = layer;
 };
 
 ZMap.prototype.setupOfflineMapMessage = function() {

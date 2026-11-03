@@ -310,16 +310,15 @@ CategoryButton.prototype.mouseEnter = function() {
   let complete  = this.category.complete;
   let total     = this.category.total;
 
-  this.labelNode.html(
-    complete+'/'+total + (
-      this.labelNode[0].clientHeight == 24 ? "<BR><BR>" : ""
-    )
-  );
-
+  // Hold the label at its wrapped height so the shorter count doesn't
+  // reflow the grid.
+  this.labelNode.css('min-height', this.labelNode[0].getBoundingClientRect().height + 'px');
+  this.labelNode.text(complete+'/'+total);
 };
 
 CategoryButton.prototype.mouseLeave = function() {
   this.labelNode.text(this.category.name);
+  this.labelNode.css('min-height', '');
 };
 
 CategoryButton.prototype._className = "CategoryButton";

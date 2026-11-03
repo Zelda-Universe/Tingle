@@ -479,7 +479,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._drawerXDown = point.clientX;
     this._drawerYDown = point.clientY;
     this._drawerStartTop = this.drawerTop();
+    this._refreshMobileDrawerDetents();
     this._drawerDragging = false;
+    this._drawerVelocity = 0;
+    this._drawerLastY = point.clientY;
+    this._drawerLastMoveTime = performance.now();
     this._drawerAnimationId++;
 
     if(e.type.startsWith('touch')) {
@@ -505,6 +509,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(yDelta === 0) return;
 
     this._drawerDragging = true;
+    var now = performance.now();
+    var elapsed = now - this._drawerLastMoveTime;
+    if(elapsed > 0) {
+      // Smoothed px/ms so a single jittery sample doesn't decide the snap.
+      var sample = (point.clientY - this._drawerLastY) / elapsed;
+      this._drawerVelocity = this._drawerVelocity * 0.6 + sample * 0.4;
+    }
+    this._drawerLastY = point.clientY;
+    this._drawerLastMoveTime = now;
     var nextTop = Math.max(
       this.options.openTo,
       Math.min(this._startPosition, this._drawerStartTop + yDelta)
@@ -528,18 +541,61 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     if(this._drawerDragging) {
       this._suppressNextDrawerClick();
-      var currentTop = this.drawerTop();
-      if(currentTop < this._drawerStartTop) {
-        this.openDrawerManual(this.options.openTo);
-      } else if(currentTop > this._drawerStartTop) {
-        this.closeDrawer(true);
-      }
+      this._settleDrawerDrag();
     }
     this._drawerXDown = null;
     this._drawerYDown = null;
     this._drawerStartTop = null;
     this._drawerDragging = false;
     this._drawerPointerId = null;
+  },
+
+  // Snap a released drag to closed, partially open or fully open, whichever
+  // is nearest to where the drawer would coast at its release velocity.
+  _settleDrawerDrag: function() {
+    var currentTop = this.drawerTop();
+    if(currentTop === this._drawerStartTop) return;
+
+    // A pause before lifting the finger means no fling.
+    var velocity = performance.now() - this._drawerLastMoveTime > 80
+      ? 0
+      : this._drawerVelocity;
+    var projectedTop = currentTop + velocity * 200;
+
+    this._refreshMobileDrawerDetents();
+    var partialTop = this.options.softOpenTo;
+    var detents = [this.options.openTo, this._startPosition];
+    // Skip the partial stop on full-only pages, or when it would sit on top of
+    // another detent.
+    if(
+      this._partialDrawerAvailable &&
+      partialTop - this.options.openTo > 60 &&
+      this._startPosition - partialTop > 60
+    ) {
+      detents.push(partialTop);
+    }
+    var target = detents.reduce(function(best, top) {
+      return Math.abs(top - projectedTop) < Math.abs(best - projectedTop) ? top : best;
+    });
+    // Any drag moves at least one stop in its direction, never back.
+    var travel = currentTop - this._drawerStartTop;
+    if(Math.abs(target - this._drawerStartTop) < 1 || (target - this._drawerStartTop) * travel < 0) {
+      var startTop = this._drawerStartTop;
+      var ahead = detents.filter(function(top) {
+        return travel < 0 ? top < startTop - 1 : top > startTop + 1;
+      });
+      if(ahead.length) {
+        target = travel < 0 ? Math.max.apply(null, ahead) : Math.min.apply(null, ahead);
+      }
+    }
+
+    if(target === this._startPosition) {
+      this.closeDrawer(true);
+    } else if(target === this.options.openTo) {
+      this.openDrawerManual(this.options.openTo);
+    } else {
+      this.openDrawerSmall(true);
+    }
   },
 
   _clearDrawerClickSuppression: function() {
@@ -634,24 +690,37 @@ L.Control.ZLayers = L.Control.Layers.extend({
     return Math.max(0, Math.min(1, (this._startPosition - top) / travel));
   },
 
+  // Like _mobileDrawerProgress, but only counts travel above the partial stop,
+  // so the drawer stays a floating card until it heads for fully open.
+  _mobileDrawerExpansionProgress: function(top) {
+    var fromTop = this._partialDrawerAvailable && Number.isFinite(this.options.softOpenTo)
+      ? this.options.softOpenTo
+      : this._startPosition;
+    var travel = fromTop - this.options.openTo;
+    if(!Number.isFinite(travel) || travel <= 0) return this._mobileDrawerProgress(top);
+    return Math.max(0, Math.min(1, (fromTop - top) / travel));
+  },
+
   _updateMobileDrawerPresentation: function(top) {
     if(!this.viewStyleBottomSlide) return;
 
     var progress = this._mobileDrawerProgress(top);
+    var expansion = this._mobileDrawerExpansionProgress(top);
     var edgeInset = 12 * (1 - progress);
     var topRadius = 28;
     var expandedBottomRadius = this._deviceBottomCornerRadius();
-    var bottomRadius = this._partialDrawerMode
-      ? 28
-      : (
-          expandedBottomRadius > 0
-            ? 28 + ((expandedBottomRadius - 28) * progress)
-            : 28 * (1 - progress)
-        );
+    var bottomRadius = expandedBottomRadius > 0
+      ? 28 + ((expandedBottomRadius - 28) * expansion)
+      : 28 * (1 - expansion);
     var fullWidth = this.options.width || window.innerWidth;
-    var contentProgress = this._partialDrawerMode
-      ? 1
-      : Math.max(0, Math.min(1, (progress - 0.08) / 0.42));
+    // Fade the contents in over the travel to the first stop above closed, so
+    // they're fully settled when a drawer comes to rest partially open.
+    var fadeProgress = progress;
+    var partialTravel = this._startPosition - this.options.softOpenTo;
+    if(this._partialDrawerAvailable && partialTravel > 0) {
+      fadeProgress = Math.min(1, (this._startPosition - top) / partialTravel);
+    }
+    var contentProgress = Math.max(0, Math.min(1, (fadeProgress - 0.08) / 0.42));
 
     this._container.style.left = edgeInset + 'px';
     this._container.style.width = Math.max(0, fullWidth - (edgeInset * 2)) + 'px';
@@ -660,12 +729,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
       bottomRadius + 'px ' + bottomRadius + 'px';
 
     if(this._contents) {
-      // Keep the contents at the fully open width, offset against the inset,
-      // so wrapped text doesn't reflow while the drawer edges widen.
-      this._contents.style.width = fullWidth + 'px';
+      // Between closed and the partial stop, hold the contents at the partial
+      // drawer's width, offset against the widening edges, so wrapped text
+      // doesn't reflow while it opens. Above the partial stop the contents
+      // follow the drawer's width out to fully open. Pages without a partial
+      // stop stay at the fully open width throughout.
+      var settledInset = 0;
+      if(this._partialDrawerAvailable) {
+        settledInset = top < this.options.softOpenTo
+          ? edgeInset
+          : 12 * (1 - this._mobileDrawerProgress(this.options.softOpenTo));
+      }
+      this._contents.style.width = Math.max(0, fullWidth - (settledInset * 2)) + 'px';
       this._contents.style.opacity = contentProgress;
       this._contents.style.transform =
-        'translate(' + (-edgeInset) + 'px, ' + (8 * (1 - contentProgress)) + 'px)';
+        'translate(' + (settledInset - edgeInset) + 'px, ' + (8 * (1 - contentProgress)) + 'px)';
       this._contents.style.pointerEvents = contentProgress > 0.95 ? '' : 'none';
     }
     if(this._drawerHeaderSeparator) {
@@ -678,9 +756,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _mobileDrawerSurfaceBottom: function(top) {
     var visibleBottom = this._viewportBottom() - this._safeAreaBottom();
-    if(this._partialDrawerMode) return visibleBottom - 10;
-
-    var progress = this._mobileDrawerProgress(top);
+    var progress = this._mobileDrawerExpansionProgress(top);
     var bottomGap = 10 * (1 - progress);
     var isStandalone = document.documentElement.classList.contains('zm-standalone');
     var usesPhysicalScreen = this._usesPhysicalMobileScreen();
@@ -725,9 +801,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var lastAction = actions[actionCount - 1];
     var containerTop = this._container.getBoundingClientRect().top;
     var popupContent = content.querySelector('.popupContent');
+    // Measure the resting layout, not the 8px entrance offset the contents
+    // carry while fading in on a first open.
+    var contentsShift = new DOMMatrixReadOnly(
+      window.getComputedStyle(this._contents).transform
+    ).m42;
     var contentBottom = Math.max(
-      lastAction.getBoundingClientRect().bottom,
-      popupContent ? popupContent.getBoundingClientRect().bottom : containerTop
+      lastAction.getBoundingClientRect().bottom - contentsShift,
+      popupContent ? popupContent.getBoundingClientRect().bottom - contentsShift : containerTop
     );
     if(contentBottom <= containerTop) return null;
 
@@ -758,12 +839,38 @@ L.Control.ZLayers = L.Control.Layers.extend({
     return this._viewportHeight() * 0.5;
   },
 
-  _updateMobileDrawerSoftOpenTo: function(baseScreenTop) {
-    var peekHeight = this._mobileDrawerPeekHeight();
-    if(!peekHeight) {
-      peekHeight = (this._form.getBoundingClientRect().height || this.options.headerHeight) + 180;
+  // Height of the partially open drawer for the current page, or null when the
+  // page only opens fully (account pages, menus, forms). Partial drawers fit
+  // their page's content up to the maximum; the category list always uses it.
+  _mobileDrawerPartialHeight: function() {
+    var type = this._contentType || 'category';
+    var maxHeight = this._mobileDrawerMaxPartialHeight();
+    var height;
+    if(type === 'category') {
+      height = maxHeight;
+    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type)) {
+      height = this._mobileDrawerPeekHeight() || this._mobileDrawerContentHeight();
+    } else {
+      return null;
     }
-    peekHeight = Math.min(peekHeight, this._mobileDrawerMaxPartialHeight());
+    return Math.min(height || maxHeight, maxHeight);
+  },
+
+  // Recompute the partial stop for the page currently in the drawer.
+  _refreshMobileDrawerDetents: function() {
+    if(!this.viewStyleBottomSlide || !this._form) return;
+    var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
+    this._updateMobileDrawerSoftOpenTo(
+      Number.isFinite(this._mobileDrawerBaseTop)
+        ? this._mobileDrawerBaseTop
+        : this._container.getBoundingClientRect().top - currentCssTop
+    );
+  },
+
+  _updateMobileDrawerSoftOpenTo: function(baseScreenTop) {
+    var peekHeight = this._mobileDrawerPartialHeight();
+    this._partialDrawerAvailable = !!peekHeight;
+    if(!peekHeight) peekHeight = this._mobileDrawerMaxPartialHeight();
 
     this.options.softOpenTo = Math.max(
       this.options.openTo,
@@ -1021,7 +1128,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var depths = {
         category: 0, search: 1, games: 1, maps: 1, loginForm: 1, accountPage: 1,
         registerForm: 2, lostPasswordForm: 2, accountInformationPage: 2,
-        offlineMapsPage: 2, deleteAccountForm: 2, changePasswordForm: 3
+        offlineMapsPage: 2, bookmarksPage: 2, deleteAccountForm: 2, changePasswordForm: 3
       };
       var pageDepth = function(type) {
         if(depths[type] !== undefined) return depths[type];
@@ -1029,7 +1136,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || type === 'newMarker') return 2;
         return 0;
       };
-      var backward = pageDepth(vType) < pageDepth(previousContentType);
+      var backward = this._navigatingBack || pageDepth(vType) < pageDepth(previousContentType);
       var width = this._contents.getBoundingClientRect().width;
       outgoingPage.style.position = 'absolute';
       outgoingPage.style.top = outgoingBounds.top + 'px';
@@ -1080,6 +1187,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._pageTransitionCleanup = cleanup;
       entering.onfinish = cleanup;
     }
+    this._navigatingBack = false;
     if(this.zMap && this.zMap.syncDrawerPageURL) this.zMap.syncDrawerPageURL(vType);
     if(
       /^m\d+$/.test(previousContentType || '') ||
@@ -1100,7 +1208,40 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     this._clearContent();
 
-    if(
+    // Top-level pages opened from the map or header don't sit "above" the
+    // category list, so they get a close button instead of a back button.
+    var closesPage = /^m\d+$/.test(vType) || /^droppedPin-/.test(vType) || vType === 'accountPage';
+    // A page opened from a list (e.g. Bookmarks) can also go back to it.
+    var returnsTo = null;
+    if(closesPage) {
+      returnsTo = this._nextPageReturnsTo;
+      this._nextPageReturnsTo = null;
+    }
+    if(returnsTo === 'bookmarks') {
+      var returnButton = L.DomUtil.create('a', 'button back-button', this._contents);
+      returnButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+      returnButton.setAttribute('aria-label', 'Back to Bookmarks');
+      L.DomEvent
+        .on(returnButton, 'click', L.DomEvent.stopPropagation)
+        .on(returnButton, 'click', function(e) {
+          e.preventDefault();
+          this.zMap._closeNewMarker();
+          this._navigatingBack = true;
+          this.zMap._createBookmarksPage();
+          if(this.viewStyleBottomSlide) this.openDrawerLarge();
+        }, this);
+    }
+    if(closesPage) {
+      var dismissButton = L.DomUtil.create('a', 'button back-button close-button', this._contents);
+      dismissButton.innerHTML = '<i class="fas fa-times"></i>';
+      dismissButton.setAttribute('aria-label', 'Close');
+      L.DomEvent
+        .on(dismissButton, 'click', L.DomEvent.stopPropagation)
+        .on(dismissButton, 'click', function(e) {
+          e.preventDefault();
+          this.closePage();
+        }, this);
+    } else if(
       vType != 'category' &&
       !(vType == 'search' && !this.viewStyleBottomSlide)
     ) {
@@ -1112,7 +1253,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           e.preventDefault();
           if(vType === 'changePasswordForm' && this.zMap.getUser()) {
             this.zMap._createAccountInformationForm();
-          } else if(['offlineMapsPage', 'accountInformationPage'].includes(vType) && this.zMap.getUser()) {
+          } else if(['offlineMapsPage', 'accountInformationPage', 'bookmarksPage'].includes(vType) && this.zMap.getUser()) {
             this.zMap._createAccountForm(this.zMap.getUser());
           } else {
             this.reset();
@@ -1175,6 +1316,23 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._mapsButton.clear();
     this._gamesButton.clear();
     if(wasPartiallyOpen) this.openDrawerDefaultPartial();
+  },
+
+  // The next POI or dropped pin page shown gets a back button to this page.
+  returnNextPageTo: function(page) {
+    this._nextPageReturnsTo = page;
+  },
+
+  // Dismiss a top-level page (POI, dropped pin, account): deselect it and, on
+  // mobile, close the drawer; the category list is restored once it's closed.
+  closePage: function() {
+    if(!this.viewStyleBottomSlide) {
+      this.reset();
+      return;
+    }
+    zMap._closeNewMarker();
+    this.headerBar.searchArea.markerSearchField.clear();
+    this.closeDrawer();
   },
 
   openDrawerDefaultPartial: function() {
@@ -1351,6 +1509,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   _animateStart: function(menu, from, to, isOpen) {
     // console.log(`_animateStart(${menu}, ${from}, ${to}, ${isOpen})`);
     this._triggerHandler("before_animateStart", menu, from, to, isOpen);
+    this._refreshMobileDrawerDetents();
     var animationId = ++this._drawerAnimationId;
     this._animate(menu, from, to, isOpen, animationId);
     this._triggerHandler("after_animateStart", menu, from, to, isOpen);
@@ -1414,7 +1573,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       if(this.viewStyleBottomSlide && this._contents) {
         this._contents.style.transition =
           'opacity ' + Math.min(duration, 240) + 'ms ease-out, ' +
-          'transform ' + duration + 'ms ' + timing;
+          'transform ' + duration + 'ms ' + timing + ', ' +
+          'width ' + duration + 'ms ' + timing;
       }
       if(this.viewStyleBottomSlide && this._drawerHeaderSeparator) {
         this._drawerHeaderSeparator.style.transition =
@@ -1478,6 +1638,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
       ? this._mobileDrawerBaseTop
       : containerTop - currentCssTop;
     this._updateMobileDrawerSoftOpenTo(baseScreenTop);
+    if(!this._partialDrawerAvailable) {
+      this.openDrawerLarge();
+      return;
+    }
     if(forcePartial || this._partialDrawerMode || this.drawerTop() >= this.options.softOpenTo) {
       this._partialDrawerMode = true;
       if(immediate) {

@@ -148,7 +148,16 @@ main {
 }
 
 .settings-control .settings-control-panel {
-	display: none;
+	display: block;
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+	/* Slides out of the toggle: leftward on desktop, downward on mobile. */
+	transform: translateX(12px);
+	transition:
+		opacity .2s ease,
+		transform .3s cubic-bezier(.32, .72, 0, 1),
+		visibility 0s linear .3s;
 	position: absolute;
 	top: 0;
 	right: 52px;
@@ -163,7 +172,17 @@ main {
 }
 
 .settings-control.open .settings-control-panel {
-	display: block;
+	visibility: visible;
+	opacity: 1;
+	pointer-events: auto;
+	transform: none;
+	transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.settings-control .settings-control-panel {
+		transform: none !important;
+	}
 }
 
 .settings-control-panel h3 {
@@ -214,6 +233,7 @@ main {
 }
 
 .settings-control-mobile-floating .settings-control-panel {
+	transform: translateY(-12px);
 	top: 52px;
 	right: 0;
 	width: calc(100vw - 20px);
@@ -540,33 +560,6 @@ main.leaflet-container,
 .delete-account-warning {
 	font-size: 16px;
 	line-height: 1.5;
-	text-align: center;
-}
-
-.dropped-pin-page {
-	padding: 0 24px 24px;
-}
-
-.dropped-pin-coordinates {
-	margin: 24px 0;
-	padding: 14px 16px !important;
-	background: rgba(255,255,255,.12);
-	border-radius: 10px;
-	font-size: 16px !important;
-	line-height: 1.5;
-	text-align: center;
-}
-
-.dropped-pin-page .infoWindowIcn {
-	width: 100%;
-	box-sizing: border-box;
-	margin: 0;
-}
-
-.dropped-pin-copy-status {
-	min-height: 20px;
-	margin: 8px 0 0;
-	padding: 0 !important;
 	text-align: center;
 }
 
@@ -1121,6 +1114,34 @@ a.category-button.disabled {
 	font-size: 36px;
 }
 
+/* Some icomoon glyphs are drawn smaller within their em box than the rest of
+   the set. Scale them up so every category icon reads at the same size. */
+.category-icon.icon-TotK_Dispenser::before,
+.category-icon.icon-TotK_Bargainer_Statue::before,
+.category-icon.icon-General_Store::before,
+.category-icon.icon-TotK_Bubbulfrog::before,
+.category-icon.icon-TotK_Forge_Construct::before,
+.category-icon.icon-BotW_Armor::before,
+.category-icon.icon-TotK_Well::before,
+.category-icon.icon-TotK_CherryTree::before,
+.category-icon.icon-TotK_AncientTablet::before,
+.category-icon.icon-General_Cave::before,
+.category-icon.icon-TotK_Lightroot::before {
+	display: inline-block;
+}
+.category-icon.icon-TotK_Dispenser::before { transform: scale(1.5); }
+/* These two glyphs also sit low in their em box, so lift them back to center. */
+.category-icon.icon-TotK_Bargainer_Statue::before { transform: translateY(-.12em) scale(1.3); }
+.category-icon.icon-General_Store::before { transform: scale(1.15); }
+.category-icon.icon-TotK_Bubbulfrog::before { transform: scale(1.15); }
+.category-icon.icon-TotK_Forge_Construct::before { transform: translateY(-.07em) scale(1.12); }
+.category-icon.icon-BotW_Armor::before { transform: scale(1.12); }
+.category-icon.icon-TotK_Well::before { transform: scale(1.12); }
+.category-icon.icon-TotK_CherryTree::before,
+.category-icon.icon-TotK_AncientTablet::before,
+.category-icon.icon-General_Cave::before,
+.category-icon.icon-TotK_Lightroot::before { transform: scale(1.08); }
+
 .icon-background {
 	color: white;
 }
@@ -1259,6 +1280,23 @@ a.button.leaflet-control-layers-toggle {
 	color: rgba(255, 255, 255, .65);
 	font-size: 12px;
 	text-overflow: ellipsis;
+}
+
+
+/*** BOOKMARKS ***/
+
+.bookmark-pin-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #3b8ad8;
+	font-size: 28px;
+}
+
+.bookmarks-empty {
+	margin: 8px 0 24px;
+	color: rgba(255, 255, 255, .65);
+	text-align: center;
 }
 
 
@@ -1447,6 +1485,10 @@ a.button.leaflet-control-layers-toggle {
 	margin: 16px;
 }
 
+.leaflet-control-layers .marker-actions-row-four {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .leaflet-control-layers .popupContent {
 	padding-bottom: 8px;
 }
@@ -1611,6 +1653,16 @@ a.button.back-button svg {
 	transform: translateX(-1px);
 }
 
+a.button.back-button.close-button {
+	left: auto;
+	right: 16px;
+}
+
+a.button.back-button.close-button i,
+a.button.back-button.close-button svg {
+	transform: none;
+}
+
 a.button.back-button:hover {
 	border-color: rgba(255,255,255,.8) !important;
 	color: white;
@@ -1731,6 +1783,20 @@ button[aria-disabled="true"] {
 	-webkit-user-drag: none;
 	-webkit-user-select: none;
 	user-select: none;
+}
+
+/* Long-pressing the map drops a pin; keep iOS from selecting map labels or
+   opening the magnifier instead. */
+.leaflet-container {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.leaflet-container input,
+.leaflet-container textarea {
+	-webkit-user-select: text;
+	user-select: text;
 }
 
 .settings-control-mobile-floating.leaflet-control {

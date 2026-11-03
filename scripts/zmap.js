@@ -665,13 +665,15 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
         this.pad(Math.round(latlng.lat), 4);
     }
 
+    this._bookmarkTarget = { markerId: marker.id };
     var content = "<h2 class='popupTitle'>" + title + "</h2>" +
       "<p class='marker-coordinate-pill'>" + coordinateText + "</p>" +
-      "<div class='marker-actions-row'>" +
+      "<div class='marker-actions-row marker-actions-row-four'>" +
         "<button type='button' id='check" + marker.id + "' class='marker-action-button infoWindowIcn " + (!marker.complete ? "unchecked" : "checked") + "' onclick=\"var button = document.getElementById('check" + marker.id + "'); var complete = button.classList.contains('unchecked'); button.classList.toggle('unchecked', !complete); button.classList.toggle('checked', complete); _this._setMarkerDone(" + marker.id + ", complete); return false\">" +
           "<span class='marker-action-icon'><i class='icon-" + (!marker.complete ? "checkbox-unchecked" : "checkmark") + "'></i></span>" +
           "<span class='marker-action-label'>" + (!marker.complete ? "Mark Complete" : "Completed") + "</span>" +
         "</button>" +
+        this._bookmarkButtonHTML() +
         "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboard(" + marker.id + "); return false'>" +
           "<span class='marker-action-icon'><i class='fas fa-link'></i></span>" +
           "<span class='marker-action-label'>Copy Link</span>" +
@@ -924,7 +926,9 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
   }
 };
 
-ZMap.prototype._shouldShowMarker = function(marker) {
+// ignoreBounds: answer whether the marker is hidden for any reason other than
+// being culled outside the viewport.
+ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
   var markerCategory = this.categories[marker.categoryId];
 
   // Data Handling Investigation Display
@@ -986,7 +990,7 @@ ZMap.prototype._shouldShowMarker = function(marker) {
     return marker.visible
     && this.mapOptions.showPoiLabels !== false
     && markerCategory.checked
-    && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
+    && (ignoreBounds || mapBounds.contains(marker.getLatLng()))  // Is in the Map Bounds (PERFORMANCE)
     && (
       this.mapOptions.categorySelectionMethod != "focus"
       || !this.mapControl._categoryMenu.modeAutomatic
@@ -1001,7 +1005,7 @@ ZMap.prototype._shouldShowMarker = function(marker) {
   } else if (marker.categoryTypeId == 3) {
     return marker.visible
       // @TODO: HARDCODE for TotK Release, need better handling
-      && mapBounds.contains(marker.getLatLng())  // Is in the Map Bounds (PERFORMANCE)
+      && (ignoreBounds || mapBounds.contains(marker.getLatLng()))  // Is in the Map Bounds (PERFORMANCE)
       && (
         (
          this.mapOptions.categorySelectionMethod == "focus"
@@ -1321,6 +1325,8 @@ ZMap.prototype.addMapControl = function(gameId) {
       newMarker != null
       && newMarker.markerPos != null
       && !_this.map.hasLayer(markers[newMarker.markerPos])
+      // Markers are culled outside the viewport; only deselect when hidden.
+      && !_this._shouldShowMarker(markers[newMarker.markerPos], true)
     ) {
       _this._closeNewMarker();
       _this.mapControl.resetContent();
@@ -1376,16 +1382,17 @@ ZMap.prototype._setupDroppedPinGesture = function() {
   L.DomEvent.on(container, 'pointerup pointercancel pointerleave', clearPress);
 };
 
+// Built like POI links: only the shareable params from the current URL.
 ZMap.prototype._createDroppedPinLink = function(latlng) {
-  var url = new URL(window.location.href);
-  url.searchParams.delete('marker');
-  url.searchParams.set('map', this.mapControl.getCurrentMap().mapId);
-  url.searchParams.set('subMap', this.mapControl.getCurrentMap().subMapId);
-  url.searchParams.set('zoom', this.map.getZoom());
-  url.searchParams.set('x', latlng.lng.toFixed(4));
-  url.searchParams.set('y', latlng.lat.toFixed(4));
-  url.searchParams.set('droppedPin', 'true');
-  return url.toString();
+  var href = window.location.href.split("?");
+  var clipboardParams = this._getClipboardParams(href);
+  return href[0] + "?" + clipboardParams +
+    "map=" + this.mapControl.getCurrentMap().mapId +
+    "&subMap=" + this.mapControl.getCurrentMap().subMapId +
+    "&zoom=" + this.map.getZoom() +
+    "&x=" + latlng.lng.toFixed(4) +
+    "&y=" + latlng.lat.toFixed(4) +
+    "&droppedPin=true";
 };
 
 ZMap.prototype._openDroppedPin = function(latlng) {
@@ -1393,34 +1400,261 @@ ZMap.prototype._openDroppedPin = function(latlng) {
   newMarker = L.marker(latlng).addTo(this.map);
   newMarker.droppedPin = true;
 
-  var x = latlng.lng.toFixed(2);
-  var y = latlng.lat.toFixed(2);
   var link = this._createDroppedPinLink(latlng);
-  var content = '' +
-    '<div class="dropped-pin-page">' +
-      '<h3 class="text-center">Dropped Pin</h3>' +
-      '<p class="dropped-pin-coordinates"><strong>Coordinates</strong><br>X: ' + x + '<br>Y: ' + y + '</p>' +
-      '<button id="copy_dropped_pin_link" type="button" class="infoWindowIcn form-action-button">' +
-        '<i class="fas fa-link" aria-hidden="true"></i> Copy Link to Pin' +
-      '</button>' +
-      '<p id="dropped_pin_copy_status" class="dropped-pin-copy-status" role="status" aria-live="polite"></p>' +
-    '</div>';
+  var embedLink = this._createDroppedPinEmbedLink(latlng);
+  var coordinateText = this.pad(Math.round(latlng.lng), 4) + ", " +
+    this.pad(Math.round(latlng.lat), 4);
+  this._bookmarkTarget = {
+    mapId: this.mapControl.getCurrentMap().mapId,
+    subMapId: this.mapControl.getCurrentMap().subMapId,
+    x: latlng.lng,
+    y: latlng.lat
+  };
+  // Same layout as a POI page, minus completion: dropped pins aren't markers.
+  var content = "<h2 class='popupTitle'>Dropped Pin</h2>" +
+    "<p class='marker-coordinate-pill'>" + coordinateText + "</p>" +
+    "<div class='marker-actions-row'>" +
+      this._bookmarkButtonHTML() +
+      "<button type='button' id='copy_dropped_pin_link' class='marker-action-button infoWindowIcn'>" +
+        "<span class='marker-action-icon'><i class='fas fa-link'></i></span>" +
+        "<span class='marker-action-label'>Copy Link</span>" +
+      "</button>" +
+      "<button type='button' id='copy_dropped_pin_embed' class='marker-action-button infoWindowIcn'>" +
+        "<span class='marker-action-icon'><i class='icon-embed2'></i></span>" +
+        "<span class='marker-action-label'>Embed Code</span>" +
+      "</button>" +
+    "</div>" +
+    "<div class='popupContent'></div>";
 
   this.mapControl.setContent(content, 'droppedPin-' + L.Util.stamp(newMarker));
   this.mapControl.openDrawerSmall();
 
   $('#copy_dropped_pin_link').on('click', function() {
-    var status = $('#dropped_pin_copy_status');
-    if(navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(link).then(function() {
-        status.text('Link copied.');
-      }).catch(function() {
-        window.prompt('Copy this link:', link);
-      });
-    } else {
-      window.prompt('Copy this link:', link);
+    window.prompt("Copy to clipboard: Ctrl+C, Enter", link);
+    return false;
+  });
+  $('#copy_dropped_pin_embed').on('click', function() {
+    window.prompt("Copy to clipboard: Ctrl+C, Enter", "<iframe src=\"" + embedLink + "\" frameborder=\"0\" allowfullscreen></iframe>");
+    return false;
+  });
+};
+
+ZMap.prototype._createDroppedPinEmbedLink = function(latlng) {
+  return this._createDroppedPinLink(latlng) + "&showMapControl=true";
+};
+
+//************* BOOKMARKS *************//
+// Bookmarks are POIs (markerId) or dropped pins (map, submap and coordinates)
+// saved to the user's account for the current game.
+
+ZMap.prototype.getUserBookmarks = function() {
+  var _this = this;
+  $.getJSON("ajax.php?command=get_user_bookmarks&game=" + gameId, function(results) {
+    _this.bookmarks = results || [];
+    _this._updateBookmarkButton();
+    if(_this.mapControl.getContentType() == 'bookmarksPage') _this._renderBookmarksList();
+  });
+};
+
+ZMap.prototype._findBookmark = function(target) {
+  if(!target) return null;
+  return (this.bookmarks || []).find(function(bookmark) {
+    if(target.markerId != null) return bookmark.markerId == target.markerId;
+    return bookmark.markerId == null &&
+      bookmark.mapId == target.mapId &&
+      bookmark.submapId == target.subMapId &&
+      Math.abs(bookmark.x - target.x) < 0.0001 &&
+      Math.abs(bookmark.y - target.y) < 0.0001;
+  }) || null;
+};
+
+ZMap.prototype._bookmarkButtonHTML = function() {
+  return "<button type='button' id='bookmark_button' class='marker-action-button infoWindowIcn' onclick='_this.toggleBookmark(); return false'>" +
+    this._bookmarkButtonContent(!!this._findBookmark(this._bookmarkTarget)) +
+  "</button>";
+};
+
+ZMap.prototype._bookmarkButtonContent = function(bookmarked) {
+  return "<span class='marker-action-icon'><i class='" + (bookmarked ? "fas" : "far") + " fa-bookmark'></i></span>" +
+    "<span class='marker-action-label'>" + (bookmarked ? "Bookmarked" : "Bookmark") + "</span>";
+};
+
+ZMap.prototype._updateBookmarkButton = function() {
+  var button = document.getElementById('bookmark_button');
+  if(!button || !this.mapControl._contents.contains(button)) return;
+  button.innerHTML = this._bookmarkButtonContent(!!this._findBookmark(this._bookmarkTarget));
+};
+
+ZMap.prototype.toggleBookmark = function() {
+  var _this = this;
+  var target = this._bookmarkTarget;
+  if(!target) return;
+
+  if(!this.getUser()) {
+    toastr.info('Log in or create an account to save bookmarks.');
+    this._createLoginForm();
+    if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
+    return;
+  }
+
+  var button = document.getElementById('bookmark_button');
+  if(button) button.disabled = true;
+  var existing = this._findBookmark(target);
+  var request = existing
+    ? { command: 'del_bookmark', data: { bookmarkId: existing.id } }
+    : {
+        command: 'add_bookmark',
+        data: target.markerId != null
+          ? { markerId: target.markerId }
+          : { mapId: target.mapId, submapId: target.subMapId, x: target.x, y: target.y }
+      };
+
+  $.ajax({
+    type: 'POST',
+    url: 'ajax.php?command=' + request.command,
+    data: request.data,
+    success: function(data) {
+      if(!data.success) {
+        toastr.error(data.msg || 'The bookmark could not be saved.');
+        return;
+      }
+      if(existing) {
+        _this.bookmarks = _this.bookmarks.filter(function(bookmark) {
+          return bookmark.id != existing.id;
+        });
+      } else {
+        _this.bookmarks.unshift({
+          id: data.id,
+          markerId: target.markerId != null ? target.markerId : null,
+          mapId: target.markerId != null ? null : target.mapId,
+          submapId: target.markerId != null ? null : target.subMapId,
+          x: target.markerId != null ? null : Number(target.x.toFixed(4)),
+          y: target.markerId != null ? null : Number(target.y.toFixed(4))
+        });
+      }
+      if(_this._bookmarkTarget === target) _this._updateBookmarkButton();
+    },
+    error: function() {
+      toastr.error('The bookmark could not be saved.');
+    },
+    complete: function() {
+      if(button) button.disabled = false;
     }
   });
+};
+
+ZMap.prototype._createBookmarksPage = function() {
+  this.mapControl.setContent(
+    '<div id="bookmarks" class="bookmarks-page">' +
+      '<h3 class="text-center">Bookmarks</h3>' +
+      '<div class="marker-list-view bookmarks-list"><ul class="marker-list"></ul></div>' +
+    '</div>',
+    'bookmarksPage'
+  );
+  this._renderBookmarksList();
+};
+
+ZMap.prototype._renderBookmarksList = function() {
+  var _this = this;
+  var list = $('#bookmarks .marker-list');
+  if(!list.length) return;
+  list.empty();
+
+  var entries = (this.bookmarks || []).map(function(bookmark) {
+    return bookmark.markerId != null
+      ? _this._createMarkerBookmarkEntry(bookmark)
+      : _this._createPinBookmarkEntry(bookmark);
+  }).filter(Boolean);
+
+  if(!entries.length) {
+    list.append('<p class="bookmarks-empty">Bookmark POIs and dropped pins to find them here.</p>');
+    return;
+  }
+
+  entries.forEach(function(entry) {
+    list.append(entry);
+    list.append('<div class="leaflet-control-layers-separator search-result-separator"></div>');
+  });
+};
+
+ZMap.prototype._createMarkerBookmarkEntry = function(bookmark) {
+  var marker = this.cachedMarkersById[bookmark.markerId];
+  if(!marker) return null;
+  var title = marker.title;
+  if(marker.gameData != null && marker.gameData.actor != null && this.lang[marker.gameData.actor + "_Name"] != null) {
+    title = this.lang[marker.gameData.actor + "_Name"];
+  }
+  var entry = new SearchMarkerListEntry({
+    item: {
+      id: marker.id,
+      name: title,
+      description: '',
+      categoryId: marker.categoryId,
+      markerCategoryTypeId: marker.categoryTypeId,
+      mapId: marker.mapId,
+      submapId: marker.submapId
+    },
+    matches: []
+  }, {
+    categories: this.categories,
+    onClick: this.openBookmark.bind(this, bookmark)
+  });
+  return entry.domNode;
+};
+
+ZMap.prototype._createPinBookmarkEntry = function(bookmark) {
+  var pinMap = this.maps.find(function(map) {
+    return map.originalId == bookmark.mapId;
+  });
+  var location = this.pad(Math.round(bookmark.x), 4) + ", " + this.pad(Math.round(bookmark.y), 4);
+  if(this.maps.length > 1 && pinMap) location = pinMap.title + ' - ' + location;
+
+  var entry = $(
+    '<li class="marker-list-entry search-marker-list-entry">' +
+      '<span class="icon"><span class="icon-background circle category-icon bookmark-pin-icon"><i class="fas fa-map-marker-alt"></i></span></span>' +
+      '<span class="details">' +
+        '<div class="name">Dropped Pin</div>' +
+        '<div class="location"></div>' +
+      '</span>' +
+    '</li>'
+  );
+  entry.find('.location').text(location);
+  entry.on('click', this.openBookmark.bind(this, bookmark));
+  return entry;
+};
+
+// Show a bookmark from the Bookmarks page in the partial drawer; its page gets a
+// back button to the list as well as the close button.
+ZMap.prototype.openBookmark = function(bookmark) {
+  var latlng;
+  var marker = bookmark.markerId != null ? this.cachedMarkersById[bookmark.markerId] : null;
+  if(bookmark.markerId != null && !marker) return;
+  this.mapControl.returnNextPageTo('bookmarks');
+  this._closeNewMarker();
+
+  if(marker) {
+    this.goTo({ marker: marker.id, panTo: false }, true);
+    latlng = marker.getLatLng();
+  } else {
+    this.mapControl.changeMapOnly(bookmark.mapId, bookmark.submapId);
+    latlng = L.latLng(bookmark.y, bookmark.x);
+    this._openDroppedPin(latlng);
+  }
+
+  if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerSmall(true);
+  this._centerInVisibleAreaWhenSettled(latlng);
+};
+
+ZMap.prototype._centerInVisibleAreaWhenSettled = function(latlng) {
+  var attempts = 0;
+  var center = function() {
+    if(attempts++ < 20 && this.mapControl._drawerAnimationTimeout) {
+      window.setTimeout(center, 100);
+      return;
+    }
+    this._setViewAtMarkerInVisibleArea({ getLatLng: function() { return latlng; } }, this.map.getZoom());
+  }.bind(this);
+  window.setTimeout(center, 0);
 };
 
 ZMap.prototype._addMapGridBackground = function() {
@@ -1545,7 +1779,10 @@ ZMap.prototype.setUser = function(vUser) {
       } else {
          _this.getUserCompletedMarkers();
       }
-
+      this.getUserBookmarks();
+   } else {
+      this.bookmarks = [];
+      this._updateBookmarkButton();
    }
 };
 
@@ -2558,6 +2795,7 @@ ZMap.prototype.drawerPageRoutes = {
   accountPage: 'account',
   accountInformationPage: 'account-information',
   offlineMapsPage: 'offline-maps',
+  bookmarksPage: 'bookmarks',
   loginForm: 'login',
   registerForm: 'register',
   lostPasswordForm: 'lost-password',
@@ -2583,6 +2821,7 @@ ZMap.prototype.restoreDrawerPage = function(page) {
     account: '_createAccountForm',
     'account-information': '_createAccountInformationForm',
     'offline-maps': '_createOfflineMapsForm',
+    bookmarks: '_createBookmarksPage',
     'change-password': '_createChangePasswordForm',
     'delete-account': '_createAccountDeleteForm'
   };
@@ -2625,6 +2864,7 @@ ZMap.prototype._createAccountForm = function(user) {
       '<div class="modal-footer">' +
          '<div>' +
            '<button id="account_information_btn" type="button" class="infoWindowIcn">Account Information</button>' +
+           '<button id="account_bookmarks_btn" type="button" class="infoWindowIcn">Bookmarks</button>' +
            '<button id="account_offline_maps_btn" type="button" class="infoWindowIcn">Download Offline Maps</button>' +
            '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn">Reset Completed Markers</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn">Log Out</button>' +
@@ -2697,6 +2937,11 @@ ZMap.prototype._createAccountForm = function(user) {
      e.preventDefault();
   });
 
+
+  $("#account_bookmarks_btn").click(function(e) {
+     _this._createBookmarksPage();
+     e.preventDefault();
+  });
 
   $("#account_offline_maps_btn").click(function(e) {
      _this._createOfflineMapsForm();

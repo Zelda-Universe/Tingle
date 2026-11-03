@@ -346,9 +346,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
             // console.log('_mapsButton - afterToggle - this.toggledOn');
             var drawerWasOpen = _thisLayer._open;
             var previousDrawerTop = _thisLayer.drawerTop();
+            var resizePOIPartial = /^m\d+$/.test(_thisLayer._contentType || '') && previousDrawerTop > _thisLayer.options.openTo + 2;
             _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
             if(_thisLayer.viewStyleBottomSlide) {
-              if(drawerWasOpen) _thisLayer.openDrawerManual(previousDrawerTop);
+              if(drawerWasOpen && !resizePOIPartial) _thisLayer.openDrawerManual(previousDrawerTop);
               else _thisLayer.openDrawerDefaultPartial();
             } else {
               _thisLayer.openDrawerLarge();
@@ -384,9 +385,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
           if (this.toggledOn) {
             var drawerWasOpen = _thisLayer._open;
             var previousDrawerTop = _thisLayer.drawerTop();
+            var resizePOIPartial = /^m\d+$/.test(_thisLayer._contentType || '') && previousDrawerTop > _thisLayer.options.openTo + 2;
             _thisLayer.setContent(_thisLayer._gameMenu.domNode, "games");
             if(_thisLayer.viewStyleBottomSlide) {
-              if(drawerWasOpen) _thisLayer.openDrawerManual(previousDrawerTop);
+              if(drawerWasOpen && !resizePOIPartial) _thisLayer.openDrawerManual(previousDrawerTop);
               else _thisLayer.openDrawerDefaultPartial();
             } else {
               _thisLayer.openDrawerLarge();

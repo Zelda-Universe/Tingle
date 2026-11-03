@@ -174,8 +174,8 @@
           document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }
       </script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261103-drawer-focus"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261103-drawer-focus" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261103-switch-partial"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261103-switch-partial" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

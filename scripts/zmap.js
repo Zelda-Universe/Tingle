@@ -2401,19 +2401,16 @@ ZMap.prototype.getUserCompletedMarkers = function() {
 
    //@TODO: Use gameID from zmap, not zmain
    $.getJSON("ajax.php?command=get_user_completed_markers&game=" + gameId + "&userId=" + user.id, function(vResults) {
-      $.each(vResults, function(i,marker){
-
-         for (var i = 0; i < markers.length; i++) {
-            if (markers[i].id == marker.markerId) {
-               completedMarkers.push(marker.markerId);
-
-               _this.categories[markers[i].categoryId].complete++;
-               _this._doSetMarkerDoneIcon(markers[i], true);
-               break;
-            }
-         }
-         _this.refreshMap();
+      // Look markers up by id and refresh once at the end: refreshing the
+      // whole map per completed marker froze phones for accounts with many.
+      $.each(vResults, function(i, completed) {
+         var marker = _this.cachedMarkersById[completed.markerId];
+         if (!marker) return;
+         completedMarkers.push(completed.markerId);
+         _this.categories[marker.categoryId].complete++;
+         _this._doSetMarkerDoneIcon(marker, true);
       });
+      _this.refreshMap();
    });
 }
 

@@ -274,6 +274,7 @@ ZMap.prototype.addMap = function(vMap) {
       + vMap.subMap[0].tileExt
       , {
           maxZoom           : vMap.maxZoom
+        , maxNativeZoom     : Number(vMap.maxZoom)
         , attribution       : vMap.mapCopyright
           + ', '
           + vMap.subMap[0].mapMapper
@@ -306,6 +307,7 @@ ZMap.prototype.addMap = function(vMap) {
       /* TODO: Improve this to use no tile at all (remove tile border)*/
       var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
                                            , { maxZoom:           vMap.maxZoom
+                                             , maxNativeZoom:     Number(vMap.maxZoom)
                                              , noWrap:            true
                                              , tileSize:          this.mapOptions.tileSize
                                              , updateWhenIdle:    false
@@ -326,6 +328,7 @@ ZMap.prototype.addMap = function(vMap) {
     for (var i = 0; i < vMap.subMap.length; i++) {
        var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
                                           , { maxZoom:           vMap.maxZoom
+                                            , maxNativeZoom:     Number(vMap.maxZoom)
                                             , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
                                             , opacity:           vMap.subMap[i].opacity
                                             , noWrap:            true
@@ -355,6 +358,7 @@ ZMap.prototype.addMap = function(vMap) {
 
              var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
                                                                      , { maxZoom:           submap.maxZoom
+                                                                       , maxNativeZoom:     Number(submap.maxZoom || vMap.maxZoom)
                                                                        , noWrap:            true
                                                                        , attribution:       submap.mapMapper
                                                                        , zIndex:            (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
@@ -1063,6 +1067,7 @@ ZMap.prototype.buildMap = function(gameId) {
         ZConfig.getConfig('contextmenuWidth')
       ),
       layers:       [this.maps[0]],
+      bounceAtZoomLimits: false,
       maxBoundsViscosity: Number.parseFloat(
         ZConfig.getConfig('maxBoundsViscosity')
       ),
@@ -1426,6 +1431,19 @@ ZMap.prototype.setupOfflineMapMessage = function() {
   message.setAttribute('role', 'status');
   message.style.display = 'none';
   document.body.appendChild(message);
+  function positionMessage() {
+    if(map.mapControl && map.mapControl.viewStyleBottomSlide) {
+      var control = map.mapControl;
+      var collapsedTop = control._mobileDrawerBaseTop + control._startPosition;
+      if(Number.isFinite(collapsedTop)) {
+        message.style.top = collapsedTop - 12 + 'px';
+        message.style.transform = 'translate(-50%, -100%)';
+      }
+    } else {
+      message.style.top = '12px';
+      message.style.transform = 'translateX(-50%)';
+    }
+  }
   function refresh() {
     message.style.display = 'none';
     if(navigator.onLine || !('caches' in window)) return;
@@ -1448,11 +1466,14 @@ ZMap.prototype.setupOfflineMapMessage = function() {
       if(!navigator.onLine && !hasTiles) {
         message.textContent = "You're offline. Connect to the internet to view maps for " + map.mapOptions.name + '.';
         message.style.display = 'block';
+        positionMessage();
       }
     });
   }
   window.addEventListener('online', refresh);
   window.addEventListener('offline', refresh);
+  window.addEventListener('resize', positionMessage);
+  if(window.visualViewport) window.visualViewport.addEventListener('resize', positionMessage);
   refresh();
 };
 

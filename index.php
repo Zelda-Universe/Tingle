@@ -174,12 +174,12 @@
           document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }
       </script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261102-offline-navigation"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261102-offline-navigation" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261102-zoom-limit"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261102-zoom-limit" />
       <script>
         if ('serviceWorker' in navigator) {
           window.addEventListener('load', function() {
-            navigator.serviceWorker.register('service-worker.js?v=20261102-offline-navigation', { updateViaCache: 'none' }).catch(function(error) {
+            navigator.serviceWorker.register('service-worker.js?v=20261102-zoom-limit', { updateViaCache: 'none' }).catch(function(error) {
               console.warn('Offline caching could not be enabled.', error);
             });
           });

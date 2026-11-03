@@ -9,6 +9,8 @@ scripts/util/leaflet.polylineDecorator.js
 scripts/widgets/ProgressBar.js
 scripts/widgets/Link.js
 scripts/widgets/CopyLink.js
+scripts/util/poiStyle.js
+scripts/util/botwCategoryCorrections.js
 scripts/widgets/CategoryIcon.js
 scripts/widgets/CategoryIconCompleted.js
 scripts/widgets/CategoryMenu.js

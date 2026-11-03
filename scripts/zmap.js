@@ -218,6 +218,9 @@ ZMap.prototype.constructor = function(vMapOptions) {
 
 // Add a map category
 ZMap.prototype.addCategory = function(category) {
+  if(String(category.container_id) === '19' && String(category.id) === '1915') {
+    category.visible = true;
+  }
   category.checkedDefault = Object.pop(category, 'default_checked');
 
   if(this.mapOptions.categorySelectionMethod == 'focus') {
@@ -401,12 +404,16 @@ ZMap.prototype.addMarkers = function(vMarkers) {
   this.handlers["markersAdded"].forEach(function(handler) {
     handler(vMarkers); // or markers..
   }, this);
+  if(this.mapControl) this.mapControl._categoryMenu.categoryButtons.forEach(function(button) {
+    button.updateCategoryLabel();
+  });
 };
 
 ZMap.prototype.addMarker = function(vMarker) {
    if (vMarker == null) {
       return;
    }
+   vMarker = correctBotWMarkerCategory(vMarker);
 
    var marker;
    if (vMarker.markerCategoryTypeId != 3) {
@@ -783,9 +790,11 @@ ZMap.prototype._getDisplayZoom = function() {
 }
 
 ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
+   var poiStyle = getPOIStyle(this.categories[vCatId]);
+   var poiClass = poiStyle ? ' poi-badge poi-' + poiStyle : '';
    if (this._getDisplayZoom() > this.mapOptions.switchIconsAtZoom) {
       return new markerIconMedium({className: 'map-icon-svg'
-                            ,html: "<div class='circle circleMap-medium ' style='background-color: " + this.categories[vCatId].color + "; "
+                            ,html: "<div class='circle circleMap-medium" + poiClass + "' style='background-color: " + this.categories[vCatId].color + "; "
                                                                       + "border-color: " + this.categories[vCatId].color + "'>"
                                        + "<span class='icon-" + this.categories[vCatId].img + " icnText-medium'></span>"
                                        + (vComplete?"<span class='icon-checkmark completeMarker completeMarker-Medium'></span>":"")
@@ -793,7 +802,7 @@ ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
       });
    } else {
       return new markerIconSmall({className: 'map-icon-svg'
-                            ,html: "<div class='circle circleMap-small' style='background-color: " + this.categories[vCatId].color + "; "
+                            ,html: "<div class='circle circleMap-small" + poiClass + "' style='background-color: " + this.categories[vCatId].color + "; "
                                                                       + "border-color: " + this.categories[vCatId].color + "'>"
                                        + "<span class='icon-" + this.categories[vCatId].img + " icnText-small'></span>"
                                        + (vComplete?"<span class='icon-checkmark completeMarker completeMarker-Small'></span>":"")
@@ -842,6 +851,64 @@ ZMap.prototype.refreshMapCompleted = function() {
   this.refreshMap(null, true);
 }
 
+ZMap.prototype.focusSingleMapCategory = function(category) {
+  var navigationRequest = this._categoryNavigationRequest;
+  var categories = [];
+  var collect = function(c) {
+    categories.push(c);
+    (c.childrenArr || []).forEach(collect);
+  };
+  collect(category);
+  var candidates = [];
+  categories.forEach(function(c) {
+    (this.cachedMarkersByCategory[c.id] || []).forEach(function(marker) {
+      if(marker.visible === false || marker.categoryTypeId == 3 || (marker.complete && !this.mapOptions.showCompleted)) return;
+      if(marker.mapId == null || marker.submapId == null) return;
+      candidates.push(marker);
+    }, this);
+  }, this);
+  if(!candidates.length) return;
+  var currentMap = this.mapControl.getCurrentMap();
+  var currentMapCandidates = candidates.filter(function(marker) {
+    return String(marker.mapId) === String(currentMap.mapId) &&
+      String(marker.submapId) === String(currentMap.subMapId);
+  });
+  var stayOnCurrentMap = currentMapCandidates.length > 0;
+  var previousZoom = this.map.getZoom();
+  if(stayOnCurrentMap) {
+    var viewport = this.map.getBounds();
+    if(currentMapCandidates.some(function(marker) { return viewport.contains(marker.getLatLng()); })) return;
+    candidates = currentMapCandidates;
+  } else {
+    var first = candidates[0];
+    if(candidates.some(function(m) {
+      return String(m.mapId) !== String(first.mapId) || String(m.submapId) !== String(first.submapId);
+    })) return;
+    this.mapControl.changeMapOnly(first.mapId, first.submapId);
+    this.mapControl.setCurrentMap(first.mapId, first.submapId);
+    this.refreshMap();
+  }
+  var fit = function() {
+    if(navigationRequest !== this._categoryNavigationRequest || !category.checked) return;
+    var rect = this.map.getContainer().getBoundingClientRect();
+    var drawer = this.mapControl._container.getBoundingClientRect();
+    var topLeft = [32, 72], bottomRight = [32, 32];
+    if(this.mapControl.viewStyleBottomSlide) {
+      bottomRight[1] += Math.max(0, rect.bottom - drawer.top);
+    } else if(!this.mapControl.options.collapsed) {
+      if(this.mapControl.options.position.endsWith('left')) topLeft[0] += drawer.width;
+      else bottomRight[0] += drawer.width;
+    }
+    var bounds = L.latLngBounds(candidates.map(function(m) { return m.getLatLng(); }));
+    this.map.fitBounds(bounds, { paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
+      maxZoom: stayOnCurrentMap ? previousZoom : this.map.getMaxZoom(), animate: true });
+  }.bind(this);
+  if(this.mapControl.viewStyleBottomSlide && this.mapControl._open && !this.mapControl._partialDrawerMode) {
+    this.mapControl.openDrawerDefaultPartial();
+    window.setTimeout(fit, 400);
+  } else fit();
+};
+
 ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
   if(affectedCategories) {
     if(!$.isArray(affectedCategories)) {
@@ -865,6 +932,9 @@ ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
   }
 
   this.checkWarnUserSeveralEnabledCategories();
+  if(this.mapControl && this.mapControl._categoryMenu) {
+    this.mapControl._categoryMenu.categoryButtons.forEach(function(button) { button.updateCategoryLabel(); });
+  }
 };
 
 ZMap.prototype._updateMarkersVisiblilityByCategory = function(affectedCategory) {
@@ -992,8 +1062,10 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
     && markerCategory.checked
     && (ignoreBounds || mapBounds.contains(marker.getLatLng()))  // Is in the Map Bounds (PERFORMANCE)
     && (
-      this.mapOptions.categorySelectionMethod != "focus"
-      || !this.mapControl._categoryMenu.modeAutomatic
+      (!markerCategory._respectZoomThreshold && (
+        this.mapOptions.categorySelectionMethod != "focus"
+        || !this.mapControl._categoryMenu.modeAutomatic
+      ))
       || markerCategory.visible_zoom <= this._getDisplayZoom()
     ) // Check if we should show for the category, and at this zoom level, for focus modes
     && (
@@ -2234,6 +2306,9 @@ ZMap.prototype._setMarkerDone = function(vID, vComplete) {
     );
     buttonComplete.querySelector('.marker-action-label').textContent =
       vComplete ? "Completed" : "Complete";
+  }
+  if(this.mapControl && this.mapControl._categoryMenu) {
+    this.mapControl._categoryMenu.categoryButtons.forEach(function(button) { button.updateCategoryLabel(); });
   }
 }
 

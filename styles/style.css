@@ -114,7 +114,8 @@
 .icon-BotW_Fish:before {
   content: "\e90a";
 }
-.icon-BotW_Food-n-Materials:before {
+.icon-BotW_Food-n-Materials:before,
+.icon-BotW_Materials:before {
   content: "\e90b";
 }
 .icon-BotW_Great-Fairy:before {
@@ -264,7 +265,10 @@
   width: 1em;
   height: 1em;
   vertical-align: -0.08em;
-  background: center / contain no-repeat url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cpath%20fill='white'%20d='M4%205h24a3%203%200%200%201%203%203v13a3%203%200%200%201-3%203H15l-7.5%205v-5H4a3%203%200%200%201-3-3V8a3%203%200%200%201%203-3Z'/%3E%3Ccircle%20cx='9'%20cy='14.5'%20r='2'%20fill='%234bc5ee'/%3E%3Ccircle%20cx='16'%20cy='14.5'%20r='2'%20fill='%234bc5ee'/%3E%3Ccircle%20cx='23'%20cy='14.5'%20r='2'%20fill='%234bc5ee'/%3E%3C/svg%3E");
+  background: currentColor;
+  --npc-mask: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Cpath%20fill='white'%20fill-rule='evenodd'%20d='M4%205h24a3%203%200%200%201%203%203v13a3%203%200%200%201-3%203H15l-7.5%205v-5H4a3%203%200%200%201-3-3V8a3%203%200%200%201%203-3Z%20M11%2014.5a2%202%200%201%200-4%200a2%202%200%201%200%204%200Z%20M18%2014.5a2%202%200%201%200-4%200a2%202%200%201%200%204%200Z%20M25%2014.5a2%202%200%201%200-4%200a2%202%200%201%200%204%200Z'/%3E%3C/svg%3E");
+  -webkit-mask: var(--npc-mask) center / contain no-repeat;
+  mask: var(--npc-mask) center / contain no-repeat;
 }
 .icon-General_Heart:before {
   content: "\f004";

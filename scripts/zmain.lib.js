@@ -158,6 +158,7 @@ function getMapCategories(categoriesSelectedIdPairsObject) {
   $.getJSON(
     "ajax.php?command=get_categories&game=" + gameId,
     function(vResults) {
+      vResults = ensureBotWNPCCategory(vResults);
       $.each(vResults, function(i, category) {
         zMap.addCategory(category);
 

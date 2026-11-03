@@ -126,6 +126,7 @@ CategoryButton.prototype._initSettings = function(opts) {
   if(this.showIcon && (this.icon || this.iconClass || this.iconURL)) {
     this.categoryIcon = (
       (this.icon) ? this.icon : new CategoryIcon({
+        category: this.category,
         color: this.category.color,
         iconTitle: this.title,
         iconClass: this.iconClass,
@@ -225,7 +226,24 @@ CategoryButton.prototype._setupUserInputListener = function() {
   this.domNode.on('click', function(e) {
     if (!this.disabled) {
       e.preventDefault();
+      var selectingCategory = !this.category.checked || (
+        this.categoryMenu && this.categoryMenu.categorySelectionMethod === 'focus' &&
+        this.categoryMenu._categoryTree && !this.categoryMenu.computeHasUncheck()
+      );
+      if(this.categoryMenu && this.categoryMenu._categoryTree) {
+        zMap._categoryNavigationRequest = (zMap._categoryNavigationRequest || 0) + 1;
+        // Explicitly focusing one category can reveal its markers immediately;
+        // section-wide visibility controls retain the normal zoom thresholds.
+        this.category._respectZoomThreshold = false;
+        this.childCategoryButtons.forEach(function(button) {
+          button.category._respectZoomThreshold = false;
+        });
+      }
       this.toggle();
+      if(selectingCategory && this.categoryMenu && this.categoryMenu._categoryTree && this.category.checked &&
+        typeof zMap.focusSingleMapCategory === 'function') {
+        zMap.focusSingleMapCategory(this.category);
+      }
     }
   }.bind(this));
   this.domNode.on('mouseenter', function(e) {
@@ -298,6 +316,9 @@ CategoryButton.prototype.toggle = function(toggledOn) {
   if(!this._triggerHandler('beforeToggle', toggledOn)) return;
   this._toggle();
   this._triggerHandler('afterToggle', toggledOn);
+  if(this.categoryMenu && this.categoryMenu.updateCategoryGroupControls) {
+    this.categoryMenu.updateCategoryGroupControls();
+  }
 };
 
 CategoryButton.prototype.clear = function() {
@@ -307,18 +328,26 @@ CategoryButton.prototype.clear = function() {
 
 
 CategoryButton.prototype.mouseEnter = function() {
-  let complete  = this.category.complete;
-  let total     = this.category.total;
-
   // Hold the label at its wrapped height so the shorter count doesn't
   // reflow the grid.
   this.labelNode.css('min-height', this.labelNode[0].getBoundingClientRect().height + 'px');
-  this.labelNode.text(complete+'/'+total);
+  this._labelHovered = true;
+  this.updateCategoryLabel();
 };
 
 CategoryButton.prototype.mouseLeave = function() {
-  this.labelNode.text(this.category.name);
+  this._labelHovered = false;
+  this.updateCategoryLabel();
   this.labelNode.css('min-height', '');
+};
+
+CategoryButton.prototype.updateCategoryLabel = function() {
+  var name = this.displayTitle || this.category.name || this.title;
+  var countsByDefault = getCookie('showCategoryCompletionCounts') === 'true';
+  var showCounts = this.showProgress && this.category.total > 0 &&
+    (countsByDefault ? !this._labelHovered : !!this._labelHovered);
+  this.labelNode.text(showCounts ? this.category.complete + '/' + this.category.total : name);
+  this.domNode.attr('aria-label', name);
 };
 
 CategoryButton.prototype._className = "CategoryButton";

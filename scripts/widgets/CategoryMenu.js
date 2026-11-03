@@ -181,6 +181,67 @@ CategoryMenu.prototype._initDOMElements = function() {
       this._addCategoryEntry(category);
     }, this);
   }
+  if(this._categoryTree) this.organizePOICategories();
+};
+
+CategoryMenu.prototype.organizePOICategories = function() {
+  var groups = getPOICategoryGroups(this._categories);
+  if(!groups) return;
+  var list = this.domNodeCategorySelectionList;
+  this.poiCategoryGroups = [];
+  this.domNode.addClass('poi-category-groups');
+  this.categoryButtons.forEach(function(button) {
+    if(!button.category.parent_id || String(button.category.parent_id) === '2162') {
+      button.domNode.closest('li').addClass('poi-original-category');
+    }
+  });
+  groups.forEach(function(group) {
+    if(!group.categories.length) return;
+    var heading = $('<li class="poi-category-heading"><h3></h3></li>');
+    heading.find('h3').text(group.title);
+    var toggle = $('<button type="button" class="poi-category-toggle"></button>');
+    heading.append(toggle);
+    this.poiCategoryGroups.push({ categories: group.categories, toggle: toggle, title: group.title });
+    toggle.on('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var checked = !group.categories.every(function(c) { return !!c.checked; });
+      this.modeAutomatic = false;
+      zMap._categoryNavigationRequest = (zMap._categoryNavigationRequest || 0) + 1;
+      group.categories.forEach(function(category) {
+        category.checked = checked;
+        category._respectZoomThreshold = true;
+        var button = this.categoryButtons.find(function(b) { return String(b.category.id) === String(category.id); });
+        if(button) button._toggle(checked);
+      }, this);
+      this.updateCategoryGroupControls();
+      zMap.refreshMap(group.categories);
+    }.bind(this));
+    list.append(heading);
+    group.categories.forEach(function(category) {
+      var button = this.categoryButtons.find(function(b) { return String(b.category.id) === String(category.id); });
+      if(button) {
+        if(!category.parent_id) {
+          button._directMarkersOnly = true;
+          button.childCategoryButtons = [];
+          button.domNode.closest('li').removeClass('poi-original-category');
+          button.displayTitle = category.name === 'Point of Interest' ? 'Other POIs' : 'Other ' + category.name;
+        }
+        if(String(category.id) === '2134') button.displayTitle = "Dragon's Tears";
+        if(button.displayTitle) button.labelNode.text(button.displayTitle);
+        list.append(button.domNode.closest('li'));
+      }
+    }, this);
+  }, this);
+  this.updateCategoryGroupControls();
+};
+
+CategoryMenu.prototype.updateCategoryGroupControls = function() {
+  (this.poiCategoryGroups || []).forEach(function(group) {
+    var allShown = group.categories.every(function(c) { return !!c.checked; });
+    var action = allShown ? 'Hide All' : 'Show All';
+    group.toggle.text(action).attr('aria-label', action + ' ' + group.title);
+  });
 };
 
 CategoryMenu.prototype._buildActionGroup = function(parent) {
@@ -337,7 +398,7 @@ CategoryMenu.prototype.updateCategorySelectionFocus = function(categoryButton) {
     categoryButton._toggle(true);
 
     var affectedCategories = [ categoryButton.category ];
-    if(categoryButton.category.childrenArr.length > 0) {
+    if(!categoryButton._directMarkersOnly && categoryButton.category.childrenArr.length > 0) {
       categoryButton.category.childrenArr.forEach(function(category) {
         category.checked = true;
         affectedCategories.push(category);

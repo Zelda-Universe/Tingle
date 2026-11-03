@@ -81,6 +81,17 @@ L.Control.Settings = L.Control.extend({
       this.syncRegionAreaNames();
     }, this.labelCategories.length === 0);
 
+    this.completionCountsCheckbox = this.addCheckbox(
+      'Show Completion Counts',
+      getCookie('showCategoryCompletionCounts') === 'true',
+      function(checked) {
+        setCookie('showCategoryCompletionCounts', checked);
+        this.mapControl._categoryMenu.categoryButtons.forEach(function(button) {
+          button.updateCategoryLabel();
+        });
+      }
+    );
+
     this.hideReplacedCategoryButtons();
     this.syncRegionAreaNames();
     if(this.mapControl.isMobile) this.mountMobileControl(container, toggle, panel);

@@ -712,10 +712,12 @@ main.leaflet-container,
 	transform: translateY(-50%);
 }
 
-#account_information_form > label {
+#account_information_form > label,
+.poi-category-groups .poi-category-heading h3 {
 	display: block;
 	font-size: 12px;
 	line-height: 1.4;
+	font-weight: 700;
 	margin-bottom: 8px;
 }
 

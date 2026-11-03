@@ -1,0 +1,120 @@
+/* BotW/TotK POI treatments shared by category glyphs and map markers. */
+.poi-badge {
+  position: relative;
+  isolation: isolate;
+  background: transparent !important;
+  border-color: transparent !important;
+  border-radius: 0;
+  color: #fff;
+  box-shadow: none !important;
+  --poi-fill: #ffad47;
+}
+.poi-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--poi-fill);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.poi-travel { --poi-fill: #4395f7; }
+.poi-travel::after { border-radius: 17%; transform: rotate(45deg) scale(.76); }
+/* A diamond has less usable corner space than a circle. Enlarge only its
+   backing plate; glyph sizes, marker anchors and completion badges stay put. */
+.circleMap-medium.poi-travel::after,
+.circleMap-small.poi-travel::after { transform: rotate(45deg) scale(.9); }
+.category-icon.poi-travel,
+.circleMap-medium.poi-travel,
+.circleMap-small.poi-travel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.poi-travel > [class*='icnText-'] { display: inline-flex; line-height: 1; }
+.category-icon.poi-travel::before,
+.poi-travel > [class*='icnText-']::before { display: block; line-height: 1; transform-origin: center; }
+/* Optical corrections for broad/asymmetric travel glyphs. Keep the backing
+   diamonds and marker anchors unchanged. */
+.category-icon.poi-travel.icon-BotW_Shrines-of-Trials::before,
+.poi-travel > .icon-BotW_Shrines-of-Trials::before { transform: translateY(calc(-.025em - 1px)); }
+.category-icon.poi-travel.icon-TotK_Lightroot::before,
+.poi-travel > .icon-TotK_Lightroot::before { transform: translate(.025em, .015em) scale(.92); }
+.category-icon.poi-travel.icon-BotW_Dungeon::before,
+.poi-travel > .icon-BotW_Dungeon::before { transform: translateY(-.015em); }
+.poi-korok { --poi-fill: #3dbc75; }
+.poi-memory { --poi-fill: #c6c396; }
+.poi-relic, .poi-location, .poi-location-round, .poi-cave { --poi-fill: #8f773a; }
+.poi-location, .poi-location-round, .poi-cave { color: #684521; }
+.poi-location::after { border-radius: 16%; }
+.poi-cave::after { border-radius: 50% 50% 13% 13%; }
+.poi-enemy { --poi-fill: #e85040; }
+.poi-interest { --poi-fill: #ffad47; }
+.poi-treasure { color: #ede954; }
+.poi-treasure::after { display: none; }
+.poi-treasure::before,
+.poi-treasure > [class*='icnText-'] {
+  -webkit-text-stroke: 1px #2a2600;
+  paint-order: stroke fill;
+  filter: drop-shadow(1px 0 #2a2600) drop-shadow(-1px 0 #2a2600) drop-shadow(0 1px #2a2600) drop-shadow(0 -1px #2a2600);
+}
+.category-icon.poi-treasure::before { -webkit-text-stroke-width: 3px; }
+.poi-badge > [class*='icnText-'] { color: inherit; }
+
+/* Match the existing category-list correction for this smaller-drawn glyph. */
+.circleMap-medium.poi-interest > .icon-TotK_Dispenser::before,
+.circleMap-small.poi-interest > .icon-TotK_Dispenser::before {
+  display: inline-block;
+  transform: scale(1.5);
+  transform-origin: center;
+}
+
+.category-icon.poi-location.icon-General_Store::before,
+.poi-location > .icon-General_Store::before {
+  display: inline-block;
+  transform: scale(1.3);
+  transform-origin: center;
+}
+
+.poi-category-groups .poi-original-category { display: none; }
+.poi-category-groups .poi-category-heading {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  clear: both;
+  width: 100%;
+  padding: 16px 8px 8px;
+  box-sizing: border-box;
+  list-style: none;
+}
+.poi-category-groups .poi-category-heading h3 {
+  margin: 0 0 8px;
+  padding: 0;
+  font-family: inherit;
+  font-size: 14px;
+  color: inherit;
+}
+.poi-category-groups .category-selector:nth-of-type(7)::after { display: none; }
+
+.poi-category-toggle {
+  margin-left: auto;
+  flex: 0 0 auto;
+  border: 0;
+  background: rgba(255,255,255,.12);
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin: 0 0 8px auto;
+  color: rgba(255,255,255,.65);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+.poi-category-toggle:hover { color: #fff; background: rgba(255,255,255,.2); }
+.poi-category-toggle:focus-visible { outline: 1px solid currentColor; outline-offset: 3px; }
+
+.poi-category-groups .poi-category-heading:first-of-type,
+.poi-category-groups .poi-original-category + .poi-category-heading {
+  padding-top: 4px;
+}

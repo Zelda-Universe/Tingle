@@ -99,7 +99,6 @@ function ZMap() {
       ACCOUNT_TITLE  : "Account",
 
       REGISTER_WELCOME  : "Create an Account",
-      REGISTER_SUCCESS : "Excuuuuse me, %1! Your account has been successfully created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
       LOST_PASSWORD_WELCOME: "Forgot Password",
@@ -2830,23 +2829,30 @@ ZMap.prototype._createRegisterForm = function() {
         success: function(data) {
             //data = jQuery.parseJSON(data);
             if (data.success) {
-               if(_this._pendingBookmarkRegistration) {
-                 $.ajax({ type: 'POST', url: 'ajax.php?command=login',
-                   data: { user: registrationUser, password: registrationPassword },
-                   success: function(login) {
-                     if(login.success) {
-                       _this.setUser(login.user);
-                       updateAdState();
-                       _this._saveRegistrationBookmark();
-                     } else _this._createLoginForm('Your account has been created! Please log in to finish saving your bookmark.');
-                   },
-                   error: function() { _this._createLoginForm('Your account has been created! Please log in to finish saving your bookmark.'); }
-                 });
-                 return;
-               }
-               var successMessage = _this.langMsgs.REGISTER_SUCCESS.format($("#user")[0].value)
-                 + " Please log in.";
-               _this._createLoginForm(successMessage);
+               // Sign the new account straight in; fall back to the login
+               // page if that fails.
+               var bookmarkPending = !!_this._pendingBookmarkRegistration;
+               var showLoginFallback = function() {
+                 _this._createLoginForm(bookmarkPending
+                   ? 'Your account has been created! Please log in to finish saving your bookmark.'
+                   : 'Your account has been created! Please log in.');
+               };
+               $.ajax({ type: 'POST', url: 'ajax.php?command=login',
+                 data: { user: registrationUser, password: registrationPassword, remember: 'on' },
+                 success: function(login) {
+                   if(!login.success) return showLoginFallback();
+                   _this.setUser(login.user);
+                   updateAdState();
+                   if(bookmarkPending) {
+                     _this._saveRegistrationBookmark();
+                     return;
+                   }
+                   if(_this.mapControl.isMobile) _this.mapControl.closeDrawer();
+                   else _this.mapControl.resetContent();
+                   _this._showWelcomeAlert();
+                 },
+                 error: showLoginFallback
+               });
             } else {
                registrationError.text(_this.langMsgs.REGISTER_ERROR.format(data.msg || 'Unable to register. Please try again.')).prop('hidden', false);
             }
@@ -3168,6 +3174,15 @@ ZMap.prototype._showAccountDeletedAlert = function() {
     title: 'Account Deleted',
     description: 'We\'ve completely removed your account. Sorry to see you go!',
     actions: [{ label: 'Okay' }]
+  });
+};
+
+ZMap.prototype._showWelcomeAlert = function() {
+  this._showAlert({
+    id: 'welcome-alert',
+    title: 'Welcome to Zelda Maps!',
+    description: 'Your account is ready. Ads are gone, and your completed markers and bookmarks will now sync.',
+    actions: [{ label: 'Let\'s go!' }]
   });
 };
 

@@ -43,7 +43,7 @@ L.Control.Settings = L.Control.extend({
       this.zMap.refreshMapCompleted();
     });
 
-    if(!this.mapControl.isMobile) {
+    {
       this.minimalCheckbox = this.addCheckbox(
         'Minimal UI',
         this.mapControl.viewStyleBottomSlide ? !this.mapControl._open : this.mapControl.options.collapsed,
@@ -58,6 +58,7 @@ L.Control.Settings = L.Control.extend({
           }
         }
       );
+      this.minimalCheckbox.parentNode.style.display = this.mapControl.isMobile ? 'none' : '';
     }
 
     this.labelCategories = this.labelNames.map(function(name) {

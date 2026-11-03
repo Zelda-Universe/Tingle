@@ -2024,6 +2024,10 @@ button[aria-disabled="true"] {
 	cursor: pointer;
 }
 
+.leaflet-control-layers:not(.leaflet-control-layers-mobile) .grabber {
+	display: none;
+}
+
 .grabber::before {
 	content: '';
 	position: absolute;

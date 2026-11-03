@@ -2839,11 +2839,51 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   var page = this.drawerPageRoutes[contentType];
   if(page) url.searchParams.set('page', page);
   else url.searchParams.delete('page');
-  window.history.replaceState(window.history.state, '', url.href);
+  var reloadParent = null;
+  if(['accountPage', 'loginForm', 'games', 'maps'].includes(contentType)) {
+    var parent = this.mapControl._headerPageParent;
+    if(parent && /^m\d+$/.test(parent.type)) reloadParent = parent.type;
+  }
+  var state = Object.assign({}, window.history.state);
+  if(reloadParent) state.drawerReloadParent = reloadParent;
+  else delete state.drawerReloadParent;
+  window.history.replaceState(state, '', url.href);
 };
 
 ZMap.prototype.restoreDrawerPage = function(page) {
   this._drawerRoutingReady = true;
+  var state = Object.assign({}, window.history.state);
+  if(state.responsiveDrawer) {
+    var snapshot = state.responsiveDrawer;
+    delete state.responsiveDrawer;
+    delete state.drawerReloadParent;
+    window.history.replaceState(state, '', window.location.href);
+    this.restoreResponsiveDrawer(snapshot);
+    return;
+  }
+  var parent = state.drawerReloadParent;
+  if(parent) {
+    delete state.drawerReloadParent;
+    var url = new URL(window.location.href);
+    if(/^m\d+$/.test(parent)) {
+      url.searchParams.set('marker', parent.substring(1));
+      url.searchParams.delete('page');
+      page = null;
+    }
+    window.history.replaceState(state, '', url.href);
+    if(/^m\d+$/.test(parent)) {
+      // The marker URL may have been cleared while viewing a header page.
+      // finalLoad has already run by the time account restoration completes,
+      // so changing the URL alone cannot restore the POI.
+      this.mapControl._restoringInitialPage = true;
+      try {
+        this.goTo({ marker: parent.substring(1), panTo: false, centerInVisibleArea: true });
+      } finally {
+        this.mapControl._restoringInitialPage = false;
+      }
+      return;
+    }
+  }
   if(!page) return;
   if(page === 'games' || page === 'maps') {
     this.syncDrawerPageURL(this.mapControl.getContentType());
@@ -2869,6 +2909,52 @@ ZMap.prototype.restoreDrawerPage = function(page) {
   } else return;
   if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
   else this.mapControl._expand();
+};
+
+ZMap.prototype.restoreResponsiveDrawer = function(snapshot) {
+  var control = this.mapControl;
+  var type = snapshot.type;
+  control._restoringInitialPage = true;
+  try {
+    if(snapshot.parent && /^m\d+$/.test(snapshot.parent.type || '')) {
+      this.goTo({ marker: snapshot.parent.type.substring(1), panTo: false, centerInVisibleArea: false });
+    }
+    if(/^m\d+$/.test(type || '')) {
+      this.goTo({ marker: type.substring(1), panTo: false, centerInVisibleArea: false });
+    } else if(['games', 'maps'].includes(type)) {
+      control._headerPageParent = snapshot.parent;
+      control._navigatingBack = true; // Preserve the inherited parent during restoration.
+      control.setContent(type === 'games' ? control._gameMenu.domNode : control._mapsMenu.domNode, type);
+      (type === 'games' ? control._gamesButton : control._mapsButton)._toggle(true);
+    } else if(this.drawerPageRoutes[type]) {
+      control._headerPageParent = snapshot.parent;
+      control._navigatingBack = true;
+      this.restoreDrawerPage(this.drawerPageRoutes[type]);
+    } else {
+      control.resetContent();
+    }
+    // Parent positions belong to the old viewport. Preserve their relative
+    // detent rather than reusing an absolute coordinate after a layout change.
+    if(snapshot.parent) {
+      var parent = Object.assign({}, snapshot.parent);
+      var oldHeight = snapshot.parentViewportHeight || control._viewportHeight();
+      parent.top = parent.top <= control.options.openTo + 1 ? control.options.openTo :
+        Math.max(control.options.openTo + 2, parent.top * control._viewportHeight() / oldHeight);
+      control._headerPageParent = parent;
+      control._mobileAccountParent = parent;
+    }
+    if(control.viewStyleBottomSlide) {
+      if(!snapshot.open) control.closeDrawer(true);
+      else if(snapshot.partial) control.openDrawerDefaultPartial();
+      else control.openDrawerLarge();
+    } else {
+      control._expand();
+    }
+    control._contents.scrollTop = snapshot.scrollTop || 0;
+    this.syncDrawerPageURL(type);
+  } finally {
+    control._restoringInitialPage = false;
+  }
 };
 
 ZMap.prototype._createAccountForm = function(user) {
@@ -3667,7 +3753,7 @@ ZMap.prototype.updateUrl = function() {
    url.searchParams.set("zoom", this.map.getZoom());
    url.searchParams.set("x", Math.floor(this.map.getCenter().lng));
    url.searchParams.set("y", Math.floor(this.map.getCenter().lat));
-   history.pushState({}, "", url);
+   history.pushState(Object.assign({}, history.state), "", url);
 }
 
 ZMap.prototype.addLanguage = function(lang) {

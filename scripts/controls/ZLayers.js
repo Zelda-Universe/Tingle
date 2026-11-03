@@ -277,7 +277,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
 
     // Mobile touch interaction
-    if(this.viewStyleBottomSlide) {
+    {
       this._drawerXDown = null;
       this._drawerYDown = null;
 
@@ -308,7 +308,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._mapsMenu = this.createMapsMenu();
 
       // Add mobile grabber element
-      if(this.viewStyleBottomSlide) {
+      {
         var grabber = L.DomUtil.create('div', 'grabber', headerMenu);
         grabber.setAttribute('role', 'button');
         grabber.setAttribute('tabindex', '0');
@@ -346,10 +346,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
             // console.log('_mapsButton - afterToggle - this.toggledOn');
             var drawerWasOpen = _thisLayer._open;
             var previousDrawerTop = _thisLayer.drawerTop();
-            var resizePOIPartial = /^m\d+$/.test(_thisLayer._contentType || '') && previousDrawerTop > _thisLayer.options.openTo + 2;
             _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
             if(_thisLayer.viewStyleBottomSlide) {
-              if(drawerWasOpen && !resizePOIPartial) _thisLayer.openDrawerManual(previousDrawerTop);
+              if(_thisLayer._headerPageParent) _thisLayer._openSwitchMenuAtParentHeight();
+              else if(drawerWasOpen) _thisLayer.openDrawerManual(previousDrawerTop);
               else _thisLayer.openDrawerDefaultPartial();
             } else {
               _thisLayer.openDrawerLarge();
@@ -385,10 +385,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
           if (this.toggledOn) {
             var drawerWasOpen = _thisLayer._open;
             var previousDrawerTop = _thisLayer.drawerTop();
-            var resizePOIPartial = /^m\d+$/.test(_thisLayer._contentType || '') && previousDrawerTop > _thisLayer.options.openTo + 2;
             _thisLayer.setContent(_thisLayer._gameMenu.domNode, "games");
             if(_thisLayer.viewStyleBottomSlide) {
-              if(drawerWasOpen && !resizePOIPartial) _thisLayer.openDrawerManual(previousDrawerTop);
+              if(_thisLayer._headerPageParent) _thisLayer._openSwitchMenuAtParentHeight();
+              else if(drawerWasOpen) _thisLayer.openDrawerManual(previousDrawerTop);
               else _thisLayer.openDrawerDefaultPartial();
             } else {
               _thisLayer.openDrawerLarge();
@@ -475,11 +475,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
   		container.appendChild(form1);
   		container.appendChild(this._contents);
 
-      if(this.viewStyleBottomSlide) {
+      {
         window.requestAnimationFrame(function() {
-          this._refreshMobileDrawerLayout();
+          if(this.viewStyleBottomSlide) this._refreshMobileDrawerLayout();
+          else this._refreshDesktopDrawerLayout();
         }.bind(this));
         var refreshMobileLayout = function() {
+          if(!this.viewStyleBottomSlide) {
+            this._refreshDesktopDrawerLayout();
+            return;
+          }
           if(this._keyboardDrawerViewport) {
             var baseline = this._keyboardDrawerViewport;
             var active = document.activeElement;
@@ -504,9 +509,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
         if(window.visualViewport) {
           window.visualViewport.addEventListener('resize', refreshMobileLayout);
         }
-      } else {
-        this._refreshDesktopDrawerLayout();
-        window.addEventListener('resize', this._refreshDesktopDrawerLayout.bind(this));
       }
     }
 
@@ -523,22 +525,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _drawerStart: function(e) {
+    if(!this.viewStyleBottomSlide) return;
     if(e.target.closest && e.target.closest('.marker-actions-row')) return;
 
     var point = e.type.startsWith('touch') ? e.touches[0] : e;
     this._clearDrawerClickSuppression();
-    if(this._drawerClosing) {
-      if(this._drawerAnimationTimeout) {
-        window.clearTimeout(this._drawerAnimationTimeout);
-        this._drawerAnimationTimeout = null;
-      }
-      this._finishDrawerClose();
-    }
-    this._container.style.transition = 'none';
-    if(this._contents) this._contents.style.transition = 'none';
-    if(this._drawerHeaderSeparator) {
-      this._drawerHeaderSeparator.style.transition = 'none';
-    }
     this._drawerXDown = point.clientX;
     this._drawerYDown = point.clientY;
     this._drawerStartTop = this.drawerTop();
@@ -547,7 +538,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._drawerVelocity = 0;
     this._drawerLastY = point.clientY;
     this._drawerLastMoveTime = performance.now();
-    this._drawerAnimationId++;
 
     if(e.type.startsWith('touch')) {
       L.DomEvent
@@ -572,6 +562,23 @@ L.Control.ZLayers = L.Control.Layers.extend({
       // Real touch taps contain a few pixels of movement. Do not consume
       // their click or snap the drawer until an intentional vertical drag.
       if(Math.abs(yDelta) < 8 || Math.abs(xDelta) > Math.abs(yDelta)) return;
+      // A header-button tap must not cancel the drawer's resize. Only take
+      // over once this interaction has actually become a vertical drag.
+      this._drawerStartTop = this.drawerTop();
+      this._drawerAnimationId++;
+      if(this._drawerAnimationTimeout) {
+        window.clearTimeout(this._drawerAnimationTimeout);
+        this._drawerAnimationTimeout = null;
+      }
+      this._drawerClosing = false;
+      if(this._drawerGeometryAnimation) {
+        this._drawerGeometryAnimation.cancel();
+        this._drawerGeometryAnimation = null;
+      }
+      this._container.style.transition = 'none';
+      this._container.style.top = this._drawerStartTop + 'px';
+      if(this._contents) this._contents.style.transition = 'none';
+      if(this._drawerHeaderSeparator) this._drawerHeaderSeparator.style.transition = 'none';
     }
     if(yDelta === 0) return;
 
@@ -908,6 +915,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
       : this._contents.getBoundingClientRect().top -
         this._container.getBoundingClientRect().top;
 
+    var switchMenu = content.querySelector('.switch-menu');
+    if(switchMenu) {
+      // Measure the menu itself, not the wrapper's scrollHeight: on Safari
+      // the wrapper includes a toolbar-clearance ::after spacer. Counting
+      // that spacer as menu content feeds extra space into the partial stop.
+      return contentsOffset + switchMenu.getBoundingClientRect().bottom -
+        this._contents.getBoundingClientRect().top;
+    }
+
     return Math.max(
       this._form.getBoundingClientRect().height,
       contentsOffset + content.offsetTop + content.scrollHeight
@@ -1007,6 +1023,78 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._map.getSize().y - 250,
       250
     ) + 'px';
+  },
+
+  setResponsiveLayout: function(mobile) {
+    if(this.viewStyleBottomSlide === mobile) return;
+    var scrollTop = this._contents.scrollTop;
+    if(this.viewStyleBottomSlide) this._layoutMobileState = { open: this._open, partial: this._partialDrawerMode };
+    if(this._pageTransitionCleanup) this._pageTransitionCleanup();
+    this._drawerAnimationId++;
+    if(this._drawerGeometryAnimation) this._drawerGeometryAnimation.cancel();
+    this._drawerGeometryAnimation = null;
+    if(this._drawerAnimationTimeout) window.clearTimeout(this._drawerAnimationTimeout);
+    this._drawerAnimationTimeout = null;
+    this.isMobile = this.viewStyleBottomSlide = mobile;
+    this._keyboardDrawerViewport = null;
+    this._mobileDrawerBaseTop = this._mobileDrawerContentsOffset = null;
+    this._container.removeAttribute('style');
+    this._contents.removeAttribute('style');
+    this._contents.style.clear = 'both';
+    var header = this.headerBar;
+    if(mobile) {
+      L.DomUtil.addClass(this._container, 'leaflet-control-layers-mobile');
+      if(!header.isolated) {
+        var row = header.domNode;
+        var separator = row.nextElementSibling;
+        if(separator && separator.classList.contains(this.options.className + '-separator')) separator.remove();
+        var wrapper = L.DomUtil.create('div', 'header-bar mobile-header-bar leaflet-control', this._map._controlCorners.topleft);
+        // Match the initial mobile DOM order. Appending after the floating
+        // drawer makes Leaflet's clear:both push the search header below it.
+        this._map._controlCorners.topleft.insertBefore(wrapper, this._container);
+        wrapper.appendChild(row);
+        header.domNode = wrapper;
+      }
+      header.isolated = true;
+      header.ensureMobileSearchResultsPanel();
+      this._form.style.width = '100%';
+      this._container.style.margin = '0';
+      this._container.style.border = '0';
+      L.DomUtil.addClass(this._contents, 'bottommenu');
+      var state = this._layoutMobileState || { open: true, partial: true };
+      this._open = false;
+      this._refreshMobileDrawerLayout();
+      if(state.open) {
+        if(state.partial) this.openDrawerDefaultPartial();
+        else this.openDrawerLarge();
+      }
+    } else {
+      L.DomUtil.removeClass(this._container, 'leaflet-control-layers-mobile');
+      if(header.isolated) {
+        var wrapper = header.domNode;
+        var row = wrapper.querySelector('.row-header');
+        this._form.insertBefore(row, this._form.firstChild);
+        this._form.insertBefore(L.DomUtil.create('div', this.options.className + '-separator'), row.nextSibling);
+        wrapper.remove();
+        header.domNode = row;
+      }
+      header.isolated = false;
+      header.hideMobileSearchResults();
+      this.options.width = 360;
+      this._form.style.width = '360px';
+      this._contents.style.width = '360px';
+      L.DomUtil.removeClass(this._contents, 'bottommenu');
+      this.options.collapsed = false;
+      L.DomUtil.addClass(this._container, 'leaflet-control-layers-expanded');
+      this._refreshDesktopDrawerLayout();
+    }
+    var settings = this.zMap.settingsControl;
+    if(settings) {
+      settings.container.classList.toggle('settings-control-mobile-floating', mobile);
+      if(settings.minimalCheckbox) settings.minimalCheckbox.parentNode.style.display = mobile ? 'none' : '';
+    }
+    this._contents.scrollTop = scrollTop;
+    this._map.invalidateSize({ pan: false });
   },
 
   updateContentsHeight: function(targetTop) {
@@ -1171,20 +1259,26 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   setContent: function(vContent, vType) {
     var previousContentType = this._contentType;
-    if(['accountPage', 'loginForm'].includes(vType) && previousContentType === 'category') {
-      this._accountReturnsToCategories = !this.viewStyleBottomSlide || this._open;
-      this._accountCategoryReturnTop = this.viewStyleBottomSlide ? this.drawerTop() : null;
+    var siblingPages = ['games', 'maps', 'accountPage', 'loginForm'];
+    var swappingSiblingPages = siblingPages.includes(previousContentType) && siblingPages.includes(vType);
+    if(siblingPages.includes(vType) && !this._navigatingBack && !swappingSiblingPages &&
+      (previousContentType === 'category' || /^m\d+$/.test(previousContentType || ''))) {
+      this._headerPageParent = (!this.viewStyleBottomSlide || this._open) ? {
+        type: previousContentType, top: this.drawerTop()
+      } : null;
     }
-    if(!this.viewStyleBottomSlide && ['accountPage', 'loginForm'].includes(vType) &&
-      !['accountPage', 'loginForm', 'accountInformationPage', 'offlineMapsPage', 'bookmarksPage', 'games', 'maps', 'registerForm', 'lostPasswordForm', 'changePasswordForm', 'deleteAccountForm'].includes(previousContentType)) {
-      this._desktopAccountReturnMarker = /^m\d+$/.test(previousContentType || '') ? previousContentType.substring(1) : null;
-    }
-    if(['games', 'maps'].includes(vType) && !['games', 'maps'].includes(previousContentType)) {
-      this._switchMenuReturnAccount = previousContentType === 'accountPage';
-      this._switchMenuReturnLogin = previousContentType === 'loginForm';
-      this._switchMenuReturnsToCategories = this.viewStyleBottomSlide && this._open && ['category', 'accountPage', 'loginForm'].includes(previousContentType);
-      this._switchMenuReturnMarker = /^m\d+$/.test(previousContentType || '')
-        ? previousContentType.substring(1) : null;
+    if(siblingPages.includes(vType)) {
+      // All header destinations are siblings: retain the original parent
+      // rather than building a history through Account and the switch menus.
+      var headerParent = this._headerPageParent;
+      this._mobileAccountParent = headerParent;
+      this._desktopAccountReturnMarker = headerParent && /^m\d+$/.test(headerParent.type)
+        ? headerParent.type.substring(1) : null;
+      this._switchMenuReturnMarker = this._desktopAccountReturnMarker;
+      this._switchMenuReturnsToCategories = !!headerParent && headerParent.type === 'category';
+      this._switchMenuParentTop = headerParent ? headerParent.top : null;
+      this._switchMenuReturnAccount = false;
+      this._switchMenuReturnLogin = false;
     }
     var switchingBetweenPOIs = /^m\d+$/.test(previousContentType || '') && /^m\d+$/.test(vType || '');
     if(switchingBetweenPOIs && this._pageTransitionCleanup) this._pageTransitionCleanup();
@@ -1198,14 +1292,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var accountSwitchNavigation =
       (['accountPage', 'loginForm'].includes(previousContentType) && ['games', 'maps'].includes(vType)) ||
       (['accountPage', 'loginForm'].includes(vType) && ['games', 'maps'].includes(previousContentType));
+    var switchToAccountWithParent = ['games', 'maps'].includes(previousContentType) &&
+      ['accountPage', 'loginForm'].includes(vType) &&
+      (!!this._switchMenuReturnMarker || this._switchMenuReturnsToCategories ||
+        this._switchMenuReturnAccount || this._switchMenuReturnLogin);
     if(switchingMenu && this._pageTransitionCleanup) this._pageTransitionCleanup();
-    var shouldSlide = !this._restoringInitialPage && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs && previousContentType && previousContentType !== vType &&
+    var shouldSlide = !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
       (!this.viewStyleBottomSlide || this._open) &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var outgoingPage;
     var outgoingBounds;
+    var outgoingDrawerHeight;
     if(shouldSlide && this._contents.animate) {
       if(this._pageTransitionCleanup) this._pageTransitionCleanup();
+      if(!this.viewStyleBottomSlide) outgoingDrawerHeight = this._container.getBoundingClientRect().height;
       outgoingBounds = {
         top: this._contents.offsetTop,
         left: this._contents.offsetLeft,
@@ -1244,11 +1344,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var backward = this._navigatingBack || pageDepth(vType) < pageDepth(previousContentType);
       if(desktopMenuPOINavigation) backward = ['games', 'maps'].includes(previousContentType);
       if(accountSwitchNavigation) backward = ['games', 'maps'].includes(previousContentType);
-      if(!this.viewStyleBottomSlide &&
-        ((/^m\d+$/.test(previousContentType || '') && ['accountPage', 'loginForm'].includes(vType)) ||
+      if(((/^m\d+$/.test(previousContentType || '') && ['accountPage', 'loginForm'].includes(vType)) ||
          (/^m\d+$/.test(vType || '') && ['accountPage', 'loginForm'].includes(previousContentType)))) {
         backward = /^m\d+$/.test(vType || '');
       }
+      // Explicit Back actions take precedence over inferred page depths.
+      if(this._navigatingBack) backward = true;
       var width = this._contents.getBoundingClientRect().width;
       outgoingPage.style.position = 'absolute';
       outgoingPage.style.top = outgoingBounds.top + 'px';
@@ -1276,22 +1377,35 @@ L.Control.ZLayers = L.Control.Layers.extend({
         { transform: 'translateX(' + (backward ? width : -width * .3) + 'px)', opacity: 0,
           clipPath: backward ? 'inset(0 0 0 0)' : 'inset(0 70% 0 0)' }
       ], timing);
-      // The desktop panel sizes to its content, so ease between page heights
-      // rather than snapping and clipping the outgoing page.
-      var resizing;
-      if(!this.viewStyleBottomSlide) {
-        var incomingHeight = this._contents.getBoundingClientRect().height;
-        if(incomingHeight !== outgoingBounds.height) {
-          resizing = this._contents.animate([
-            { height: outgoingBounds.height + 'px' },
-            { height: incomingHeight + 'px' }
+      // Keep the incoming desktop page at its natural height. Giving its
+      // scrolling region the outgoing menu's height creates blank space and
+      // changes clipping until the temporary height animation is cancelled.
+      // The outgoing snapshot already retains its own measured height.
+      var drawerResizing;
+      var previousDrawerOverflow = this._container.style.overflow;
+      if(!this.viewStyleBottomSlide && typeof this._container.animate === 'function') {
+        var incomingDrawerHeight = this._container.getBoundingClientRect().height;
+        var drawerStyle = window.getComputedStyle(this._container);
+        var verticalExtras = drawerStyle.boxSizing === 'border-box' ? 0 :
+          (Number.parseFloat(drawerStyle.paddingTop) || 0) +
+          (Number.parseFloat(drawerStyle.paddingBottom) || 0) +
+          (Number.parseFloat(drawerStyle.borderTopWidth) || 0) +
+          (Number.parseFloat(drawerStyle.borderBottomWidth) || 0);
+        if(Math.abs(incomingDrawerHeight - outgoingDrawerHeight) > .5) {
+          this._container.style.overflow = 'hidden';
+          drawerResizing = this._container.animate([
+            { height: Math.max(0, outgoingDrawerHeight - verticalExtras) + 'px' },
+            { height: Math.max(0, incomingDrawerHeight - verticalExtras) + 'px' }
           ], timing);
         }
       }
       var cleanup = function() {
         entering.cancel();
         leaving.cancel();
-        if(resizing) resizing.cancel();
+        if(drawerResizing) {
+          drawerResizing.cancel();
+          this._container.style.overflow = previousDrawerOverflow;
+        }
         outgoingPage.remove();
         this._contents.style.zIndex = previousZIndex;
         if(this._pageTransitionCleanup === cleanup) this._pageTransitionCleanup = null;
@@ -1327,20 +1441,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var closesPage = isMapPage || ['accountPage', 'games', 'maps'].includes(vType);
     // A POI or pin opened from a list (e.g. Bookmarks) can also go back to it.
     var returnsTo = null;
-    if(this.viewStyleBottomSlide && ['accountPage', 'loginForm'].includes(vType) && this._accountReturnsToCategories) {
+    if(this.viewStyleBottomSlide && ['accountPage', 'loginForm'].includes(vType) && this._mobileAccountParent) {
       var accountBackButton = L.DomUtil.create('a', 'button back-button', this._contents);
       accountBackButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
-      accountBackButton.setAttribute('aria-label', 'Back to categories');
+      accountBackButton.setAttribute('aria-label', 'Back');
       L.DomEvent.on(accountBackButton, 'click', function(e) {
         L.DomEvent.stop(e);
-        var currentTop = Number.isFinite(this._accountCategoryReturnTop)
-          ? this._accountCategoryReturnTop : this.drawerTop();
-        this._navigatingBack = true;
-        this.resetContent();
-        if(this.viewStyleBottomSlide) {
-          this._partialDrawerMode = currentTop > this.options.openTo + 1;
-          this.openDrawerManual(currentTop);
-        }
+        this._returnFromMobileAccount();
       }, this);
     }
     if(isMapPage) {
@@ -1373,6 +1480,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       }
       var desktopAccountBack = !this.viewStyleBottomSlide && vType === 'accountPage';
       var desktopSwitchBack = ['games', 'maps'].includes(vType) && (!this.viewStyleBottomSlide || !!this._switchMenuReturnMarker);
+      var hasAccountParent = this.viewStyleBottomSlide && vType === 'accountPage' && this._mobileAccountParent;
+      if(!hasAccountParent) {
       var dismissButton = L.DomUtil.create(
         'a',
         (desktopSwitchBack || desktopAccountBack) ? 'button back-button' : 'button back-button close-button',
@@ -1394,8 +1503,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
           }
           this.closePage();
         }, this);
+      }
     } else if(!closesPage &&
       vType != 'category' &&
+      !(this.viewStyleBottomSlide && vType === 'loginForm' && this._mobileAccountParent) &&
       !(vType == 'search' && !this.viewStyleBottomSlide)
     ) {
       var closeButton = L.DomUtil.create('a', 'button back-button', this._contents);
@@ -1411,7 +1522,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
           e.preventDefault();
           if(isMobileLogin) {
             this.closeDrawer();
-          } else if(vType === 'loginForm') {
+          } else {
+            this._navigatingBack = true;
+          if(vType === 'loginForm') {
             this._returnFromDesktopAccount();
           } else if(vType === 'changePasswordForm' && this.zMap.getUser()) {
             this.zMap._createAccountInformationForm();
@@ -1419,6 +1532,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
             this.zMap._createAccountForm(this.zMap.getUser());
           } else {
             this.reset();
+          }
           }
         }, this)
     }
@@ -1494,18 +1608,33 @@ L.Control.ZLayers = L.Control.Layers.extend({
     else this.resetContent();
   },
 
+  _returnFromMobileAccount: function() {
+    var parent = this._mobileAccountParent;
+    if(!parent) return;
+    this._navigatingBack = true;
+    if(/^m\d+$/.test(parent.type)) {
+      var marker = this.zMap.cachedMarkersById[parent.type.substring(1)];
+      if(marker) this.zMap._createMarkerPopup(marker);
+      else this.resetContent();
+    } else {
+      this.resetContent();
+    }
+    this._partialDrawerMode = parent.top > this.options.openTo + 1;
+    this.openDrawerManual(parent.top);
+  },
+
+  _openSwitchMenuAtParentHeight: function() {
+    if(this._headerPageParent.top > this.options.openTo + 1) {
+      this.openDrawerDefaultPartial();
+    } else {
+      this.openDrawerLarge();
+    }
+  },
+
   _returnFromSwitchMenu: function() {
     var currentDrawerTop = this.drawerTop();
-    if(this._switchMenuReturnLogin) {
-      this._navigatingBack = true;
-      this.zMap._createLoginForm();
-      if(this.viewStyleBottomSlide) this.openDrawerManual(currentDrawerTop);
-      return;
-    }
-    if(this._switchMenuReturnAccount && this.zMap.getUser()) {
-      this._navigatingBack = true;
-      this.zMap._createAccountForm(this.zMap.getUser());
-      if(this.viewStyleBottomSlide) this.openDrawerManual(currentDrawerTop);
+    if(this.viewStyleBottomSlide && this._headerPageParent) {
+      this._returnFromMobileAccount();
       return;
     }
     var marker = this._switchMenuReturnMarker && this.zMap.cachedMarkersById[this._switchMenuReturnMarker];
@@ -1525,15 +1654,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.reset();
       return;
     }
-    zMap._closeNewMarker();
+    if(!/^m\d+$/.test(this._contentType || '')) zMap._closeNewMarker();
     this.headerBar.searchArea.markerSearchField.clear();
     this.closeDrawer();
   },
 
   // Open to the current page's partial stop, or fully if it has none.
   openDrawerDefaultPartial: function() {
-    this._refreshMobileDrawerDetents();
     this._contents.scrollTop = 0;
+    this._refreshMobileDrawerDetents();
     if(!this._partialDrawerAvailable) {
       this.openDrawerLarge();
       return;
@@ -1725,6 +1854,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._drawerAnimationTimeout = null;
     }
 
+    // Freeze the rendered geometry before changing detents. The partial-mode
+    // flag already describes the destination; applying it to the starting
+    // position would instantly shrink a full sheet into a floating card.
+    var renderedStyle = window.getComputedStyle(menu);
+    var renderedGeometry = {};
+    ['top', 'height', 'left', 'width', 'borderRadius'].forEach(function(property) {
+      renderedGeometry[property] = renderedStyle[property];
+    });
+    if(this._drawerGeometryAnimation) {
+      this._drawerGeometryAnimation.cancel();
+      this._drawerGeometryAnimation = null;
+    }
     menu.style.transition = 'none';
     if(this.viewStyleBottomSlide && this._contents) {
       this._contents.style.transition = 'none';
@@ -1732,8 +1873,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(this.viewStyleBottomSlide && this._drawerHeaderSeparator) {
       this._drawerHeaderSeparator.style.transition = 'none';
     }
-    menu.style.top = from + "px";
-    if(this.viewStyleBottomSlide) this._applyMobileDrawerViewport(from);
+    if(this.viewStyleBottomSlide && isOpen && from !== to) {
+      Object.keys(renderedGeometry).forEach(function(property) {
+        menu.style[property] = renderedGeometry[property];
+      });
+    } else {
+      menu.style.top = from + "px";
+      if(this.viewStyleBottomSlide) this._applyMobileDrawerViewport(from);
+    }
 
     if(from === to) {
       if(opensFullyFromPartial) this._partialDrawerMode = false;
@@ -1750,7 +1897,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var duration = reducedMotion ? 1 : 360;
       var timing = 'cubic-bezier(0.32, 0.72, 0, 1)';
-      menu.style.transition =
+      var explicitGeometry = this.viewStyleBottomSlide;
+      menu.style.transition = explicitGeometry ? 'none' :
         'top ' + duration + 'ms ' + timing + ', ' +
         'height ' + duration + 'ms ' + timing + ', ' +
         'left ' + duration + 'ms ' + timing + ', ' +
@@ -1776,7 +1924,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         // resized once the animation ends.
         if(isOpen && to <= from) this.updateContentsHeight(to);
       }
-      this._drawerAnimationTimeout = window.setTimeout(function() {
+      var finish = function() {
         if(animationId !== this._drawerAnimationId) return;
         menu.style.transition = '';
         if(this._contents) this._contents.style.transition = '';
@@ -1787,7 +1935,110 @@ L.Control.ZLayers = L.Control.Layers.extend({
         if(!isOpen) this._partialDrawerMode = false;
         if(isOpen) this.updateContentsHeight();
         else this._finishDrawerClose();
-      }.bind(this), duration + 20);
+      }.bind(this);
+      if(explicitGeometry) {
+        // Use the same geometry updates as dragging. This avoids Safari
+        // interpolating top/height/corners on a separately composited sheet.
+        var cancelled = false;
+        var geometryAnimation = { cancel: function() { cancelled = true; } };
+        this._drawerGeometryAnimation = geometryAnimation;
+        this._contents.style.transition = 'none';
+        if(this._drawerHeaderSeparator) this._drawerHeaderSeparator.style.transition = 'none';
+        var startTop = Number.parseFloat(renderedGeometry.top);
+        var started = performance.now();
+        var debugResize = new URLSearchParams(window.location.search).has('drawerDebug');
+        var frameCount = 0, lastFrame = started, maxFrameGap = 0;
+        var debugBadge;
+        var geometrySamples = [];
+        var sampleGeometry = function(phase, expectedTop) {
+          if(!debugResize) return;
+          var rect = menu.getBoundingClientRect();
+          var contentsRect = this._contents.getBoundingClientRect();
+          geometrySamples.push({
+            phase: phase, ms: Math.round(performance.now() - started),
+            top: rect.top, height: rect.height, bottom: rect.bottom,
+            cssTop: Number.parseFloat(window.getComputedStyle(menu).top),
+            expectedTop: expectedTop, contentsHeight: contentsRect.height,
+            viewportBottom: this._viewportBottom()
+          });
+        }.bind(this);
+        if(debugResize) {
+          debugBadge = document.getElementById('drawer-animation-debug');
+          if(!debugBadge) {
+            debugBadge = document.createElement('div');
+            debugBadge.id = 'drawer-animation-debug';
+            debugBadge.style.cssText = 'position:fixed;top:130px;left:12px;z-index:100000;background:#000;color:#fff;padding:8px;font:12px monospace;pointer-events:none;white-space:pre';
+            document.body.appendChild(debugBadge);
+          }
+          debugBadge.textContent = 'Drawer diagnostic v2: measuring…';
+          geometrySamples.push({ phase: 'before', ms: 0,
+            height: Number.parseFloat(renderedGeometry.height) });
+        }
+        var tick = function(now) {
+          if(cancelled || animationId !== this._drawerAnimationId) return;
+          if(now > lastFrame) {
+            frameCount++;
+            maxFrameGap = Math.max(maxFrameGap, now - lastFrame);
+            lastFrame = now;
+          }
+          var progress = Math.min(1, Math.max(0, (now - started) / duration));
+          // Invert the x component of cubic-bezier(.32,.72,0,1).
+          var low = 0, high = 1, t = progress;
+          for(var i = 0; i < 14; i++) {
+            t = (low + high) / 2;
+            var x = 3 * (1 - t) * (1 - t) * t * .32 + t * t * t;
+            if(x < progress) low = t; else high = t;
+          }
+          var eased = progress === 0 ? 0 : (progress === 1 ? 1 :
+            3 * (1 - t) * (1 - t) * t * .72 + 3 * (1 - t) * t * t + t * t * t);
+          var top = startTop + (to - startTop) * eased;
+          menu.style.top = top + 'px';
+          this._applyMobileDrawerViewport(top);
+          this.updateContentsHeight(top);
+          // Commit this frame's drawer geometry before yielding. The on-device
+          // measurement test was smooth with this layout read; keep it when
+          // diagnostics are disabled as well.
+          menu.getBoundingClientRect();
+          sampleGeometry('frame', top);
+          if(progress < 1) window.requestAnimationFrame(tick);
+          else {
+            this._drawerGeometryAnimation = null;
+            sampleGeometry('before cleanup', to);
+            finish();
+            if(debugBadge) {
+              sampleGeometry('after cleanup', to);
+              window.setTimeout(function() {
+                if(animationId !== this._drawerAnimationId) return;
+                sampleGeometry('settled', to);
+                window.zmDrawerGeometrySamples = geometrySamples;
+                var frames = geometrySamples.filter(function(s) { return s.phase === 'frame'; });
+                var heights = frames.filter(function(s, i) { return i % 4 === 0 || i === frames.length - 1; })
+                  .map(function(s) { return Math.round(s.height); });
+                var pre = geometrySamples.find(function(s) { return s.phase === 'before cleanup'; });
+                var post = geometrySamples.find(function(s) { return s.phase === 'after cleanup'; });
+                var settled = geometrySamples[geometrySamples.length - 1];
+                var maxStep = 0, maxError = 0;
+                frames.forEach(function(s, i) {
+                  if(i) maxStep = Math.max(maxStep, Math.abs(s.height - frames[i - 1].height));
+                  maxError = Math.max(maxError, Math.abs(s.cssTop - s.expectedTop));
+                });
+                debugBadge.textContent = 'Drawer diagnostic v2\n' +
+                  frameCount + ' frames / ' + Math.round(now - started) + ' ms\n' +
+                  'Longest frame: ' + Math.round(maxFrameGap) + ' ms\n' +
+                  'Height: ' + heights.join(' → ') + '\n' +
+                  'Largest height step: ' + Math.round(maxStep) + ' px\n' +
+                  'Position error: ' + Math.round(maxError) + ' px\n' +
+                  'Cleanup height: ' + Math.round(pre.height) + ' → ' + Math.round(post.height) + '\n' +
+                  'Settled height: ' + Math.round(settled.height) + '\n' +
+                  'Bottom drift: ' + Math.round(settled.bottom - pre.bottom) + ' px';
+              }.bind(this), 250);
+            }
+          }
+        }.bind(this);
+        tick(started);
+      } else {
+        this._drawerAnimationTimeout = window.setTimeout(finish, duration + 20);
+      }
     }.bind(this));
   },
 
@@ -1823,7 +2074,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   drawerTop: function() {
-    return parseInt(this._container.style.top.replace('px',''));
+    // Inline top is the destination during a CSS transition, not the visible
+    // position. New animations and drags must start at the rendered position.
+    var top = Number.parseFloat(window.getComputedStyle(this._container).top);
+    return Number.isFinite(top) ? top : (Number.parseFloat(this._container.style.top) || 0);
   },
 
   openDrawerSmall: function(forcePartial, immediate) {
@@ -1842,6 +2096,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._partialDrawerMode = true;
       if(immediate) {
         this._drawerAnimationId++;
+        if(this._drawerGeometryAnimation) {
+          this._drawerGeometryAnimation.cancel();
+          this._drawerGeometryAnimation = null;
+        }
         if(this._drawerAnimationTimeout) {
           window.clearTimeout(this._drawerAnimationTimeout);
           this._drawerAnimationTimeout = null;
@@ -1887,7 +2145,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._mapsButton.clear();
     $('.account-button').parent().removeClass('highlighted');
     // console.log(`closeDrawer`);
-    this._preserveContentOnClose = !!preserveContent || (
+    var hasSelectedPOI = /^m\d+$/.test(this._contentType || '') ||
+      (this._headerPageParent && /^m\d+$/.test(this._headerPageParent.type || ''));
+    this._preserveContentOnClose = !!preserveContent || !!hasSelectedPOI || (
       this._drawerClosing && this._preserveContentOnClose
     );
     if(this._open || this.drawerTop() < this._startPosition) {

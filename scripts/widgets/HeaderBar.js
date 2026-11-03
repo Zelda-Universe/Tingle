@@ -99,21 +99,7 @@ HeaderBar.prototype.createAccountButton = function(parent) {
 };
 
 HeaderBar.prototype.createSearchArea = function(parent, name, categories) {
-  if(this.mapControl.viewStyleBottomSlide) {
-    this.mobileSearchResultsPanel = L.DomUtil.create(
-      'div',
-      'mobile-search-results-panel',
-      this.parent
-    );
-    this.mobileSearchResultsPanel.setAttribute('aria-label', 'Search results');
-    L.DomEvent.disableClickPropagation(this.mobileSearchResultsPanel);
-    L.DomEvent.disableScrollPropagation(this.mobileSearchResultsPanel);
-    L.DomEvent.on(
-      this.mobileSearchResultsPanel,
-      'touchstart touchmove',
-      L.DomEvent.stopPropagation
-    );
-  }
+  this.ensureMobileSearchResultsPanel();
 
   this.searchArea = new SearchArea({
     parent: parent,
@@ -130,6 +116,25 @@ HeaderBar.prototype.createSearchArea = function(parent, name, categories) {
     name: name,
     categories: categories
   });
+};
+
+HeaderBar.prototype.ensureMobileSearchResultsPanel = function() {
+  if(this.mapControl.viewStyleBottomSlide && !this.mobileSearchResultsPanel) {
+    this.mobileSearchResultsPanel = L.DomUtil.create(
+      'div',
+      'mobile-search-results-panel',
+      this.mapControl._map._controlCorners.topleft
+    );
+    this.mobileSearchResultsPanel.setAttribute('aria-label', 'Search results');
+    L.DomEvent.disableClickPropagation(this.mobileSearchResultsPanel);
+    L.DomEvent.disableScrollPropagation(this.mobileSearchResultsPanel);
+    L.DomEvent.on(
+      this.mobileSearchResultsPanel,
+      'touchstart touchmove',
+      L.DomEvent.stopPropagation
+    );
+  }
+
 };
 
 HeaderBar.prototype.showMobileSearchResults = function(markerListView) {

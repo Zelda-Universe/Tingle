@@ -23,7 +23,9 @@ function watchMobileLayoutBreakpoint() {
   var mediaQuery = getMobileLayoutMediaQuery();
   var reloadLayout = function() {
     if(ZConfig.getConfig('forceMobile') != 'true') {
-      window.location.reload();
+      if(typeof zMap !== 'undefined' && zMap && zMap.mapControl) {
+        zMap.mapControl.setResponsiveLayout(isMobile());
+      }
     }
   };
 

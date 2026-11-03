@@ -671,7 +671,7 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
       "<div class='marker-actions-row marker-actions-row-four'>" +
         "<button type='button' id='check" + marker.id + "' class='marker-action-button infoWindowIcn " + (!marker.complete ? "unchecked" : "checked") + "' onclick=\"var button = document.getElementById('check" + marker.id + "'); var complete = button.classList.contains('unchecked'); button.classList.toggle('unchecked', !complete); button.classList.toggle('checked', complete); _this._setMarkerDone(" + marker.id + ", complete); return false\">" +
           "<span class='marker-action-icon'><i class='icon-" + (!marker.complete ? "checkbox-unchecked" : "checkmark") + "'></i></span>" +
-          "<span class='marker-action-label'>" + (!marker.complete ? "Mark Complete" : "Completed") + "</span>" +
+          "<span class='marker-action-label'>" + (!marker.complete ? "Complete" : "Completed") + "</span>" +
         "</button>" +
         this._bookmarkButtonHTML() +
         "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboard(" + marker.id + "); return false'>" +
@@ -1278,6 +1278,7 @@ ZMap.prototype.addMapControl = function(gameId) {
     mapControl: this.mapControl
   }).addTo(this.map);
   this._setupDroppedPinGesture();
+  this._setupMarkerTouchTaps();
 
   // TODO keyboard accessibility
 
@@ -1339,6 +1340,35 @@ ZMap.prototype.addMapControl = function(gameId) {
 		_this.updateUrl();
 	  }
   });
+};
+
+ZMap.prototype._setupMarkerTouchTaps = function() {
+  var map = this.map;
+  var container = map.getContainer();
+  var tap = null;
+  container.addEventListener('touchstart', function(event) {
+    tap = null;
+    if(event.touches.length !== 1) return;
+    var icon = event.target.closest && event.target.closest('.leaflet-marker-icon');
+    var target = icon && map._targets[L.Util.stamp(icon)];
+    if(!target || !target.markerId && !target.id) return;
+    var touch = event.touches[0];
+    tap = { target: target, x: touch.clientX, y: touch.clientY, time: Date.now() };
+  }, { capture: true, passive: true });
+  container.addEventListener('touchmove', function(event) {
+    if(!tap) return;
+    if(event.touches.length !== 1 ||
+      Math.hypot(event.touches[0].clientX - tap.x, event.touches[0].clientY - tap.y) > 12) tap = null;
+  }, { capture: true, passive: true });
+  container.addEventListener('touchcancel', function() { tap = null; }, { passive: true });
+  container.addEventListener('touchend', function(event) {
+    var completedTap = tap;
+    tap = null;
+    if(!completedTap || event.touches.length || Date.now() - completedTap.time > 500) return;
+    // Physical Safari can suppress the compatibility mouse click after touch
+    // gestures. Dispatch the marker's existing action without preventing pan.
+    completedTap.target.fire('click', { originalEvent: event });
+  }, { capture: true, passive: true });
 };
 
 ZMap.prototype._setupDroppedPinGesture = function() {
@@ -2203,7 +2233,7 @@ ZMap.prototype._setMarkerDone = function(vID, vComplete) {
       $(`<i class="icon-${((!vComplete)?"checkbox-unchecked":"checkmark")}"></i>`)[0]
     );
     buttonComplete.querySelector('.marker-action-label').textContent =
-      vComplete ? "Completed" : "Mark Complete";
+      vComplete ? "Completed" : "Complete";
   }
 }
 

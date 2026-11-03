@@ -21,7 +21,7 @@ AccountButton.prototype._initDOMElements = function() {
 AccountButton.prototype.updateUser = function(currentUser) {
   var iconContainer = this.domNode.find('.account-button-icon');
   if(currentUser) {
-    var profilePicture = currentUser.profilePicture || 'images/default-avatar.svg';
+    var profilePicture = currentUser.profilePicture || 'images/default-avatar.png';
     iconContainer.html(
       $('<img>', {
         alt: currentUser.username + "'s profile picture",

@@ -3424,7 +3424,7 @@ ZMap.prototype.restoreResponsiveDrawer = function(snapshot) {
 
 ZMap.prototype._createAccountForm = function(user) {
   var _this = this;
-  var profilePicture = user.profilePicture || 'images/default-avatar.svg';
+  var profilePicture = user.profilePicture || 'images/default-avatar.png';
 
   this.mapControl.setContent(
      '<div id="account">' +

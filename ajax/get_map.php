@@ -7,8 +7,8 @@
      return;
    }
 
-   if (file_exists("$path/ajax/static/map_{$map}.json")) {
-     readfile("$path/ajax/static/map_{$map}.json");
+   if (file_exists("$path/static/map_{$map}.json")) {
+     readfile("$path/static/map_{$map}.json");
      return;
    }
 

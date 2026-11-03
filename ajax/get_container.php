@@ -10,8 +10,8 @@
   }
   // debug_log("map: $map");
 
-  if (file_exists("$path/ajax/static/container_{$map}.json")) {
-    readfile("$path/ajax/static/container_{$map}.json");
+  if (file_exists("$path/static/container_{$map}.json")) {
+    readfile("$path/static/container_{$map}.json");
     return;
   }
 

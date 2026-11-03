@@ -8,7 +8,11 @@
      return;
    }
 
-   $username = (string) $_POST['user'];
+   $username = trim((string) $_POST['user']);
+   if (!preg_match('/^[A-Za-z0-9][A-Za-z0-9_.-]{2,44}$/D', $username)) {
+     echo json_encode(array('success' => false, 'msg' => 'Use 3–45 letters, numbers, periods, underscores, or hyphens.'));
+     return;
+   }
    $name     = (string) $_POST['name'];
    $email    = (string) $_POST['email'];
    $ip       = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));

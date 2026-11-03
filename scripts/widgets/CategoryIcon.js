@@ -17,6 +17,7 @@ function CategoryIcon(opts) {
 CategoryIcon.prototype._initSettings = function(item) {
   this.color = item.color;
   this.poiStyle = getPOIStyle(item.category);
+  this.isEoW = item.category && String(item.category.container_id) === '22';
 
   this.iconClass = getSetOrDefaultValues([
     item.iconClass,
@@ -50,4 +51,5 @@ CategoryIcon.prototype._initDOMElements = function() {
   this.domNode.css('background-color' , this.color);
   this.domNode.css('border-color'     , this.color);
   if(this.poiStyle && !this.iconURL) this.domNode.addClass('poi-badge poi-' + this.poiStyle);
+  if(this.poiStyle && this.isEoW) this.domNode.addClass('poi-eow');
 };

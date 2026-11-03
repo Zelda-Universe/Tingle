@@ -1,11 +1,7 @@
 <?php
   start_session('zmap');
-  if (empty($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(array('success' => false));
-    return;
-  }
-  $userId = (int) $_SESSION['user_id'];
+  // Registration also needs availability checks before an account exists.
+  $userId = (int) ($_SESSION['user_id'] ?? 0);
   session_write_close();
   $username = is_string($_GET['username'] ?? null) ? trim($_GET['username']) : '';
   $valid = (bool) preg_match('/^[A-Za-z0-9][A-Za-z0-9_.-]{2,44}$/D', $username);

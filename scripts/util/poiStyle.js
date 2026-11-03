@@ -1,5 +1,21 @@
-// Shared BotW/TotK POI styling. Existing category records and glyphs stay intact.
+// Shared Zelda POI styling. Existing category records and glyphs stay intact.
 function getPOIStyle(category) {
+  if(category && String(category.container_id || category.containerId) === '4') {
+    return {
+      '1951': 'interest', '1952': 'interest', '1953': 'interest', '1954': 'interest',
+      '1956': 'heart', '1957': 'korok', '1958': 'memory',
+      '1960': 'treasure', '1961': 'treasure', '1962': 'treasure',
+      '1964': 'location', '1965': 'location', '1966': 'location',
+      '1969': 'location', '1968': 'enemy'
+    }[String(category.id)] || '';
+  }
+  if(category && String(category.container_id || category.containerId) === '22') {
+    return {
+      '2232': 'travel', '2220': 'heart', '2221': 'memory', '2231': 'relic',
+      '2211': 'korok', '2230': 'cave', '2233': 'location',
+      '2210': 'interest', '2222': 'interest', '2278': 'treasure'
+    }[String(category.id)] || '';
+  }
   if(category && String(category.container_id || category.containerId) === '19') {
     var botwId = String(category.id);
     if(!botwId.startsWith('19')) return '';
@@ -33,9 +49,25 @@ function getPOIStyle(category) {
 function getPOICategoryGroups(categories) {
   var records = Object.values(categories || {});
   var game = records.some(function(c) { return String(c.container_id) === '21'; }) ? '21' :
-    (records.some(function(c) { return String(c.container_id) === '19'; }) ? '19' : null);
+    (records.some(function(c) { return String(c.container_id) === '19'; }) ? '19' :
+      (records.some(function(c) { return String(c.container_id) === '22'; }) ? '22' :
+        (records.some(function(c) { return String(c.container_id) === '4'; }) ? '4' : null)));
   if(!game) return null;
-  var groups = game === '19' ? [
+  var groups = game === '4' ? [
+    ['Collectibles', ['1956', '1957', '1958']],
+    ['Locations', ['1964', '1965', '1966', '1969']],
+    ['Points of Interest', ['1951', '1952', '1953', '1954']],
+    ['Enemies & Bosses', ['1968']],
+    ['Treasure', ['1960', '1961', '1962']],
+    ['Misc', []]
+  ] : game === '22' ? [
+    ['Travel Gates', ['2232']],
+    ['Collectibles', ['2220', '2221', '2231', '2211']],
+    ['Locations', ['2230', '2233']],
+    ['Points of Interest', ['2210', '2222']],
+    ['Treasure', ['2278']],
+    ['Misc', []]
+  ] : game === '19' ? [
     ['Travel Gates', ['1923', '1925', '1924', '1926']],
     ['Collectibles', ['1916', '1934']],
     ['Locations', ['1938', '1937', '1921', '1922', '1927', '1920']],
@@ -64,7 +96,7 @@ function getPOICategoryGroups(categories) {
   });
   // Preserve future leaf categories rather than silently dropping them.
   records.forEach(function(c) {
-    if(c.parent_id && String(c.parent_id) !== '2162' && !seen.has(String(c.id))) {
+    if(c.parent_id && !['2162', '2204'].includes(String(c.parent_id)) && !seen.has(String(c.id))) {
       result[result.length - 1].categories.push(c);
     }
   });

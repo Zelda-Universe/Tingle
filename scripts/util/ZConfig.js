@@ -20,7 +20,9 @@ ZConfig.setDefault('categoriesSelectedIds'    , '[]'    );
 ZConfig.setDefault('categorySelectionMethod'  , 'focus' );
 ZConfig.setDefault('centerX'                  , ''      ); // Also suffix with `-${gameId}` // DB: `default_pos_x`
 ZConfig.setDefault('centerY'                  , ''      ); // Also suffix with `-${gameId}` // DB: `default_pos_y`
-ZConfig.setDefault('changelog'                , 'true'  );
+// Off while the old changelog entries are out of date; a new alert-style
+// release note is planned to replace these toasts.
+ZConfig.setDefault('changelog'                , 'false' );
 ZConfig.setDefault('changelogForce'           , 'false' );
 ZConfig.setDefault('codetrace-methodsToIgnore', '{}'    );
 ZConfig.setDefault('codetrace-targetClasses'  , '[]'    );

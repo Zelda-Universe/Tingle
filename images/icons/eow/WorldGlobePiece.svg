@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Intentional right-angled, square spiral; no rounded trace artifacts. -->
+  <path fill="#fff" d="M21 20H44V26H27V38H38V32H36V36H29V28H44V43H21Z"/>
+</svg>

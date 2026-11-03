@@ -9,8 +9,8 @@
     return;
   }
 
-  if (file_exists("$path/ajax/static/markers_{$game}.json")) {
-    readfile("$path/ajax/static/markers_{$game}.json");
+  if (file_exists("$path/static/markers_{$game}.json")) {
+    readfile("$path/static/markers_{$game}.json");
     return;
   }
 

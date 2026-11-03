@@ -5,6 +5,38 @@ vm.runInNewContext(fs.readFileSync(__dirname + '/poiStyle.js', 'utf8'), context)
 const style = context.getPOIStyle;
 
 describe('TotK POI visual prototype', () => {
+  test('Link’s Awakening includes all leaf categories exactly once', () => {
+    const ids = ['1951', '1952', '1953', '1954', '1956', '1957', '1958', '1960', '1961', '1962', '1964', '1965', '1966', '1969', '1968'];
+    const categories = ids.map(id => ({ id, container_id: '4', parent_id: '1950' }));
+    const groups = context.getPOICategoryGroups(categories);
+    expect(groups.flatMap(g => g.categories).map(c => c.id).sort()).toEqual(ids.sort());
+    expect(groups.filter(g => g.categories.length).map(g => g.title)).toEqual([
+      'Collectibles', 'Locations', 'Points of Interest', 'Enemies & Bosses', 'Treasure'
+    ]);
+  });
+  test.each([
+    ['1956', 'heart'], ['1957', 'korok'], ['1958', 'memory'], ['1964', 'location'],
+    ['1965', 'location'], ['1966', 'location'], ['1968', 'enemy'], ['1962', 'treasure']
+  ])('LA %s uses the shared %s treatment', (id, expected) => {
+    expect(style({ id, container_id: '4' })).toBe(expected);
+  });
+  test('EoW sections include every existing leaf category exactly once', () => {
+    var ids = ['2210', '2211', '2220', '2221', '2222', '2278', '2230', '2231', '2232', '2233'];
+    var records = ids.map(id => ({ id, parent_id: '2201', container_id: '22' }));
+    records.push({ id: '2299', parent_id: '2204', container_id: '22' });
+    var groups = context.getPOICategoryGroups(records);
+    expect(groups.filter(g => g.categories.length).map(g => g.title)).toEqual([
+      'Travel Gates', 'Collectibles', 'Locations', 'Points of Interest', 'Treasure'
+    ]);
+    expect(groups.flatMap(g => g.categories).map(c => c.id).sort()).toEqual(ids.sort());
+    expect(context.getPOIStyle(records[0])).toBe('interest');
+  });
+  test.each([
+    ['2232', 'travel'], ['2220', 'heart'], ['2221', 'memory'], ['2231', 'relic'],
+    ['2211', 'korok'], ['2230', 'cave'], ['2233', 'location'], ['2278', 'treasure']
+  ])('EoW %s receives the shared %s treatment', (id, treatment) => {
+    expect(style({ id, container_id: '22' })).toBe(treatment);
+  });
   test.each([
     ['1923', 'travel'], ['1924', 'travel'], ['1925', 'travel'], ['1926', 'travel'],
     ['1927', 'location'], ['1938', 'location'], ['1916', 'korok'],

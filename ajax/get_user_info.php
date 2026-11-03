@@ -9,6 +9,23 @@
     return;
   }
 
+  // Sessions can outlive the account (e.g. "Remember me" on another device
+  // after the account was deleted), so confirm it still exists.
+  $hasDeletedColumn = (bool) $db->fetchOne("SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'deleted'");
+  $accountActive = (bool) $db->fetchOne("
+    SELECT 1
+      FROM `{$map_prefix}user`
+     WHERE `id` = ?
+       AND `password` <> '<deleted>'
+       " . ($hasDeletedColumn ? "AND `deleted` IS NULL" : "") . "
+  ", [(int) $_SESSION['user_id']]);
+  if (!$accountActive) {
+    session_unset();
+    session_destroy();
+    echo json_encode(array("success"=>false, "msg"=>"Session - Not Logged!"));
+    return;
+  }
+
   $latestVersion = $db->fetchOne("
     SELECT CONCAT(
       `version_major`, '.',

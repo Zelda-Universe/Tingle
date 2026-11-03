@@ -191,7 +191,7 @@ CategoryMenu.prototype.organizePOICategories = function() {
   this.poiCategoryGroups = [];
   this.domNode.addClass('poi-category-groups');
   this.categoryButtons.forEach(function(button) {
-    if(!button.category.parent_id || String(button.category.parent_id) === '2162') {
+    if(!button.category.parent_id || ['2162', '2204'].includes(String(button.category.parent_id))) {
       button.domNode.closest('li').addClass('poi-original-category');
     }
   });
@@ -228,6 +228,7 @@ CategoryMenu.prototype.organizePOICategories = function() {
           button.displayTitle = category.name === 'Point of Interest' ? 'Other POIs' : 'Other ' + category.name;
         }
         if(String(category.id) === '2134') button.displayTitle = "Dragon's Tears";
+        if(String(category.container_id) === '4' && String(category.id) === '1968') button.displayTitle = 'Bosses';
         if(button.displayTitle) button.labelNode.text(button.displayTitle);
         list.append(button.domNode.closest('li'));
       }

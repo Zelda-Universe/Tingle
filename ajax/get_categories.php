@@ -10,8 +10,8 @@
     return;
   }
 
-  if (file_exists("$path/ajax/static/categories_{$game}.json")) {
-    readfile("$path/ajax/static/categories_{$game}.json");
+  if (file_exists("$path/static/categories_{$game}.json")) {
+    readfile("$path/static/categories_{$game}.json");
     return;
   }
 

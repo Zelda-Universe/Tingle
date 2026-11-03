@@ -110,7 +110,7 @@ function ZMap() {
       CHANGE_PASSWORD_SUCCESS: "Excuuuuse me, %1! Your password has been successfully updated!",
       CHANGE_PASSWORD_ERROR: "I AM ERROR. Could not update password. Try again.  %1",
 
-      DELETE_ACCOUNT_WELCOME: "Delete your account",
+      DELETE_ACCOUNT_WELCOME: "Delete Your Account",
       DELETE_ACCOUNT_SUCCESS: "Account has been deleted.",
       DELETE_ACCOUNT_ERROR: "Account could not be deleted: %1",
 
@@ -441,9 +441,9 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.tabTextOriginal = vMarker.tabText;
    marker.tabId           = vMarker.tabId.split('<|>');
    marker.tabUserId       = vMarker.tabUserId.split('<|>');
-   marker.tabUserName     = vMarker.tabUserName.split('<|>');
+   marker.tabUserName     = vMarker.tabUserName.split('<|>').map(displayUserName);
    marker.userId          = vMarker.userId;
-   marker.userName        = vMarker.userName;
+   marker.userName        = displayUserName(vMarker.userName);
    marker.globalMarker    = vMarker.globalMarker;
    // marker.visible         = true;            // Used by the application to hide / show markers (everything is starting as visible) @TODO: might need to change this
    marker.visible         = this.categories[vMarker.markerCategoryId].checked
@@ -649,6 +649,12 @@ ZMap.prototype._createMarkerContentList = function(list) {
 	return content;
 }
 
+// Deleted accounts keep a "<deleted-ID>" placeholder username; credit their
+// contributions to a deleted user instead.
+function displayUserName(userName) {
+  return /^<deleted-\d+>$/.test(userName || '') ? 'Deleted user' : userName;
+}
+
 ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
     var title = marker.title;
     if (marker.gameData != null && marker.gameData.actor != null && _this.lang[marker.gameData.actor + "_Name"] != null) {
@@ -795,6 +801,7 @@ ZMap.prototype._getDisplayZoom = function() {
 ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
    var poiStyle = getPOIStyle(this.categories[vCatId]);
    var poiClass = poiStyle ? ' poi-badge poi-' + poiStyle : '';
+   if(poiStyle && String(this.categories[vCatId].container_id) === '22') poiClass += ' poi-eow';
    if (this._getDisplayZoom() > this.mapOptions.switchIconsAtZoom) {
       return new markerIconMedium({className: 'map-icon-svg'
                             ,html: "<div class='circle circleMap-medium" + poiClass + "' style='background-color: " + this.categories[vCatId].color + "; "
@@ -1554,7 +1561,9 @@ ZMap.prototype._createDroppedPinEmbedLink = function(latlng) {
 
 ZMap.prototype.getUserBookmarks = function() {
   var _this = this;
+  var request = this._bookmarksRequest = (this._bookmarksRequest || 0) + 1;
   $.getJSON("ajax.php?command=get_user_bookmarks&game=" + gameId, function(results) {
+    if(request !== _this._bookmarksRequest) return;
     _this.bookmarks = results || [];
     _this._updateBookmarkButton();
     if(_this.mapControl.getContentType() == 'bookmarksPage') _this._renderBookmarksList();
@@ -1596,9 +1605,7 @@ ZMap.prototype.toggleBookmark = function() {
   if(!target) return;
 
   if(!this.getUser()) {
-    toastr.info('Log in or create an account to save bookmarks.');
-    this._createLoginForm();
-    if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
+    this._showBookmarkRegistrationPrompt(target);
     return;
   }
 
@@ -1648,20 +1655,142 @@ ZMap.prototype.toggleBookmark = function() {
   });
 };
 
+ZMap.prototype._showBookmarkRegistrationPrompt = function(target) {
+  if(document.getElementById('bookmark-registration-prompt')) return;
+  var previousFocus = document.activeElement;
+  var dialog = document.createElement('dialog');
+  dialog.id = 'bookmark-registration-prompt';
+  dialog.className = 'bookmark-registration-prompt';
+  dialog.setAttribute('aria-labelledby', 'bookmark-registration-title');
+  dialog.setAttribute('aria-describedby', 'bookmark-registration-description');
+  dialog.innerHTML = '<h2 id="bookmark-registration-title">Register to save bookmarks.</h2>' +
+    '<p id="bookmark-registration-description">Bookmarking POIs requires a free Zelda Maps account. Register to bookmark this POI and get other cool features like Offline Maps and ad-free browsing!</p>' +
+    '<div class="bookmark-registration-actions"><button type="button" class="infoWindowIcn" data-action="register">Register Now</button>' +
+    '<button type="button" class="bookmark-registration-cancel" data-action="cancel">No Thanks</button></div>';
+  dialog.addEventListener('close', function() {
+    dialog.remove();
+    if(previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
+  });
+  var dismiss = function(register) {
+    if(dialog.classList.contains('is-closing')) return;
+    var finish = function() {
+      dialog.close();
+      if(register) {
+        this._pendingBookmarkRegistration = Object.assign({}, target);
+        if(this.mapControl.viewStyleBottomSlide) {
+          this.mapControl._registrationParentPartial = !!this.mapControl._partialDrawerMode;
+        }
+        this._createRegisterForm();
+        if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
+      }
+    }.bind(this);
+    dialog.classList.add('is-closing');
+    if(typeof dialog.getAnimations !== 'function') { finish(); return; }
+    var animations = dialog.getAnimations();
+    if(!animations.length) finish();
+    else Promise.all(animations.map(function(animation) { return animation.finished.catch(function() {}); })).then(finish);
+  }.bind(this);
+  dialog.addEventListener('cancel', function(e) { e.preventDefault(); dismiss(false); });
+  dialog.querySelector('[data-action="cancel"]').addEventListener('click', function() { dismiss(false); });
+  dialog.querySelector('[data-action="register"]').addEventListener('click', function() { dismiss(true); });
+  document.body.appendChild(dialog);
+  dialog.showModal();
+};
+
+ZMap.prototype._saveRegistrationBookmark = function() {
+  var target = this._pendingBookmarkRegistration;
+  if(!target || !this.getUser()) return;
+  $.ajax({
+    type: 'POST', url: 'ajax.php?command=add_bookmark',
+    data: target.markerId != null ? { markerId: target.markerId } :
+      { mapId: target.mapId, submapId: target.subMapId, x: target.x, y: target.y },
+    success: function(data) {
+      if(!data.success) {
+        this._showRegistrationBookmarkError(data.msg || 'Your account is ready, but the bookmark could not be saved. Please try again.');
+        return;
+      }
+      this._pendingBookmarkRegistration = null;
+      this.bookmarks = this.bookmarks || [];
+      if(!this._findBookmark(target)) this.bookmarks.push(Object.assign({ id: data.id }, target));
+      this.getUserBookmarks();
+      this.mapControl._navigatingBack = true;
+      if(target.markerId != null) this.goTo({ marker: target.markerId, panTo: false, centerInVisibleArea: true });
+      else {
+        this.mapControl.changeMapOnly(target.mapId, target.subMapId);
+        this._openDroppedPin(L.latLng(target.y, target.x));
+      }
+      this._updateBookmarkButton();
+      this._showBookmarkRegistrationSuccess();
+    }.bind(this),
+    error: function() {
+      this._showRegistrationBookmarkError('Your account is ready, but the bookmark could not be saved. Please check your connection and try again.');
+    }.bind(this)
+  });
+};
+
+ZMap.prototype._showBookmarkRegistrationSuccess = function() {
+  var dialog = document.createElement('dialog');
+  dialog.className = 'bookmark-registration-prompt';
+  dialog.setAttribute('aria-labelledby', 'bookmark-registration-success-title');
+  dialog.setAttribute('aria-describedby', 'bookmark-registration-success-description');
+  dialog.innerHTML = '<h2 id="bookmark-registration-success-title">You\'re all set!</h2>' +
+    '<p id="bookmark-registration-success-description">Thanks for registering! We\'ve saved your bookmark. You can view all of your bookmarks on your <a href="?page=account" data-action="account">Account Page</a>!</p>' +
+    '<div class="bookmark-registration-actions"><button type="button" class="infoWindowIcn" data-action="dismiss" autofocus>Let\'s go!</button></div>';
+  var dismiss = function(account) {
+    if(dialog.classList.contains('is-closing')) return;
+    dialog.classList.add('is-closing');
+    var finish = function() {
+      dialog.close();
+      if(account) {
+        // The saved POI is already the current page, so normal account
+        // navigation captures it as the parent for the Back button.
+        this._createAccountForm(this.getUser());
+        if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
+      }
+    }.bind(this);
+    var animations = typeof dialog.getAnimations === 'function' ? dialog.getAnimations() : [];
+    if(animations.length) Promise.all(animations.map(function(animation) {
+      return animation.finished.catch(function() {});
+    })).then(finish);
+    else finish();
+  }.bind(this);
+  dialog.addEventListener('close', function() { dialog.remove(); });
+  dialog.addEventListener('cancel', function(event) { event.preventDefault(); dismiss(false); });
+  dialog.querySelector('[data-action="dismiss"]').addEventListener('click', function() { dismiss(false); });
+  dialog.querySelector('[data-action="account"]').addEventListener('click', function(event) {
+    event.preventDefault();
+    dismiss(true);
+  });
+  document.body.appendChild(dialog);
+  dialog.showModal();
+};
+
+ZMap.prototype._showRegistrationBookmarkError = function(message) {
+  $('#registration-bookmark-error').remove();
+  var status = $('<div id="registration-bookmark-error" role="alert"></div>');
+  status.append($('<p class="login-error"></p>').text(message));
+  var retry = $('<button type="button" class="infoWindowIcn">Retry Saving Bookmark</button>');
+  retry.on('click', function() { retry.prop('disabled', true); this._saveRegistrationBookmark(); }.bind(this));
+  status.append(retry);
+  $('#newuser, #login').prepend(status);
+};
+
 ZMap.prototype._createBookmarksPage = function() {
-  this.mapControl.setContent(
+  var page = $(
     '<div id="bookmarks" class="bookmarks-page">' +
       '<h3 class="text-center">Bookmarks</h3>' +
       '<div class="marker-list-view bookmarks-list"><ul class="marker-list"></ul></div>' +
-    '</div>',
-    'bookmarksPage'
+    '</div>'
   );
-  this._renderBookmarksList();
+  // Finish building the page before setContent measures its destination
+  // height for the desktop drawer transition.
+  this._renderBookmarksList(page);
+  this.mapControl.setContent(page, 'bookmarksPage');
 };
 
-ZMap.prototype._renderBookmarksList = function() {
+ZMap.prototype._renderBookmarksList = function(page) {
   var _this = this;
-  var list = $('#bookmarks .marker-list');
+  var list = page ? $(page).find('.marker-list') : $('#bookmarks .marker-list');
   if(!list.length) return;
   list.empty();
 
@@ -1672,10 +1801,12 @@ ZMap.prototype._renderBookmarksList = function() {
   }).filter(Boolean);
 
   if(!entries.length) {
-    list.append('<p class="bookmarks-empty">Bookmark POIs and dropped pins to find them here.</p>');
+    list.append('<li class="bookmarks-empty"><div class="bookmarks-empty-title">No Bookmarks</div>' +
+      '<p>Bookmark POIs and dropped pins to find them here.</p></li>');
     return;
   }
 
+  list.append('<div class="leaflet-control-layers-separator search-result-separator"></div>');
   entries.forEach(function(entry) {
     list.append(entry);
     list.append('<div class="leaflet-control-layers-separator search-result-separator"></div>');
@@ -2544,6 +2675,8 @@ ZMap.prototype.logout = function() {
 
 
 ZMap.prototype._createRegisterForm = function() {
+   var registrationTarget = this._pendingBookmarkRegistration;
+   this.mapControl._registrationReturnMarker = registrationTarget && registrationTarget.markerId;
    this.mapControl.setContent('<div id="newuser">'+
                         '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
@@ -2559,9 +2692,15 @@ ZMap.prototype._createRegisterForm = function() {
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
                                        '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
-                                       '<input type="password" s="form-control" class="form-control" name="password" id="password" required="" placeholder="Create a password"/>'+
+                                       '<input type="password" class="form-control" name="password" id="password" required="" autocomplete="new-password" placeholder="Create a password"/>'+
                                     '</div>'+
                                  '</div>'+
+                              '</div>'+
+                              '<div class="form-group">'+
+                                 '<div class="cols-sm-10"><div class="input-group">'+
+                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
+                                    '<input type="password" class="form-control" name="password_confirmation" required="" autocomplete="new-password" placeholder="Confirm your password"/>'+
+                                 '</div></div>'+
                               '</div>'+
                               '<div class="form-group">'+
                                  '<div class="cols-sm-10">'+
@@ -2575,7 +2714,7 @@ ZMap.prototype._createRegisterForm = function() {
                               '<div class="form-group">'+
                                  '<div class="cols-sm-10">'+
                                     '<div class="input-group">'+
-                                       '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
+                                       '<span class="input-group-addon"><i class="fas fa-envelope" aria-hidden="true"></i></span>'+
                                        '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Your email address"/>'+
                                     '</div>'+
                                  '</div>'+
@@ -2583,8 +2722,7 @@ ZMap.prototype._createRegisterForm = function() {
 
                               '<div class="modal-footer">'+
                                  '<div>'+
-                                    '<button type="submit" class="infoWindowIcn form-action-button">Register</button>'+
-                                    '<button id="register_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>'+
+                                    '<button type="submit" class="infoWindowIcn form-action-button">' + (registrationTarget ? 'Register &amp; Add Bookmark' : 'Register') + '</button>'+
                                  '</div>'+
                                '</div>'+
                         '</form>'+
@@ -2592,7 +2730,101 @@ ZMap.prototype._createRegisterForm = function() {
    , 'registerForm');
 
 
+   var registrationForm = $('#newuserform');
+   registrationForm.attr('novalidate', 'novalidate');
+   var passwordFields = registrationForm.find('[name="password"], [name="password_confirmation"]').closest('.form-group');
+   passwordFields.wrapAll('<div class="registration-password-group"></div>');
+   var passwordGroup = registrationForm.find('.registration-password-group');
+   var passwordMessages = $('<div class="registration-password-messages"></div>').insertAfter(passwordGroup);
+   var registrationError = $('<div class="alert alert-danger login-error" role="alert" hidden></div>').prependTo(registrationForm);
+   registrationForm.find('input').each(function(index) {
+      var id = 'registration-validation-' + index;
+      $(this).attr('aria-describedby', id);
+      var message = $('<div class="registration-field-error" aria-live="polite" hidden></div>').attr('id', id);
+      if($(this).closest('.registration-password-group').length) message.appendTo(passwordMessages);
+      else message.insertAfter($(this).closest('.input-group'));
+   });
+   function validateRegistrationField(input) {
+      if(input.name === 'user' && input.value) return usernameAvailable;
+      var message = input.validity.valid ? '' : input.validationMessage;
+      $(input).attr('aria-invalid', message ? 'true' : 'false');
+      $('#' + $(input).attr('aria-describedby')).text(message).prop('hidden', !message);
+      if(input.name === 'password' || input.name === 'password_confirmation') {
+         var password = registrationForm.find('[name="password"]')[0];
+         var confirmation = registrationForm.find('[name="password_confirmation"]')[0];
+         if(!password.value && !confirmation.value && $(password).attr('aria-invalid') === 'true') {
+            $('#' + $(password).attr('aria-describedby')).text('Please enter a password.').prop('hidden', false);
+            $('#' + $(confirmation).attr('aria-describedby')).prop('hidden', true).text('');
+         }
+      }
+      return !message;
+   }
+   function validatePasswordConfirmation(showMessage) {
+      var confirmation = registrationForm.find('[name="password_confirmation"]')[0];
+      confirmation.setCustomValidity(confirmation.value !== registrationForm.find('[name="password"]').val()
+        ? 'Passwords do not match.' : '');
+      if(showMessage && confirmation.value) validateRegistrationField(confirmation);
+   }
+   registrationForm.find('[name="email"]').attr('type', 'email');
+   var usernameAvailable = false;
+   var usernameVersion = 0;
+   var usernameTimer;
+   var usernameInput = registrationForm.find('[name="user"]');
+   var usernameMessage = $('#' + usernameInput.attr('aria-describedby'));
+   var usernameGroup = usernameInput.closest('.input-group');
+   var usernameIcon = $('<span class="registration-validation-icon" aria-hidden="true"></span>').appendTo(usernameGroup);
+   usernameInput.on('input change', function() {
+      var name = this.value.trim();
+      var version = ++usernameVersion;
+      clearTimeout(usernameTimer);
+      usernameAvailable = false;
+      usernameGroup.removeClass('username-valid username-invalid');
+      usernameIcon.empty();
+      usernameInput.removeAttr('aria-invalid');
+      function feedback(available, message, checking) {
+         usernameAvailable = available;
+         usernameMessage.text(message).prop('hidden', !message).css('color', checking ? '#aaa' : available ? '#77e2a8' : '#ff8c85');
+         if(!checking) {
+            usernameInput.attr('aria-invalid', !available);
+            usernameGroup.addClass(available ? 'username-valid' : 'username-invalid');
+            usernameIcon.html(available ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>');
+         }
+      }
+      if(!name) { usernameMessage.prop('hidden', true).text(''); return; }
+      if(!/^[A-Za-z0-9][A-Za-z0-9_.-]{2,44}$/.test(name)) {
+         feedback(false, 'Use 3–45 letters, numbers, periods, underscores, or hyphens.');
+         return;
+      }
+      feedback(false, 'Checking username…', true);
+      usernameTimer = setTimeout(function() {
+         $.getJSON('ajax.php?command=check_username', { username: name }).done(function(data) {
+            if(version !== usernameVersion) return;
+            var available = !!(data.success && data.valid && data.available);
+            feedback(available, data.success ? available ? 'Username available' : 'Username unavailable' : 'Unable to check username.');
+         }).fail(function() {
+            if(version === usernameVersion) feedback(false, 'Unable to check username. Please try again.');
+         });
+      }, 300);
+   });
+   registrationForm.find('input').on('input', function() {
+      registrationError.prop('hidden', true).text('');
+      validatePasswordConfirmation(true);
+      if($(this).attr('aria-invalid') === 'true' || this.name === 'password_confirmation') validateRegistrationField(this);
+   }).on('blur', function() {
+      validatePasswordConfirmation(false);
+      if(this.value) validateRegistrationField(this);
+   });
    $("#newuserform").submit(function(e) {
+      e.preventDefault();
+      validatePasswordConfirmation(false);
+      var firstInvalid;
+      registrationForm.find('input').each(function() {
+         if(!validateRegistrationField(this) && !firstInvalid) firstInvalid = this;
+      });
+      if(firstInvalid) { firstInvalid.focus(); return; }
+      registrationError.prop('hidden', true).text('');
+      var registrationUser = $('#newuserform [name="user"]').val();
+      var registrationPassword = $('#newuserform [name="password"]').val();
       $.ajax({
         type: "POST",
         async: false,
@@ -2601,23 +2833,35 @@ ZMap.prototype._createRegisterForm = function() {
         success: function(data) {
             //data = jQuery.parseJSON(data);
             if (data.success) {
+               if(_this._pendingBookmarkRegistration) {
+                 $.ajax({ type: 'POST', url: 'ajax.php?command=login',
+                   data: { user: registrationUser, password: registrationPassword },
+                   success: function(login) {
+                     if(login.success) {
+                       _this.setUser(login.user);
+                       updateAdState();
+                       _this._saveRegistrationBookmark();
+                     } else _this._createLoginForm('Your account has been created! Please log in to finish saving your bookmark.');
+                   },
+                   error: function() { _this._createLoginForm('Your account has been created! Please log in to finish saving your bookmark.'); }
+                 });
+                 return;
+               }
                var successMessage = _this.langMsgs.REGISTER_SUCCESS.format($("#user")[0].value)
                  + " Please log in.";
                _this._createLoginForm(successMessage);
             } else {
-               console.log(data.msg);
-               toastr.error(_this.langMsgs.REGISTER_ERROR.format(data.msg));
+               registrationError.text(_this.langMsgs.REGISTER_ERROR.format(data.msg || 'Unable to register. Please try again.')).prop('hidden', false);
             }
+        },
+        error: function(data) {
+           registrationError.text(data.responseJSON && data.responseJSON.msg || 'Unable to register. Please try again.').prop('hidden', false);
         }
       });
 
       e.preventDefault();
    });
 
-   $("#register_back_btn").click(function(e) {
-      _this._createLoginForm();
-      e.preventDefault();
-   });
 }
 ZMap.prototype._createDialogDeleteAllMarkers = function() {
    if (confirm(_this.langMsgs.MARKER_DEL_ALL_COMPLETE_QUESTION.format(games[gameId].name))) {
@@ -2741,7 +2985,7 @@ ZMap.prototype._createAccountDeleteForm = function() {
   this.mapControl.setContent(
     '<div id="deleteaccount">' +
       '<h3 class="text-center">' + this.langMsgs.DELETE_ACCOUNT_WELCOME + '</h3>' +
-      '<div class="alert alert-danger delete-account-warning" role="alert">' +
+      '<div class="delete-account-warning" role="alert">' +
         '<strong>This action is permanent.</strong> ' +
         'Deleting your account will remove all of your user data from Zelda Maps. ' +
         'If you wish to save your maps data again, you will need to create a new account.' +
@@ -2753,14 +2997,15 @@ ZMap.prototype._createAccountDeleteForm = function() {
                 '<span class="input-group-addon">' +
                   '<i class="icon-fa-lock fa-lg" aria-hidden="true"></i>' +
                 '</span>' +
-                '<input type="password" s="form-control" class="form-control" name="currentpassword" id="currentpassword" required="" placeholder="Enter your current password"/>' +
+                '<input type="password" s="form-control" class="form-control" name="currentpassword" id="currentpassword" required="" placeholder="Enter your current password" autocomplete="current-password" aria-describedby="delete_password_error"/>' +
+                '<span class="password-validation-icon" aria-hidden="true"></span>' +
               '</div>' +
            '</div>' +
         '</div>' +
+        '<p id="delete_password_error" role="status" aria-live="polite"></p>' +
         '<div class="modal-footer">' +
            '<div>' +
               '<button type="submit" class="infoWindowIcn form-action-button bad">Permanently Delete Account</button>' +
-              '<button id="delete_account_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>' +
            '</div>' +
          '</div>' +
       '</form>' +
@@ -2770,34 +3015,174 @@ ZMap.prototype._createAccountDeleteForm = function() {
 
   var _this = this;
 
-  $("#delete_account_back_btn").click(function(e) {
-    _this._createAccountForm(user);
-    e.preventDefault();
-  });
+  // The password is checked when the button is pressed; a wrong one is
+  // flagged inline with the Account Information error style, and a right one
+  // moves straight on to the final confirmation.
+  var passwordInput = $('#currentpassword');
+  var passwordGroup = passwordInput.closest('.input-group');
+  var passwordIcon = passwordGroup.find('.password-validation-icon');
+  var passwordMessage = $('#delete_password_error');
+  var deleteButton = $('#deleteaccountform button[type="submit"]');
+  var busy = false;
+  var showPasswordError = function(message) {
+    passwordInput.attr('aria-invalid', 'true');
+    passwordGroup.addClass('password-invalid');
+    passwordIcon.html('<i class="fas fa-times"></i>');
+    passwordMessage.text(message);
+  };
+  var clearPasswordError = function() {
+    passwordInput.removeAttr('aria-invalid');
+    passwordGroup.removeClass('password-invalid');
+    passwordIcon.empty();
+    passwordMessage.text('');
+  };
+  var setBusy = function(value) {
+    busy = value;
+    deleteButton.prop('disabled', value);
+  };
+  passwordInput.on('input', clearPasswordError);
 
-  $("#deleteaccountform").submit(function(e) {
+  var deleteAccount = function() {
+    setBusy(true);
+
     $.ajax({
       type: "POST",
-      async: false,
       url: "ajax.php?command=delete_account",
       data: $("#deleteaccountform").serialize(),
       success: function(data) {
         if(data.success) {
-          toastr.success(_this.langMsgs.DELETE_ACCOUNT_SUCCESS);
-          _this.logout();
-          _this.mapControl.resetContent();
+          // The server has already ended the session; just sign out locally.
+          _this.setUser(null);
+          updateAdState();
+          showLoginControls();
+          if(_this.mapControl.viewStyleBottomSlide) {
+            _this.mapControl.closeDrawer();
+          } else {
+            _this.mapControl.resetContent();
+          }
+          _this._showAccountDeletedAlert();
         } else {
-          toastr.error(_this.langMsgs.DELETE_ACCOUNT_ERROR.format(data.msg));
+          setBusy(false);
+          if(/password/i.test(data.msg || '')) {
+            // e.g. the password was changed elsewhere since it was checked.
+            showPasswordError('Current password is incorrect.');
+          } else {
+            toastr.error(_this.langMsgs.DELETE_ACCOUNT_ERROR.format(data.msg || 'Please try again.'));
+          }
         }
       },
       error: function(data) {
-        toastr.error(_this.langMsgs.DELETE_ACCOUNT_ERROR.format(data.msg));
+        setBusy(false);
+        var message = data.responseJSON && data.responseJSON.msg;
+        toastr.error(_this.langMsgs.DELETE_ACCOUNT_ERROR.format(message || 'Unable to connect. Please try again.'));
       }
     });
+  };
 
+  $("#deleteaccountform").submit(function(e) {
     e.preventDefault();
+    if(busy) return;
+    var password = passwordInput.val();
+    if(!password) {
+      showPasswordError('Enter your current password.');
+      return;
+    }
+
+    setBusy(true);
+    $.ajax({ type: 'POST', url: 'ajax.php?command=check_account_password', data: { currentpassword: password } })
+      .done(function(data) {
+        setBusy(false);
+        if(!(data.success && data.valid)) {
+          showPasswordError('Current password is incorrect.');
+          return;
+        }
+        clearPasswordError();
+        // One last confirmation before anything is sent.
+        _this._showAlert({
+          id: 'confirm-delete-account-alert',
+          title: 'Really Really Delete Your Account?',
+          description: 'Confirm one last time that you really want to do this. This <strong>cannot be undone</strong>!',
+          actions: [
+            {
+              label: 'Yes, Really Delete My Account',
+              className: 'infoWindowIcn bad',
+              onSelect: deleteAccount
+            },
+            { label: 'Cancel', className: 'bookmark-registration-cancel', cancel: true }
+          ]
+        });
+      })
+      .fail(function() {
+        setBusy(false);
+        showPasswordError('Unable to check password. Please try again.');
+      });
   });
 }
+
+// Shows a modal alert in the same style as the bookmark registration prompt.
+// opts: id, title, description (HTML),
+//       actions: [{ label, className, onSelect, cancel }].
+// Escape dismisses without selecting an action.
+ZMap.prototype._showAlert = function(opts) {
+  if(document.getElementById(opts.id)) return;
+  var dialog = document.createElement('dialog');
+  dialog.id = opts.id;
+  dialog.className = 'bookmark-registration-prompt';
+  dialog.setAttribute('aria-labelledby', opts.id + '-title');
+  dialog.setAttribute('aria-describedby', opts.id + '-description');
+  dialog.innerHTML = '<h2 id="' + opts.id + '-title"></h2>' +
+    '<p id="' + opts.id + '-description"></p>' +
+    '<div class="bookmark-registration-actions"></div>';
+  dialog.querySelector('h2').textContent = opts.title;
+  dialog.querySelector('p').innerHTML = opts.description;
+  dialog.addEventListener('close', function() {
+    dialog.remove();
+  });
+
+  var dismiss = function(action) {
+    if(dialog.classList.contains('is-closing')) return;
+    var finished = false;
+    var finish = function() {
+      if(finished) return;
+      finished = true;
+      if(dialog.open) dialog.close();
+      // close() fires no event on an already-closed dialog; always clean up.
+      dialog.remove();
+      if(action && action.onSelect) action.onSelect();
+    };
+    dialog.classList.add('is-closing');
+    // Paused animations (e.g. a backgrounded tab) never finish, so don't wait
+    // longer than the exit animation needs.
+    window.setTimeout(finish, 300);
+    if(typeof dialog.getAnimations !== 'function') { finish(); return; }
+    var animations = dialog.getAnimations();
+    if(!animations.length) finish();
+    else Promise.all(animations.map(function(animation) { return animation.finished.catch(function() {}); })).then(finish);
+  };
+
+  var actionsNode = dialog.querySelector('.bookmark-registration-actions');
+  opts.actions.forEach(function(action) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = action.className || 'infoWindowIcn';
+    if(action.cancel) button.setAttribute('data-action', 'cancel');
+    button.textContent = action.label;
+    button.addEventListener('click', function() { dismiss(action); });
+    actionsNode.appendChild(button);
+  });
+  dialog.addEventListener('cancel', function(e) { e.preventDefault(); dismiss(null); });
+  document.body.appendChild(dialog);
+  dialog.showModal();
+};
+
+ZMap.prototype._showAccountDeletedAlert = function() {
+  this._showAlert({
+    id: 'account-deleted-alert',
+    title: 'Account Deleted',
+    description: 'We\'ve completely removed your account. Sorry to see you go!',
+    actions: [{ label: 'Okay' }]
+  });
+};
 
 ZMap.prototype._createLoginForm = function(successMessage) {
    this.mapControl.setContent('<div id="login">'+
@@ -2867,6 +3252,11 @@ ZMap.prototype._createLoginForm = function(successMessage) {
             checkChangelog(data.user);
             _this.setUser(data.user);
             updateAdState();
+
+            if(_this._pendingBookmarkRegistration) {
+              _this._saveRegistrationBookmark();
+              return;
+            }
 
             if (_this.mapControl.isMobile) {
                _this.mapControl.closeDrawer();

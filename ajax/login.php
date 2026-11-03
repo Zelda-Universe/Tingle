@@ -32,6 +32,8 @@
    $profilePictureSelect = $hasProfileColumn
      ? '`profile_picture` AS `profilePicture`'
      : 'NULL AS `profilePicture`';
+   $hasDeletedColumn = (bool) $db->fetchOne("SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'deleted'");
+   $deletedSelect = $hasDeletedColumn ? '`deleted`' : 'NULL AS `deleted`';
 
    $row = $db->fetchAssociative("
      SELECT
@@ -39,6 +41,7 @@
        `username`                  ,
        `email`                     ,
        {$profilePictureSelect}     ,
+       {$deletedSelect}            ,
        `password`                  ,
        `level`                     ,
        `seen_version_major` AS `v1`,
@@ -54,6 +57,7 @@
 
    if (
          !$row
+     ||  $row['deleted'] !== null
      ||  !isset($row['password'])
      ||  !(
               password_verify($password,              $row['password'])

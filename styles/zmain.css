@@ -587,6 +587,12 @@ main.leaflet-container,
 }
 
 .delete-account-warning {
+	color: #ff6b63;
+	border: 1px solid currentColor;
+	border-radius: 10px;
+	box-sizing: border-box;
+	margin: 0 24px 8px;
+	padding: 16px;
 	font-size: 16px;
 	line-height: 1.5;
 	text-align: center;
@@ -777,7 +783,8 @@ main.leaflet-container,
 	color: #ff8c85;
 }
 
-#account_information_form .input-group.password-invalid {
+#account_information_form .input-group.password-invalid,
+#deleteaccountform .input-group.password-invalid {
 	box-shadow: inset 0 0 0 1px #ff8c85;
 }
 
@@ -789,14 +796,20 @@ main.leaflet-container,
 	color: #77e2a8;
 }
 
-#account_information_form #account_password_error {
+#account_information_form #account_password_error,
+#deleteaccountform #delete_password_error {
 	color: #ff8c85;
 	font-size: 12px;
 	padding: 0;
 	margin: 8px 0 0;
 }
 
-#account_password_error:empty {
+#deleteaccountform #delete_password_error {
+	margin-bottom: 16px;
+}
+
+#account_password_error:empty,
+#delete_password_error:empty {
 	display: none;
 }
 
@@ -804,7 +817,8 @@ main.leaflet-container,
 	color: rgba(255, 255, 255, .6);
 }
 
-#account_information_form > .form-group:has(+ #account_password_error) {
+#account_information_form > .form-group:has(+ #account_password_error),
+#deleteaccountform > .form-group:has(+ #delete_password_error:not(:empty)) {
 	margin-bottom: 0;
 }
 
@@ -1332,10 +1346,128 @@ a.button.leaflet-control-layers-toggle {
 	font-size: 28px;
 }
 
+.bookmark-registration-prompt {
+	box-sizing: border-box;
+	width: min(420px, calc(100vw - 32px));
+	max-height: calc(100dvh - 48px);
+	margin: auto;
+	padding: 24px;
+	border: 1px solid rgba(255,255,255,.2);
+	border-radius: 22px;
+	background: rgba(0,0,0,.8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 16px 48px rgba(0,0,0,.4);
+	color: #fff;
+	font-family: "BrandonText", sans-serif;
+	text-align: center;
+}
+.bookmark-registration-prompt::backdrop { background: rgba(0,0,0,.45); }
+.bookmark-registration-prompt h2 { margin: 0 0 12px; font-size: 20px; font-weight: 700; }
+.bookmark-registration-prompt p { margin: 0 0 24px; font-size: 16px; line-height: 1.4; }
+.bookmark-registration-prompt p a { color: rgba(255,255,255,.7); transition: color .15s; }
+.bookmark-registration-prompt p a:hover,
+.bookmark-registration-prompt p a:focus-visible { color: #fff; }
+.bookmark-registration-actions { display: flex; flex-direction: column; gap: 8px; }
+.bookmark-registration-prompt .bookmark-registration-actions .infoWindowIcn {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+}
+.bookmark-registration-prompt .bookmark-registration-actions [data-action="cancel"],
+.bookmark-registration-prompt .bookmark-registration-actions [data-action="cancel"]:hover {
+	background: transparent;
+	border: 0;
+	box-shadow: none;
+	color: rgba(255,255,255,.7);
+}
+.bookmark-registration-prompt .bookmark-registration-actions [data-action="cancel"]:hover {
+	color: #fff;
+}
+.bookmark-registration-cancel {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+	padding: 8px;
+	font: 17px/1.4 "BrandonText", sans-serif;
+	cursor: pointer;
+}
+.bookmark-registration-cancel:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
+.bookmark-registration-prompt[open] {
+	animation: bookmark-alert-enter 300ms cubic-bezier(.16,1,.3,1) both;
+}
+.bookmark-registration-prompt[open]::backdrop {
+	animation: bookmark-alert-backdrop-enter 300ms ease-out both;
+}
+@keyframes bookmark-alert-enter {
+	0% { opacity: 0; transform: scale(1.2); }
+	60% { opacity: 1; }
+	to { opacity: 1; transform: scale(1); }
+}
+@keyframes bookmark-alert-backdrop-enter {
+	from { background-color: rgba(0,0,0,0); }
+	to { background-color: rgba(0,0,0,.45); }
+}
+.bookmark-registration-prompt.is-closing { animation: bookmark-alert-exit 150ms ease-in both; }
+.bookmark-registration-prompt.is-closing::backdrop { animation: bookmark-alert-backdrop-exit 150ms ease-in both; }
+@keyframes bookmark-alert-exit {
+	from { opacity: 1; transform: scale(1); }
+	to { opacity: 0; transform: scale(1); }
+}
+@keyframes bookmark-alert-backdrop-exit {
+	from { background-color: rgba(0,0,0,.45); }
+	to { background-color: rgba(0,0,0,0); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.bookmark-registration-prompt[open],
+	.bookmark-registration-prompt[open]::backdrop,
+	.bookmark-registration-prompt.is-closing,
+	.bookmark-registration-prompt.is-closing::backdrop { animation: none; }
+}
+
 .bookmarks-empty {
-	margin: 8px 0 24px;
+	margin: 0;
+	padding: 48px 24px;
+	list-style: none;
 	color: rgba(255, 255, 255, .65);
 	text-align: center;
+}
+
+.bookmarks-empty-title {
+	margin-bottom: 8px;
+	font-size: 18px;
+	font-weight: 700;
+	color: rgba(255, 255, 255, .9);
+}
+
+.menu-cat-content-inner .bookmarks-empty p {
+	margin: 0;
+	padding: 0;
+}
+
+.leaflet-control-layers-mobile #menu-cat-content:has(.bookmarks-empty),
+.leaflet-control-layers-mobile #menu-cat-content:has(.bookmarks-empty) > .menu-cat-content-inner,
+.leaflet-control-layers-mobile .bookmarks-page:has(.bookmarks-empty),
+.leaflet-control-layers-mobile .bookmarks-list:has(.bookmarks-empty) {
+	display: flex;
+	flex-direction: column;
+}
+
+.leaflet-control-layers-mobile #menu-cat-content:has(.bookmarks-empty) > .menu-cat-content-inner,
+.leaflet-control-layers-mobile .bookmarks-page:has(.bookmarks-empty),
+.leaflet-control-layers-mobile .bookmarks-list:has(.bookmarks-empty),
+.leaflet-control-layers-mobile .marker-list:has(> .bookmarks-empty) {
+	flex: 1;
+}
+
+.leaflet-control-layers-mobile .marker-list:has(> .bookmarks-empty) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.leaflet-control-layers-mobile .bookmarks-empty {
+	padding: 24px;
 }
 
 
@@ -1722,7 +1854,9 @@ a.button.back-button:hover {
 	color: white;
 }
 
-.leaflet-control-layers #menu-cat-content .menu-cat-content-inner .action-group {
+/* No #menu-cat-content here: pages sliding out are moved into a copy of that
+   container without its id, and must keep their styles. */
+.leaflet-control-layers .menu-cat-content-inner .action-group {
 	/* height: initial; */
 	/* float: right; */
   /* position: absolute; */
@@ -2302,7 +2436,7 @@ button[aria-disabled="true"] {
 	margin: -8px;
 }
 
-#menu-cat-content .menu-cat-content-inner #account .modal-footer div {
+.menu-cat-content-inner #account .modal-footer div {
 	margin: 0px;
 }
 
@@ -3016,6 +3150,11 @@ p.subtitle {
   background-color: red;
 }
 
+/* Red buttons brighten on hover instead of taking the generic grey. */
+.infoWindowIcn.bad:not(:disabled):not(.disabled):not([aria-disabled="true"]):hover {
+  background-color: #ff4d4d;
+}
+
 .menu-cat-content-inner h1,
 .menu-cat-content-inner h2,
 .menu-cat-content-inner h3,
@@ -3037,15 +3176,15 @@ p.subtitle {
   margin-bottom: 8px;
 }
 
-/* Temporary till we have SVGs */
+/* EoW icon artwork. */
 .icon-EoW_MightCrystal {
-	background-image: url(images/icons/eow/WorldGlobePiece.png);
+	background-image: url(images/icons/eow/WorldGlobePiece.svg);
     background-size: contain;
     background-blend-mode: color-dodge;
 }
 
 div.circle:has(>.icon-EoW_MightCrystal) {
-    background-image: url(images/icons/eow/WorldGlobePiece.png);
+    background-image: url(images/icons/eow/WorldGlobePiece.svg);
     background-blend-mode: color-dodge;
     background-size: contain;
 }
@@ -3063,13 +3202,13 @@ div.circle:has(>.icon-EoW_Waypoint) {
 }
 
 .icon-EoW_Stamp {
-	background-image: url(images/icons/eow/StampTable.png);
+	background-image: url(images/icons/eow/StampTable.svg);
     background-size: contain;
     background-blend-mode: color-dodge;
 }
 
 div.circle:has(>.icon-EoW_Stamp) {
-    background-image: url(images/icons/eow/StampTable.png);
+    background-image: url(images/icons/eow/StampTable.svg);
     background-blend-mode: color-dodge;
     background-size: contain;
 }

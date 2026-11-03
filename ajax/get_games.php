@@ -1,5 +1,9 @@
 <?php
   $path = __DIR__;
+  if (file_exists("$path/static/games.json")) {
+    readfile("$path/static/games.json");
+    return;
+  }
 
   $res = $db->fetchAllAssociative("
     SELECT c.id

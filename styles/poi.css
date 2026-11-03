@@ -1,4 +1,4 @@
-/* BotW/TotK POI treatments shared by category glyphs and map markers. */
+/* Shared POI treatments for Link's Awakening, BotW, TotK and EoW. */
 .poi-badge {
   position: relative;
   isolation: isolate;
@@ -43,6 +43,7 @@
 .category-icon.poi-travel.icon-BotW_Dungeon::before,
 .poi-travel > .icon-BotW_Dungeon::before { transform: translateY(-.015em); }
 .poi-korok { --poi-fill: #3dbc75; }
+.poi-heart { --poi-fill: #d94b72; }
 .poi-memory { --poi-fill: #c6c396; }
 .poi-relic, .poi-location, .poi-location-round, .poi-cave { --poi-fill: #8f773a; }
 .poi-location, .poi-location-round, .poi-cave { color: #684521; }
@@ -52,14 +53,73 @@
 .poi-interest { --poi-fill: #ffad47; }
 .poi-treasure { color: #ede954; }
 .poi-treasure::after { display: none; }
-.poi-treasure::before,
-.poi-treasure > [class*='icnText-'] {
+.poi-treasure:not(.poi-eow)::before,
+.poi-treasure:not(.poi-eow) > [class*='icnText-'] {
   -webkit-text-stroke: 1px #2a2600;
   paint-order: stroke fill;
   filter: drop-shadow(1px 0 #2a2600) drop-shadow(-1px 0 #2a2600) drop-shadow(0 1px #2a2600) drop-shadow(0 -1px #2a2600);
 }
-.category-icon.poi-treasure::before { -webkit-text-stroke-width: 3px; }
+.category-icon.poi-treasure:not(.poi-eow)::before { -webkit-text-stroke-width: 3px; }
 .poi-badge > [class*='icnText-'] { color: inherit; }
+
+/* Keep EoW's original color-dodge rendering rather than converting the artwork
+   into masks. Blend the unchanged raster glyph over the new backing shape. */
+.poi-badge.icon-EoW_Waypoint, .poi-badge > .icon-EoW_Waypoint { --eow-icon: url(images/icons/eow/Warp.png); }
+.poi-badge.icon-EoW_MightCrystal, .poi-badge > .icon-EoW_MightCrystal { --eow-icon: url(images/icons/eow/WorldGlobePiece.svg); }
+.poi-badge.icon-EoW_Stamp, .poi-badge > .icon-EoW_Stamp { --eow-icon: url(images/icons/eow/StampTable.svg); }
+.poi-badge.icon-EoW_Echo, .poi-badge > .icon-EoW_Echo { --eow-icon: url(images/icons/eow/Echo.png); }
+.poi-badge[class*='icon-EoW_'],
+.poi-badge > [class*='icon-EoW_'],
+.circle.poi-badge:has(> [class*='icon-EoW_']) {
+  background-image: none !important;
+  background-blend-mode: normal;
+}
+.poi-badge > [class*='icon-EoW_'] { display: inline-flex; width: 1em; height: 1em; vertical-align: middle; }
+.poi-badge[class*='icon-EoW_']::before,
+.poi-badge > [class*='icon-EoW_']::before {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background: var(--eow-icon) center / contain no-repeat;
+  mix-blend-mode: color-dodge;
+  vertical-align: middle;
+}
+
+/* EoW artwork already has generous transparent margins. Keep it prominent
+   and flat rather than inheriting the BotW/TotK outlined-treasure effect. */
+.poi-eow,
+.poi-eow::before,
+.poi-eow::after,
+.poi-eow *,
+.poi-eow *::before,
+.poi-eow *::after {
+  filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: 0 !important;
+}
+.poi-eow.category-icon,
+.poi-eow.circleMap-medium,
+.poi-eow.circleMap-small {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.poi-eow[class*='icon-EoW_']::before,
+.poi-eow > [class*='icon-EoW_']::before {
+  width: 1.45em;
+  height: 1.45em;
+  flex: 0 0 auto;
+}
+.poi-eow > [class*='icon-EoW_'] { align-items: center; justify-content: center; }
+
+/* The crystal occupies a smaller part of its source viewBox than the others. */
+.poi-eow.icon-EoW_MightCrystal::before,
+.poi-eow > .icon-EoW_MightCrystal::before {
+  width: 1.85em;
+  height: 1.85em;
+}
 
 /* Match the existing category-list correction for this smaller-drawn glyph. */
 .circleMap-medium.poi-interest > .icon-TotK_Dispenser::before,
@@ -118,3 +178,64 @@
 .poi-category-groups .poi-original-category + .poi-category-heading {
   padding-top: 4px;
 }
+
+#newuserform .registration-field-error {
+  color: #ff8c85;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 8px 0;
+}
+
+#newuserform .input-group:has(input[aria-invalid="true"]) {
+  box-shadow: inset 0 0 0 1px #ff8c85;
+}
+
+.menu-cat-content-inner #newuserform > .form-group {
+  margin: 0 0 16px;
+}
+
+.menu-cat-content-inner #newuserform > .form-group .input-group {
+  border-radius: 10px;
+  border-top: 0;
+}
+
+#newuserform .registration-password-group {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+#newuserform .registration-password-group .form-group {
+  margin: 0;
+}
+
+.menu-cat-content-inner #newuserform .registration-password-group .input-group {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+#newuserform .registration-password-group .form-group + .form-group .input-group {
+  border-top: 1px solid rgba(255,255,255,.12);
+}
+
+#newuserform .registration-password-group:has(input[aria-invalid="true"]) {
+  outline: 1px solid #ff8c85;
+  outline-offset: -1px;
+}
+
+#newuserform .registration-password-messages {
+  margin-bottom: 16px;
+}
+
+#newuserform .input-group.username-valid { box-shadow: inset 0 0 0 1px #77e2a8; }
+#newuserform .input-group.username-invalid { box-shadow: inset 0 0 0 1px #ff8c85; }
+#newuserform .registration-validation-icon {
+  order: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  color: #ff8c85;
+}
+#newuserform .username-valid .registration-validation-icon { color: #77e2a8; }
+#newuserform .registration-validation-icon i,
+#newuserform .registration-validation-icon svg { width: 16px; height: 16px; font-size: 16px; }

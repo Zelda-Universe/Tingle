@@ -1524,11 +1524,27 @@ L.Control.ZLayers = L.Control.Layers.extend({
             this.closeDrawer();
           } else {
             this._navigatingBack = true;
-          if(vType === 'loginForm') {
+          if(vType === 'registerForm') {
+            if(this._registrationReturnMarker) {
+              this.zMap._pendingBookmarkRegistration = null;
+              // Restore the existing POI without reselecting its map or
+              // requesting an immediate drawer opening through goTo().
+              // Both bypass the normal page/height transition.
+              var registrationMarker = this.zMap.cachedMarkersById[this._registrationReturnMarker];
+              if(this.viewStyleBottomSlide && typeof this._registrationParentPartial === 'boolean') {
+                this._partialDrawerMode = this._registrationParentPartial;
+              }
+              if(registrationMarker) this.zMap._createMarkerPopup(registrationMarker);
+              else this.resetContent();
+              if(this.viewStyleBottomSlide && this._registrationParentPartial === false) this.openDrawerLarge();
+            } else {
+              this.zMap._createLoginForm();
+            }
+          } else if(vType === 'loginForm') {
             this._returnFromDesktopAccount();
           } else if(vType === 'changePasswordForm' && this.zMap.getUser()) {
             this.zMap._createAccountInformationForm();
-          } else if(['offlineMapsPage', 'accountInformationPage', 'bookmarksPage'].includes(vType) && this.zMap.getUser()) {
+          } else if(['offlineMapsPage', 'accountInformationPage', 'bookmarksPage', 'deleteAccountForm'].includes(vType) && this.zMap.getUser()) {
             this.zMap._createAccountForm(this.zMap.getUser());
           } else {
             this.reset();

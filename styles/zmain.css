@@ -554,36 +554,90 @@ main.leaflet-container,
 	opacity: .5;
 }
 
-#loginform .checkbox {
-	width: 100%;
+.register-benefits {
+	margin: 24px 0 0;
+	padding: 16px;
+	border: 1px solid rgba(255,255,255,.25);
+	border-radius: 10px;
+	color: rgba(255,255,255,.85);
+	text-align: left;
+}
+
+#loginform .register-benefits h4 {
+	margin: 0 0 8px;
+	color: white;
+	font-size: 16px;
+}
+
+.register-benefits ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.register-benefits li {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+}
+
+.register-benefits li + li {
+	margin-top: 4px;
+}
+
+.register-benefits li svg,
+.register-benefits li i {
+	flex: none;
+	width: 12px;
+	color: rgba(255,255,255,.6);
+}
+
+#loginform .register-benefits .form-action-button.infoWindowIcn {
 	box-sizing: border-box;
-	margin: 0 0 24px;
-	padding: 6px 10px;
-	background: rgba(255,255,255,.2);
-	border-top: 1px solid rgba(255,255,255,.12);
-	border-radius: 0 0 10px 10px;
+	width: 100%;
+	margin: 16px 0 0;
+}
+
+/* Remember me and Forgot password?, beneath the fields. */
+#loginform > .form-group:not(:has(+ .form-group)) {
+	margin-bottom: 8px;
+}
+
+.login-options {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 0 0 16px;
+	/* Clear of the fields' rounded corners, in line with their icons. */
+	padding: 0 12px;
 	font-size: 14px;
 }
 
-#loginform > .form-group:not(:has(+ .form-group)) {
-	margin-bottom: 0;
-}
-
-#loginform > .form-group:not(:has(+ .form-group)) .input-group {
-	border-radius: 0;
-}
-
-#loginform .checkbox label {
+.login-remember {
 	display: flex;
 	align-items: center;
 	margin: 0;
-	padding: 0;
+	font-weight: normal;
 	cursor: pointer;
 }
 
-#loginform .checkbox input[type="checkbox"] {
-	position: static;
+.login-remember input[type="checkbox"] {
 	margin: 0 8px 0 0;
+}
+
+#loginform .login-forgot,
+#loginform .login-forgot:focus {
+	color: rgba(255,255,255,.6);
+	text-decoration: none;
+}
+
+#loginform .login-forgot:hover {
+	color: white;
+	text-decoration: none;
+}
+
+#loginform .modal-footer .form-action-button.infoWindowIcn {
+	margin: 0;
 }
 
 .delete-account-warning {

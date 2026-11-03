@@ -102,7 +102,7 @@ function ZMap() {
       REGISTER_SUCCESS : "Excuuuuse me, %1! Your account has been successfully created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
-      LOST_PASSWORD_WELCOME: "Lost Password",
+      LOST_PASSWORD_WELCOME: "Forgot Password",
       LOST_PASSWORD_SUCCESS: "Saria sent a new password to your email!",
       LOST_PASSWORD_ERROR: "I AM ERROR. You ended up back at the beginning! %1",
 
@@ -2875,7 +2875,7 @@ ZMap.prototype._createLostPasswordForm = function() {
                           '<div class="form-group">'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
-                                   '<span class="input-group-addon"><i class="icon-fa-envelope fa" aria-hidden="true"></i></span>'+
+                                   '<span class="input-group-addon"><i class="fas fa-envelope" aria-hidden="true"></i></span>'+
                                    '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your email address"/>'+
                                 '</div>'+
                              '</div>'+
@@ -2883,7 +2883,6 @@ ZMap.prototype._createLostPasswordForm = function() {
                           '<div class="modal-footer">'+
                                  '<div>'+
                                     '<button type="submit" class="infoWindowIcn form-action-button">Reset Password</button>'+
-                                    '<button id="lost_password_back_btn" type="button" class="infoWindowIcn form-action-button">Back</button>'+
                                  '</div>'+
                                '</div>'+
                         '</form>'+
@@ -2908,15 +2907,6 @@ ZMap.prototype._createLostPasswordForm = function() {
         }
       });
 
-      e.preventDefault();
-   });
-
-   $("#lost_password_back_btn").click(function(e) {
-      if(user) {
-         _this._createAccountForm(user);
-      } else {
-         _this._createLoginForm();
-      }
       e.preventDefault();
    });
 }
@@ -3204,19 +3194,27 @@ ZMap.prototype._createLoginForm = function(successMessage) {
                                  '</div>'+
                               '</div>'+
                            '</div>'+
-                           '<div id="remember" class="checkbox">'+
-                              '<label>'+
+                           '<div class="login-options">'+
+                              '<label class="login-remember">'+
                                  '<input type="checkbox" id="remember" name="remember" checked> Remember me'+
                               '</label>'+
+                              '<a href="#" id="login_lost_btn" class="login-forgot">Forgot password?</a>'+
                            '</div>'+
                            '<div class="modal-footer">'+
                               '<div>'+
                                  '<button type="submit" class="infoWindowIcn form-action-button">Login</button>'+
                               '</div>'+
-                              '<div>'+
-                                '<button id="login_lost_btn" type="button" class="infoWindowIcn form-action-button">Lost Password?</button>'+
-                                '<button id="login_register_btn" type="button" class="infoWindowIcn form-action-button">Register</button>'+
-                              '</div>'+
+                           '</div>'+
+                           '<div class="register-benefits">'+
+                              '<h4>Register <em>for free</em> to:</h4>'+
+                              '<ul>'+
+                                 ['Remove ads!', 'Download maps to use offline', 'Sync completed markers',
+                                  'Save bookmarks &amp; dropped pins', 'Suggest edits to maps (coming soon!)'
+                                 ].map(function(benefit) {
+                                    return '<li><i class="fas fa-check" aria-hidden="true"></i><span>' + benefit + '</span></li>';
+                                 }).join('')+
+                              '</ul>'+
+                              '<button id="login_register_btn" type="button" class="infoWindowIcn form-action-button">Register</button>'+
                            '</div>'+
                            '</form>'+
                         '</div>', 'loginForm');

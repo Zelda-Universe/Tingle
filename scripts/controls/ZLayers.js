@@ -1557,6 +1557,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
             } else {
               this.zMap._createLoginForm();
             }
+          } else if(vType === 'lostPasswordForm') {
+            this.zMap._createLoginForm();
           } else if(vType === 'loginForm') {
             this._returnFromDesktopAccount();
           } else if(vType === 'changePasswordForm' && this.zMap.getUser()) {

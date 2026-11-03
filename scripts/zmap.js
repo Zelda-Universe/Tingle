@@ -3214,7 +3214,7 @@ ZMap.prototype._createLoginForm = function(successMessage) {
                                  '<button type="submit" class="infoWindowIcn form-action-button">Login</button>'+
                               '</div>'+
                               '<div>'+
-                                '<button id="login_lost_btn" type="button" class="infoWindowIcn form-action-button" disabled="true">Lost Password?</button>'+
+                                '<button id="login_lost_btn" type="button" class="infoWindowIcn form-action-button">Lost Password?</button>'+
                                 '<button id="login_register_btn" type="button" class="infoWindowIcn form-action-button">Register</button>'+
                               '</div>'+
                            '</div>'+

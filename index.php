@@ -174,8 +174,8 @@
           document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }
       </script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261102-navigation-refinement"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261102-navigation-refinement" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261103-safari-viewport"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261103-safari-viewport" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

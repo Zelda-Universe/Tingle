@@ -102,6 +102,22 @@ main {
 	font-family: "BrandonText", sans-serif !important;
 }
 
+@media (max-width: 600px) and (orientation: portrait) {
+	html.zm-ios-safari,
+	.zm-ios-safari body {
+		background: #000;
+	}
+
+	html.zm-ios-safari {
+		--mobile-control-top: 10px !important;
+	}
+
+	.zm-ios-safari main.leaflet-container {
+		border-top-left-radius: 22px;
+		border-top-right-radius: 22px;
+	}
+}
+
 :root {
 	--safe-area-bottom: env(safe-area-inset-bottom, 0px);
 	--mobile-control-top: calc(env(safe-area-inset-top, 0px) + 10px);

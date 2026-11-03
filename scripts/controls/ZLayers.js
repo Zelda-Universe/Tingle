@@ -477,7 +477,27 @@ L.Control.ZLayers = L.Control.Layers.extend({
         window.requestAnimationFrame(function() {
           this._refreshMobileDrawerLayout();
         }.bind(this));
-        var refreshMobileLayout = this._refreshMobileDrawerLayout.bind(this);
+        var refreshMobileLayout = function() {
+          if(this._keyboardDrawerViewport) {
+            var baseline = this._keyboardDrawerViewport;
+            var active = document.activeElement;
+            var editing = active && active.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]), textarea, [contenteditable="true"]');
+            var height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            if(Math.abs(window.innerWidth - baseline.width) < 80 && (editing || height < baseline.height - 80)) return;
+            this._keyboardDrawerViewport = null;
+          }
+          this._refreshMobileDrawerLayout();
+        }.bind(this);
+        document.addEventListener('focusin', function(e) {
+          if(!this._keyboardDrawerViewport && e.target.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]), textarea, [contenteditable="true"]')) {
+            this._keyboardDrawerViewport = {
+              height: this._viewportHeight(), bottom: this._viewportBottom(), width: window.innerWidth
+            };
+          }
+        }.bind(this));
+        document.addEventListener('focusout', function() {
+          window.setTimeout(refreshMobileLayout, 350);
+        });
         window.addEventListener('resize', refreshMobileLayout);
         if(window.visualViewport) {
           window.visualViewport.addEventListener('resize', refreshMobileLayout);
@@ -720,12 +740,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _viewportHeight: function() {
+    if(this._keyboardDrawerViewport) return this._keyboardDrawerViewport.height;
     return window.visualViewport
       ? window.visualViewport.height
       : window.innerHeight;
   },
 
   _viewportBottom: function() {
+    if(this._keyboardDrawerViewport) return this._keyboardDrawerViewport.bottom;
     return window.visualViewport
       ? window.visualViewport.offsetTop + window.visualViewport.height
       : window.innerHeight;
@@ -941,6 +963,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _refreshMobileDrawerLayout: function() {
     if(!this.viewStyleBottomSlide || !this._form) return;
+    if(this._keyboardDrawerViewport) return;
     if(document.activeElement && document.activeElement.matches('.marker-search')) return;
     this._map.invalidateSize({ pan: false });
     this.options.width = this._map.getContainer().getBoundingClientRect().width || window.innerWidth;

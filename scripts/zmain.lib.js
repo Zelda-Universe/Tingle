@@ -388,6 +388,8 @@ var AD_CLIENT = 'ca-pub-7269573247649351';
 var AD_SLOT = '4512666333';
 var AD_PRODUCTION_HOSTS = ['zeldamaps.com', 'www.zeldamaps.com'];
 var AD_GAP = 8;
+var AD_BOTTOM = 10; // Matches #ads in zmain.css.
+var AD_SIDEBAR_GAP = 16;
 var adState = { key: null, observing: false, fallbackTimer: null };
 
 // "live" on the production site. Elsewhere "test" asks AdSense for test ads
@@ -399,17 +401,18 @@ function getAdMode() {
   return AD_PRODUCTION_HOSTS.indexOf(location.hostname) > -1 ? 'live' : 'test';
 }
 
-// The strip along the bottom of the desktop map: right of the sidebar and
-// left of the bottom-right controls, centred on the visible map.
+// The strip along the bottom of the desktop page, left of the bottom-right
+// controls. The banner centres on the page, and slides under the sidebar
+// (which leaves room above it) when it would otherwise cover the controls.
 function getDesktopAdArea() {
   var panel = zMap.mapControl && zMap.mapControl._container;
-  var left = panel && panel.offsetParent ? panel.getBoundingClientRect().right : 0;
+  var panelRect = panel && panel.offsetParent ? panel.getBoundingClientRect() : null;
   var controls = document.querySelector('.leaflet-bottom.leaflet-right');
   var right = controls && controls.offsetHeight
     ? controls.getBoundingClientRect().left : window.innerWidth;
   return {
-    center: (left + window.innerWidth) / 2,
-    left: left + AD_GAP,
+    center: window.innerWidth / 2,
+    left: panelRect ? panelRect.left : AD_GAP,
     right: right - AD_GAP
   };
 }
@@ -423,7 +426,7 @@ function getAdSize(mobile) {
   }) || null;
 }
 
-// Centred on the map, nudged aside when it would cover the sidebar or controls.
+// Centred on the page, nudged left when it would cover the controls.
 function getDesktopAdLeft(width) {
   var area = getDesktopAdArea();
   return Math.max(area.left, Math.min(area.center - width / 2, area.right - width));
@@ -515,7 +518,10 @@ function updateAdState() {
   var mobile = isMobile();
   var mode = getAdMode();
   var size = authenticated || mode == 'off' ? null : getAdSize(mobile);
-  document.body.classList.toggle('ads-off', !size);
+
+  zMap.mapControl.setBottomReserve(
+    size && !mobile ? AD_BOTTOM + size.height + AD_SIDEBAR_GAP : 0
+  );
 
   var key = size ? [mode, mobile, size.width].join(':') : '';
   if(key !== adState.key) {

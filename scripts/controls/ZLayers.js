@@ -1019,10 +1019,27 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _refreshDesktopDrawerLayout: function() {
     if(this.viewStyleBottomSlide || !this._contents || !this._map) return;
-    this._contents.style.maxHeight = Math.max(
-      this._map.getSize().y - 250,
-      250
-    ) + 'px';
+    // Measured, as Leaflet's cached size lags a window resize.
+    var mapHeight = this._map.getContainer().clientHeight;
+    var maxHeight = mapHeight - 250;
+    // Once the ads are settled, run down to the bottom of the map: clear of the
+    // space reserved for a banner, which can slide underneath, or with the
+    // same margin as at the top when there is none.
+    if(this._bottomReserve !== undefined) {
+      var mapTop = this._map.getContainer().getBoundingClientRect().top;
+      var container = this._container.getBoundingClientRect();
+      var contents = this._contents.getBoundingClientRect();
+      var bottomMargin = this._bottomReserve || container.top - mapTop;
+      maxHeight = mapHeight - bottomMargin
+        - (contents.top - mapTop) - (container.bottom - contents.bottom);
+    }
+    this._contents.style.maxHeight = Math.max(maxHeight, 250) + 'px';
+  },
+
+  setBottomReserve: function(height) {
+    if(this._bottomReserve === height) return;
+    this._bottomReserve = height;
+    this._refreshDesktopDrawerLayout();
   },
 
   setResponsiveLayout: function(mobile) {

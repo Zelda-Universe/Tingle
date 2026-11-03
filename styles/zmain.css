@@ -2540,9 +2540,11 @@ button[aria-disabled="true"] {
 	pointer-events: none;
 }
 
-/* Auto ads AdSense placed before the user signed in. */
-body.ads-off ins.adsbygoogle,
-body.ads-off .google-auto-placed {
+/* Only our own banner. Hide whatever Auto ads place elsewhere (anchors, side
+   rails, vignettes, in-page units); Auto ads should also be off for the site
+   in AdSense. */
+ins.adsbygoogle:not(#ads ins),
+.google-auto-placed {
 	display: none !important;
 }
 

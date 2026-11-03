@@ -109,21 +109,10 @@
 
   # User features
 
-  # Lost password dependent options
+  # Site
   {
-    $lostPasswordRandomGeneratorStrengthStrings = array_keys((new SecurityLib\Strength)->getConstList());
-
-    $lostPasswordRandomGeneratorStrengthString = get_config("LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH");
-    if(
-      array_search(
-        $lostPasswordRandomGeneratorStrengthString, $lostPasswordRandomGeneratorStrengthStrings
-      ) === false
-    ) {
-      // Display notice instead of using a silent default since it could be an important setting for security.
-      error_log("Miconfigured \"LOST_PASSWORD_RANDOM_GENERATOR_STRENGTH\" setting; using the value \"MEDIUM\" by default.");
-      $lostPasswordRandomGeneratorStrengthString = "MEDIUM";
-    }
-    $lostPasswordRandomGeneratorStrengthConstant = new SecurityLib\Strength((new SecurityLib\Strength)->getConstList()[$lostPasswordRandomGeneratorStrengthString]);
+    # Absolute URL of this installation, used when building links in e-mails.
+    $siteBaseURL = rtrim(get_config('siteBaseURL', 'string', ['https://zeldamaps.com']), '/');
   }
 
   # Mail
@@ -139,6 +128,11 @@
 
     $lostPasswordSubject = get_config("lostPasswordSubject");
     $lostPasswordBodyTemplateFilePath = get_config("lostPasswordBodyTemplateFilePath");
+    # Seconds a password-reset link stays valid.
+    $lostPasswordTokenLifetime = get_config("lostPasswordTokenLifetime", 'int', [3600]);
+    if ($lostPasswordTokenLifetime < 60) {
+      $lostPasswordTokenLifetime = 3600;
+    }
 
     # Validation
     if(!empty($lostPasswordBodyTemplateFilePath)) {

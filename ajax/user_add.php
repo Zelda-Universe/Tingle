@@ -34,7 +34,7 @@
      ", [$username, $hash, $name, $email, $ip]);
    } catch (UniqueConstraintViolationException $e) {
      // username and email are both unique keys.
-     echo json_encode(array("success"=>false, "msg"=>"User already exists!"));
+     echo json_encode(array("success"=>false, "msg"=>"That username or email address is already registered."));
      return;
    }
 

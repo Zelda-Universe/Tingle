@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261103-7';
+const CACHE_VERSION = '20261103-8';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;

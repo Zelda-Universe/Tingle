@@ -2220,6 +2220,22 @@ button[aria-disabled="true"] {
    }
 }
 
+.offline-map-empty-message {
+	position: fixed;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: min(80vw, 440px);
+	padding: 20px;
+	border-radius: 16px;
+	background: rgba(0,0,0,.75);
+	color: white;
+	text-align: center;
+	font-size: 18px;
+	z-index: 400;
+	pointer-events: none;
+}
+
 /*** General Drawer Stuff ***/
 
 .zm-ios-safari .menu-cat-content-inner::after {

@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261102-6';
+const CACHE_VERSION = '20261102-7';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -7,8 +7,8 @@ const MAX_TILE_ENTRIES = 500;
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261102-offline-fetch-fix',
-  './res.php?type=css&v=20261102-offline-fetch-fix',
+  './res.php?type=javascript&v=20261102-offline-navigation',
+  './res.php?type=css&v=20261102-offline-navigation',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',

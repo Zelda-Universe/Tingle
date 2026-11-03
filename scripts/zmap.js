@@ -1417,6 +1417,45 @@ ZMap.prototype._openDroppedPin = function(latlng) {
   });
 };
 
+ZMap.prototype.setupOfflineMapMessage = function() {
+  var map = this;
+  if(this._offlineMessageSetup) return;
+  this._offlineMessageSetup = true;
+  var message = document.createElement('div');
+  message.className = 'offline-map-empty-message';
+  message.setAttribute('role', 'status');
+  message.style.display = 'none';
+  document.body.appendChild(message);
+  function refresh() {
+    message.style.display = 'none';
+    if(navigator.onLine || !('caches' in window)) return;
+    var prefixes = [];
+    map.maps.forEach(function(layer) {
+      if(layer._url) prefixes.push(new URL(layer._url.split('{')[0], location.href).href);
+    });
+    caches.keys().then(function(names) {
+      return Promise.all(names.filter(function(name) {
+        return name.indexOf('zeldamaps-') === 0;
+      }).map(function(name) {
+        return caches.open(name).then(function(cache) { return cache.keys(); });
+      }));
+    }).then(function(groups) {
+      var hasTiles = groups.some(function(requests) {
+        return requests.some(function(request) {
+          return prefixes.some(function(prefix) { return request.url.indexOf(prefix) === 0; });
+        });
+      });
+      if(!navigator.onLine && !hasTiles) {
+        message.textContent = "You're offline. Connect to the internet to view maps for " + map.mapOptions.name + '.';
+        message.style.display = 'block';
+      }
+    });
+  }
+  window.addEventListener('online', refresh);
+  window.addEventListener('offline', refresh);
+  refresh();
+};
+
 ZMap.prototype.goToStart = function() {
   this.map.setView(
     new L.LatLng(
@@ -2417,7 +2456,6 @@ ZMap.prototype._createLoginForm = function(successMessage) {
             checkChangelog(data.user);
             _this.setUser(data.user);
             updateAdState();
-            toastr.success(_this.langMsgs.LOGIN_SUCCESS.format(user.username));
 
             if (_this.mapControl.isMobile) {
                _this.mapControl.closeDrawer();
@@ -2965,7 +3003,24 @@ ZMap.prototype._createOfflineMapsForm = function() {
         tileCount: totalTiles,
         updatedAt: Date.now()
       });
-      return downloadPage(cache, 0);
+      var containerURL = 'ajax.php?command=get_container&game=' + encodeURIComponent(game.id);
+      return fetch(containerURL).then(function(response) {
+        if(!response.ok) throw new Error('The offline map data could not be saved.');
+        return response.json().then(function(containers) {
+          if(!containers[0]) throw new Error('The offline map data could not be loaded.');
+          return cache.put(containerURL, new Response(JSON.stringify(containers), {
+            headers: { 'Content-Type': 'application/json' }
+          })).then(function() {
+            return Promise.all(['get_map', 'get_categories', 'get_markers'].map(function(command) {
+              var url = 'ajax.php?command=' + command + '&game=' + containers[0].id;
+              return fetch(url).then(function(dataResponse) {
+                if(!dataResponse.ok) throw new Error('The offline map data could not be saved.');
+                return cache.put(url, dataResponse);
+              });
+            }));
+          });
+        });
+      }).then(function() { return downloadPage(cache, 0); });
     }).then(function() {
       writePackRecord(game.id, {
         status: 'downloaded',

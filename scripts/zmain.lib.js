@@ -189,6 +189,24 @@ function getGames() {
       $.each(vResults, function(i,map){
         zMap.addGame(map);
       });
+      if(navigator.onLine && 'caches' in window) {
+        caches.open('zeldamaps-offline-navigation').then(function(cache) {
+          var urls = ['ajax.php?command=get_games'];
+          vResults.forEach(function(game) {
+            urls.push('ajax.php?command=get_container&game=' + game.shortName);
+            ['get_map', 'get_categories', 'get_markers'].forEach(function(command) {
+              urls.push('ajax.php?command=' + command + '&game=' + game.id);
+            });
+          });
+          return urls.reduce(function(chain, url) {
+            return chain.then(function() {
+              return fetch(url).then(function(response) {
+                if(response.ok) return cache.put(url, response);
+              }).catch(function() {});
+            });
+          }, Promise.resolve());
+        }).catch(function() {});
+      }
    });
 };
 
@@ -253,6 +271,7 @@ function getMarkers(categories) {
         zMap.addMarkers(vResults);
       }
       zMap.refreshMap();
+      zMap.setupOfflineMapMessage();
 
       finalLoad();
     }.bind(this, gameId)

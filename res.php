@@ -254,6 +254,16 @@
         // debug_log("update                 : ".var_export($update, true));
       }
     }
+
+    ### Check for a minifier update, which changes the output too
+    if(!$update && $cacheDestFileMTime !== false) {
+      foreach(array('lib/minify.php', 'lib/CSSmin.php', 'lib/JSMin.php') as $minifierFile) {
+        if(filemtime(__DIR__."/$minifierFile") > $cacheDestFileMTime) {
+          $update = true;
+          break;
+        }
+      }
+    }
   }
 
   // exit('Debug forced stop: '."\n\n".$debugLog); // Debug

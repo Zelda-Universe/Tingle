@@ -586,7 +586,11 @@ class CSSmin
 
     private function replace_calc($matches)
     {
-        $this->preserved_tokens[] = trim(preg_replace('/\s*([\*\/\(\),])\s*/', '$1', $matches[2]));
+        // Only around * / , and inside brackets: + and - need their spaces,
+        // so `) + 10px` must not become `)+ 10px`, which Chrome rejects.
+        $calc = preg_replace('/\s*([\*\/,])\s*/', '$1', $matches[2]);
+        $calc = preg_replace(array('/\(\s+/', '/\s+\)/', '/\s+/'), array('(', ')', ' '), $calc);
+        $this->preserved_tokens[] = trim($calc);
         return 'calc('. self::TOKEN . (count($this->preserved_tokens) - 1) . '___' . ')';
     }
 

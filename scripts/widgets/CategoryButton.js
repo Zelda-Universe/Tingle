@@ -144,6 +144,7 @@ CategoryButton.prototype._initDOMElements = function() {
       '<div class="icon-container">' +
       '</div>' +
       '<p class="label"></p>' +
+      '<p class="label-count" hidden></p>' +
     '</a>'
   ;
   this.domNode = $(this.domNodeTemplate);
@@ -158,6 +159,7 @@ CategoryButton.prototype._initDOMElements = function() {
 
   this.labelNode = this.domNode.find('.label');
   this.labelNode.text(this.title);
+  this.countNode = this.domNode.find('.label-count');
 };
 
 CategoryButton.prototype._initHandlers = function() {
@@ -341,13 +343,16 @@ CategoryButton.prototype.mouseLeave = function() {
   this.labelNode.css('min-height', '');
 };
 
+// Unless Hide Completion Counts is on, the count sits below the name;
+// otherwise it replaces the name while hovered.
 CategoryButton.prototype.updateCategoryLabel = function() {
   var name = this.displayTitle || this.category.name || this.title;
-  var countsByDefault = getCookie('showCategoryCompletionCounts') === 'true';
-  var showCounts = this.showProgress && this.category.total > 0 &&
-    (countsByDefault ? !this._labelHovered : !!this._labelHovered);
-  this.labelNode.text(showCounts ? this.category.complete + '/' + this.category.total : name);
-  this.domNode.attr('aria-label', name);
+  var hasCounts = this.showProgress && this.category.total > 0;
+  var counts = hasCounts ? this.category.complete + '/' + this.category.total : '';
+  var countsBelow = hasCounts && getCookie('showCategoryCompletionCounts') !== 'false';
+  this.labelNode.text(hasCounts && !countsBelow && this._labelHovered ? counts : name);
+  if(this.countNode) this.countNode.text(countsBelow ? counts : '').prop('hidden', !countsBelow);
+  this.domNode.attr('aria-label', countsBelow ? name + ', ' + counts + ' completed' : name);
 };
 
 CategoryButton.prototype._className = "CategoryButton";

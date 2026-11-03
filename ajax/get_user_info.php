@@ -59,6 +59,8 @@
   $details = $db->fetchAssociative("SELECT email, name FROM `{$map_prefix}user` WHERE id = ?", [(int) $user['id']]);
   $user['email'] = $details ? $details['email'] : null;
   $user['name']  = $details ? $details['name']  : null;
+  include_once(dirname(__DIR__) . '/lib/common/user_settings.php');
+  $user['settings'] = userSettingsLoad($db, $map_prefix, $user['id']);
 
   $user['profilePicture'] = null;
   $hasProfileColumn = (bool) $db->fetchOne("SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'profile_picture'");

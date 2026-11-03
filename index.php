@@ -12,38 +12,106 @@
     'LA' => [
       'name' => "Link's Awakening",
       'description' => "Explore Koholint Island with the Zelda Maps interactive map for The Legend of Zelda: Link's Awakening.",
-      'image' => 'social-la.png',
+      'image' => 'social-la.jpg',
       'themeColor' => '#43a047'
     ],
     'BotW' => [
       'name' => 'Breath of the Wild',
       'description' => 'Explore Hyrule with the Zelda Maps interactive map for The Legend of Zelda: Breath of the Wild.',
-      'image' => 'social-botw.png',
+      'image' => 'social-botw.jpg',
       'themeColor' => '#67c6e8'
     ],
     'TotK' => [
       'name' => 'Tears of the Kingdom',
       'description' => 'Explore the Surface, Sky, and Depths with the Zelda Maps interactive map for The Legend of Zelda: Tears of the Kingdom.',
-      'image' => 'social-totk.png',
+      'image' => 'social-totk.jpg',
       'themeColor' => '#67b9ad'
     ],
     'EoW' => [
       'name' => 'Echoes of Wisdom',
       'description' => 'Explore Hyrule with the Zelda Maps interactive map for The Legend of Zelda: Echoes of Wisdom.',
-      'image' => 'social-eow.png',
+      'image' => 'social-eow.jpg',
       'themeColor' => '#d4a738'
     ]
   ];
   $metadata = $gameMetadata[$gameId];
-  $pageTitle = 'Zelda Maps - ' . $metadata['name'] . ' Interactive Map';
+  $pageHeading = $metadata['name'] . ' Interactive Map';
+  $pageTitle = $pageHeading . ' - Zelda Maps';
+  $pageDescription = $metadata['description'];
   $canonicalUrl = 'https://zeldamaps.com/?game=' . rawurlencode($gameId);
   $socialImageUrl = 'https://zeldamaps.com/images/' . $metadata['image'];
   function metadataEscape($value) {
     return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
   }
+  $landingCategoryId = null;
+  $pageUrl = null; // Shared link, when it differs from the canonical URL.
+  $markerId = isset($_GET['marker']) ? (int) $_GET['marker'] : 0;
+  $categorySlug = isset($_GET['category']) ? (string) $_GET['category'] : '';
+  if ($markerId > 0 || $categorySlug !== '') {
+    include_once(__DIR__ . '/config.php');
+    include_once(__DIR__ . '/lib/common/database.php');
+    include_once(__DIR__ . '/lib/common/seo.php');
+    $landingCategories = open() === 0 ? seoLandingCategories($db, $map_prefix, $gameId) : [];
+
+    // A category from the category list gets its own page.
+    $category = $landingCategories[seoSlug($categorySlug)] ?? null;
+    if ($markerId === 0 && $category) {
+      $landingCategoryId = $category['id'];
+      $count = number_format($category['count']);
+      $maps = $category['maps'];
+      // Name the maps when there are only a few, as with TotK's three layers.
+      $where = count($maps) > 1 && count($maps) <= 3
+        ? ' across the ' . implode(', ', array_slice($maps, 0, -1)) . ' and ' . end($maps)
+        : '';
+      $pageHeading = $category['name'] . ' - ' . $metadata['name'] . ' Interactive Map';
+      $pageTitle = $category['name'] . ' Map - ' . $metadata['name'] . ' - Zelda Maps';
+      $pageDescription = 'All ' . $count . ' ' . $category['name'] . ' locations' . $where .
+        ' in The Legend of Zelda: ' . $metadata['name'] . ', on the Zelda Maps interactive map.';
+      $canonicalUrl = seoCategoryUrl($gameId, $category['slug']);
+    }
+
+    // A marker keeps its own title and description for link previews, but
+    // points search engines at its category's page rather than being indexed
+    // on its own.
+    if ($markerId > 0 && isset($db)) {
+      $marker = $db->fetchAssociative("
+        SELECT m.name, m.description, m.marker_category_id AS categoryId, mc.name AS category, mp.name AS map
+          FROM `{$map_prefix}marker` m
+          JOIN `{$map_prefix}marker_category` mc ON mc.id = m.marker_category_id
+          JOIN `{$map_prefix}submap` smp ON smp.id = m.submap_id
+          JOIN `{$map_prefix}map` mp ON mp.id = smp.map_id
+          JOIN `{$map_prefix}container` c ON c.id = mp.container_id
+         WHERE m.id = ? AND c.short_name = ?
+           AND m.visible = 1 AND smp.visible = 1 AND mp.visible = 1 AND c.visible = 1
+      ", [$markerId, $gameId]);
+      $markerName = $marker ? seoPlainText($marker['name']) : '';
+      if ($markerName !== '') {
+        $categoryName = seoPlainText($marker['category']);
+        $mapName = seoPlainText($marker['map']);
+        $details = seoPlainText($marker['description']);
+        // Some descriptions are only game data, such as a Korok's hash.
+        if (!preg_match('/\p{L}{3}/u', $details)) $details = '';
+        $pageHeading = $markerName . ' - ' . $metadata['name'] . ' Interactive Map';
+        $pageTitle = $markerName . ' - ' . $metadata['name'] . ' Map - Zelda Maps';
+        $pageDescription = $details !== ''
+          ? $markerName . ' (' . $categoryName . ', ' . $mapName . '): ' . $details
+          : 'Location of the ' . $markerName . ' (' . $categoryName . ') on the ' . $mapName .
+            ' map of The Legend of Zelda: ' . $metadata['name'] . ', on the Zelda Maps interactive map.';
+        $pageDescription = mb_strimwidth($pageDescription, 0, 160, '…', 'UTF-8');
+        $pageUrl = 'https://zeldamaps.com/?' . http_build_query(['game' => $gameId, 'marker' => $markerId]);
+        foreach ($landingCategories as $landingCategory) {
+          if ($landingCategory['id'] == $marker['categoryId']) {
+            $canonicalUrl = seoCategoryUrl($gameId, $landingCategory['slug']);
+            break;
+          }
+        }
+      }
+    }
+  }
+  $pageUrl = $pageUrl ?: $canonicalUrl;
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <!-- Metadata -->
 
@@ -66,7 +134,7 @@
           content="en-us"
         />
 
-        <meta name="description" content="<?= metadataEscape($metadata['description']) ?>">
+        <meta name="description" content="<?= metadataEscape($pageDescription) ?>">
         <meta name="application-name" content="Zelda Maps" />
         <meta name="theme-color" content="<?= metadataEscape($metadata['themeColor']) ?>" />
         <meta
@@ -95,29 +163,31 @@
 
       <!-- OpenGraph (OG) / Facebook/Meta Tags -->
 
-        <meta property="og:description" content="<?= metadataEscape($metadata['description']) ?>">
+        <meta property="og:description" content="<?= metadataEscape($pageDescription) ?>">
         <meta property="og:locale"  content="en_US" />
         <meta property="og:locale:alternate"  content="en_US" />
         <meta property="og:image" content="<?= metadataEscape($socialImageUrl) ?>">
-        <meta property="og:image:width" content="1200">
-        <meta property="og:image:height" content="630">
+        <!-- Screenshots from dev/captureSocialImages.sh: 1200x630 at 2x. -->
+        <meta property="og:image:type" content="image/jpeg">
+        <meta property="og:image:width" content="2400">
+        <meta property="og:image:height" content="1260">
         <meta property="og:image:alt" content="<?= metadataEscape($pageTitle) ?>">
         <meta property="og:site_name" content="Zelda Maps" />
         <meta property="og:title" content="<?= metadataEscape($pageTitle) ?>">
         <meta property="og:type"    content="website">
-        <meta property="og:url" content="<?= metadataEscape($canonicalUrl) ?>">
+        <meta property="og:url" content="<?= metadataEscape($pageUrl) ?>">
         <link rel="canonical" href="<?= metadataEscape($canonicalUrl) ?>">
 
 
       <!-- Twitter Meta Tags -->
 
         <meta name="twitter:card"     content="summary_large_image">
-        <meta name="twitter:description" content="<?= metadataEscape($metadata['description']) ?>">
+        <meta name="twitter:description" content="<?= metadataEscape($pageDescription) ?>">
         <meta property="twitter:domain"   content="zeldamaps.com">
         <meta name="twitter:image" content="<?= metadataEscape($socialImageUrl) ?>">
         <meta name="twitter:image:alt" content="<?= metadataEscape($pageTitle) ?>">
         <meta name="twitter:title" content="<?= metadataEscape($pageTitle) ?>">
-        <meta property="twitter:url" content="<?= metadataEscape($canonicalUrl) ?>">
+        <meta property="twitter:url" content="<?= metadataEscape($pageUrl) ?>">
 
 
 
@@ -174,6 +244,7 @@
           document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }
       </script>
+      <script>var zmapLandingCategoryId = <?= json_encode($landingCategoryId) ?>;</script>
       <script type="text/javascript" src="res.php?type=javascript&amp;v=20261103-default-avatar"></script>
       <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261103-default-avatar" />
       <script>
@@ -234,21 +305,15 @@
             window.location.href = "?game=TotK";
             return;
           }
-
-          $.getJSON(
-            "ajax.php?command=get_container_name&game=" + game,
-            function(data) {
-              if(!data.success) {
-                document.title = "Zelda Maps";
-                return;
-              }
-
-              document.title = data.name + " Interactive Map - Zelda Maps";
-            });
-          })();
+        })();
       </script>
   </head>
   <body>
+    <!-- What the page is, in text, for search engines and screen readers. -->
+    <header class="sr-only">
+      <h1><?= metadataEscape($pageHeading) ?></h1>
+      <p><?= metadataEscape($pageDescription) ?></p>
+    </header>
     <main>
       <!--
         Note: Ads should be above the map/layers/tiles area,
@@ -261,14 +326,18 @@
     </main>
 
     <div id="tracking">
-      <!-- Google Analytics -->
+      <!-- Google tag (gtag.js), on the production site only. -->
       <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-         })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-317947-14', 'auto');
-        ga('send', 'pageview');
+        if (['zeldamaps.com', 'www.zeldamaps.com'].indexOf(location.hostname) > -1) {
+          var gtagScript = document.createElement('script');
+          gtagScript.async = true;
+          gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-YGLG406J6N';
+          document.head.appendChild(gtagScript);
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-YGLG406J6N');
+        }
       </script>
 
       <!-- comScore -->

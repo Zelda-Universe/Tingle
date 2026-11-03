@@ -87,6 +87,8 @@
    }
    $user['level']        = $row['level'];
    $user['seen_version'] = $row['v1'] . '.' . $row['v2'] . '.' . $row['v3'];
+   include_once(dirname(__DIR__) . '/lib/common/user_settings.php');
+   $user['settings']     = userSettingsLoad($db, $map_prefix, $row['id']);
 
    $rememberLifetime = isset($_POST['remember']) ? 60 * 60 * 24 * 30 : 0;
    start_session("zmap", $rememberLifetime);

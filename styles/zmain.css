@@ -113,8 +113,8 @@ main {
 	}
 
 	.zm-ios-safari main.leaflet-container {
-		border-top-left-radius: 22px;
-		border-top-right-radius: 22px;
+		border-top-left-radius: 26px;
+		border-top-right-radius: 26px;
 	}
 
 	.zm-ios-safari main.leaflet-container,
@@ -1222,6 +1222,21 @@ main.leaflet-container,
   text-align: center;
 	vertical-align: top;
 	width: 25%;
+}
+
+/* With counts on, the name's bottom margin moves below the count, with a
+   little extra room before the next row. */
+.category-selection-list>.category-selector>.category-button>.label:has(+ .label-count:not([hidden])) {
+	margin-bottom: 0;
+}
+
+.category-selection-list>.category-selector>.category-button>.label-count {
+	margin: 2px 0 14px;
+	padding: 0 4px;
+	color: rgba(255,255,255,.5);
+	font-size: 11px;
+	line-height: 1.2;
+	text-align: center;
 }
 
 .category-selector:nth-of-type(7)::after {

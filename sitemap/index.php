@@ -1,57 +1,59 @@
 <?php
-   header('Content-type: application/xml');
-   echo '<?xml version="1.0" encoding="UTF-8"?>';
-?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<?php
    $path = __DIR__;
    include_once("$path/../config.php");
    include_once("$path/../lib/common/database.php");
+   include_once("$path/../lib/common/seo.php");
+
+   // Fail visibly, so search engines retry later instead of reading an empty
+   // sitemap.
+   function sitemapUnavailable() {
+     http_response_code(503);
+     header('Retry-After: 3600');
+     header('Content-Type: text/plain');
+     echo "Sitemap temporarily unavailable.\n";
+   }
 
    if (open() !== 0) {
+     sitemapUnavailable();
      return;
    }
 
-   $games = $db->fetchAllAssociative("
-      select c.short_name
-        from {$map_prefix}container c
-       where c.visible = 1
-       order by 1
-   ");
-
-   foreach ($games as $row) {
-      echo "\t<url>";
-      echo "\t\t<loc>https://zeldamaps.com/?game=" . $row['short_name'] . "</loc>\n";
-      echo "\t</url>\n";
+   // Game pages and category pages. Individual markers point search engines
+   // at their category's page instead, so they are left out.
+   try {
+     $games = $db->fetchFirstColumn("
+        select c.short_name
+          from {$map_prefix}container c
+         where c.visible = 1
+         order by 1
+     ");
+     $categories = seoLandingCategories($db, $map_prefix);
+   } catch (\Throwable $e) {
+     debug_log('Sitemap query error: ' . $e->getMessage());
+     sitemapUnavailable();
+     return;
    }
 
-   $markers = $db->fetchAllAssociative("
-      select m.id as id
-           , c.short_name
-           , DATE_FORMAT(m.last_updated, '%Y-%m-%dT%TZ') as last_updated
-           , CASE WHEN m.last_updated > DATE_SUB(CURDATE(), INTERVAL 1 YEAR) THEN 'monthly'
-                  ELSE 'yearly'
-             end as frequency
-        from {$map_prefix}marker m
-           , {$map_prefix}submap smp
-           , {$map_prefix}map mp
-           , {$map_prefix}container c
-       where m.submap_id = smp.id
-         and smp.map_id = mp.id
-         and mp.container_id = c.id
-         and m.visible = 1
-         and smp.visible = 1
-         and mp.visible = 1
-         and c.visible = 1
-       order by 2, 1
-   ");
-
-   foreach ($markers as $row) {
-      echo "\t<url>";
-      echo "\t\t<loc>https://zeldamaps.com/?game=" . $row['short_name'] . "&#038;amp;marker=" . $row["id"] . "</loc>\n";
-      echo "\t\t<lastmod>" . $row["last_updated"] . "</lastmod>\n";
-      echo "\t\t<changefreq>" . $row["frequency"] . "</changefreq>\n";
-      echo "\t</url>\n";
+   function sitemapLoc($url) {
+     return htmlspecialchars($url, ENT_XML1 | ENT_QUOTES, 'UTF-8');
    }
+
+   header('Content-Type: application/xml; charset=utf-8');
+   echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+   echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+
+   foreach ($games as $game) {
+      echo "\t<url>\n";
+      echo "\t\t<loc>" . sitemapLoc('https://zeldamaps.com/?' . http_build_query(['game' => $game])) . "</loc>\n";
+      echo "\t</url>\n";
+
+      foreach ($categories[$game] ?? [] as $category) {
+         echo "\t<url>\n";
+         echo "\t\t<loc>" . sitemapLoc(seoCategoryUrl($game, $category['slug'])) . "</loc>\n";
+         if ($category['lastUpdated']) echo "\t\t<lastmod>" . $category['lastUpdated'] . "</lastmod>\n";
+         echo "\t</url>\n";
+      }
+   }
+
+   echo "</urlset>\n";
 ?>
-</urlset>

@@ -37,29 +37,24 @@ L.Control.Settings = L.Control.extend({
     L.DomEvent.disableScrollPropagation(container);
     L.DomEvent.on(toggle, 'click', this.togglePanel, this);
 
-    this.addCheckbox('Hide Completed Markers', !this.zMap.mapOptions.showCompleted, function(checked) {
-      this.zMap.mapOptions.showCompleted = !checked;
-      setCookie('showCompleted', !checked);
-      this.zMap.refreshMapCompleted();
-    });
-
     {
       this.minimalCheckbox = this.addCheckbox(
-        'Minimal UI',
+        'Minimal UI (esc)',
         this.mapControl.viewStyleBottomSlide ? !this.mapControl._open : this.mapControl.options.collapsed,
         function(checked) {
-          if(this.mapControl.viewStyleBottomSlide) {
-            if(checked) this.mapControl.closeDrawer();
-            else this.mapControl.openDrawerLarge();
-          } else if(checked) {
-            this.mapControl._collapse();
-          } else {
-            this.mapControl._expand();
-          }
+          this.setMinimalUI(checked);
         }
       );
       this.minimalCheckbox.parentNode.style.display = this.mapControl.isMobile ? 'none' : '';
+      // The collapsed sidebar's logo button is the other way out of Minimal UI.
+      L.DomEvent.on(this.mapControl._layersLink, 'click', function() {
+        this.rememberMinimalUI(false);
+      }, this);
     }
+
+    this.hideCompletedCheckbox = this.addCheckbox('Hide Completed Markers', !this.zMap.mapOptions.showCompleted, function(checked) {
+      this.setShowCompleted(!checked);
+    });
 
     this.labelCategories = this.labelNames.map(function(name) {
       return this.findCategory(name);
@@ -70,29 +65,27 @@ L.Control.Settings = L.Control.extend({
       ? true
       : savedPoiLabels === 'true';
 
-    this.poiLabelsCheckbox = this.addCheckbox('Show POI Markers', this.zMap.mapOptions.showPoiLabels, function(checked) {
-      this.setPoiLabelsChecked(checked);
+    // These read as "hide" in the panel; the saved settings stay "show".
+    this.poiLabelsCheckbox = this.addCheckbox('Hide All Map Markers', !this.zMap.mapOptions.showPoiLabels, function(checked) {
+      this.setPoiLabelsChecked(!checked);
     });
 
-    this.regionAreaCheckbox = this.addCheckbox('Show Region and Area Names', false, function(checked) {
-      this.labelCategories.forEach(function(category) {
-        this.setCategoryChecked(category, checked);
-      }, this);
-      this.syncRegionAreaNames();
+    this.regionAreaCheckbox = this.addCheckbox('Hide Region and Area Names', false, function(checked) {
+      this.setRegionAreaNames(!checked);
     }, this.labelCategories.length === 0);
 
+    // Counts show unless turned off.
     this.completionCountsCheckbox = this.addCheckbox(
-      'Show Completion Counts',
-      getCookie('showCategoryCompletionCounts') === 'true',
+      'Hide Completion Counts',
+      !this.showsCompletionCounts(),
       function(checked) {
-        setCookie('showCategoryCompletionCounts', checked);
-        this.mapControl._categoryMenu.categoryButtons.forEach(function(button) {
-          button.updateCategoryLabel();
-        });
+        this.setCompletionCounts(!checked);
       }
     );
 
     this.hideReplacedCategoryButtons();
+    var savedRegionAreaNames = getCookie('showRegionAreaNames');
+    if(savedRegionAreaNames !== '') this.setRegionAreaNames(savedRegionAreaNames === 'true', true);
     this.syncRegionAreaNames();
     if(this.mapControl.isMobile) this.mountMobileControl(container, toggle, panel);
     return container;
@@ -133,11 +126,128 @@ L.Control.Settings = L.Control.extend({
     if(category.settingsCheckbox) category.settingsCheckbox.checked = checked;
   },
 
-  setPoiLabelsChecked: function(checked) {
+  // Each setter applies a setting, keeps its checkbox in step and saves it.
+  // `skipSave` is for applying a value that is already saved.
+
+  setShowCompleted: function(show, skipSave) {
+    this.zMap.mapOptions.showCompleted = show;
+    if(this.hideCompletedCheckbox) this.hideCompletedCheckbox.checked = !show;
+    this.zMap.refreshMapCompleted();
+    if(!skipSave) this.saveSetting('showCompleted', show);
+  },
+
+  setPoiLabelsChecked: function(checked, skipSave) {
     this.zMap.mapOptions.showPoiLabels = checked;
-    setCookie('showPoiLabels', checked);
     this.zMap.refreshMap();
-    if(this.poiLabelsCheckbox) this.poiLabelsCheckbox.checked = checked;
+    if(this.poiLabelsCheckbox) this.poiLabelsCheckbox.checked = !checked;
+    if(!skipSave) this.saveSetting('showPoiLabels', checked);
+  },
+
+  setRegionAreaNames: function(checked, skipSave) {
+    this.labelCategories.forEach(function(category) {
+      this.setCategoryChecked(category, checked);
+    }, this);
+    this.syncRegionAreaNames();
+    if(!skipSave) this.saveSetting('showRegionAreaNames', checked);
+  },
+
+  showsCompletionCounts: function() {
+    return getCookie('showCategoryCompletionCounts') !== 'false';
+  },
+
+  setCompletionCounts: function(checked, skipSave) {
+    if(this.completionCountsCheckbox) this.completionCountsCheckbox.checked = !checked;
+    setCookie('showCategoryCompletionCounts', checked);
+    this.mapControl._categoryMenu.categoryButtons.forEach(function(button) {
+      button.updateCategoryLabel();
+    });
+    if(!skipSave) this.saveSetting('showCategoryCompletionCounts', checked);
+  },
+
+  // Minimal UI hides the desktop sidebar until it is turned off here or with
+  // the sidebar's logo button; selecting markers leaves it hidden.
+  setMinimalUI: function(on, skipSave) {
+    if(!this.mapControl.viewStyleBottomSlide) {
+      // Hide without resetting the sidebar, so a selected marker stays put.
+      if(on && !this.mapControl.options.collapsed) {
+        this.mapControl.options.collapsed = true;
+        this.mapControl.collapse();
+      } else if(!on && this.mapControl.options.collapsed) {
+        this.mapControl._expand();
+      }
+    }
+    this.rememberMinimalUI(on, skipSave);
+  },
+
+  rememberMinimalUI: function(on, skipSave) {
+    if(this.minimalCheckbox) this.minimalCheckbox.checked = on;
+    if(!skipSave) this.saveSetting('minimalUI', on);
+  },
+
+  isMinimalUI: function() {
+    return getCookie('minimalUI') === 'true';
+  },
+
+  // Restores Minimal UI on load, unless the link opens a page in the sidebar.
+  applySavedMinimalUI: function() {
+    if(this.isMinimalUI() && !getUrlParam('page')) this.setMinimalUI(true, true);
+  },
+
+  // Settings are kept in cookies on this device and, when signed in, on the
+  // account (lib/common/user_settings.php).
+  saveSetting: function(key, value) {
+    setCookie(key, value);
+    if(!this.zMap.getUser()) return;
+    window.clearTimeout(this._accountSaveTimer);
+    this._accountSaveTimer = window.setTimeout(this.saveAccountSettings.bind(this), 400);
+  },
+
+  currentSettings: function() {
+    var settings = {
+      showCompleted: this.zMap.mapOptions.showCompleted !== false,
+      showPoiLabels: this.zMap.mapOptions.showPoiLabels !== false,
+      showCategoryCompletionCounts: this.showsCompletionCounts(),
+      minimalUI: this.isMinimalUI()
+    };
+    var regionAreaNames = getCookie('showRegionAreaNames');
+    if(regionAreaNames !== '') settings.showRegionAreaNames = regionAreaNames === 'true';
+    return settings;
+  },
+
+  saveAccountSettings: function() {
+    if(!this.zMap.getUser()) return;
+    $.ajax({
+      type: 'POST',
+      url: 'ajax.php?command=save_user_settings',
+      data: { settings: JSON.stringify(this.currentSettings()) }
+    });
+  },
+
+  // On sign-in the account's settings replace this device's. An account with
+  // none saved yet takes this device's instead.
+  applyAccountSettings: function(settings) {
+    if(!settings) {
+      this.saveAccountSettings();
+      return;
+    }
+    var apply = function(key, setter) {
+      if(typeof settings[key] !== 'boolean') return;
+      setCookie(key, settings[key]);
+      setter.call(this, settings[key], true);
+    }.bind(this);
+    apply('showCompleted', function(value) {
+      if(value !== (this.zMap.mapOptions.showCompleted !== false)) this.setShowCompleted(value, true);
+    });
+    apply('showPoiLabels', function(value) {
+      if(value !== (this.zMap.mapOptions.showPoiLabels !== false)) this.setPoiLabelsChecked(value, true);
+    });
+    apply('showRegionAreaNames', this.setRegionAreaNames);
+    apply('showCategoryCompletionCounts', this.setCompletionCounts);
+    // Leave a page opened by the link (?page=account) showing.
+    apply('minimalUI', function(value) {
+      if(value && getUrlParam('page')) this.rememberMinimalUI(value, true);
+      else this.setMinimalUI(value, true);
+    });
   },
 
   syncRegionAreaNames: function() {
@@ -145,7 +255,7 @@ L.Control.Settings = L.Control.extend({
       return category.checked;
     }).length;
     if(this.regionAreaCheckbox) {
-      this.regionAreaCheckbox.checked = selected > 0 && selected === this.labelCategories.length;
+      this.regionAreaCheckbox.checked = selected === 0;
       this.regionAreaCheckbox.indeterminate = selected > 0 && selected < this.labelCategories.length;
       this.regionAreaCheckbox.disabled = this.labelCategories.length === 0;
     }

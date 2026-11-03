@@ -497,7 +497,8 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.pos = markers.length - 1;
 
    marker.on('click', function() {
-    if (_this.mapControl.options.collapsed) {
+    // On desktop the marker loads into the hidden sidebar, so Minimal UI stays.
+    if (_this.mapControl.options.collapsed && _this.mapControl.viewStyleBottomSlide) {
       _this.mapControl.toggle();
     }
 
@@ -1360,6 +1361,7 @@ ZMap.prototype.addMapControl = function(gameId) {
   }).addTo(this.map);
   this._setupDroppedPinGesture();
   this._setupMarkerTouchTaps();
+  this._setupDoubleTapZoom();
 
   // TODO keyboard accessibility
 
@@ -1392,8 +1394,11 @@ ZMap.prototype.addMapControl = function(gameId) {
       if(_this.mapControl._contentType != _this.mapControl.options.defaultContentType) {
         _this.mapControl.resetContent();
         _this._closeNewMarker()
-      } else {
+      } else if(_this.mapControl.viewStyleBottomSlide) {
         _this.mapControl.toggle();
+      } else if(!_this.mapControl.options.collapsed && _this.settingsControl) {
+        // Escape hides the desktop sidebar (Minimal UI) but doesn't bring it back.
+        _this.settingsControl.setMinimalUI(true);
       }
     } else if(e.ctrlKey && e.key == "U") {
       _this.updateUrl();
@@ -1449,6 +1454,60 @@ ZMap.prototype._setupMarkerTouchTaps = function() {
     // Physical Safari can suppress the compatibility mouse click after touch
     // gestures. Dispatch the marker's existing action without preventing pan.
     completedTap.target.fire('click', { originalEvent: event });
+  }, { capture: true, passive: true });
+};
+
+// Mobile Safari doesn't give Leaflet a dblclick for a double tap on the map,
+// so zoom in on two quick taps ourselves.
+ZMap.prototype._setupDoubleTapZoom = function() {
+  var map = this.map;
+  var container = map.getContainer();
+  var tap = null;
+  var lastTap = null;
+  var lastTouchZoom = 0;
+
+  // Where the browser does send a dblclick after our zoom, don't zoom twice.
+  var doubleClickZoom = map.doubleClickZoom;
+  var wasEnabled = doubleClickZoom.enabled();
+  var onDoubleClick = doubleClickZoom._onDoubleClick;
+  if(wasEnabled) doubleClickZoom.disable();
+  doubleClickZoom._onDoubleClick = function(e) {
+    if(Date.now() - lastTouchZoom < 600) return;
+    onDoubleClick.call(this, e);
+  };
+  if(wasEnabled) doubleClickZoom.enable();
+
+  container.addEventListener('touchstart', function(event) {
+    tap = null;
+    if(event.touches.length !== 1) { lastTap = null; return; }
+    if(event.target.closest && event.target.closest('.leaflet-marker-icon, .leaflet-control, .leaflet-popup')) return;
+    var touch = event.touches[0];
+    tap = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+  }, { capture: true, passive: true });
+  container.addEventListener('touchmove', function(event) {
+    if(tap && (event.touches.length !== 1 ||
+      Math.hypot(event.touches[0].clientX - tap.x, event.touches[0].clientY - tap.y) > 12)) {
+      tap = lastTap = null;
+    }
+  }, { capture: true, passive: true });
+  container.addEventListener('touchcancel', function() { tap = lastTap = null; }, { passive: true });
+  container.addEventListener('touchend', function(event) {
+    var completedTap = tap;
+    tap = null;
+    if(!completedTap || event.touches.length || Date.now() - completedTap.time > 300) {
+      lastTap = null;
+      return;
+    }
+    if(lastTap && completedTap.time - lastTap.time < 350 &&
+      Math.hypot(completedTap.x - lastTap.x, completedTap.y - lastTap.y) < 40) {
+      lastTap = null;
+      lastTouchZoom = Date.now();
+      var rect = container.getBoundingClientRect();
+      var point = L.point(completedTap.x - rect.left, completedTap.y - rect.top);
+      map.setZoomAround(point, Math.min(map.getZoom() + 1, map.getMaxZoom()));
+      return;
+    }
+    lastTap = completedTap;
   }, { capture: true, passive: true });
 };
 
@@ -2843,6 +2902,7 @@ ZMap.prototype._createRegisterForm = function() {
                    if(!login.success) return showLoginFallback();
                    _this.setUser(login.user);
                    updateAdState();
+                   if(_this.settingsControl) _this.settingsControl.applyAccountSettings(login.user.settings);
                    if(bookmarkPending) {
                      _this._saveRegistrationBookmark();
                      return;
@@ -3303,6 +3363,7 @@ ZMap.prototype._createLoginForm = function(successMessage) {
             } else {
               _this.mapControl.resetContent();
             }
+            if(_this.settingsControl) _this.settingsControl.applyAccountSettings(data.user.settings);
           } else {
             showLoginError(data.msg);
           }

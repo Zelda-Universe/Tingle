@@ -131,6 +131,11 @@ function zMapInit(vResults) {
     var categoriesSelectedIds = JSON.parse(
       ZConfig.getConfig('categoriesSelectedIds') || '[]'
     );
+    // A category page (?category=korok-seeds) shows only that category,
+    // unless the link names its own selection.
+    if(window.zmapLandingCategoryId && !getUrlParam('categoriesSelectedIds')) {
+      categoriesSelectedIds = [window.zmapLandingCategoryId];
+    }
     if (categoriesSelectedIds && categoriesSelectedIds.length > 0) {
       var categoriesSelectedIdPairsObject = Object.fromEntries(
         categoriesSelectedIds.map((id) => [id, true])
@@ -226,6 +231,10 @@ function getUserInfo() {
    $.getJSON("ajax.php?command=get_user_info", function(vResults) {
     if(vResults.user) zMap.setUser(vResults.user);
     zMap.restoreDrawerPage(requestedPage);
+    if(zMap.settingsControl) {
+      if(vResults.user) zMap.settingsControl.applyAccountSettings(vResults.user.settings);
+      zMap.settingsControl.applySavedMinimalUI();
+    }
     updateAdState();
     if(ZConfig.getConfig("changelog") == 'true')
       checkChangelog(vResults.user);
@@ -301,6 +310,13 @@ function finalLoad() {
     if(Number.isFinite(pinX) && Number.isFinite(pinY)) {
       zMap._openDroppedPin(new L.LatLng(pinY, pinX));
     }
+  }
+
+  // A category page fits its markers, unless the link sets its own zoom.
+  var landingCategory = window.zmapLandingCategoryId && zMap.categories[window.zmapLandingCategoryId];
+  if(landingCategory && !getUrlParam('zoom')) {
+    zMap.focusSingleMapCategory(landingCategory);
+    return;
   }
 
   var zoom = (

@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261102-5';
+const CACHE_VERSION = '20261102-6';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -7,8 +7,8 @@ const MAX_TILE_ENTRIES = 500;
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261102-drawer-transitions',
-  './res.php?type=css&v=20261102-drawer-transitions',
+  './res.php?type=javascript&v=20261102-offline-fetch-fix',
+  './res.php?type=css&v=20261102-offline-fetch-fix',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -178,7 +178,7 @@ self.addEventListener('fetch', event => {
   }
 
   if (isTileRequest(url, request)) {
-    if (request.redirect === 'manual') {
+    if (request.destination === '') {
       event.respondWith(fetch(request));
       return;
     }

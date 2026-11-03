@@ -2897,12 +2897,12 @@ ZMap.prototype._createOfflineMapsForm = function() {
         var fetchOptions = sameOrigin
           ? {
               credentials: 'same-origin',
-              redirect: 'manual'
+              redirect: 'follow'
             }
           : {
               mode: 'no-cors',
               credentials: 'omit',
-              redirect: 'manual'
+              redirect: 'follow'
             };
         return cache.match(absoluteURL).then(function(cachedResponse) {
           if(cachedResponse) {

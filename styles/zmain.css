@@ -373,7 +373,8 @@ main {
 		height: 60px;
 	}
 
-	.leaflet-control-layers-mobile .menu-header-button .label {
+	.leaflet-control-layers-mobile .menu-header-button .label,
+	.leaflet-control-layers-mobile .menu-header-button:hover .label {
 		display: block;
 		width: 100%;
 		padding: 5px 0 0;
@@ -670,9 +671,17 @@ main.leaflet-container,
 	cursor: not-allowed;
 }
 
-.menu-cat-content-inner > #account > h3:first-child,
-.menu-cat-content-inner > #account_information > h3:first-child {
-	margin-top: 12px;
+/* Icons sit at the left edge; labels stay centered. */
+#account .account-nav-button {
+	position: relative;
+}
+
+#account .account-nav-button .account-nav-icon {
+	position: absolute;
+	top: 50%;
+	left: 16px;
+	width: 18px;
+	transform: translateY(-50%);
 }
 
 #account_information_form > label {
@@ -1321,9 +1330,11 @@ a.button.leaflet-control-layers-toggle {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: 0 56px;
+	/* Clear the 44px back/close buttons, 16px from each side, and center the
+	   title on them. */
+	padding: 0 68px;
 	min-height: 44px;
-	margin: 24px 24px 16px;
+	margin: 12px 0 16px;
 	text-align: center;
 }
 
@@ -1370,7 +1381,7 @@ a.button.leaflet-control-layers-toggle {
 	font-size: 24px;
 }
 
-.leaflet-control-layers-mobile .switch-menu > .switch-menu-title {
+.leaflet-control-layers .switch-menu > .switch-menu-title {
 	font-family: "BrandonText", sans-serif;
 	font-weight: 500;
 	box-sizing: border-box;
@@ -1383,21 +1394,21 @@ a.button.leaflet-control-layers-toggle {
 	font-size: 24px;
 }
 
-.leaflet-control-layers-mobile .maps-menu > .category-selection-list {
+.leaflet-control-layers .switch-menu > .category-selection-list {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 16px;
 	padding: 8px 16px 16px;
 }
 
-.leaflet-control-layers-mobile .maps-menu > .category-selection-list > .category-selector {
+.leaflet-control-layers .switch-menu > .category-selection-list > .category-selector {
 	box-sizing: border-box;
 	width: 100%;
 	padding: 0;
 	overflow: visible;
 }
 
-.leaflet-control-layers-mobile .maps-menu > .category-selection-list > .category-selector > .category-button {
+.leaflet-control-layers .switch-menu > .category-selection-list > .category-selector > .category-button {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -1411,15 +1422,15 @@ a.button.leaflet-control-layers-toggle {
 	text-align: center;
 }
 
-.leaflet-control-layers-mobile .maps-menu > .category-selection-list > .category-selector > .category-button:hover {
+.leaflet-control-layers .switch-menu > .category-selection-list > .category-selector > .category-button:hover {
 	background: transparent;
 }
 
-.leaflet-control-layers-mobile .maps-menu > .category-selection-list > .category-selector > .category-button.disabled {
+.leaflet-control-layers .switch-menu > .category-selection-list > .category-selector > .category-button.disabled {
 	opacity: 1;
 }
 
-.leaflet-control-layers-mobile .maps-menu .category-button .icon-container {
+.leaflet-control-layers .switch-menu .category-button .icon-container {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -1433,26 +1444,39 @@ a.button.leaflet-control-layers-toggle {
 	border-radius: 12px;
 }
 
-.leaflet-control-layers-mobile .maps-menu .category-button .icon-container img {
+.leaflet-control-layers .switch-menu .category-button .icon-container img {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
 	border-radius: 8px;
 }
 
-.leaflet-control-layers-mobile .maps-menu .category-button.disabled .icon-container {
+.leaflet-control-layers .switch-menu .category-button.disabled .icon-container {
 	border-color: rgba(255,255,255,.8);
 }
 
-.leaflet-control-layers-mobile .maps-menu .category-button:not(.disabled):hover .icon-container {
+.leaflet-control-layers .switch-menu .category-button:not(.disabled):hover .icon-container {
 	border-color: rgba(255,255,255,.2);
 }
 
-.leaflet-control-layers-mobile .maps-menu .category-button .label {
+.leaflet-control-layers .switch-menu .category-button .label {
 	margin: 0;
 	padding: 0;
 	text-align: center;
 	font-size: 12px;
+}
+
+/* Games have an icon instead of a preview image: fill the tile with it. */
+.leaflet-control-layers .switch-menu .category-button .icon-container .category-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	border-radius: 8px;
+	font-size: 56px;
+	line-height: 1;
 }
 
 .leaflet-control-layers .menu-cat-content-inner > .marker-coordinate-pill {

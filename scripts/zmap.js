@@ -92,17 +92,17 @@ function ZMap() {
       LOGOUT_SUCCESS : "May the Goddess smile upon you, %1!",
       LOGOUT_ERROR   : "I AM ERROR! Could not log out. Please try clearing your cache and restarting your browser to safely log out.",
 
-      LOGIN_WELCOME  : "Hey, listen!<br />Welcome back!",
+      LOGIN_WELCOME  : "Welcome Back!",
       LOGIN_SUCCESS : "Hey, listen! Welcome back, %1!",
       LOGIN_ERROR   : "I AM ERROR. %1",
 
       ACCOUNT_TITLE  : "Account",
 
-      REGISTER_WELCOME  : "It's dangerous to go alone! We're glad you're here with us.",
+      REGISTER_WELCOME  : "Create an Account",
       REGISTER_SUCCESS : "Excuuuuse me, %1! Your account has been successfully created!",
       REGISTER_ERROR   : "I AM ERROR! %1",
 
-      LOST_PASSWORD_WELCOME: "Let's fill out Saria's<br />password recovery form!",
+      LOST_PASSWORD_WELCOME: "Lost Password",
       LOST_PASSWORD_SUCCESS: "Saria sent a new password to your email!",
       LOST_PASSWORD_ERROR: "I AM ERROR. You ended up back at the beginning! %1",
 
@@ -2863,11 +2863,11 @@ ZMap.prototype._createAccountForm = function(user) {
       '</div>' +
       '<div class="modal-footer">' +
          '<div>' +
-           '<button id="account_information_btn" type="button" class="infoWindowIcn">Account Information</button>' +
-           '<button id="account_bookmarks_btn" type="button" class="infoWindowIcn">Bookmarks</button>' +
-           '<button id="account_offline_maps_btn" type="button" class="infoWindowIcn">Download Offline Maps</button>' +
-           '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn">Reset Completed Markers</button>' +
-           '<button id="log_out_btn" type="button" class="infoWindowIcn">Log Out</button>' +
+           '<button id="account_information_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-user account-nav-icon" aria-hidden="true"></i>Account Information</button>' +
+           '<button id="account_bookmarks_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bookmark account-nav-icon" aria-hidden="true"></i>Bookmarks</button>' +
+           '<button id="account_offline_maps_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-download account-nav-icon" aria-hidden="true"></i>Download Offline Maps</button>' +
+           '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-undo account-nav-icon" aria-hidden="true"></i>Reset Completed Markers</button>' +
+           '<button id="log_out_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-sign-out-alt account-nav-icon" aria-hidden="true"></i>Log Out</button>' +
            '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
          '</div>' +
       '</div>' +
@@ -3131,7 +3131,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
   var _this = this;
   this.mapControl.setContent(
     '<div id="offline_maps" class="offline-maps-page">' +
-      '<h3 class="text-center">Download Offline Maps</h3>' +
+      '<h3 class="text-center">Offline Maps</h3>' +
       '<p class="offline-maps-intro">Save maps to this device for use without an internet connection. Downloads may be removed by your browser when storage is low.</p>' +
       '<div id="offline_maps_list" class="offline-maps-list">' +
         '<p class="offline-maps-loading">Calculating download sizes…</p>' +

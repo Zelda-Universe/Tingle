@@ -346,7 +346,6 @@ L.Control.ZLayers = L.Control.Layers.extend({
         toggledOn: false
       });
 
-      $(headerMenu).append(this._mapsButton.domNode);
 
       this._gamesButton = new CategoryButton({
         addlClasses: 'completed-button menu-header-button',
@@ -379,7 +378,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
         label: 'Switch Game',
         toggledOn: false
       });
-      $(headerMenu).append(this._gamesButton.domNode);
+      // Show Switch Map then Switch Game. Mobile floats these right, so the
+      // first appended ends up rightmost; the desktop header lays them out in
+      // order.
+      var switchButtons = [this._mapsButton.domNode, this._gamesButton.domNode];
+      if(this.viewStyleBottomSlide) switchButtons.reverse();
+      switchButtons.forEach(function(button) {
+        $(headerMenu).append(button);
+      });
     }
 
     this._drawerHeaderSeparator = L.DomUtil.create(
@@ -693,6 +699,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // Like _mobileDrawerProgress, but only counts travel above the partial stop,
   // so the drawer stays a floating card until it heads for fully open.
   _mobileDrawerExpansionProgress: function(top) {
+    // A drawer resting partially open stays a floating card, even if the
+    // viewport (e.g. Safari's toolbar) has moved the partial stop under it.
+    if(this._partialDrawerMode && !this._drawerDragging) return 0;
     var fromTop = this._partialDrawerAvailable && Number.isFinite(this.options.softOpenTo)
       ? this.options.softOpenTo
       : this._startPosition;
@@ -850,6 +859,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       height = maxHeight;
     } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type)) {
       height = this._mobileDrawerPeekHeight() || this._mobileDrawerContentHeight();
+    } else if(type === 'games' || type === 'maps') {
+      height = this._mobileDrawerContentHeight();
     } else {
       return null;
     }
@@ -1208,12 +1219,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     this._clearContent();
 
-    // Top-level pages opened from the map or header don't sit "above" the
-    // category list, so they get a close button instead of a back button.
-    var closesPage = /^m\d+$/.test(vType) || /^droppedPin-/.test(vType) || vType === 'accountPage';
-    // A page opened from a list (e.g. Bookmarks) can also go back to it.
+    // On mobile, top-level pages opened from the map or header dismiss the
+    // drawer, so they get a close button. On desktop the panel stays open and
+    // returns to the category list, so they keep a back button.
+    var isMapPage = /^m\d+$/.test(vType) || /^droppedPin-/.test(vType);
+    var closesPage = isMapPage || ['accountPage', 'games', 'maps'].includes(vType);
+    // A POI or pin opened from a list (e.g. Bookmarks) can also go back to it.
     var returnsTo = null;
-    if(closesPage) {
+    if(isMapPage) {
       returnsTo = this._nextPageReturnsTo;
       this._nextPageReturnsTo = null;
     }
@@ -1231,17 +1244,24 @@ L.Control.ZLayers = L.Control.Layers.extend({
           if(this.viewStyleBottomSlide) this.openDrawerLarge();
         }, this);
     }
-    if(closesPage) {
-      var dismissButton = L.DomUtil.create('a', 'button back-button close-button', this._contents);
-      dismissButton.innerHTML = '<i class="fas fa-times"></i>';
-      dismissButton.setAttribute('aria-label', 'Close');
+    // On desktop a page returning to Bookmarks already has its back button.
+    if(closesPage && (this.viewStyleBottomSlide || !returnsTo)) {
+      var dismissButton = L.DomUtil.create(
+        'a',
+        this.viewStyleBottomSlide ? 'button back-button close-button' : 'button back-button',
+        this._contents
+      );
+      dismissButton.innerHTML = this.viewStyleBottomSlide
+        ? '<i class="fas fa-times"></i>'
+        : '<i class="fas fa-chevron-left"></i>';
+      dismissButton.setAttribute('aria-label', this.viewStyleBottomSlide ? 'Close' : 'Back');
       L.DomEvent
         .on(dismissButton, 'click', L.DomEvent.stopPropagation)
         .on(dismissButton, 'click', function(e) {
           e.preventDefault();
           this.closePage();
         }, this);
-    } else if(
+    } else if(!closesPage &&
       vType != 'category' &&
       !(vType == 'search' && !this.viewStyleBottomSlide)
     ) {
@@ -1323,7 +1343,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._nextPageReturnsTo = page;
   },
 
-  // Dismiss a top-level page (POI, dropped pin, account): deselect it and, on
+  // Dismiss a top-level page (POI, dropped pin, account, game/map switcher): deselect it and, on
   // mobile, close the drawer; the category list is restored once it's closed.
   closePage: function() {
     if(!this.viewStyleBottomSlide) {
@@ -1335,28 +1355,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this.closeDrawer();
   },
 
+  // Open to the current page's partial stop, or fully if it has none.
   openDrawerDefaultPartial: function() {
-    var currentCssTop = Number.parseFloat(this._container.style.top) || 0;
-    var containerTop = this._container.getBoundingClientRect().top;
-    var baseScreenTop = Number.isFinite(this._mobileDrawerBaseTop)
-      ? this._mobileDrawerBaseTop
-      : containerTop - currentCssTop;
-    var desiredHeight = Math.min(
-      this._mobileDrawerContentHeight() || this._mobileDrawerMaxPartialHeight(),
-      this._mobileDrawerMaxPartialHeight()
-    );
-    var targetTop = Math.max(
-      this.options.openTo,
-      this._viewportBottom() -
-        this._safeAreaBottom() -
-        10 -
-        desiredHeight -
-        baseScreenTop
-    );
-
+    this._refreshMobileDrawerDetents();
     this._contents.scrollTop = 0;
+    if(!this._partialDrawerAvailable) {
+      this.openDrawerLarge();
+      return;
+    }
     this._partialDrawerMode = true;
-    this.openDrawerManual(targetTop);
+    this.openDrawerManual(this.options.softOpenTo);
   },
 
   // Sets it to the default category selector scene,

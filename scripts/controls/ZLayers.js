@@ -730,6 +730,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
       fadeProgress = Math.min(1, (this._startPosition - top) / partialTravel);
     }
     var contentProgress = Math.max(0, Math.min(1, (fadeProgress - 0.08) / 0.42));
+    // While closing, the contents ride down with the drawer as they were
+    // when it was released, instead of fading out ahead of it.
+    if(this._drawerClosing && Number.isFinite(this._closingContentProgress)) {
+      contentProgress = this._closingContentProgress;
+    }
 
     this._container.style.left = edgeInset + 'px';
     this._container.style.width = Math.max(0, fullWidth - (edgeInset * 2)) + 'px';
@@ -1533,6 +1538,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
     );
     // console.log(`_animate(${menu}, ${from}, ${to}, ${isOpen})`);
     this._drawerClosing = !isOpen;
+    this._closingContentProgress = (!isOpen && this.viewStyleBottomSlide && this._contents)
+      ? Number.parseFloat(window.getComputedStyle(this._contents).opacity)
+      : null;
     if(isOpen) this._preserveContentOnClose = false;
     var resizingPartialDrawer = this.viewStyleBottomSlide &&
       isOpen &&
@@ -1592,7 +1600,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
       menu.style.top = to + 'px';
       if(this.viewStyleBottomSlide) {
         this._applyMobileDrawerViewport(to);
-        this.updateContentsHeight(to);
+        // Grow the contents up front when the drawer rises. When it lowers
+        // (to partial or closed), keep their current height so they ride down
+        // with the drawer instead of shrinking on the first frame; they're
+        // resized once the animation ends.
+        if(isOpen && to <= from) this.updateContentsHeight(to);
       }
       this._drawerAnimationTimeout = window.setTimeout(function() {
         if(animationId !== this._drawerAnimationId) return;
@@ -1611,6 +1623,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _finishDrawerClose: function() {
     this._drawerClosing = false;
+    this._closingContentProgress = null;
+    // Hide and resize the contents now the drawer has closed over them.
+    if(this.viewStyleBottomSlide) {
+      this._updateMobileDrawerPresentation(this.drawerTop());
+      this.updateContentsHeight();
+    }
     if(!this._preserveContentOnClose) {
       this._gamesButton.clear();
       this._mapsButton.clear();

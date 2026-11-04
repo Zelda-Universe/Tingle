@@ -4465,22 +4465,45 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
     function collectImages(data) {
       ZMapOfflinePacks.embeddedImageURLs(data, document.baseURI).forEach(function(url) { embeddedImages.add(url); });
     }
+    // Marker images often live on other sites. One that's missing or slow
+    // is left out (its marker shows no image offline) rather than failing
+    // the whole download.
+    var EMBEDDED_IMAGE_TIMEOUT = 20000;
+    function skipEmbeddedImage(cache, url) {
+      delete newIndex[url];
+      return cache.delete(url).catch(function() {});
+    }
     function verifyEmbeddedImage(cache, url) {
       if(!savingEmbeddedImages) return Promise.resolve();
       // Cross-origin fetch responses are opaque: a 404 can look successful.
       // Decode from the saved pack before counting the image as downloaded.
-      return new Promise(function(resolve, reject) {
+      return new Promise(function(resolve) {
         var image = new Image();
-        var timer = window.setTimeout(failed, 20000);
+        var timer = window.setTimeout(failed, EMBEDDED_IMAGE_TIMEOUT);
         function failed() {
           window.clearTimeout(timer);
           image.onload = image.onerror = null;
-          cache.delete(url).then(function() { reject(new Error('An embedded marker image could not be saved. Resume to try again.')); }, reject);
+          image.src = '';
+          skipEmbeddedImage(cache, url).then(resolve);
         }
         image.onload = function() { window.clearTimeout(timer); resolve(); };
         image.onerror = failed;
         image.src = url;
       });
+    }
+    // fetch() has no time limit of its own: an unreachable host can hold a
+    // download until the browser gives up minutes later.
+    function fetchEmbeddedImage(url, options) {
+      var controller = typeof AbortController === 'function' ? new AbortController() : null;
+      var timer;
+      var timeout = new Promise(function(resolve, reject) {
+        timer = window.setTimeout(function() {
+          if(controller) controller.abort();
+          reject(new Error('Timed out'));
+        }, EMBEDDED_IMAGE_TIMEOUT);
+      });
+      var request = fetch(url, controller ? Object.assign({ signal: controller.signal }, options) : options);
+      return Promise.race([request, timeout]).finally(function() { window.clearTimeout(timer); });
     }
 
     downloadButton.prop('disabled', true).text(isUpdate ? 'Updating…' : 'Downloading…');
@@ -4537,6 +4560,15 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
               ? cachedResponse.clone().json().then(collectImages) : Promise.resolve())
               .then(function() { return verifyEmbeddedImage(cache, absoluteURL); })
               .then(function() { updateProgress(tile.size); });
+          }
+          if(savingEmbeddedImages) {
+            return fetchEmbeddedImage(absoluteURL, fetchOptions).then(function(response) {
+              if(!response.ok && response.type !== 'opaque') throw new Error('Not found');
+              return cache.put(absoluteURL, response.clone())
+                .then(function() { return verifyEmbeddedImage(cache, absoluteURL); });
+            }).catch(function() {
+              return skipEmbeddedImage(cache, absoluteURL);
+            }).then(function() { updateProgress(0); });
           }
           return fetch(absoluteURL, fetchOptions).then(function(response) {
             if(!response.ok && response.type !== 'opaque') {
@@ -4688,10 +4720,10 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
             updatedAt: Date.now()
           });
           setPackState(card, game, 'partial');
-          status.addClass('error').text(
-            (error.message || (isUpdate ? 'The map update was interrupted.' : 'The map download was interrupted.')) +
-            ' Tap Resume to continue.'
-          );
+          var interrupted = isUpdate ? 'The map update was interrupted.' : 'The map download was interrupted.';
+          var message = error instanceof TypeError || !error.message ? interrupted : error.message;
+          if(!/[.!?]$/.test(message)) message += '.';
+          status.addClass('error').text(message + ' Tap Resume to continue.');
         } else {
           caches.delete(cacheName);
           removePackRecord(game.id);

@@ -111,5 +111,8 @@
       WHERE id = ?
    ", [$ip, (int) $row['id']]);
 
+   include_once(dirname(__DIR__) . '/lib/common/activity.php');
+   activityRecord($db, $map_prefix, $row['id']);
+
    echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));
 ?>

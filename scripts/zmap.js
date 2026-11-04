@@ -3544,8 +3544,24 @@ ZMap.prototype._createAdminPage = function() {
     '<div id="admin">' +
       '<h3 class="text-center">Admin</h3>' +
       '<section class="admin-section">' +
-        '<h4>Registrations <span id="admin_total" class="admin-muted"></span></h4>' +
-        '<div id="admin_chart" class="admin-chart"><p class="admin-muted">Loading…</p></div>' +
+        '<h4>Accounts <span id="admin_total" class="admin-muted"></span></h4>' +
+        '<div class="admin-chart">' +
+          '<div class="admin-chart-options">' +
+            '<div class="admin-toggle" role="group" aria-label="Graph">' +
+              '<button type="button" data-metric="registrations" aria-pressed="true">Registrations</button>' +
+              '<button type="button" data-metric="active" aria-pressed="false">Active Users</button>' +
+            '</div>' +
+            '<div class="admin-toggle admin-ranges" role="group" aria-label="Time frame">' +
+              [['7d', '1W'], ['14d', '2W'], ['30d', '30D'], ['6m', '6M'], ['1y', '1Y'], ['all', 'All']].map(function(range) {
+                return '<button type="button" data-range="' + range[0] + '" aria-pressed="' + (range[0] === '30d') + '">' + range[1] + '</button>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<div id="admin_chart"><p class="admin-muted">Loading…</p></div>' +
+        '</div>' +
+        // Active users over the latest complete day, week and month, whatever
+        // the graph shows.
+        '<div id="admin_summary" class="admin-summary"></div>' +
       '</section>' +
       '<section class="admin-section">' +
         '<h4>Users</h4>' +
@@ -3563,11 +3579,26 @@ ZMap.prototype._createAdminPage = function() {
     'adminPage'
   );
 
-  $.getJSON('ajax.php?command=admin_get_registrations', function(data) {
-    if(!data.success) return $('#admin_chart').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load registrations.');
-    $('#admin_total').text(data.total.toLocaleString() + ' accounts');
-    $('#admin_chart').empty().append(_this._adminRegistrationChart(data.months));
+  var graph = { metric: 'registrations', range: '30d' }, statsRequest = 0;
+  var loadStats = function() {
+    var requestId = ++statsRequest;
+    $.getJSON('ajax.php?command=admin_get_stats', graph, function(data) {
+      if(requestId !== statsRequest) return;
+      if(!data.success) return $('#admin_chart').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load stats.');
+      $('#admin_total').text(data.total.toLocaleString() + ' total');
+      $('#admin_chart').empty().append(_this._adminChart(data.buckets, data.metric));
+      $('#admin_summary').empty().append(_this._adminSummary(data.summary));
+    });
+  };
+  $('#admin .admin-chart-options button').click(function() {
+    var button = $(this);
+    if(button.data('metric')) graph.metric = button.data('metric');
+    if(button.data('range')) graph.range = button.data('range');
+    button.siblings().attr('aria-pressed', 'false');
+    button.attr('aria-pressed', 'true');
+    loadStats();
   });
+  loadStats();
 
   var query = '', offset = 0, request = 0;
   var search = function(append) {
@@ -3595,28 +3626,52 @@ ZMap.prototype._createAdminPage = function() {
   search(false);
 };
 
-// Monthly registrations as an inline SVG bar chart.
-ZMap.prototype._adminRegistrationChart = function(months) {
-  if(!months.length) return $('<p class="admin-muted">No registrations yet.</p>');
+// The graph's buckets as an inline SVG bar chart.
+ZMap.prototype._adminChart = function(buckets, metric) {
+  var noun = metric === 'active' ? 'active' : 'new';
   var width = 320, height = 120, top = 8, bottom = 18;
-  var max = Math.max.apply(null, months.map(function(m) { return m.count; })) || 1;
-  var step = width / months.length, barWidth = Math.max(1, step - 1);
-  var svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="New accounts per month">';
-  months.forEach(function(m, i) {
-    var barHeight = Math.max(1, (height - top - bottom) * m.count / max);
+  var max = Math.max.apply(null, buckets.map(function(b) { return b.count; })) || 1;
+  var step = width / buckets.length, gap = Math.min(2, step * .2);
+  var svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="' +
+    (metric === 'active' ? 'Active users' : 'New accounts') + ' over time">';
+  buckets.forEach(function(b, i) {
+    var barHeight = b.count ? Math.max(1, (height - top - bottom) * b.count / max) : 0;
     svg += '<rect x="' + (i * step).toFixed(2) + '" y="' + (height - bottom - barHeight).toFixed(2) +
-      '" width="' + barWidth.toFixed(2) + '" height="' + barHeight.toFixed(2) + '" rx="1">' +
-      '<title>' + m.month + ': ' + m.count + '</title></rect>';
+      '" width="' + Math.max(.5, step - gap).toFixed(2) + '" height="' + barHeight.toFixed(2) + '" rx="1">' +
+      '<title>' + b.label + ': ' + b.count.toLocaleString() + ' ' + noun + '</title></rect>';
   });
-  // Label the first and last month, and each January between them.
-  months.forEach(function(m, i) {
-    if(i === 0 || i === months.length - 1 || m.month.slice(5) === '01') {
-      var anchor = i === 0 ? 'start' : i === months.length - 1 ? 'end' : 'middle';
-      svg += '<text x="' + (i === months.length - 1 ? width : i * step + step / 2).toFixed(2) + '" y="' + (height - 4) +
-        '" text-anchor="' + anchor + '">' + (m.month.slice(5) === '01' && i !== 0 && i !== months.length - 1 ? m.month.slice(0, 4) : m.month) + '</text>';
-    }
-  });
+  // Up to five evenly spaced labels, always including the first and last.
+  var labels = Math.min(5, buckets.length);
+  for(var n = 0; n < labels; n++) {
+    var i = labels === 1 ? 0 : Math.round(n * (buckets.length - 1) / (labels - 1));
+    var anchor = n === 0 ? 'start' : n === labels - 1 ? 'end' : 'middle';
+    var x = n === 0 ? 0 : n === labels - 1 ? width : i * step + step / 2;
+    svg += '<text x="' + x.toFixed(2) + '" y="' + (height - 4) + '" text-anchor="' + anchor + '">' + buckets[i].label + '</text>';
+  }
+  svg += '<text x="0" y="' + (top + 2) + '" class="admin-chart-max">' + max.toLocaleString() + '</text>';
   return $(svg + '</svg>');
+};
+
+// Daily, weekly and monthly active users, each with its change.
+ZMap.prototype._adminSummary = function(summary) {
+  var boxes = $();
+  [['daily', 'Daily Active', 'yesterday vs. the day before'],
+   ['weekly', 'Weekly Active', 'last 7 days vs. the 7 before'],
+   ['monthly', 'Monthly Active', 'last 30 days vs. the 30 before']].forEach(function(item) {
+    var stat = summary[item[0]], change = stat.current - stat.previous;
+    var percent = stat.previous ? Math.round(change / stat.previous * 100) : null;
+    var box = $('<div class="admin-stat"><span class="admin-stat-label"></span><span class="admin-stat-value"></span>' +
+      '<span class="admin-stat-change"></span></div>');
+    box.attr('title', item[2]);
+    box.find('.admin-stat-label').text(item[1]);
+    box.find('.admin-stat-value').text(stat.current.toLocaleString());
+    box.find('.admin-stat-change')
+      .addClass(change > 0 ? 'up' : change < 0 ? 'down' : '')
+      .text((change > 0 ? '▲ ' : change < 0 ? '▼ ' : '') + Math.abs(change).toLocaleString() +
+        (percent !== null ? ' (' + Math.abs(percent) + '%)' : ''));
+    boxes = boxes.add(box);
+  });
+  return boxes;
 };
 
 ZMap.prototype._adminUserRow = function(account) {

@@ -39,7 +39,12 @@
   $pageTitle = $pageHeading . ' - Zelda Maps';
   $pageDescription = $metadata['description'];
   $canonicalUrl = 'https://zeldamaps.com/?game=' . rawurlencode($gameId);
-  $socialImageUrl = 'https://zeldamaps.com/images/' . $metadata['image'];
+  // Link previews come from the site serving the page (so staging previews
+  // show staging's images); search engines' canonical URL stays production.
+  $requestHost = strtolower($_SERVER['HTTP_HOST'] ?? '');
+  $siteOrigin = preg_match('/^([a-z0-9-]+\.)*zeldamaps\.com$/', $requestHost)
+    ? 'https://' . $requestHost : 'https://zeldamaps.com';
+  $socialImageUrl = $siteOrigin . '/images/' . $metadata['image'];
   function metadataEscape($value) {
     return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
   }
@@ -108,7 +113,7 @@
       }
     }
   }
-  $pageUrl = $pageUrl ?: $canonicalUrl;
+  $pageUrl = preg_replace('#^https://zeldamaps\.com#', $siteOrigin, $pageUrl ?: $canonicalUrl);
 ?>
 <!DOCTYPE html>
 <html lang="en">

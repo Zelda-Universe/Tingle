@@ -3418,6 +3418,80 @@ div.circle:has(>.icon-EoW_Echo) {
 	font-size: 8px;
 }
 
+.admin-chart-options {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 8px;
+	margin: 0 0 12px;
+}
+
+.admin-toggle {
+	display: inline-flex;
+	padding: 2px;
+	border-radius: 999px;
+	background: rgba(255,255,255,.1);
+}
+
+.admin-toggle button {
+	padding: 3px 8px;
+	border: 0;
+	border-radius: 999px;
+	background: none;
+	color: rgba(255,255,255,.65);
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.admin-toggle button:hover {
+	color: white;
+}
+
+.admin-toggle button[aria-pressed="true"] {
+	background: rgba(255,255,255,.2);
+	color: white;
+}
+
+.admin-summary {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+	margin: 8px 0 0;
+}
+
+.admin-stat {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 10px;
+	border: 1px solid rgba(255,255,255,.2);
+	border-radius: 10px;
+}
+
+.admin-stat-label {
+	color: rgba(255,255,255,.6);
+	font-size: 11px;
+}
+
+.admin-stat-value {
+	font-size: 20px;
+	font-weight: 700;
+	line-height: 1.2;
+}
+
+.admin-stat-change {
+	color: rgba(255,255,255,.5);
+	font-size: 11px;
+}
+
+.admin-stat-change.up {
+	color: #6fe0a0;
+}
+
+.admin-stat-change.down {
+	color: #ff8c85;
+}
+
 .admin-search .input-group {
 	border-radius: 10px;
 }

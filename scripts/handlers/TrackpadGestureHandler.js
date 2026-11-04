@@ -201,13 +201,16 @@ TrackpadGestureHandler.prototype.onWheel = function(event) {
   if(this.panFrame !== null) return;
 
   this.panFrame = window.requestAnimationFrame(function() {
-    this.map.panBy([this.panX, this.panY], {
-      animate: false,
-      noMoveStart: true
-    });
+    // Reset first: if panning throws, a pending frame left behind would make
+    // every later scroll wait on it, and the map could never pan again.
+    var offset = [this.panX, this.panY];
     this.panX = 0;
     this.panY = 0;
     this.panFrame = null;
+    this.map.panBy(offset, {
+      animate: false,
+      noMoveStart: true
+    });
   }.bind(this));
 };
 

@@ -1428,7 +1428,7 @@ ZMap.prototype.addMapControl = function(gameId) {
           ZConfig.getConfig('autoUpdateUrl'     ) != 'false'
       &&  ZConfig.getConfig('autoUpdateUrlMove' ) != 'false'
     ) {
-		_this.updateUrl();
+		_this.scheduleUrlUpdate();
 	  }
   });
 };
@@ -5201,7 +5201,21 @@ ZMap.prototype.updateUrl = function() {
    url.searchParams.set("zoom", this.map.getZoom());
    url.searchParams.set("x", Math.floor(this.map.getCenter().lng));
    url.searchParams.set("y", Math.floor(this.map.getCenter().lat));
-   history.pushState(Object.assign({}, history.state), "", url);
+   // Replace, not push: map positions aren't navigation, and Back doesn't
+   // move the map. Safari also throws once a page changes history more than
+   // 100 times in 10 seconds, which would break whatever moved the map.
+   try {
+      history.replaceState(Object.assign({}, history.state), "", url);
+   } catch(error) {
+      console.warn('Could not update the URL: ' + error.message);
+   }
+}
+
+// Panning and zooming end a move every frame; update the URL once the map
+// settles.
+ZMap.prototype.scheduleUrlUpdate = function() {
+   clearTimeout(this._urlUpdateTimer);
+   this._urlUpdateTimer = setTimeout(this.updateUrl.bind(this), 300);
 }
 
 ZMap.prototype.addLanguage = function(lang) {

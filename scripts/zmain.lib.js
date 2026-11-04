@@ -611,6 +611,8 @@ function updateAdState() {
     if(size) renderAd(ads, size, mode);
   }
   positionAds();
+  // On phones the banner sits above the drawer, out of the map's viewable area.
+  if(zMap._updateMinZoom) zMap._updateMinZoom();
 };
 
 /**** LANG *****/

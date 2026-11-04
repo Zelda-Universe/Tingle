@@ -1000,6 +1000,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       - this._safeAreaBottom() - baseScreenTop;
     this._container.style.top = desiredTop + 'px';
     this._startPosition = desiredTop;
+    // How far out the map zooms depends on where the drawer rests.
+    if(this.zMap && this.zMap._updateMinZoom) this.zMap._updateMinZoom();
     if(!this._open && !this._drawerDragging) {
       this._container.style.top = this._startPosition + 'px';
       this._container.style.height = collapsedHeight + 'px';
@@ -1136,6 +1138,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
     this._contents.scrollTop = scrollTop;
     this._map.invalidateSize({ pan: false });
+    if(this.zMap && this.zMap._updateMinZoom) this.zMap._updateMinZoom();
   },
 
   updateContentsHeight: function(targetTop) {

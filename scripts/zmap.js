@@ -1153,7 +1153,9 @@ ZMap.prototype.buildMap = function(gameId) {
         ZConfig.getConfig('contextmenuWidth')
       ),
       layers:       [this.maps[0]],
-      bounceAtZoomLimits: false,
+      // Pinches stretch a little past the zoom limits and spring back
+      // (_addZoomRubberBand).
+      bounceAtZoomLimits: true,
       maxBoundsViscosity: Number.parseFloat(
         ZConfig.getConfig('maxBoundsViscosity')
       ),
@@ -1205,6 +1207,8 @@ ZMap.prototype.buildMap = function(gameId) {
 
   this.map = L.map(mainEl, this.mapOptions);
   this._addMapGridBackground();
+  this._limitZoomToMapBounds();
+  this._addZoomRubberBand();
   var map = this.map;
   var updateMobileMapHeight = function() {
     if(!isMobile()) {
@@ -1359,6 +1363,7 @@ ZMap.prototype.addMapControl = function(gameId) {
     zMap: this,
     mapControl: this.mapControl
   }).addTo(this.map);
+  if(this._updateMinZoom) this._updateMinZoom();
   this._setupDroppedPinGesture();
   this._setupMarkerTouchTaps();
   this._setupDoubleTapZoom();
@@ -1968,6 +1973,126 @@ ZMap.prototype._centerInVisibleAreaWhenSettled = function(latlng) {
     this._setViewAtMarkerInVisibleArea({ getLatLng: function() { return latlng; } }, this.map.getZoom());
   }.bind(this);
   window.setTimeout(center, 0);
+};
+
+// The part of the screen the controls leave clear is the map's viewable
+// area: beside the sidebar (and above any banner) on desktop; between the
+// search bar and the collapsed drawer (and any banner above it) on phones. Fully zoomed out, the
+// whole map fits there, centred; zoomed in, its edges stop at that area's
+// edges instead of sliding under the controls. Kept current as the screen,
+// layout or banner changes.
+ZMap.prototype._limitZoomToMapBounds = function() {
+  var zMap = this;
+  var map = this.map;
+  if(!map.options.maxBounds) return;
+  var bounds = L.latLngBounds(map.options.maxBounds);
+  // Room left around the map when it's fully zoomed out.
+  var margin = 10;
+  var insets = { top: 0, right: 0, bottom: 0, left: 0 };
+
+  function measureInsets() {
+    var container = map.getContainer().getBoundingClientRect();
+    var control = zMap.mapControl;
+    var next = { top: 0, right: 0, bottom: 0, left: 0 };
+    if(!control || !control._container) return next;
+    if(control.viewStyleBottomSlide) {
+      var settings = zMap.settingsControl && zMap.settingsControl.container;
+      if(settings) next.top = Math.max(0, settings.getBoundingClientRect().bottom - container.top);
+      var collapsedTop = control._mobileDrawerBaseTop + control._startPosition;
+      var bottomEdge = Number.isFinite(collapsedTop) ? collapsedTop : container.bottom;
+      var ads = document.getElementById('ads');
+      if(ads && ads.classList.contains('ads-mobile')) {
+        var adRect = ads.getBoundingClientRect();
+        if(adRect.height) bottomEdge = Math.min(bottomEdge, adRect.top);
+      }
+      next.bottom = Math.max(0, container.bottom - bottomEdge);
+    } else {
+      var sidebar = control._container.getBoundingClientRect();
+      if(sidebar.width) next.left = Math.max(0, sidebar.right - container.left);
+      // A banner beside the sidebar covers the bottom of the map.
+      var banner = document.getElementById('ads');
+      if(banner && banner.classList.contains('ads-desktop')) {
+        var bannerRect = banner.getBoundingClientRect();
+        if(bannerRect.height && bannerRect.right > container.left + next.left) {
+          next.bottom = Math.max(0, container.bottom - bannerRect.top);
+        }
+      }
+    }
+    return next;
+  }
+
+  // Leaflet keeps the view inside maxBounds by comparing it with the whole
+  // map container; compare with the viewable area instead. A map smaller
+  // than that area is centred in it.
+  var getBoundsOffset = map._getBoundsOffset;
+  map._getBoundsOffset = function(pxBounds, maxBounds, zoom) {
+    var min = pxBounds.min.add(L.point(insets.left, insets.top));
+    var max = pxBounds.max.subtract(L.point(insets.right, insets.bottom));
+    if(min.x < max.x && min.y < max.y) pxBounds = L.bounds(min, max);
+    return getBoundsOffset.call(this, pxBounds, maxBounds, zoom);
+  };
+  // Dragging limits itself separately, from the container's edges.
+  map.on('dragstart', function() {
+    var drag = map.dragging;
+    if(!drag || !drag._offsetLimit) return;
+    drag._offsetLimit = L.bounds(
+      map.latLngToContainerPoint(bounds.getNorthWest()).multiplyBy(-1)
+        .add(L.point(insets.left, insets.top)),
+      map.latLngToContainerPoint(bounds.getSouthEast()).multiplyBy(-1)
+        .add(map.getSize()).subtract(L.point(insets.right, insets.bottom))
+    );
+  });
+
+  var update = function() {
+    var size = map.getSize();
+    if(!size.x || !size.y) return;
+    var next = measureInsets();
+    var moved = ['top', 'right', 'bottom', 'left'].some(function(side) {
+      return Math.abs(next[side] - insets[side]) > .5;
+    });
+    insets = next;
+    // Not getBoundsZoom(), which never returns less than the current minimum,
+    // so the limit could never be lowered again.
+    var free = size.subtract(L.point(
+      insets.left + insets.right + 2 * margin, insets.top + insets.bottom + 2 * margin
+    ));
+    var current = map.getZoom() || 0;
+    var mapSize = L.bounds(map.project(bounds.getNorthWest(), current), map.project(bounds.getSouthEast(), current)).getSize();
+    if(free.x <= 0 || free.y <= 0 || !mapSize.x || !mapSize.y) return;
+    var zoom = map.getScaleZoom(Math.min(free.x / mapSize.x, free.y / mapSize.y), current);
+    if(Number.isFinite(zoom)) map.setMinZoom(Math.max(0, Math.min(zoom, Number(map.getMaxZoom()))));
+    if(moved && map._loaded) map.panInsideBounds(bounds, { animate: false });
+  };
+  this._updateMinZoom = update;
+  update();
+  map.on('resize', update);
+};
+
+// Leaflet lets a pinch run freely past the zoom limits and then snaps back.
+// Resist instead, like a rubber band: the further past a limit, the less the
+// map gives, up to RUBBER_BAND_ZOOM levels. Leaflet springs it back on release.
+ZMap.prototype._addZoomRubberBand = function() {
+  var map = this.map;
+  var handler = map.touchZoom;
+  if(!handler || typeof handler._onTouchMove !== 'function') return;
+  var RUBBER_BAND_ZOOM = 0.5;
+  function resist(zoom) {
+    var min = map.getMinZoom(), max = Number(map.getMaxZoom());
+    var limit = zoom < min ? min : zoom > max ? max : null;
+    if(limit === null) return zoom;
+    var past = Math.abs(zoom - limit);
+    var give = RUBBER_BAND_ZOOM * (1 - Math.exp(-past / RUBBER_BAND_ZOOM));
+    return zoom < limit ? limit - give : limit + give;
+  }
+  var onTouchMove = handler._onTouchMove;
+  // Replaced on the instance before any pinch starts, so Leaflet adds and
+  // removes this version of the listener.
+  handler._onTouchMove = function(e) {
+    var getScaleZoom = map.getScaleZoom;
+    map.getScaleZoom = function() { return resist(getScaleZoom.apply(map, arguments)); };
+    try { return onTouchMove.call(this, e); }
+    finally { map.getScaleZoom = getScaleZoom; }
+  };
 };
 
 ZMap.prototype._addMapGridBackground = function() {

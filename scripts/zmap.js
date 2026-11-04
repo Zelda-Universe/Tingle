@@ -4301,7 +4301,7 @@ ZMap.prototype.checkOfflineMapUpdates = function() {
   }
   if(!this.getUser() || !navigator.onLine || !('caches' in window)) return;
   if(this._checkingOfflineUpdates) return;
-  var gameIds = ZMapOfflinePacks.downloadedGameIds();
+  var gameIds = sortGames(ZMapOfflinePacks.downloadedGameIds());
   if(!gameIds.length) return;
   this._checkingOfflineUpdates = true;
 
@@ -4826,7 +4826,7 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
   // adds or removes any that differ.
   var list = $('#offline_maps_list');
   var cards = {};
-  var knownGames = Object.values(games || {}).map(function(game) {
+  var knownGames = sortGames(Object.values(games || {})).map(function(game) {
     return { id: game.shortName, name: game.name };
   });
   if(knownGames.length) {

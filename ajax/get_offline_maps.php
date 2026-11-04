@@ -157,12 +157,13 @@
     return $manifest;
   }
 
+  include_once(dirname(__DIR__) . '/lib/common/game_order.php');
   $gameRows = array();
   foreach ($db->fetchAllAssociative("
     SELECT `id`, `short_name` AS `shortName`, `name`
     FROM `{$map_prefix}container`
     WHERE `visible` = 1 AND `enabled` = 1
-    ORDER BY `id`
+    ORDER BY " . gameOrderSql('`short_name`') . ", `id`
   ") as $gameRow) {
     $gameRows[$gameRow['shortName']] = $gameRow;
   }

@@ -1182,7 +1182,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   createGameMenu: function() {
     var gameMenu = new CategoryMenu({
-      categories: games,
+      categories: sortGames(games.filter(Boolean)),
       categorySelectionMethod: this.options.categorySelectionMethod,
       defaultToggledState: true,
       categoryButtonOptions: {

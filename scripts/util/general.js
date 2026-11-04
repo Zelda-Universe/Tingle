@@ -6,6 +6,24 @@
 // including the 744px-wide iPad mini in portrait, use the desktop layout.
 var MOBILE_LAYOUT_BREAKPOINT = 600;
 
+// The order games are listed in, most played first; others follow in their
+// existing order. Matches GAME_ORDER in lib/common/game_order.php.
+var GAME_ORDER = ['TotK', 'BotW', 'EoW', 'LA'];
+
+// A sorted copy of a list of games, or of their short names when getName is
+// omitted and the items are strings.
+function sortGames(list, getName) {
+  getName = getName || function(item) { return item.shortName || item.id || item; };
+  var rank = function(item) {
+    var index = GAME_ORDER.indexOf(getName(item));
+    return index === -1 ? GAME_ORDER.length : index;
+  };
+  return list
+    .map(function(item, position) { return { item: item, position: position }; })
+    .sort(function(a, b) { return rank(a.item) - rank(b.item) || a.position - b.position; })
+    .map(function(entry) { return entry.item; });
+};
+
 function getMobileLayoutMediaQuery() {
   return window.matchMedia(
     '(max-width: ' + MOBILE_LAYOUT_BREAKPOINT + 'px)'

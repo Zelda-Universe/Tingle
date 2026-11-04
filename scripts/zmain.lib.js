@@ -314,7 +314,7 @@ function getMarkers(categories) {
 function showOfflineUnavailable(xhr) {
   if(!ZOfflineSync.isNetworkError(xhr) || document.getElementById('offline-unavailable')) return;
   var requested = getUrlParam('game');
-  var downloaded = ZMapOfflinePacks.downloadedGameIds().filter(function(id) { return id !== requested; });
+  var downloaded = sortGames(ZMapOfflinePacks.downloadedGameIds()).filter(function(id) { return id !== requested; });
   var notice = $('<div>', { id: 'offline-unavailable', class: 'offline-unavailable', role: 'alert' });
   var card = $('<div>', { class: 'offline-unavailable-card' }).appendTo(notice);
   card.append($('<img>', { src: 'images/zmaps_white.png', alt: 'Zelda Maps', class: 'offline-unavailable-logo' }));

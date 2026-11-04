@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261104-20';
+const CACHE_VERSION = '20261104-34';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +8,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261104-form-inset',
-  './res.php?type=css&v=20261104-form-inset',
+  './res.php?type=javascript&v=20261104-notify-2',
+  './res.php?type=css&v=20261104-notify-2',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -30,7 +30,7 @@ const OPTIONAL_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.16/tinymce.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.9/tinymce.min.js',
   'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'
 ];
 
@@ -300,4 +300,51 @@ self.addEventListener('fetch', event => {
   if (request.destination === 'image') {
     event.respondWith(downloadedImageOrNetwork(request));
   }
+});
+
+// Push notifications (lib/common/push.php). Pushes carry no payload: ask
+// the server what's new, as the signed-in account, and show it. Browsers
+// require something to be shown for every push.
+self.addEventListener('push', event => {
+  event.waitUntil((async () => {
+    const icon = new URL('images/apple-touch-icon-precomposed.png', self.registration.scope).href;
+    let items = [];
+    try {
+      const response = await fetch(new URL('ajax.php?command=notifications_push_latest', self.registration.scope), {
+        credentials: 'include', cache: 'no-store'
+      });
+      items = (await response.json()).notifications || [];
+    } catch (e) {}
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    windows.forEach(client => client.postMessage({ type: 'zeldamaps-notifications' }));
+    if (!items.length) {
+      await self.registration.showNotification('Zelda Maps', {
+        body: 'You have new notifications.', icon, tag: 'zeldamaps-notifications',
+        data: { url: new URL('?page=notifications', self.registration.scope).href }
+      });
+      return;
+    }
+    // Tagged by id, so one shown by an earlier push is replaced, not repeated.
+    await Promise.all(items.map(item => self.registration.showNotification(item.title, {
+      body: item.body || undefined, icon, tag: 'zeldamaps-notification-' + item.id,
+      // notification= marks it read when it's opened.
+      data: { url: new URL(item.url + '&notification=' + item.id, self.registration.scope).href }
+    })));
+  })());
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || self.registration.scope;
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const open = windows.find(client => new URL(client.url).origin === self.location.origin);
+    if (open) {
+      // The open page shows it in place.
+      await open.focus();
+      open.postMessage({ type: 'zeldamaps-open-notification', url });
+      return;
+    }
+    await self.clients.openWindow(url);
+  })());
 });

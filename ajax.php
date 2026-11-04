@@ -50,6 +50,9 @@
     // Sessions of accounts deleted, disabled or banned since signing in end
     // here, before the command runs.
     include_once(__DIR__.'/lib/common/account_status.php');
+    include_once(__DIR__.'/lib/common/auth_token.php');
+    // Puts back the session of anyone signed in whose session has been lost.
+    authRestoreSession($db, $map_prefix);
     accountSessionCheck($db, $map_prefix);
     $error=false;
     ob_start();

@@ -97,7 +97,12 @@
   // Otherwise anyone logged in can add a marker; it stays hidden until a
   // level 5+ user adds it, or an admin makes it visible.
 
+  include_once(dirname(__DIR__) . '/lib/common/wiki.php');
   begin();
+
+  // History (lib/common/wiki.php): markers edited for the first time keep
+  // the version they had first.
+  if ($isUpdate) wikiEnsureBaseline($db, $map_prefix, $markerId);
 
   if (!$isUpdate) {
     $visible = ($sessionLevel >= 5) ? 1 : 0;
@@ -175,7 +180,18 @@
     ", [$markerId, $userId, htmlentities(stripslashes($tabText), ENT_QUOTES, "UTF-8")]);
   }
 
+  $revisionId = wikiRecordRevision(
+    $db, $map_prefix, $markerId, $sessionUserId, $isUpdate ? 'edit' : 'create',
+    is_string($_POST['summary'] ?? null) ? $_POST['summary'] : null
+  );
+
   commit();
+
+  // The marker's owner and followers hear about edits.
+  if ($isUpdate) {
+    include_once(dirname(__DIR__) . '/lib/common/notifications.php');
+    notifyMarkerChange($db, $map_prefix, $sessionUserId, $markerId, $revisionId, 'edit');
+  }
 
   // Return the marker exactly as get_markers renders it.
   $_GET['newMarkerId'] = $markerId;

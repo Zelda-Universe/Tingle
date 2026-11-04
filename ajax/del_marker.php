@@ -39,11 +39,18 @@
      return;
    }
 
+   include_once(dirname(__DIR__) . '/lib/common/wiki.php');
+   wikiEnsureBaseline($db, $map_prefix, $markerId);
    $db->executeStatement("
      UPDATE {$map_prefix}marker
         SET visible = 0
       WHERE id = ?
    ", [$markerId]);
+   // A revision too, so the marker can be brought back from its History.
+   $revisionId = wikiRecordRevision($db, $map_prefix, $markerId, $sessionUserId, 'delete',
+     is_string($_POST['summary'] ?? null) ? $_POST['summary'] : null);
+   include_once(dirname(__DIR__) . '/lib/common/notifications.php');
+   notifyMarkerChange($db, $map_prefix, $sessionUserId, $markerId, $revisionId, 'delete');
 
    echo json_encode(array("success"=>true, "msg"=>"Marker deleted!"));
 ?>

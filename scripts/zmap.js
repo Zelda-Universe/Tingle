@@ -772,18 +772,10 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
       content = content  + "<div>" + marker.tabText[0] + "</div>";
    }*/
 
-   if (user != null) {
-      if (user.level >= 10 || (user.level >= 5 && marker.userId == user.id)) {
-         content +=  "<p style='text-align: left; float:left; margin-right: 10px;'>Marker ID no. " + marker.id + "</p>"
-                   + "<p style='text-align: right; float: right'>Added by " + marker.userName + "</p>"
-                   + "<br style='height:0pt; clear:both;'>"
-                     + "<span class=\"icon-pencil infoWindowIcn\" onclick=\"_this.editMarker("+marker.id+"); return false\"></span>"
-                     + "<span class=\"icon-cross infoWindowIcn\" onclick=\"_this.deleteMarker("+marker.id+"); return false\"></span>";
-      }
-   }
-
+  content += "</div>";
 
   this.mapControl.setContent(content, 'm'+marker.id);
+  this._refreshMarkerEditorTools(marker);
   var openImmediatelyMobile = (
     !!openDrawerImmediately &&
     this.mapControl.viewStyleBottomSlide
@@ -2234,7 +2226,9 @@ ZMap.prototype.setUser = function(vUser) {
    // Signed out: remove the account's offline data from this device.
    if(user == null) ZOfflineSync.clear();
    _this._buildContextMenu();
+   if (this._watchWikiUser) this._watchWikiUser();
    this.notifyUserChanged();
+   if (this._watchNotifications) this._watchNotifications();
 
    if (user != null) {
       // Transfer cookies completed markers to database
@@ -2291,16 +2285,22 @@ ZMap.prototype.checkWarnUserSeveralEnabledCategories = function() {
 ZMap.prototype.deleteMarker = function(vMarkerId) {
   $.ajax({
     type: "POST",
-    url: "ajax/del_marker.php",
+    url: "ajax.php?command=del_marker",
     data: {markerId: vMarkerId, userId: user.id},
+    dataType: "json",
+    error: function() {
+      toastr.error(_this.langMsgs.MARKER_DEL_ERROR.format('Check your connection and try again.'));
+      $('[data-editor-action="confirm-delete"]').prop('disabled', false);
+    },
     success: function(data) {
-      data = jQuery.parseJSON(data);
       if (data.success) {
         for (var i = 0; i < markers.length; i++) {
           // Just hide the marker on the marker array ... on reaload, query won't get it.
           if (markers[i].id == vMarkerId) {
             markers[i].visible = 0;
             markers[i].categoryId = -1;
+            _this.map.removeLayer(markers[i]);
+            delete _this.cachedMarkersById[vMarkerId];
             toastr.success(_this.langMsgs.MARKER_DEL_SUCCESS.format(markers[i].id));
             if (_this.mapControl.isMobile) {
               _this.mapControl.closeDrawer();
@@ -2313,7 +2313,7 @@ ZMap.prototype.deleteMarker = function(vMarkerId) {
         }
       } else {
         toastr.error(_this.langMsgs.MARKER_DEL_ERROR.format(data.msg));
-        //alert(data.msg);
+        $('[data-editor-action="confirm-delete"]').prop('disabled', false);
       }
     }
   });
@@ -2334,222 +2334,200 @@ ZMap.prototype.editMarker = function(vMarkerId) {
 
 }
 
+// Adding or editing a marker: the standard field bars, a rich-text editor
+// for each content section, and, for editors, an edit summary for History.
 ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
-   if (user == null) {
-      toastr.error(_this.langMsgs.GENERAL_ERROR.format('You are not logged!'));
-      return;
-   }
+  var _this = this;
+  if (user == null) {
+    toastr.error(_this.langMsgs.GENERAL_ERROR.format('You are not logged!'));
+    return;
+  }
+  if (window.tinymce) tinymce.remove();
 
-   // Clean TinyMCE
-   tinymce.remove();
+  var editing = vMarker != null;
+  var isEditor = user.level >= 5;
+  var esc = this._wikiEscape.bind(this);
+  var field = function(icon, control) {
+    return '<div class="form-group"><div class="input-group">' +
+      '<span class="input-group-addon"><i class="fas ' + icon + '" aria-hidden="true"></i></span>' +
+      control + '</div></div>';
+  };
+  var categoryOptions = this.categoriesArr.map(function(entry) {
+    return '<option value="' + esc(entry.id) + '">' + esc(entry.name) + '</option>';
+  }).join('');
+  var submapId = editing && vMarker.submapId != null ? vMarker.submapId : this.mapControl.getCurrentMap().subMapId;
 
-   var catSelection = "";
-   this.categoriesArr.forEach(function(entry) {
-      catSelection = catSelection + '<option class="icon-BotW_Points-of-Interest" style="font-size: 14px;" value="'+ entry.id +'"' + (vMarker!=null&&vMarker.categoryId==entry.id?"selected":"") + '> ' + entry.name + '</option>';
-   });
+  var html =
+    '<div id="marker_edit" class="wiki-page">' +
+      '<h3 class="text-center">' + (editing ? 'Edit Marker' : 'New Marker') + '</h3>' +
+      (editing ? '<p class="wiki-subtitle">' + esc(vMarker.title) + '</p>' : '') +
+      '<form id="newMarkerForm" class="leaflet-control-layers-list marker-edit-form" autocomplete="off">' +
+        '<label for="markerTitle">Title</label>' +
+        field('fa-heading', '<input type="text" class="form-control" id="markerTitle" name="markerTitle" required maxlength="255" placeholder="What is it?" />') +
+        '<label for="categoryId">Category</label>' +
+        field('fa-tag', '<select class="form-control" name="categoryId" id="categoryId">' + categoryOptions + '</select>') +
+        '<label>Content</label>' +
+        '<div class="divTabBody marker-edit-sections"></div>' +
+        '<button id="add_field_button" type="button" class="marker-edit-add"><i class="fas fa-plus" aria-hidden="true"></i>Add Section</button>' +
+        '<label for="markerDescription">Internal Notes</label>' +
+        field('fa-sticky-note', '<textarea class="form-control" id="markerDescription" name="markerDescription" rows="2" placeholder="For editors. Not shown on the map."></textarea>') +
+        '<div class="marker-edit-options">' +
+          '<label class="admin-check"><input type="checkbox" id="isGlobal" name="isGlobal" />' +
+            '<span>Show on every map of this game<small>For example, in both the Light World and Dark World.</small></span></label>' +
+          (editing && user.level >= 10
+            ? '<label class="admin-check"><input type="checkbox" id="isVisible" name="isVisible" />' +
+              '<span>Visible<small>Hidden markers stay in History and can be shown again.</small></span></label>'
+            : '') +
+        '</div>' +
+        (editing && isEditor
+          ? '<label for="markerSummary">Edit Summary</label>' +
+            field('fa-comment-alt', '<input type="text" class="form-control" id="markerSummary" name="summary" maxlength="255" placeholder="What did you change? (optional)" />')
+          : '') +
+        '<input type="hidden" name="game" value="' + esc(this.mapOptions.id) + '" />' +
+        '<input type="hidden" name="lat" value="' + esc(vLatLng.lat) + '" />' +
+        '<input type="hidden" name="lng" value="' + esc(vLatLng.lng) + '" />' +
+        '<input type="hidden" name="userId" value="' + esc(user.id) + '" />' +
+        (editing ? '<input type="hidden" name="markerId" value="' + esc(vMarker.id) + '" />' : '') +
+        '<input type="hidden" name="submapId" value="' + esc(submapId) + '" />' +
+        '<p class="admin-user-status" role="status" aria-live="polite"></p>' +
+        '<button type="submit" class="infoWindowIcn form-action-button">' + (editing ? 'Save Changes' : 'Add Marker') + '</button>' +
+      '</form>' +
+    '</div>';
 
-   var popupContent = '<h2 class="text-center popupTitle">'+ (vMarker!=null?vMarker.title:'New Marker') +'</h2>';
+  this.mapControl._nextPageBack = editing ? this._wikiBackToMarker(vMarker.id) : null;
+  this.mapControl._navigatingForward = true;
+  this.mapControl.setContent(html, editing ? 'markerEdit-' + vMarker.id : 'newMarker');
+  if (this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
 
-   if (user.level >= 5) {
-      popupContent = popupContent +
-         '<iframe id="form_target" name="form_target" style="display:none"></iframe>'+
-         '<form id="imageUploadForm" action="content/upload.php" target="form_target" method="post" enctype="multipart/form-data" style="width:0px;height:0;overflow:hidden">'+
-             '<input name="image" type="file" onchange="$(\'#imageUploadForm\').submit();this.value=\'\';">'+
-             '<input style="display: none;" type="text" id="game" name="game" value="'+this.mapOptions.shortName+'" />'+
-             '<input style="display: none;" type="text" id="userId" name="userId" value="' + user.id + '" />'+
-         '</form>'
-      ;
-   }
+  var form = $('#newMarkerForm');
+  form.find('#markerTitle').val(editing ? vMarker.title : '');
+  if (editing) form.find('#categoryId').val(String(vMarker.categoryId));
+  form.find('#markerDescription').val(editing ? (vMarker.description || '') : '');
+  form.find('#isGlobal').prop('checked', editing && vMarker.globalMarker == 1);
+  form.find('#isVisible').prop('checked', editing && vMarker.dbVisible == 1);
 
-   popupContent = popupContent +
-         '<div id="markerForm">'+
-            '<form class="leaflet-control-layers-list" role="newMarkerForm" id="newMarkerForm" enctype="multipart/form-data">'
-   ;
-
-   if (vMarker!=null && user!=null && user.level >= 10) {
-      popupContent = popupContent +
-               '<div id="isVisible" class="checkbox">'+
-                  '<label>'+
-                     '<input type="checkbox" id="isVisible" name="isVisible" '+(vMarker!=null&&vMarker.dbVisible==1?' checked':'')+'> Visible?'+
-                  '</label>'+
-               '</div>'
-      ;
-   }
-
-   popupContent = popupContent +
-               '<div class="form-group">'+
-                  '<label for="categoryId" class="control-label">Category</label>'+
-                     '<select class="form-control" name="categoryId" id="categoryId">'+ catSelection +'</select>'+
-                  '<span class="help-block"></span>'+
-               '</div>'+
-               '<div class="form-group">'+
-                  '<label for="markerTitle" class="control-label">Title</label>'+
-                  '<input type="text" class="form-control" id="markerTitle" name="markerTitle" value="'+ (vMarker!=null?vMarker.title:'') + '" required="" title="Please enter a title for the marker" placeholder="Title of Marker">'+
-                  '<span class="help-block"></span>'+
-               '</div>'+
-               '<div class="form-group">'+
-                  '<label for="markerDescription" class="control-label">Description</label>'+
-                  '<textarea type="text" class="form-control" id="markerDescription" name="markerDescription" value="" title="Please enter a description for the marker" placeholder="Internal Description (not visible to viewers)">'+ (vMarker!=null?vMarker.description:'') + '</textarea>'+
-                  '<span class="help-block"></span>'+
-               '</div>'+
-               '<div id="isGlobal" class="checkbox">'+
-                  '<label>'+
-                     '<input type="checkbox" id="isGlobal" name="isGlobal" '+(vMarker!=null&&vMarker.globalMarker==1?' checked':'')+'> Global? (Ex: Appears on both Light World / Dark World)'+
-                  '</label>'+
-               '</div>'+
-               '<input style="display: none;" type="text" id="game" name="game" value="' + this.mapOptions.id + '" />'+
-               '<input style="display: none;" type="text" id="lat" name="lat" value="' + vLatLng.lat + '" />'+
-               '<input style="display: none;" type="text" id="lng" name="lng" value="' + vLatLng.lng + '" />'+
-               '<input style="display: none;" type="text" id="userId" name="userId" value="' + user.id + '" />'+
-               (vMarker!=null ? '<input style="display: none;" type="text" id="markerId" name="markerId" value="'+vMarker.id+'" />' : '')+
-               '<input style="display: none;" type="text" id="submapId" name="submapId" value="'+this.mapControl.getCurrentMap().subMapId+'" />'+
-               '<div class="divTabBody">'
-   ;
-
-                        /*
-                           '<div class="divTableRow">' +
-                           '<div class="divTableCell"><label class="control-label col-sm-5"><strong>Tab Title (1): </strong></label></div>'+
-                           '<div class="divTableCell tabTitle"><input size="38" type="string" placeholder="Title of Tab Content - Optional" class="form-control" id="tabTitle[]" name="tabTitle[]"></div>'+
-                        '</div>'+
-                        */
-   if (vMarker!=null&&vMarker.tabText!=null) {
-      for (var i = 0; i < vMarker.tabText.length; i++) {
-
-         popupContent = popupContent +
-                  '<div class="form-group">'+
-                     '<label for="tabText'+i+'" class="control-label">Tab Text (' + (i+1) + ')</label>'+
-                     '<textarea type="text" class="form-control tabText" name="tabText[]" id="tabText'+i+'" value="" placeholder="Please describe the marker">'+ (vMarker!=null?vMarker.tabText[i]:'') + '</textarea>'+
-                     '<span class="help-block"></span>'+
-                  '</div>';
-      }
-   } else {
-      popupContent = popupContent +
-                  '<div class="form-group">'+
-                     '<label for="tabText0" class="control-label">Tab Text (1)</label>'+
-                     '<textarea type="text" class="form-control tabText" name="tabText[]" id="tabText0" value="" placeholder="Please describe the marker"></textarea>'+
-                     '<span class="help-block"></span>'+
-                  '</div>';
-   }
-
-   popupContent = popupContent +
-               '</div>'+
-               '<div class="form-group">'+
-                  '<div>'+
-                     '<button id="add_field_button" type="button" class="infoWindowIcn form-action-button">Add more</button>'+
-                  '</div>'+
-               '</div>'+
-               '<div class="modal-footer">'+
-                  '<div>'+
-                     '<button type="submit" class="infoWindowIcn form-action-button">Submit</button>'+
-                  '</div>'+
-               '</div>'
-   ;
-
-   popupContent = popupContent +
-            '</form>'+
-         '</div>'
-   ;
-
-   /*
-   popupContent = popupContent +
-                        if (vMarker!=null&&vMarker.tabText!=null) {
-                           for (var i = 0; i < vMarker.tabText.length; i++) {
-   popupContent = popupContent +
-                        '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (' + (i+1) + '): </strong></label></p>'+
-                        '<p><textarea id="tabText'+i+'" name="tabText[]" class="tabText" cols=40 rows=5>'+ (vMarker!=null?vMarker.tabText[i]:'')+'</textarea></p>'
-                           }
-                        } else {
-   popupContent = popupContent +
-                           '<p style="vertical-align:top"><label class="control-label col-sm-5"><strong>Tab Text (1): </strong></label></p>'+
-                           '<p><textarea id="tabText0" name="tabText[]" class="tabText" cols=40 rows=5></textarea></p>'
-                        }
-   */
-   this.mapControl.setContent(popupContent, 'newMarker');
-
-   function initEditor() {
-      var toolbarButtons = ['undo redo | styleselect | bullist numlist outdent indent | bold italic | link image media | fullscreen code'];
-      var toolbarPlugins = ['lists link image anchor code','media table contextmenu paste fullscreen code'];
-      if (user.level >= 5) {
-         tinymce.init({selector:'textarea.tabText',
-                     menubar: false,
-                     plugins: [toolbarPlugins],
-                     file_browser_callback: function(field_name, url, type, win) {
-                        if (type=='image') $('#imageUploadForm input').click();
-                     },
-                     toolbar: toolbarButtons,
-                     content_css: '//www.tinymce.com/css/codepen.min.css'
-         });
-      } else {
-         tinymce.init({selector:'textarea.tabText',
-                     menubar: false,
-                     plugins: [toolbarPlugins],
-                     toolbar: toolbarButtons,
-                     content_css: '//www.tinymce.com/css/codepen.min.css'
-         });
-      }
-   }
-   initEditor();
-
-   var wrapper         = $(".divTabBody"); //Fields wrapper
-   var add_button      = $("#add_field_button"); //Add button ID
-
-   $(add_button).click(function(e){ //on add input button click
-      e.preventDefault();
-
-      var c = ($('.tabText').length+1);
-      $(wrapper).append(
-               '<div class="form-group">'+
-                  '<label for="tabText'+c+'" class="control-label">Tab Text (' + c + ')</label>'+
-                  '<textarea type="text" class="form-control tabText" id="tabText'+c+'" name="tabText[]" value="" placeholder="Please describe the marker"></textarea>'+
-                  '<span class="help-block"></span>'+
-               '</div>'
-                        );
-      initEditor();
-   });
-
-   $("#newMarkerForm").submit(function(e) {
+  var sections = form.find('.marker-edit-sections');
+  var editorOptions = {
+    skin: 'oxide-dark',
+    content_css: 'dark',
+    menubar: false,
+    statusbar: false,
+    branding: false,
+    plugins: 'lists link image media table code autoresize paste',
+    toolbar: 'bold italic | bullist numlist | link image media | table | removeformat code',
+    toolbar_mode: 'wrap',
+    min_height: 160,
+    max_height: 520,
+    autoresize_bottom_margin: 12,
+    // Keep links and uploads as written: 'uploads/…', not '../uploads/…'.
+    convert_urls: false,
+    image_dimensions: false,
+    content_style:
+      'body { margin: 12px; background: #1e1e20; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.45; }' +
+      'a { color: #8fd8ff; }' +
+      'img { max-width: 100%; height: auto; }'
+  };
+  if (isEditor) {
+    editorOptions.automatic_uploads = true;
+    editorOptions.images_file_types = 'jpeg,jpg,png,gif,webp';
+    editorOptions.images_upload_handler = function(blobInfo, success, failure) {
+      var upload = new FormData();
+      upload.append('file', blobInfo.blob(), blobInfo.filename());
       $.ajax({
-        type: "POST",
-        url: "ajax.php?command=add_marker",
-        data: $("#newMarkerForm").serialize(), // serializes the form's elements.
-        success: function(data) {
-          //data = jQuery.parseJSON(data);
-          if (data.success) {
-            if (user.level < 5) {
-              tinymce.remove();
-              _this.mapControl.resetContent();
-              toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS_RESTRICTED);
-            } else {
-              marker = jQuery.parseJSON(data.marker)[0];
-              tinymce.remove();
+        type: 'POST', url: 'ajax.php?command=upload_marker_image', data: upload,
+        processData: false, contentType: false, dataType: 'json'
+      }).done(function(result) {
+        if (result.success) success(result.location);
+        else failure(result.msg || 'The image could not be uploaded.', { remove: true });
+      }).fail(function(xhr) {
+        failure(_this._wikiError(xhr, 'The image could not be uploaded.'), { remove: true });
+      });
+    };
+  }
+  var renumber = function() {
+    var all = sections.children('.marker-edit-section');
+    all.each(function(i) {
+      $(this).find('.marker-edit-section-name').text(all.length > 1 ? 'Section ' + (i + 1) : 'Section');
+      $(this).find('.marker-edit-section-remove').prop('hidden', all.length < 2);
+    });
+  };
+  var sectionCount = 0;
+  var addSection = function(content) {
+    var id = 'tabText' + (sectionCount++);
+    var section = $(
+      '<div class="marker-edit-section">' +
+        '<div class="marker-edit-section-head"><span class="marker-edit-section-name"></span>' +
+          '<button type="button" class="marker-edit-section-remove" aria-label="Remove section"><i class="fas fa-times" aria-hidden="true"></i></button></div>' +
+        '<textarea class="tabText" name="tabText[]" id="' + id + '"></textarea>' +
+      '</div>'
+    );
+    section.find('textarea').val(content || '');
+    sections.append(section);
+    renumber();
+    if (window.tinymce) tinymce.init(Object.assign({ target: section.find('textarea')[0] }, editorOptions));
+    section.find('.marker-edit-section-remove').on('click', function() {
+      var editor = window.tinymce && tinymce.get(id);
+      var empty = !editor || !editor.getContent().trim();
+      if (!empty && !window.confirm('Remove this section and its content?')) return;
+      if (editor) editor.remove();
+      section.remove();
+      renumber();
+    });
+  };
+  var tabs = editing && vMarker.tabText && vMarker.tabText.length ? vMarker.tabText : [''];
+  tabs.forEach(addSection);
+  $('#add_field_button').on('click', function(e) {
+    e.preventDefault();
+    addSection('');
+  });
 
-              if (data.action == "ADD") {
-                 _this.addMarker(marker);
-              } else {
-                 for (var i = 0; i < markers.length; i++) {
-                    // Just hide the marker on the marker array ... on reaload, query won't get it.
-                    if (markers[i].id == marker.id) {
-                       markers[i].id = -1;
-                       markers[i].visible = 0;
-                       markers[i].categoryId = -1;
-                    }
-                 }
-                 _this.addMarker(marker);
-              }
-              _this.map.addLayer(markers[markers.length - 1]);
-              _this._createMarkerPopup(markers[markers.length - 1]);
-              toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS.format(marker.id));
-            }
-          } else {
-            console.log(data.msg);
-            toastr.error(_this.langMsgs.MARKER_ADD_ERROR.format(data.msg));
+  var status = form.find('.admin-user-status');
+  form.on('submit', function(e) {
+    e.preventDefault();
+    if (window.tinymce) tinymce.triggerSave();
+    var submit = form.find('button[type="submit"]').prop('disabled', true);
+    status.removeClass('error success').text('Saving…');
+    $.ajax({
+      type: 'POST',
+      url: 'ajax.php?command=add_marker',
+      data: form.serialize(),
+      dataType: 'json'
+    }).done(function(data) {
+      submit.prop('disabled', false);
+      if (!data.success) {
+        status.addClass('error').text(data.msg || 'The marker could not be saved.');
+        return;
+      }
+      if (window.tinymce) tinymce.remove();
+      if (user.level < 5) {
+        _this.mapControl.resetContent();
+        toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS_RESTRICTED);
+        return;
+      }
+      var saved = jQuery.parseJSON(data.marker)[0];
+      if (data.action != "ADD") {
+        for (var i = 0; i < markers.length; i++) {
+          if (markers[i].id == saved.id) {
+            _this.map.removeLayer(markers[i]);
+            markers[i].id = -1;
+            markers[i].visible = 0;
+            markers[i].categoryId = -1;
           }
         }
-      });
-
-      e.preventDefault(); // avoid to execute the actual submit of the form.
+        delete _this.cachedMarkersById[saved.id];
+      }
+      _this.addMarker(saved);
+      _this.map.addLayer(markers[markers.length - 1]);
+      _this.mapControl._navigatingBack = editing;
+      _this._createMarkerPopup(markers[markers.length - 1]);
+      if (editing) toastr.success('Saved your changes to marker ' + saved.id + '.');
+      else toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS.format(saved.id));
+    }).fail(function(xhr) {
+      submit.prop('disabled', false);
+      status.addClass('error').text(_this._wikiError(xhr, 'The marker could not be saved. Check your connection.'));
+    });
   });
-}
+};
 //****************************************************************************//
 //*************                                                  *************//
 //*************               END - MARKER HANDLING              *************//
@@ -2923,6 +2901,14 @@ ZMap.prototype._buildContextMenu = function() {
 }
 
 ZMap.prototype.logout = function() {
+  // This device stops getting push notifications for the account first,
+  // while it's still signed in to say so.
+  var forgetPush = this._pushForgetDevice ? this._pushForgetDevice() : Promise.resolve();
+  var timeout = new Promise(function(resolve) { setTimeout(resolve, 3000); });
+  Promise.race([forgetPush, timeout]).then(function() { _this._logoutNow(); });
+};
+
+ZMap.prototype._logoutNow = function() {
   $.ajax({
     type: "POST",
     url: "ajax.php?command=logout",
@@ -2930,6 +2916,7 @@ ZMap.prototype.logout = function() {
       if(data.success) {
         toastr.success(_this.langMsgs.LOGOUT_SUCCESS.format(user.username));
         _this.setUser(null);
+        if (_this.setNotificationCount) _this.setNotificationCount(0);
         updateAdState();
         _this.mapControl.resetContent();
         showLoginControls();
@@ -3518,9 +3505,6 @@ ZMap.prototype._createLoginForm = function(successMessage) {
                               '</div>'+
                            '</div>'+
                            '<div class="login-options">'+
-                              '<label class="login-remember">'+
-                                 '<input type="checkbox" id="remember" name="remember" checked> Remember me'+
-                              '</label>'+
                               '<a href="#" id="login_lost_btn" class="login-forgot">Forgot password?</a>'+
                            '</div>'+
                            '<div class="modal-footer">'+
@@ -3621,7 +3605,10 @@ ZMap.prototype.drawerPageRoutes = {
   registerForm: 'register',
   lostPasswordForm: 'lost-password',
   changePasswordForm: 'change-password',
-  deleteAccountForm: 'delete-account'
+  deleteAccountForm: 'delete-account',
+  notificationsPage: 'notifications',
+  notificationSettingsPage: 'notification-settings',
+  followedMarkersPage: 'followed-markers'
 };
 
 ZMap.prototype.syncDrawerPageURL = function(contentType) {
@@ -3630,6 +3617,8 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   var page = this.drawerPageRoutes[contentType];
   if(page) url.searchParams.set('page', page);
   else url.searchParams.delete('page');
+  // Revision links (?marker=1&rev=2) last only while the revision is open.
+  if(!/^markerRevision-/.test(contentType || '')) url.searchParams.delete('rev');
   var reloadParent = null;
   if(['accountPage', 'loginForm', 'games', 'maps'].includes(contentType)) {
     var parent = this.mapControl._headerPageParent;
@@ -3643,6 +3632,10 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
 
 ZMap.prototype.restoreDrawerPage = function(page) {
   this._drawerRoutingReady = true;
+  if(this._hasWikiLink && this._hasWikiLink()) {
+    this._openRevisionLinkWhenReady('user');
+    if(this._revisionLinkOpened) return;
+  }
   var state = Object.assign({}, window.history.state);
   if(state.responsiveDrawer) {
     var snapshot = state.responsiveDrawer;
@@ -3687,7 +3680,11 @@ ZMap.prototype.restoreDrawerPage = function(page) {
     bookmarks: '_createBookmarksPage',
     admin: '_createAdminPage',
     'change-password': '_createChangePasswordForm',
-    'delete-account': '_createAccountDeleteForm'
+    'delete-account': '_createAccountDeleteForm',
+    // Notifications (znotifications.js), editors only for now.
+    notifications: '_routeNotifications',
+    'notification-settings': '_routeNotificationSettings',
+    'followed-markers': '_routeFollowedMarkers'
   };
   var publicRoutes = {
     login: '_createLoginForm', register: '_createRegisterForm',
@@ -4431,6 +4428,8 @@ ZMap.prototype._createAccountForm = function(user) {
       '</div>' +
       '<div class="modal-footer">' +
          '<div>' +
+           (user.level >= 5 ? '<button id="account_notifications_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bell account-nav-icon" aria-hidden="true"></i>Notifications<span class="account-nav-count" hidden></span></button>' : '') +
+           (user.level >= 5 ? '<button id="account_profile_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-id-badge account-nav-icon" aria-hidden="true"></i>Profile</button>' : '') +
            (user.level >= 10 ? '<button id="account_admin_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-shield-alt account-nav-icon" aria-hidden="true"></i>Admin</button>' : '') +
            '<button id="account_information_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-user account-nav-icon" aria-hidden="true"></i>Account Information</button>' +
            '<button id="account_bookmarks_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bookmark account-nav-icon" aria-hidden="true"></i>Bookmarks</button>' +
@@ -4452,6 +4451,13 @@ ZMap.prototype._createAccountForm = function(user) {
   });
   $('#account_admin_btn').click(function() {
     _this._createAdminPage();
+  });
+  $('#account_notifications_btn').click(function() {
+    _this._openNotificationsPage(function() { _this._createAccountForm(_this.getUser()); });
+  });
+  if (this.setNotificationCount) this.setNotificationCount(this.notificationCount);
+  $('#account_profile_btn').click(function() {
+    _this._openUserProfile({ id: user.id }, function() { _this._createAccountForm(_this.getUser()); });
   });
   $('#account_information_btn').click(function() {
     _this._createAccountInformationForm();

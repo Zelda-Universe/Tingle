@@ -41,6 +41,9 @@
     if ($userId && !accountIsUsable($db, $prefix, $userId)) {
       session_unset();
       session_destroy();
+      include_once(__DIR__ . '/auth_token.php');
+      authRevokeUser($db, $prefix, $userId);
+      authSetCookie('', time() - 3600);
       return;
     }
     session_write_close();

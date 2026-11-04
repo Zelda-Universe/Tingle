@@ -598,7 +598,8 @@ main.leaflet-container,
 	margin: 16px 0 0;
 }
 
-/* Remember me and Forgot password?, beneath the fields. */
+/* Forgot password?, beneath the fields. Everyone stays signed in until
+   they log out, so there's no Remember me. */
 #loginform > .form-group:not(:has(+ .form-group)) {
 	margin-bottom: 8px;
 }
@@ -606,7 +607,7 @@ main.leaflet-container,
 .login-options {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: flex-end;
 	margin: 0 0 16px;
 	/* Clear of the fields' rounded corners, in line with their icons. */
 	padding: 0 12px;
@@ -1738,6 +1739,13 @@ a.button.leaflet-control-layers-toggle {
 	padding: 16px 16px 24px;
 }
 
+/* Sign In and Register keep a roomier 24px. */
+.menu-cat-content-inner form#loginform,
+.menu-cat-content-inner form#newuserform {
+	padding-left: 24px;
+	padding-right: 24px;
+}
+
 .menu-cat-content-inner form .modal-footer .infoWindowIcn {
 	width: 100%;
 	box-sizing: border-box;
@@ -2066,6 +2074,126 @@ a.button.back-button svg {
 a.button.back-button.close-button {
 	left: auto;
 	right: 16px;
+}
+
+/* A page's back and close buttons stay at the top while it scrolls: in the
+   flow but taking no room (the negative bottom margin), stuck 12px down. */
+.main-content > a.button.back-button {
+	position: sticky;
+	top: 12px;
+	margin: 12px 0 -56px 16px;
+}
+
+.main-content > a.button.back-button.close-button {
+	margin: 12px 16px -56px auto;
+}
+
+/* The drawer's background and blur sit on a layer behind its contents
+   rather than on the drawer itself: Chrome won't apply a backdrop blur
+   inside an element that has its own, and the title bar needs one. */
+.leaflet-control-container .leaflet-control.leaflet-control-layers {
+	background-color: transparent;
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
+	isolation: isolate;
+}
+
+.leaflet-control-container .leaflet-control.leaflet-control-layers::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	border-radius: inherit;
+	background-color: rgba(0, 0, 0, .8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	pointer-events: none;
+}
+
+/* The compact title bar that fades in once a page's title has scrolled away
+   (ZLayers _setupCompactTitle): one line, truncated, between the buttons,
+   over a blur of the content beneath. Takes no room in the page. */
+.main-content > .compact-title-bar {
+	position: sticky;
+	top: 0;
+	z-index: 60;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 68px;
+	margin: 0 0 -68px;
+	/* Clear the 44px buttons 16px from each side, with 12px to spare. */
+	padding: 0 72px;
+	border-bottom: 1px solid rgba(255,255,255,.12);
+	/* Lighter than the drawer's own .8, so what's beneath shows through. */
+	background-color: rgba(0,0,0,.5);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity .2s ease;
+}
+
+.main-content > .compact-title-bar.visible {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.compact-title-bar-text {
+	overflow: hidden;
+	color: white;
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 1.2;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.compact-title-bar-popup .compact-title-bar-text {
+	font-family: HyliaSerif;
+	font-size: 19px;
+	font-weight: normal;
+}
+
+/* Other pages keep their own title in place over the bar, stuck where it
+   rests (12px down, level with the buttons). */
+.main-content > a.button.back-button ~ .menu-cat-content-inner > div > h1:first-child,
+.main-content > a.button.back-button ~ .menu-cat-content-inner > div > h2:first-child,
+.main-content > a.button.back-button ~ .menu-cat-content-inner > div > h3:first-child,
+.main-content > a.button.back-button ~ .menu-cat-content-inner > div > h4:first-child,
+.main-content > a.button.back-button ~ .menu-cat-content-inner > div > h5:first-child,
+.main-content > a.button.back-button ~ .menu-cat-content-inner > div > h6:first-child {
+	position: sticky;
+	top: 12px;
+	z-index: 70;
+}
+
+/* POIs: title above a very compact coordinate pill. */
+.main-content > .compact-title-bar-popup {
+	flex-direction: column;
+	gap: 3px;
+}
+
+.compact-title-bar-popup .compact-title-bar-text {
+	max-width: 100%;
+	font-size: 17px;
+	line-height: 1.15;
+}
+
+.compact-title-bar-pill {
+	max-width: 100%;
+	overflow: hidden;
+	box-sizing: border-box;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: rgba(255,255,255,.2);
+	color: rgba(255,255,255,.85);
+	font-size: 9px;
+	font-variant-numeric: tabular-nums;
+	line-height: 1.3;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 a.button.back-button.close-button i,
@@ -3935,3 +4063,1170 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: #6fe0a0;
 }
 
+
+
+/**** WIKI: marker editing, History, Talk and profiles (zwiki.js) ***/
+
+/* Text lines up with its section, not the drawer's paragraph inset. */
+.menu-cat-content-inner .wiki-page p,
+.menu-cat-content-inner .marker-editor-tools p {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.menu-cat-content-inner .wiki-page p.wiki-subtitle {
+	margin: -8px 16px 16px;
+	color: rgba(255,255,255,.7);
+	font-size: 14px;
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+
+.wiki-page .wiki-section {
+	margin: 0 16px 24px;
+}
+
+.wiki-page .wiki-section h4 {
+	margin: 0 0 8px;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.wiki-page a,
+.marker-editor-tools a {
+	color: #8fd8ff;
+}
+
+.wiki-card {
+	box-sizing: border-box;
+	padding: 12px 14px;
+	border-radius: 10px;
+	background: rgba(255,255,255,.1);
+	font-size: 14px;
+	overflow-wrap: anywhere;
+}
+
+.wiki-card > p:last-child {
+	margin-bottom: 0;
+}
+
+.wiki-page .wiki-empty {
+	margin: 0;
+	padding: 8px 0;
+	color: rgba(255,255,255,.6);
+	font-size: 14px;
+	list-style: none;
+}
+
+.wiki-hint {
+	margin: -8px 0 12px;
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+.wiki-hint code,
+.wiki-action-button code {
+	padding: 1px 5px;
+	border-radius: 4px;
+	background: rgba(255,255,255,.12);
+	color: inherit;
+	font-size: 12px;
+}
+
+.wiki-button-pair {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
+}
+
+.menu-cat-content-inner .wiki-button-pair .infoWindowIcn,
+.menu-cat-content-inner .wiki-comment-form > .infoWindowIcn {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+	padding: 8px;
+	color: white;
+}
+
+.menu-cat-content-inner .wiki-page form {
+	padding: 0;
+}
+
+.wiki-page [hidden],
+.marker-editor-tools [hidden] {
+	display: none !important;
+}
+
+/* POI footer: who added it, then Edit, History, Talk and Delete. */
+.marker-editor-tools {
+	margin: 8px 16px 16px;
+	padding-top: 12px;
+	border-top: 1px solid rgba(255,255,255,.12);
+	clear: both;
+}
+
+.marker-editor-meta {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 4px 12px;
+	margin-bottom: 12px;
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+.marker-editor-buttons {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.marker-editor-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 4px;
+	min-width: 0;
+	min-height: 52px;
+	margin: 0;
+	padding: 6px 4px;
+	border: 0;
+	border-radius: 12px;
+	background: rgba(255,255,255,.2);
+	color: white;
+	font-size: 12px;
+	line-height: 1.2;
+}
+
+.marker-editor-button:hover {
+	background: rgba(255,255,255,.3);
+}
+
+.marker-editor-button svg,
+.marker-editor-button i {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+}
+
+.marker-editor-button.bad {
+	color: #ff8c85;
+}
+
+.marker-editor-confirm p {
+	margin: 0 0 12px;
+	font-size: 14px;
+}
+
+/* Action badges in History. */
+.wiki-action {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: rgba(255,255,255,.15);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .02em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.wiki-action svg,
+.wiki-action i {
+	width: 10px;
+	height: 10px;
+	font-size: 10px;
+}
+
+.wiki-action-create { background: rgba(60,188,117,.3); color: #8ff0b8; }
+.wiki-action-edit { background: rgba(80,160,255,.25); color: #a8d2ff; }
+.wiki-action-revert { background: rgba(255,179,107,.25); color: #ffcf9e; }
+.wiki-action-delete { background: rgba(255,107,99,.25); color: #ffaaa5; }
+
+.wiki-current {
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: white;
+	color: black;
+	font-size: 11px;
+	font-weight: 700;
+}
+
+/* History and recent changes. */
+.menu-cat-content-inner ul.wiki-revisions {
+	margin: 0 16px 24px;
+	padding: 0;
+	list-style: none;
+}
+
+.wiki-section ul.wiki-revisions {
+	margin: 0;
+}
+
+.wiki-revisions > li + li {
+	margin-top: 8px;
+}
+
+.wiki-revision {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding: 10px 36px 10px 14px;
+	border-radius: 10px;
+	background: rgba(255,255,255,.1);
+	cursor: pointer;
+	overflow-wrap: anywhere;
+}
+
+.wiki-revision:hover,
+.wiki-revision:focus-visible {
+	background: rgba(255,255,255,.18);
+	outline: none;
+}
+
+.wiki-revision-top {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.wiki-revision-time {
+	margin-left: auto;
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+.wiki-revision-marker {
+	font-weight: 600;
+}
+
+.wiki-revision-summary {
+	font-size: 14px;
+}
+
+.wiki-revision-by {
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+.wiki-chevron {
+	position: absolute;
+	top: 50%;
+	right: 14px;
+	width: 10px;
+	transform: translateY(-50%);
+	color: rgba(255,255,255,.4);
+}
+
+/* One revision. */
+.wiki-revision-body > .wiki-card,
+.wiki-revision-body > .wiki-actions,
+.wiki-revision-body > .wiki-revert-form,
+.wiki-revision-body > .wiki-empty {
+	margin: 0 16px 16px;
+}
+
+.wiki-revision-meta p {
+	margin: 8px 0 0;
+}
+
+.wiki-actions {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
+	margin: 0 16px 24px;
+}
+
+.wiki-action-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-width: 0;
+	min-height: 44px;
+	margin: 0;
+	padding: 8px 10px;
+	border: 0;
+	border-radius: 10px;
+	background: rgba(255,255,255,.2);
+	color: white;
+	font-size: 13px;
+	line-height: 1.2;
+	text-align: center;
+}
+
+.wiki-action-button:hover {
+	background: rgba(255,255,255,.3);
+}
+
+.wiki-action-button svg,
+.wiki-action-button i {
+	flex: none;
+	width: 14px;
+}
+
+.wiki-action-button[data-action="history"],
+.wiki-action-button[data-action="revert"] {
+	grid-column: 1 / -1;
+}
+
+.wiki-action-button[data-action="revert"] {
+	background: #2e8a57;
+}
+
+.wiki-action-button[data-action="revert"]:hover {
+	background: #36a065;
+}
+
+.wiki-revert-form > p {
+	margin: 0 0 12px;
+	font-size: 14px;
+}
+
+.wiki-diff {
+	margin: 0;
+}
+
+.wiki-diff-row + .wiki-diff-row {
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.wiki-diff dt {
+	margin-bottom: 2px;
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.wiki-diff dd {
+	margin: 0;
+	line-height: 1.5;
+}
+
+.wiki-diff ins {
+	border-radius: 3px;
+	background: rgba(60,188,117,.35);
+	color: #c9ffe0;
+	text-decoration: none;
+}
+
+.wiki-diff del {
+	border-radius: 3px;
+	background: rgba(255,107,99,.3);
+	color: #ffc9c5;
+}
+
+.leaflet-control-layers .wiki-preview.popupContent {
+	padding-bottom: 12px;
+}
+
+.wiki-preview img {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Link codes: [[rev:1]], [[marker:2]], [[user:name]]. */
+.wiki-code-link {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 4px;
+	padding: 0 6px;
+	border-radius: 6px;
+	background: rgba(143,216,255,.14);
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.wiki-code-link svg,
+.wiki-code-link i {
+	width: 10px;
+	font-size: 10px;
+}
+
+/* Talk. */
+.wiki-new-comment {
+	margin: 0 16px 24px;
+}
+
+.menu-cat-content-inner ul.wiki-thread,
+.menu-cat-content-inner ul.wiki-replies {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.menu-cat-content-inner ul.wiki-thread {
+	margin: 0 16px 24px;
+}
+
+.wiki-thread > .wiki-comment + .wiki-comment {
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.menu-cat-content-inner ul.wiki-replies {
+	margin: 4px 0 0 16px;
+	padding-left: 12px;
+	border-left: 2px solid rgba(255,255,255,.12);
+}
+
+.menu-cat-content-inner ul.wiki-replies.wiki-replies-flat {
+	margin-left: 0;
+	padding-left: 0;
+	border-left: 0;
+}
+
+.wiki-replies > .wiki-comment {
+	margin-top: 4px;
+}
+
+.wiki-comment-body-wrap {
+	display: flex;
+	gap: 10px;
+	padding: 6px 0;
+}
+
+.wiki-comment-new > .wiki-comment-body-wrap {
+	animation: wiki-comment-new 2s ease-out;
+	border-radius: 8px;
+}
+
+@keyframes wiki-comment-new {
+	from { background: rgba(143,216,255,.2); }
+	to { background: transparent; }
+}
+
+.wiki-avatar {
+	flex: none;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	object-fit: cover;
+	background: rgba(255,255,255,.15);
+}
+
+.wiki-comment-main {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.wiki-comment-head {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 6px;
+	font-size: 13px;
+}
+
+.wiki-comment-head .wiki-user {
+	font-weight: 700;
+}
+
+.wiki-role {
+	color: #6fe0a0;
+	font-size: 11px;
+	font-weight: 700;
+}
+
+.wiki-comment-time {
+	color: rgba(255,255,255,.55);
+	font-size: 12px;
+}
+
+.wiki-comment-body {
+	margin-top: 2px;
+	font-size: 14px;
+	line-height: 1.45;
+	overflow-wrap: anywhere;
+}
+
+.wiki-comment-deleted > .wiki-comment-body-wrap .wiki-comment-body {
+	color: rgba(255,255,255,.5);
+}
+
+.wiki-comment-actions {
+	display: flex;
+	gap: 16px;
+	margin-top: 4px;
+}
+
+.wiki-comment-actions button {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	margin: 0;
+	padding: 4px 0;
+	border: 0;
+	background: none;
+	color: rgba(255,255,255,.65);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.wiki-comment-actions button:hover {
+	color: white;
+}
+
+.wiki-comment-actions svg,
+.wiki-comment-actions i {
+	width: 11px;
+}
+
+.wiki-reply-form {
+	margin: 4px 0 8px 42px;
+}
+
+.wiki-reply-form .form-group:not(:has(+ .form-group)) {
+	margin-bottom: 8px;
+}
+
+/* Profiles. */
+.profile-banner {
+	height: 120px;
+	margin: 0 0 -36px;
+	background: linear-gradient(135deg, #1f6b46, #2a4f7a) center / cover no-repeat;
+}
+
+.leaflet-control-layers-mobile .profile-banner {
+	border-radius: 0;
+}
+
+.profile-head {
+	position: relative;
+	margin: 0 16px 16px;
+	text-align: center;
+}
+
+.profile-avatar {
+	width: 72px;
+	height: 72px;
+	border: 3px solid rgba(0,0,0,.6);
+	border-radius: 50%;
+	object-fit: cover;
+	background: #333;
+}
+
+.menu-cat-content-inner .profile-head h3.profile-name {
+	margin: 8px 0 2px;
+	font-size: 22px;
+	font-weight: 700;
+	overflow-wrap: anywhere;
+}
+
+.menu-cat-content-inner .wiki-page .profile-role {
+	margin: 0;
+	color: rgba(255,255,255,.65);
+	font-size: 13px;
+}
+
+.profile-stats {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+	margin: 0 16px 16px;
+	text-align: center;
+}
+
+.profile-stats > div {
+	display: flex;
+	flex-direction: column;
+	padding: 8px 4px;
+	border-radius: 10px;
+	background: rgba(255,255,255,.1);
+}
+
+.profile-stats strong {
+	font-size: 18px;
+}
+
+.profile-stats span {
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+.profile-actions [data-action="copy-code"],
+.profile-actions:not(:has([data-action="edit"])) [data-action="talk"] {
+	grid-column: 1 / -1;
+}
+
+.profile-edit-form .wiki-button-pair + .admin-muted {
+	margin: 8px 0 12px;
+}
+
+.profile-edit-form .admin-user-status:empty {
+	display: none;
+}
+
+.profile-edit-form > .wiki-button-pair:last-child {
+	margin-top: 16px;
+}
+
+/* Editing a marker. */
+#marker_edit .marker-edit-form {
+	padding: 0 16px 24px;
+}
+
+.marker-edit-form > label:not(.admin-check) {
+	display: block;
+	margin-bottom: 8px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.4;
+}
+
+.marker-edit-section {
+	margin-bottom: 8px;
+	border-radius: 10px;
+	overflow: hidden;
+	background: rgba(255,255,255,.1);
+}
+
+.marker-edit-section-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 32px;
+	padding: 0 4px 0 12px;
+	color: rgba(255,255,255,.7);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.marker-edit-section-remove {
+	width: 32px;
+	height: 32px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: rgba(255,255,255,.7);
+}
+
+/* TinyMCE's dark skin, in the drawer's greys rather than its blue. */
+.marker-edit-section .tox.tox-tinymce {
+	border: 0;
+	border-radius: 0;
+}
+
+.marker-edit-section .tox .tox-editor-header,
+.marker-edit-section .tox .tox-toolbar,
+.marker-edit-section .tox .tox-toolbar__primary,
+.marker-edit-section .tox .tox-toolbar__overflow,
+.marker-edit-section .tox .tox-edit-area__iframe {
+	background: #2a2a2d;
+}
+
+.marker-edit-section .tox .tox-edit-area__iframe {
+	background: #1e1e20;
+}
+
+.marker-edit-section .tox .tox-toolbar__group {
+	border-color: rgba(255,255,255,.1) !important;
+}
+
+.marker-edit-section .tox .tox-tbtn:hover {
+	background: rgba(255,255,255,.12);
+}
+
+.marker-edit-section textarea.tabText {
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 160px;
+	border: 0;
+	background: transparent;
+	color: inherit;
+}
+
+.marker-edit-add {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	width: 100%;
+	min-height: 40px;
+	margin: 0 0 16px;
+	border: 1px dashed rgba(255,255,255,.3);
+	border-radius: 10px;
+	background: none;
+	color: rgba(255,255,255,.8);
+	font-size: 14px;
+}
+
+.marker-edit-add:hover {
+	background: rgba(255,255,255,.08);
+	color: white;
+}
+
+.marker-edit-options {
+	margin: 0 0 16px;
+}
+
+.marker-edit-options .admin-check {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 0 0 10px;
+	font-size: 14px;
+	font-weight: 400;
+	cursor: pointer;
+}
+
+.marker-edit-options .admin-check small {
+	display: block;
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+#marker_edit .admin-user-status:empty {
+	display: none;
+}
+
+#marker_edit .marker-edit-form > .form-action-button {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 8px 0 0;
+	padding: 8px;
+	color: white;
+}
+
+/* TinyMCE's menus and dialogs float above the drawer. */
+.tox.tox-silver-sink,
+.tox-tinymce-aux {
+	z-index: 100000 !important;
+}
+
+
+/**** NOTIFICATIONS (znotifications.js) ***/
+
+.account-button {
+	position: relative;
+}
+
+.account-badge {
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	box-sizing: border-box;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	border: 2px solid rgba(0,0,0,.85);
+	border-radius: 999px;
+	background: #ff453a;
+	color: white;
+	font-family: "BrandonText", sans-serif;
+	font-size: 10px;
+	font-weight: 700;
+	line-height: 14px;
+	text-align: center;
+	pointer-events: none;
+}
+
+.account-badge[hidden],
+#account .account-nav-count[hidden] {
+	display: none;
+}
+
+#account .account-nav-count {
+	position: absolute;
+	top: 50%;
+	right: 16px;
+	min-width: 22px;
+	padding: 1px 7px;
+	border-radius: 999px;
+	background: #ff453a;
+	font-size: 13px;
+	font-weight: 700;
+	line-height: 20px;
+	transform: translateY(-50%);
+}
+
+/* The list. */
+.notification-actions [data-action="read-all"] {
+	grid-column: auto;
+}
+
+.menu-cat-content-inner ul.notification-list {
+	margin: 0 16px 16px;
+	padding: 0;
+	list-style: none;
+}
+
+.notification {
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 10px 28px 10px 10px;
+	border-radius: 12px;
+	cursor: pointer;
+}
+
+.notification + .notification {
+	margin-top: 4px;
+}
+
+.notification:hover,
+.notification:focus-visible {
+	background: rgba(255,255,255,.08);
+	outline: none;
+}
+
+.notification.unread {
+	background: rgba(143,216,255,.1);
+}
+
+.notification.unread:hover {
+	background: rgba(143,216,255,.16);
+}
+
+.notification-avatar {
+	position: relative;
+	flex: none;
+	width: 40px;
+	height: 40px;
+}
+
+.notification-avatar img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	object-fit: cover;
+	background: rgba(255,255,255,.15);
+}
+
+.notification-kind {
+	position: absolute;
+	right: -4px;
+	bottom: -4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	border: 2px solid #1c1c1e;
+	border-radius: 50%;
+	background: #2e8a57;
+	font-size: 9px;
+}
+
+.notification-kind svg,
+.notification-kind i {
+	width: 9px;
+	height: 9px;
+}
+
+.notification-main {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+	font-size: 14px;
+	line-height: 1.35;
+	overflow-wrap: anywhere;
+}
+
+.notification.unread .notification-title {
+	font-weight: 700;
+}
+
+.notification-body {
+	display: -webkit-box;
+	overflow: hidden;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	color: rgba(255,255,255,.75);
+}
+
+.notification-time {
+	color: rgba(255,255,255,.55);
+	font-size: 12px;
+}
+
+.notification-dot {
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #4fb3ff;
+	transform: translateY(-50%);
+	visibility: hidden;
+}
+
+.notification.unread .notification-dot {
+	visibility: visible;
+}
+
+.menu-cat-content-inner .wiki-page .notification-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	padding: 24px 16px;
+	text-align: center;
+}
+
+.notification-empty svg,
+.notification-empty i {
+	width: 28px;
+	height: 28px;
+	font-size: 28px;
+	opacity: .5;
+}
+
+.menu-cat-content-inner #notifications_page .notification-more {
+	box-sizing: border-box;
+	width: calc(100% - 32px);
+	margin: 0 16px 24px;
+	padding: 8px;
+	color: white;
+}
+
+.notification-more[hidden] {
+	display: none;
+}
+
+/* Settings. */
+.notification-push .wiki-card p {
+	margin: 0;
+}
+
+.menu-cat-content-inner .notification-push .notification-push-button {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 12px 0 0;
+	padding: 8px;
+	color: white;
+}
+
+.notification-push .notification-note {
+	margin: 8px 0 0;
+}
+
+.notification-types {
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.notification-type {
+	padding: 10px 0;
+}
+
+.notification-type + .notification-type {
+	border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.notification-type-label {
+	font-weight: 600;
+}
+
+.notification-type-hint {
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+/* Off · In-App · Email · Both. */
+.notification-choice {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 2px;
+	margin-top: 8px;
+	padding: 2px;
+	border-radius: 9px;
+	background: rgba(0,0,0,.3);
+}
+
+.notification-choice button {
+	min-width: 0;
+	min-height: 30px;
+	margin: 0;
+	padding: 4px 2px;
+	border: 0;
+	border-radius: 7px;
+	background: transparent;
+	color: rgba(255,255,255,.75);
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.notification-choice button:hover {
+	color: white;
+}
+
+.notification-choice button[aria-pressed="true"] {
+	background: rgba(255,255,255,.25);
+	color: white;
+	box-shadow: 0 1px 3px rgba(0,0,0,.3);
+}
+
+.notification-choice button[aria-pressed="true"][data-choice="off"] {
+	background: rgba(255,255,255,.12);
+}
+
+/* Switches. (Leaflet sets its labels to display: block.) */
+.leaflet-control-layers .notification-switch {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 0;
+	font-size: 14px;
+	font-weight: 400;
+	cursor: pointer;
+}
+
+.notification-switch small {
+	display: block;
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+
+.notification-switch input[type="checkbox"] {
+	-webkit-appearance: none;
+	appearance: none;
+	position: relative;
+	flex: none;
+	width: 46px;
+	height: 28px;
+	margin: 0;
+	border-radius: 999px;
+	background: rgba(255,255,255,.25);
+	cursor: pointer;
+	transition: background-color .2s;
+}
+
+.notification-switch input[type="checkbox"]::after {
+	content: '';
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: white;
+	box-shadow: 0 1px 3px rgba(0,0,0,.4);
+	transition: transform .2s;
+}
+
+.notification-switch input[type="checkbox"]:checked {
+	background: #34c759;
+}
+
+.notification-switch input[type="checkbox"]:checked::after {
+	transform: translateX(18px);
+}
+
+.notification-switch input[type="checkbox"]:disabled {
+	opacity: .5;
+}
+
+.notification-link-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	margin: 12px 0 0;
+	padding: 12px 0 0;
+	border: 0;
+	border-top: 1px solid rgba(255,255,255,.1);
+	background: none;
+	color: white;
+	font-size: 14px;
+	text-align: left;
+}
+
+.notification-link-row > span:first-child {
+	flex: 1 1 auto;
+	font-weight: 600;
+}
+
+.notification-link-count {
+	color: rgba(255,255,255,.6);
+}
+
+.notification-link-row svg,
+.notification-link-row i {
+	width: 8px;
+	color: rgba(255,255,255,.4);
+}
+
+/* Followed markers. */
+.followed-marker {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.followed-marker .wiki-revision {
+	flex: 1 1 auto;
+	min-width: 0;
+	padding-right: 14px;
+}
+
+.followed-marker-button {
+	flex: none;
+	min-width: 92px;
+	min-height: 36px;
+	margin: 0;
+	padding: 6px 12px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(255,255,255,.2);
+	color: white;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.followed-marker-button[aria-pressed="true"] {
+	background: rgba(52,199,89,.25);
+	color: #9ff0b5;
+}
+
+#followed_markers.followed-paused .followed-list {
+	opacity: .55;
+}
+
+/* Follow on a marker's Talk page. */
+.wiki-follow {
+	display: flex;
+	justify-content: center;
+	margin: -8px 16px 16px;
+}
+
+.wiki-follow[hidden] {
+	display: none;
+}
+
+.wiki-follow-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0;
+	padding: 6px 14px;
+	border: 0;
+	border-radius: 999px;
+	background: rgba(255,255,255,.2);
+	color: white;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.wiki-follow-button svg,
+.wiki-follow-button i {
+	width: 12px;
+}
+
+.wiki-follow-button[aria-pressed="true"] {
+	background: rgba(52,199,89,.25);
+	color: #9ff0b5;
+}

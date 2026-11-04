@@ -5,7 +5,8 @@
 
   if (!isset($_SESSION['user_id']) || !isset($_SESSION['username']) || !isset($_SESSION['level'])) {
     session_destroy();
-    echo json_encode(array("success"=>false, "msg"=>"Session - Not Logged!"));
+    // loggedOut: only this answer signs the page out; errors don't.
+    echo json_encode(array("success"=>false, "loggedOut"=>true, "msg"=>"Session - Not Logged!"));
     return;
   }
 
@@ -15,9 +16,13 @@
   include_once(dirname(__DIR__) . '/lib/common/account_status.php');
   $accountActive = accountIsUsable($db, $map_prefix, $_SESSION['user_id']);
   if (!$accountActive) {
+    $inactiveUserId = (int) $_SESSION['user_id'];
     session_unset();
     session_destroy();
-    echo json_encode(array("success"=>false, "msg"=>"Session - Not Logged!"));
+    include_once(dirname(__DIR__) . '/lib/common/auth_token.php');
+    authRevokeUser($db, $map_prefix, $inactiveUserId);
+    authSetCookie('', time() - 3600);
+    echo json_encode(array("success"=>false, "loggedOut"=>true, "msg"=>"Session - Not Logged!"));
     return;
   }
 
@@ -94,6 +99,11 @@
 
   include_once(dirname(__DIR__) . '/lib/common/activity.php');
   activityRecord($db, $map_prefix, $user['id']);
+
+  // The account button's badge.
+  include_once(dirname(__DIR__) . '/lib/common/notifications.php');
+  $user['unreadNotifications'] = (int) $user['level'] >= WIKI_EDITOR_LEVEL
+    ? notificationUnreadCount($db, $map_prefix, $user['id']) : 0;
 
   echo json_encode(array("success"=>true, "msg"=>"Success!", "user"=>$user));
 ?>

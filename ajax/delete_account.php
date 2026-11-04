@@ -112,7 +112,10 @@
     }
   }
 
-  // End the session the same way logout.php does.
+  // End the session the same way logout.php does, on every device.
+  include_once(dirname(__DIR__) . '/lib/common/auth_token.php');
+  authRevokeUser($db, $map_prefix, $userId);
+  authSetCookie('', time() - 3600);
   setcookie(session_name(), '', [
     'expires'  => time() - 3600,
     'path'     => '/',

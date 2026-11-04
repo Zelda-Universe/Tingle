@@ -217,11 +217,9 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"
       ></script>
       <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.0.16/tinymce.min.js"
+        src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.9/tinymce.min.js"
+        referrerpolicy="origin"
       ></script>
-      <script>
-        tinymce.init({ selector:'textarea' });
-      </script>
 
 
     <!-- Third-Party Styles -->
@@ -250,8 +248,8 @@
         }
       </script>
       <script>var zmapLandingCategoryId = <?= json_encode($landingCategoryId) ?>;</script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261104-form-inset"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261104-form-inset" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261104-notify-2"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261104-notify-2" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

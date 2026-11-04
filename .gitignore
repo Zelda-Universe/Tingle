@@ -32,6 +32,10 @@ node_modules
 /vendor
 /uploads/profile-pictures/*
 !/uploads/profile-pictures/index.html
+/uploads/profile-banners/*
+!/uploads/profile-banners/index.html
+/uploads/marker-images/*
+!/uploads/marker-images/index.html
 
 # Debug Files
 /php_errors.log

@@ -253,13 +253,19 @@ function getUserInfo() {
     if(ZConfig.getConfig("changelog") == 'true')
       checkChangelog(vResults.user);
    };
+   // Only the server saying so signs this device out. Errors (a database
+   // hiccup, a bad gateway) keep the account this device last saw.
+   var keepSavedUser = function() {
+    applyUserInfo(ZOfflineSync.savedUserInfo() || {}, true);
+   };
    $.getJSON("ajax.php?command=get_user_info").done(function(vResults) {
+    if(!vResults || (!vResults.user && !vResults.loggedOut)) {
+      keepSavedUser();
+      return;
+    }
     ZOfflineSync.saveUserInfo(vResults);
     applyUserInfo(vResults, false);
-   }).fail(function(xhr) {
-    if(!ZOfflineSync.isNetworkError(xhr)) return;
-    applyUserInfo(ZOfflineSync.savedUserInfo() || {}, true);
-   });
+   }).fail(keepSavedUser);
 };
 
 function checkChangelog(user) {
@@ -356,8 +362,11 @@ function finalLoad() {
     } finally {
       zMap.mapControl._restoringInitialPage = false;
     }
+    if(zMap._hasWikiLink()) zMap._openRevisionLinkWhenReady('markers');
     return;
   }
+  // Links to a user's Talk page (?user=1&talk=1) don't open a marker.
+  if(zMap._hasWikiLink()) zMap._openRevisionLinkWhenReady('markers');
 
   if(ZConfig.getConfig('droppedPin') == 'true') {
     var pinX = Number.parseFloat(ZConfig.getConfig('x'));

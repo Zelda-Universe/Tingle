@@ -41,6 +41,8 @@ scripts/leaflet.contextmenu.js
 scripts/controls/ZLayers.js
 scripts/controls/SettingsControl.js
 scripts/zmap.js
+scripts/zwiki.js
+scripts/znotifications.js
 scripts/zmain.lib.js
 scripts/zmain.js
 scripts/widgets/CategoryButtonCompletedBlock.js

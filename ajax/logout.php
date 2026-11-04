@@ -1,4 +1,6 @@
 <?php
+  include_once(dirname(__DIR__) . '/lib/common/auth_token.php');
+  authRevokeCurrent($db, $map_prefix);
 	start_session("zmap");
   setcookie(session_name(), '', [
     'expires' => time() - 3600,

@@ -108,7 +108,9 @@
    include_once(dirname(__DIR__) . '/lib/common/user_settings.php');
    $user['settings']     = userSettingsLoad($db, $map_prefix, $row['id']);
 
-   $rememberLifetime = isset($_POST['remember']) ? 60 * 60 * 24 * 30 : 0;
+   // Everyone stays signed in until they log out (lib/common/auth_token.php).
+   include_once(dirname(__DIR__) . '/lib/common/auth_token.php');
+   $rememberLifetime = AUTH_LIFETIME;
    start_session("zmap", $rememberLifetime);
    session_regenerate_id(true);
 
@@ -121,6 +123,7 @@
    $_SESSION['remember'] = $rememberLifetime > 0;
 
    session_write_close();
+   authIssueToken($db, $map_prefix, $row['id']);
 
    $db->executeStatement("
      UPDATE {$map_prefix}user

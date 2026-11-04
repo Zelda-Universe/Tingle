@@ -42,8 +42,9 @@ ZConfig.setDefault(
   JSON.stringify({
     position: 'topleft',
     delay: 0,
-    //openTo: 78,
-    openTo: 150,
+    // How far below the search bar the fully open drawer stops, leaving a
+    // sliver of map in view.
+    openTo: 48,
     softOpenTo: 0 // REVERSE
 }));
 ZConfig.setDefault('layersBottomHeightOptionsOverrides', '{}');

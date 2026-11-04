@@ -349,7 +349,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
             _thisLayer.setContent(_thisLayer._mapsMenu.domNode, "maps");
             if(_thisLayer.viewStyleBottomSlide) {
               if(_thisLayer._headerPageParent) _thisLayer._openSwitchMenuAtParentHeight();
-              else if(drawerWasOpen) _thisLayer.openDrawerManual(previousDrawerTop);
+              // Fully open stays fully open; otherwise fit this menu rather
+              // than keep the height of whatever was showing.
+              else if(drawerWasOpen && previousDrawerTop <= _thisLayer.options.openTo + 1) _thisLayer.openDrawerManual(previousDrawerTop);
               else _thisLayer.openDrawerDefaultPartial();
             } else {
               _thisLayer.openDrawerLarge();
@@ -388,7 +390,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
             _thisLayer.setContent(_thisLayer._gameMenu.domNode, "games");
             if(_thisLayer.viewStyleBottomSlide) {
               if(_thisLayer._headerPageParent) _thisLayer._openSwitchMenuAtParentHeight();
-              else if(drawerWasOpen) _thisLayer.openDrawerManual(previousDrawerTop);
+              // Fully open stays fully open; otherwise fit this menu rather
+              // than keep the height of whatever was showing.
+              else if(drawerWasOpen && previousDrawerTop <= _thisLayer.options.openTo + 1) _thisLayer.openDrawerManual(previousDrawerTop);
               else _thisLayer.openDrawerDefaultPartial();
             } else {
               _thisLayer.openDrawerLarge();
@@ -438,6 +442,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
       L.DomEvent.disableClickPropagation(this._contents);
       L.DomEvent.on(this._contents, 'wheel', L.DomEvent.stopPropagation);
       this._contents.id = 'menu-cat-content';
+      // Fades the compact title bar in once the page's own title has
+      // scrolled up under it (_setupCompactTitle).
+      L.DomEvent.on(this._contents, 'scroll', this._updateCompactTitle, this);
+      this._setupSwipeBack();
 
       this._categoryMenuMarkerSettingArea = $(
         '<div class="category-menu-marker-setting-area"></div>'
@@ -1347,7 +1355,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       (!!this._switchMenuReturnMarker || this._switchMenuReturnsToCategories ||
         this._switchMenuReturnAccount || this._switchMenuReturnLogin);
     if(switchingMenu && this._pageTransitionCleanup) this._pageTransitionCleanup();
-    var shouldSlide = !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
+    // A swipe back (_setupSwipeBack) has already animated the change.
+    var shouldSlide = !this._skipNextSlide && !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
       (!this.viewStyleBottomSlide || this._open) &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var outgoingPage;
@@ -1379,15 +1388,22 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._triggerHandler("beforeSetContent", vContent, vType);
     this._setContent(vContent, vType);
     this._triggerHandler("afterSetContent", vContent, vType);
+    this._setupCompactTitle();
+    this._watchPartialFit();
     if(outgoingPage) {
       var depths = {
         category: 0, search: 1, games: 1, maps: 1, loginForm: 1, accountPage: 1,
         registerForm: 2, lostPasswordForm: 2, accountInformationPage: 2,
         offlineMapsPage: 2, bookmarksPage: 2, deleteAccountForm: 2, changePasswordForm: 3,
-        adminPage: 2, adminUserPage: 3
+        adminPage: 2, adminUserPage: 3,
+        notificationsPage: 2, notificationSettingsPage: 3, followedMarkersPage: 4
       };
       var pageDepth = function(type) {
         if(depths[type] !== undefined) return depths[type];
+        // Wiki pages (zwiki.js) open from each other in any order; they say
+        // which way they're going with _navigatingForward or _navigatingBack.
+        if(/^(markerEdit|markerHistory|talk)-/.test(type)) return 3;
+        if(/^(markerRevision|userProfile)-/.test(type)) return 4;
         // Marker detail pages sit above the category list and search results.
         if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || type === 'newMarker') return 2;
         return 0;
@@ -1400,7 +1416,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
         backward = /^m\d+$/.test(vType || '');
       }
       // Explicit Back actions take precedence over inferred page depths.
+      if(this._navigatingForward) backward = false;
       if(this._navigatingBack) backward = true;
+      // The page being returned to was the last one kept for swiping back.
+      if(backward && this._backPages) this._backPages.pop();
       var width = this._contents.getBoundingClientRect().width;
       outgoingPage.style.position = 'absolute';
       outgoingPage.style.top = outgoingBounds.top + 'px';
@@ -1486,14 +1505,22 @@ L.Control.ZLayers = L.Control.Layers.extend({
           this._container.style.overflow = previousDrawerOverflow;
         }
         outgoingPage.remove();
+        // Kept for swiping back to it; a page left by going back isn't.
+        if(!backward) this._rememberBackPage(outgoingPage, outgoingScrollTop, previousContentType);
         this._contents.style.zIndex = previousZIndex;
         if(this._pageTransitionCleanup === cleanup) this._pageTransitionCleanup = null;
         if(this._desktopLayoutPending && !this._pageTransitionCleanup) this._refreshDesktopDrawerLayout();
       }.bind(this);
       this._pageTransitionCleanup = cleanup;
       entering.onfinish = cleanup;
+    } else if(previousContentType !== vType) {
+      // Without a slide the kept pages may no longer lead back here, except
+      // after a swipe back, which returned to the last of them.
+      if(this._skipNextSlide) { if(this._backPages) this._backPages.pop(); }
+      else this._backPages = [];
     }
     this._navigatingBack = false;
+    this._navigatingForward = false;
     if(this.zMap && this.zMap.syncDrawerPageURL) this.zMap.syncDrawerPageURL(vType);
     if(
       /^m\d+$/.test(previousContentType || '') ||
@@ -1510,6 +1537,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // initializing or cleaning up the widget, and should
   // be ignored.
   _setContent: function(vContent, vType) {
+    // Pages can say how their Back button goes back (see zwiki.js).
+    var pageBack = this._nextPageBack;
+    this._nextPageBack = null;
     if(this._contentType === vType) return;
 
     this._clearContent();
@@ -1604,7 +1634,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
             this.closeDrawer();
           } else {
             this._navigatingBack = true;
-          if(vType === 'registerForm') {
+          if(pageBack) {
+            pageBack();
+          } else if(vType === 'registerForm') {
             if(this._registrationReturnMarker) {
               this.zMap._pendingBookmarkRegistration = null;
               // Restore the existing POI without reselecting its map or
@@ -1643,6 +1675,243 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
     this._contentType = vType;
     // $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
+  },
+
+  _rememberBackPage: function(page, scrollTop, type) {
+    this._backPages = (this._backPages || []).concat([{
+      page: page, scrollTop: scrollTop || 0, type: type
+    }]).slice(-5);
+  },
+
+  // Dragging a page with a back button to the right goes back, following the
+  // finger: the page slides away as the one before it (kept by setContent's
+  // transition) slides in from the left. Released past 40% of the width or
+  // with a flick, it finishes and the page's own back button does the rest;
+  // otherwise it springs back. Touch and pen only.
+  _setupSwipeBack: function() {
+    var control = this;
+    var contents = this._contents;
+    var swipe = null;
+    var pressingBack = false;
+    var excluded = 'input, textarea, select, [contenteditable="true"], .admin-chart, [data-no-swipe-back]';
+    var backButton = function() {
+      return contents.querySelector(':scope > a.back-button:not(.close-button)');
+    };
+    var scrollsSideways = function(el) {
+      for(; el && el !== contents; el = el.parentElement) {
+        if(el.scrollWidth > el.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(el).overflowX)) return true;
+      }
+      return false;
+    };
+    var place = function(dx) {
+      var w = swipe.width;
+      contents.style.transform = 'translateX(' + dx + 'px)';
+      if(!swipe.preview) return;
+      // From 30% to the left into place, clipped at the current page's left
+      // edge: page backgrounds are transparent, so they mustn't overlap.
+      var offset = -0.3 * w * (1 - dx / w);
+      swipe.preview.style.transform = 'translateX(' + offset + 'px)';
+      swipe.preview.style.clipPath = 'inset(0 ' + Math.max(0, w - (dx - offset)) + 'px 0 0)';
+    };
+    var reset = function() {
+      contents.style.transform = '';
+      contents.style.boxShadow = '';
+      contents.style.zIndex = swipe.previousZIndex;
+      if(swipe.preview) {
+        swipe.preview.remove();
+        swipe.preview.style.transform = '';
+        swipe.preview.style.clipPath = '';
+      }
+      swipe = null;
+    };
+    var begin = function() {
+      if(control._pageTransitionCleanup) control._pageTransitionCleanup();
+      swipe.active = true;
+      var rect = contents.getBoundingClientRect();
+      swipe.width = rect.width;
+      swipe.previousZIndex = contents.style.zIndex;
+      var entry = control._backPages && control._backPages[control._backPages.length - 1];
+      if(entry) {
+        var page = entry.page;
+        Object.assign(page.style, {
+          position: 'absolute', top: contents.offsetTop + 'px', left: contents.offsetLeft + 'px',
+          boxSizing: 'border-box', margin: '0', width: rect.width + 'px',
+          height: rect.height + 'px', minHeight: rect.height + 'px', maxHeight: rect.height + 'px',
+          pointerEvents: 'none', zIndex: '0', opacity: '', transition: 'none'
+        });
+        // After the page, like setContent's outgoing pages, so lookups by id
+        // find the real page's elements first; z-index puts it behind.
+        contents.parentNode.appendChild(page);
+        page.scrollTop = entry.scrollTop;
+        swipe.preview = page;
+      }
+      contents.style.zIndex = '1';
+      contents.style.boxShadow = '-12px 0 24px rgba(0,0,0,.35)';
+    };
+    // Eases the rest of the way, then goes back or restores the page.
+    var finish = function(commit) {
+      var from = swipe.dx, to = commit ? swipe.width : 0;
+      var duration = Math.max(120, Math.min(280, Math.abs(to - from) / swipe.width * 320));
+      var start = performance.now();
+      var current = swipe;
+      var step = function(now) {
+        if(swipe !== current) return;
+        var t = Math.min(1, (now - start) / duration);
+        place(from + (to - from) * (1 - Math.pow(1 - t, 3)));
+        if(t < 1) return window.requestAnimationFrame(step);
+        var button = commit && backButton();
+        // Out of the document before the page it previews is rebuilt, which
+        // looks up its elements by id. All in one frame, so nothing flickers.
+        reset();
+        if(button) {
+          // The swipe already moved the pages; skip the back button's slide.
+          control._skipNextSlide = true;
+          pressingBack = true;
+          try { button.click(); } finally { control._skipNextSlide = false; pressingBack = false; }
+        }
+      };
+      window.requestAnimationFrame(step);
+    };
+
+    contents.addEventListener('pointerdown', function(e) {
+      if(e.pointerType === 'mouse' || !e.isPrimary || swipe) return;
+      if(control._drawerDragging || !backButton()) return;
+      if(e.target.closest && e.target.closest(excluded)) return;
+      if(scrollsSideways(e.target)) return;
+      swipe = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, active: false, lastX: e.clientX, lastTime: e.timeStamp, velocity: 0 };
+    });
+    document.addEventListener('pointermove', function(e) {
+      if(!swipe || e.pointerId !== swipe.id || swipe.finishing) return;
+      var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
+      if(!swipe.active) {
+        // Only a clearly sideways drag to the right; scrolling wins otherwise.
+        if(Math.abs(dy) > 10 && Math.abs(dy) >= Math.abs(dx)) { swipe = null; return; }
+        if(dx < 10 || dx < Math.abs(dy) * 1.3) return;
+        begin();
+      }
+      var elapsed = e.timeStamp - swipe.lastTime;
+      if(elapsed > 0) swipe.velocity = swipe.velocity * .5 + (e.clientX - swipe.lastX) / elapsed * .5;
+      swipe.lastX = e.clientX;
+      swipe.lastTime = e.timeStamp;
+      swipe.dx = Math.max(0, Math.min(swipe.width, dx));
+      place(swipe.dx);
+    });
+    var release = function(e) {
+      if(!swipe || e.pointerId !== swipe.id) return;
+      if(!swipe.active) { swipe = null; return; }
+      swipe.finishing = true;
+      // A swipe that began on a button shouldn't also press it.
+      var swallow = function(click) {
+        if(pressingBack) return;
+        click.stopPropagation();
+        click.preventDefault();
+      };
+      contents.addEventListener('click', swallow, true);
+      window.setTimeout(function() { contents.removeEventListener('click', swallow, true); }, 400);
+      var fast = e.type === 'pointerup' && swipe.velocity > .4 && swipe.dx > 24;
+      finish(e.type === 'pointerup' && (swipe.dx > swipe.width * .4 || fast));
+    };
+    document.addEventListener('pointerup', release);
+    document.addEventListener('pointercancel', release);
+    // iOS: keep the page from scrolling while it's being swiped.
+    contents.addEventListener('touchmove', function(e) {
+      if(swipe && swipe.active && e.cancelable) e.preventDefault();
+    }, { passive: false });
+  },
+
+  // A partially open drawer sized to its page (switch menus, markers) stays
+  // fitted as the page settles: images decoding after it opened would
+  // otherwise leave a little to scroll, or space below.
+  _watchPartialFit: function() {
+    if(typeof ResizeObserver !== 'function' || !this._contents) return;
+    if(!this._partialFitObserver) {
+      this._partialFitObserver = new ResizeObserver(function() {
+        if(this._partialFitFrame) return;
+        this._partialFitFrame = window.requestAnimationFrame(function() {
+          this._partialFitFrame = null;
+          this._refitPartialDrawer();
+        }.bind(this));
+      }.bind(this));
+    }
+    this._partialFitObserver.disconnect();
+    var content = this._contents.querySelector('.menu-cat-content-inner');
+    if(content) this._partialFitObserver.observe(content);
+  },
+
+  _refitPartialDrawer: function() {
+    if(!this.viewStyleBottomSlide || !this._open || !this._partialDrawerMode) return;
+    if(this._drawerDragging || this._drawerYDown !== null && this._drawerYDown !== undefined) return;
+    var fitted = this.options.softOpenTo;
+    // Only a drawer resting at (or heading to) the partial stop; one the
+    // user has dragged elsewhere stays put.
+    var top = Number.parseFloat(this._container.style.top);
+    if(Number.isFinite(top) && Math.abs(top - fitted) > 2) return;
+    this._refreshMobileDrawerDetents();
+    if(!this._partialDrawerAvailable || Math.abs(this.options.softOpenTo - fitted) <= 1) return;
+    this.openDrawerManual(this.options.softOpenTo);
+  },
+
+  // Once a page scrolls, a bar fades in at the top behind the back and close
+  // buttons, which stay put. A POI's large title scrolls away and the bar
+  // shows it on one line (truncated if long) over its coordinates, like Apple
+  // Maps; other pages' titles stay put over the bar (styles/zmain.css).
+  // Pages with neither button (the category list) have no title bar.
+  _setupCompactTitle: function() {
+    var contents = this._contents;
+    if(!contents) return;
+    var previous = contents.querySelector(':scope > .compact-title-bar');
+    if(previous) previous.remove();
+    this._compactTitleBar = null;
+    this._compactTitleSource = null;
+    if(!contents.querySelector(':scope > a.back-button')) return;
+    var source = contents.querySelector(
+      '.menu-cat-content-inner > .popupTitle, ' +
+      ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(function(tag) {
+        return '.menu-cat-content-inner > div > ' + tag + ':first-child';
+      }).join(', ')
+    );
+    if(!source) return;
+    // POIs (markers, dropped pins) have their title directly in the page;
+    // the switch menus reuse the class in a wrapper, in the regular font.
+    var popup = source.classList.contains('popupTitle') &&
+      source.parentElement.classList.contains('menu-cat-content-inner');
+    var bar = document.createElement('div');
+    bar.className = 'compact-title-bar ' + (popup ? 'compact-title-bar-popup' : 'compact-title-bar-plain');
+    // The page's own title is what assistive technology reads.
+    bar.setAttribute('aria-hidden', 'true');
+    if(popup) {
+      var text = document.createElement('span');
+      text.className = 'compact-title-bar-text';
+      bar.appendChild(text);
+    }
+    // POIs: their coordinates as a second line, in a small pill.
+    var coordinates = popup &&
+      contents.querySelector('.menu-cat-content-inner > .marker-coordinate-pill');
+    if(coordinates) {
+      var pill = document.createElement('span');
+      pill.className = 'compact-title-bar-pill';
+      bar.appendChild(pill);
+    }
+    contents.insertBefore(bar, contents.firstChild);
+    this._compactTitleBar = bar;
+    this._compactTitleSource = source;
+    this._compactTitleCoordinates = coordinates || null;
+    this._updateCompactTitle();
+  },
+
+  _updateCompactTitle: function() {
+    var bar = this._compactTitleBar, source = this._compactTitleSource;
+    if(!bar || !source || !bar.isConnected) return;
+    // Pages change their titles (e.g. a dropped pin renamed), so copy each time.
+    var title = source.textContent.trim();
+    if(bar.firstChild && bar.firstChild.textContent !== title) bar.firstChild.textContent = title;
+    var coordinates = this._compactTitleCoordinates;
+    if(coordinates && bar.lastChild !== bar.firstChild) {
+      var position = coordinates.textContent.trim();
+      if(bar.lastChild.textContent !== position) bar.lastChild.textContent = position;
+    }
+    // As soon as the page starts to scroll.
+    bar.classList.toggle('visible', this._contents.scrollTop > 0);
   },
 
   _clearContent: function() {
@@ -2047,7 +2316,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
         }
         this._drawerAnimationTimeout = null;
         if(!isOpen) this._partialDrawerMode = false;
-        if(isOpen) this.updateContentsHeight();
+        if(isOpen) {
+          this.updateContentsHeight();
+          // Measured once at rest: mid-opening measurements can come up short.
+          if(this._refitPartialDrawer) this._refitPartialDrawer();
+        }
         else this._finishDrawerClose();
       }.bind(this);
       if(explicitGeometry) {

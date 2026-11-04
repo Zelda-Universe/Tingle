@@ -10,8 +10,9 @@
     start_session('zmap');
     $userId = (int) ($_SESSION['user_id'] ?? 0);
     session_write_close();
+    include_once(__DIR__ . '/account_status.php');
     $level = $userId ? $db->fetchOne(
-      "SELECT `level` FROM `{$prefix}user` WHERE `id` = ? AND `deleted` IS NULL",
+      "SELECT `level` FROM `{$prefix}user` WHERE `id` = ? AND " . accountUsableSql($db, $prefix),
       [$userId]
     ) : false;
     if ($level === false || (int) $level < ADMIN_LEVEL) {
@@ -20,5 +21,33 @@
       return null;
     }
     return $userId;
+  }
+
+  // Columns and tables from the admin_accounts migration (last_seen, disabled,
+  // admin_log) may not exist yet on older databases.
+  function adminHasColumn($db, $prefix, $column) {
+    static $found = [];
+    // SHOW COLUMNS can't take a placeholder, so only known names go in.
+    if (!in_array($column, ['last_seen', 'disabled', 'deleted', 'banned'], true)) return false;
+    if (!isset($found[$column])) {
+      $found[$column] = (bool) $db->fetchOne("SHOW COLUMNS FROM `{$prefix}user` LIKE '{$column}'");
+    }
+    return $found[$column];
+  }
+
+  function adminHasLog($db, $prefix) {
+    static $found = null;
+    if ($found === null) $found = (bool) $db->fetchOne("SHOW TABLES LIKE '{$prefix}admin_log'");
+    return $found;
+  }
+
+  // Records an admin's change to an account. $details is an array, stored as
+  // JSON; never include passwords.
+  function adminLog($db, $prefix, $adminId, $userId, $action, $details = null) {
+    if (!adminHasLog($db, $prefix)) return;
+    $db->executeStatement(
+      "INSERT INTO `{$prefix}admin_log` (`admin_id`, `user_id`, `action`, `details`, `created`) VALUES (?, ?, ?, ?, NOW())",
+      [(int) $adminId, (int) $userId, $action, $details === null ? null : json_encode($details)]
+    );
   }
 ?>

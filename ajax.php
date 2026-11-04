@@ -47,6 +47,10 @@
     if(!file_exists($cmdpath)) {
       die(json_encode(array("success"=>false,"code"=>-1,"msg"=>"Invalid command!")));
     }
+    // Sessions of accounts deleted, disabled or banned since signing in end
+    // here, before the command runs.
+    include_once(__DIR__.'/lib/common/account_status.php');
+    accountSessionCheck($db, $map_prefix);
     $error=false;
     ob_start();
     try {

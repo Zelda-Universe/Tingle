@@ -4,7 +4,7 @@
   if ($adminId === null) return;
 
   $userId = (int) ($_POST['id'] ?? 0);
-  $user = $db->fetchAssociative("SELECT `id`, `level`, `deleted` FROM `{$map_prefix}user` WHERE `id` = ?", [$userId]);
+  $user = $db->fetchAssociative("SELECT `id`, `username`, `name`, `email`, `level`, `deleted` FROM `{$map_prefix}user` WHERE `id` = ?", [$userId]);
   if (!$user || $user['deleted'] !== null) {
     echo json_encode(array('success' => false, 'msg' => 'That account was not found or has been deleted.'));
     return;
@@ -58,6 +58,16 @@
   }
   $params[] = $userId;
   $db->executeStatement("UPDATE `{$map_prefix}user` SET {$fields} WHERE `id` = ?", $params);
+
+  // The change log: each changed field as [before, after]. A new password is
+  // only noted, never stored.
+  $changes = [];
+  foreach (['username' => $username, 'name' => $name, 'email' => $email] as $field => $value) {
+    if ((string) $user[$field] !== $value) $changes[$field] = [$user[$field], $value];
+  }
+  if ((int) $user['level'] !== $level) $changes['level'] = [(int) $user['level'], $level];
+  if ($password !== '') $changes['password'] = true;
+  if ($changes) adminLog($db, $map_prefix, $adminId, $userId, 'update', $changes);
 
   echo json_encode(array('success' => true, 'msg' => 'Account updated.', 'user' => array(
     'id' => $userId, 'username' => $username, 'name' => $name, 'email' => $email, 'level' => $level

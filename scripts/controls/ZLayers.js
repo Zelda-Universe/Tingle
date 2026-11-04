@@ -1627,7 +1627,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           } else if(vType === 'changePasswordForm' && this.zMap.getUser()) {
             this.zMap._createAccountInformationForm();
           } else if(vType === 'adminUserPage' && this.zMap.getUser()) {
-            this.zMap._createAdminPage();
+            this.zMap._createAdminPage({ restore: true });
           } else if(['offlineMapsPage', 'accountInformationPage', 'bookmarksPage', 'deleteAccountForm', 'adminPage'].includes(vType) && this.zMap.getUser()) {
             this.zMap._createAccountForm(this.zMap.getUser());
           } else {

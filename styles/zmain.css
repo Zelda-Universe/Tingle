@@ -645,7 +645,7 @@ main.leaflet-container,
 	border: 1px solid currentColor;
 	border-radius: 10px;
 	box-sizing: border-box;
-	margin: 0 24px 8px;
+	margin: 0 16px 8px;
 	padding: 16px;
 	font-size: 16px;
 	line-height: 1.5;
@@ -774,6 +774,8 @@ main.leaflet-container,
 }
 
 #account_information_form > label,
+#admin_user_form > label,
+#admin_ban_form > label:not(.admin-check),
 .poi-category-groups .poi-category-heading h3 {
 	display: block;
 	font-size: 12px;
@@ -782,7 +784,8 @@ main.leaflet-container,
 	margin-bottom: 8px;
 }
 
-#account_information_form > .form-action-button {
+#account_information_form > .form-action-button,
+#admin_user_form > .form-action-button {
 	box-sizing: border-box;
 	width: 100%;
 	margin: 24px 0 0;
@@ -790,7 +793,8 @@ main.leaflet-container,
 	color: white;
 }
 
-#account_information_form > .form-group:has(+ .form-action-button) {
+#account_information_form > .form-group:has(+ .form-action-button),
+#admin_user_form > .form-group:has(+ .form-action-button) {
 	margin-bottom: 0;
 }
 
@@ -1730,7 +1734,8 @@ a.button.leaflet-control-layers-toggle {
 
 .menu-cat-content-inner form {
 	box-sizing: border-box;
-	padding: 16px 24px 24px;
+	/* 16px from the drawer's edges, like the rest of the drawer. */
+	padding: 16px 16px 24px;
 }
 
 .menu-cat-content-inner form .modal-footer .infoWindowIcn {
@@ -3509,6 +3514,7 @@ div.circle:has(>.icon-EoW_Echo) {
 /**** ADMIN ***/
 
 .admin-section {
+	/* 16px from the drawer's edges, like the rest of the drawer. */
 	margin: 0 16px 24px;
 }
 
@@ -3524,8 +3530,9 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: white;
 }
 
-#admin_user_form {
+#admin_user #admin_user_form {
 	margin: 0 16px;
+	padding: 0;
 }
 
 .admin-section h4 {
@@ -3552,12 +3559,39 @@ div.circle:has(>.icon-EoW_Echo) {
 	height: auto;
 }
 
-.admin-chart rect {
-	fill: #3cbc75;
+.admin-chart svg {
+	/* Dragging sideways across the bars scrubs; up and down still scrolls. */
+	touch-action: pan-y;
+	cursor: crosshair;
 }
 
-.admin-chart rect:hover {
-	fill: #6fe0a0;
+.admin-chart .admin-chart-hit {
+	fill: transparent;
+}
+
+.admin-chart .admin-chart-bar {
+	fill: #3cbc75;
+	pointer-events: none;
+}
+
+.admin-chart .admin-chart-bar.active {
+	fill: #a6f3c6;
+}
+
+/* Admin text lines up with its section, not the drawer's paragraph inset. */
+.menu-cat-content-inner #admin p:not(.offline-notice),
+.menu-cat-content-inner #admin_user p:not(.offline-notice) {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.menu-cat-content-inner p.admin-chart-readout {
+	min-height: 18px;
+	margin: 0 0 6px;
+	padding: 0;
+	color: white;
+	font-size: 13px;
+	font-weight: 600;
 }
 
 .admin-chart text {
@@ -3567,10 +3601,27 @@ div.circle:has(>.icon-EoW_Echo) {
 
 .admin-chart-options {
 	display: flex;
-	flex-wrap: wrap;
-	justify-content: space-between;
+	flex-direction: column;
 	gap: 8px;
 	margin: 0 0 12px;
+}
+
+/* Each on its own line: the metric as two halves, and the ranges spread
+   across, scrolling sideways if they ever run out of room. */
+.admin-chart-options .admin-toggle {
+	display: flex;
+	max-width: 100%;
+	overflow-x: auto;
+	scrollbar-width: none;
+}
+
+.admin-chart-options .admin-toggle::-webkit-scrollbar {
+	display: none;
+}
+
+.admin-chart-options .admin-toggle button {
+	flex: 1 0 auto;
+	min-height: 30px;
 }
 
 .admin-toggle {
@@ -3639,8 +3690,14 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: #ff8c85;
 }
 
-.admin-search .input-group {
-	border-radius: 10px;
+/* A standard field bar, already inside the section's inset. */
+#admin .admin-search {
+	margin: 0;
+	padding: 0;
+}
+
+#admin .admin-search > .form-group {
+	margin-bottom: 0;
 }
 
 #admin_results_count {
@@ -3699,31 +3756,164 @@ div.circle:has(>.icon-EoW_Echo) {
 	white-space: nowrap;
 }
 
-#admin_user_form > label {
-	display: block;
+.admin-user-times {
+	grid-column: 1 / -1;
+}
+
+.admin-user-role.admin-badge-admin {
+	color: #6fe0a0;
+}
+
+.admin-user-role.admin-badge-warning,
+.admin-user-status-badge {
+	color: #ffb36b;
+}
+
+.admin-user-status-badge {
+	margin: -4px 0 12px;
+	font-weight: 600;
+	text-align: center;
+}
+
+#admin_user [hidden] {
+	display: none !important;
+}
+
+.admin-facts {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 4px 12px;
+	margin: 0 0 12px;
+	font-size: 13px;
+}
+
+.admin-facts dt {
+	color: rgba(255,255,255,.6);
+	font-weight: 400;
+}
+
+.admin-facts dd {
+	margin: 0;
+}
+
+.admin-user-stats {
+	margin: 0;
+}
+
+
+.admin-account-actions {
+	margin-top: 24px;
+}
+
+#admin_user_form > .admin-user-status {
+	margin: 8px 0 0;
+}
+
+#admin_user_form > .admin-user-status:empty {
+	display: none;
+}
+
+.admin-account-actions .form-action-button {
+	width: 100%;
+	margin: 0;
+}
+
+.admin-access-note,
+.admin-ban-note {
 	margin: 0 0 8px;
-	font-size: 12px;
-	font-weight: 700;
-	line-height: 1.4;
 }
 
-#admin_user_form > .form-group {
-	margin-bottom: 16px;
+.admin-ban {
+	margin-top: 16px;
 }
 
-#admin_user_form .input-group {
-	border-radius: 10px !important;
+#admin_user .admin-ban-form {
+	margin: 16px 0 0;
+	padding: 0;
 }
 
-#admin_user_form select.form-control {
-	appearance: auto;
+
+.admin-ban-form .admin-user-status:empty {
+	display: none;
+}
+
+
+#admin_user .admin-check {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin: 0 0 12px;
 	color: white;
-	background: transparent;
-	padding-left: 14px;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.4;
+	text-transform: none;
+	cursor: pointer;
 }
 
-#admin_user_form select.form-control option {
+.admin-check input {
+	margin: 3px 0 0;
+}
+
+.admin-ban-buttons {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 8px;
+}
+
+.admin-ban .form-action-button {
+	width: 100%;
+	margin: 0;
+}
+
+.admin-log {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 13px;
+}
+
+.admin-log li {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 8px 0;
+}
+
+.admin-log li + li {
+	border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.admin-log-what {
+	overflow-wrap: anywhere;
+}
+
+/* Selects in the standard field bars: the same text inset as inputs, and a
+   caret in place of the browser's own control. */
+.menu-cat-content-inner form .input-group select.form-control {
+	-webkit-appearance: none;
+	appearance: none;
+	padding-right: 36px;
+	background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center;
+	cursor: pointer;
+}
+
+.menu-cat-content-inner form .input-group select.form-control option {
 	color: black;
+}
+
+/* Text areas in the standard field bars grow downward, icon at the top. */
+.menu-cat-content-inner form .input-group textarea.form-control {
+	height: auto;
+	min-height: 88px;
+	padding-top: 12px;
+	line-height: 1.4;
+	resize: vertical;
+}
+
+.menu-cat-content-inner form .input-group:has(textarea) .input-group-addon {
+	align-items: flex-start;
+	padding-top: 14px;
 }
 
 #admin_user_form .admin-user-meta {
@@ -3745,10 +3935,3 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: #6fe0a0;
 }
 
-#admin_user_form > .form-action-button {
-	box-sizing: border-box;
-	width: 100%;
-	margin: 0;
-	padding: 8px;
-	color: white;
-}

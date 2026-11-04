@@ -3759,8 +3759,11 @@ ZMap.prototype.adminRoles = [
   { level: 10, label: 'Admin' }
 ];
 
-ZMap.prototype._createAdminPage = function() {
+// opts.restore: coming back from an account, so show the search, results and
+// scroll position as they were instead of starting over.
+ZMap.prototype._createAdminPage = function(opts) {
   var _this = this;
+  var saved = opts && opts.restore ? this._adminState : null;
   this.mapControl.setContent(
     '<div id="admin">' +
       '<h3 class="text-center">Admin</h3>' +
@@ -3768,16 +3771,17 @@ ZMap.prototype._createAdminPage = function() {
         '<h4>Accounts <span id="admin_total" class="admin-muted"></span></h4>' +
         '<div class="admin-chart">' +
           '<div class="admin-chart-options">' +
-            '<div class="admin-toggle" role="group" aria-label="Graph">' +
-              '<button type="button" data-metric="registrations" aria-pressed="true">Registrations</button>' +
-              '<button type="button" data-metric="active" aria-pressed="false">Active Users</button>' +
+            '<div class="admin-toggle admin-metrics" role="group" aria-label="Graph">' +
+              '<button type="button" data-metric="registrations">Registrations</button>' +
+              '<button type="button" data-metric="active">Active Users</button>' +
             '</div>' +
             '<div class="admin-toggle admin-ranges" role="group" aria-label="Time frame">' +
               [['7d', '1W'], ['14d', '2W'], ['30d', '30D'], ['6m', '6M'], ['1y', '1Y'], ['all', 'All']].map(function(range) {
-                return '<button type="button" data-range="' + range[0] + '" aria-pressed="' + (range[0] === '30d') + '">' + range[1] + '</button>';
+                return '<button type="button" data-range="' + range[0] + '">' + range[1] + '</button>';
               }).join('') +
             '</div>' +
           '</div>' +
+          '<p id="admin_chart_readout" class="admin-chart-readout" aria-live="polite"></p>' +
           '<div id="admin_chart"><p class="admin-muted">Loading…</p></div>' +
         '</div>' +
         // Active users over the latest complete day, week and month, whatever
@@ -3787,10 +3791,11 @@ ZMap.prototype._createAdminPage = function() {
       '<section class="admin-section">' +
         '<h4>Users</h4>' +
         '<form id="admin_search_form" class="admin-search" role="search">' +
-          '<div class="input-group">' +
+          '<div class="form-group"><div class="input-group">' +
             '<span class="input-group-addon"><i class="fas fa-search" aria-hidden="true"></i></span>' +
-            '<input id="admin_search" type="search" class="form-control" placeholder="Username, name, email or id" aria-label="Search users" />' +
-          '</div>' +
+            '<input id="admin_search" type="search" class="form-control" placeholder="Username, name, email or id" aria-label="Search users" ' +
+              'autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" enterkeyhint="search" />' +
+          '</div></div>' +
         '</form>' +
         '<p id="admin_results_count" class="admin-muted" role="status" aria-live="polite"></p>' +
         '<ul id="admin_results" class="admin-results"></ul>' +
@@ -3804,56 +3809,116 @@ ZMap.prototype._createAdminPage = function() {
     message: 'You\'re offline. Connect to the internet to use the admin tools.'
   });
 
-  var graph = { metric: 'registrations', range: '30d' }, statsRequest = 0;
+  // What going back to this page restores.
+  var state = this._adminState = saved || {
+    graph: { metric: 'registrations', range: '30d' },
+    query: '', users: [], total: null, offset: 0, scrollTop: 0
+  };
+
+  var statsRequest = 0;
+  var showStats = function(data) {
+    $('#admin_total').text(data.total.toLocaleString() + ' total');
+    $('#admin_chart').empty().append(_this._adminChart(data.buckets, data.metric, $('#admin_chart_readout')));
+    $('#admin_summary').empty().append(_this._adminSummary(data.summary));
+  };
   var loadStats = function() {
     var requestId = ++statsRequest;
-    $.getJSON('ajax.php?command=admin_get_stats', graph, function(data) {
+    $.getJSON('ajax.php?command=admin_get_stats', state.graph, function(data) {
       if(requestId !== statsRequest) return;
       if(!data.success) return $('#admin_chart').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load stats.');
-      $('#admin_total').text(data.total.toLocaleString() + ' total');
-      $('#admin_chart').empty().append(_this._adminChart(data.buckets, data.metric));
-      $('#admin_summary').empty().append(_this._adminSummary(data.summary));
+      state.stats = data;
+      showStats(data);
+    });
+  };
+  var showGraphOptions = function() {
+    $('#admin .admin-chart-options button').each(function() {
+      var button = $(this);
+      var pressed = button.data('metric') ? button.data('metric') === state.graph.metric : button.data('range') === state.graph.range;
+      button.attr('aria-pressed', String(pressed));
     });
   };
   $('#admin .admin-chart-options button').click(function() {
     var button = $(this);
-    if(button.data('metric')) graph.metric = button.data('metric');
-    if(button.data('range')) graph.range = button.data('range');
-    button.siblings().attr('aria-pressed', 'false');
-    button.attr('aria-pressed', 'true');
+    if(button.data('metric')) state.graph.metric = button.data('metric');
+    if(button.data('range')) state.graph.range = button.data('range');
+    showGraphOptions();
     loadStats();
   });
+  showGraphOptions();
+  // Going back: the last graph at once, so the page is its full height when
+  // the scroll position returns, then fresh numbers.
+  if(saved && saved.stats) showStats(saved.stats);
   loadStats();
 
-  var query = '', offset = 0, request = 0;
+  var request = 0;
+  var showResults = function() {
+    var list = $('#admin_results').empty();
+    state.users.forEach(function(account) { list.append(_this._adminUserRow(account)); });
+    if(state.total !== null) {
+      $('#admin_results_count').text(state.total.toLocaleString() + (state.total === 1 ? ' user' : ' users'));
+    }
+    $('#admin_more').prop('hidden', state.total === null || state.offset >= state.total);
+  };
   var search = function(append) {
     var requestId = ++request;
-    if(!append) offset = 0;
-    $.getJSON('ajax.php?command=admin_search_users', { q: query, offset: offset }, function(data) {
+    if(!append) state.offset = 0;
+    $.getJSON('ajax.php?command=admin_search_users', { q: state.query, offset: state.offset }, function(data) {
       if(requestId !== request) return;
       if(!data.success) return $('#admin_results_count').text(data.msg || 'Unable to load users.');
-      var list = $('#admin_results');
-      if(!append) list.empty();
-      data.users.forEach(function(account) { list.append(_this._adminUserRow(account)); });
-      offset = data.offset + data.users.length;
-      $('#admin_results_count').text(data.total.toLocaleString() + (data.total === 1 ? ' user' : ' users'));
-      $('#admin_more').prop('hidden', offset >= data.total);
+      state.users = append ? state.users.concat(data.users) : data.users;
+      state.total = data.total;
+      state.offset = data.offset + data.users.length;
+      showResults();
     });
   };
   var searchTimer = null;
-  $('#admin_search').on('input', function() {
-    query = this.value.trim();
+  $('#admin_search').val(state.query).on('input', function() {
+    state.query = this.value.trim();
     window.clearTimeout(searchTimer);
     searchTimer = window.setTimeout(function() { search(false); }, 250);
   });
-  $('#admin_search_form').on('submit', function(e) { e.preventDefault(); });
+  $('#admin_search_form').on('submit', function(e) {
+    e.preventDefault();
+    // Search now, and put the phone keyboard away to show the results.
+    window.clearTimeout(searchTimer);
+    search(false);
+    $('#admin_search').blur();
+  });
   $('#admin_more').click(function() { search(true); });
-  search(false);
+
+  if(saved && saved.users.length) {
+    showResults();
+    this.mapControl._contents.scrollTop = saved.scrollTop;
+  } else {
+    search(false);
+  }
 };
 
-// The graph's buckets as an inline SVG bar chart.
-ZMap.prototype._adminChart = function(buckets, metric) {
-  var noun = metric === 'active' ? 'active' : 'new';
+// How long ago, from the server's count of seconds: "just now", "12 min
+// ago", "5 hr ago" within a day, then the date and time in the viewer's time
+// zone. opts.dateOnly leaves out the time for older dates.
+ZMap.prototype._adminTime = function(ago, opts) {
+  if(ago === null || ago === undefined || ago < 0) return null;
+  if(ago < 60) return 'just now';
+  if(ago < 3600) return Math.floor(ago / 60) + ' min ago';
+  if(ago < 86400) {
+    var hours = Math.floor(ago / 3600);
+    return hours + (hours === 1 ? ' hour ago' : ' hours ago');
+  }
+  var date = new Date(Date.now() - ago * 1000);
+  var format = { month: 'short', day: 'numeric', year: 'numeric' };
+  if(!(opts && opts.dateOnly)) {
+    format.hour = 'numeric';
+    format.minute = '2-digit';
+  }
+  return date.toLocaleString(undefined, format);
+};
+
+// The graph's buckets as an inline SVG bar chart. Hovering, tapping or
+// dragging across it shows a bar's count in readout; otherwise it shows the
+// latest bar.
+ZMap.prototype._adminChart = function(buckets, metric, readout) {
+  var noun = metric === 'active' ? 'active users' : 'new accounts';
   var width = 320, height = 120, top = 8, bottom = 18;
   var max = Math.max.apply(null, buckets.map(function(b) { return b.count; })) || 1;
   var step = width / buckets.length, gap = Math.min(2, step * .2);
@@ -3861,9 +3926,11 @@ ZMap.prototype._adminChart = function(buckets, metric) {
     (metric === 'active' ? 'Active users' : 'New accounts') + ' over time">';
   buckets.forEach(function(b, i) {
     var barHeight = b.count ? Math.max(1, (height - top - bottom) * b.count / max) : 0;
-    svg += '<rect x="' + (i * step).toFixed(2) + '" y="' + (height - bottom - barHeight).toFixed(2) +
-      '" width="' + Math.max(.5, step - gap).toFixed(2) + '" height="' + barHeight.toFixed(2) + '" rx="1">' +
-      '<title>' + b.label + ': ' + b.count.toLocaleString() + ' ' + noun + '</title></rect>';
+    // A full-height strip behind each bar, so short and empty bars are as easy
+    // to tap as tall ones.
+    svg += '<rect class="admin-chart-hit" x="' + (i * step).toFixed(2) + '" y="0" width="' + step.toFixed(2) + '" height="' + (height - bottom) + '"></rect>';
+    svg += '<rect class="admin-chart-bar" x="' + (i * step).toFixed(2) + '" y="' + (height - bottom - barHeight).toFixed(2) +
+      '" width="' + Math.max(.5, step - gap).toFixed(2) + '" height="' + barHeight.toFixed(2) + '" rx="1"></rect>';
   });
   // Up to five evenly spaced labels, always including the first and last.
   var labels = Math.min(5, buckets.length);
@@ -3874,7 +3941,40 @@ ZMap.prototype._adminChart = function(buckets, metric) {
     svg += '<text x="' + x.toFixed(2) + '" y="' + (height - 4) + '" text-anchor="' + anchor + '">' + buckets[i].label + '</text>';
   }
   svg += '<text x="0" y="' + (top + 2) + '" class="admin-chart-max">' + max.toLocaleString() + '</text>';
-  return $(svg + '</svg>');
+  var chart = $(svg + '</svg>');
+  var bars = chart.find('.admin-chart-bar');
+
+  var show = function(index, chosen) {
+    var bucket = buckets[index];
+    if(!bucket) return;
+    bars.removeClass('active');
+    if(chosen) bars.eq(index).addClass('active');
+    readout.text(bucket.label + ': ' + bucket.count.toLocaleString() + ' ' + noun);
+  };
+  var indexAt = function(event) {
+    var rect = chart[0].getBoundingClientRect();
+    if(!rect.width) return -1;
+    var ratio = (event.clientX - rect.left) / rect.width;
+    return Math.max(0, Math.min(buckets.length - 1, Math.floor(ratio * buckets.length)));
+  };
+  var latest = function() { show(buckets.length - 1, false); };
+  var scrubbing = false;
+  chart.on('pointerdown', function(e) {
+    scrubbing = true;
+    // Keep following a finger that slides off the chart while scrubbing.
+    try { this.setPointerCapture(e.originalEvent.pointerId); } catch(error) {}
+    show(indexAt(e), true);
+  }).on('pointermove', function(e) {
+    // Mouse hover, or a finger dragging across the bars.
+    if(e.pointerType === 'mouse' || e.originalEvent.pointerType === 'mouse' || scrubbing) show(indexAt(e), true);
+  }).on('pointerup pointercancel', function() {
+    // A tapped bar stays showing until another is chosen.
+    scrubbing = false;
+  }).on('pointerleave', function(e) {
+    if(e.originalEvent.pointerType === 'mouse') latest();
+  });
+  latest();
+  return chart;
 };
 
 // Daily, weekly and monthly active users, each with its change.
@@ -3899,55 +3999,127 @@ ZMap.prototype._adminSummary = function(summary) {
   return boxes;
 };
 
+ZMap.prototype._adminRoleLabel = function(level) {
+  var role = this.adminRoles.find(function(r) { return r.level == level; });
+  return role ? role.label : 'Level ' + level;
+};
+
+// Deleted, Banned or Disabled, or null for an account in use.
+ZMap.prototype._adminStatus = function(account) {
+  if(account.deleted) return 'Deleted';
+  if(account.banned) return 'Banned';
+  if(account.disabled) return 'Disabled';
+  return null;
+};
+
 ZMap.prototype._adminUserRow = function(account) {
   var _this = this;
-  var role = this.adminRoles.find(function(r) { return r.level == account.level; });
-  var row = $('<li><button type="button" class="admin-user"><span class="admin-user-name"></span>' +
-    '<span class="admin-user-role"></span><span class="admin-user-detail admin-muted"></span></button></li>');
-  row.find('.admin-user-name').text(displayUserName(account.username));
-  row.find('.admin-user-role').text(account.deleted ? 'Deleted' : role ? role.label : 'Level ' + account.level);
-  row.find('.admin-user-detail').text('#' + account.id + (account.email ? ' · ' + account.email : '') +
-    (account.created ? ' · joined ' + account.created.slice(0, 10) : ''));
-  row.find('button').prop('disabled', !!account.deleted).click(function() {
+  var row = $('<li><button type="button" class="admin-user">' +
+    '<span class="admin-user-name"></span><span class="admin-user-role"></span>' +
+    '<span class="admin-user-detail admin-muted"></span>' +
+    '<span class="admin-user-times admin-muted"></span>' +
+  '</button></li>');
+  var status = this._adminStatus(account);
+  row.find('.admin-user-name').text(account.deleted ? 'Deleted account' : displayUserName(account.username));
+  row.find('.admin-user-role')
+    .text(status || this._adminRoleLabel(account.level))
+    .toggleClass('admin-badge-warning', !!status)
+    .toggleClass('admin-badge-admin', !status && account.level >= 10);
+  row.find('.admin-user-detail').text('#' + account.id + (account.email && !account.deleted ? ' · ' + account.email : ''));
+  var joined = this._adminTime(account.createdAgo);
+  var seen = account.deleted ? null : this._adminTime(account.lastSeenAgo);
+  row.find('.admin-user-times').text(
+    (joined ? 'Joined ' + joined : '') + (seen ? (joined ? ' · ' : '') + 'Seen ' + seen : '')
+  );
+  row.find('button').click(function() {
+    _this._adminState.scrollTop = _this.mapControl._contents.scrollTop;
     _this._createAdminUserPage(account);
   });
   return row;
 };
 
+// One account: when it joined and was last seen, how much it uses the site,
+// an editor, disabling and banning, and the changes admins have made. Deleted accounts
+// have been wiped, so they only show what's left.
 ZMap.prototype._createAdminUserPage = function(account) {
   var _this = this;
   this.mapControl.setContent(
     '<div id="admin_user">' +
       '<h3 class="text-center"></h3>' +
+      '<p class="admin-user-status-badge" hidden></p>' +
+      '<section class="admin-section admin-user-overview">' +
+        '<dl class="admin-facts"></dl>' +
+        '<div class="admin-summary admin-user-stats"></div>' +
+      '</section>' +
       '<form id="admin_user_form" class="leaflet-control-layers-list">' +
-        '<p class="admin-muted admin-user-meta"></p>' +
         '<label for="admin_user_username">Username</label>' +
-        '<div class="form-group"><div class="input-group"><input id="admin_user_username" name="username" class="form-control" required /></div></div>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-user" aria-hidden="true"></i></span>' +
+          '<input id="admin_user_username" name="username" class="form-control" required ' +
+          'autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" /></div></div>' +
         '<label for="admin_user_name">Full Name</label>' +
-        '<div class="form-group"><div class="input-group"><input id="admin_user_name" name="name" class="form-control" required /></div></div>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-id-card" aria-hidden="true"></i></span>' +
+          '<input id="admin_user_name" name="name" class="form-control" required ' +
+          'autocapitalize="words" autocorrect="off" spellcheck="false" autocomplete="off" /></div></div>' +
         '<label for="admin_user_email">Email</label>' +
-        '<div class="form-group"><div class="input-group"><input id="admin_user_email" name="email" type="email" class="form-control" required /></div></div>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-envelope" aria-hidden="true"></i></span>' +
+          '<input id="admin_user_email" name="email" type="email" inputmode="email" class="form-control" required ' +
+          'autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" /></div></div>' +
         '<label for="admin_user_level">Role</label>' +
-        '<div class="form-group"><div class="input-group"><select id="admin_user_level" name="level" class="form-control"></select></div></div>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-user-shield" aria-hidden="true"></i></span>' +
+          '<select id="admin_user_level" name="level" class="form-control"></select>' +
+        '</div></div>' +
         '<label for="admin_user_password">New Password</label>' +
-        '<div class="form-group"><div class="input-group"><input id="admin_user_password" name="password" type="password" class="form-control" placeholder="Leave blank to keep the current password" autocomplete="new-password" /></div></div>' +
-        '<p id="admin_user_status" class="admin-user-status" role="status" aria-live="polite"></p>' +
+        '<div class="form-group"><div class="input-group">' +
+          '<span class="input-group-addon"><i class="fas fa-lock" aria-hidden="true"></i></span>' +
+          '<input id="admin_user_password" name="password" type="password" class="form-control" placeholder="Leave blank to keep the current password" autocomplete="new-password" />' +
+        '</div></div>' +
         '<button type="submit" class="infoWindowIcn form-action-button">Save Changes</button>' +
+        '<p id="admin_user_status" class="admin-user-status" role="status" aria-live="polite"></p>' +
       '</form>' +
+      '<section class="admin-section admin-account-actions">' +
+        '<h4>Account Access</h4>' +
+        '<p class="admin-muted admin-access-note"></p>' +
+        '<p id="admin_access_status" class="admin-user-status" role="status" aria-live="polite"></p>' +
+        '<button id="admin_access_btn" type="button" class="infoWindowIcn form-action-button"></button>' +
+        // Banning goes further than disabling: it needs a reason, and blocks
+        // the email from signing up again.
+        '<div class="admin-ban">' +
+          '<p class="admin-muted admin-ban-note"></p>' +
+          '<button id="admin_ban_btn" type="button" class="infoWindowIcn form-action-button"></button>' +
+          '<form id="admin_ban_form" class="admin-ban-form" hidden>' +
+            '<label for="admin_ban_reason">Reason</label>' +
+            '<div class="form-group"><div class="input-group">' +
+              '<span class="input-group-addon"><i class="fas fa-comment-alt" aria-hidden="true"></i></span>' +
+              '<textarea id="admin_ban_reason" class="form-control" rows="3" maxlength="500" required ' +
+                'placeholder="Why they\'re banned. Admins see this; they don\'t."></textarea>' +
+            '</div></div>' +
+            '<label class="admin-check" hidden><input id="admin_ban_hide" type="checkbox" /><span></span></label>' +
+            '<p id="admin_ban_status" class="admin-user-status" role="status" aria-live="polite"></p>' +
+            '<div class="admin-ban-buttons">' +
+              '<button id="admin_ban_cancel" type="button" class="infoWindowIcn form-action-button">Cancel</button>' +
+              '<button type="submit" class="infoWindowIcn form-action-button bad">Ban Account</button>' +
+            '</div>' +
+          '</form>' +
+        '</div>' +
+      '</section>' +
+      '<section class="admin-section">' +
+        '<h4>Change Log</h4>' +
+        '<ul id="admin_log" class="admin-log"><li class="admin-muted">Loading…</li></ul>' +
+      '</section>' +
     '</div>',
     'adminUserPage'
   );
   this._lockWhileOffline('#admin_user', {
-    dim: '#admin_user_form',
+    dim: '#admin_user_form, .admin-account-actions',
     message: 'You\'re offline. Connect to the internet to make changes to accounts.'
   });
-  $('#admin_user h3').text(displayUserName(account.username));
-  $('#admin_user .admin-user-meta').text('#' + account.id +
-    (account.created ? ' · joined ' + account.created.slice(0, 10) : '') +
-    (account.lastLogin ? ' · last seen ' + account.lastLogin.slice(0, 10) : ''));
-  $('#admin_user_username').val(account.username);
-  $('#admin_user_name').val(account.name || '');
-  $('#admin_user_email').val(account.email || '');
+
+  var me = this.getUser();
+  var isSelf = me && String(me.id) === String(account.id);
   var levelSelect = $('#admin_user_level');
   this.adminRoles.forEach(function(role) {
     levelSelect.append($('<option></option>').val(role.level).text(role.label));
@@ -3955,10 +4127,120 @@ ZMap.prototype._createAdminUserPage = function(account) {
   if(!this.adminRoles.some(function(r) { return r.level == account.level; })) {
     levelSelect.prepend($('<option></option>').val(account.level).text('Level ' + account.level));
   }
-  levelSelect.val(String(account.level));
+
+  var stats = null, log = [], logAvailable = true;
+  var render = function() {
+    var status = _this._adminStatus(account);
+    $('#admin_user h3').text(account.deleted ? 'Deleted account' : displayUserName(account.username));
+    $('#admin_user .admin-user-status-badge').prop('hidden', !status).text(status || '');
+
+    var facts = $('#admin_user .admin-facts').empty();
+    var fact = function(label, value) {
+      if(!value) return;
+      facts.append($('<dt></dt>').text(label), $('<dd></dd>').text(value));
+    };
+    // Exact times here; "time ago" alongside within the last day.
+    var when = function(ago) {
+      var text = _this._adminTime(ago);
+      if(ago === null || ago === undefined) return null;
+      if(ago >= 86400) return text;
+      return text + ' (' + new Date(Date.now() - ago * 1000).toLocaleString(undefined, { hour: 'numeric', minute: '2-digit' }) + ')';
+    };
+    fact('Account', '#' + account.id + ' · ' + _this._adminRoleLabel(account.level));
+    fact('Joined', when(account.createdAgo));
+    if(!account.deleted) fact('Last seen', when(account.lastSeenAgo));
+    if(account.deleted) fact('Deleted', when(account.deletedAgo) || account.deleted.slice(0, 10));
+    if(account.banned) fact('Banned', when(account.bannedAgo) || 'Yes');
+    if(account.banned && account.banReason) fact('Reason', account.banReason);
+    if(account.disabled) fact('Disabled', when(account.disabledAgo) || 'Yes');
+
+    var statBoxes = $('#admin_user .admin-user-stats').empty();
+    if(stats) {
+      [['Active Days', stats.activeDays30, 'Days used in the last 30'],
+       ['Completed', stats.completedMarkers, 'Markers marked complete'],
+       ['Bookmarks', stats.bookmarks, 'Markers bookmarked']].forEach(function(item) {
+        if(item[1] === null || item[1] === undefined) return;
+        var box = $('<div class="admin-stat"><span class="admin-stat-label"></span><span class="admin-stat-value"></span></div>');
+        box.attr('title', item[2]);
+        box.find('.admin-stat-label').text(item[0]);
+        box.find('.admin-stat-value').text(item[1].toLocaleString());
+        statBoxes.append(box);
+      });
+    }
+
+    // A deleted account's details are gone, so there's nothing to edit.
+    $('#admin_user_form').prop('hidden', !!account.deleted);
+    $('#admin_user .admin-account-actions').prop('hidden', !!account.deleted);
+    if(!account.deleted) {
+      $('#admin_user_username').val(account.username);
+      $('#admin_user_name').val(account.name || '');
+      $('#admin_user_email').val(account.email || '');
+      levelSelect.val(String(account.level));
+      $('#admin_user .admin-access-note').text(account.disabled
+        ? 'This account can\'t sign in. Enabling it lets them sign in again with their current password.'
+        : isSelf
+          ? 'You can\'t disable your own account.'
+          : 'Disabling signs them out everywhere and stops them signing in. Nothing is deleted.');
+      $('#admin_access_btn')
+        .text(account.disabled ? 'Enable Account' : 'Disable Account')
+        .toggleClass('bad', !account.disabled)
+        .prop('disabled', !account.disabled && isSelf);
+      // A ban already stops them signing in, so it's lifted first.
+      $('#admin_user .admin-access-note, #admin_access_btn').prop('hidden', !!account.banned);
+      $('#admin_user .admin-ban-note').text(account.banned
+        ? 'They can\'t sign in, and their email can\'t be used to sign up again. Unbanning lifts both.'
+        : 'Banning also stops their email being used to sign up again, and needs a reason.');
+      $('#admin_ban_btn')
+        .text(account.banned ? 'Unban Account' : 'Ban Account…')
+        .toggleClass('bad', !account.banned)
+        .prop('hidden', !account.banned && (isSelf || !$('#admin_ban_form').prop('hidden')));
+      $('#admin_user .admin-ban-note').prop('hidden', !account.banned && isSelf);
+      if(account.banned) $('#admin_ban_form').prop('hidden', true);
+      var markers = stats && stats.visibleMarkers;
+      $('#admin_ban_form .admin-check').prop('hidden', !markers)
+        .find('span').text('Also hide the ' + (markers || 0).toLocaleString() +
+          (markers === 1 ? ' marker they\'ve added to the map' : ' markers they\'ve added to the map'));
+    }
+
+    var list = $('#admin_log').empty();
+    if(!logAvailable) {
+      list.append($('<li class="admin-muted"></li>').text('The change log needs the admin_accounts migration.'));
+    } else if(!log.length) {
+      list.append($('<li class="admin-muted"></li>').text('No changes by admins yet.'));
+    }
+    log.forEach(function(entry) {
+      var item = $('<li><span class="admin-log-what"></span><span class="admin-log-when admin-muted"></span></li>');
+      item.find('.admin-log-what').text(_this._adminLogText(entry));
+      item.find('.admin-log-when').text((entry.adminName ? displayUserName(entry.adminName) : 'Admin #' + entry.adminId) +
+        ' · ' + _this._adminTime(entry.ago));
+      list.append(item);
+    });
+  };
+
+  var loadDetails = function() {
+    $.getJSON('ajax.php?command=admin_get_user', { id: account.id }, function(data) {
+      if(!data.success || !$('#admin_user').length) return;
+      Object.assign(account, data.user);
+      stats = data.stats;
+      log = data.log || [];
+      logAvailable = data.logAvailable !== false;
+      render();
+    });
+  };
+  render();
+  loadDetails();
 
   $('#admin_user_form').submit(function(e) {
     e.preventDefault();
+    var newLevel = Number(levelSelect.val());
+    // A mis-tap on a phone shouldn't change someone's access.
+    if(newLevel !== Number(account.level) && !window.confirm(
+      'Change ' + displayUserName(account.username) + ' from ' + _this._adminRoleLabel(account.level) +
+      ' to ' + _this._adminRoleLabel(newLevel) + '?'
+    )) {
+      levelSelect.val(String(account.level));
+      return;
+    }
     var status = $('#admin_user_status').removeClass('error success').text('Saving…');
     var button = $(this).find('button[type="submit"]').prop('disabled', true);
     $.ajax({
@@ -3969,8 +4251,8 @@ ZMap.prototype._createAdminUserPage = function(account) {
         status.addClass(data.success ? 'success' : 'error').text(data.msg || (data.success ? 'Saved.' : 'Unable to save.'));
         if(!data.success) return;
         Object.assign(account, data.user);
-        $('#admin_user h3').text(displayUserName(account.username));
         $('#admin_user_password').val('');
+        loadDetails();
       },
       error: function(xhr) {
         status.addClass('error').text(xhr.responseJSON && xhr.responseJSON.msg || 'Unable to save.');
@@ -3978,6 +4260,109 @@ ZMap.prototype._createAdminUserPage = function(account) {
       complete: function() { button.prop('disabled', false); }
     });
   });
+
+  $('#admin_access_btn').click(function() {
+    var disable = !account.disabled;
+    if(disable && !window.confirm(
+      'Disable ' + displayUserName(account.username) + '? They\'ll be signed out and won\'t be able to sign in until the account is enabled again.'
+    )) return;
+    var status = $('#admin_access_status').removeClass('error success').text(disable ? 'Disabling…' : 'Enabling…');
+    var button = $(this).prop('disabled', true);
+    $.ajax({
+      type: 'POST',
+      url: 'ajax.php?command=admin_set_disabled',
+      data: { id: account.id, disabled: disable ? '1' : '0' },
+      success: function(data) {
+        status.addClass(data.success ? 'success' : 'error').text(data.msg || (data.success ? 'Done.' : 'Unable to change access.'));
+        if(!data.success) return;
+        account.disabled = data.disabled;
+        loadDetails();
+      },
+      error: function(xhr) {
+        status.addClass('error').text(xhr.responseJSON && xhr.responseJSON.msg || 'Unable to change access.');
+      },
+      complete: function() {
+        button.prop('disabled', false);
+        render();
+      }
+    });
+  });
+
+  var setBan = function(data, busyText) {
+    // Unbanning reports beside its button; banning inside the open form.
+    var status = $(data.banned === '1' ? '#admin_ban_status' : '#admin_access_status')
+      .removeClass('error success').text(busyText);
+    var buttons = $('#admin_user .admin-ban button').prop('disabled', true);
+    $.ajax({
+      type: 'POST',
+      url: 'ajax.php?command=admin_set_ban',
+      data: Object.assign({ id: account.id }, data),
+      success: function(result) {
+        status.addClass(result.success ? 'success' : 'error').text(result.msg || (result.success ? 'Done.' : 'Unable to change the ban.'));
+        if(!result.success) return;
+        account.banned = data.banned === '1' ? 'now' : null;
+        $('#admin_ban_form').prop('hidden', true)[0].reset();
+        // The form's closed now, so say it where it can be seen.
+        $('#admin_access_status').removeClass('error').addClass('success').text(result.msg);
+        loadDetails();
+      },
+      error: function(xhr) {
+        status.addClass('error').text(xhr.responseJSON && xhr.responseJSON.msg || 'Unable to change the ban.');
+      },
+      complete: function() {
+        buttons.prop('disabled', false);
+        render();
+      }
+    });
+  };
+  $('#admin_ban_btn').click(function() {
+    if(account.banned) {
+      if(window.confirm('Unban ' + displayUserName(account.username) + '? They can sign in again, and their email can be used to sign up.')) {
+        setBan({ banned: '0' }, 'Unbanning…');
+      }
+      return;
+    }
+    $('#admin_access_status, #admin_ban_status').removeClass('error success').text('');
+    $('#admin_ban_form').prop('hidden', false);
+    render();
+    $('#admin_ban_reason').focus();
+  });
+  $('#admin_ban_cancel').click(function() {
+    $('#admin_ban_form').prop('hidden', true)[0].reset();
+    render();
+  });
+  $('#admin_ban_form').submit(function(e) {
+    e.preventDefault();
+    var reason = $('#admin_ban_reason').val().trim();
+    if(!reason) {
+      $('#admin_ban_status').removeClass('success').addClass('error').text('Enter a reason for the ban.');
+      $('#admin_ban_reason').focus();
+      return;
+    }
+    setBan({ banned: '1', reason: reason, hideMarkers: $('#admin_ban_hide').prop('checked') ? '1' : '0' }, 'Banning…');
+  });
+};
+
+// A change log entry as a sentence, e.g. "Role: User → Admin, email changed".
+ZMap.prototype._adminLogText = function(entry) {
+  var _this = this;
+  var details = entry.details || {};
+  if(entry.action === 'disable') return 'Disabled the account';
+  if(entry.action === 'enable') return 'Enabled the account';
+  if(entry.action === 'unban') return 'Unbanned the account';
+  if(entry.action === 'ban') {
+    var hidden = details.hiddenMarkers;
+    return 'Banned: ' + (details.reason || 'no reason given') +
+      (hidden && hidden.length ? ' (hid ' + hidden.length + (hidden.length === 1 ? ' marker)' : ' markers)') : '');
+  }
+  var parts = Object.keys(details).map(function(field) {
+    var change = details[field];
+    if(field === 'password') return 'Set a new password';
+    if(field === 'level') return 'Role: ' + _this._adminRoleLabel(change[0]) + ' → ' + _this._adminRoleLabel(change[1]);
+    var label = { username: 'Username', name: 'Name', email: 'Email' }[field] || field;
+    return label + ': ' + change[0] + ' → ' + change[1];
+  });
+  return parts.length ? parts.join('; ') : 'Updated the account';
 };
 
 // While offline, shows a notice under the page's title and dims and

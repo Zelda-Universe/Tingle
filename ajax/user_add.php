@@ -16,6 +16,12 @@
    $name     = (string) $_POST['name'];
    $email    = (string) $_POST['email'];
    $ip       = preg_replace('#[^0-9.]#', '', getenv('REMOTE_ADDR'));
+   // Banned accounts' emails can't sign up again (admin_set_ban.php).
+   include_once(dirname(__DIR__) . '/lib/common/account_status.php');
+   if (emailIsBanned($db, $map_prefix, $email)) {
+     echo json_encode(array("success"=>false, "msg"=>"This email address can't be used to create an account."));
+     return;
+   }
    $hash     = password_hash((string) $_POST['password'], PASSWORD_DEFAULT, ['cost' => 13]);
 
    try {

@@ -34,6 +34,12 @@
      : 'NULL AS `profilePicture`';
    $hasDeletedColumn = (bool) $db->fetchOne("SHOW COLUMNS FROM `{$map_prefix}user` LIKE 'deleted'");
    $deletedSelect = $hasDeletedColumn ? '`deleted`' : 'NULL AS `deleted`';
+   // Set by an admin (admin_set_disabled.php, admin_set_ban.php), from a
+   // later migration.
+   include_once(dirname(__DIR__) . '/lib/common/account_status.php');
+   $statusColumns = accountStatusColumns($db, $map_prefix);
+   $disabledSelect = in_array('disabled', $statusColumns, true) ? '`disabled`' : 'NULL AS `disabled`';
+   $bannedSelect = in_array('banned', $statusColumns, true) ? '`banned`' : 'NULL AS `banned`';
 
    $row = $db->fetchAssociative("
      SELECT
@@ -43,6 +49,8 @@
        `name`                      ,
        {$profilePictureSelect}     ,
        {$deletedSelect}            ,
+       {$disabledSelect}           ,
+       {$bannedSelect}             ,
        `password`                  ,
        `level`                     ,
        `seen_version_major` AS `v1`,
@@ -66,6 +74,16 @@
          )
    ) {
      echo json_encode(array("success"=>false, "msg"=>"Username or password invalid!"));
+     return;
+   }
+   // Only once the password is right, so this doesn't reveal which accounts
+   // exist.
+   if ($row['banned'] !== null) {
+     echo json_encode(array("success"=>false, "msg"=>"This account has been banned."));
+     return;
+   }
+   if ($row['disabled'] !== null) {
+     echo json_encode(array("success"=>false, "msg"=>"This account has been disabled."));
      return;
    }
 

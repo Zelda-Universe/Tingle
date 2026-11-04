@@ -1033,6 +1033,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
       maxHeight = mapHeight - bottomMargin
         - (contents.top - mapTop) - (container.bottom - contents.bottom);
     }
+    // Portrait tablets: at most 60% of the height, which leaves the map
+    // (and the banner below the sidebar) room.
+    if(mapHeight > this._map.getContainer().clientWidth) {
+      var drawer = this._container.getBoundingClientRect();
+      var list = this._contents.getBoundingClientRect();
+      maxHeight = Math.min(maxHeight,
+        mapHeight * .6 - (list.top - drawer.top) - (drawer.bottom - list.bottom));
+    }
     this._contents.style.maxHeight = Math.max(maxHeight, 250) + 'px';
   },
 

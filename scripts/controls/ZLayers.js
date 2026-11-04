@@ -586,10 +586,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
     this._drawerLastY = point.clientY;
     this._drawerLastMoveTime = now;
-    var nextTop = Math.max(
-      this.options.openTo,
-      Math.min(this._startPosition, this._drawerStartTop + yDelta)
-    );
+    var nextTop = Math.min(this._startPosition, this._drawerStartTop + yDelta);
+    // Past fully open, stretch like iOS scrolling: the further the finger
+    // goes, the less the drawer follows. Releasing snaps back to fully open.
+    if(nextTop < this.options.openTo) {
+      // iOS's rubber-band curve; DRAWER_STRETCH is the most it can ever give.
+      var DRAWER_STRETCH = 200;
+      var overshoot = this.options.openTo - nextTop;
+      nextTop = this.options.openTo -
+        (1 - 1 / (overshoot * 0.55 / DRAWER_STRETCH + 1)) * DRAWER_STRETCH;
+    }
     this._container.style.top = nextTop + 'px';
     this._applyMobileDrawerViewport(nextTop);
     this.updateContentsHeight(nextTop);
@@ -1951,7 +1957,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       isOpen &&
       this._partialDrawerMode &&
       to > this.options.openTo;
-    if ((isOpen && from < to && !resizingPartialDrawer) || (!isOpen && from > to)) {
+    // A drawer stretched past fully open (see _drawerMove) springs back down.
+    var springingBack = this.viewStyleBottomSlide && isOpen && from < this.options.openTo;
+    if ((isOpen && from < to && !resizingPartialDrawer && !springingBack) || (!isOpen && from > to)) {
       from = to;
     }
 

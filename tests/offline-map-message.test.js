@@ -23,9 +23,11 @@ test('announces downloaded maps only after the worker serves a tile for this gam
   expect(message.style.display).toBe('block');
   map.maps = [{ _url: 'https://zeldamaps.com/tiles/eow/hyrule_overworld/{z}_{x}_{y}.png' }];
   map.mapOptions.name = 'Echoes of Wisdom';
+  map.mapControl = { viewStyleBottomSlide: true, _mobileDrawerBaseTop: 0, _startPosition: 600 };
   map.setupOfflineMapMessage();
   expect(document.querySelectorAll('.offline-map-empty-message')).toHaveLength(1);
   expect(message.textContent).toContain('Echoes of Wisdom');
+  expect(message.classList.contains('offline-map-message-mobile')).toBe(true);
   listener({data:{type:'zeldamaps-tile-source',source:'download',url:'https://zeldamaps.com/tiles/totk/1_0_0.png'}});
   expect(message.textContent).toContain('Connect to the internet');
   listener({data:{type:'zeldamaps-tile-source',source:'download',url:'https://zeldamaps.com/tiles/eow/hyrule_overworld/0_0_0.png'}});

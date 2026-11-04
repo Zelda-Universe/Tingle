@@ -2041,6 +2041,7 @@ ZMap.prototype.setupOfflineMapMessage = function() {
     }
   });
   function positionMessage() {
+    message.classList.toggle('offline-map-message-mobile', !!(map.mapControl && map.mapControl.viewStyleBottomSlide));
     if(map.mapControl && map.mapControl.viewStyleBottomSlide) {
       var control = map.mapControl;
       var viewportBottom = window.visualViewport

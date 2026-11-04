@@ -1,14 +1,15 @@
-const CACHE_VERSION = '20261104-5';
+const CACHE_VERSION = '20261104-6';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
 const MAX_TILE_ENTRIES = 500;
+const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261104-offline-notice-zoom',
-  './res.php?type=css&v=20261104-offline-notice-zoom',
+  './res.php?type=javascript&v=20261104-offline-cold-start',
+  './res.php?type=css&v=20261104-offline-cold-start',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -18,6 +19,10 @@ const CORE_ASSETS = [
 ];
 
 const OPTIONAL_ASSETS = [
+  './fonts/icomoon.ttf?xz2wpa',
+  './fonts/icomoon.woff?xz2wpa',
+  ...['265406_1_0', '265406_0_0', '264CA8_2_0', '264CA8_1_0', '265406_2_0', '265406_3_0', '264CA8_0_0']
+    .map(name => './fonts/brandon/' + name + '.woff'),
   'https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js',
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css',
@@ -52,10 +57,35 @@ self.addEventListener('install', event => {
       .then(async cache => {
         await cache.addAll(CORE_ASSETS);
         await Promise.allSettled(OPTIONAL_ASSETS.map(asset => cache.add(asset)));
+        await warmNavigationCache();
       })
       .then(() => self.skipWaiting())
   );
 });
+
+async function warmNavigationCache() {
+  try {
+    const cache = await caches.open(NAVIGATION_CACHE);
+    const gamesURL = new URL('ajax.php?command=get_games', self.registration.scope).href;
+    const response = await fetch(gamesURL);
+    if (!response.ok) return;
+    const games = await response.clone().json();
+    if (!Array.isArray(games)) return;
+    await cache.put(gamesURL, response);
+    const urls = games.flatMap(game => [
+      'ajax.php?command=get_container&game=' + encodeURIComponent(game.shortName),
+      ...['get_map', 'get_categories', 'get_markers'].map(command =>
+        'ajax.php?command=' + command + '&game=' + encodeURIComponent(game.id))
+    ]);
+    await Promise.allSettled(urls.map(async path => {
+      const url = new URL(path, self.registration.scope).href;
+      const data = await fetch(url);
+      if (data.ok) await cache.put(url, data);
+    }));
+  } catch (error) {
+    // Keep the previous navigation data if an update occurs offline.
+  }
+}
 
 self.addEventListener('activate', event => {
   const activeCaches = new Set([APP_CACHE, DATA_CACHE, TILE_CACHE]);
@@ -101,6 +131,25 @@ async function networkFirst(request, cacheName, fallbackRequest) {
       const fallbackResponse = await caches.match(fallbackRequest);
       if (fallbackResponse) return fallbackResponse;
     }
+    throw error;
+  }
+}
+
+async function navigateWithCurrentShell(request) {
+  try {
+    const response = await fetch(request);
+    await putSafely(APP_CACHE, request, response);
+    return response;
+  } catch (error) {
+    // Downloaded HTML can name obsolete, versioned JS/CSS removed by an
+    // app update. Always boot the current shell; game selection comes from
+    // the address bar, not from the shell's original game query string.
+    const app = await caches.open(APP_CACHE);
+    const shellURL = new URL('./?game=TotK', self.registration.scope).href;
+    const shell = await app.match(shellURL);
+    if (shell) return shell;
+    const cached = await caches.match(request);
+    if (cached) return cached;
     throw error;
   }
 }
@@ -207,16 +256,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
 
   if (request.mode === 'navigate') {
-    // Offline, a link with a map position falls back to the game's page,
-    // which downloaded maps save.
-    const game = url.searchParams.get('game');
-    event.respondWith(networkFirst(request, APP_CACHE).catch(async error => {
-      const gamePage = game && await caches.match(new URL('./?game=' + encodeURIComponent(game), self.registration.scope).href);
-      if (gamePage) return gamePage;
-      const fallback = await caches.match('./?game=TotK');
-      if (fallback) return fallback;
-      throw error;
-    }));
+    event.respondWith(navigateWithCurrentShell(request));
     return;
   }
 
@@ -227,7 +267,9 @@ self.addEventListener('fetch', event => {
   }
 
   if (isPublicDataRequest(url)) {
-    event.respondWith(networkFirst(request, DATA_CACHE));
+    // Public game metadata is needed to navigate even to undownloaded games.
+    // Unlike the app bundle cache, it must survive version upgrades.
+    event.respondWith(networkFirst(request, NAVIGATION_CACHE));
     return;
   }
 

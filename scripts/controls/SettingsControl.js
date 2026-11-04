@@ -214,18 +214,39 @@ L.Control.Settings = L.Control.extend({
     return settings;
   },
 
-  saveAccountSettings: function() {
-    if(!this.zMap.getUser()) return;
+  // done(saved) is optional. Changes that can't reach the server are sent
+  // when the connection returns (ZOfflineSync).
+  saveAccountSettings: function(done) {
+    if(!this.zMap.getUser()) {
+      if(done) done(false);
+      return;
+    }
+    if(!navigator.onLine) {
+      ZOfflineSync.setSettingsPending(true);
+      if(done) done(false);
+      return;
+    }
     $.ajax({
       type: 'POST',
       url: 'ajax.php?command=save_user_settings',
-      data: { settings: JSON.stringify(this.currentSettings()) }
+      data: { settings: JSON.stringify(this.currentSettings()) },
+      success: function(data) {
+        if(data && data.success) ZOfflineSync.setSettingsPending(false);
+        if(done) done(!!(data && data.success));
+      },
+      error: function(xhr) {
+        if(ZOfflineSync.isNetworkError(xhr)) ZOfflineSync.setSettingsPending(true);
+        if(done) done(false);
+      }
     });
   },
 
   // On sign-in the account's settings replace this device's. An account with
   // none saved yet takes this device's instead.
   applyAccountSettings: function(settings) {
+    // Changed offline since, so this device's are newer; they're sent with
+    // the rest of the offline changes.
+    if(ZOfflineSync.settingsPending()) return;
     if(!settings) {
       this.saveAccountSettings();
       return;

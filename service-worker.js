@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261103-8';
+const CACHE_VERSION = '20261103-10';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -7,8 +7,8 @@ const MAX_TILE_ENTRIES = 500;
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261103-default-avatar',
-  './res.php?type=css&v=20261103-default-avatar',
+  './res.php?type=javascript&v=20261104-offline-sync',
+  './res.php?type=css&v=20261104-offline-sync',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -106,7 +106,9 @@ async function networkFirst(request, cacheName, fallbackRequest) {
 }
 
 async function staleWhileRevalidate(request, cacheName) {
-  const cachedResponse = await caches.match(request);
+  // Downloaded maps save marker images with fetch(), whose Vary request
+  // headers can differ from an <img>'s.
+  const cachedResponse = await caches.match(request, { ignoreVary: true });
   const networkResponse = fetch(request)
     .then(async response => {
       await putSafely(cacheName, request, response);
@@ -151,7 +153,10 @@ async function cacheFirstTile(request) {
 }
 
 function isPublicDataRequest(url) {
-  if (url.origin !== self.location.origin || !url.pathname.endsWith('/ajax.php')) return false;
+  if (url.origin !== self.location.origin) return false;
+  // Marker names and details, which downloaded maps also save.
+  if (/\/data\/[^/]+\/lang\/[^/]+\.json$/.test(url.pathname)) return true;
+  if (!url.pathname.endsWith('/ajax.php')) return false;
   return PUBLIC_DATA_COMMANDS.has(url.searchParams.get('command'));
 }
 
@@ -179,7 +184,22 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
 
   if (request.mode === 'navigate') {
-    event.respondWith(networkFirst(request, APP_CACHE, './?game=TotK'));
+    // Offline, a link with a map position falls back to the game's page,
+    // which downloaded maps save.
+    const game = url.searchParams.get('game');
+    event.respondWith(networkFirst(request, APP_CACHE).catch(async error => {
+      const gamePage = game && await caches.match(new URL('./?game=' + encodeURIComponent(game), self.registration.scope).href);
+      if (gamePage) return gamePage;
+      const fallback = await caches.match('./?game=TotK');
+      if (fallback) return fallback;
+      throw error;
+    }));
+    return;
+  }
+
+  // Profile pictures, so the signed-in account looks the same offline.
+  if (url.origin === self.location.origin && url.pathname.includes('/uploads/profile-pictures/')) {
+    event.respondWith(networkFirst(request, APP_CACHE));
     return;
   }
 

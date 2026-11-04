@@ -1416,10 +1416,38 @@ L.Control.ZLayers = L.Control.Layers.extend({
             { height: Math.max(0, incomingDrawerHeight - verticalExtras) + 'px' }
           ], timing);
         }
+        // A page that fills in while sliding in (e.g. a list loaded from the
+        // server) changes its height: head for the new height from wherever
+        // the drawer is, rather than finishing at the old one and jumping.
+        if(typeof ResizeObserver === 'function') {
+          var transitionStart = performance.now();
+          var incomingContentsHeight = this._contents.getBoundingClientRect().height;
+          var retarget = function() {
+            var contentsHeight = this._contents.getBoundingClientRect().height;
+            if(Math.abs(contentsHeight - incomingContentsHeight) <= .5) return;
+            incomingContentsHeight = contentsHeight;
+            var currentHeight = this._container.getBoundingClientRect().height;
+            if(drawerResizing) drawerResizing.cancel();
+            var targetHeight = this._container.getBoundingClientRect().height;
+            drawerResizing = null;
+            if(Math.abs(targetHeight - currentHeight) <= .5) return;
+            this._container.style.overflow = 'hidden';
+            drawerResizing = this._container.animate([
+              { height: Math.max(0, currentHeight - verticalExtras) + 'px' },
+              { height: Math.max(0, targetHeight - verticalExtras) + 'px' }
+            ], {
+              duration: Math.max(150, timing.duration - (performance.now() - transitionStart)),
+              easing: timing.easing
+            });
+          }.bind(this);
+          var contentsObserver = new ResizeObserver(retarget);
+          contentsObserver.observe(this._contents);
+        }
       }
       var cleanup = function() {
         entering.cancel();
         leaving.cancel();
+        if(contentsObserver) contentsObserver.disconnect();
         if(drawerResizing) {
           drawerResizing.cancel();
           this._container.style.overflow = previousDrawerOverflow;

@@ -3,6 +3,7 @@ scripts/util/ZConfig.lib.js
 scripts/util/ZConfig.js
 scripts/util/zlogger.js
 scripts/util/general.js
+scripts/util/ZOfflineSync.js
 scripts/util/customPolyfills.js
 scripts/util/debug.zmap.lib.js
 scripts/util/leaflet.polylineDecorator.js

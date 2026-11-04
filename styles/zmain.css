@@ -740,6 +740,7 @@ main.leaflet-container,
 
 #account #account_delete_btn {
 	margin-top: 24px;
+	margin-bottom: 16px;
 	color: #ff6b63;
 	background: transparent;
 }
@@ -958,6 +959,87 @@ main.leaflet-container,
 	border-radius: 50%;
 	object-fit: cover;
 	box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+/* Offline, a game this device has no map data for (showOfflineUnavailable). */
+.offline-unavailable {
+	position: fixed;
+	inset: 0;
+	z-index: 2000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	background: #1d1d1d;
+	color: #fff;
+	font-family: "BrandonText", sans-serif;
+}
+
+.offline-unavailable-card {
+	width: 100%;
+	max-width: 360px;
+	padding: 24px;
+	border-radius: 26px;
+	background: rgba(255, 255, 255, 0.08);
+	text-align: center;
+}
+
+.offline-unavailable-logo {
+	width: 160px;
+	margin-bottom: 16px;
+}
+
+.offline-unavailable-card p {
+	margin: 0 0 16px;
+	font-size: 16px;
+}
+
+.offline-unavailable-card .offline-unavailable-hint {
+	margin-bottom: 8px;
+	font-size: 14px;
+	opacity: 0.7;
+}
+
+.offline-unavailable-links {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.offline-unavailable-links a {
+	display: block;
+	padding: 12px 16px;
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.2);
+	color: inherit;
+	font-size: 17px;
+	text-decoration: none;
+}
+
+.offline-unavailable-links a:hover,
+.offline-unavailable-links a:focus-visible {
+	background: rgba(255, 255, 255, 0.3);
+}
+
+/* Pages that need the server, while offline (ZMap._lockWhileOffline).
+   Scoped like the drawer's own paragraph rules, which would otherwise remove
+   the padding and margin. */
+.offline-notice,
+.menu-cat-content-inner p.offline-notice,
+.menu-cat-content-inner #account p.offline-notice {
+	margin: 0 16px 16px;
+	padding: 12px 16px;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: 10px;
+	background: rgba(255, 255, 255, 0.08);
+	font-size: 14px;
+	text-align: center;
+}
+
+.offline-dimmed {
+	opacity: 0.4;
+	pointer-events: none;
+	transition: opacity 0.2s;
 }
 
 .account-profile-status {

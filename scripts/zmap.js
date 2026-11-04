@@ -1620,11 +1620,26 @@ ZMap.prototype._createDroppedPinEmbedLink = function(latlng) {
 ZMap.prototype.getUserBookmarks = function() {
   var _this = this;
   var request = this._bookmarksRequest = (this._bookmarksRequest || 0) + 1;
-  $.getJSON("ajax.php?command=get_user_bookmarks&game=" + gameId, function(results) {
+  var userId = this.getUser() && this.getUser().id;
+  var apply = function(results) {
     if(request !== _this._bookmarksRequest) return;
     _this.bookmarks = results || [];
     _this._updateBookmarkButton();
     if(_this.mapControl.getContentType() == 'bookmarksPage') _this._renderBookmarksList();
+  };
+  $.getJSON("ajax.php?command=get_user_bookmarks&game=" + gameId).done(function(results) {
+    // Bookmarks added offline that haven't been sent yet stay listed.
+    var pending = (ZOfflineSync.savedBookmarks(userId, gameId) || []).filter(function(bookmark) {
+      return String(bookmark.id).indexOf('offline-') === 0 && ZOfflineSync.queue().some(function(item) {
+        return item.tempId === bookmark.id;
+      });
+    });
+    results = pending.concat(results || []);
+    ZOfflineSync.saveBookmarks(userId, gameId, results);
+    apply(results);
+  }).fail(function(xhr) {
+    if(!ZOfflineSync.isNetworkError(xhr)) return;
+    apply(ZOfflineSync.savedBookmarks(userId, gameId) || []);
   });
 };
 
@@ -1679,11 +1694,16 @@ ZMap.prototype.toggleBookmark = function() {
           : { mapId: target.mapId, submapId: target.subMapId, x: target.x, y: target.y }
       };
 
-  $.ajax({
-    type: 'POST',
-    url: 'ajax.php?command=' + request.command,
+  var finished = function() {
+    if(button) button.disabled = false;
+  };
+  ZOfflineSync.send({
+    command: request.command,
     data: request.data,
+    userId: this.getUser().id,
+    game: gameId,
     success: function(data) {
+      finished();
       if(!data.success) {
         toastr.error(data.msg || 'The bookmark could not be saved.');
         return;
@@ -1702,13 +1722,12 @@ ZMap.prototype.toggleBookmark = function() {
           y: target.markerId != null ? null : Number(target.y.toFixed(4))
         });
       }
+      ZOfflineSync.saveBookmarks(_this.getUser().id, gameId, _this.bookmarks);
       if(_this._bookmarkTarget === target) _this._updateBookmarkButton();
     },
     error: function() {
+      finished();
       toastr.error('The bookmark could not be saved.');
-    },
-    complete: function() {
-      if(button) button.disabled = false;
     }
   });
 };
@@ -2062,6 +2081,8 @@ ZMap.prototype.goToStart = function() {
 
 ZMap.prototype.setUser = function(vUser) {
    user = vUser;
+   // Signed out: remove the account's offline data from this device.
+   if(user == null) ZOfflineSync.clear();
    _this._buildContextMenu();
    this.notifyUserChanged();
 
@@ -2458,19 +2479,59 @@ ZMap.prototype.getUserCompletedMarkers = function() {
    }, this);
 
    //@TODO: Use gameID from zmap, not zmain
-   $.getJSON("ajax.php?command=get_user_completed_markers&game=" + gameId + "&userId=" + user.id, function(vResults) {
+   var userId = user.id;
+   var apply = function(markerIds) {
       // Look markers up by id and refresh once at the end: refreshing the
       // whole map per completed marker froze phones for accounts with many.
-      $.each(vResults, function(i, completed) {
-         var marker = _this.cachedMarkersById[completed.markerId];
-         if (!marker) return;
-         completedMarkers.push(completed.markerId);
+      var seen = {};
+      markerIds.forEach(function(markerId) {
+         var marker = _this.cachedMarkersById[markerId];
+         if (!marker || seen[marker.id]) return;
+         seen[marker.id] = true;
+         if (completedMarkers.indexOf(marker.id) === -1) completedMarkers.push(marker.id);
          _this.categories[marker.categoryId].complete++;
          _this._doSetMarkerDoneIcon(marker, true);
       });
       _this.refreshMap();
+      if(_this.mapControl && _this.mapControl._categoryMenu) {
+        _this.mapControl._categoryMenu.categoryButtons.forEach(function(button) { button.updateCategoryLabel(); });
+      }
+   };
+   $.getJSON("ajax.php?command=get_user_completed_markers&game=" + gameId + "&userId=" + userId).done(function(vResults) {
+      // Including changes made offline that haven't been sent yet.
+      var markerIds = ZOfflineSync.applyPendingCompleted(userId, gameId, (vResults || []).map(function(completed) {
+         return completed.markerId;
+      }));
+      ZOfflineSync.saveCompleted(userId, gameId, markerIds);
+      apply(markerIds);
+   }).fail(function(xhr) {
+      if(!ZOfflineSync.isNetworkError(xhr)) return;
+      apply(ZOfflineSync.savedCompleted(userId, gameId) || []);
    });
 }
+
+// Keeps this device's copy of the account's completed markers current.
+ZMap.prototype._saveCompletedOffline = function() {
+  if(user && user.id) ZOfflineSync.saveCompleted(user.id, gameId, completedMarkers);
+};
+
+// Sends changes made offline, now or once the connection returns.
+ZMap.prototype.syncOfflineChanges = function() {
+  var _this = this;
+  if(!this._offlineSyncListener) {
+    this._offlineSyncListener = true;
+    window.addEventListener('online', function() { _this.syncOfflineChanges(); });
+  }
+  if(!this.getUser()) return;
+  ZOfflineSync.flush(this.getUser().id, {
+    saveSettings: function(done) {
+      if(_this.settingsControl) _this.settingsControl.saveAccountSettings(done);
+      else done(false);
+    },
+    // Bookmarks added offline get their real ids.
+    onDone: function(changed) { if(changed) _this.getUserBookmarks(); }
+  });
+};
 
 ZMap.prototype.addCompletedMarkers = function(vComplete) {
    completedMarkers = vComplete;
@@ -2512,13 +2573,15 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
   }
 
   if (user && user.id) {
-    $.ajax({
-      type: "POST",
-      url: "ajax.php?command=add_complete_marker",
+    ZOfflineSync.send({
+      command: "add_complete_marker",
       data: { markerId: vMarker.id, userId: user.id },
+      userId: user.id,
+      game: gameId,
       success: function(data) {
         if (data.success) {
           _this._completeSetMarkerDoneAndCookie(vMarker);
+          _this._saveCompletedOffline();
         } else {
           toastr.error(
             _this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg)
@@ -2556,16 +2619,18 @@ ZMap.prototype._completeSetMarkerDoneAndCookie = function(vMarker) {
 
 ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
   if (user != null || user != undefined) {
-    $.ajax({
-      type: "POST",
-      url: "ajax.php?command=del_complete_marker",
+    ZOfflineSync.send({
+      command: "del_complete_marker",
       data: { markerId: vMarker.id, userId: user.id },
+      userId: user.id,
+      game: gameId,
       success: function(data) {
         if (data.success) {
           vMIdx = completedMarkers.indexOf(vMarker.id);
           if (vMIdx >= 0) completedMarkers.splice(vMIdx, 1);
           _this._doSetMarkerDoneIcon(vMarker, false);
           _this.categories[vMarker.categoryId].complete--;
+          _this._saveCompletedOffline();
         } else {
           toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
         }
@@ -2901,6 +2966,7 @@ ZMap.prototype._createRegisterForm = function() {
                  success: function(login) {
                    if(!login.success) return showLoginFallback();
                    _this.setUser(login.user);
+                   ZOfflineSync.saveUserInfo({ success: true, user: login.user });
                    updateAdState();
                    if(_this.settingsControl) _this.settingsControl.applyAccountSettings(login.user.settings);
                    if(bookmarkPending) {
@@ -3006,6 +3072,7 @@ ZMap.prototype._createChangePasswordForm = function() {
                         '</form>'+
                      '</div>'
    , 'changePasswordForm');
+   this._lockWhileOffline('#changepassword', { keep: '#change_password_back_btn', dim: '#changepasswordform' });
 
 
    $("#changepasswordform").submit(function(e) {
@@ -3065,6 +3132,7 @@ ZMap.prototype._createAccountDeleteForm = function() {
     '</div>'
   , 'deleteAccountForm'
   );
+  this._lockWhileOffline('#deleteaccount', { dim: '#deleteaccountform' });
 
   var _this = this;
 
@@ -3364,6 +3432,9 @@ ZMap.prototype._createLoginForm = function(successMessage) {
               _this.mapControl.resetContent();
             }
             if(_this.settingsControl) _this.settingsControl.applyAccountSettings(data.user.settings);
+            ZOfflineSync.saveUserInfo({ success: true, user: data.user });
+            _this.syncOfflineChanges();
+            _this.checkOfflineMapUpdates();
           } else {
             showLoginError(data.msg);
           }
@@ -3578,6 +3649,10 @@ ZMap.prototype._createAdminPage = function() {
     '</div>',
     'adminPage'
   );
+  this._lockWhileOffline('#admin', {
+    dim: '.admin-section',
+    message: 'You\'re offline. Connect to the internet to use the admin tools.'
+  });
 
   var graph = { metric: 'registrations', range: '30d' }, statsRequest = 0;
   var loadStats = function() {
@@ -3712,6 +3787,10 @@ ZMap.prototype._createAdminUserPage = function(account) {
     '</div>',
     'adminUserPage'
   );
+  this._lockWhileOffline('#admin_user', {
+    dim: '#admin_user_form',
+    message: 'You\'re offline. Connect to the internet to make changes to accounts.'
+  });
   $('#admin_user h3').text(displayUserName(account.username));
   $('#admin_user .admin-user-meta').text('#' + account.id +
     (account.created ? ' · joined ' + account.created.slice(0, 10) : '') +
@@ -3751,6 +3830,51 @@ ZMap.prototype._createAdminUserPage = function(account) {
   });
 };
 
+// While offline, shows a notice under the page's title and dims and
+// disables the controls that need the server, restoring them once back
+// online. opts: controls (selector, default every form control), keep
+// (selector to leave usable), dim (selector to dim instead of the controls),
+// message, onChange(offline).
+ZMap.prototype._lockWhileOffline = function(rootSelector, opts) {
+  opts = opts || {};
+  var root = $(rootSelector);
+  if(!root.length) return;
+  var notice = $('<p>', { class: 'offline-notice', role: 'status' })
+    .text(opts.message || 'You\'re offline. Connect to the internet to make changes to your account.')
+    .hide();
+  var title = root.find('h3').first();
+  if(title.length) notice.insertAfter(title);
+  else notice.prependTo(root);
+
+  var update = function() {
+    if(!root[0].isConnected) {
+      window.removeEventListener('online', update);
+      window.removeEventListener('offline', update);
+      return;
+    }
+    var offline = !navigator.onLine;
+    notice.toggle(offline);
+    var controls = root.find(opts.controls || 'input, button, select, textarea');
+    if(opts.keep) controls = controls.not(opts.keep);
+    controls.each(function() {
+      var control = $(this);
+      if(offline && !control.data('offlineLocked')) {
+        control.data('offlineLocked', true).data('offlineWasDisabled', this.disabled);
+        this.disabled = true;
+      } else if(!offline && control.data('offlineLocked')) {
+        this.disabled = !!control.data('offlineWasDisabled');
+        control.removeData('offlineLocked offlineWasDisabled');
+      }
+    });
+    (opts.dim ? root.find(opts.dim) : controls).toggleClass('offline-dimmed', offline);
+    if(opts.onChange) opts.onChange(offline);
+  };
+  window.addEventListener('online', update);
+  window.addEventListener('offline', update);
+  // After the page's own setup, which may enable some controls.
+  Promise.resolve().then(update);
+};
+
 ZMap.prototype._createAccountForm = function(user) {
   var _this = this;
   var profilePicture = user.profilePicture || 'images/default-avatar.png';
@@ -3787,6 +3911,10 @@ ZMap.prototype._createAccountForm = function(user) {
 
   var selectedPreviewURL = null;
   $('#account_clear_completed_btn').prop('disabled', completedMarkers.length === 0);
+  this._lockWhileOffline('#account', {
+    controls: '#account_profile_choose, #account_admin_btn, #account_clear_completed_btn, #log_out_btn, #account_delete_btn',
+    message: 'You\'re offline. Some features will be unavailable until you reconnect to the internet.'
+  });
   $('#account_admin_btn').click(function() {
     _this._createAdminPage();
   });
@@ -3916,6 +4044,7 @@ ZMap.prototype._createAccountInformationForm = function() {
   $('#account_username').val(user.username);
   $('#account_name').val(user.name || '');
   $('#account_email').val(user.email || '');
+  this._lockWhileOffline('#account_information', { dim: '#account_information_form' });
   var savingAccountInformation = false;
   var usernameAvailable = true;
   var usernameCheckTimer;
@@ -4049,8 +4178,139 @@ ZMap.prototype._createAccountInformationForm = function() {
   });
 };
 
-ZMap.prototype._createOfflineMapsForm = function() {
+// Downloaded map packs: one cache of tiles and map data per game, plus a
+// record in localStorage of its status and tile version.
+var ZMapOfflinePacks = {
+  cacheName: function(gameId) {
+    return 'zeldamaps-offline-' + gameId;
+  },
+  storageKey: function(gameId) {
+    return 'zeldamapsOfflineMap-' + gameId;
+  },
+  // Each saved tile's size and modified time, to tell which ones an update
+  // replaces. Kept in the pack's own cache.
+  indexURL: 'offline-pack-index.json',
+  read: function(gameId) {
+    try {
+      var value = localStorage.getItem(this.storageKey(gameId));
+      return value ? JSON.parse(value) : null;
+    } catch(error) {
+      return null;
+    }
+  },
+  write: function(gameId, record) {
+    try {
+      localStorage.setItem(this.storageKey(gameId), JSON.stringify(record));
+    } catch(error) {
+      // CacheStorage remains authoritative if localStorage is unavailable.
+    }
+  },
+  remove: function(gameId) {
+    try {
+      localStorage.removeItem(this.storageKey(gameId));
+    } catch(error) {}
+  },
+  // The ids of games downloaded in full on this device.
+  downloadedGameIds: function() {
+    var ids = [];
+    try {
+      for(var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if(key.indexOf('zeldamapsOfflineMap-') !== 0) continue;
+        var gameId = key.slice('zeldamapsOfflineMap-'.length);
+        var record = this.read(gameId);
+        if(record && (record.status === 'downloaded' || (!record.status && record.downloadedAt))) ids.push(gameId);
+      }
+    } catch(error) {}
+    return ids;
+  },
+  // A download made before tile versions existed counts as out of date.
+  needsUpdate: function(record, game) {
+    return !!(record && game && game.available && game.version && record.version !== game.version);
+  }
+};
+
+// When signed in and online, offers to update downloaded maps whose tiles
+// have changed. Each new version is offered until updated or declined.
+ZMap.prototype.checkOfflineMapUpdates = function() {
   var _this = this;
+  if(!this._offlineUpdateListener) {
+    this._offlineUpdateListener = true;
+    window.addEventListener('online', function() { _this.checkOfflineMapUpdates(); });
+  }
+  if(!this.getUser() || !navigator.onLine || !('caches' in window)) return;
+  if(this._checkingOfflineUpdates) return;
+  var gameIds = ZMapOfflinePacks.downloadedGameIds();
+  if(!gameIds.length) return;
+  this._checkingOfflineUpdates = true;
+
+  // Only packs the browser still has.
+  Promise.all(gameIds.map(function(gameId) {
+    return caches.has(ZMapOfflinePacks.cacheName(gameId)).then(function(has) { return has ? gameId : null; });
+  })).then(function(ids) {
+    ids = ids.filter(Boolean);
+    if(!ids.length) return null;
+    return $.getJSON('ajax.php?command=get_offline_maps&mode=versions&games=' + encodeURIComponent(ids.join(',')));
+  }).then(function(data) {
+    if(!data || !data.success) return;
+    var outdated = (data.games || []).filter(function(game) {
+      var record = ZMapOfflinePacks.read(game.id);
+      return ZMapOfflinePacks.needsUpdate(record, game) && record.dismissedVersion !== game.version;
+    });
+    if(!outdated.length || document.getElementById('offline-map-update-alert')) return;
+    var names = outdated.map(function(game) { return game.name; });
+    var nameList = names.length > 1
+      ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]
+      : names[0];
+    _this._showAlert({
+      id: 'offline-map-update-alert',
+      title: outdated.length > 1 ? 'Map Updates Available' : 'Map Update Available',
+      description: 'There ' + (outdated.length > 1 ? 'are updates' : 'is an update') +
+        ' for your offline ' + $('<span>').text(nameList).html() + ' ' +
+        (outdated.length > 1 ? 'maps' : 'map') + '. Download ' +
+        (outdated.length > 1 ? 'them' : 'it') + ' now?',
+      actions: [
+        {
+          label: 'Update',
+          onSelect: function() { _this.openOfflineMapsPage({ autoUpdate: outdated.map(function(game) { return game.id; }) }); }
+        },
+        {
+          label: 'Not Now',
+          className: 'bookmark-registration-cancel',
+          cancel: true,
+          onSelect: function() {
+            outdated.forEach(function(game) {
+              var record = ZMapOfflinePacks.read(game.id);
+              if(!record) return;
+              record.dismissedVersion = game.version;
+              ZMapOfflinePacks.write(game.id, record);
+            });
+          }
+        }
+      ]
+    });
+  }).catch(function() {}).then(function() {
+    _this._checkingOfflineUpdates = false;
+  });
+};
+
+// Shows the Offline Maps page from anywhere, e.g. an alert.
+ZMap.prototype.openOfflineMapsPage = function(opts) {
+  var control = this.mapControl;
+  if(!control.viewStyleBottomSlide && this.settingsControl && this.settingsControl.isMinimalUI()) {
+    this.settingsControl.setMinimalUI(false);
+  } else if(!control.viewStyleBottomSlide && control.options.collapsed) {
+    control._expand();
+  }
+  this._createOfflineMapsForm(opts);
+  if(control.viewStyleBottomSlide) control.openDrawerLarge();
+};
+
+// opts.autoUpdate: game ids to update as soon as the page knows they need it.
+// Routes call this with the user, which has no autoUpdate.
+ZMap.prototype._createOfflineMapsForm = function(opts) {
+  var _this = this;
+  var autoUpdate = opts && Array.isArray(opts.autoUpdate) ? opts.autoUpdate : [];
   this.mapControl.setContent(
     '<div id="offline_maps" class="offline-maps-page">' +
       '<h3 class="text-center">Offline Maps</h3>' +
@@ -4061,6 +4321,19 @@ ZMap.prototype._createOfflineMapsForm = function() {
     '</div>',
     'offlineMapsPage'
   );
+  // Downloads need the connection; removing a saved map doesn't.
+  this._lockWhileOffline('#offline_maps', {
+    controls: '.offline-map-none',
+    message: 'You\'re offline. Connect to the internet to download or update maps.',
+    onChange: function() {
+      $('#offline_maps .offline-map-card').each(function() {
+        var card = $(this);
+        if(card.data('game') && card.find('.offline-map-download').text().slice(-1) !== '…') {
+          setPackState(card, card.data('game'), card.data('packState') || null);
+        }
+      });
+    }
+  });
 
   function formatBytes(bytes) {
     if(!bytes) return '0 MB';
@@ -4070,42 +4343,16 @@ ZMap.prototype._createOfflineMapsForm = function() {
     return value.toFixed(unitIndex >= 2 && value < 10 ? 1 : 0) + ' ' + units[unitIndex];
   }
 
-  function packCacheName(gameId) {
-    return 'zeldamaps-offline-' + gameId;
-  }
-
-  function packStorageKey(gameId) {
-    return 'zeldamapsOfflineMap-' + gameId;
-  }
-
-  function readPackRecord(gameId) {
-    try {
-      var value = localStorage.getItem(packStorageKey(gameId));
-      return value ? JSON.parse(value) : null;
-    } catch(error) {
-      return null;
-    }
-  }
-
-  function writePackRecord(gameId, record) {
-    try {
-      localStorage.setItem(packStorageKey(gameId), JSON.stringify(record));
-    } catch(error) {
-      // CacheStorage remains authoritative if localStorage is unavailable.
-    }
-  }
-
-  function removePackRecord(gameId) {
-    try {
-      localStorage.removeItem(packStorageKey(gameId));
-    } catch(error) {}
-  }
+  var packCacheName = ZMapOfflinePacks.cacheName.bind(ZMapOfflinePacks);
+  var readPackRecord = ZMapOfflinePacks.read.bind(ZMapOfflinePacks);
+  var writePackRecord = ZMapOfflinePacks.write.bind(ZMapOfflinePacks);
+  var removePackRecord = ZMapOfflinePacks.remove.bind(ZMapOfflinePacks);
 
   function setPackState(card, game, packState) {
     var downloadButton = card.find('.offline-map-download');
     var deleteButton = card.find('.offline-map-delete');
     var status = card.find('.offline-map-status');
-    card.data('packState', packState);
+    card.data('packState', packState).data('game', game);
     status.removeClass('success error');
     if(packState === 'downloaded') {
       // The saved size is known even before this game's size has loaded.
@@ -4113,16 +4360,24 @@ ZMap.prototype._createOfflineMapsForm = function() {
       downloadButton.text('Downloaded').prop('disabled', true).addClass('downloaded');
       deleteButton.show();
       status.text(formatBytes(savedSize) + ' saved on this device.').addClass('success');
-    } else if(packState === 'partial') {
-      downloadButton.text('Resume').prop('disabled', false).removeClass('downloaded');
+    } else if(packState === 'update') {
+      downloadButton.text('Update').prop('disabled', false).removeClass('downloaded');
       deleteButton.show();
-      status.text('Download paused. Resume to continue with the remaining tiles.');
+      status.text('An update is available for this map.');
+    } else if(packState === 'partial') {
+      var updating = (readPackRecord(game.id) || {}).pendingUpdate;
+      downloadButton.text(updating ? 'Resume Update' : 'Resume').prop('disabled', false).removeClass('downloaded');
+      deleteButton.show();
+      status.text(updating
+        ? 'Update paused. Resume to finish updating this map.'
+        : 'Download paused. Resume to continue with the remaining tiles.');
     } else {
       downloadButton.text('Download').prop('disabled', !game.available).removeClass('downloaded');
       deleteButton.hide();
       // Until the size loads, availability isn't known yet.
       status.text(game.available === false ? 'Map files are not available for download.' : '');
     }
+    if(!navigator.onLine) downloadButton.prop('disabled', true);
   }
 
   function downloadTiles(game, card) {
@@ -4136,11 +4391,19 @@ ZMap.prototype._createOfflineMapsForm = function() {
     var totalTiles = game.tileCount;
     var totalBytes = game.size;
     var existingRecord = readPackRecord(game.id);
+    // An update replaces only tiles whose size or modified time changed.
+    var isUpdate = !!existingRecord && (
+      existingRecord.pendingUpdate || card.data('packState') === 'update'
+    );
+    var oldIndex = null;
+    var newIndex = {};
+    var newVersion = null;
+    var dataURLs = [];
 
-    downloadButton.prop('disabled', true).text('Downloading…');
+    downloadButton.prop('disabled', true).text(isUpdate ? 'Updating…' : 'Downloading…');
     progress.attr('max', Math.max(totalBytes, 1)).val(0).show();
     progressLabel.text('0%').show();
-    status.removeClass('success error').text('Preparing download…');
+    status.removeClass('success error').text(isUpdate ? 'Preparing update…' : 'Preparing download…');
 
     function updateProgress(tileSize) {
       completedTiles += 1;
@@ -4151,7 +4414,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
       var percent = Math.min(100, Math.round(fraction * 100));
       progress.val(totalBytes > 0 ? completedBytes : completedTiles);
       progress.attr('max', totalBytes > 0 ? totalBytes : Math.max(totalTiles, 1));
-      progressLabel.text(percent + '% · ' + completedTiles + ' of ' + totalTiles + ' tiles');
+      progressLabel.text(percent + '% · ' + completedTiles + ' of ' + totalTiles + ' files');
     }
 
     function downloadBatch(cache, tiles) {
@@ -4161,20 +4424,27 @@ ZMap.prototype._createOfflineMapsForm = function() {
       function worker() {
         if(index >= tiles.length) return Promise.resolve();
         var tile = tiles[index++];
-        var absoluteURL = new URL(tile.url, window.location.origin).href;
+        // Tiles have absolute paths; marker images are relative to the site.
+        var absoluteURL = new URL(tile.url, document.baseURI).href;
         var sameOrigin = new URL(absoluteURL).origin === window.location.origin;
+        var signature = tile.size + ':' + tile.m;
+        newIndex[absoluteURL] = signature;
+        // Revalidate, so a replaced tile isn't served from the HTTP cache.
         var fetchOptions = sameOrigin
           ? {
               credentials: 'same-origin',
-              redirect: 'follow'
+              redirect: 'follow',
+              cache: 'no-cache'
             }
           : {
               mode: 'no-cors',
               credentials: 'omit',
-              redirect: 'follow'
+              redirect: 'follow',
+              cache: 'no-cache'
             };
         return cache.match(absoluteURL, { ignoreVary: true }).then(function(cachedResponse) {
-          if(cachedResponse) {
+          var unchanged = !isUpdate || (oldIndex && oldIndex[absoluteURL] === signature);
+          if(cachedResponse && unchanged) {
             updateProgress(tile.size);
             return;
           }
@@ -4203,6 +4473,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
         if(!data.success) throw new Error(data.msg || 'The map manifest could not be loaded.');
         totalTiles = data.total;
         totalBytes = data.totalBytes;
+        newVersion = data.version || null;
         return downloadBatch(cache, data.tiles).then(function() {
           var nextOffset = offset + data.tiles.length;
           if(nextOffset < data.total) return downloadPage(cache, nextOffset);
@@ -4221,7 +4492,7 @@ ZMap.prototype._createOfflineMapsForm = function() {
 
     storageCheck.then(function(estimate) {
       if(
-        (!existingRecord || existingRecord.status !== 'partial') &&
+        !existingRecord &&
         estimate && estimate.quota && estimate.usage + totalBytes * 1.1 > estimate.quota
       ) {
         throw new Error('This device does not have enough available browser storage for this map.');
@@ -4232,33 +4503,71 @@ ZMap.prototype._createOfflineMapsForm = function() {
         status: 'partial',
         size: totalBytes,
         tileCount: totalTiles,
+        version: existingRecord && existingRecord.version,
+        pendingUpdate: isUpdate,
         updatedAt: Date.now()
       });
+      var indexRead = isUpdate
+        ? cache.match(ZMapOfflinePacks.indexURL).then(function(response) {
+            return response ? response.json() : null;
+          }).then(function(index) { oldIndex = index && index.tiles; }).catch(function() {})
+        : Promise.resolve();
       var containerURL = 'ajax.php?command=get_container&game=' + encodeURIComponent(game.id);
-      return fetch(containerURL).then(function(response) {
+      dataURLs.push(containerURL);
+      return indexRead.then(function() {
+        return fetch(containerURL, { cache: 'no-cache' });
+      }).then(function(response) {
         if(!response.ok) throw new Error('The offline map data could not be saved.');
         return response.json().then(function(containers) {
           if(!containers[0]) throw new Error('The offline map data could not be loaded.');
           return cache.put(containerURL, new Response(JSON.stringify(containers), {
             headers: { 'Content-Type': 'application/json' }
           })).then(function() {
-            return Promise.all(['get_map', 'get_categories', 'get_markers'].map(function(command) {
+            var saves = ['get_map', 'get_categories', 'get_markers'].map(function(command) {
               var url = 'ajax.php?command=' + command + '&game=' + containers[0].id;
-              return fetch(url).then(function(dataResponse) {
+              dataURLs.push(url);
+              return fetch(url, { cache: 'no-cache' }).then(function(dataResponse) {
                 if(!dataResponse.ok) throw new Error('The offline map data could not be saved.');
                 return cache.put(url, dataResponse);
               });
+            });
+            // The page itself, so switching to this game works offline.
+            var pageURL = './?game=' + encodeURIComponent(game.id);
+            dataURLs.push(pageURL);
+            saves.push(fetch(pageURL, { cache: 'no-cache', credentials: 'same-origin' }).then(function(pageResponse) {
+              if(pageResponse.ok) return cache.put(pageURL, pageResponse);
             }));
+            return Promise.all(saves);
           });
         });
-      }).then(function() { return downloadPage(cache, 0); });
+      }).then(function() {
+        return downloadPage(cache, 0);
+      }).then(function() {
+        // Remove tiles the map no longer uses, then save the new index.
+        var keep = {};
+        dataURLs.concat(ZMapOfflinePacks.indexURL).forEach(function(url) {
+          keep[new URL(url, window.location.href).href] = true;
+        });
+        return cache.keys().then(function(requests) {
+          return Promise.all(requests.filter(function(request) {
+            return !keep[request.url] && !newIndex[request.url];
+          }).map(function(request) { return cache.delete(request); }));
+        }).then(function() {
+          return cache.put(ZMapOfflinePacks.indexURL, new Response(
+            JSON.stringify({ version: newVersion, tiles: newIndex }),
+            { headers: { 'Content-Type': 'application/json' } }
+          ));
+        });
+      });
     }).then(function() {
       writePackRecord(game.id, {
         status: 'downloaded',
         size: totalBytes,
         tileCount: totalTiles,
+        version: newVersion,
         downloadedAt: Date.now()
       });
+      game.version = newVersion;
       progress.hide();
       progressLabel.hide();
       setPackState(card, game, 'downloaded');
@@ -4273,11 +4582,14 @@ ZMap.prototype._createOfflineMapsForm = function() {
             status: 'partial',
             size: totalBytes,
             tileCount: totalTiles,
+            version: existingRecord && existingRecord.version,
+            pendingUpdate: isUpdate,
             updatedAt: Date.now()
           });
           setPackState(card, game, 'partial');
           status.addClass('error').text(
-            (error.message || 'The map download was interrupted.') + ' Tap Resume to continue.'
+            (error.message || (isUpdate ? 'The map update was interrupted.' : 'The map download was interrupted.')) +
+            ' Tap Resume to continue.'
           );
         } else {
           caches.delete(cacheName);
@@ -4326,47 +4638,68 @@ ZMap.prototype._createOfflineMapsForm = function() {
 
     var packRecord = readPackRecord(game.id);
     setPackState(card, game, null);
-    caches.has(packCacheName(game.id)).then(function(hasCache) {
-      if(packRecord && hasCache) {
-        caches.open(packCacheName(game.id)).then(function(cache) {
-          return cache.keys();
-        }).then(function(requests) {
-          var tileCount = requests.filter(function(request) {
-            return new URL(request.url).pathname.indexOf('/tiles/') !== -1;
-          }).length;
-          if(tileCount < packRecord.tileCount) {
-            packRecord.status = 'partial';
-            writePackRecord(game.id, packRecord);
-            setPackState(card, game, 'partial');
-          }
-        });
-        setPackState(
-          card,
-          game,
-          (
-            packRecord.status === 'downloaded' ||
-            (!packRecord.status && packRecord.downloadedAt)
-          ) ? 'downloaded' : 'partial'
-        );
-      } else {
+    // What this device has saved: 'downloaded', 'partial' or null.
+    var savedState = caches.has(packCacheName(game.id)).then(function(hasCache) {
+      if(!packRecord || !hasCache) {
         removePackRecord(game.id);
         if(hasCache) caches.delete(packCacheName(game.id));
+        return null;
       }
-    });
+      var state = (
+        packRecord.status === 'downloaded' ||
+        (!packRecord.status && packRecord.downloadedAt)
+      ) ? 'downloaded' : 'partial';
+      setPackState(card, game, state);
+      return caches.open(packCacheName(game.id)).then(function(cache) {
+        return cache.keys();
+      }).then(function(requests) {
+        // Saved files (tiles and marker images) have no query string.
+        var tileCount = requests.filter(function(request) {
+          var url = new URL(request.url);
+          return !url.search && url.pathname.slice(-ZMapOfflinePacks.indexURL.length) !== ZMapOfflinePacks.indexURL;
+        }).length;
+        // The browser removed some files.
+        if(tileCount < packRecord.tileCount) {
+          packRecord.status = 'partial';
+          writePackRecord(game.id, packRecord);
+          state = 'partial';
+          setPackState(card, game, state);
+        }
+        return state;
+      });
+    }).catch(function() { return null; });
 
-    $.getJSON('ajax.php?command=get_offline_maps&game=' + encodeURIComponent(game.id), function(data) {
+    var sizeLoaded = $.getJSON('ajax.php?command=get_offline_maps&game=' + encodeURIComponent(game.id)).then(function(data) {
       var size = card.find('.offline-map-size');
       if(!data.success || !data.game) {
         size.text('Size unavailable');
-        return;
+        return false;
       }
       game.size = data.game.size;
       game.tileCount = data.game.tileCount;
       game.available = data.game.available;
+      game.version = data.game.version;
       size.text(game.available ? formatBytes(game.size) : 'Unavailable');
-      setPackState(card, game, card.data('packState') || null);
-    }).fail(function() {
+      return true;
+    }, function() {
       card.find('.offline-map-size').text('Size unavailable');
+      return false;
+    });
+
+    // Once both are known, show whether the saved map is out of date.
+    Promise.all([savedState, sizeLoaded]).then(function(results) {
+      var packState = results[0];
+      if(!results[1]) return;
+      // A download in progress sets its own state.
+      if(card.find('.offline-map-download').text().slice(-1) === '…') return;
+      if(packState === 'downloaded' && ZMapOfflinePacks.needsUpdate(readPackRecord(game.id), game)) {
+        packState = 'update';
+      }
+      setPackState(card, game, packState);
+      // Opened from the update alert: start right away.
+      if(autoUpdate.indexOf(game.id) !== -1 && (packState === 'update' || packState === 'partial')) {
+        downloadTiles(game, card);
+      }
     });
 
     downloadButton.click(function() {
@@ -4387,17 +4720,47 @@ ZMap.prototype._createOfflineMapsForm = function() {
     return;
   }
 
+  // Cards for the games the site already knows, straight away, so the page
+  // slides in at its full height (and works offline). The server's list then
+  // adds or removes any that differ.
+  var list = $('#offline_maps_list');
+  var cards = {};
+  var knownGames = Object.values(games || {}).map(function(game) {
+    return { id: game.shortName, name: game.name };
+  });
+  if(knownGames.length) {
+    list.empty();
+    knownGames.forEach(function(game) {
+      cards[game.id] = renderGame(game);
+      list.append(cards[game.id]);
+    });
+  }
+
   $.getJSON('ajax.php?command=get_offline_maps&mode=list', function(data) {
-    var list = $('#offline_maps_list').empty();
     if(!data.success || !data.games || !data.games.length) {
-      list.append('<p class="offline-map-status error">No offline maps are currently available.</p>');
+      list.empty().append('<p class="offline-map-status error">No offline maps are currently available.</p>');
       return;
     }
-    data.games.forEach(function(game) {
-      list.append(renderGame(game));
+    if(!knownGames.length) list.empty();
+    var listed = {};
+    data.games.forEach(function(game, index) {
+      listed[game.id] = true;
+      if(!cards[game.id]) {
+        cards[game.id] = renderGame(game);
+        var next = data.games.slice(index + 1).map(function(later) { return cards[later.id]; }).find(Boolean);
+        if(next) cards[game.id].insertBefore(next);
+        else list.append(cards[game.id]);
+      }
+    });
+    Object.keys(cards).forEach(function(id) {
+      if(!listed[id]) cards[id].remove();
     });
   }).fail(function() {
-    $('#offline_maps_list').html('<p class="offline-map-status error">Offline maps could not be loaded.</p>');
+    if(!knownGames.length) {
+      list.html(navigator.onLine
+        ? '<p class="offline-map-status error">Offline maps could not be loaded.</p>'
+        : '');
+    }
   });
 };
 //****************************************************************************//

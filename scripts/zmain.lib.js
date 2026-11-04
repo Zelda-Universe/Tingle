@@ -118,6 +118,11 @@ function zMapInit(vResults) {
 
     zMap.constructor(vContainer);
 
+    // Offline, another game's saved page can stand in for this one's.
+    if(vContainer.name && document.title.indexOf(vContainer.name) === -1) {
+      document.title = vContainer.name + ' Interactive Map - Zelda Maps';
+    }
+
     // TODO: Remove when proper lang files are added for the other games,
     // or when a proper detection mechanism is added, probably another
     // container field boolean value, since a head XHR request,
@@ -182,7 +187,7 @@ function getMapCategories(categoriesSelectedIdPairsObject) {
 
       getMaps();
     }
-  );
+  ).fail(showOfflineUnavailable);
 };
 
 function getGames() {
@@ -223,21 +228,37 @@ function getMaps() {
     });
 
     getMarkers();
-  });
+  }).fail(showOfflineUnavailable);
 };
 
 function getUserInfo() {
    var requestedPage = getUrlParam('page');
-   $.getJSON("ajax.php?command=get_user_info", function(vResults) {
+   // offline: this device's saved account, used when the server can't be
+   // reached, so being offline doesn't sign anyone out.
+   var applyUserInfo = function(vResults, offline) {
     if(vResults.user) zMap.setUser(vResults.user);
     zMap.restoreDrawerPage(requestedPage);
     if(zMap.settingsControl) {
-      if(vResults.user) zMap.settingsControl.applyAccountSettings(vResults.user.settings);
+      // Offline, this device's settings are the newest.
+      if(vResults.user && !offline) zMap.settingsControl.applyAccountSettings(vResults.user.settings);
       zMap.settingsControl.applySavedMinimalUI();
     }
     updateAdState();
+    // Both wait for the connection when offline.
+    if(vResults.user) {
+      zMap.syncOfflineChanges();
+      zMap.checkOfflineMapUpdates();
+    }
+    if(offline) return;
     if(ZConfig.getConfig("changelog") == 'true')
       checkChangelog(vResults.user);
+   };
+   $.getJSON("ajax.php?command=get_user_info").done(function(vResults) {
+    ZOfflineSync.saveUserInfo(vResults);
+    applyUserInfo(vResults, false);
+   }).fail(function(xhr) {
+    if(!ZOfflineSync.isNetworkError(xhr)) return;
+    applyUserInfo(ZOfflineSync.savedUserInfo() || {}, true);
    });
 };
 
@@ -285,8 +306,42 @@ function getMarkers(categories) {
 
       finalLoad();
     }.bind(this, gameId)
-  );
+  ).fail(showOfflineUnavailable);
 };
+
+// Offline, for a game whose map data this device never saved: a notice in
+// place of the map, with links to the games that are downloaded.
+function showOfflineUnavailable(xhr) {
+  if(!ZOfflineSync.isNetworkError(xhr) || document.getElementById('offline-unavailable')) return;
+  var requested = getUrlParam('game');
+  var downloaded = ZMapOfflinePacks.downloadedGameIds().filter(function(id) { return id !== requested; });
+  var notice = $('<div>', { id: 'offline-unavailable', class: 'offline-unavailable', role: 'alert' });
+  var card = $('<div>', { class: 'offline-unavailable-card' }).appendTo(notice);
+  card.append($('<img>', { src: 'images/zmaps_white.png', alt: 'Zelda Maps', class: 'offline-unavailable-logo' }));
+  var message = $('<p>').appendTo(card);
+  var links = $('<div>', { class: 'offline-unavailable-links' });
+  var render = function(names) {
+    var name = names[requested];
+    message.text('You\'re offline. Connect to the internet to view ' + (name ? 'maps for ' + name : 'this map') + '.');
+    links.empty();
+    downloaded.forEach(function(id) {
+      links.append($('<a>', { href: '?game=' + encodeURIComponent(id) }).text(names[id] || id));
+    });
+    if(downloaded.length) {
+      card.append($('<p>', { class: 'offline-unavailable-hint' }).text('Your downloaded maps:'), links);
+    }
+  };
+  render({});
+  // Offline, the request can fail before the page's body exists.
+  $(function() { $('body').append(notice); });
+  // Game names, if this device saved the list.
+  $.getJSON('ajax.php?command=get_games').done(function(games) {
+    var names = {};
+    (games || []).forEach(function(game) { names[game.shortName] = game.name; });
+    card.find('.offline-unavailable-hint').remove();
+    render(names);
+  });
+}
 
 function finalLoad() {
   var marker = ZConfig.getConfig('marker');

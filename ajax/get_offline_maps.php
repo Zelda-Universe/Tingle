@@ -7,7 +7,7 @@
   }
   session_write_close();
 
-  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v2';
+  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v4';
   $manifestCacheLifetime = 6 * 60 * 60;
   $tileRoot = realpath(dirname(__DIR__) . '/tiles');
   $tilePublicBaseURL = rtrim(
@@ -45,45 +45,113 @@
     return array_values(array_unique($directories));
   }
 
-  function buildOfflineManifest($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL) {
-    $tilesByPath = array();
-    if (!$tileRoot) return array();
-
+  // Everything a downloaded game needs: its map tiles, plus the game's data
+  // folder (marker images and text) and map icons, which the site serves.
+  function getOfflineSources($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL) {
+    $sources = array();
+    $siteRoot = realpath(dirname(__DIR__));
+    $iconFolders = array();
     foreach (getOfflineTileDirectories($db, $map_prefix, $gameId) as $relativeDirectory) {
-      $directory = realpath($tileRoot . '/' . $relativeDirectory);
-      if (!$directory || strpos($directory, $tileRoot . DIRECTORY_SEPARATOR) !== 0) continue;
+      $iconFolders[] = explode('/', $relativeDirectory)[0];
+      if (!$tileRoot) continue;
+      $sources[] = array(
+        'root' => $tileRoot,
+        'directory' => $tileRoot . '/' . $relativeDirectory,
+        'base' => $tilePublicBaseURL,
+        'pattern' => '/^\d+_\d+_\d+\.(?:png|jpe?g|webp)$/i',
+        'tile' => true
+      );
+    }
+    $assetDirectories = array('data/' . $gameId);
+    foreach (array_unique($iconFolders) as $folder) $assetDirectories[] = 'images/icons/' . $folder;
+    foreach ($assetDirectories as $relativeDirectory) {
+      $sources[] = array(
+        'root' => $siteRoot,
+        'directory' => $siteRoot . '/' . $relativeDirectory,
+        'base' => '',
+        'pattern' => '/\.(?:png|jpe?g|webp|gif|svg|json)$/i',
+        'tile' => false
+      );
+    }
+    return $sources;
+  }
+
+  function buildOfflineManifest($sources) {
+    $filesByURL = array();
+    foreach ($sources as $source) {
+      $root = $source['root'];
+      $directory = realpath($source['directory']);
+      if (!$directory || strpos($directory, $root . DIRECTORY_SEPARATOR) !== 0) continue;
 
       $iterator = new RecursiveIteratorIterator(
         new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS)
       );
       foreach ($iterator as $file) {
         if (!$file->isFile()) continue;
-        if (!preg_match('/^\d+_\d+_\d+\.(?:png|jpe?g|webp)$/i', $file->getFilename())) continue;
+        if (!preg_match($source['pattern'], $file->getFilename())) continue;
 
         $absolutePath = $file->getRealPath();
-        if (!$absolutePath || strpos($absolutePath, $tileRoot . DIRECTORY_SEPARATOR) !== 0) continue;
-        $relativePath = substr($absolutePath, strlen($tileRoot) + 1);
-        $tilesByPath[$relativePath] = array(
-          'url' => $tilePublicBaseURL . encodeOfflineTilePath($relativePath),
-          'size' => $file->getSize()
+        if (!$absolutePath || strpos($absolutePath, $root . DIRECTORY_SEPARATOR) !== 0) continue;
+        $url = $source['base'] . encodeOfflineTilePath(substr($absolutePath, strlen($root) + 1));
+        $filesByURL[$url] = array(
+          'url' => $url,
+          'size' => $file->getSize(),
+          // Changes when a file is replaced, so downloads can update just it.
+          'm' => $file->getMTime()
         );
+        if ($source['tile']) $filesByURL[$url]['tile'] = 1;
       }
     }
 
-    ksort($tilesByPath, SORT_NATURAL);
-    return array_values($tilesByPath);
+    ksort($filesByURL, SORT_NATURAL);
+    return array_values($filesByURL);
   }
 
+  // The newest change to any folder the game's files are in. Adding,
+  // removing or replacing (by upload and rename, or git) a file updates its
+  // folder.
+  function getOfflineTileSignature($sources) {
+    $latest = 0;
+    $pending = array();
+    foreach ($sources as $source) {
+      $directory = realpath($source['directory']);
+      if ($directory && strpos($directory, $source['root'] . DIRECTORY_SEPARATOR) === 0) $pending[] = $directory;
+    }
+    while ($pending) {
+      $directory = array_pop($pending);
+      $latest = max($latest, (int) @filemtime($directory));
+      foreach (glob($directory . '/*', GLOB_ONLYDIR | GLOB_NOSORT) ?: array() as $child) $pending[] = $child;
+    }
+    return $latest;
+  }
+
+  // The game's file list and version. The version is a hash of every file's
+  // path, size and modified time, so it changes whenever a map pack or the
+  // game's marker images do.
   function getOfflineManifest($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL, $cacheDirectory, $cacheLifetime) {
     if (!is_dir($cacheDirectory)) @mkdir($cacheDirectory, 0755, true);
     $cacheFile = $cacheDirectory . '/' . preg_replace('/[^A-Za-z0-9_-]/', '', $gameId) . '.json';
+    $sources = getOfflineSources($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL);
+    $signature = getOfflineTileSignature($sources);
     if (is_file($cacheFile) && filemtime($cacheFile) > time() - $cacheLifetime) {
-      $cachedManifest = json_decode(file_get_contents($cacheFile), true);
-      if (is_array($cachedManifest) && count($cachedManifest) > 0) return $cachedManifest;
+      $cached = json_decode(file_get_contents($cacheFile), true);
+      if (
+        is_array($cached) && !empty($cached['tiles']) &&
+        ($cached['signature'] ?? null) === $signature
+      ) return $cached;
     }
 
-    $manifest = buildOfflineManifest($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL);
-    if (count($manifest) > 0) {
+    $tiles = buildOfflineManifest($sources);
+    // Only a game with map tiles can be downloaded.
+    if (!array_filter(array_column($tiles, 'tile'))) $tiles = array();
+    $manifest = array(
+      'signature' => $signature,
+      'version' => $tiles ? substr(sha1(implode("\n", array_map(function($tile) {
+        return $tile['url'] . '|' . $tile['size'] . '|' . $tile['m'];
+      }, $tiles))), 0, 16) : null,
+      'tiles' => $tiles
+    );
+    if (count($tiles) > 0) {
       @file_put_contents($cacheFile, json_encode($manifest), LOCK_EX);
     }
     return $manifest;
@@ -110,15 +178,17 @@
       $db, $map_prefix, $requestedGame, $tileRoot, $tilePublicBaseURL,
       $manifestCacheDirectory, $manifestCacheLifetime
     );
+    $tiles = $manifest['tiles'];
     $offset = max(0, isset($_GET['offset']) ? (int) $_GET['offset'] : 0);
     $limit = min(250, max(1, isset($_GET['limit']) ? (int) $_GET['limit'] : 100));
     echo json_encode(array(
       'success' => true,
       'game' => $requestedGame,
-      'total' => count($manifest),
-      'totalBytes' => array_sum(array_column($manifest, 'size')),
+      'version' => $manifest['version'],
+      'total' => count($tiles),
+      'totalBytes' => array_sum(array_column($tiles, 'size')),
       'offset' => $offset,
-      'tiles' => array_slice($manifest, $offset, $limit)
+      'tiles' => array_slice($tiles, $offset, $limit)
     ));
     return;
   }
@@ -141,11 +211,23 @@
     return array(
       'id' => $gameRow['shortName'],
       'name' => $gameRow['name'],
-      'tileCount' => count($manifest),
-      'size' => array_sum(array_column($manifest, 'size')),
-      'available' => count($manifest) > 0
+      'version' => $manifest['version'],
+      'tileCount' => count($manifest['tiles']),
+      'size' => array_sum(array_column($manifest['tiles'], 'size')),
+      'available' => count($manifest['tiles']) > 0
     );
   };
+
+  // Several games' sizes and versions at once, for checking downloaded maps
+  // for updates (?games=TotK,BotW).
+  if ($mode === 'versions') {
+    $games = array();
+    foreach (array_unique(explode(',', (string) ($_GET['games'] ?? ''))) as $gameId) {
+      if (isset($gameRows[$gameId])) $games[] = $summarizeGame($gameRows[$gameId]);
+    }
+    echo json_encode(array('success' => true, 'games' => $games));
+    return;
+  }
 
   // One game's size, so each can be loaded on its own.
   if ($requestedGame !== '') {

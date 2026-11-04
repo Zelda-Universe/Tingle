@@ -127,6 +127,10 @@ begin
           --user=$dbUser          \
         ;
 
+        if test -n "$dbOthConnOpts"
+          set -a dbConStr $dbOthConnOpts;
+        end
+
         # Prefer sockets for security and performance.
         if test -n "$dbSocket"
           set -a dbConStr         \

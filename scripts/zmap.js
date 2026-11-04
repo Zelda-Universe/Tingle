@@ -4375,7 +4375,7 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
   this.mapControl.setContent(
     '<div id="offline_maps" class="offline-maps-page">' +
       '<h3 class="text-center">Offline Maps</h3>' +
-      '<p class="offline-maps-intro">Save maps to this device for use without an internet connection. Downloads may be removed by your browser when storage is low.</p>' +
+      '<p class="offline-maps-intro">Download full maps and marker information to this device for use without an internet connection.</p>' +
       '<div id="offline_maps_list" class="offline-maps-list">' +
         '<p class="offline-maps-loading">Loading maps…</p>' +
       '</div>' +

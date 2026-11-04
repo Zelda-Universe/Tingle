@@ -415,14 +415,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
         label: 'Switch Game',
         toggledOn: false
       });
-      // Show Switch Map then Switch Game. Mobile floats these right, so the
-      // first appended ends up rightmost; the desktop header lays them out in
-      // order.
-      var switchButtons = [this._mapsButton.domNode, this._gamesButton.domNode];
-      if(this.viewStyleBottomSlide) switchButtons.reverse();
-      switchButtons.forEach(function(button) {
-        $(headerMenu).append(button);
-      });
+      $(headerMenu).append(this._mapsButton.domNode, this._gamesButton.domNode);
+      this._syncSwitchButtonOrder();
     }
 
     this._drawerHeaderSeparator = L.DomUtil.create(
@@ -1052,6 +1046,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._refreshDesktopDrawerLayout();
   },
 
+  _syncSwitchButtonOrder: function() {
+    var maps = this._mapsButton.domNode[0] || this._mapsButton.domNode;
+    var games = this._gamesButton.domNode[0] || this._gamesButton.domNode;
+    var parent = maps.parentNode;
+    if(!parent) return;
+    // Mobile uses float:right; desktop uses flex. Keep the visual order
+    // Map, Game in both layouts, including every rotation/breakpoint change.
+    (this.viewStyleBottomSlide ? [games, maps] : [maps, games]).forEach(function(button) {
+      parent.appendChild(button);
+    });
+  },
+
   setResponsiveLayout: function(mobile) {
     if(this.viewStyleBottomSlide === mobile) return;
     var scrollTop = this._contents.scrollTop;
@@ -1063,6 +1069,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(this._drawerAnimationTimeout) window.clearTimeout(this._drawerAnimationTimeout);
     this._drawerAnimationTimeout = null;
     this.isMobile = this.viewStyleBottomSlide = mobile;
+    this._syncSwitchButtonOrder();
     this._keyboardDrawerViewport = null;
     this._mobileDrawerBaseTop = this._mobileDrawerContentsOffset = null;
     this._container.removeAttribute('style');

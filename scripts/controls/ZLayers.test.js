@@ -12,6 +12,25 @@ function drawerMethods(globals = {}) {
   return context.L.Control.ZLayers.prototype;
 }
 
+test('switch controls retain Map then Game visually across repeated rotations', () => {
+  const methods = drawerMethods();
+  const children = [];
+  const parent = { appendChild(node) {
+    const index = children.indexOf(node);
+    if(index !== -1) children.splice(index, 1);
+    children.push(node);
+  } };
+  const maps = { parentNode: parent, name: 'Map' };
+  const games = { parentNode: parent, name: 'Game' };
+  const drawer = { _mapsButton: { domNode: [maps] }, _gamesButton: { domNode: [games] } };
+  for(const mobile of [true, false, true, false, true]) {
+    drawer.viewStyleBottomSlide = mobile;
+    methods._syncSwitchButtonOrder.call(drawer);
+    const visual = mobile ? children.slice().reverse() : children;
+    expect(visual.map(node => node.name)).toEqual(['Map', 'Game']);
+  }
+});
+
 describe('switch menu partial sizing', () => {
   const methods = drawerMethods();
 

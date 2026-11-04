@@ -1015,6 +1015,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _refreshDesktopDrawerLayout: function() {
     if(this.viewStyleBottomSlide || !this._contents || !this._map) return;
+    // Mid-transition the drawer's height is animated, so its padding below
+    // the list can't be measured; lay out once the transition ends.
+    if(this._pageTransitionCleanup) {
+      this._desktopLayoutPending = true;
+      return;
+    }
+    this._desktopLayoutPending = false;
     // Measured, as Leaflet's cached size lags a window resize.
     var mapHeight = this._map.getContainer().clientHeight;
     var maxHeight = mapHeight - 250;
@@ -1472,6 +1479,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         outgoingPage.remove();
         this._contents.style.zIndex = previousZIndex;
         if(this._pageTransitionCleanup === cleanup) this._pageTransitionCleanup = null;
+        if(this._desktopLayoutPending && !this._pageTransitionCleanup) this._refreshDesktopDrawerLayout();
       }.bind(this);
       this._pageTransitionCleanup = cleanup;
       entering.onfinish = cleanup;

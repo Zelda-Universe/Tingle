@@ -2162,6 +2162,20 @@ button[aria-disabled="true"] {
 	html.zm-notch-left .leaflet-control-container .leaflet-right {
 		right: min(env(safe-area-inset-right, 0px), 16px);
 	}
+
+	/* Home-screen apps on iPad draw under the status bar and the home
+	   indicator; Safari's toolbars normally keep these at zero. */
+	.leaflet-control-container .leaflet-top {
+		top: env(safe-area-inset-top, 0px);
+	}
+
+	.leaflet-control-container .leaflet-bottom {
+		bottom: env(safe-area-inset-bottom, 0px);
+	}
+
+	#ads.ads-desktop {
+		bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+	}
 }
 
 .leaflet-control-layers,

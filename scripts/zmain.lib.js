@@ -488,6 +488,14 @@ function getDesktopAdArea() {
   };
 }
 
+// The banner's distance from the bottom: AD_BOTTOM, plus the home
+// indicator's safe area in home-screen apps (zmain.css).
+function getDesktopAdBottom(ads) {
+  ads.classList.add('ads-desktop');
+  var bottom = parseFloat(window.getComputedStyle(ads).bottom);
+  return isNaN(bottom) ? AD_BOTTOM : bottom;
+}
+
 // The largest banner that fits the layout, or null when none does.
 function getAdSize(mobile) {
   if(mobile) return window.innerWidth >= 320 + AD_GAP * 2 ? { width: 320, height: 50 } : null;
@@ -591,7 +599,7 @@ function updateAdState() {
   var size = authenticated || mode == 'off' ? null : getAdSize(mobile);
 
   zMap.mapControl.setBottomReserve(
-    size && !mobile ? AD_BOTTOM + size.height + AD_SIDEBAR_GAP : 0
+    size && !mobile ? getDesktopAdBottom(ads) + size.height + AD_SIDEBAR_GAP : 0
   );
 
   var key = size ? [mode, mobile, size.width].join(':') : '';

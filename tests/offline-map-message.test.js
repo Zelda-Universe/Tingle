@@ -4,6 +4,7 @@ const vm = require('vm');
 const source = fs.readFileSync(__dirname + '/../scripts/zmap.js', 'utf8');
 
 test('announces downloaded maps only after the worker serves a tile for this game', () => {
+  window.matchMedia = jest.fn(() => ({ matches: false }));
   let listener;
   Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
   Object.defineProperty(navigator, 'serviceWorker', { configurable: true, value: {
@@ -28,6 +29,12 @@ test('announces downloaded maps only after the worker serves a tile for this gam
   expect(document.querySelectorAll('.offline-map-empty-message')).toHaveLength(1);
   expect(message.textContent).toContain('Echoes of Wisdom');
   expect(message.classList.contains('offline-map-message-mobile')).toBe(true);
+  window.matchMedia = jest.fn(() => ({ matches: true }));
+  map.setupOfflineMapMessage();
+  expect(message.classList.contains('offline-map-message-landscape')).toBe(true);
+  expect(message.classList.contains('offline-map-message-mobile')).toBe(false);
+  window.matchMedia = jest.fn(() => ({ matches: false }));
+  map.setupOfflineMapMessage();
   listener({data:{type:'zeldamaps-tile-source',source:'download',url:'https://zeldamaps.com/tiles/totk/1_0_0.png'}});
   expect(message.textContent).toContain('Connect to the internet');
   listener({data:{type:'zeldamaps-tile-source',source:'download',url:'https://zeldamaps.com/tiles/eow/hyrule_overworld/0_0_0.png'}});

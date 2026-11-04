@@ -250,8 +250,8 @@
         }
       </script>
       <script>var zmapLandingCategoryId = <?= json_encode($landingCategoryId) ?>;</script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261104-offline-cold-start"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261104-offline-cold-start" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261104-offline-marker-images"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261104-offline-marker-images" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

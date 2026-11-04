@@ -802,6 +802,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       fadeProgress = Math.min(1, (this._startPosition - top) / partialTravel);
     }
     var contentProgress = Math.max(0, Math.min(1, (fadeProgress - 0.08) / 0.42));
+    // Match positionAds(): lifted means more than 1px above the closed stop.
+    document.documentElement.style.setProperty('--mobile-drawer-notice-opacity', top < this._startPosition - 1 ? '0' : '1');
     // While closing, the contents ride down with the drawer as they were
     // when it was released, instead of fading out ahead of it.
     if(this._drawerClosing && Number.isFinite(this._closingContentProgress)) {

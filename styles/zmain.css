@@ -2778,6 +2778,20 @@ ins.adsbygoogle:not(#ads ins),
 
 .offline-map-empty-message.offline-map-message-mobile {
 	z-index: 400;
+	opacity: var(--mobile-drawer-notice-opacity, 1);
+	transition: opacity .2s ease;
+}
+
+.offline-map-empty-message.offline-map-message-landscape {
+	top: auto !important;
+	left: auto;
+	right: calc(10px + env(safe-area-inset-right, 0px));
+	bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+	transform: none !important;
+}
+
+html.zm-notch-left .offline-map-empty-message.offline-map-message-landscape {
+	right: calc(10px + min(env(safe-area-inset-right, 0px), 16px));
 }
 
 .zm-ios-safari .menu-cat-content-inner::after {

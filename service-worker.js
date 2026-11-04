@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261104-6';
+const CACHE_VERSION = '20261104-7';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +8,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261104-offline-cold-start',
-  './res.php?type=css&v=20261104-offline-cold-start',
+  './res.php?type=javascript&v=20261104-offline-marker-images',
+  './res.php?type=css&v=20261104-offline-marker-images',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -249,6 +249,15 @@ function isStaticAssetRequest(url, request) {
   return false;
 }
 
+async function downloadedImageOrNetwork(request) {
+  const names = (await caches.keys()).filter(name => name.startsWith('zeldamaps-offline-') && name !== NAVIGATION_CACHE);
+  for (const name of names) {
+    const image = await (await caches.open(name)).match(request, { ignoreVary: true });
+    if (image) return image;
+  }
+  return fetch(request);
+}
+
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
@@ -284,5 +293,11 @@ self.addEventListener('fetch', event => {
 
   if (isStaticAssetRequest(url, request)) {
     event.respondWith(staleWhileRevalidate(request, APP_CACHE));
+    return;
+  }
+  // Embedded marker images from other hosts are only served when explicitly
+  // downloaded, rather than indiscriminately caching external resources.
+  if (request.destination === 'image') {
+    event.respondWith(downloadedImageOrNetwork(request));
   }
 });

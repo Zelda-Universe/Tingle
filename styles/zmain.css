@@ -2770,7 +2770,7 @@ ins.adsbygoogle:not(#ads ins),
 	text-align: center;
 	font-size: 12px;
 	line-height: 1.4;
-	z-index: 400;
+	z-index: 1001;
 	pointer-events: none;
 }
 

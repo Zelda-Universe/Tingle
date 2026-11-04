@@ -278,7 +278,7 @@ ZMap.prototype.addMap = function(vMap) {
       + '.'
       + vMap.subMap[0].tileExt
       , {
-          maxZoom           : vMap.maxZoom
+          maxZoom           : Math.max(Number(vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
         , maxNativeZoom     : Number(vMap.maxZoom)
         , attribution       : vMap.mapCopyright
           + ', '
@@ -311,7 +311,7 @@ ZMap.prototype.addMap = function(vMap) {
       //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
       /* TODO: Improve this to use no tile at all (remove tile border)*/
       var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
-                                           , { maxZoom:           vMap.maxZoom
+                                           , { maxZoom:           Math.max(Number(vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
                                              , maxNativeZoom:     Number(vMap.maxZoom)
                                              , noWrap:            true
                                              , tileSize:          this.mapOptions.tileSize
@@ -332,7 +332,7 @@ ZMap.prototype.addMap = function(vMap) {
     // Add all the submaps to the overlay array (including the first submap for control purposes)
     for (var i = 0; i < vMap.subMap.length; i++) {
        var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
-                                          , { maxZoom:           vMap.maxZoom
+                                            , { maxZoom:           Math.max(Number(vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
                                             , maxNativeZoom:     Number(vMap.maxZoom)
                                             , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
                                             , opacity:           vMap.subMap[i].opacity
@@ -362,7 +362,7 @@ ZMap.prototype.addMap = function(vMap) {
              var submap = vMap.subMap[i].submapLayer[j];
 
              var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
-                                                                     , { maxZoom:           submap.maxZoom
+                                                                     , { maxZoom:           Math.max(Number(submap.maxZoom || vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
                                                                        , maxNativeZoom:     Number(submap.maxZoom || vMap.maxZoom)
                                                                        , noWrap:            true
                                                                        , attribution:       submap.mapMapper
@@ -2016,7 +2016,11 @@ ZMap.prototype._addMapGridBackground = function() {
 
 ZMap.prototype.setupOfflineMapMessage = function() {
   var map = this;
-  if(this._offlineMessageSetup) return;
+  if(!document.body) {
+    document.addEventListener('DOMContentLoaded', function() { map.setupOfflineMapMessage(); }, { once: true });
+    return;
+  }
+  if(this._offlineMessageSetup) { this._refreshOfflineMapMessage(); return; }
   this._offlineMessageSetup = true;
   var message = document.createElement('div');
   message.className = 'offline-map-empty-message';
@@ -2026,24 +2030,25 @@ ZMap.prototype.setupOfflineMapMessage = function() {
   var usingDownloadedTiles = false;
   if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function(event) {
     var data = event.data;
-    if(!data || data.type !== 'zeldamaps-tile-source' || data.source !== 'download') return;
+    if(!data || data.type !== 'zeldamaps-tile-source') return;
     var path = new URL(data.url, location.href).pathname;
     var currentMapTile = map.maps.some(function(layer) {
       return layer._url && path.indexOf(new URL(layer._url.split('{')[0], location.href).pathname) === 0;
     });
     if(currentMapTile) {
-      usingDownloadedTiles = true;
+      usingDownloadedTiles = data.source === 'download';
       refresh();
     }
   });
   function positionMessage() {
     if(map.mapControl && map.mapControl.viewStyleBottomSlide) {
       var control = map.mapControl;
+      var viewportBottom = window.visualViewport
+        ? window.visualViewport.offsetTop + window.visualViewport.height : window.innerHeight;
       var collapsedTop = control._mobileDrawerBaseTop + control._startPosition;
-      if(Number.isFinite(collapsedTop)) {
-        message.style.top = collapsedTop - 12 + 'px';
-        message.style.transform = 'translate(-50%, -100%)';
-      }
+      if(!Number.isFinite(collapsedTop)) collapsedTop = viewportBottom - 120;
+      message.style.top = Math.min(collapsedTop - 12, viewportBottom - 24) + 'px';
+      message.style.transform = 'translate(-50%, -100%)';
     } else {
       message.style.top = '12px';
       message.style.transform = 'translateX(-50%)';
@@ -2051,20 +2056,25 @@ ZMap.prototype.setupOfflineMapMessage = function() {
   }
   function refresh() {
     message.style.display = 'none';
-    if(navigator.onLine || !('caches' in window)) return;
+    if(navigator.onLine) return;
     if(usingDownloadedTiles) {
       message.textContent = "You're offline. Using on-device downloaded maps.";
       message.style.display = 'block';
       positionMessage();
       return;
     }
-    message.textContent = "You're offline. Connect to the internet to view maps for " + map.mapOptions.name + '.';
+    var names = { BotW: 'Breath of the Wild', TotK: 'Tears of the Kingdom', LA: "Link's Awakening", EoW: 'Echoes of Wisdom' };
+    var name = (map.mapOptions && map.mapOptions.name) || names[new URL(location.href).searchParams.get('game')];
+    message.textContent = "You're offline. Connect to the internet to view " + (name ? 'maps for ' + name : 'this map') + '.';
     message.style.display = 'block';
     positionMessage();
   }
   window.addEventListener('online', refresh);
   window.addEventListener('offline', refresh);
   window.addEventListener('resize', positionMessage);
+  window.addEventListener('pageshow', refresh);
+  document.addEventListener('visibilitychange', refresh);
+  this._refreshOfflineMapMessage = refresh;
   if(window.visualViewport) window.visualViewport.addEventListener('resize', positionMessage);
   refresh();
 };

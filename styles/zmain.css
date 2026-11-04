@@ -3358,3 +3358,176 @@ div.circle:has(>.icon-EoW_Echo) {
     background-blend-mode: color-dodge;
     background-size: contain;
 }
+
+/**** ADMIN ***/
+
+.admin-section {
+	margin: 0 16px 24px;
+}
+
+#admin_more[hidden] {
+	display: none;
+}
+
+#admin_more {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+	padding: 8px;
+	color: white;
+}
+
+#admin_user_form {
+	margin: 0 16px;
+}
+
+.admin-section h4 {
+	margin: 0 0 8px;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.admin-muted {
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.admin-chart {
+	padding: 12px;
+	border: 1px solid rgba(255,255,255,.2);
+	border-radius: 10px;
+}
+
+.admin-chart svg {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.admin-chart rect {
+	fill: #3cbc75;
+}
+
+.admin-chart rect:hover {
+	fill: #6fe0a0;
+}
+
+.admin-chart text {
+	fill: rgba(255,255,255,.6);
+	font-size: 8px;
+}
+
+.admin-search .input-group {
+	border-radius: 10px;
+}
+
+#admin_results_count {
+	margin: 8px 0;
+}
+
+.admin-results {
+	margin: 0 0 8px;
+	padding: 0;
+	list-style: none;
+}
+
+.admin-results li + li {
+	border-top: 1px solid rgba(255,255,255,.1);
+}
+
+.admin-user {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 2px 8px;
+	width: 100%;
+	padding: 8px 4px;
+	border: 0;
+	background: none;
+	color: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+
+.admin-user:hover:not(:disabled) {
+	background: rgba(255,255,255,.08);
+	border-radius: 8px;
+}
+
+.admin-user:disabled {
+	cursor: default;
+	opacity: .5;
+}
+
+.admin-user-name {
+	overflow: hidden;
+	font-weight: 600;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.admin-user-role {
+	color: rgba(255,255,255,.7);
+	font-size: 12px;
+}
+
+.admin-user-detail {
+	grid-column: 1 / -1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#admin_user_form > label {
+	display: block;
+	margin: 0 0 8px;
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1.4;
+}
+
+#admin_user_form > .form-group {
+	margin-bottom: 16px;
+}
+
+#admin_user_form .input-group {
+	border-radius: 10px !important;
+}
+
+#admin_user_form select.form-control {
+	appearance: auto;
+	color: white;
+	background: transparent;
+	padding-left: 14px;
+}
+
+#admin_user_form select.form-control option {
+	color: black;
+}
+
+#admin_user_form .admin-user-meta {
+	margin: 0 0 16px;
+	text-align: center;
+}
+
+.admin-user-status {
+	min-height: 1.4em;
+	margin: 0 0 8px;
+	font-size: 14px;
+}
+
+.admin-user-status.error {
+	color: #ff8c85;
+}
+
+.admin-user-status.success {
+	color: #6fe0a0;
+}
+
+#admin_user_form > .form-action-button {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+	padding: 8px;
+	color: white;
+}

@@ -3395,6 +3395,7 @@ ZMap.prototype.drawerPageRoutes = {
   accountInformationPage: 'account-information',
   offlineMapsPage: 'offline-maps',
   bookmarksPage: 'bookmarks',
+  adminPage: 'admin',
   loginForm: 'login',
   registerForm: 'register',
   lostPasswordForm: 'lost-password',
@@ -3463,6 +3464,7 @@ ZMap.prototype.restoreDrawerPage = function(page) {
     'account-information': '_createAccountInformationForm',
     'offline-maps': '_createOfflineMapsForm',
     bookmarks: '_createBookmarksPage',
+    admin: '_createAdminPage',
     'change-password': '_createChangePasswordForm',
     'delete-account': '_createAccountDeleteForm'
   };
@@ -3526,6 +3528,174 @@ ZMap.prototype.restoreResponsiveDrawer = function(snapshot) {
   }
 };
 
+//************* ADMIN *************//
+// For admins (level 10+): registrations over time, and a searchable list of
+// accounts that opens an editor for each. See ajax/admin_*.php.
+
+ZMap.prototype.adminRoles = [
+  { level: 1, label: 'User' },
+  { level: 5, label: 'Contributor' },
+  { level: 10, label: 'Admin' }
+];
+
+ZMap.prototype._createAdminPage = function() {
+  var _this = this;
+  this.mapControl.setContent(
+    '<div id="admin">' +
+      '<h3 class="text-center">Admin</h3>' +
+      '<section class="admin-section">' +
+        '<h4>Registrations <span id="admin_total" class="admin-muted"></span></h4>' +
+        '<div id="admin_chart" class="admin-chart"><p class="admin-muted">Loading…</p></div>' +
+      '</section>' +
+      '<section class="admin-section">' +
+        '<h4>Users</h4>' +
+        '<form id="admin_search_form" class="admin-search" role="search">' +
+          '<div class="input-group">' +
+            '<span class="input-group-addon"><i class="fas fa-search" aria-hidden="true"></i></span>' +
+            '<input id="admin_search" type="search" class="form-control" placeholder="Username, name, email or id" aria-label="Search users" />' +
+          '</div>' +
+        '</form>' +
+        '<p id="admin_results_count" class="admin-muted" role="status" aria-live="polite"></p>' +
+        '<ul id="admin_results" class="admin-results"></ul>' +
+        '<button id="admin_more" type="button" class="infoWindowIcn form-action-button" hidden>Load More</button>' +
+      '</section>' +
+    '</div>',
+    'adminPage'
+  );
+
+  $.getJSON('ajax.php?command=admin_get_registrations', function(data) {
+    if(!data.success) return $('#admin_chart').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load registrations.');
+    $('#admin_total').text(data.total.toLocaleString() + ' accounts');
+    $('#admin_chart').empty().append(_this._adminRegistrationChart(data.months));
+  });
+
+  var query = '', offset = 0, request = 0;
+  var search = function(append) {
+    var requestId = ++request;
+    if(!append) offset = 0;
+    $.getJSON('ajax.php?command=admin_search_users', { q: query, offset: offset }, function(data) {
+      if(requestId !== request) return;
+      if(!data.success) return $('#admin_results_count').text(data.msg || 'Unable to load users.');
+      var list = $('#admin_results');
+      if(!append) list.empty();
+      data.users.forEach(function(account) { list.append(_this._adminUserRow(account)); });
+      offset = data.offset + data.users.length;
+      $('#admin_results_count').text(data.total.toLocaleString() + (data.total === 1 ? ' user' : ' users'));
+      $('#admin_more').prop('hidden', offset >= data.total);
+    });
+  };
+  var searchTimer = null;
+  $('#admin_search').on('input', function() {
+    query = this.value.trim();
+    window.clearTimeout(searchTimer);
+    searchTimer = window.setTimeout(function() { search(false); }, 250);
+  });
+  $('#admin_search_form').on('submit', function(e) { e.preventDefault(); });
+  $('#admin_more').click(function() { search(true); });
+  search(false);
+};
+
+// Monthly registrations as an inline SVG bar chart.
+ZMap.prototype._adminRegistrationChart = function(months) {
+  if(!months.length) return $('<p class="admin-muted">No registrations yet.</p>');
+  var width = 320, height = 120, top = 8, bottom = 18;
+  var max = Math.max.apply(null, months.map(function(m) { return m.count; })) || 1;
+  var step = width / months.length, barWidth = Math.max(1, step - 1);
+  var svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="New accounts per month">';
+  months.forEach(function(m, i) {
+    var barHeight = Math.max(1, (height - top - bottom) * m.count / max);
+    svg += '<rect x="' + (i * step).toFixed(2) + '" y="' + (height - bottom - barHeight).toFixed(2) +
+      '" width="' + barWidth.toFixed(2) + '" height="' + barHeight.toFixed(2) + '" rx="1">' +
+      '<title>' + m.month + ': ' + m.count + '</title></rect>';
+  });
+  // Label the first and last month, and each January between them.
+  months.forEach(function(m, i) {
+    if(i === 0 || i === months.length - 1 || m.month.slice(5) === '01') {
+      var anchor = i === 0 ? 'start' : i === months.length - 1 ? 'end' : 'middle';
+      svg += '<text x="' + (i === months.length - 1 ? width : i * step + step / 2).toFixed(2) + '" y="' + (height - 4) +
+        '" text-anchor="' + anchor + '">' + (m.month.slice(5) === '01' && i !== 0 && i !== months.length - 1 ? m.month.slice(0, 4) : m.month) + '</text>';
+    }
+  });
+  return $(svg + '</svg>');
+};
+
+ZMap.prototype._adminUserRow = function(account) {
+  var _this = this;
+  var role = this.adminRoles.find(function(r) { return r.level == account.level; });
+  var row = $('<li><button type="button" class="admin-user"><span class="admin-user-name"></span>' +
+    '<span class="admin-user-role"></span><span class="admin-user-detail admin-muted"></span></button></li>');
+  row.find('.admin-user-name').text(displayUserName(account.username));
+  row.find('.admin-user-role').text(account.deleted ? 'Deleted' : role ? role.label : 'Level ' + account.level);
+  row.find('.admin-user-detail').text('#' + account.id + (account.email ? ' · ' + account.email : '') +
+    (account.created ? ' · joined ' + account.created.slice(0, 10) : ''));
+  row.find('button').prop('disabled', !!account.deleted).click(function() {
+    _this._createAdminUserPage(account);
+  });
+  return row;
+};
+
+ZMap.prototype._createAdminUserPage = function(account) {
+  var _this = this;
+  this.mapControl.setContent(
+    '<div id="admin_user">' +
+      '<h3 class="text-center"></h3>' +
+      '<form id="admin_user_form" class="leaflet-control-layers-list">' +
+        '<p class="admin-muted admin-user-meta"></p>' +
+        '<label for="admin_user_username">Username</label>' +
+        '<div class="form-group"><div class="input-group"><input id="admin_user_username" name="username" class="form-control" required /></div></div>' +
+        '<label for="admin_user_name">Full Name</label>' +
+        '<div class="form-group"><div class="input-group"><input id="admin_user_name" name="name" class="form-control" required /></div></div>' +
+        '<label for="admin_user_email">Email</label>' +
+        '<div class="form-group"><div class="input-group"><input id="admin_user_email" name="email" type="email" class="form-control" required /></div></div>' +
+        '<label for="admin_user_level">Role</label>' +
+        '<div class="form-group"><div class="input-group"><select id="admin_user_level" name="level" class="form-control"></select></div></div>' +
+        '<label for="admin_user_password">New Password</label>' +
+        '<div class="form-group"><div class="input-group"><input id="admin_user_password" name="password" type="password" class="form-control" placeholder="Leave blank to keep the current password" autocomplete="new-password" /></div></div>' +
+        '<p id="admin_user_status" class="admin-user-status" role="status" aria-live="polite"></p>' +
+        '<button type="submit" class="infoWindowIcn form-action-button">Save Changes</button>' +
+      '</form>' +
+    '</div>',
+    'adminUserPage'
+  );
+  $('#admin_user h3').text(displayUserName(account.username));
+  $('#admin_user .admin-user-meta').text('#' + account.id +
+    (account.created ? ' · joined ' + account.created.slice(0, 10) : '') +
+    (account.lastLogin ? ' · last seen ' + account.lastLogin.slice(0, 10) : ''));
+  $('#admin_user_username').val(account.username);
+  $('#admin_user_name').val(account.name || '');
+  $('#admin_user_email').val(account.email || '');
+  var levelSelect = $('#admin_user_level');
+  this.adminRoles.forEach(function(role) {
+    levelSelect.append($('<option></option>').val(role.level).text(role.label));
+  });
+  if(!this.adminRoles.some(function(r) { return r.level == account.level; })) {
+    levelSelect.prepend($('<option></option>').val(account.level).text('Level ' + account.level));
+  }
+  levelSelect.val(String(account.level));
+
+  $('#admin_user_form').submit(function(e) {
+    e.preventDefault();
+    var status = $('#admin_user_status').removeClass('error success').text('Saving…');
+    var button = $(this).find('button[type="submit"]').prop('disabled', true);
+    $.ajax({
+      type: 'POST',
+      url: 'ajax.php?command=admin_update_user',
+      data: $(this).serialize() + '&id=' + encodeURIComponent(account.id),
+      success: function(data) {
+        status.addClass(data.success ? 'success' : 'error').text(data.msg || (data.success ? 'Saved.' : 'Unable to save.'));
+        if(!data.success) return;
+        Object.assign(account, data.user);
+        $('#admin_user h3').text(displayUserName(account.username));
+        $('#admin_user_password').val('');
+      },
+      error: function(xhr) {
+        status.addClass('error').text(xhr.responseJSON && xhr.responseJSON.msg || 'Unable to save.');
+      },
+      complete: function() { button.prop('disabled', false); }
+    });
+  });
+};
+
 ZMap.prototype._createAccountForm = function(user) {
   var _this = this;
   var profilePicture = user.profilePicture || 'images/default-avatar.png';
@@ -3547,6 +3717,7 @@ ZMap.prototype._createAccountForm = function(user) {
       '</div>' +
       '<div class="modal-footer">' +
          '<div>' +
+           (user.level >= 10 ? '<button id="account_admin_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-shield-alt account-nav-icon" aria-hidden="true"></i>Admin</button>' : '') +
            '<button id="account_information_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-user account-nav-icon" aria-hidden="true"></i>Account Information</button>' +
            '<button id="account_bookmarks_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bookmark account-nav-icon" aria-hidden="true"></i>Bookmarks</button>' +
            '<button id="account_offline_maps_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-download account-nav-icon" aria-hidden="true"></i>Download Offline Maps</button>' +
@@ -3561,6 +3732,9 @@ ZMap.prototype._createAccountForm = function(user) {
 
   var selectedPreviewURL = null;
   $('#account_clear_completed_btn').prop('disabled', completedMarkers.length === 0);
+  $('#account_admin_btn').click(function() {
+    _this._createAdminPage();
+  });
   $('#account_information_btn').click(function() {
     _this._createAccountInformationForm();
   });

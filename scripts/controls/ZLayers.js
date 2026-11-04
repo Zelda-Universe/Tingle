@@ -1350,7 +1350,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var depths = {
         category: 0, search: 1, games: 1, maps: 1, loginForm: 1, accountPage: 1,
         registerForm: 2, lostPasswordForm: 2, accountInformationPage: 2,
-        offlineMapsPage: 2, bookmarksPage: 2, deleteAccountForm: 2, changePasswordForm: 3
+        offlineMapsPage: 2, bookmarksPage: 2, deleteAccountForm: 2, changePasswordForm: 3,
+        adminPage: 2, adminUserPage: 3
       };
       var pageDepth = function(type) {
         if(depths[type] !== undefined) return depths[type];
@@ -1563,7 +1564,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
             this._returnFromDesktopAccount();
           } else if(vType === 'changePasswordForm' && this.zMap.getUser()) {
             this.zMap._createAccountInformationForm();
-          } else if(['offlineMapsPage', 'accountInformationPage', 'bookmarksPage', 'deleteAccountForm'].includes(vType) && this.zMap.getUser()) {
+          } else if(vType === 'adminUserPage' && this.zMap.getUser()) {
+            this.zMap._createAdminPage();
+          } else if(['offlineMapsPage', 'accountInformationPage', 'bookmarksPage', 'deleteAccountForm', 'adminPage'].includes(vType) && this.zMap.getUser()) {
             this.zMap._createAccountForm(this.zMap.getUser());
           } else {
             this.reset();

@@ -38,6 +38,27 @@ function watchMobileLayoutBreakpoint() {
 
 watchMobileLayoutBreakpoint();
 
+// In landscape, an iPhone's Dynamic Island sits on one side only, but the
+// safe-area insets are the same on both. Mark which side it's on, so the
+// other side can use the space (styles/zmain.css). Turned counter-clockwise
+// (90°) puts it on the left; clockwise (270° or -90°) on the right.
+function updateNotchSide() {
+  var angle = screen.orientation && typeof screen.orientation.angle === 'number'
+    ? screen.orientation.angle
+    : Number(window.orientation) || 0;
+  angle = ((angle % 360) + 360) % 360;
+  var root = document.documentElement;
+  root.classList.toggle('zm-notch-left', angle === 90);
+  root.classList.toggle('zm-notch-right', angle === 270);
+};
+
+updateNotchSide();
+if(screen.orientation && screen.orientation.addEventListener) {
+  screen.orientation.addEventListener('change', updateNotchSide);
+}
+window.addEventListener('orientationchange', updateNotchSide);
+window.addEventListener('resize', updateNotchSide);
+
 function getSetOrDefaultValue(value, defaultValue) {
   return (
     (value === undefined)

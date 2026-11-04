@@ -2141,6 +2141,29 @@ button[aria-disabled="true"] {
 	bottom: 0;
 }
 
+/* Landscape iPhones use the desktop layout: keep the sidebar and the
+   controls clear of the Dynamic Island and the display's rounded corners.
+   The insets are zero in desktop browsers, so nothing moves there. */
+@media only screen and (min-width: 601px) {
+	.leaflet-control-container .leaflet-left {
+		left: env(safe-area-inset-left, 0px);
+	}
+
+	.leaflet-control-container .leaflet-right {
+		right: env(safe-area-inset-right, 0px);
+	}
+
+	/* The side without the Dynamic Island (scripts/util/general.js) only
+	   needs to clear the display's rounded corners. */
+	html.zm-notch-right .leaflet-control-container .leaflet-left {
+		left: min(env(safe-area-inset-left, 0px), 16px);
+	}
+
+	html.zm-notch-left .leaflet-control-container .leaflet-right {
+		right: min(env(safe-area-inset-right, 0px), 16px);
+	}
+}
+
 .leaflet-control-layers,
 .leaflet-control:not(.settings-control) {
 	background-color: rgba(0, 0, 0, .8);
@@ -3317,6 +3340,16 @@ span.mouse-coords, .leaflet-control-zoom {
 
 span.mouse-coord div.infobox-separator {
    display: none;
+}
+
+/* Touch devices pinch to zoom and have no pointer whose position the
+   coordinates could show, even in landscape's desktop layout. The mobile
+   layout never has them, including after rotating from landscape. */
+@media (max-width: 600px), (pointer: coarse) {
+	.leaflet-control-zoom,
+	.mouse-coords {
+		display: none !important;
+	}
 }
 
 .leaflet-container {

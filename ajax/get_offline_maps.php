@@ -7,11 +7,11 @@
   }
   session_write_close();
 
-  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v4';
+  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v5';
   $manifestCacheLifetime = 6 * 60 * 60;
   $tileRoot = realpath(dirname(__DIR__) . '/tiles');
   $tilePublicBaseURL = rtrim(
-    get_config('tilesBaseURL', 'string', array('/tiles/')),
+    get_config('tilesBaseURL', 'string', array('https://zeldamaps.com/tiles/')),
     '/'
   ) . '/';
 

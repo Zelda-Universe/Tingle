@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261104-3';
+const CACHE_VERSION = '20261104-4';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -7,8 +7,8 @@ const MAX_TILE_ENTRIES = 500;
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261104-home-screen-safe-area',
-  './res.php?type=css&v=20261104-home-screen-safe-area',
+  './res.php?type=javascript&v=20261104-offline-tile-routing',
+  './res.php?type=css&v=20261104-offline-tile-routing',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -130,7 +130,19 @@ async function trimTileCache() {
   await Promise.all(requests.slice(0, excess).map(request => cache.delete(request)));
 }
 
-async function cacheFirstTile(request) {
+function tilePath(url) {
+  const pathname = new URL(url, self.location.origin).pathname;
+  const start = pathname.indexOf('/tiles/');
+  return start < 0 ? null : pathname.slice(start);
+}
+
+async function reportTileSource(clientId, source, url) {
+  if (!clientId) return;
+  const client = await self.clients.get(clientId);
+  if (client) client.postMessage({ type: 'zeldamaps-tile-source', source, url });
+}
+
+async function cacheFirstTile(request, clientId) {
   // Explicit packs take priority over the rolling cache. These are static
   // images; fetch() and <img> may send different Vary request headers.
   const packNames = (await caches.keys()).filter(name =>
@@ -138,8 +150,19 @@ async function cacheFirstTile(request) {
   );
   for (const name of packNames) {
     const pack = await caches.open(name);
-    const tile = await pack.match(request.url, { ignoreVary: true });
-    if (tile) return tile;
+    let tile = await pack.match(request.url, { ignoreVary: true });
+    // Older manifests used the site's /tiles/ host while the renderer uses
+    // the production CDN. Recover those existing downloads by tile path.
+    if (!tile && tilePath(request.url)) {
+      for (const origin of [self.location.origin, 'https://zeldamaps.com', 'https://www.zeldamaps.com']) {
+        tile = await pack.match(new URL(tilePath(request.url), origin).href, { ignoreVary: true });
+        if (tile) break;
+      }
+    }
+    if (tile) {
+      await reportTileSource(clientId, 'download', request.url);
+      return tile;
+    }
   }
   const cachedResponse = await caches.match(request, { ignoreVary: true });
   if (cachedResponse) return cachedResponse;
@@ -213,7 +236,7 @@ self.addEventListener('fetch', event => {
       event.respondWith(fetch(request));
       return;
     }
-    event.respondWith(cacheFirstTile(request));
+    event.respondWith(cacheFirstTile(request, event.clientId));
     return;
   }
 

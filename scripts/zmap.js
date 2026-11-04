@@ -2023,6 +2023,19 @@ ZMap.prototype.setupOfflineMapMessage = function() {
   message.setAttribute('role', 'status');
   message.style.display = 'none';
   document.body.appendChild(message);
+  var usingDownloadedTiles = false;
+  if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function(event) {
+    var data = event.data;
+    if(!data || data.type !== 'zeldamaps-tile-source' || data.source !== 'download') return;
+    var path = new URL(data.url, location.href).pathname;
+    var currentMapTile = map.maps.some(function(layer) {
+      return layer._url && path.indexOf(new URL(layer._url.split('{')[0], location.href).pathname) === 0;
+    });
+    if(currentMapTile) {
+      usingDownloadedTiles = true;
+      refresh();
+    }
+  });
   function positionMessage() {
     if(map.mapControl && map.mapControl.viewStyleBottomSlide) {
       var control = map.mapControl;
@@ -2039,28 +2052,15 @@ ZMap.prototype.setupOfflineMapMessage = function() {
   function refresh() {
     message.style.display = 'none';
     if(navigator.onLine || !('caches' in window)) return;
-    var prefixes = [];
-    map.maps.forEach(function(layer) {
-      if(layer._url) prefixes.push(new URL(layer._url.split('{')[0], location.href).href);
-    });
-    caches.keys().then(function(names) {
-      return Promise.all(names.filter(function(name) {
-        return name.indexOf('zeldamaps-') === 0;
-      }).map(function(name) {
-        return caches.open(name).then(function(cache) { return cache.keys(); });
-      }));
-    }).then(function(groups) {
-      var hasTiles = groups.some(function(requests) {
-        return requests.some(function(request) {
-          return prefixes.some(function(prefix) { return request.url.indexOf(prefix) === 0; });
-        });
-      });
-      if(!navigator.onLine && !hasTiles) {
-        message.textContent = "You're offline. Connect to the internet to view maps for " + map.mapOptions.name + '.';
-        message.style.display = 'block';
-        positionMessage();
-      }
-    });
+    if(usingDownloadedTiles) {
+      message.textContent = "You're offline. Using on-device downloaded maps.";
+      message.style.display = 'block';
+      positionMessage();
+      return;
+    }
+    message.textContent = "You're offline. Connect to the internet to view maps for " + map.mapOptions.name + '.';
+    message.style.display = 'block';
+    positionMessage();
   }
   window.addEventListener('online', refresh);
   window.addEventListener('offline', refresh);

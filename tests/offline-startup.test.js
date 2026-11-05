@@ -4,8 +4,8 @@ const source = fs.readFileSync(__dirname + '/../scripts/zmain.js', 'utf8');
 
 test.each([
   [false, '', ['LA'], 'LA'],
-  [false, '', [], 'TotK'],
-  [true, '', ['LA'], 'TotK'],
+  [false, '', [], 'OoT'],
+  [true, '', ['LA'], 'OoT'],
   [false, 'EoW', ['LA'], 'EoW']
 ])('startup online=%s, linked game=%s, downloads=%j selects %s before requesting data', (online, linked, downloads, expected) => {
   const getJSON = jest.fn(() => ({ fail() {} }));

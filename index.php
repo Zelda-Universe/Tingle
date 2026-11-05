@@ -1,5 +1,5 @@
 <?php
-  $gameKey = isset($_GET['game']) ? strtolower((string) $_GET['game']) : 'totk';
+  $gameKey = isset($_GET['game']) ? strtolower((string) $_GET['game']) : 'oot';
   $gameAliases = [
     'la' => 'LA',
     'linksawakening' => 'LA',
@@ -8,7 +8,7 @@
     'eow' => 'EoW',
     'oot' => 'OoT'
   ];
-  $gameId = $gameAliases[$gameKey] ?? 'TotK';
+  $gameId = $gameAliases[$gameKey] ?? 'OoT';
   $gameMetadata = [
     'OoT' => [
       'name' => 'Ocarina of Time',
@@ -258,8 +258,8 @@
       <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
       <link rel="stylesheet" href="data/OoT/icons.css" />
       <?php endif; ?>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-ootpoi-2"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-ootpoi-2" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-3"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-3" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;
@@ -315,7 +315,7 @@
           var game = urlParams["game"];
 
           if(game === undefined) {
-            window.location.href = "?game=TotK";
+            window.location.href = "?game=OoT";
             return;
           }
         })();

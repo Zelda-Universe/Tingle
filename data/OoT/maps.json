@@ -3,7 +3,7 @@
     "id": "65000",
     "name": "Hyrule",
     "defaultZoom": "1",
-    "maxZoom": "4",
+    "maxZoom": "5",
     "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
     "kind": "world",
     "subMap": [
@@ -21,108 +21,108 @@
         "isDefault": "1",
         "opacity": "1",
         "iconURL": "data/OoT/previews/hyrule-child.webp",
-        "maxZoom": "4",
+        "maxZoom": "5",
         "submapLayer": [],
         "placeLabels": [
           {
             "name": "Hyrule Field",
-            "x": 136.25,
-            "y": -120.625
+            "x": 131.875,
+            "y": -146.53125
           },
           {
             "name": "Market",
-            "x": 131.25,
-            "y": -94.375
+            "x": 122.3125,
+            "y": -121.25
           },
           {
             "name": "Hyrule Castle",
-            "x": 131.25,
-            "y": -71.875
+            "x": 122.59375,
+            "y": -99.40625
           },
           {
             "name": "Kakariko Village",
-            "x": 175.625,
-            "y": -102.5
+            "x": 164.84375,
+            "y": -121.28125
           },
           {
             "name": "Graveyard",
-            "x": 203.125,
-            "y": -101.875
+            "x": 179.75,
+            "y": -123.84375
           },
           {
             "name": "Death Mountain Trail",
-            "x": 175.625,
-            "y": -70
+            "x": 166.125,
+            "y": -98.34375
           },
           {
             "name": "Goron City",
-            "x": 172.5,
-            "y": -42.5
+            "x": 153.0625,
+            "y": -83.09375
           },
           {
             "name": "Death Mountain Crater",
-            "x": 195,
-            "y": -35
+            "x": 164.84375,
+            "y": -67.71875
           },
           {
             "name": "Zora's River",
-            "x": 195.625,
-            "y": -131.875
+            "x": 192.1875,
+            "y": -139.9375
           },
           {
             "name": "Zora's Domain",
-            "x": 218.75,
-            "y": -101.25
+            "x": 217.5,
+            "y": -143.09375
           },
           {
             "name": "Zora's Fountain",
-            "x": 226.25,
-            "y": -76.875
+            "x": 244,
+            "y": -149.65625
           },
           {
             "name": "Kokiri Forest",
-            "x": 195,
-            "y": -176.875
+            "x": 161.34375,
+            "y": -190.875
           },
           {
             "name": "Lost Woods",
-            "x": 215.625,
-            "y": -153.125
+            "x": 184.3125,
+            "y": -179.53125
           },
           {
             "name": "Sacred Forest Meadow",
-            "x": 229.375,
-            "y": -125.625
+            "x": 202.625,
+            "y": -170.625
           },
           {
             "name": "Lake Hylia",
-            "x": 121.875,
-            "y": -201.875
+            "x": 114.65625,
+            "y": -188.28125
           },
           {
             "name": "Gerudo Valley",
-            "x": 82.5,
-            "y": -154.375
+            "x": 86.875,
+            "y": -149.625
           },
           {
             "name": "Gerudo Fortress",
-            "x": 56.875,
-            "y": -127.5
+            "x": 66.875,
+            "y": -133.8125
           },
           {
             "name": "Haunted Wasteland",
-            "x": 35.625,
-            "y": -94.375
+            "x": 39.59375,
+            "y": -126
           },
           {
             "name": "Desert Colossus",
-            "x": 32.5,
-            "y": -58.125
+            "x": 13.59375,
+            "y": -127.25
           },
           {
             "name": "Lon Lon Ranch",
-            "x": 138.125,
-            "y": -145.625
+            "x": 129.755,
+            "y": -160.51318750000002
           }
         ]
       },
@@ -140,108 +140,108 @@
         "isDefault": "0",
         "opacity": "1",
         "iconURL": "data/OoT/previews/hyrule-adult.webp",
-        "maxZoom": "4",
+        "maxZoom": "5",
         "submapLayer": [],
         "placeLabels": [
           {
             "name": "Hyrule Field",
-            "x": 136.25,
-            "y": -120.625
+            "x": 131.875,
+            "y": -146.53125
           },
           {
             "name": "Market",
-            "x": 131.25,
-            "y": -94.375
+            "x": 122.3125,
+            "y": -121.25
           },
           {
             "name": "Ganon's Castle",
-            "x": 131.25,
-            "y": -71.875
+            "x": 122.59375,
+            "y": -99.40625
           },
           {
             "name": "Kakariko Village",
-            "x": 175.625,
-            "y": -102.5
+            "x": 164.84375,
+            "y": -121.28125
           },
           {
             "name": "Graveyard",
-            "x": 203.125,
-            "y": -101.875
+            "x": 179.75,
+            "y": -123.84375
           },
           {
             "name": "Death Mountain Trail",
-            "x": 175.625,
-            "y": -70
+            "x": 166.125,
+            "y": -98.34375
           },
           {
             "name": "Goron City",
-            "x": 172.5,
-            "y": -42.5
+            "x": 153.0625,
+            "y": -83.09375
           },
           {
             "name": "Death Mountain Crater",
-            "x": 195,
-            "y": -35
+            "x": 164.84375,
+            "y": -67.71875
           },
           {
             "name": "Zora's River",
-            "x": 195.625,
-            "y": -131.875
+            "x": 192.1875,
+            "y": -139.9375
           },
           {
             "name": "Zora's Domain",
-            "x": 218.75,
-            "y": -101.25
+            "x": 217.5,
+            "y": -143.09375
           },
           {
             "name": "Zora's Fountain",
-            "x": 226.25,
-            "y": -76.875
+            "x": 244,
+            "y": -149.65625
           },
           {
             "name": "Kokiri Forest",
-            "x": 195,
-            "y": -176.875
+            "x": 161.34375,
+            "y": -190.875
           },
           {
             "name": "Lost Woods",
-            "x": 215.625,
-            "y": -153.125
+            "x": 184.3125,
+            "y": -179.53125
           },
           {
             "name": "Sacred Forest Meadow",
-            "x": 229.375,
-            "y": -125.625
+            "x": 202.625,
+            "y": -170.625
           },
           {
             "name": "Lake Hylia",
-            "x": 121.875,
-            "y": -201.875
+            "x": 114.65625,
+            "y": -188.28125
           },
           {
             "name": "Gerudo Valley",
-            "x": 82.5,
-            "y": -154.375
+            "x": 86.875,
+            "y": -149.625
           },
           {
             "name": "Gerudo Fortress",
-            "x": 56.875,
-            "y": -127.5
+            "x": 66.875,
+            "y": -133.8125
           },
           {
             "name": "Haunted Wasteland",
-            "x": 35.625,
-            "y": -94.375
+            "x": 39.59375,
+            "y": -126
           },
           {
             "name": "Desert Colossus",
-            "x": 32.5,
-            "y": -58.125
+            "x": 13.59375,
+            "y": -127.25
           },
           {
             "name": "Lon Lon Ranch",
-            "x": 138.125,
-            "y": -145.625
+            "x": 129.755,
+            "y": -160.51318750000002
           }
         ]
       }

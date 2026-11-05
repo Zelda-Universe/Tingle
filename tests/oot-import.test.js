@@ -65,10 +65,17 @@ test('hand-placed OoT collectibles are complete, unique and on real categories a
   // Dungeon markers name a floor of their own dungeon.
   const floors=new Map(read('maps').flatMap(m=>m.subMap.map(s=>[s.id,m.id])));
   for(const p of pois.filter(p=>p.submap)) expect(floors.get(p.submap)).toBe(p.map);
-  for(const p of pois) {
-    expect(['child','adult','both']).toContain(p.age);
-    expect(p.x).toBeGreaterThanOrEqual(0); expect(p.x).toBeLessThanOrEqual(256);
-    expect(p.y).toBeLessThanOrEqual(0); expect(p.y).toBeGreaterThanOrEqual(-256);
+  for(const p of pois) expect(['child','adult','both']).toContain(p.age);
+  // Overworld markers sit inside a real area of the Hyrule layout.
+  const areas=new Set(require('../dev/assets/oot/world-layout.json').regions.map(r=>r[0]));
+  for(const p of pois.filter(p=>p.map==='65000')) {
+    expect(areas.has(p.region)).toBe(true);
+    expect(p.u).toBeGreaterThanOrEqual(0); expect(p.u).toBeLessThanOrEqual(1);
+    expect(p.v).toBeGreaterThanOrEqual(0); expect(p.v).toBeLessThanOrEqual(1);
+  }
+  for(const m of markers) {
+    expect(+m.x).toBeGreaterThanOrEqual(0); expect(+m.x).toBeLessThanOrEqual(256);
+    expect(+m.y).toBeLessThanOrEqual(0); expect(+m.y).toBeGreaterThanOrEqual(-256);
   }
 });
 

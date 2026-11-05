@@ -538,7 +538,7 @@ ZMap.prototype.addMarker = function(vMarker) {
       _this._createMarkerPopup(marker);
 
       _this._closeNewMarker();
-      newMarker = L.marker(marker._latlng).addTo(_this.map);
+      newMarker = _this._createPin(marker._latlng, marker).addTo(_this.map);
       newMarker.markerId = marker.id;
       newMarker.markerPos = marker.pos;
       _this._panMarkerIntoVisibleMapArea(marker, true);
@@ -578,6 +578,55 @@ ZMap.prototype._closeNewMarker = function() {
       newMarker = null;
    }
 }
+
+// The pin shown on a selected marker, a dropped pin or a marker being added:
+// the Master Sword, stabbing down into the spot as it appears. The bottom 19%
+// of the blade is cut away on impact (styles/zmain.css), so the anchor is that
+// cut edge: the visible blade ends exactly on the spot.
+//
+// Given the marker it stabs, it ends on that marker's drawn centre instead.
+// Marker icons are anchored at floor(size / 2), so an odd-sized icon (23px)
+// is drawn half a pixel right of and below its point; the pin follows it, and
+// re-checks when the marker's icon switches size with the zoom.
+ZMap.prototype._createPin = function(latlng, marker) {
+  var map = this.map;
+  var swordIcon = function() {
+    var dx = 0, dy = 0;
+    var options = marker && marker.options.icon && marker.options.icon.options;
+    if (options && options.iconSize && options.iconAnchor) {
+      dx = Number(options.iconSize[0]) / 2 - Number(options.iconAnchor[0]);
+      dy = Number(options.iconSize[1]) / 2 - Number(options.iconAnchor[1]);
+    }
+    return L.divIcon({
+      className: 'sword-pin',
+      html: "<img class='sword-pin-image' src='images/pin-sword.svg' alt='' draggable='false'>",
+      iconSize: [30, 42],
+      iconAnchor: [15 - dx, 34 - dy]
+    });
+  };
+  var pin = L.marker(latlng, {
+    icon: swordIcon(),
+    keyboard: false,
+    zIndexOffset: 1000
+  });
+  if (marker) {
+    var anchor = pin.options.icon.options.iconAnchor.join();
+    var follow = function() {
+      var icon = swordIcon();
+      if (icon.options.iconAnchor.join() === anchor) return;
+      anchor = icon.options.iconAnchor.join();
+      pin.setIcon(icon);
+      // A new icon would replay the stab; this is the same pin, already in.
+      var image = pin.getElement() && pin.getElement().querySelector('.sword-pin-image');
+      if (image) image.style.animation = 'none';
+    };
+    // After the zoom's own handlers, which swap the markers' icons.
+    var followLater = function() { window.setTimeout(follow, 0); };
+    pin.on('add', function() { map.on('zoomend', followLater); });
+    pin.on('remove', function() { map.off('zoomend', followLater); });
+  }
+  return pin;
+};
 
 ZMap.prototype._panMarkerIntoVisibleMapArea = function(marker, onlyIfObscured, delay) {
    var attempts = 0;
@@ -1605,7 +1654,7 @@ ZMap.prototype._createDroppedPinLink = function(latlng) {
 
 ZMap.prototype._openDroppedPin = function(latlng) {
   this._closeNewMarker();
-  newMarker = L.marker(latlng).addTo(this.map);
+  newMarker = this._createPin(latlng).addTo(this.map);
   newMarker.droppedPin = true;
 
   var link = this._createDroppedPinLink(latlng);
@@ -3180,7 +3229,7 @@ ZMap.prototype._buildContextMenu = function() {
     if (newMarker != null) {
       _this.map.removeLayer(newMarker);
     }
-    newMarker = new L.marker(e.latlng).addTo(this.map);
+    newMarker = this._createPin(e.latlng).addTo(this.map);
     _this.map.contextmenu.hide();
     _this.map.panTo(e.latlng);
     _this._createMarkerForm(null, e.latlng);
@@ -6514,7 +6563,7 @@ ZMap.prototype._openMarker = function(
        this.map.setView(latlng, vZoom);
      }
      if (vPin) {
-         newMarker = L.marker(marker._latlng).addTo(this.map);
+         newMarker = this._createPin(marker._latlng, marker).addTo(this.map);
      }
 
      //$('#mkrDiv'+vMarkerId).unslider({arrows:false});

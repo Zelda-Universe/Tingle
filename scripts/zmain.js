@@ -8,7 +8,7 @@ if(!gameId) {
   // A home-screen cold launch opens the manifest's bare start URL. Resolve
   // it before requesting map data; there is no cached "game=" response.
   var downloadedGames = !navigator.onLine ? ZMapOfflinePacks.downloadedGameIds() : [];
-  gameId = downloadedGames[0] || 'TotK';
+  gameId = downloadedGames[0] || 'OoT';
   var startURL = new URL(window.location.href);
   startURL.searchParams.set('game', gameId);
   window.history.replaceState(window.history.state, '', startURL.href);

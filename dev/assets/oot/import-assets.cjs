@@ -107,9 +107,13 @@ async function main(source) {
     await addMap('Hyrule', 'Hyrule', ['Child','Adult'].map(age=>path.join(temporary,`Hyrule_${age}.png`)), 'world');
     const names = {ZoraDomain:"Zora's Domain",ZoraFountain:"Zora's Fountain",ZoraRiver:"Zora's River",LonLonRanch:'Lon Lon Ranch',GanonCastle:"Ganon's Castle"};
     maps[maps.length-1].subMap.forEach(submap=>{
-      submap.placeLabels = require('./world-layout.json').regions
+      const layout = require('./world-layout.json'), scale = (layout.canvas || 4096) / 256;
+      submap.placeLabels = layout.regions
         .filter(([key])=> !(key==='HyruleCastle' && submap.name==='Adult') && !(key==='GanonCastle' && submap.name==='Child'))
-        .map(([key,x,y])=>({name:names[key] || friendly(key),x:x/16,y:-(y+(key==='HyruleField' ? -350 : 0))/16}));
+        .map(([key,x,y])=>({name:names[key] || friendly(key),x:x/scale,y:-(y+(key==='HyruleField' ? -350 : 0))/scale}));
+      // Lon Lon Ranch is drawn inside the Hyrule Field artwork; label the ranch there.
+      const field = require('./world-boxes.json').boxes[submap.name].HyruleField;
+      submap.placeLabels.push({name:names.LonLonRanch, x:(field[0] + 0.447 * field[2]) / scale, y:-(field[1] + 0.598 * field[3]) / scale});
     });
   } finally { fs.rmSync(temporary,{recursive:true,force:true}); }
   // Regions are now part of the world, not separate destinations.
@@ -157,7 +161,7 @@ async function main(source) {
     enemies:definitions('ActorMsg/Enemy.csv'),locations:(text['LocationMsg/Location.csv'] || []).map(row=>
       ({key:row.Label,name:row.USenText,coordinates:null}))};
   write('unplaced-content.json',unplaced);
-  write('container.json',[{id:GAME,name:'Ocarina of Time',shortName:'OoT',icon:'OoT',markerURL:'markers/',markerExt:'png',
+  write('container.json',[{id:GAME,name:'Ocarina of Time',shortName:'OoT',icon:'Ocarina-of-Time',markerURL:'markers/',markerExt:'png',
     bgColor:'#241a0c',showMapControl:'1',showZoomControl:'1',centerX:'128',centerY:'-128',boundTopX:'10',boundTopY:'-10',
     boundBottomX:'-266',boundBottomY:'266',clusterMaxZoom:'6',clusterGridSize:'30',defaultZoom:'1',maxZoom:'6',
     tileSize:'256',iconWidth:'23',iconHeight:'23',iconSmallWidth:'16',iconSmallHeight:'16',switchIconsAtZoom:'-1',

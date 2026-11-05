@@ -1,0 +1,69 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 40 56" style="enable-background:new 0 0 40 56;" xml:space="preserve">
+<style type="text/css">
+	.st0{opacity:0.2;fill:url(#SVGID_1_);}
+	.st1{opacity:0.2;fill:url(#SVGID_2_);}
+	.st2{opacity:0.2;fill:url(#SVGID_3_);}
+	.st3{opacity:0.2;fill:url(#SVGID_4_);}
+	.st4{opacity:0.2;fill:url(#SVGID_5_);}
+	.st5{opacity:0.2;fill:url(#SVGID_6_);}
+	.st6{fill:#32327D;}
+	.st7{fill:#E6E6E6;}
+	.st8{fill:#6E6EFF;}
+	.st9{fill:#FFFFFF;}
+	.st10{fill:#4B4BFF;}
+	.st11{fill:#CCCCCC;}
+	.st12{fill:#B3B3B3;}
+	.st13{fill:#FBB03B;}
+	.st14{fill:#F7931E;}
+	.st15{opacity:0.5;}
+	.st16{opacity:0.2;fill:url(#SVGID_7_);}
+	.st17{opacity:0.2;fill:url(#SVGID_8_);}
+	.st18{opacity:0.2;fill:url(#SVGID_9_);}
+	.st19{opacity:0.2;fill:url(#SVGID_10_);}
+	.st20{opacity:0.2;fill:url(#SVGID_11_);}
+	.st21{opacity:0.2;fill:url(#SVGID_12_);}
+	.st22{fill:#AFAFFF;}
+	.st23{opacity:0.2;fill:url(#SVGID_13_);}
+	.st24{opacity:0.2;fill:url(#SVGID_14_);}
+	.st25{opacity:0.2;fill:url(#SVGID_15_);}
+	.st26{opacity:0.2;fill:url(#SVGID_16_);}
+	.st27{opacity:0.2;fill:url(#SVGID_17_);}
+	.st28{opacity:0.2;fill:url(#SVGID_18_);}
+</style>
+<g id="Sword_4">
+	<path class="st6" d="M22,0h-4c-0.758,0-1.45,0.428-1.789,1.106l-2,4c-0.282,0.563-0.282,1.226,0,1.789l1.65,3.301
+		C15.596,10.068,15.302,10,15,10C7.832,10,2,15.832,2,23v2c0,1.105,0.895,2,2,2h7c1.125,0,2.164-0.373,3-1.002v19.177
+		c0,2.009,0.594,4.01,1.717,5.789l2.592,4.105C18.675,55.648,19.314,56,20,56s1.325-0.352,1.691-0.932l2.592-4.105
+		C25.406,49.185,26,47.184,26,45.175V25.998C26.836,26.627,27.875,27,29,27h7c1.105,0,2-0.895,2-2v-2c0-7.168-5.832-13-13-13
+		c-0.302,0-0.596,0.068-0.861,0.195l1.65-3.301c0.282-0.563,0.282-1.226,0-1.789l-2-4C23.45,0.428,22.758,0,22,0L22,0z"/>
+	<path class="st7" d="M22.592,49.895L20,54l-2.592-4.105C16.482,48.43,16,46.814,16,45.175V16h8v29.175
+		C24,46.814,23.518,48.43,22.592,49.895z"/>
+	<path class="st8" d="M20,22l4,3v-5c1.105,0,2,0.895,2,2c0,1.657,1.343,3,3,3h7v-2c0-6.075-4.925-11-11-11l-3,4v-6l2-4l-2-4h-4l-2,4
+		l2,4v6l-3-4C8.925,12,4,16.925,4,23v2h7c1.657,0,3-1.343,3-3c0-1.105,0.895-2,2-2v5L20,22z"/>
+	<polygon class="st9" points="24,29 20,35 20,38 24,32 	"/>
+	<polygon class="st9" points="24,34 20,40 20,42 24,36 	"/>
+	<polygon class="st10" points="22,10 24,6 16,6 18,10 	"/>
+	<g>
+		<path class="st10" d="M16,19c-1.105,0-2,0.895-2,2c0,1.657-1.343,3-3,3H4v1h7c1.657,0,3-1.343,3-3c0-1.105,0.895-2,2-2V19z"/>
+	</g>
+	<g>
+		<path class="st10" d="M26,21c0-1.105-0.895-2-2-2v1c1.105,0,2,0.895,2,2c0,1.657,1.343,3,3,3h7v-1h-7C27.343,24,26,22.657,26,21z"
+			/>
+	</g>
+	<g>
+		<polygon class="st11" points="20,23.25 16,26.25 16,28.438 20,25.438 24,28.438 24,26.25 		"/>
+	</g>
+	<polygon class="st6" points="24,22 24,25 20,22 16,25 16,22 15,23 15,27 20,23.25 25,27 25,23 	"/>
+	<path class="st12" d="M20.5,45.277V24.333L20,25l-0.5-0.667v20.944l-3.001,2.701c0.116,0.332,0.245,0.661,0.402,0.983L20,46.173
+		l3.099,2.789c0.157-0.322,0.286-0.651,0.402-0.983L20.5,45.277z"/>
+	<g>
+		<polygon class="st13" points="20,17 17,21 20,25 23,21 		"/>
+		<polygon class="st14" points="17,21 20,22 23,21 20,25 		"/>
+		<polygon class="st15" points="20,25 23,21 20,17 		"/>
+	</g>
+	<g>
+		<polygon class="st22" points="22,6 23.143,4.286 22.286,2.571 20,6 		"/>
+	</g>
+</g>
+</svg>

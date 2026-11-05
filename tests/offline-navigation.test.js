@@ -14,7 +14,7 @@ test('offline game switches boot the current app instead of downloaded HTML with
   vm.runInNewContext(source, scope);
   const request = { url: 'https://stage.zeldamaps.com/?game=EoW' };
   expect(await scope.navigateWithCurrentShell(request)).toBe(currentShell);
-  expect(match).toHaveBeenCalledWith('https://stage.zeldamaps.com/?game=TotK');
+  expect(match).toHaveBeenCalledWith('https://stage.zeldamaps.com/?game=OoT');
   expect(globalMatch).not.toHaveBeenCalled();
 });
 

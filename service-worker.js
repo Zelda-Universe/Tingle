@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261105-68';
+const CACHE_VERSION = '20261105-69';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -6,13 +6,15 @@ const MAX_TILE_ENTRIES = 500;
 const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 
 const CORE_ASSETS = [
-  './?game=TotK',
+  './?game=OoT',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261105-ootpoi-2',
-  './res.php?type=css&v=20261105-ootpoi-2',
+  './res.php?type=javascript&v=20261105-oot-3',
+  './res.php?type=css&v=20261105-oot-3',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
+  './images/pin-sword.svg',
+  './images/icons/games/ocarina-of-time.svg',
   './images/zmaps_white_small.png',
   './images/default-avatar.png',
   './images/zelda-maps-bg-tile.png'
@@ -147,7 +149,7 @@ async function navigateWithCurrentShell(request) {
     // app update. Always boot the current shell; game selection comes from
     // the address bar, not from the shell's original game query string.
     const app = await caches.open(APP_CACHE);
-    const shellURL = new URL('./?game=TotK', self.registration.scope).href;
+    const shellURL = new URL('./?game=OoT', self.registration.scope).href;
     const shell = await app.match(shellURL);
     if (shell) return shell;
     const cached = await caches.match(request);

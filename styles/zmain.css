@@ -2628,6 +2628,59 @@ button[aria-disabled="true"] {
 	}
 }
 
+/* The selected / dropped pin: the Master Sword drops in, tip first, and
+   stabs into the spot. The tip is the icon anchor, so it lands exactly on
+   the location; the drop is on the image so Leaflet's positioning is untouched. */
+.leaflet-marker-icon.sword-pin {
+	background: none;
+	border: 0;
+	animation: none;
+}
+
+.sword-pin-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .45));
+	transform-origin: 50% 100%;
+	clip-path: inset(0 0 19% 0);
+	animation: sword-pin-stab .42s cubic-bezier(.55, 0, .85, .35) both;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+/* As it strikes, the bottom 19% of the blade is cut away so the tip stays
+   buried in the marker. The pin is anchored at that cut edge (see
+   ZMap._createPin), so the visible blade ends on the marker's centre. */
+@keyframes sword-pin-stab {
+	0% {
+		opacity: 0;
+		transform: translateY(-75%);
+		clip-path: inset(0 0 0 0);
+	}
+	55% {
+		opacity: 1;
+	}
+	70% {
+		clip-path: inset(0 0 0 0);
+	}
+	78% {
+		transform: translateY(6%) scaleY(.94);
+		clip-path: inset(0 0 19% 0);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0) scaleY(1);
+		clip-path: inset(0 0 19% 0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sword-pin-image {
+		animation: fadein .2s both;
+	}
+}
+
 
 /* Firefox < 16 */
 

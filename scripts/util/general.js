@@ -8,7 +8,7 @@ var MOBILE_LAYOUT_BREAKPOINT = 600;
 
 // The order games are listed in, most played first; others follow in their
 // existing order. Matches GAME_ORDER in lib/common/game_order.php.
-var GAME_ORDER = ['TotK', 'BotW', 'EoW', 'LA'];
+var GAME_ORDER = ['OoT', 'TotK', 'BotW', 'EoW', 'LA'];
 
 // A sorted copy of a list of games, or of their short names when getName is
 // omitted and the items are strings.

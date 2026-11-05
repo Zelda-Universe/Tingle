@@ -1,7 +1,7 @@
 <?php
   // The order games are listed in, most played first. Games not listed here
   // follow, by id. Matches GAME_ORDER in scripts/util/general.js.
-  const GAME_ORDER = ['TotK', 'BotW', 'EoW', 'LA'];
+  const GAME_ORDER = ['OoT', 'TotK', 'BotW', 'EoW', 'LA'];
 
   // An ORDER BY clause for a container's short name column.
   function gameOrderSql($column) {

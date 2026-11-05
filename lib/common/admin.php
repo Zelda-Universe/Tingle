@@ -23,6 +23,15 @@
     return $userId;
   }
 
+  // Admins are equals: none of them can change, disable or ban another
+  // admin's account from here. Those changes are made at the database, by
+  // the people who run the site. Answers for the caller when it refuses.
+  function adminCanManage($adminId, $targetId, $targetLevel) {
+    if ((int) $targetId === (int) $adminId || (int) $targetLevel < ADMIN_LEVEL) return true;
+    echo json_encode(array('success' => false, 'msg' => "Other admins' accounts can't be changed here."));
+    return false;
+  }
+
   // Columns and tables from the admin_accounts migration (last_seen, disabled,
   // admin_log) may not exist yet on older databases.
   function adminHasColumn($db, $prefix, $column) {

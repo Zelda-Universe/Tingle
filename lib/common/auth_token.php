@@ -47,6 +47,12 @@
 
   function authIssueToken($db, $prefix, $userId) {
     if (!authTokensAvailable($db, $prefix)) return;
+    // Tokens past their cookie's lifetime can never be presented again;
+    // clear them out as people sign in, so the table doesn't grow forever.
+    $db->executeStatement(
+      "DELETE FROM `{$prefix}user_login_token` WHERE `last_used` < NOW() - INTERVAL ? SECOND",
+      [AUTH_LIFETIME]
+    );
     $selector = bin2hex(random_bytes(12));
     $validator = bin2hex(random_bytes(32));
     $agent = substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 255);
@@ -80,6 +86,9 @@
         FROM `{$prefix}user` WHERE `id` = ?
     ", [(int) $userId]);
     if (!$row) return false;
+    // A fresh session id, as login.php gives: the one the browser arrived
+    // with was issued before it proved who it was.
+    session_regenerate_id(true);
     $_SESSION['username'] = $row['username'];
     $_SESSION['user_id']  = $row['id'];
     $_SESSION['level']    = $row['level'];
@@ -137,10 +146,26 @@
     authSetCookie('', time() - 3600);
   }
 
-  // Deleted, disabled or banned accounts: every device.
+  // Deleted, disabled or banned accounts, and passwords set by a reset link
+  // or an admin: every device.
   function authRevokeUser($db, $prefix, $userId) {
     if (authTokensAvailable($db, $prefix)) {
       $db->executeStatement("DELETE FROM `{$prefix}user_login_token` WHERE `user_id` = ?", [(int) $userId]);
+    }
+  }
+
+  // A password the account holder changed themselves: every device but the
+  // one they did it from.
+  function authRevokeOtherDevices($db, $prefix, $userId) {
+    if (!authTokensAvailable($db, $prefix)) return;
+    $parts = authCookieParts();
+    if ($parts) {
+      $db->executeStatement(
+        "DELETE FROM `{$prefix}user_login_token` WHERE `user_id` = ? AND `selector` <> ?",
+        [(int) $userId, $parts[0]]
+      );
+    } else {
+      authRevokeUser($db, $prefix, $userId);
     }
   }
 ?>

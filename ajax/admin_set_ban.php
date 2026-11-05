@@ -18,7 +18,7 @@
   $hideMarkers = ($_POST['hideMarkers'] ?? '') === '1';
 
   $user = $db->fetchAssociative(
-    "SELECT `id`, `email`, `deleted`, `banned` FROM `{$map_prefix}user` WHERE `id` = ?",
+    "SELECT `id`, `email`, `level`, `deleted`, `banned` FROM `{$map_prefix}user` WHERE `id` = ?",
     [$userId]
   );
   if (!$user || $user['deleted'] !== null) {
@@ -29,6 +29,7 @@
     echo json_encode(array('success' => false, 'msg' => "You can't ban your own account."));
     return;
   }
+  if (!adminCanManage($adminId, $userId, $user['level'])) return;
   if (($user['banned'] !== null) === $ban) {
     echo json_encode(array('success' => true, 'msg' => $ban ? 'Account already banned.' : 'Account isn\'t banned.'));
     return;
@@ -67,6 +68,9 @@
     $details = ['reason' => $reason];
     if ($hideMarkers) $details['hiddenMarkers'] = $hidden;
     adminLog($db, $map_prefix, $adminId, $userId, 'ban', $details);
+    // Signed out of every device now, not on their next request.
+    include_once(dirname(__DIR__) . '/lib/common/auth_token.php');
+    authRevokeUser($db, $map_prefix, $userId);
   } else {
     $db->executeStatement(
       "UPDATE `{$map_prefix}user` SET `banned` = NULL, `ban_reason` = NULL WHERE `id` = ?",

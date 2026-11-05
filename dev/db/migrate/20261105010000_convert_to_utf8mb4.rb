@@ -5,6 +5,10 @@ class ConvertToUtf8mb4 < ActiveRecord::Migration[7.1]
   # as the old server did. Everything becomes utf8mb4, and the application
   # talks utf8mb4 to the server (lib/common/database.php).
   #
+  # utf8mb4_swedish_ci, not the Unicode default, keeps latin1_swedish_ci's
+  # equality rules: ä, ö and ü are letters of their own, so usernames like
+  # Bjorn and björn stay two accounts instead of colliding on unique keys.
+  #
   # Tables with text columns are rebuilt (ALGORITHM=COPY: reads continue,
   # writes to the table being rebuilt wait), so this runs in a quiet window
   # with a fresh backup; tables without text only get a new default, which
@@ -16,7 +20,7 @@ class ConvertToUtf8mb4 < ActiveRecord::Migration[7.1]
     # while foreign keys are checked. The keys are on integer columns, which
     # the charset change doesn't touch, and the setting is per session.
     execute "SET foreign_key_checks = 0"
-    execute "ALTER DATABASE `#{connection.current_database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+    execute "ALTER DATABASE `#{connection.current_database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_swedish_ci"
     connection.tables.sort.each do |table|
       has_text = connection.select_value(<<~SQL).to_i > 0
         SELECT COUNT(*) FROM information_schema.COLUMNS
@@ -24,9 +28,9 @@ class ConvertToUtf8mb4 < ActiveRecord::Migration[7.1]
            AND CHARACTER_SET_NAME IS NOT NULL
       SQL
       if has_text
-        execute "ALTER TABLE `#{table}` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, ROW_FORMAT=DYNAMIC"
+        execute "ALTER TABLE `#{table}` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_swedish_ci, ROW_FORMAT=DYNAMIC"
       else
-        execute "ALTER TABLE `#{table}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+        execute "ALTER TABLE `#{table}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_swedish_ci"
       end
     end
     execute "SET foreign_key_checks = 1"

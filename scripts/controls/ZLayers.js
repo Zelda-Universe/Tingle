@@ -1639,6 +1639,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           } else if(vType === 'registerForm') {
             if(this._registrationReturnMarker) {
               this.zMap._pendingBookmarkRegistration = null;
+              this.zMap._pendingCompleteRegistration = null;
               // Restore the existing POI without reselecting its map or
               // requesting an immediate drawer opening through goTo().
               // Both bypass the normal page/height transition.

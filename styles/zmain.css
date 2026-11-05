@@ -1598,6 +1598,8 @@ a.button.leaflet-control-layers-toggle {
 	width: 100%;
 	margin: 0;
 }
+.bookmark-registration-prompt .bookmark-registration-actions .bookmark-registration-cancel,
+.bookmark-registration-prompt .bookmark-registration-actions .bookmark-registration-cancel:hover,
 .bookmark-registration-prompt .bookmark-registration-actions [data-action="cancel"],
 .bookmark-registration-prompt .bookmark-registration-actions [data-action="cancel"]:hover {
 	background: transparent;
@@ -1605,8 +1607,15 @@ a.button.leaflet-control-layers-toggle {
 	box-shadow: none;
 	color: rgba(255,255,255,.7);
 }
+.bookmark-registration-prompt .bookmark-registration-actions .bookmark-registration-cancel:hover,
 .bookmark-registration-prompt .bookmark-registration-actions [data-action="cancel"]:hover {
 	color: #fff;
+}
+/* Two ways to decline: Maybe Later, then a quieter Don't Remind Me Again. */
+.bookmark-registration-prompt .bookmark-registration-actions [data-action="later"] + [data-action="never"] {
+	margin-top: -8px;
+	font-size: 15px;
+	color: rgba(255,255,255,.5);
 }
 .bookmark-registration-cancel {
 	box-sizing: border-box;
@@ -5266,4 +5275,423 @@ div.circle:has(>.icon-EoW_Echo) {
 .marker-edit-coords .form-control::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}
+
+/* Admin: sign-up sources and feature usage. */
+.admin-signup {
+	font-size: 14px;
+	line-height: 1.35;
+	padding: 12px 14px;
+	border: 1px solid rgba(255,255,255,.2);
+	border-radius: 10px;
+}
+
+.admin-signup + .admin-signup {
+	margin-top: 8px;
+}
+
+.admin-signup-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.admin-signup-name {
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.admin-signup-count {
+	font-size: 14px;
+}
+
+.admin-signup-count {
+	font-variant-numeric: tabular-nums;
+	white-space: nowrap;
+}
+
+.admin-signup-bar {
+	height: 6px;
+	margin: 8px 0 12px;
+	border-radius: 999px;
+	background: rgba(255,255,255,.12);
+	overflow: hidden;
+}
+
+.admin-signup-bar span {
+	display: block;
+	height: 100%;
+	border-radius: 999px;
+	background: #3cbc75;
+}
+
+.admin-funnel {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 6px;
+}
+
+.admin-funnel-step {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 8px 10px;
+	border-radius: 8px;
+	background: rgba(255,255,255,.08);
+}
+
+.admin-funnel-value {
+	font-size: 18px;
+	font-weight: 700;
+	font-variant-numeric: tabular-nums;
+}
+
+.admin-funnel-label {
+	color: rgba(255,255,255,.65);
+	font-size: 11px;
+	line-height: 1.3;
+}
+
+.menu-cat-content-inner #admin p.admin-signup-outs,
+.menu-cat-content-inner #admin .admin-signup p.admin-muted,
+.menu-cat-content-inner #admin p.admin-signup-note {
+	margin: 8px 0 0;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.menu-cat-content-inner #admin p.admin-signup-note {
+	margin: 8px 0 0;
+}
+
+.admin-usage-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 8px;
+}
+
+.admin-usage-grid .admin-stat-change {
+	color: rgba(255,255,255,.6);
+}
+
+/* Admin: completes, bookmarks and offline maps. Four boxes in a row. */
+.admin-summary.admin-activity-summary {
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.admin-offline {
+	margin-top: 16px;
+}
+
+.menu-cat-content-inner #admin .admin-offline-heading {
+	margin: 0 0 8px;
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.menu-cat-content-inner #admin ol.admin-offline-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.admin-offline-game {
+	padding: 10px 12px;
+	border: 1px solid rgba(255,255,255,.2);
+	border-radius: 10px;
+	font-size: 14px;
+}
+
+.admin-offline-game + .admin-offline-game {
+	margin-top: 8px;
+}
+
+.admin-offline-game .admin-signup-bar {
+	margin: 8px 0 6px;
+}
+
+.menu-cat-content-inner #admin p.admin-offline-detail {
+	margin: 0;
+	font-size: 12px;
+	line-height: 1.4;
+}
+
+.admin-top-marker {
+	cursor: pointer;
+}
+
+.admin-top-marker:hover,
+.admin-top-marker:focus-visible {
+	background: rgba(255,255,255,.06);
+	outline: none;
+}
+
+.admin-top-marker .admin-signup-name {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.admin-top-rank {
+	color: rgba(255,255,255,.5);
+	font-weight: 600;
+}
+
+/* Admin: Analytics and Users tabs. */
+.admin-tabs {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 2px;
+	margin: 0 16px 20px;
+	padding: 2px;
+	/* Pills, like the graphs' toggles. */
+	border-radius: 999px;
+	background: rgba(255,255,255,.1);
+}
+
+.admin-tabs button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 36px;
+	margin: 0;
+	padding: 6px 8px;
+	border: 0;
+	border-radius: 999px;
+	background: none;
+	color: rgba(255,255,255,.7);
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.admin-tabs button:hover {
+	color: white;
+}
+
+.admin-tabs button[aria-selected="true"] {
+	background: rgba(255,255,255,.2);
+	color: white;
+}
+
+.admin-tabs button svg,
+.admin-tabs button i {
+	width: 14px;
+}
+
+.admin-panel[hidden] {
+	display: none !important;
+}
+
+/* Admin: Users tab filters. */
+.admin-filters {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin: 12px 0 4px;
+}
+
+.admin-filter .admin-chart-options {
+	margin: 0;
+}
+
+.admin-filter-label {
+	display: block;
+	margin: 0 0 4px 4px;
+	color: rgba(255,255,255,.6);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+
+.admin-filters-clear {
+	align-self: flex-start;
+	margin: 0;
+	padding: 2px 4px;
+	border: 0;
+	background: none;
+	color: #8fd8ff;
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.admin-filters-clear[hidden] {
+	display: none;
+}
+
+.admin-filters-clear:hover {
+	color: white;
+}
+
+/* Admin: the Filters button over the Users tab's filters. */
+/* The Filters button heads a box that holds the filters when open. */
+.admin-filter-box {
+	margin: 12px 0 0;
+	border: 1px solid rgba(255,255,255,.14);
+	border-radius: 14px;
+	background: rgba(255,255,255,.04);
+}
+
+.admin-filter-box:has(.admin-filters-toggle.active) {
+	border-color: rgba(143,216,255,.35);
+}
+
+.admin-filters-toggle {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
+	min-height: 44px;
+	margin: 0;
+	padding: 6px 14px;
+	border: 0;
+	border-radius: 14px;
+	background: none;
+	color: rgba(255,255,255,.8);
+	font-size: 14px;
+	font-weight: 600;
+	text-align: left;
+}
+
+.admin-filter-box .admin-filters {
+	margin: 0;
+	padding: 2px 12px 12px;
+}
+
+.admin-filters-toggle:hover {
+	color: white;
+}
+
+.admin-filters-toggle.active {
+	color: white;
+}
+
+.admin-filters-toggle > svg:first-child,
+.admin-filters-toggle > i:first-child {
+	width: 14px;
+}
+
+.admin-filters-summary {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	color: #8fd8ff;
+	font-size: 13px;
+	font-weight: 600;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.admin-chevron {
+	flex: none;
+	width: 10px;
+	transition: transform .2s;
+}
+
+[aria-expanded="true"] > .admin-chevron {
+	transform: rotate(180deg);
+}
+
+.admin-filters[hidden] {
+	display: none !important;
+}
+
+/* Admin: Analytics in two groups, Growth and Engagement, each a run of
+   plain sections: a heading with its summary, then the section's own
+   graph, boxes and lists. */
+.menu-cat-content-inner #admin p.admin-group-label {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 4px 16px 14px;
+	color: rgba(255,255,255,.55);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+}
+
+.menu-cat-content-inner #admin p.admin-group-label::after {
+	content: '';
+	flex: 1 1 auto;
+	height: 1px;
+	background: rgba(255,255,255,.14);
+}
+
+.menu-cat-content-inner #admin p.admin-group-label ~ p.admin-group-label {
+	margin-top: 12px;
+}
+
+.admin-analytics-section {
+	margin-bottom: 28px;
+}
+
+.admin-section h4.admin-section-heading {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 4px 8px;
+	margin: 0 0 10px;
+	font-size: 15px;
+}
+
+.admin-section-summary {
+	font-size: 12px;
+}
+
+
+/* Admin: the reminder-timing A/B test, in the Complete card. */
+.admin-test {
+	margin-top: 12px;
+	padding-top: 12px;
+	border-top: 1px solid rgba(255,255,255,.12);
+}
+
+.menu-cat-content-inner #admin p.admin-test-title {
+	margin: 0 0 6px;
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.admin-test-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 13px;
+	font-variant-numeric: tabular-nums;
+}
+
+.admin-test-table th,
+.admin-test-table td {
+	padding: 4px 0;
+	text-align: right;
+}
+
+.admin-test-table thead th {
+	color: rgba(255,255,255,.65);
+	font-size: 12px;
+	font-weight: 700;
+}
+
+.admin-test-table tbody th {
+	color: rgba(255,255,255,.65);
+	font-weight: 400;
+	text-align: left;
+}
+
+.admin-test-table tbody tr:last-child td {
+	font-weight: 700;
+}
+
+.admin-test-table tbody tr + tr th,
+.admin-test-table tbody tr + tr td {
+	border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.menu-cat-content-inner #admin p.admin-test-verdict {
+	margin: 8px 0 0;
+	font-size: 12px;
+	line-height: 1.4;
 }

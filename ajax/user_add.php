@@ -44,5 +44,17 @@
      return;
    }
 
+   // Where the sign-up started (lib/common/signups.php). The page also
+   // counts it as a 'registered' event; this keeps it with the account.
+   include_once(dirname(__DIR__) . '/lib/common/signups.php');
+   $source = (string) ($_POST['source'] ?? 'account');
+   if (signupsAvailable($db, $map_prefix) && isset(signupFeatures()[$source])) {
+     $variant = (string) ($_POST['variant'] ?? '');
+     $db->executeStatement(
+       "UPDATE `{$map_prefix}user` SET `signup_source` = ?, `signup_variant` = ? WHERE `username` = ?",
+       [$source, $source === 'complete' && isset(signupVariants()[$variant]) ? $variant : null, $username]
+     );
+   }
+
    echo json_encode(array("success"=>true, "msg"=>"Success! User created!"));
 ?>

@@ -1747,7 +1747,7 @@ ZMap.prototype._showBookmarkRegistrationPrompt = function(target) {
   dialog.innerHTML = '<h2 id="bookmark-registration-title">Register to save bookmarks.</h2>' +
     '<p id="bookmark-registration-description">Bookmarking POIs requires a free Zelda Maps account. Register to bookmark this POI and get other cool features like Offline Maps and ad-free browsing!</p>' +
     '<div class="bookmark-registration-actions"><button type="button" class="infoWindowIcn" data-action="register">Register Now</button>' +
-    '<button type="button" class="bookmark-registration-cancel" data-action="cancel">No Thanks</button></div>';
+    '<button type="button" class="bookmark-registration-cancel" data-action="cancel">Maybe Later</button></div>';
   dialog.addEventListener('close', function() {
     dialog.remove();
     if(previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
@@ -1772,10 +1772,206 @@ ZMap.prototype._showBookmarkRegistrationPrompt = function(target) {
     else Promise.all(animations.map(function(animation) { return animation.finished.catch(function() {}); })).then(finish);
   }.bind(this);
   dialog.addEventListener('cancel', function(e) { e.preventDefault(); dismiss(false); });
-  dialog.querySelector('[data-action="cancel"]').addEventListener('click', function() { dismiss(false); });
-  dialog.querySelector('[data-action="register"]').addEventListener('click', function() { dismiss(true); });
+  dialog.querySelector('[data-action="cancel"]').addEventListener('click', function() {
+    this.trackFeatureEvent('prompt_later', 'bookmark');
+    dismiss(false);
+  }.bind(this));
+  dialog.querySelector('[data-action="register"]').addEventListener('click', function() {
+    this.trackFeatureEvent('prompt_register', 'bookmark');
+    dismiss(true);
+  }.bind(this));
   document.body.appendChild(dialog);
   dialog.showModal();
+  this.trackFeatureEvent('prompt_shown', 'bookmark');
+};
+
+// Completing markers while signed out. Counts are this device's saved
+// completes (all games), so the prompts grow with what there is to lose:
+// - the 3rd complete: a prompt to register (once);
+// - after that, the prompt again, saying how many markers they've completed.
+//   How often is an A/B test: each device is put in a group at random, kept
+//   in its prompt state, and the group goes with its events and sign-ups
+//   (Admin, Sign-Up Sources):
+//     milestone: at 15, 50 and 100 completes, then every 100;
+//     visit: on the first complete of every visit, like the old toast.
+// Both only offer Maybe Later: the reminders keep coming. (Devices that chose
+// Don't Remind Me Again before it was removed stay opted out.)
+ZMap.prototype.COMPLETE_PROMPT_KEY = 'zeldamaps.completeRegistrationPrompt';
+ZMap.prototype.COMPLETE_PROMPT_OFF_KEY = 'zeldamaps.completeRegistrationPromptOff';
+ZMap.prototype.COMPLETE_PROMPT_FIRST = 3;
+ZMap.prototype.COMPLETE_REMINDERS = [15, 50, 100];
+ZMap.prototype.COMPLETE_REMINDER_VARIANTS = ['milestone', 'visit'];
+
+// This device's group, chosen the first time it's needed.
+ZMap.prototype._completeReminderVariant = function(state) {
+  if(this.COMPLETE_REMINDER_VARIANTS.indexOf(state.variant) < 0) {
+    var random = new Uint8Array(1);
+    if(window.crypto && crypto.getRandomValues) crypto.getRandomValues(random);
+    else random[0] = Math.floor(Math.random() * 256);
+    state.variant = this.COMPLETE_REMINDER_VARIANTS[random[0] % 2];
+    this._saveCompletePromptState(state);
+  }
+  return state.variant;
+};
+
+ZMap.prototype._completePromptState = function() {
+  var state = {};
+  try {
+    state = JSON.parse(localStorage.getItem(this.COMPLETE_PROMPT_KEY) || '{}') || {};
+    if(localStorage.getItem(this.COMPLETE_PROMPT_OFF_KEY) === '1') state.off = true;
+  } catch(e) {}
+  return state;
+};
+
+ZMap.prototype._saveCompletePromptState = function(state) {
+  try {
+    localStorage.setItem(this.COMPLETE_PROMPT_KEY, JSON.stringify(state));
+    if(state.off) localStorage.setItem(this.COMPLETE_PROMPT_OFF_KEY, '1');
+  } catch(e) {}
+};
+
+ZMap.prototype._isCompleteReminder = function(count) {
+  var last = this.COMPLETE_REMINDERS[this.COMPLETE_REMINDERS.length - 1];
+  return this.COMPLETE_REMINDERS.indexOf(count) >= 0 || (count > last && count % 100 === 0);
+};
+
+ZMap.prototype._showCompleteRegistrationPrompt = function(markerId) {
+  if(this.getUser()) return;
+  var state = this._completePromptState();
+  if(state.off) return;
+  var count = (completedMarkers || []).length;
+  if(!state.prompted) {
+    if(count < this.COMPLETE_PROMPT_FIRST) return;
+    this._completeReminderVariant(state);
+    state.prompted = true;
+    state.lastAt = count;
+    this._saveCompletePromptState(state);
+    this._completeReminderShownThisVisit = true;
+    this._showCompleteRegistrationDialog(markerId);
+    return;
+  }
+  var variant = this._completeReminderVariant(state);
+  var due = variant === 'visit'
+    // Once a visit: the first complete after the page loads.
+    ? !this._completeReminderShownThisVisit
+    // Each milestone once: un-completing and completing again doesn't repeat it.
+    : count > (state.lastAt || 0) && this._isCompleteReminder(count);
+  if(!due) return;
+  this._completeReminderShownThisVisit = true;
+  state.lastAt = Math.max(state.lastAt || 0, count);
+  this._saveCompletePromptState(state);
+  this._showCompleteRegistrationDialog(markerId, count);
+};
+
+ZMap.prototype._registerToSaveCompletes = function(markerId) {
+  this._pendingCompleteRegistration = { markerId: markerId };
+  this._pendingBookmarkRegistration = null;
+  if(this.mapControl.viewStyleBottomSlide) {
+    this.mapControl._registrationParentPartial = !!this.mapControl._partialDrawerMode;
+  }
+  this._createRegisterForm();
+  if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
+};
+
+// reminderCount: a later reminder, which says how many they've completed.
+// Its choices are counted apart from the first prompt's (reminder_*).
+ZMap.prototype._showCompleteRegistrationDialog = function(markerId, reminderCount) {
+  if(document.getElementById('complete-registration-prompt')) return;
+  var reminder = reminderCount > 0;
+  var variant = this._completePromptState().variant || null;
+  var body = reminder
+    ? 'You’ve completed ' + Number(reminderCount).toLocaleString() + ' markers, but they’re currently only stored on this device. ' +
+      'Register for free to save your markers, plus get other cool features like Offline Maps and ad-free browsing!'
+    : 'Your completed markers will currently only be stored on this device. Register for free to save your markers, ' +
+      'plus get other cool features like Offline Maps and ad-free browsing!';
+  var previousFocus = document.activeElement;
+  var dialog = document.createElement('dialog');
+  dialog.id = 'complete-registration-prompt';
+  dialog.className = 'bookmark-registration-prompt';
+  dialog.setAttribute('aria-labelledby', 'complete-registration-title');
+  dialog.setAttribute('aria-describedby', 'complete-registration-description');
+  dialog.innerHTML = '<h2 id="complete-registration-title">Register to save your completed markers.</h2>' +
+    '<p id="complete-registration-description"></p>' +
+    '<div class="bookmark-registration-actions">' +
+      '<button type="button" class="infoWindowIcn" data-action="register">Register Now &amp; Save My Markers</button>' +
+      '<button type="button" class="bookmark-registration-cancel" data-action="later">Maybe Later</button>' +
+    '</div>';
+  dialog.querySelector('#complete-registration-description').textContent = body;
+  dialog.addEventListener('close', function() {
+    dialog.remove();
+    if(previousFocus && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
+  });
+  var dismiss = function(action) {
+    if(dialog.classList.contains('is-closing')) return;
+    this.trackFeatureEvent(reminder
+      ? (action === 'register' ? 'reminder_register' : 'reminder_dismiss')
+      : (action === 'register' ? 'prompt_register' : 'prompt_later'), 'complete', variant);
+    var finish = function() {
+      dialog.close();
+      if(action === 'register') this._registerToSaveCompletes(markerId);
+    }.bind(this);
+    dialog.classList.add('is-closing');
+    var animations = typeof dialog.getAnimations === 'function' ? dialog.getAnimations() : [];
+    if(!animations.length) finish();
+    else Promise.all(animations.map(function(animation) { return animation.finished.catch(function() {}); })).then(finish);
+  }.bind(this);
+  dialog.addEventListener('cancel', function(e) { e.preventDefault(); dismiss('later'); });
+  dialog.querySelectorAll('[data-action]').forEach(function(button) {
+    button.addEventListener('click', function() { dismiss(button.getAttribute('data-action')); });
+  });
+  document.body.appendChild(dialog);
+  dialog.showModal();
+  this.trackFeatureEvent(reminder ? 'reminder_shown' : 'prompt_shown', 'complete', variant);
+};
+
+// Signed in from the prompt: back to the marker, and (for new accounts) a
+// note that the completes went with them.
+ZMap.prototype._finishCompleteRegistration = function(registered) {
+  var target = this._pendingCompleteRegistration;
+  this._pendingCompleteRegistration = null;
+  this.mapControl._navigatingBack = true;
+  if(target && this.cachedMarkersById[target.markerId]) {
+    this.goTo({ marker: target.markerId, panTo: false, centerInVisibleArea: true });
+  } else if(this.mapControl.isMobile) {
+    this.mapControl.closeDrawer();
+  } else {
+    this.mapControl.resetContent();
+  }
+  if(!registered) return;
+  var dialog = document.createElement('dialog');
+  dialog.className = 'bookmark-registration-prompt';
+  dialog.setAttribute('aria-labelledby', 'complete-registration-success-title');
+  dialog.setAttribute('aria-describedby', 'complete-registration-success-description');
+  dialog.innerHTML = '<h2 id="complete-registration-success-title">You\'re all set!</h2>' +
+    '<p id="complete-registration-success-description">Thanks for registering! We\'ve saved your completed markers to your account, so they’ll be there wherever you sign in.</p>' +
+    '<div class="bookmark-registration-actions"><button type="button" class="infoWindowIcn" data-action="dismiss" autofocus>Let\'s go!</button></div>';
+  var dismiss = function() {
+    if(dialog.classList.contains('is-closing')) return;
+    dialog.classList.add('is-closing');
+    var animations = typeof dialog.getAnimations === 'function' ? dialog.getAnimations() : [];
+    if(animations.length) Promise.all(animations.map(function(animation) {
+      return animation.finished.catch(function() {});
+    })).then(function() { dialog.close(); });
+    else dialog.close();
+  };
+  dialog.addEventListener('close', function() { dialog.remove(); });
+  dialog.addEventListener('cancel', function(event) { event.preventDefault(); dismiss(); });
+  dialog.querySelector('[data-action="dismiss"]').addEventListener('click', dismiss);
+  document.body.appendChild(dialog);
+  dialog.showModal();
+};
+
+// Anonymous counts of the sign-up prompts (shown, Register, Maybe Later,
+// Don't Remind Me Again) and sign-ups, for Admin's Sign-Up Sources. Nothing
+// about the person is sent.
+// variant: the A/B group the event belongs to, if any.
+ZMap.prototype.trackFeatureEvent = function(event, feature, variant) {
+  try {
+    var data = { event: event, feature: feature };
+    if(variant) data.variant = variant;
+    if(navigator.sendBeacon) navigator.sendBeacon('ajax.php?command=track_event', new URLSearchParams(data));
+    else $.post('ajax.php?command=track_event', data);
+  } catch(e) {}
 };
 
 ZMap.prototype._saveRegistrationBookmark = function() {
@@ -2657,7 +2853,8 @@ ZMap.prototype.transferCompletedMarkersToDB = function() {
                            completedMarkers = [];
                            document.cookie = 'completedMarkers=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
                            _this.getUserCompletedMarkers();
-                           toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);
+                           if(_this._quietCompleteTransfer) _this._quietCompleteTransfer = false;
+                           else toastr.success(_this.langMsgs.MARKER_COMPLETE_TRANSFER_SUCCESS);
                         } else {
                            toastr.error(_this.langMsgs.MARKER_COMPLETE_TRANSFER_ERROR.format(data.msg));
                            //alert(data.msg);
@@ -2796,10 +2993,8 @@ ZMap.prototype._completeSetMarkerDoneAndCookie = function(vMarker) {
   if (user === null || user === undefined) {
     setCookie('completedMarkers', JSON.stringify(completedMarkers));
 
-    if (!userWarnedAboutLogin) {
-      toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
-      userWarnedAboutLogin = true;
-    }
+    // A prompt to register, so completes are saved to an account.
+    _this._showCompleteRegistrationPrompt(vMarker.id);
   }
 
   if (!this.mapOptions.showCompleted) {
@@ -2836,10 +3031,6 @@ ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
     _this._doSetMarkerDoneIcon(vMarker, false);
     setCookie('completedMarkers', JSON.stringify(completedMarkers));
     _this.categories[vMarker.categoryId].complete--;
-    if (!userWarnedAboutLogin) {
-      toastr.warning(_this.langMsgs.MARKER_COMPLETE_WARNING);
-      userWarnedAboutLogin = true;
-    }
   }
   vMarker.complete = false;
   if (!_this.mapOptions.showCompleted) {
@@ -2998,8 +3189,11 @@ ZMap.prototype._logoutNow = function() {
 
 
 ZMap.prototype._createRegisterForm = function() {
-   var registrationTarget = this._pendingBookmarkRegistration;
+   var completeTarget = this._pendingCompleteRegistration;
+   var registrationTarget = this._pendingBookmarkRegistration || completeTarget;
    this.mapControl._registrationReturnMarker = registrationTarget && registrationTarget.markerId;
+   // Where this sign-up started, for Admin's sign-up sources.
+   var registrationSource = completeTarget ? 'complete' : (this._pendingBookmarkRegistration ? 'bookmark' : 'account');
    this.mapControl.setContent('<div id="newuser">'+
                         '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
@@ -3045,7 +3239,9 @@ ZMap.prototype._createRegisterForm = function() {
 
                               '<div class="modal-footer">'+
                                  '<div>'+
-                                    '<button type="submit" class="infoWindowIcn form-action-button">' + (registrationTarget ? 'Register &amp; Add Bookmark' : 'Register') + '</button>'+
+                                    '<input type="hidden" name="source" value="' + registrationSource + '" />'+
+                                    (completeTarget && this._completePromptState().variant ? '<input type="hidden" name="variant" value="' + this._completePromptState().variant + '" />' : '')+
+                                    '<button type="submit" class="infoWindowIcn form-action-button">' + (completeTarget ? 'Register &amp; Save Markers' : registrationTarget ? 'Register &amp; Add Bookmark' : 'Register') + '</button>'+
                                  '</div>'+
                                '</div>'+
                         '</form>'+
@@ -3159,6 +3355,7 @@ ZMap.prototype._createRegisterForm = function() {
                // Sign the new account straight in; fall back to the login
                // page if that fails.
                var bookmarkPending = !!_this._pendingBookmarkRegistration;
+               var completePending = !!_this._pendingCompleteRegistration;
                var showLoginFallback = function() {
                  _this._createLoginForm(bookmarkPending
                    ? 'Your account has been created! Please log in to finish saving your bookmark.'
@@ -3168,12 +3365,19 @@ ZMap.prototype._createRegisterForm = function() {
                  data: { user: registrationUser, password: registrationPassword, remember: 'on' },
                  success: function(login) {
                    if(!login.success) return showLoginFallback();
+                   // Signing in moves this device's completes to the account
+                   // (transferCompletedMarkersToDB); the dialog below says so.
+                   if(completePending) _this._quietCompleteTransfer = true;
                    _this.setUser(login.user);
                    ZOfflineSync.saveUserInfo({ success: true, user: login.user });
                    updateAdState();
                    if(_this.settingsControl) _this.settingsControl.applyAccountSettings(login.user.settings);
                    if(bookmarkPending) {
                      _this._saveRegistrationBookmark();
+                     return;
+                   }
+                   if(completePending) {
+                     _this._finishCompleteRegistration(true);
                      return;
                    }
                    if(_this.mapControl.isMobile) _this.mapControl.closeDrawer();
@@ -3686,7 +3890,7 @@ ZMap.prototype._createLoginForm = function(successMessage) {
                            '<div class="register-benefits">'+
                               '<h4>Register <em>for free</em> to:</h4>'+
                               '<ul>'+
-                                 ['Remove ads!', 'Download maps to use offline', 'Sync completed markers',
+                                 ['Remove ads!', 'Download maps to use offline', 'Save completed markers',
                                   'Save bookmarks &amp; dropped pins', 'Suggest edits to maps (coming soon!)'
                                  ].map(function(benefit) {
                                     return '<li><i class="fas fa-check" aria-hidden="true"></i><span>' + benefit + '</span></li>';
@@ -3723,11 +3927,17 @@ ZMap.prototype._createLoginForm = function(successMessage) {
           //data = jQuery.parseJSON(data);
           if (data.success) {
             checkChangelog(data.user);
+            if(_this._pendingBookmarkRegistration) _this.trackFeatureEvent('signed_in', 'bookmark');
             _this.setUser(data.user);
             updateAdState();
 
             if(_this._pendingBookmarkRegistration) {
               _this._saveRegistrationBookmark();
+              return;
+            }
+            if(_this._pendingCompleteRegistration) {
+              _this.trackFeatureEvent('signed_in', 'complete', _this._completePromptState().variant);
+              _this._finishCompleteRegistration(false);
               return;
             }
 
@@ -3941,8 +4151,19 @@ ZMap.prototype._createAdminPage = function(opts) {
   this.mapControl.setContent(
     '<div id="admin">' +
       '<h3 class="text-center">Admin</h3>' +
-      '<section class="admin-section">' +
-        '<h4>Accounts <span id="admin_total" class="admin-muted"></span></h4>' +
+      // Two tabs: the stats, and finding and managing accounts.
+      '<div class="admin-tabs" role="tablist" aria-label="Admin">' +
+        '<button type="button" role="tab" id="admin_tab_analytics" aria-controls="admin_panel_analytics" data-admin-tab="analytics">' +
+          '<i class="fas fa-chart-bar" aria-hidden="true"></i>Analytics</button>' +
+        '<button type="button" role="tab" id="admin_tab_users" aria-controls="admin_panel_users" data-admin-tab="users">' +
+          '<i class="fas fa-users" aria-hidden="true"></i>Users</button>' +
+      '</div>' +
+      '<div class="admin-panel" id="admin_panel_analytics" role="tabpanel" aria-labelledby="admin_tab_analytics" data-admin-panel="analytics">' +
+      // Growth: how many people sign up and come back, and what brought
+      // them. Engagement: which features they use, then each in detail.
+      '<p class="admin-group-label">Growth</p>' +
+      '<section data-section="accounts" class="admin-section admin-analytics-section">' +
+        '<h4 class="admin-section-heading">Accounts <span id="admin_total" class="admin-muted admin-section-summary"></span></h4>' +
         '<div class="admin-chart">' +
           '<div class="admin-chart-options">' +
             '<div class="admin-toggle admin-metrics" role="group" aria-label="Graph">' +
@@ -3962,8 +4183,62 @@ ZMap.prototype._createAdminPage = function(opts) {
         // the graph shows.
         '<div id="admin_summary" class="admin-summary"></div>' +
       '</section>' +
+      '<section data-section="signups" class="admin-section admin-analytics-section">' +
+        '<h4 class="admin-section-heading">Sign-Up Sources <span id="admin_signup_total" class="admin-muted admin-section-summary"></span></h4>' +
+        // The same time frames, laid out the same, as the Accounts graph.
+        '<div class="admin-chart-options">' +
+          '<div class="admin-toggle admin-signup-ranges" role="group" aria-label="Time frame">' +
+            [['7d', '1W'], ['14d', '2W'], ['30d', '30D'], ['6m', '6M'], ['1y', '1Y'], ['all', 'All']].map(function(range) {
+              return '<button type="button" data-signup-range="' + range[0] + '">' + range[1] + '</button>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+        '<div id="admin_signups" class="admin-signups"><p class="admin-muted">Loading…</p></div>' +
+      '</section>' +
+      '<p class="admin-group-label">Engagement</p>' +
+      '<section data-section="usage" class="admin-section admin-analytics-section">' +
+        '<h4 class="admin-section-heading">Feature Adoption <span id="admin_usage_total" class="admin-muted admin-section-summary"></span></h4>' +
+        '<div id="admin_usage" class="admin-usage"><p class="admin-muted">Loading…</p></div>' +
+      '</section>' +
+      '<section data-section="markers" class="admin-section admin-analytics-section admin-activity" data-activity="markers">' +
+        '<h4 class="admin-section-heading">Completes &amp; Bookmarks <span class="admin-muted admin-section-summary admin-activity-total"></span></h4>' +
+        '<div class="admin-chart">' +
+          '<div class="admin-chart-options">' +
+            '<div class="admin-toggle admin-metrics" role="group" aria-label="Graph">' +
+              '<button type="button" data-metric="completes">Completes</button>' +
+              '<button type="button" data-metric="bookmarks">Bookmarks</button>' +
+            '</div>' +
+            '<div class="admin-toggle admin-ranges" role="group" aria-label="Time frame">' +
+              [['7d', '1W'], ['14d', '2W'], ['30d', '30D'], ['6m', '6M'], ['1y', '1Y'], ['all', 'All']].map(function(range) {
+                return '<button type="button" data-range="' + range[0] + '">' + range[1] + '</button>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<p class="admin-chart-readout" aria-live="polite"></p>' +
+          '<div class="admin-activity-chart"><p class="admin-muted">Loading…</p></div>' +
+        '</div>' +
+        '<div class="admin-summary admin-activity-summary"></div>' +
+        '<div class="admin-top-markers"></div>' +
+      '</section>' +
+      '<section data-section="offline" class="admin-section admin-analytics-section admin-activity" data-activity="offline">' +
+        '<h4 class="admin-section-heading">Offline Maps <span class="admin-muted admin-section-summary admin-offline-total"></span></h4>' +
+        '<div class="admin-chart">' +
+          '<div class="admin-chart-options">' +
+            '<div class="admin-toggle admin-ranges" role="group" aria-label="Time frame">' +
+              [['7d', '1W'], ['14d', '2W'], ['30d', '30D'], ['6m', '6M'], ['1y', '1Y'], ['all', 'All']].map(function(range) {
+                return '<button type="button" data-range="' + range[0] + '">' + range[1] + '</button>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<p class="admin-chart-readout" aria-live="polite"></p>' +
+          '<div class="admin-activity-chart"><p class="admin-muted">Loading…</p></div>' +
+        '</div>' +
+        '<div class="admin-summary admin-activity-summary"></div>' +
+        '<div class="admin-offline-games"></div>' +
+      '</section>' +
+      '</div>' +
+      '<div class="admin-panel" id="admin_panel_users" role="tabpanel" aria-labelledby="admin_tab_users" data-admin-panel="users">' +
       '<section class="admin-section">' +
-        '<h4>Users</h4>' +
         '<form id="admin_search_form" class="admin-search" role="search">' +
           '<div class="form-group"><div class="input-group">' +
             '<span class="input-group-addon"><i class="fas fa-search" aria-hidden="true"></i></span>' +
@@ -3971,10 +4246,37 @@ ZMap.prototype._createAdminPage = function(opts) {
               'autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" enterkeyhint="search" />' +
           '</div></div>' +
         '</form>' +
+        // Role, status, where they signed up, and order: pills like the graphs',
+        // folded away behind a Filters button that says what's applied.
+        '<div class="admin-filter-box">' +
+        '<button id="admin_filters_toggle" type="button" class="admin-filters-toggle" aria-expanded="false" aria-controls="admin_filters">' +
+          '<i class="fas fa-sliders-h" aria-hidden="true"></i><span class="admin-filters-toggle-label">Filters</span>' +
+          '<span class="admin-filters-summary"></span>' +
+          '<i class="fas fa-chevron-down admin-chevron" aria-hidden="true"></i>' +
+        '</button>' +
+        '<div id="admin_filters" class="admin-filters" hidden>' +
+          [['role', 'Role', [['', 'All'], ['admin', 'Admins'], ['contributor', 'Contributors'], ['user', 'Users']]],
+           ['status', 'Status', [['', 'All'], ['active', 'Active'], ['disabled', 'Disabled'], ['banned', 'Banned'], ['deleted', 'Deleted']]],
+           ['source', 'Signed Up From', [['', 'All'], ['bookmark', 'Bookmark'], ['complete', 'Complete'], ['account', 'Account'], ['unknown', 'Untracked']]],
+           ['sort', 'Sort', [['newest', 'Newest'], ['oldest', 'Oldest'], ['seen', 'Last Seen'], ['name', 'Username']]]
+          ].map(function(filter) {
+            return '<div class="admin-filter">' +
+              '<span class="admin-filter-label" id="admin_filter_' + filter[0] + '">' + filter[1] + '</span>' +
+              '<div class="admin-chart-options"><div class="admin-toggle" role="group" aria-labelledby="admin_filter_' + filter[0] + '">' +
+                filter[2].map(function(option) {
+                  return '<button type="button" data-filter="' + filter[0] + '" data-value="' + option[0] + '">' + option[1] + '</button>';
+                }).join('') +
+              '</div></div>' +
+            '</div>';
+          }).join('') +
+          '<button id="admin_filters_clear" type="button" class="admin-filters-clear" hidden>Clear Filters</button>' +
+        '</div>' +
+        '</div>' +
         '<p id="admin_results_count" class="admin-muted" role="status" aria-live="polite"></p>' +
         '<ul id="admin_results" class="admin-results"></ul>' +
         '<button id="admin_more" type="button" class="infoWindowIcn form-action-button" hidden>Load More</button>' +
       '</section>' +
+      '</div>' +
     '</div>',
     'adminPage'
   );
@@ -3986,12 +4288,47 @@ ZMap.prototype._createAdminPage = function(opts) {
   // What going back to this page restores.
   var state = this._adminState = saved || {
     graph: { metric: 'registrations', range: '30d' },
-    query: '', users: [], total: null, offset: 0, scrollTop: 0
+    signupRange: '30d',
+    activity: { markers: { metric: 'completes', range: '30d' }, offline: { metric: 'downloads', range: '30d' } },
+    query: '', users: [], total: null, offset: 0, scrollTop: 0,
+    tab: 'analytics', tabScroll: {},
+    filters: { role: '', status: '', source: '', sort: 'newest' }
   };
+  state.filters = state.filters || { role: '', status: '', source: '', sort: 'newest' };
+  state.tabScroll = state.tabScroll || {};
+
+  // Each tab keeps its own place.
+  var showTab = function(tab, restoreScroll) {
+    var contents = _this.mapControl._contents;
+    if(state.tab && state.tab !== tab) state.tabScroll[state.tab] = contents.scrollTop;
+    state.tab = tab;
+    $('#admin [data-admin-tab]').each(function() {
+      var selected = this.getAttribute('data-admin-tab') === tab;
+      this.setAttribute('aria-selected', String(selected));
+      this.tabIndex = selected ? 0 : -1;
+    });
+    $('#admin [data-admin-panel]').each(function() {
+      this.hidden = this.getAttribute('data-admin-panel') !== tab;
+    });
+    if(restoreScroll !== false) contents.scrollTop = state.tabScroll[tab] || 0;
+  };
+  $('#admin [data-admin-tab]').on('click', function() {
+    showTab(this.getAttribute('data-admin-tab'));
+  }).on('keydown', function(e) {
+    if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    e.preventDefault();
+    var next = state.tab === 'analytics' ? 'users' : 'analytics';
+    showTab(next);
+    $('#admin [data-admin-tab="' + next + '"]').trigger('focus');
+  });
+  showTab(state.tab || 'analytics', false);
+
 
   var statsRequest = 0;
   var showStats = function(data) {
-    $('#admin_total').text(data.total.toLocaleString() + ' total');
+    var monthly = data.summary && data.summary.monthly ? data.summary.monthly.current : null;
+    $('#admin_total').text(data.total.toLocaleString() + ' total' +
+      (monthly !== null ? ' · ' + monthly.toLocaleString() + ' active this month' : ''));
     $('#admin_chart').empty().append(_this._adminChart(data.buckets, data.metric, $('#admin_chart_readout')));
     $('#admin_summary').empty().append(_this._adminSummary(data.summary));
   };
@@ -4005,13 +4342,13 @@ ZMap.prototype._createAdminPage = function(opts) {
     });
   };
   var showGraphOptions = function() {
-    $('#admin .admin-chart-options button').each(function() {
+    $('#admin_chart').closest('.admin-chart').find('.admin-chart-options button').each(function() {
       var button = $(this);
       var pressed = button.data('metric') ? button.data('metric') === state.graph.metric : button.data('range') === state.graph.range;
       button.attr('aria-pressed', String(pressed));
     });
   };
-  $('#admin .admin-chart-options button').click(function() {
+  $('#admin_chart').closest('.admin-chart').find('.admin-chart-options button').click(function() {
     var button = $(this);
     if(button.data('metric')) state.graph.metric = button.data('metric');
     if(button.data('range')) state.graph.range = button.data('range');
@@ -4024,19 +4361,109 @@ ZMap.prototype._createAdminPage = function(opts) {
   if(saved && saved.stats) showStats(saved.stats);
   loadStats();
 
+  // Completes & Bookmarks and Offline Maps: a graph with the Accounts
+  // graph's options, boxes beneath, and for offline maps their games.
+  state.activity = state.activity || { markers: { metric: 'completes', range: '30d' }, offline: { metric: 'downloads', range: '30d' } };
+  $('#admin .admin-activity').each(function() {
+    var section = $(this);
+    var key = section.attr('data-activity');
+    var graph = state.activity[key];
+    var request = 0;
+    var show = function(data) {
+      section.find('.admin-activity-chart').empty().append(_this._adminChart(data.buckets, data.metric, section.find('.admin-chart-readout')));
+      section.find('.admin-activity-summary').empty().append(_this._adminActivitySummary(data));
+      if(key === 'markers') {
+        section.find('.admin-top-markers').empty().append(_this._adminTopMarkers(data, graph.range));
+        section.find('.admin-activity-total').text(data.summary.total.current.toLocaleString() + ' ' +
+          (_this.ADMIN_CHART_NOUNS[data.metric] || ['saved'])[0]);
+      }
+      if(key === 'offline') {
+        var offline = data.offline || {};
+        section.find('.admin-offline-total').text(offline.people
+          ? offline.people.toLocaleString() + (offline.people === 1 ? ' person' : ' people') + ' with maps saved'
+          : 'No maps saved yet');
+        section.find('.admin-offline-games').empty().append(_this._adminOfflineGames(data));
+      }
+    };
+    var showOptions = function() {
+      section.find('.admin-chart-options button').each(function() {
+        var button = $(this);
+        var pressed = button.data('metric') ? button.data('metric') === graph.metric : button.data('range') === graph.range;
+        button.attr('aria-pressed', String(pressed));
+      });
+    };
+    var load = function() {
+      var requestId = ++request;
+      $.getJSON('ajax.php?command=admin_get_activity', graph, function(data) {
+        if(requestId !== request) return;
+        if(!data.success) {
+          section.find('.admin-activity-chart').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load stats.');
+          section.find('.admin-activity-summary, .admin-offline-games, .admin-top-markers').empty();
+          return;
+        }
+        graph.data = data;
+        show(data);
+      });
+    };
+    section.find('.admin-chart-options button').click(function() {
+      var button = $(this);
+      if(button.data('metric')) graph.metric = button.data('metric');
+      if(button.data('range')) graph.range = button.data('range');
+      showOptions();
+      load();
+    });
+    showOptions();
+    if(graph.data) show(graph.data);
+    load();
+  });
+
+  var signupRequest = 0;
+  var showSignups = function(data) {
+    var rangeLabel = { '7d': '1W', '14d': '2W', '30d': '30D', '6m': '6M', '1y': '1Y', all: 'all time' }[data.range] || '';
+    $('#admin_signup_total').text(data.total.toLocaleString() + (data.total === 1 ? ' sign-up' : ' sign-ups') +
+      (rangeLabel ? ' · ' + rangeLabel : ''));
+    $('#admin_signups').empty().append(_this._adminSignupSources(data));
+    $('#admin_usage').empty().append(_this._adminFeatureUsage(data));
+    var most = (data.usage || []).slice().sort(function(a, b) { return (b.people || 0) - (a.people || 0); })[0];
+    $('#admin_usage_total').text(most && most.people ? 'Most used: ' + most.label : '');
+  };
+  var showSignupRange = function() {
+    $('#admin .admin-signup-ranges button').each(function() {
+      this.setAttribute('aria-pressed', String(this.getAttribute('data-signup-range') === state.signupRange));
+    });
+  };
+  var loadSignups = function() {
+    var requestId = ++signupRequest;
+    $.getJSON('ajax.php?command=admin_get_signups', { range: state.signupRange }, function(data) {
+      if(requestId !== signupRequest) return;
+      if(!data.success) return $('#admin_signups').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load sign-ups.');
+      state.signups = data;
+      showSignups(data);
+    });
+  };
+  $('#admin .admin-signup-ranges button').click(function() {
+    state.signupRange = this.getAttribute('data-signup-range');
+    showSignupRange();
+    loadSignups();
+  });
+  showSignupRange();
+  if(saved && saved.signups) showSignups(saved.signups);
+  loadSignups();
+
   var request = 0;
   var showResults = function() {
     var list = $('#admin_results').empty();
     state.users.forEach(function(account) { list.append(_this._adminUserRow(account)); });
     if(state.total !== null) {
-      $('#admin_results_count').text(state.total.toLocaleString() + (state.total === 1 ? ' user' : ' users'));
+      $('#admin_results_count').text(state.total.toLocaleString() + (state.total === 1 ? ' user' : ' users') +
+        (state.filters && (state.filters.role || state.filters.status || state.filters.source) ? ' matching these filters' : ''));
     }
     $('#admin_more').prop('hidden', state.total === null || state.offset >= state.total);
   };
   var search = function(append) {
     var requestId = ++request;
     if(!append) state.offset = 0;
-    $.getJSON('ajax.php?command=admin_search_users', { q: state.query, offset: state.offset }, function(data) {
+    $.getJSON('ajax.php?command=admin_search_users', Object.assign({ q: state.query, offset: state.offset }, state.filters), function(data) {
       if(requestId !== request) return;
       if(!data.success) return $('#admin_results_count').text(data.msg || 'Unable to load users.');
       state.users = append ? state.users.concat(data.users) : data.users;
@@ -4059,6 +4486,42 @@ ZMap.prototype._createAdminPage = function(opts) {
     $('#admin_search').blur();
   });
   $('#admin_more').click(function() { search(true); });
+
+  var filtered = function() {
+    return !!(state.filters.role || state.filters.status || state.filters.source);
+  };
+  var showFilters = function() {
+    var applied = [];
+    $('#admin .admin-filters [data-filter]').each(function() {
+      var name = this.getAttribute('data-filter');
+      var pressed = state.filters[name] === this.getAttribute('data-value');
+      this.setAttribute('aria-pressed', String(pressed));
+      if(pressed && this.getAttribute('data-value') !== '' && !(name === 'sort' && this.getAttribute('data-value') === 'newest')) {
+        applied.push(name === 'sort' ? 'by ' + this.textContent : this.textContent);
+      }
+    });
+    $('#admin_filters_clear').prop('hidden', !applied.length);
+    $('#admin_filters_toggle').toggleClass('active', !!applied.length)
+      .find('.admin-filters-summary').text(applied.join(' · '));
+    $('#admin_filters_toggle').attr('aria-expanded', String(!!state.filtersOpen))
+      .closest('.admin-filter-box').toggleClass('open', !!state.filtersOpen);
+    $('#admin_filters').prop('hidden', !state.filtersOpen);
+  };
+  $('#admin_filters_toggle').click(function() {
+    state.filtersOpen = !state.filtersOpen;
+    showFilters();
+  });
+  $('#admin .admin-filters [data-filter]').click(function() {
+    state.filters[this.getAttribute('data-filter')] = this.getAttribute('data-value');
+    showFilters();
+    search(false);
+  });
+  $('#admin_filters_clear').click(function() {
+    state.filters = { role: '', status: '', source: '', sort: 'newest' };
+    showFilters();
+    search(false);
+  });
+  showFilters();
 
   if(saved && saved.users.length) {
     showResults();
@@ -4091,13 +4554,22 @@ ZMap.prototype._adminTime = function(ago, opts) {
 // The graph's buckets as an inline SVG bar chart. Hovering, tapping or
 // dragging across it shows a bar's count in readout; otherwise it shows the
 // latest bar.
+ZMap.prototype.ADMIN_CHART_NOUNS = {
+  registrations: ['new accounts', 'New accounts'],
+  active: ['active users', 'Active users'],
+  completes: ['completes', 'Completed markers'],
+  bookmarks: ['bookmarks', 'Bookmarks'],
+  downloads: ['downloads', 'Offline map downloads']
+};
+
 ZMap.prototype._adminChart = function(buckets, metric, readout) {
-  var noun = metric === 'active' ? 'active users' : 'new accounts';
+  var nouns = this.ADMIN_CHART_NOUNS[metric] || this.ADMIN_CHART_NOUNS.registrations;
+  var noun = nouns[0];
   var width = 320, height = 120, top = 8, bottom = 18;
   var max = Math.max.apply(null, buckets.map(function(b) { return b.count; })) || 1;
   var step = width / buckets.length, gap = Math.min(2, step * .2);
   var svg = '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="' +
-    (metric === 'active' ? 'Active users' : 'New accounts') + ' over time">';
+    nouns[1] + ' over time">';
   buckets.forEach(function(b, i) {
     var barHeight = b.count ? Math.max(1, (height - top - bottom) * b.count / max) : 0;
     // A full-height strip behind each bar, so short and empty bars are as easy
@@ -4171,6 +4643,262 @@ ZMap.prototype._adminSummary = function(summary) {
     boxes = boxes.add(box);
   });
   return boxes;
+};
+
+// One card per place registration is offered: its sign-ups and share of
+// them, then the prompt's funnel (shown, tapped Register, signed up) and the
+// other ways out.
+ZMap.prototype._adminSignupSources = function(data) {
+  var self = this;
+  var nodes = $();
+  var percent = function(part, whole) { return whole ? Math.round(part / whole * 100) + '%' : '–'; };
+  var number = function(n) { return Number(n || 0).toLocaleString(); };
+  if(!data.available) {
+    return $('<p class="admin-muted">Run the track_signups migration to see where sign-ups come from.</p>');
+  }
+  var sources = data.sources.slice().sort(function(a, b) { return b.registrations - a.registrations; });
+  var tracked = sources.reduce(function(sum, s) { return sum + s.registrations; }, 0);
+  sources.forEach(function(source) {
+    var e = source.events;
+    var card = $('<div class="admin-signup"></div>');
+    var head = $('<div class="admin-signup-head"><span class="admin-signup-name"></span>' +
+      '<span class="admin-signup-count"></span></div>');
+    head.find('.admin-signup-name').text(source.label);
+    head.find('.admin-signup-count').text(number(source.registrations) + ' · ' + percent(source.registrations, tracked));
+    card.append(head);
+    card.append($('<div class="admin-signup-bar"><span></span></div>').find('span')
+      .css('width', (tracked ? source.registrations / tracked * 100 : 0) + '%').end());
+    if(source.feature === 'account') {
+      card.append('<p class="admin-muted">Registered from the Account button, without a prompt.</p>');
+    } else {
+      var funnel = $('<div class="admin-funnel"></div>');
+      [['Prompt shown', e.prompt_shown, null],
+       ['Tapped Register', e.prompt_register, e.prompt_shown],
+       ['Signed up', source.registrations, e.prompt_shown]].forEach(function(step) {
+        var item = $('<div class="admin-funnel-step"><span class="admin-funnel-value"></span>' +
+          '<span class="admin-funnel-label"></span></div>');
+        item.find('.admin-funnel-value').text(number(step[1]));
+        item.find('.admin-funnel-label').text(step[0] + (step[2] !== null ? ' · ' + percent(step[1], step[2]) : ''));
+        funnel.append(item);
+      });
+      card.append(funnel);
+      card.append($('<p class="admin-muted admin-signup-outs"></p>').text(
+        'Maybe Later ' + number(e.prompt_later) + ' · Signed in instead ' + number(e.signed_in)
+      ));
+      // Complete's later reminders, and their A/B test.
+      if(source.feature === 'complete' && data.experiment && data.experiment.length) {
+        card.append(self._adminReminderTest(data.experiment));
+      }
+      if(source.feature === 'complete') {
+        card.append($('<p class="admin-muted admin-signup-outs"></p>').text(
+          'Reminders: shown ' + number(e.reminder_shown) +
+          ' · Register ' + number(e.reminder_register) + ' (' + percent(e.reminder_register, e.reminder_shown) + ')' +
+          ' · Maybe Later ' + number(e.reminder_dismiss)
+        ));
+      }
+    }
+    nodes = nodes.add(card);
+  });
+  var notes = [];
+  if(data.untracked) notes.push(number(data.untracked) + ' sign-up' + (data.untracked === 1 ? '' : 's') + ' in this range came before sources were recorded.');
+  if(data.trackingSince) {
+    notes.push('Prompt counts start ' + new Date(data.trackingSince.replace(' ', 'T'))
+      .toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) + '.');
+  }
+  if(notes.length) nodes = nodes.add($('<p class="admin-muted admin-signup-note"></p>').text(notes.join(' ')));
+  return nodes;
+};
+
+// Total, then the last 30 days, 7 days and 24 hours against the period
+// before each, like the Active boxes.
+ZMap.prototype._adminActivitySummary = function(data) {
+  var boxes = $();
+  var noun = (this.ADMIN_CHART_NOUNS[data.metric] || ['items'])[0];
+  [['total', 'Total', 'all time'],
+   ['month', '30 Days', 'last 30 days vs. the 30 before'],
+   ['week', '1 Week', 'last 7 days vs. the 7 before'],
+   ['day', '1 Day', 'last 24 hours vs. the 24 before']].forEach(function(item) {
+    var stat = data.summary[item[0]];
+    var box = $('<div class="admin-stat"><span class="admin-stat-label"></span><span class="admin-stat-value"></span>' +
+      '<span class="admin-stat-change"></span></div>');
+    box.attr('title', item[2]);
+    box.find('.admin-stat-label').text(item[1]);
+    box.find('.admin-stat-value').text(stat.current.toLocaleString());
+    if(stat.previous === null) {
+      box.find('.admin-stat-change').text(data.people.toLocaleString() + (data.people === 1 ? ' person' : ' people'));
+    } else {
+      var change = stat.current - stat.previous;
+      var percent = stat.previous ? Math.round(change / stat.previous * 100) : null;
+      box.find('.admin-stat-change')
+        .addClass(change > 0 ? 'up' : change < 0 ? 'down' : '')
+        .text((change > 0 ? '▲ ' : change < 0 ? '▼ ' : '') + Math.abs(change).toLocaleString() +
+          (percent !== null ? ' (' + Math.abs(percent) + '%)' : ''));
+    }
+    box.attr('aria-label', item[1] + ': ' + stat.current.toLocaleString() + ' ' + noun);
+    boxes = boxes.add(box);
+  });
+  return boxes;
+};
+
+// Most completed or most bookmarked markers over the graph's time frame,
+// by how many people saved each. Tapping one opens it (in its own game).
+ZMap.prototype._adminTopMarkers = function(data, range) {
+  var _this = this;
+  var completes = data.metric === 'completes';
+  var rangeNames = { '7d': 'this week', '14d': 'the last 2 weeks', '30d': 'the last 30 days', '6m': 'the last 6 months', '1y': 'the last year', all: 'all time' };
+  var nodes = $('<div class="admin-offline"></div>');
+  nodes.append($('<h4 class="admin-offline-heading"></h4>').text(
+    (completes ? 'Most Completed' : 'Most Bookmarked') + ' · ' + (rangeNames[range] || '')
+  ));
+  var top = data.top || [];
+  if(!top.length) {
+    nodes.append($('<p class="admin-muted"></p>').text(completes ? 'No markers completed in this time frame.' : 'No markers bookmarked in this time frame.'));
+  } else {
+    var max = top[0].people || 1;
+    var list = $('<ol class="admin-offline-list admin-top-list"></ol>');
+    top.forEach(function(marker, index) {
+      var row = $('<li class="admin-offline-game admin-top-marker" role="button" tabindex="0">' +
+        '<div class="admin-signup-head"><span class="admin-signup-name"><span class="admin-top-rank"></span><span class="admin-top-title"></span></span>' +
+        '<span class="admin-signup-count"></span></div>' +
+        '<div class="admin-signup-bar"><span></span></div>' +
+        '<p class="admin-muted admin-offline-detail"></p>' +
+      '</li>');
+      row.find('.admin-top-rank').text((index + 1) + '. ');
+      row.find('.admin-top-title').text(marker.title || ('Marker #' + marker.markerId));
+      row.find('.admin-signup-count').text(marker.people.toLocaleString() + (marker.people === 1 ? ' person' : ' people'));
+      row.find('.admin-signup-bar span').css('width', (marker.people / max * 100) + '%');
+      row.find('.admin-offline-detail').text(
+        [marker.gameName, marker.category, marker.visible ? null : 'Deleted', '#' + marker.markerId].filter(Boolean).join(' · ')
+      );
+      row.on('click keydown', function(e) {
+        if(e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        if(_this.cachedMarkersById[marker.markerId]) {
+          _this.goTo({ marker: marker.markerId });
+        } else if(marker.game) {
+          var url = new URL(window.location.href.split('?')[0]);
+          url.searchParams.set('game', marker.game);
+          url.searchParams.set('marker', marker.markerId);
+          window.location.href = url.href;
+        }
+      });
+      list.append(row);
+    });
+    nodes.append(list);
+  }
+  if(data.droppedPins) {
+    nodes.append($('<p class="admin-muted admin-signup-note"></p>').text(
+      'Plus ' + data.droppedPins.toLocaleString() + ' bookmarked dropped pin' + (data.droppedPins === 1 ? '' : 's') + ' in this time frame.'
+    ));
+  }
+  return nodes;
+};
+
+// Games by how many people have them saved now, with downloads all time and
+// in the last 30 days.
+ZMap.prototype._adminOfflineGames = function(data) {
+  var games = data.games || [];
+  var offline = data.offline || {};
+  var size = function(bytes) {
+    if(bytes >= 1e9) return (bytes / 1e9).toFixed(1) + ' GB';
+    if(bytes >= 1e6) return Math.round(bytes / 1e6) + ' MB';
+    return bytes ? Math.max(1, Math.round(bytes / 1e3)) + ' KB' : '0 MB';
+  };
+  var nodes = $('<div class="admin-offline"></div>');
+  nodes.append('<h4 class="admin-offline-heading">Most Saved Games</h4>');
+  if(!games.length) {
+    nodes.append('<p class="admin-muted">No offline maps downloaded yet.</p>');
+    return nodes;
+  }
+  var max = Math.max.apply(null, games.map(function(g) { return g.people; })) || 1;
+  var list = $('<ol class="admin-offline-list"></ol>');
+  games.forEach(function(game) {
+    var row = $('<li class="admin-offline-game">' +
+      '<div class="admin-signup-head"><span class="admin-signup-name"></span><span class="admin-signup-count"></span></div>' +
+      '<div class="admin-signup-bar"><span></span></div>' +
+      '<p class="admin-muted admin-offline-detail"></p>' +
+    '</li>');
+    row.find('.admin-signup-name').text(game.name);
+    row.find('.admin-signup-count').text(game.people.toLocaleString() + (game.people === 1 ? ' person' : ' people'));
+    row.find('.admin-signup-bar span').css('width', (game.people / max * 100) + '%');
+    row.find('.admin-offline-detail').text(
+      game.downloads.toLocaleString() + ' download' + (game.downloads === 1 ? '' : 's') +
+      ' · ' + game.recent.toLocaleString() + ' in 30 days' +
+      (game.people ? ' · ' + size(game.bytes) + ' saved' : '') +
+      (game.failed ? ' · ' + game.failed.toLocaleString() + ' failed' : '') +
+      (game.removed ? ' · ' + game.removed.toLocaleString() + ' removed' : '')
+    );
+    list.append(row);
+  });
+  nodes.append(list);
+  var finished = offline.started ? Math.round(data.summary.total.current / offline.started * 100) : null;
+  nodes.append($('<p class="admin-muted admin-signup-note"></p>').text(
+    offline.packs.toLocaleString() + ' saved game' + (offline.packs === 1 ? '' : 's') + ' on devices, ' + size(offline.bytes) + ' in all.' +
+    (finished !== null ? ' ' + finished + '% of downloads started finish.' : '') +
+    ' Counts start when downloads began being recorded; browsers clearing storage on their own isn\'t seen.'
+  ));
+  return nodes;
+};
+
+// The reminder-timing A/B test: each group's devices, reminders, sign-ups
+// and conversion side by side, and whether the difference is likely real
+// (a two-proportion z-test at 95%).
+ZMap.prototype._adminReminderTest = function(groups) {
+  var number = function(n) { return Number(n || 0).toLocaleString(); };
+  var rate = function(g) { return g.devices ? g.registrations / g.devices : 0; };
+  var percent = function(r) { return (Math.round(r * 1000) / 10) + '%'; };
+  var box = $('<div class="admin-test"></div>');
+  box.append('<p class="admin-test-title">Reminder Timing Test</p>');
+  var table = $('<table class="admin-test-table"><thead><tr><th></th></tr></thead><tbody></tbody></table>');
+  groups.forEach(function(g) { table.find('thead tr').append($('<th></th>').text(g.label)); });
+  [['Devices', function(g) { return number(g.devices); }],
+   ['Reminders shown', function(g) { return number(g.reminders); }],
+   ['Per device', function(g) { return g.devices ? (Math.round(g.reminders / g.devices * 10) / 10).toLocaleString() : '–'; }],
+   ['Tapped Register', function(g) { return number(g.register); }],
+   ['Maybe Later', function(g) { return number(g.later); }],
+   ['Signed up', function(g) { return number(g.registrations); }],
+   ['Conversion', function(g) { return g.devices ? percent(rate(g)) : '–'; }]
+  ].forEach(function(row) {
+    var tr = $('<tr></tr>').append($('<th scope="row"></th>').text(row[0]));
+    groups.forEach(function(g) { tr.append($('<td></td>').text(row[1](g))); });
+    table.find('tbody').append(tr);
+  });
+  box.append(table);
+  var a = groups[0], b = groups[1], verdict;
+  var smallest = Math.min(a.devices, b.devices);
+  if(smallest < 100) {
+    verdict = 'Too early to tell: each group needs at least 100 devices (the smaller has ' + number(smallest) + ').';
+  } else {
+    var pooled = (a.registrations + b.registrations) / (a.devices + b.devices);
+    var se = Math.sqrt(pooled * (1 - pooled) * (1 / a.devices + 1 / b.devices));
+    var z = se ? (rate(a) - rate(b)) / se : 0;
+    if(Math.abs(z) < 1.96) {
+      verdict = 'No clear winner yet: the difference could still be chance.';
+    } else {
+      var winner = z > 0 ? a : b, loser = z > 0 ? b : a;
+      var lift = rate(loser) ? Math.round((rate(winner) / rate(loser) - 1) * 100) : null;
+      verdict = winner.label + ' converts better' + (lift !== null ? ', by about ' + lift + '%' : '') + '. This is unlikely to be chance (95% confidence).';
+    }
+  }
+  box.append($('<p class="admin-muted admin-test-verdict"></p>').text(verdict));
+  return box;
+};
+
+ZMap.prototype._adminFeatureUsage = function(data) {
+  var grid = $('<div class="admin-usage-grid"></div>');
+  (data.usage || []).forEach(function(item) {
+    var tile = $('<div class="admin-stat"><span class="admin-stat-label"></span><span class="admin-stat-value"></span>' +
+      '<span class="admin-stat-change"></span></div>');
+    tile.find('.admin-stat-label').text(item.label);
+    tile.find('.admin-stat-value').text(Number(item.people || 0).toLocaleString());
+    tile.find('.admin-stat-change').text(
+      (item.people === 1 ? 'person' : 'people') + ' · ' + Number(item.items || 0).toLocaleString() + ' ' + item.unit +
+      (data.accounts ? ' · ' + Math.round((item.people || 0) / data.accounts * 1000) / 10 + '% of accounts' : '')
+    );
+    grid.append(tile);
+  });
+  if(!grid.children().length) return $('<p class="admin-muted">Nothing to show yet.</p>');
+  return grid;
 };
 
 ZMap.prototype._adminRoleLabel = function(level) {
@@ -5134,6 +5862,15 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
     if(!navigator.onLine) downloadButton.prop('disabled', true);
   }
 
+  // What happened to a download, for Admin's Offline Maps stats.
+  function reportOfflineEvent(game, event, bytes) {
+    try {
+      var data = { game: game.id, event: event };
+      if(bytes > 0) data.bytes = Math.round(bytes);
+      $.post('ajax.php?command=offline_map_event', data);
+    } catch(e) {}
+  }
+
   function downloadTiles(game, card) {
     var progress = card.find('.offline-map-progress');
     var progressLabel = card.find('.offline-map-progress-label');
@@ -5299,6 +6036,7 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
       });
     }
 
+    reportOfflineEvent(game, 'started', totalBytes);
     var persistenceRequest = navigator.storage && navigator.storage.persist
       ? navigator.storage.persist().catch(function() { return false; })
       : Promise.resolve(false);
@@ -5397,7 +6135,9 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
       progress.hide();
       progressLabel.hide();
       setPackState(card, game, 'downloaded');
+      reportOfflineEvent(game, isUpdate ? 'updated' : 'downloaded', totalBytes);
     }).catch(function(error) {
+      reportOfflineEvent(game, 'failed', completedBytes);
       progress.hide();
       progressLabel.hide();
       caches.open(cacheName).then(function(cache) {
@@ -5536,6 +6276,7 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
       caches.delete(packCacheName(game.id)).then(function() {
         removePackRecord(game.id);
         setPackState(card, game, null);
+        reportOfflineEvent(game, 'removed');
       });
     });
     return card;

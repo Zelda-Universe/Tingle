@@ -32,6 +32,43 @@
     return false;
   }
 
+  // Admin statistics are computed once per $ttl seconds and shared from a
+  // file in the cache folder, not computed per request: the feature graphs
+  // scan user_completed_marker (66 million rows), and every click on the
+  // admin page used to rerun them. While one request computes, others wait
+  // for its result instead of starting their own (a lock file), so a page
+  // opened by several people costs one computation.
+  function adminCached($key, $ttl, $compute) {
+    global $cacheFolder;
+    $directory = rtrim($cacheFolder, '/') . '/admin';
+    if (!is_dir($directory) && !@mkdir($directory, 0700, true)) return $compute();
+    $file = $directory . '/' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $key) . '.json';
+    $fresh = function() use ($file, $ttl) {
+      if (!is_file($file) || filemtime($file) <= time() - $ttl) return null;
+      $data = json_decode((string) file_get_contents($file), true);
+      return is_array($data) ? $data : null;
+    };
+    $data = $fresh();
+    if ($data !== null) return $data;
+    $lock = @fopen($file . '.lock', 'c');
+    if (!$lock) return $compute();
+    try {
+      flock($lock, LOCK_EX);
+      // Another request may have finished computing while this one waited.
+      $data = $fresh();
+      if ($data === null) {
+        $data = $compute();
+        if (@file_put_contents($file . '.tmp', json_encode($data), LOCK_EX) !== false) {
+          @rename($file . '.tmp', $file);
+        }
+      }
+    } finally {
+      flock($lock, LOCK_UN);
+      fclose($lock);
+    }
+    return $data;
+  }
+
   // Columns and tables from the admin_accounts migration (last_seen, disabled,
   // admin_log) may not exist yet on older databases.
   function adminHasColumn($db, $prefix, $column) {

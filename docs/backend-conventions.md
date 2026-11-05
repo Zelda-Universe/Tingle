@@ -55,8 +55,12 @@ Read this before writing or changing anything under `ajax/`, `lib/` or
   (`schema_migrations` there is stale since 2018).
 - Prefer the schema being right over feature-detecting columns with
   `SHOW COLUMNS` in code.
-- Everything is `utf8mb4` / `utf8mb4_unicode_ci` (since
+- Everything is `utf8mb4` / `utf8mb4_swedish_ci` (since
   `20261105010000_convert_to_utf8mb4`), and the connection speaks utf8mb4.
+  Swedish, not the Unicode default, because it keeps the equality rules of
+  the old `latin1_swedish_ci`: ä, ö, ü are distinct letters, so accounts
+  like *Bjorn* and *björn* stay two accounts; `utf8mb4_swedish_ci` would
+  merge 28 such pairs under the unique keys.
   New tables take the database default: don't write `DEFAULT CHARSET` into
   hand-run SQL, and never `latin1`. (The dev export tooling under
   `dev/db/` still stamps `latin1_swedish_ci` on dumps and needs the same
@@ -68,8 +72,10 @@ Read this before writing or changing anything under `ajax/`, `lib/` or
 
   ```
   mysqldump --single-transaction --quick DBNAME | gzip > /root/DBNAME-pre-utf8mb4.sql.gz
-  mysql DBNAME -e "ALTER DATABASE \`DBNAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-  mysql -N DBNAME -e "SELECT CONCAT('ALTER TABLE \`', t.TABLE_NAME, '\` ', IF(EXISTS(SELECT 1 FROM information_schema.COLUMNS c WHERE c.TABLE_SCHEMA = t.TABLE_SCHEMA AND c.TABLE_NAME = t.TABLE_NAME AND c.CHARACTER_SET_NAME IS NOT NULL), 'CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, ROW_FORMAT=DYNAMIC', 'DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'), ';') FROM information_schema.TABLES t WHERE t.TABLE_SCHEMA = DATABASE() AND t.TABLE_TYPE = 'BASE TABLE' AND t.TABLE_COLLATION <> 'utf8mb4_unicode_ci'" | mysql DBNAME
+  mysql DBNAME -e "ALTER DATABASE \`DBNAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_swedish_ci;"
+  mysql -N DBNAME -e "SELECT CONCAT('ALTER TABLE \`', t.TABLE_NAME, '\` ', IF(EXISTS(SELECT 1 FROM information_schema.COLUMNS c WHERE c.TABLE_SCHEMA = t.TABLE_SCHEMA AND c.TABLE_NAME = t.TABLE_NAME AND c.CHARACTER_SET_NAME IS NOT NULL), 'CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_swedish_ci, ROW_FORMAT=DYNAMIC', 'DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_swedish_ci'), ';') FROM information_schema.TABLES t WHERE t.TABLE_SCHEMA = DATABASE() AND t.TABLE_TYPE = 'BASE TABLE' AND t.TABLE_COLLATION <> 'utf8mb4_swedish_ci'" > /root/utf8mb4.sql
+  sed -i '1i SET foreign_key_checks = 0;' /root/utf8mb4.sql   # parent tables (user, marker) can't be rebuilt with checks on; the keys are on integer columns
+  mysql DBNAME < /root/utf8mb4.sql
   mysql DBNAME -e "SELECT TABLE_COLLATION, COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() GROUP BY 1;"
   ```
 

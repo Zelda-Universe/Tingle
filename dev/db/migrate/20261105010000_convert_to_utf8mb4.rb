@@ -12,6 +12,10 @@ class ConvertToUtf8mb4 < ActiveRecord::Migration[7.1]
   # bytes a character. The hand-run equivalent is in
   # docs/backend-conventions.md.
   def up
+    # Rebuilding a table that other tables reference (user, marker) is refused
+    # while foreign keys are checked. The keys are on integer columns, which
+    # the charset change doesn't touch, and the setting is per session.
+    execute "SET foreign_key_checks = 0"
     execute "ALTER DATABASE `#{connection.current_database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
     connection.tables.sort.each do |table|
       has_text = connection.select_value(<<~SQL).to_i > 0
@@ -25,6 +29,7 @@ class ConvertToUtf8mb4 < ActiveRecord::Migration[7.1]
         execute "ALTER TABLE `#{table}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
       end
     end
+    execute "SET foreign_key_checks = 1"
   end
 
   def down

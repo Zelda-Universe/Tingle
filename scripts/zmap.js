@@ -1788,12 +1788,14 @@ ZMap.prototype._showBookmarkRegistrationPrompt = function(target) {
 // Completing markers while signed out. Counts are this device's saved
 // completes (all games), so the prompts grow with what there is to lose:
 // - the 3rd complete: a prompt to register (once);
-// - after that, the prompt again, saying how many markers they've completed.
+// - after that, reminders saying how many markers they've completed.
 //   How often is an A/B test: each device is put in a group at random, kept
 //   in its prompt state, and the group goes with its events and sign-ups
 //   (Admin, Sign-Up Sources):
-//     milestone: at 15, 50 and 100 completes, then every 100;
-//     visit: on the first complete of every visit, like the old toast.
+//     milestone: the prompt again, at 15, 50 and 100 completes, then
+//       every 100;
+//     visit: a banner that doesn't block the map, on the first complete of
+//       every visit, like the old toast.
 // Both only offer Maybe Later: the reminders keep coming. (Devices that chose
 // Don't Remind Me Again before it was removed stay opted out.)
 ZMap.prototype.COMPLETE_PROMPT_KEY = 'zeldamaps.completeRegistrationPrompt';
@@ -1851,6 +1853,9 @@ ZMap.prototype._showCompleteRegistrationPrompt = function(markerId) {
     return;
   }
   var variant = this._completeReminderVariant(state);
+  // Not with fewer than the first prompt's count (say, after the browser
+  // cleared the saved completes).
+  if(count < this.COMPLETE_PROMPT_FIRST) return;
   var due = variant === 'visit'
     // Once a visit: the first complete after the page loads.
     ? !this._completeReminderShownThisVisit
@@ -1860,7 +1865,55 @@ ZMap.prototype._showCompleteRegistrationPrompt = function(markerId) {
   this._completeReminderShownThisVisit = true;
   state.lastAt = Math.max(state.lastAt || 0, count);
   this._saveCompletePromptState(state);
-  this._showCompleteRegistrationDialog(markerId, count);
+  if(variant === 'visit') this._showCompleteReminder(markerId, count, variant);
+  else this._showCompleteRegistrationDialog(markerId, count);
+};
+
+// The "visit" group's reminder: a banner under the header, like the old
+// toast but with the count and a Register button. It leaves the map usable
+// and goes away by itself after a while.
+ZMap.prototype._showCompleteReminder = function(markerId, count, variant) {
+  var _this = this;
+  $('#complete-reminder').remove();
+  var banner = $(
+    '<div id="complete-reminder" class="complete-reminder" role="status">' +
+      '<p class="complete-reminder-text"></p>' +
+      '<div class="complete-reminder-actions">' +
+        '<button type="button" class="complete-reminder-register" data-action="register">Register &amp; Save</button>' +
+        '<button type="button" class="complete-reminder-later" data-action="later">Maybe Later</button>' +
+      '</div>' +
+      '<button type="button" class="complete-reminder-close" data-action="later" aria-label="Dismiss"><i class="fas fa-times" aria-hidden="true"></i></button>' +
+    '</div>'
+  );
+  banner.find('.complete-reminder-text').text(
+    'You’ve completed ' + count.toLocaleString() + (count === 1 ? ' marker' : ' markers') +
+    ', but they’re currently only stored on this device. Register for free to save them to our database.'
+  );
+  var timer = null;
+  var close = function() {
+    window.clearTimeout(timer);
+    banner.addClass('is-closing');
+    window.setTimeout(function() { banner.remove(); }, 250);
+  };
+  banner.on('click', '[data-action]', function() {
+    if(this.getAttribute('data-action') === 'register') {
+      _this.trackFeatureEvent('reminder_register', 'complete', variant);
+      close();
+      _this._registerToSaveCompletes(markerId);
+    } else {
+      _this.trackFeatureEvent('reminder_dismiss', 'complete', variant);
+      close();
+    }
+  });
+  // Hovering or focusing keeps it up while someone's reading it.
+  var schedule = function() {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(close, 12000);
+  };
+  banner.on('mouseenter focusin', function() { window.clearTimeout(timer); }).on('mouseleave focusout', schedule);
+  $('body').append(banner);
+  schedule();
+  this.trackFeatureEvent('reminder_shown', 'complete', variant);
 };
 
 ZMap.prototype._registerToSaveCompletes = function(markerId) {

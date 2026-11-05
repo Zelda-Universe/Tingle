@@ -14,7 +14,7 @@
   function signupEvents() {
     // shown → register (tapped Register) → registered; later, never and
     // signed_in (had an account already) are the other ways out.
-    // reminder_* are Complete's later prompts (shown, Register, Maybe Later).
+    // reminder_* are Complete's later reminders, prompts or banners (shown, Register, Maybe Later).
     return array('prompt_shown', 'prompt_register', 'prompt_later', 'prompt_never', 'registered', 'signed_in',
       'reminder_shown', 'reminder_register', 'reminder_dismiss');
   }

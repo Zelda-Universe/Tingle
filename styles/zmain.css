@@ -5695,3 +5695,95 @@ div.circle:has(>.icon-EoW_Echo) {
 	font-size: 12px;
 	line-height: 1.4;
 }
+
+/* The "visit" group's reminder to register: a banner under the header that
+   leaves the map usable. */
+.complete-reminder {
+	position: fixed;
+	top: 76px;
+	left: 50%;
+	z-index: 5000;
+	box-sizing: border-box;
+	width: min(420px, calc(100vw - 32px));
+	padding: 14px 44px 14px 16px;
+	border: 1px solid rgba(255,255,255,.14);
+	border-radius: 16px;
+	background: rgba(0,0,0,.8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 8px 24px rgba(0,0,0,.35);
+	color: white;
+	font-size: 14px;
+	line-height: 1.4;
+	transform: translateX(-50%);
+	animation: complete-reminder-in .3s cubic-bezier(.35,.91,.33,.97);
+}
+
+.complete-reminder.is-closing {
+	opacity: 0;
+	transform: translate(-50%, -8px);
+	transition: opacity .25s, transform .25s;
+}
+
+@keyframes complete-reminder-in {
+	from { opacity: 0; transform: translate(-50%, -12px); }
+	to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.complete-reminder-text {
+	margin: 0 0 10px;
+}
+
+.complete-reminder-actions {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.complete-reminder-register {
+	margin: 0;
+	padding: 6px 14px;
+	border: 0;
+	border-radius: 999px;
+	background: white;
+	color: black;
+	font-size: 14px;
+	font-weight: 700;
+}
+
+.complete-reminder-later {
+	margin: 0;
+	padding: 4px 0;
+	border: 0;
+	background: none;
+	color: rgba(255,255,255,.6);
+	font-size: 13px;
+}
+
+.complete-reminder-later:hover {
+	color: white;
+}
+
+.complete-reminder-close {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	width: 30px;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: none;
+	color: rgba(255,255,255,.6);
+}
+
+.complete-reminder-close:hover {
+	background: rgba(255,255,255,.12);
+	color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.complete-reminder { animation: none; }
+	.complete-reminder.is-closing { transition: none; }
+}

@@ -1878,10 +1878,13 @@ ZMap.prototype._showCompleteReminder = function(markerId, count, variant) {
   $('#complete-reminder').remove();
   var banner = $(
     '<div id="complete-reminder" class="complete-reminder" role="status">' +
-      '<p class="complete-reminder-text"></p>' +
-      '<div class="complete-reminder-actions">' +
-        '<button type="button" class="complete-reminder-register" data-action="register">Register &amp; Save</button>' +
-        '<button type="button" class="complete-reminder-later" data-action="later">Maybe Later</button>' +
+      '<span class="complete-reminder-icon" aria-hidden="true"><i class="fas fa-exclamation-triangle"></i></span>' +
+      '<div class="complete-reminder-body">' +
+        '<p class="complete-reminder-text"></p>' +
+        '<div class="complete-reminder-actions">' +
+          '<button type="button" class="complete-reminder-register" data-action="register">Register &amp; Save</button>' +
+          '<button type="button" class="complete-reminder-later" data-action="later">Maybe Later</button>' +
+        '</div>' +
       '</div>' +
       '<button type="button" class="complete-reminder-close" data-action="later" aria-label="Dismiss"><i class="fas fa-times" aria-hidden="true"></i></button>' +
     '</div>'

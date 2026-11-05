@@ -53,6 +53,10 @@
   $siteOrigin = preg_match('/^([a-z0-9-]+\.)*zeldamaps\.com$/', $requestHost)
     ? 'https://' . $requestHost : 'https://zeldamaps.com';
   $socialImageUrl = $siteOrigin . '/images/' . $metadata['image'];
+  // Versioned by content: the CDN keeps images for a month, and a recaptured
+  // preview must reach link previews straight away.
+  $socialImageFile = __DIR__ . '/images/' . $metadata['image'];
+  if (is_file($socialImageFile)) $socialImageUrl .= '?v=' . substr(md5_file($socialImageFile), 0, 10);
   function metadataEscape($value) {
     return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
   }

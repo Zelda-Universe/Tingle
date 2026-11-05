@@ -55,7 +55,9 @@ ZMap.prototype.navigateToArea = function(area) {
   }
   this._closeNewMarker();
   this._rememberAreaReturnView(area);
-  this.mapControl.changeMap(area.mapId,area.submapId);
+  // changeMapOnly swaps the map layer directly; changeMap goes through the old
+  // layer form, which only OoT's asset preview bypasses.
+  this.mapControl.changeMapOnly(area.mapId,area.submapId);
   var gameData=area.gameData;
   if(typeof gameData === 'string') {try {gameData=JSON.parse(gameData);} catch(e) {gameData=null;}}
   var bounds=area.bounds || (gameData && gameData.bounds);
@@ -108,24 +110,37 @@ ZMap.prototype.navigateToArea = function(area) {
   this.updateUrl();
 };
 
+// The label nearest a marker on its own map, among labels of one category
+// (one level: Region, Area, Places...) or of any category. Games without
+// area outlines (all but OoT) decide which area a POI is in this way.
+ZMap.prototype.nearestLabel = function(marker, categoryId) {
+  var cache=this._labelsByLevel || (this._labelsByLevel=Object.create(null));
+  var key=marker.mapId+':'+marker.submapId+':'+(categoryId || '*');
+  var labels=cache[key] || (cache[key]=this.getMarkers().filter(function(m) {
+    return m.categoryTypeId == 3 && m.mapId == marker.mapId && m.submapId == marker.submapId &&
+      (!categoryId || m.categoryId == categoryId);
+  }));
+  var point=typeof marker.getLatLng === 'function' ? marker.getLatLng() : marker._latlng;
+  if(!point) return null;
+  var nearest=null,distance=Infinity;
+  labels.forEach(function(label) {
+    var at=label.getLatLng(),d=Math.hypot(at.lat-point.lat,at.lng-point.lng);
+    if(d<distance) {nearest=label;distance=d;}
+  });
+  return nearest;
+};
+
 ZMap.prototype._getAreaMarkers = function(area,bounds) {
   var zmap=this;
-  var labels=this.getMarkers().filter(function(m) {
-    return m.categoryTypeId == 3 && m.mapId == area.mapId && m.submapId == area.submapId;
-  });
   return this.getMarkers().filter(function(marker) {
     var category=zmap.categories[marker.categoryId];
     if(!category || !category.checked || marker.categoryTypeId == 3 || marker.dbVisible == 0) return false;
     if(marker.mapId != area.mapId || (marker.submapId != area.submapId && !(zmap.mapOptions.shortName==='OoT' && marker.globalMarker == 1))) return false;
     if(area.mapDestination) return true;
     if(bounds) return bounds.contains(marker.getLatLng());
-    // Without recorded borders, use the closest named area rather than claiming
-    // every POI on the map belongs to this place.
-    var closest=null,distance=Infinity;
-    labels.forEach(function(label) {
-      var d=zmap.map.distance(marker.getLatLng(),label.getLatLng());
-      if(d<distance) {closest=label;distance=d;}
-    });
+    // Without recorded borders, a POI belongs to the nearest label of the
+    // same level, so a region claims more than a single place does.
+    var closest=zmap.nearestLabel(marker,area.categoryId);
     return closest && closest.id == area.id;
   });
 };

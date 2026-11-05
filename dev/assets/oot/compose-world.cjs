@@ -41,11 +41,12 @@ async function compose(source, output, sharp) {
   // The map's own background: a rectangle around every area of both ages,
   // with a margin, rather than the whole square canvas. Outside it the map is
   // transparent, and the site keeps the view within it.
-  const margin = layout.margin || 160;
+  // margin: [sides, top and bottom] in pixels.
+  const [marginX, marginY] = layout.margin || [160, 160];
   const all = [...Object.values(boxes.Child), ...Object.values(boxes.Adult)];
   const extent = [
-    Math.max(0, Math.min(...all.map(b => b[0])) - margin), Math.max(0, Math.min(...all.map(b => b[1])) - margin),
-    Math.min(canvas, Math.max(...all.map(b => b[0] + b[2])) + margin), Math.min(canvas, Math.max(...all.map(b => b[1] + b[3])) + margin)];
+    Math.max(0, Math.min(...all.map(b => b[0])) - marginX), Math.max(0, Math.min(...all.map(b => b[1])) - marginY),
+    Math.min(canvas, Math.max(...all.map(b => b[0] + b[2])) + marginX), Math.min(canvas, Math.max(...all.map(b => b[1] + b[3])) + marginY)];
   const backdrop = await sharp({create:{width:extent[2]-extent[0],height:extent[3]-extent[1],channels:4,background:'#241a0c'}}).png().toBuffer();
   for(const age of ['Child', 'Adult']) {
     await sharp({create:{width:canvas,height:canvas,channels:4,background:{r:0,g:0,b:0,alpha:0}}})

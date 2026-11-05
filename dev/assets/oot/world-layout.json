@@ -1,5 +1,5 @@
 {
-  "description": "Area layout for the Hyrule map: centres on an 8192px canvas. Width is for the Child artwork; Adult artwork is drawn at the same scale. Areas keep at least 120px apart, and connected areas are placed so their connector lines (connections.json) run straight where possible. Graveyard sits off Kakariko's east exit; Lon Lon Ranch is part of the Hyrule Field artwork. adultShift moves an area's Adult artwork by [x, y] pixels so it lines up with the Child artwork.",
+  "description": "Area layout for the Hyrule map: centres on an 8192px canvas. Width is for the Child artwork; Adult artwork is drawn at the same scale. Areas keep at least 120px apart, and connected areas are placed so their connector lines (connections.json) run straight where possible. Graveyard sits off Kakariko's east exit; Lon Lon Ranch is part of the Hyrule Field artwork. adultShift moves an area's Adult artwork by [x, y] pixels so it lines up with the Child artwork. margin is the background's padding around the areas: [sides, top and bottom].",
   "canvas": 8192,
   "regions": [
     ["HyruleField", 4209, 4702, 1280],
@@ -25,5 +25,6 @@
   ],
   "adultShift": {
     "ZoraFountain": [0, -25]
-  }
+  },
+  "margin": [160, 280]
 }

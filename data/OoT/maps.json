@@ -20,7 +20,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/hyrule-child.webp",
+        "iconURL": "data/OoT/previews/hyrule-child.webp?v=0e61966a461c",
         "maxZoom": "5",
         "submapLayer": [],
         "placeLabels": [
@@ -553,11 +553,11 @@
         ],
         "bounds": [
           [
-            -191.28125,
+            -195.03125,
             24.75
           ],
           [
-            -64.71875,
+            -60.96875,
             231.28125
           ]
         ]
@@ -575,7 +575,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/hyrule-adult.webp",
+        "iconURL": "data/OoT/previews/hyrule-adult.webp?v=0c6a6361de76",
         "maxZoom": "5",
         "submapLayer": [],
         "placeLabels": [
@@ -1108,11 +1108,11 @@
         ],
         "bounds": [
           [
-            -191.28125,
+            -195.03125,
             24.75
           ],
           [
-            -64.71875,
+            -60.96875,
             231.28125
           ]
         ]
@@ -1140,7 +1140,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/bottom-of-the-well-b1-state00.webp",
+        "iconURL": "data/OoT/previews/bottom-of-the-well-b1-state00.webp?v=b2d7cf699bd8",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1157,7 +1157,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/bottom-of-the-well-b1-state01.webp",
+        "iconURL": "data/OoT/previews/bottom-of-the-well-b1-state01.webp?v=60fee3e59ca4",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1174,7 +1174,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/bottom-of-the-well-b2.webp",
+        "iconURL": "data/OoT/previews/bottom-of-the-well-b2.webp?v=93f160361d60",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -1201,7 +1201,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/dodongo-cavern-1f.webp",
+        "iconURL": "data/OoT/previews/dodongo-cavern-1f.webp?v=ebb324e33bea",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1218,7 +1218,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/dodongo-cavern-2f.webp",
+        "iconURL": "data/OoT/previews/dodongo-cavern-2f.webp?v=5d44e497ed3f",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -1245,7 +1245,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/fire-temple-1f-state00.webp",
+        "iconURL": "data/OoT/previews/fire-temple-1f-state00.webp?v=94547c339344",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1262,7 +1262,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/fire-temple-1f-state01.webp",
+        "iconURL": "data/OoT/previews/fire-temple-1f-state01.webp?v=281a3f58a50c",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1279,7 +1279,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/fire-temple-2f-state00.webp",
+        "iconURL": "data/OoT/previews/fire-temple-2f-state00.webp?v=3ad5e9c2ab41",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1296,7 +1296,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/fire-temple-2f-state01.webp",
+        "iconURL": "data/OoT/previews/fire-temple-2f-state01.webp?v=928da59279bd",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1313,7 +1313,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/fire-temple-3f.webp",
+        "iconURL": "data/OoT/previews/fire-temple-3f.webp?v=469ebce9cd01",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1330,7 +1330,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/fire-temple-4f.webp",
+        "iconURL": "data/OoT/previews/fire-temple-4f.webp?v=6a91253fbe63",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1347,7 +1347,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/fire-temple-5f-state00.webp",
+        "iconURL": "data/OoT/previews/fire-temple-5f-state00.webp?v=073e0e308ab7",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1364,7 +1364,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/fire-temple-5f-state01.webp",
+        "iconURL": "data/OoT/previews/fire-temple-5f-state01.webp?v=65a95e16eb27",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -1391,7 +1391,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-1f.webp",
+        "iconURL": "data/OoT/previews/forest-temple-1f.webp?v=32157461bb29",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1408,7 +1408,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-2f-state00.webp",
+        "iconURL": "data/OoT/previews/forest-temple-2f-state00.webp?v=750c12bdc92e",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1425,7 +1425,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-2f-state01.webp",
+        "iconURL": "data/OoT/previews/forest-temple-2f-state01.webp?v=750c12bdc92e",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1442,7 +1442,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-2f-state02.webp",
+        "iconURL": "data/OoT/previews/forest-temple-2f-state02.webp?v=750c12bdc92e",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1459,7 +1459,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-2f-state03.webp",
+        "iconURL": "data/OoT/previews/forest-temple-2f-state03.webp?v=750c12bdc92e",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1476,7 +1476,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-3f-state00.webp",
+        "iconURL": "data/OoT/previews/forest-temple-3f-state00.webp?v=839650a16569",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1493,7 +1493,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-3f-state01.webp",
+        "iconURL": "data/OoT/previews/forest-temple-3f-state01.webp?v=98b8d128f1d0",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1510,7 +1510,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-3f-state02.webp",
+        "iconURL": "data/OoT/previews/forest-temple-3f-state02.webp?v=1ad6332d6ce9",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1527,7 +1527,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-3f-state03.webp",
+        "iconURL": "data/OoT/previews/forest-temple-3f-state03.webp?v=fbe536d922e9",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1544,7 +1544,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-b1.webp",
+        "iconURL": "data/OoT/previews/forest-temple-b1.webp?v=cca9725a9e2a",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1561,7 +1561,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/forest-temple-b2.webp",
+        "iconURL": "data/OoT/previews/forest-temple-b2.webp?v=b6712bc6b14e",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -1588,7 +1588,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/ice-cavern-1f.webp",
+        "iconURL": "data/OoT/previews/ice-cavern-1f.webp?v=13a69764bf44",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -1615,7 +1615,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-jabu-jabu-belly-1f.webp",
+        "iconURL": "data/OoT/previews/inside-jabu-jabu-belly-1f.webp?v=8855306b8270",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1632,7 +1632,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-jabu-jabu-belly-2f.webp",
+        "iconURL": "data/OoT/previews/inside-jabu-jabu-belly-2f.webp?v=651f2f593bc6",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1649,7 +1649,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-jabu-jabu-belly-b1.webp",
+        "iconURL": "data/OoT/previews/inside-jabu-jabu-belly-b1.webp?v=dcbf8e7e0b80",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -1676,7 +1676,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-1f-state00.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-1f-state00.webp?v=3825d0c17e55",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1693,7 +1693,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-1f-state01.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-1f-state01.webp?v=2ea00b357c61",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1710,7 +1710,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-2f-state00.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-2f-state00.webp?v=0be765b95538",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1727,7 +1727,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-2f-state01.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-2f-state01.webp?v=a740f6f3e654",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1744,7 +1744,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-3f-state00.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-3f-state00.webp?v=f502b676f0bd",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1761,7 +1761,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-3f-state01.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-3f-state01.webp?v=df744cff2b95",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1778,7 +1778,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-b1-state00.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-b1-state00.webp?v=8b9fb37896b2",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1795,7 +1795,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-b1-state01.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-b1-state01.webp?v=5aaa62bfed98",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1812,7 +1812,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/inside-the-deku-tree-b2-state00.webp",
+        "iconURL": "data/OoT/previews/inside-the-deku-tree-b2-state00.webp?v=b04f8c4fc8e0",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -1839,7 +1839,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/shadow-temple-b1.webp",
+        "iconURL": "data/OoT/previews/shadow-temple-b1.webp?v=73bdff0cc374",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1856,7 +1856,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/shadow-temple-b2.webp",
+        "iconURL": "data/OoT/previews/shadow-temple-b2.webp?v=7cfd7b2bcb7e",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1873,7 +1873,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/shadow-temple-b3.webp",
+        "iconURL": "data/OoT/previews/shadow-temple-b3.webp?v=8334dc1b3032",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1890,7 +1890,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/shadow-temple-b4-state00.webp",
+        "iconURL": "data/OoT/previews/shadow-temple-b4-state00.webp?v=4e1a62eefcda",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1907,7 +1907,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/shadow-temple-b4-state01.webp",
+        "iconURL": "data/OoT/previews/shadow-temple-b4-state01.webp?v=b2e12c1a0c18",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -1934,7 +1934,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/spirit-temple-1f.webp",
+        "iconURL": "data/OoT/previews/spirit-temple-1f.webp?v=469f75df419d",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1951,7 +1951,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/spirit-temple-2f.webp",
+        "iconURL": "data/OoT/previews/spirit-temple-2f.webp?v=3f93a75730fd",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1968,7 +1968,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/spirit-temple-3f-state00.webp",
+        "iconURL": "data/OoT/previews/spirit-temple-3f-state00.webp?v=d956468cb48c",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -1985,7 +1985,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/spirit-temple-3f-state01.webp",
+        "iconURL": "data/OoT/previews/spirit-temple-3f-state01.webp?v=cad5f9dc014f",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2002,7 +2002,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/spirit-temple-3f-state02.webp",
+        "iconURL": "data/OoT/previews/spirit-temple-3f-state02.webp?v=d2b03c00efc0",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2019,7 +2019,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/spirit-temple-4f-state00.webp",
+        "iconURL": "data/OoT/previews/spirit-temple-4f-state00.webp?v=978ffafae0b1",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2036,7 +2036,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/spirit-temple-4f-state01.webp",
+        "iconURL": "data/OoT/previews/spirit-temple-4f-state01.webp?v=dd25c5ce7885",
         "maxZoom": "3",
         "submapLayer": []
       }
@@ -2063,7 +2063,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-1f-lv1-state00.webp",
+        "iconURL": "data/OoT/previews/water-temple-1f-lv1-state00.webp?v=a546a544d8a7",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2080,7 +2080,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-1f-lv1-state01.webp",
+        "iconURL": "data/OoT/previews/water-temple-1f-lv1-state01.webp?v=70a3efe58c3b",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2097,7 +2097,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-1f-lv2-state00.webp",
+        "iconURL": "data/OoT/previews/water-temple-1f-lv2-state00.webp?v=9a3b4086df4c",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2114,7 +2114,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-1f-lv2-state01.webp",
+        "iconURL": "data/OoT/previews/water-temple-1f-lv2-state01.webp?v=5407317b851b",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2131,7 +2131,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-1f-lv3-state00.webp",
+        "iconURL": "data/OoT/previews/water-temple-1f-lv3-state00.webp?v=9a3b4086df4c",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2148,7 +2148,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-1f-lv3-state01.webp",
+        "iconURL": "data/OoT/previews/water-temple-1f-lv3-state01.webp?v=5407317b851b",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2165,7 +2165,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-2f-lv1.webp",
+        "iconURL": "data/OoT/previews/water-temple-2f-lv1.webp?v=4f8fef54751c",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2182,7 +2182,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-2f-lv2.webp",
+        "iconURL": "data/OoT/previews/water-temple-2f-lv2.webp?v=727799ab4cff",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2199,7 +2199,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-2f-lv3.webp",
+        "iconURL": "data/OoT/previews/water-temple-2f-lv3.webp?v=98cb1963b3b2",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2216,7 +2216,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-3f-lv1.webp",
+        "iconURL": "data/OoT/previews/water-temple-3f-lv1.webp?v=37e18e451b3f",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2233,7 +2233,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-3f-lv2.webp",
+        "iconURL": "data/OoT/previews/water-temple-3f-lv2.webp?v=a970172a63a4",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2250,7 +2250,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-3f-lv3.webp",
+        "iconURL": "data/OoT/previews/water-temple-3f-lv3.webp?v=c2feda837d80",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2267,7 +2267,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-b1-lv1.webp",
+        "iconURL": "data/OoT/previews/water-temple-b1-lv1.webp?v=f20b47b8e359",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2284,7 +2284,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-b1-lv2.webp",
+        "iconURL": "data/OoT/previews/water-temple-b1-lv2.webp?v=f20b47b8e359",
         "maxZoom": "3",
         "submapLayer": []
       },
@@ -2301,7 +2301,7 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/water-temple-b1-lv3.webp",
+        "iconURL": "data/OoT/previews/water-temple-b1-lv3.webp?v=f20b47b8e359",
         "maxZoom": "3",
         "submapLayer": []
       }

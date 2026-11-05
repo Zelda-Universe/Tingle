@@ -14,7 +14,6 @@ function SearchMarkerListEntry(searchEntry, opts) {
 SearchMarkerListEntry.prototype = Object.create(MarkerListEntry.prototype);
 SearchMarkerListEntry.prototype.constructor = SearchMarkerListEntry;
 
-var markerAreaLabelsCache = Object.create(null);
 var markerLocationNameCache = Object.create(null);
 
 SearchMarkerListEntry.prototype._initDOMElements = function(marker) {
@@ -22,20 +21,13 @@ SearchMarkerListEntry.prototype._initDOMElements = function(marker) {
   this.domNode.addClass('search-marker-list-entry');
   if(marker.mapDestination && marker.iconURL) {
     this.iconNode.empty().append($('<img class="search-map-preview" alt="">').attr('src',marker.iconURL));
-  } else if(marker.areaDestination) {
-    // An area within a map: a square tile like the map results, in gold so it
-    // isn't mistaken for one, with the generic Point of Interest glyph.
+  } else if(marker.areaDestination || marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
+    // An area within a map (OoT's areas, other games' place labels): a square
+    // tile like the map results, in gold so it isn't mistaken for one, with
+    // the generic Point of Interest glyph.
     this.iconNode.empty().append(
       '<span class="search-area-preview" aria-hidden="true"><span class="icon-BotW_Points-of-Interest"></span></span>'
     );
-  } else if(marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
-    var labelCategory = this.categories[marker.categoryId || marker.markerCategoryId];
-    var labelGroup = labelCategory && this.categories[labelCategory.parent_id];
-    this.categoryIcon = new CategoryIcon({
-      iconClass: (labelCategory && labelCategory.img) || (labelGroup && labelGroup.img) || 'General_Map',
-      color: (labelCategory && labelCategory.color) || (labelGroup && labelGroup.color)
-    });
-    this.iconNode.empty().append(this.categoryIcon.domNode);
   }
 
   this.detailsNode = this.domNode.find('.details');
@@ -77,36 +69,18 @@ function getMarkerLocationName(marker) {
   return markerLocationNameCache[marker.id] = locationParts.join(', ');
 }
 
+// The area a POI is in, for games without area outlines: its nearest "Area
+// Labels" label where the game has that level (so TotK says "Hyrule Field",
+// not the tiny place next door), else its nearest label of any kind.
 function getNearestMarkerAreaName(marker) {
   var mapMarker = zMap.cachedMarkersById[marker.id];
-  if(!mapMarker) return '';
-  var markerPosition = mapMarker.getLatLng();
-  var cacheKey = marker.mapId + ':' + marker.submapId;
-  var labels = markerAreaLabelsCache[cacheKey];
-  if(!labels) {
-    labels = markerAreaLabelsCache[cacheKey] = zMap.getMarkers()
-      .filter(function(candidate) {
-        return (
-          candidate.categoryTypeId == 3 &&
-          candidate.mapId == marker.mapId &&
-          candidate.submapId == marker.submapId &&
-          candidate.title
-        );
-      });
-  }
-
-  var nearestLabel = labels.reduce(function(nearest, candidate) {
-    var position = candidate.getLatLng();
-    var distance = Math.hypot(
-      position.lng - markerPosition.lng,
-      position.lat - markerPosition.lat
-    );
-    return !nearest || distance < nearest.distance
-      ? { title: candidate.title, distance: distance }
-      : nearest;
-  }, null);
-
-  return nearestLabel ? nearestLabel.title : '';
+  if(!mapMarker || !zMap.nearestLabel) return '';
+  var areaLevel = Object.keys(zMap.categories).find(function(id) {
+    var category = zMap.categories[id];
+    return category && /^Area Labels$/i.test(category.name || '');
+  });
+  var nearest = (areaLevel && zMap.nearestLabel(mapMarker, areaLevel)) || zMap.nearestLabel(mapMarker);
+  return nearest ? (nearest.title || nearest.name || '') : '';
 }
 
 SearchMarkerListEntry.prototype._addHighlighting = function() {

@@ -98,7 +98,8 @@ test('OoT pack exposes all distinct maps and main-texture variants',()=>{
   expect(Object.values(definitions).flat().every(row=>row.coordinates===null)).toBe(true);
   for(const map of maps) for(const sub of map.subMap) {
     expect(sub.tileBaseURL).toBe('/tiles/');
-    expect(fs.existsSync(path.join(__dirname,'../',sub.iconURL))).toBe(true);
+    expect(fs.existsSync(path.join(__dirname,'../',sub.iconURL.split('?')[0]))).toBe(true);
+    expect(sub.iconURL).toMatch(/\.webp\?v=[0-9a-f]{12}$/); // versioned, so browsers refetch a changed thumbnail
   }
 });
 

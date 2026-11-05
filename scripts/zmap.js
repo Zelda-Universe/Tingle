@@ -803,11 +803,11 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
           "<span class='marker-action-label'>" + (!marker.complete ? "Complete" : "Completed") + "</span>" +
         "</button>" +
         this._bookmarkButtonHTML() +
-        "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboard(" + marker.id + "); return false'>" +
+        "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboard(" + marker.id + ", this); return false'>" +
           "<span class='marker-action-icon'><i class='fas fa-link'></i></span>" +
           "<span class='marker-action-label'>Copy Link</span>" +
         "</button>" +
-        "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboardEmbed(" + marker.id + "); return false'>" +
+        "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboardEmbed(" + marker.id + ", this); return false'>" +
           "<span class='marker-action-icon'><i class='icon-embed2'></i></span>" +
           "<span class='marker-action-label'>Embed Code</span>" +
         "</button>" +
@@ -945,17 +945,63 @@ ZMap.prototype._getClipboardParams = function(href) {
    }
    return clipboardParams;
 }
-ZMap.prototype._copyToClipboardEmbed = function(vMarkerId) {
+ZMap.prototype._copyToClipboardEmbed = function(vMarkerId, button) {
    var href = window.location.href.split("?");
    var clipboardParams = this._getClipboardParams(href);
 
-   window.prompt("Copy to clipboard: Ctrl+C, Enter", "<iframe src=\"" + href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>");
+   this._copyText("<iframe src=\"" + href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>", button);
 }
-ZMap.prototype._copyToClipboard = function(vMarkerId) {
+ZMap.prototype._copyToClipboard = function(vMarkerId, button) {
    var href = window.location.href.split("?");
    var clipboardParams = this._getClipboardParams(href);
-   window.prompt("Copy to clipboard: Ctrl+C, Enter", href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom());
+   this._copyText(href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom(), button);
 }
+
+// Copies straight to the clipboard. The action button then shows a checkmark
+// and "Copied!" for a moment; where the browser won't allow it, the text is
+// offered to copy by hand instead.
+ZMap.prototype._copyText = function(text, button) {
+  var confirm = function() {
+    if(!button) return;
+    var icon = button.querySelector('.marker-action-icon');
+    var label = button.querySelector('.marker-action-label');
+    if(!icon || !label) return;
+    if(!button._copyOriginal) button._copyOriginal = { icon: icon.innerHTML, label: label.textContent };
+    icon.innerHTML = "<i class='fas fa-check' aria-hidden='true'></i>";
+    label.textContent = 'Copied!';
+    button.classList.add('is-copied');
+    window.clearTimeout(button._copyTimer);
+    button._copyTimer = window.setTimeout(function() {
+      icon.innerHTML = button._copyOriginal.icon;
+      label.textContent = button._copyOriginal.label;
+      button.classList.remove('is-copied');
+    }, 1500);
+  };
+  var byHand = function() { window.prompt("Copy to clipboard: Ctrl+C, Enter", text); };
+  if(navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(confirm, function() {
+      // Older Safari without clipboard permission: the selection route works.
+      if(copyBySelection()) confirm(); else byHand();
+    });
+  } else if(copyBySelection()) {
+    confirm();
+  } else {
+    byHand();
+  }
+  function copyBySelection() {
+    var field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+    var copied = false;
+    try { copied = document.execCommand('copy'); } catch(e) {}
+    field.remove();
+    return copied;
+  }
+};
 
 ZMap.prototype.addMarkerToCategoryCache = function(marker) {
   if(!this.cachedMarkersByCategory[marker.categoryId]) this.cachedMarkersByCategory[marker.categoryId] = [];
@@ -1719,12 +1765,13 @@ ZMap.prototype._openDroppedPin = function(latlng) {
   this.mapControl.setContent(content, 'droppedPin-' + L.Util.stamp(newMarker));
   this.mapControl.openDrawerSmall();
 
+  var zmap = this;
   $('#copy_dropped_pin_link').on('click', function() {
-    window.prompt("Copy to clipboard: Ctrl+C, Enter", link);
+    zmap._copyText(link, this);
     return false;
   });
   $('#copy_dropped_pin_embed').on('click', function() {
-    window.prompt("Copy to clipboard: Ctrl+C, Enter", "<iframe src=\"" + embedLink + "\" frameborder=\"0\" allowfullscreen></iframe>");
+    zmap._copyText("<iframe src=\"" + embedLink + "\" frameborder=\"0\" allowfullscreen></iframe>", this);
     return false;
   });
 };

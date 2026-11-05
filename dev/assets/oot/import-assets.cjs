@@ -48,7 +48,7 @@ async function main(source) {
     if(existing && fs.existsSync(path.join(ROOT,'tiles',existing.tileURL,`${maxZoom}_${2 ** maxZoom - 1}_${2 ** maxZoom - 1}.webp`))) {
       assets.push(existing);
       tileCount += (4 ** (maxZoom + 1) - 1) / 3;
-      return { maxZoom, tileURL: existing.tileURL };
+      return { maxZoom, tileURL: existing.tileURL, preview: await preview(buffer, dest) };
     }
     const offsetX = Math.floor((side - meta.width) / 2), offsetY = Math.floor((side - meta.height) / 2);
     // The Hyrule map paints its own background, fitted to the areas; around
@@ -70,11 +70,23 @@ async function main(source) {
         tileCount += 2 ** z;
       }
     }
-    fs.mkdirSync(path.join(out, 'previews'), {recursive:true});
-    await sharp(canvas).resize(256,256).webp({quality:85}).toFile(path.join(out, 'previews', dest + '.webp'));
     assets.push({source:path.relative(source,file), sha256,
       width:meta.width, height:meta.height, maxZoom, tileURL:relative, offsetX, offsetY});
-    return { maxZoom, tileURL:relative };
+    return { maxZoom, tileURL:relative, preview: await preview(buffer, dest) };
+  }
+  // The Switch Map thumbnail: the map's artwork trimmed of empty space and
+  // fitted to the square with a little room around it, rather than the whole
+  // (mostly empty) tile canvas. Returns a short hash of the image, which goes
+  // on its URL so browsers fetch a new one when it changes.
+  async function preview(buffer, dest) {
+    // Twice: Hyrule's transparent surround first, then its painted background.
+    const art = await sharp(await sharp(buffer).trim().toBuffer()).trim().toBuffer();
+    const fitted = await sharp(art).resize(232, 232, {fit:'contain', background:{r:0, g:0, b:0, alpha:0}}).png().toBuffer();
+    const image = await sharp({create:{width:256, height:256, channels:4, background:'#241a0c'}})
+      .composite([{input:fitted, left:12, top:12}]).webp({quality:85}).toBuffer();
+    fs.mkdirSync(path.join(out, 'previews'), {recursive:true});
+    fs.writeFileSync(path.join(out, 'previews', dest + '.webp'), image);
+    return crypto.createHash('sha256').update(image).digest('hex').slice(0, 12);
   }
   async function addMap(key, name, files, kind) {
     const id = String(mapId++), subMap = [];
@@ -87,7 +99,7 @@ async function main(source) {
       subMap.push({id:String(submapId++),name:variant, mapTypeName:'FlatMap',googleDefault:'0',
         tileURL:rendered.tileURL, tileBaseURL:'/tiles/',tileExt:'webp',img404:'blank',emptyMap:'0',
         mapMapper:'Supplied OoT asset dump; texture placement preserved',isDefault:i === 0 ? '1':'0',opacity:'1',
-        iconURL:'data/OoT/previews/' + dest + '.webp',maxZoom:String(rendered.maxZoom),submapLayer:[]});
+        iconURL:'data/OoT/previews/' + dest + '.webp?v=' + rendered.preview,maxZoom:String(rendered.maxZoom),submapLayer:[]});
     }
     maps.push({id,name,defaultZoom:'1',maxZoom:String(Math.max(...subMap.map(s=>Number(s.maxZoom)))),
       mapCopyright:'Map artwork © Nintendo. Local asset preview; no coordinate data supplied.',kind,subMap});

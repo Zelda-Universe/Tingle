@@ -54,6 +54,7 @@ ZMap.prototype.navigateToArea = function(area) {
     if(matching && matching.submapId==active.subMapId) area=matching;
   }
   this._closeNewMarker();
+  this._rememberAreaReturnView(area);
   this.mapControl.changeMap(area.mapId,area.submapId);
   var gameData=area.gameData;
   if(typeof gameData === 'string') {try {gameData=JSON.parse(gameData);} catch(e) {gameData=null;}}
@@ -92,13 +93,18 @@ ZMap.prototype.navigateToArea = function(area) {
     // Leaflet otherwise snaps when fitting a small area from a distant zoom.
     var threshold=map.options.zoomAnimationThreshold;
     map.options.zoomAnimationThreshold=Infinity;
+    var fitOptions={paddingTopLeft:[left+24,24],paddingBottomRight:[24,bottom+24],animate:!reducedMotion,duration:.25,easeLinearity:.2};
+    var arrival=map._getBoundsCenterZoom ? map._getBoundsCenterZoom(validBounds,fitOptions) : null;
     try {
-      map.fitBounds(validBounds,{paddingTopLeft:[left+24,24],paddingBottomRight:[24,bottom+24],animate:!reducedMotion,duration:.25,easeLinearity:.2});
+      map.fitBounds(validBounds,fitOptions);
     } finally {map.options.zoomAnimationThreshold=threshold;}
   } else {
     var point=typeof area.getLatLng === 'function' ? area.getLatLng() : L.latLng(Number(area.y),Number(area.x));
     this._setViewAtMarkerInVisibleArea({getLatLng:function(){return point;}},map.getZoom());
   }
+  // Where the map lands: closing the area restores the earlier view only if
+  // the map is still here.
+  if(this._areaReturnView) this._areaReturnView.arrived=arrival || {center:map.getCenter(),zoom:map.getZoom()};
   this.updateUrl();
 };
 
@@ -243,4 +249,36 @@ ZMap.prototype.getMarkerAreaName = function(marker) {
     if(d<nearestDistance) {nearest=place;nearestDistance=d;}
   });
   return cache[key]=(best || nearest).name;
+};
+
+// Closing an area puts the map back where it was before the area was opened,
+// as long as the map hasn't been panned or zoomed since it zoomed to the
+// area. Hopping straight from one area to another keeps the first "before"
+// view. Opening a whole map (a dungeon) or changing map or age isn't undone.
+ZMap.prototype._rememberAreaReturnView = function(area) {
+  var current=this.mapControl.getCurrentMap();
+  if(area.mapDestination || area.mapId != current.mapId) { this._areaReturnView=null; return; }
+  if(this._areaReturnView && /^area-/.test(this.mapControl.getContentType() || '')) {
+    this._areaReturnView.arrived=null; // still returns to the view before the first area
+    return;
+  }
+  this._areaReturnView={mapId:current.mapId,subMapId:current.subMapId,
+    center:this.map.getCenter(),zoom:this.map.getZoom(),arrived:null};
+};
+
+// Called as the area page closes. Returns true when it moved the map back.
+ZMap.prototype.restoreAreaReturnView = function() {
+  var view=this._areaReturnView,map=this.map;
+  this._areaReturnView=null;
+  if(!view || !view.arrived) return false;
+  var current=this.mapControl.getCurrentMap();
+  if(current.mapId != view.mapId || current.subMapId != view.subMapId) return false;
+  var moved=map.latLngToContainerPoint(map.getCenter()).distanceTo(map.latLngToContainerPoint(view.arrived.center));
+  if(Math.abs(map.getZoom()-view.arrived.zoom)>0.01 || moved>2) return false;
+  var reducedMotion=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var threshold=map.options.zoomAnimationThreshold;
+  map.options.zoomAnimationThreshold=Infinity;
+  try { map.setView(view.center,view.zoom,{animate:!reducedMotion,duration:.25,easeLinearity:.2}); }
+  finally { map.options.zoomAnimationThreshold=threshold; }
+  return true;
 };

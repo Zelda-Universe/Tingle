@@ -2041,6 +2041,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
       areaURL.searchParams.delete('area');
       window.history.replaceState(window.history.state,'',areaURL.href);
       this.zMap.selectedArea=null;
+      // Back to where the map was before the area, if it hasn't been moved.
+      if(this.zMap.restoreAreaReturnView) this.zMap.restoreAreaReturnView();
+      // The game's own title, as zmain.lib.js sets it on load.
+      var options=this.zMap.mapOptions || {};
+      var gameName=options.shortName === 'OoT' ? 'Ocarina of Time Remake (2026)' : options.name;
+      if(gameName) document.title=gameName+' Interactive Map - Zelda Maps';
     }
     if(/^m\d+$/.test(this._contentType || '')) {
       this._dismissPOIOnClose = true;

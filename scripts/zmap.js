@@ -102,8 +102,15 @@ function ZMap() {
       REGISTER_ERROR   : "I AM ERROR! %1",
 
       LOST_PASSWORD_WELCOME: "Forgot Password",
-      LOST_PASSWORD_SUCCESS: "Saria sent a new password to your email!",
+      LOST_PASSWORD_SUCCESS: "Hey, listen! If that email has an account, Saria sent it a link to reset your password.",
       LOST_PASSWORD_ERROR: "I AM ERROR. You ended up back at the beginning! %1",
+
+      RESET_PASSWORD_WELCOME: "Choose a New Password",
+      RESET_PASSWORD_CHECKING: "Checking your link…",
+      RESET_PASSWORD_INVALID: "This password reset link is invalid or has expired.",
+      RESET_PASSWORD_MISMATCH: "Those passwords don't match.",
+      RESET_PASSWORD_SUCCESS: "Your password has been changed. You can now log in.",
+      RESET_PASSWORD_ERROR: "I AM ERROR. %1",
 
       CHANGE_PASSWORD_WELCOME: "Change Your Password",
       CHANGE_PASSWORD_SUCCESS: "Excuuuuse me, %1! Your password has been successfully updated!",
@@ -3239,6 +3246,111 @@ ZMap.prototype._createLostPasswordForm = function() {
    });
 }
 
+// The page a password-reset e-mail links to: /?reset=<token>. The link is
+// checked with the server before the form is shown, so an expired or used
+// one says so instead of failing on submit.
+ZMap.prototype._createResetPasswordForm = function() {
+   var _this = this;
+   var token = new URL(window.location.href).searchParams.get('reset') || '';
+   var forgetToken = function() {
+      var url = new URL(window.location.href);
+      url.searchParams.delete('reset');
+      window.history.replaceState(window.history.state, '', url.href);
+   };
+
+   this.mapControl.setContent('<div id="resetpassword">'+
+                        '<h3 class="text-center">' + this.langMsgs.RESET_PASSWORD_WELCOME + '</h3>'+
+                        '<p class="text-center" id="resetpassword_status">' + this.langMsgs.RESET_PASSWORD_CHECKING + '</p>'+
+                        '<form class="leaflet-control-layers-list" role="resetpasswordform" id="resetpasswordform" hidden>'+
+                          '<div class="form-group">'+
+                             '<div class="cols-sm-10">'+
+                                '<div class="input-group">'+
+                                   '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
+                                   '<input type="password" class="form-control" name="password" id="resetpassword_new" required="" minlength="8" maxlength="72" placeholder="Enter a new password (8+ characters)" autocomplete="new-password"/>'+
+                                '</div>'+
+                             '</div>'+
+                          '</div>'+
+                          '<div class="form-group">'+
+                             '<div class="cols-sm-10">'+
+                                '<div class="input-group">'+
+                                   '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
+                                   '<input type="password" class="form-control" name="confirm" id="resetpassword_confirm" required="" minlength="8" maxlength="72" placeholder="Enter it again" autocomplete="new-password"/>'+
+                                '</div>'+
+                             '</div>'+
+                          '</div>'+
+                          '<div class="modal-footer">'+
+                             '<div>'+
+                                '<button type="submit" class="infoWindowIcn form-action-button">Change Password</button>'+
+                             '</div>'+
+                           '</div>'+
+                        '</form>'+
+                        '<div class="modal-footer" id="resetpassword_expired" hidden>'+
+                           '<div>'+
+                              '<button id="resetpassword_again_btn" type="button" class="infoWindowIcn form-action-button">Request a New Link</button>'+
+                           '</div>'+
+                        '</div>'+
+                     '</div>'
+   , 'resetPasswordForm');
+   this._lockWhileOffline('#resetpassword', { dim: '#resetpasswordform' });
+
+   var showExpired = function() {
+      $('#resetpassword_status').text(_this.langMsgs.RESET_PASSWORD_INVALID);
+      $('#resetpasswordform').prop('hidden', true);
+      $('#resetpassword_expired').prop('hidden', false);
+   };
+
+   $('#resetpassword_again_btn').click(function(e) {
+      forgetToken();
+      _this._createLostPasswordForm();
+      e.preventDefault();
+   });
+
+   if(!/^[0-9a-f]{64}$/.test(token)) {
+      showExpired();
+      return;
+   }
+
+   $.getJSON('ajax.php?command=reset_password&check=1&token=' + encodeURIComponent(token)).done(function(data) {
+      if(!data.success || !data.valid) { showExpired(); return; }
+      $('#resetpassword_status').prop('hidden', true);
+      $('#resetpasswordform').prop('hidden', false);
+      $('#resetpassword_new').trigger('focus');
+   }).fail(function() {
+      $('#resetpassword_status').text(_this.langMsgs.GENERAL_ERROR.format(''));
+   });
+
+   $('#resetpasswordform').submit(function(e) {
+      e.preventDefault();
+      var password = $('#resetpassword_new').val();
+      if(password !== $('#resetpassword_confirm').val()) {
+         toastr.error(_this.langMsgs.RESET_PASSWORD_MISMATCH);
+         $('#resetpassword_confirm').trigger('focus');
+         return;
+      }
+      var button = $('#resetpasswordform button[type="submit"]').prop('disabled', true);
+      $.ajax({
+        type: 'POST',
+        url: 'ajax.php?command=reset_password',
+        data: { token: token, password: password }
+      }).done(function(data) {
+         if(data.success) {
+            forgetToken();
+            toastr.success(_this.langMsgs.RESET_PASSWORD_SUCCESS);
+            _this._createLoginForm();
+         } else if(data.field === 'password') {
+            toastr.error(_this.langMsgs.RESET_PASSWORD_ERROR.format(data.msg));
+            button.prop('disabled', false);
+         } else {
+            // The link was used or expired between the check and now.
+            showExpired();
+         }
+      }).fail(function() {
+         toastr.error(_this.langMsgs.RESET_PASSWORD_ERROR.format(''));
+         button.prop('disabled', false);
+      });
+   });
+};
+
 ZMap.prototype._createChangePasswordForm = function() {
    this.mapControl.setContent('<div id="changepassword">'+
                         '<h3 class="text-center">' + this.langMsgs.CHANGE_PASSWORD_WELCOME + '</h3>'+
@@ -3663,6 +3775,7 @@ ZMap.prototype.drawerPageRoutes = {
   loginForm: 'login',
   registerForm: 'register',
   lostPasswordForm: 'lost-password',
+  resetPasswordForm: 'reset-password',
   changePasswordForm: 'change-password',
   deleteAccountForm: 'delete-account',
   notificationsPage: 'notifications',
@@ -3678,6 +3791,8 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   else url.searchParams.delete('page');
   // Revision links (?marker=1&rev=2) last only while the revision is open.
   if(!/^markerRevision-/.test(contentType || '')) url.searchParams.delete('rev');
+  // The reset token (?reset=) lasts only while the reset form is open.
+  if(contentType !== 'resetPasswordForm') url.searchParams.delete('reset');
   var reloadParent = null;
   if(['accountPage', 'loginForm', 'games', 'maps'].includes(contentType)) {
     var parent = this.mapControl._headerPageParent;
@@ -3727,6 +3842,8 @@ ZMap.prototype.restoreDrawerPage = function(page) {
       return;
     }
   }
+  // A password-reset e-mail links to /?reset=<token>.
+  if(new URL(window.location.href).searchParams.has('reset')) page = 'reset-password';
   if(!page) return;
   if(page === 'games' || page === 'maps') {
     this.syncDrawerPageURL(this.mapControl.getContentType());
@@ -3747,7 +3864,8 @@ ZMap.prototype.restoreDrawerPage = function(page) {
   };
   var publicRoutes = {
     login: '_createLoginForm', register: '_createRegisterForm',
-    'lost-password': '_createLostPasswordForm'
+    'lost-password': '_createLostPasswordForm',
+    'reset-password': '_createResetPasswordForm'
   };
   if(authenticatedRoutes[page]) {
     if(this.getUser()) this[authenticatedRoutes[page]](this.getUser());

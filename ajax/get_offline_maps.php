@@ -6,6 +6,7 @@
     return;
   }
   session_write_close();
+  include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
 
   $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v5';
   $manifestCacheLifetime = 6 * 60 * 60;
@@ -20,6 +21,11 @@
   }
 
   function getOfflineTileDirectories($db, $map_prefix, $gameId) {
+    if (ootPackIsGame($gameId)) {
+      $directories = [];
+      foreach (ootPackData('maps') as $map) foreach ($map['subMap'] as $submap) $directories[] = $submap['tileURL'];
+      return array_values(array_unique(array_map(function($value) { return trim($value, '/'); }, $directories)));
+    }
     $rows = $db->fetchAllAssociative("
       SELECT DISTINCT `tile_url` AS `tileURL`
       FROM `{$map_prefix}submap` sm
@@ -50,6 +56,7 @@
   function getOfflineSources($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL) {
     $sources = array();
     $siteRoot = realpath(dirname(__DIR__));
+    if (ootPackIsGame($gameId)) $tilePublicBaseURL = '/tiles/';
     $iconFolders = array();
     foreach (getOfflineTileDirectories($db, $map_prefix, $gameId) as $relativeDirectory) {
       $iconFolders[] = explode('/', $relativeDirectory)[0];
@@ -69,7 +76,7 @@
         'root' => $siteRoot,
         'directory' => $siteRoot . '/' . $relativeDirectory,
         'base' => '',
-        'pattern' => '/\.(?:png|jpe?g|webp|gif|svg|json)$/i',
+        'pattern' => '/\.(?:png|jpe?g|webp|gif|svg|json|css)$/i',
         'tile' => false
       );
     }
@@ -169,6 +176,7 @@
   }
 
   $requestedGame = isset($_GET['game']) ? (string) $_GET['game'] : '';
+  if (ootPackData('container')) $gameRows['OoT'] = ['id' => '64', 'shortName' => 'OoT', 'name' => 'Ocarina of Time'];
   $mode = isset($_GET['mode']) ? (string) $_GET['mode'] : 'summary';
   if ($mode === 'manifest') {
     if (!isset($gameRows[$requestedGame])) {

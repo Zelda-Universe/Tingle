@@ -4,6 +4,8 @@
   $path = __DIR__;
 
   $map = $_GET["game"] ?? '';
+  include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
+  if (ootPackIsGame($map)) { echo json_encode(ootPackData('container')); return; }
   if ($map === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $map)) {
     echo json_encode(array());
     return;

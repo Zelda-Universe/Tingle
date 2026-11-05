@@ -1,0 +1,3 @@
+.icon-OoT_HeartPiece::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/HeartPiece.svg') center / contain no-repeat; vertical-align: middle; }
+.icon-OoT_Item_Token_Gold::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Token_Gold.png') center / contain no-repeat; vertical-align: middle; }
+.icon-OoT_Item_Bottle_BigPoe::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Bottle_BigPoe.png') center / contain no-repeat; vertical-align: middle; }

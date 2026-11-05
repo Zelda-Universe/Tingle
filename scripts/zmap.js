@@ -175,6 +175,7 @@ ZMap.prototype.constructor = function(vMapOptions) {
       vMapOptions.showCompleted = true;
     }
     this.mapOptions = vMapOptions;
+    document.documentElement.classList.toggle('oot-asset-preview', !!vMapOptions.assetPreview);
   }
 
   if(!this.mapOptions.categorySelectionMethod)
@@ -272,6 +273,30 @@ ZMap.prototype.addMap = function(vMap) {
       console.log("No subMap configured for \"" + vMap.name + "\"!!!");
       return;
    }
+   var tileBaseURL = vMap.subMap[0].tileBaseURL || this.tilesBaseURL;
+   if(this.mapOptions.assetPreview && this.mapOptions.shortName === 'OoT') {
+     // Each supplied floor/age/state is independently selectable. Do not use
+     // the legacy blank-base overlay path, which cannot expose these variants.
+     vMap.subMap.forEach(function(submap) {
+       var title = vMap.name + (vMap.subMap.length > 1 ? ' — ' + submap.name : '');
+       var layer = L.tileLayer((submap.tileBaseURL || tileBaseURL) + submap.tileURL + this.tileNameFormat + '.' + submap.tileExt, {
+         maxZoom: Number(this.mapOptions.maxZoom), maxNativeZoom: Number(submap.maxZoom || vMap.maxZoom),
+         minZoom: 0, noWrap: true, tileSize: Number(this.mapOptions.tileSize), keepBuffer: 2,
+         attribution: vMap.mapCopyright, label: title, iconURL: submap.iconURL
+       });
+       layer.id = 'mID' + vMap.id + 's' + submap.id;
+       layer.originalId = vMap.id;
+       layer.defaultSubMapId = submap.id;
+       layer.ootKind = vMap.kind;
+       layer.ootGroupName = vMap.name;
+       layer.ootVariant = submap.name;
+       layer.ootPlaceLabels = submap.placeLabels || [];
+       layer.title = submap === vMap.subMap[0] ? vMap.name : title;
+       layer._overlayMap = [];
+       this.maps.push(layer);
+     }, this);
+     return;
+   }
 
    // If only one submap exists, we just add it without any overlay
   if (
@@ -279,7 +304,7 @@ ZMap.prototype.addMap = function(vMap) {
     &&  vMap.subMap[0].submapLayer.length == 0
   ) {
     var tLayer = L.tileLayer(
-      this.tilesBaseURL
+      tileBaseURL
       + vMap.subMap[0].tileURL
       + this.tileNameFormat
       + '.'
@@ -297,7 +322,7 @@ ZMap.prototype.addMap = function(vMap) {
         , updateWhenZooming : true
         , keepBuffer        : 4
         , label             : vMap.name
-        , iconURL           : this.defaultIconURL
+        , iconURL           : vMap.subMap[0].iconURL || this.defaultIconURL
           + vMap.subMap[0].tileURL
           + 'icon.'
           + vMap.subMap[0].tileExt
@@ -317,7 +342,7 @@ ZMap.prototype.addMap = function(vMap) {
       //  We create it as an empty map, so different sized overlay maps won't show on top
       //  We could create based on first submap of the array, but then we would need to change the controller to not redisplay the first submap
       /* TODO: Improve this to use no tile at all (remove tile border)*/
-      var tLayer = L.tileLayer(this.tilesBaseURL + vMap.subMap[0].tileURL + 'blank.png'
+      var tLayer = L.tileLayer(tileBaseURL + vMap.subMap[0].tileURL + 'blank.png'
                                            , { maxZoom:           Math.max(Number(vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
                                              , maxNativeZoom:     Number(vMap.maxZoom)
                                              , noWrap:            true
@@ -326,7 +351,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , updateWhenZooming: true
                                              , keepBuffer:        4
                                              , label:             vMap.name
-                                             , iconURL:           this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
+                                             , iconURL:           vMap.subMap[0].iconURL || this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
                                              }
       );
 
@@ -338,7 +363,7 @@ ZMap.prototype.addMap = function(vMap) {
 
     // Add all the submaps to the overlay array (including the first submap for control purposes)
     for (var i = 0; i < vMap.subMap.length; i++) {
-       var overlay = L.tileLayer(this.tilesBaseURL + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
+       var overlay = L.tileLayer((vMap.subMap[i].tileBaseURL || tileBaseURL) + vMap.subMap[i].tileURL + this.tileNameFormat + '.' + vMap.subMap[i].tileExt
                                             , { maxZoom:           Math.max(Number(vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
                                             , maxNativeZoom:     Number(vMap.maxZoom)
                                             , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
@@ -349,7 +374,7 @@ ZMap.prototype.addMap = function(vMap) {
                                             , updateWhenZooming: true
                                             , keepBuffer:        4
                                             , label:             vMap.name
-                                            , iconURL:           this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                            , iconURL:           vMap.subMap[i].iconURL || this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                           }
        );
 
@@ -368,7 +393,7 @@ ZMap.prototype.addMap = function(vMap) {
 
              var submap = vMap.subMap[i].submapLayer[j];
 
-             var overlay2 = L.tileLayer(this.tilesBaseURL + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
+             var overlay2 = L.tileLayer((submap.tileBaseURL || tileBaseURL) + submap.tileURL + '{z}_{x}_{y}.' + submap.tileExt
                                                                      , { maxZoom:           Math.max(Number(submap.maxZoom || vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
                                                                        , maxNativeZoom:     Number(submap.maxZoom || vMap.maxZoom)
                                                                        , noWrap:            true
@@ -971,9 +996,12 @@ ZMap.prototype._updateMarkersPresence = function(markers) {
 ZMap.prototype._updateMarkerPresence = function(marker) {
   mapBounds = this.map.getBounds().pad(0.15);
 
+  // OoT: markers for things either age can get (globalMarker) show on both
+  // the Child and Adult maps, as one marker.
+  var everySubmap = this.mapOptions.shortName === 'OoT' && marker.globalMarker == 1;
   if (
        this.mapControl.getCurrentMap().mapId    != marker.mapId
-    || this.mapControl.getCurrentMap().subMapId != marker.submapId
+    || (!everySubmap && this.mapControl.getCurrentMap().subMapId != marker.submapId)
   ) {
     this.map.removeLayer(marker);
 
@@ -1372,26 +1400,32 @@ ZMap.prototype.addMapControl = function(gameId) {
   this.map.on('baselayerchange', function(e) {
     //@TODO: Fix this null value - (for light / dark) - this is when a layer updates
     //       Defaulting to the first layer for now - workaround!!!!!
-    var defaultSubMapId;
+    var defaultSubMapId = e.defaultSubMapId;
     var i;
     for (i = 0; i < _this.maps.length; i++) {
-      if (_this.maps[i].originalId == e.originalId) {
+      if (defaultSubMapId == null && _this.maps[i].originalId == e.originalId) {
             defaultSubMapId = _this.maps[i].defaultSubMapId;
             break;
          }
     }
     // END OF WORKAROUND!!!
     //console.log(e.originalId + " " + defaultSubMapId);
+    var sameOotMap = _this.mapOptions.assetPreview && _this.mapControl.currentMap == e.originalId;
     _this.mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
     _this.refreshMap();
     _this._closeNewMarker();
     //this.mapControl.resetContent();
 
-    _this.map.setView(new L.LatLng(
+    if(!sameOotMap) _this.map.setView(new L.LatLng(
       _this.mapOptions.centerY,
       _this.mapOptions.centerX
     ), _this.map.getZoom());
   });
+  if(this.mapOptions.assetPreview) {
+    var requestedMap = ZConfig.getConfig('map');
+    if(requestedMap) this.mapControl.changeMapOnly(requestedMap, ZConfig.getConfig('subMap'));
+    if(this.setupOotFloors) this.setupOotFloors();
+  }
 
   $(document).on('keydown', function(e) {
     if(e.key == "Escape") {

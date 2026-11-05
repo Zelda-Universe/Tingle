@@ -1,0 +1,26 @@
+{
+  "description": "Inferred scene layout, not surveyed coordinates. Positions are centers on a 4096px canvas; width preserves each clean silhouette's aspect ratio. Tune joins against scene exits, never stretch artwork.",
+  "regions": [
+    ["HyruleField", 2180, 2280, 1280],
+    ["Market", 2100, 1510, 360],
+    ["HyruleCastle", 2100, 1150, 520],
+    ["GanonCastle", 2100, 1150, 520],
+    ["KakarikoVillage", 2810, 1640, 540],
+    ["Graveyard", 3250, 1630, 340],
+    ["DeathMountainTrail", 2810, 1120, 540],
+    ["GoronCity", 2760, 680, 420],
+    ["DeathMountainCrater", 3120, 560, 490],
+    ["ZoraRiver", 3130, 2110, 640],
+    ["ZoraDomain", 3500, 1620, 390],
+    ["ZoraFountain", 3620, 1230, 450],
+    ["KokiriForest", 3120, 2830, 510],
+    ["LostWood", 3450, 2450, 500],
+    ["SacredForestMeadow", 3670, 2010, 310],
+    ["LakeHylia", 1950, 3230, 790],
+    ["GerudoValley", 1320, 2470, 490],
+    ["GerudoFortress", 910, 2040, 470],
+    ["HountedWasteland", 570, 1510, 550],
+    ["DesertColossus", 520, 930, 530],
+    ["LonLonRanch", 2210, 2330, 260]
+  ]
+}

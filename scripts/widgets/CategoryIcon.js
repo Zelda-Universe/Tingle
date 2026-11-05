@@ -16,8 +16,9 @@ function CategoryIcon(opts) {
 
 CategoryIcon.prototype._initSettings = function(item) {
   this.color = item.color;
-  this.poiStyle = getPOIStyle(item.category);
-  this.isEoW = item.category && String(item.category.container_id) === '22';
+  var category=item.category || item;
+  this.poiStyle = getPOIStyle(category);
+  this.isEoW = String(category.container_id || category.containerId) === '22';
 
   this.iconClass = getSetOrDefaultValues([
     item.iconClass,

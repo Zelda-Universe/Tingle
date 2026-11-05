@@ -121,6 +121,7 @@ MarkerSearchField.prototype.clear = function() {
 };
 
 MarkerSearchField.prototype._clearSearchField = function() {
+  this._clearSearchWait();
   this._setQuery("");
   this._updateClearSearchButtonVisibility();
 };

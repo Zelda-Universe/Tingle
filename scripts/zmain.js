@@ -14,6 +14,13 @@ if(!gameId) {
   window.history.replaceState(window.history.state, '', startURL.href);
 }
 // Show connectivity status even while offline map data is still loading.
+if(/^ootr?$/i.test(gameId)) {
+  // Keep existing offline-data keys, but use the remake's canonical public URL.
+  gameId='OoT';
+  var canonicalGameURL=new URL(window.location.href);
+  canonicalGameURL.searchParams.set('game','OoTR');
+  window.history.replaceState(window.history.state,'',canonicalGameURL.href);
+}
 zMap.setupOfflineMapMessage();
 
 $(document).on('keydown', globalKeyPressHandler);

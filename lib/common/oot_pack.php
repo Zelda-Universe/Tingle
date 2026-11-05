@@ -8,6 +8,7 @@ function ootPackData($kind) {
   if ($kind === 'maps') {
     $versions = ootPackTileVersions();
     foreach ($data as &$map) foreach ($map['subMap'] as &$submap) {
+      $submap['name']=preg_replace('/(?:\s*·\s*)?State\s*\d+/i','',$submap['name']);
       $submap['tileVersion'] = $versions[trim($submap['tileURL'], '/')] ?? null;
     }
     unset($map, $submap);
@@ -24,13 +25,17 @@ function ootPackTileVersions() {
   return $versions;
 }
 function ootPackIsGame($value) {
-  return in_array((string) $value, ['OoT', '64'], true) && ootPackData('container') !== null;
+  return in_array(strtolower((string) $value), ['oot', 'ootr', '64'], true) && ootPackData('container') !== null;
 }
 function ootPackAppendGame($games) {
   $container = ootPackData('container');
   if (!$container) return $games;
-  foreach ($games as $game) if (($game['shortName'] ?? '') === 'OoT') return $games;
+  // Reserve both aliases for this pack, replacing any placeholder DB entry.
+  $games=array_values(array_filter($games,function($game) {
+    return !in_array(strtolower($game['shortName'] ?? ''),['oot','ootr'],true);
+  }));
   $game = $container[0];
+  $game['shortName']='OoTR';
   $games[] = array_intersect_key($game, array_flip(['id', 'shortName', 'name', 'icon']));
   return $games;
 }

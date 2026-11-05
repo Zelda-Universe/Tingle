@@ -29,6 +29,9 @@ SearchArea.prototype._initState = function(opts) {
     showSearchStats: true,
     categories: opts.categories,
     markerSearchClick: opts.markerSearchClick || function(marker, e) {
+      if(marker.areaDestination || marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
+        zMap.navigateToArea(marker); return;
+      }
       zMap.goTo({ marker: marker.id }, true);
     }
   });
@@ -38,7 +41,7 @@ SearchArea.prototype._initState = function(opts) {
   );
 
   zMap.addHandler("markersAdded", function(markers) {
-    this.searchMarkerHandler.setMarkers(markers);
+    this.searchMarkerHandler.setMarkers(markers.concat(zMap.getAreaSearchEntries()));
   }.bind(this));
 
   L.DomEvent.disableClickPropagation(opts.parent);

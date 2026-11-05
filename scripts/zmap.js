@@ -278,7 +278,8 @@ ZMap.prototype.addMap = function(vMap) {
      // Each supplied floor/age/state is independently selectable. Do not use
      // the legacy blank-base overlay path, which cannot expose these variants.
      vMap.subMap.forEach(function(submap) {
-       var title = vMap.name + (vMap.subMap.length > 1 ? ' — ' + submap.name : '');
+       var variantName=submap.name.replace(/(?:\s*·\s*)?State\s*\d+/gi,'');
+       var title = vMap.name + (vMap.subMap.length > 1 ? ' — ' + variantName : '');
        var tileVersion = submap.tileVersion ? '?v=' + encodeURIComponent(submap.tileVersion) : '';
        var layer = L.tileLayer((submap.tileBaseURL || tileBaseURL) + submap.tileURL + this.tileNameFormat + '.' + submap.tileExt + tileVersion, {
          maxZoom: Number(this.mapOptions.maxZoom), maxNativeZoom: Number(submap.maxZoom || vMap.maxZoom),
@@ -290,7 +291,7 @@ ZMap.prototype.addMap = function(vMap) {
        layer.defaultSubMapId = submap.id;
        layer.ootKind = vMap.kind;
        layer.ootGroupName = vMap.name;
-       layer.ootVariant = submap.name;
+       layer.ootVariant = variantName;
        layer.ootPlaceLabels = submap.placeLabels || [];
        layer.title = submap === vMap.subMap[0] ? vMap.name : title;
        layer._overlayMap = [];
@@ -457,7 +458,11 @@ ZMap.prototype.addMarker = function(vMarker) {
                                                    });
    } else {
       marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
-      marker.bindTooltip(vMarker.name, {permanent: true, className: this.mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
+      marker.bindTooltip(vMarker.name, {permanent: true, interactive:true, className: this.mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
+      marker.getTooltip().on('click',function(e) {
+        if(e.originalEvent) L.DomEvent.stop(e.originalEvent);
+        _this.navigateToArea(marker);
+      });
    }
 
    marker.id              = vMarker.id;
@@ -477,6 +482,7 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.userId          = vMarker.userId;
    marker.userName        = displayUserName(vMarker.userName);
    marker.globalMarker    = vMarker.globalMarker;
+   marker.bounds          = vMarker.bounds;
    // marker.visible         = true;            // Used by the application to hide / show markers (everything is starting as visible) @TODO: might need to change this
    marker.visible         = this.categories[vMarker.markerCategoryId].checked
    marker.dbVisible       = vMarker.visible; // This is used in the database to check if a marker is deleted or not... used by the grid
@@ -530,6 +536,7 @@ ZMap.prototype.addMarker = function(vMarker) {
    marker.pos = markers.length - 1;
 
    marker.on('click', function() {
+    if(marker.categoryTypeId == 3) { _this.navigateToArea(marker); return; }
     // On desktop the marker loads into the hidden sidebar, so Minimal UI stays.
     if (_this.mapControl.options.collapsed && _this.mapControl.viewStyleBottomSlide) {
       _this.mapControl.toggle();
@@ -579,6 +586,23 @@ ZMap.prototype._closeNewMarker = function() {
       newMarker = null;
    }
 }
+
+// Selection follows map membership, not whether a marker happens to be on screen.
+ZMap.prototype._reconcileOotMarkerSelection = function(mapId, subMapId) {
+  if(!newMarker || newMarker.markerPos == null) { this._closeNewMarker(); return; }
+  var marker = markers[newMarker.markerPos];
+  if(marker && marker.mapId == mapId && (marker.globalMarker == 1 || marker.submapId == subMapId)) return;
+  this._closeNewMarker();
+  var control = this.mapControl;
+  control._headerPageParent = control._mobileAccountParent = null;
+  control._desktopAccountReturnMarker = control._switchMenuReturnMarker = null;
+  if(/^m\d+$/.test(control._contentType || '')) control.resetContent();
+  var url = new URL(window.location.href);
+  url.searchParams.delete('marker');
+  var state = Object.assign({}, window.history.state);
+  delete state.drawerReloadParent;
+  window.history.replaceState(state, '', url.href);
+};
 
 // The pin shown on a selected marker, a dropped pin or a marker being added:
 // the Master Sword, stabbing down into the spot as it appears. The bottom 19%
@@ -764,6 +788,11 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
     }
 
     this._bookmarkTarget = { markerId: marker.id };
+    if(this.mapOptions.shortName === 'OoT') {
+      coordinateText=(marker.gameData && marker.gameData.areaName) ||
+        ((this.maps.find(function(layer) {return layer.originalId==marker.mapId;}) || {}).ootGroupName) || 'Hyrule';
+      coordinateText=$('<span>').text(coordinateText).html();
+    }
     var content = "<h2 class='popupTitle'>" + title + "</h2>" +
       "<p class='marker-coordinate-pill'>" + coordinateText + "</p>" +
       "<div class='marker-actions-row marker-actions-row-four'>" +
@@ -827,7 +856,7 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
 
     }
 
-	if (marker.gameData == null) {
+	if (marker.gameData == null || this.mapOptions.shortName === 'OoT') {
 		//content = content + "<hr>";
 
 		for (var i = 0; i < marker.tabText.length; i++) {
@@ -1462,8 +1491,9 @@ ZMap.prototype.addMapControl = function(gameId) {
     //console.log(e.originalId + " " + defaultSubMapId);
     var sameOotMap = _this.mapOptions.assetPreview && _this.mapControl.currentMap == e.originalId;
     _this.mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
+    if(_this.mapOptions.shortName === 'OoT') _this._reconcileOotMarkerSelection(e.originalId, defaultSubMapId);
     _this.refreshMap();
-    _this._closeNewMarker();
+    if(_this.mapOptions.shortName !== 'OoT') _this._closeNewMarker();
     //this.mapControl.resetContent();
 
     if(!sameOotMap) _this.map.setView(new L.LatLng(
@@ -3088,6 +3118,7 @@ ZMap.prototype._setMarkerDone = function(vID, vComplete) {
 ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
    vMarker.complete = vComplete;
    vMarker.setIcon(_this._createMarkerIcon(vMarker.categoryId, vComplete));
+   if(this.updateAreaCompletionCounts) this.updateAreaCompletionCounts();
 }
 
 ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
@@ -4129,6 +4160,10 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   if(!this._drawerRoutingReady) return;
   var url = new URL(window.location.href);
   var page = this.drawerPageRoutes[contentType];
+  if(/^area-/.test(contentType || '') && this.selectedArea) {
+    url.searchParams.set('area',this.areaURLKey(this.selectedArea));
+    url.searchParams.delete('marker');
+  } else url.searchParams.delete('area');
   if(page) url.searchParams.set('page', page);
   else url.searchParams.delete('page');
   // Revision links (?marker=1&rev=2) last only while the revision is open.
@@ -4148,6 +4183,7 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
 
 ZMap.prototype.restoreDrawerPage = function(page) {
   this._drawerRoutingReady = true;
+  if(this.restoreAreaFromURL && this.restoreAreaFromURL()) return;
   if(this._hasWikiLink && this._hasWikiLink()) {
     this._openRevisionLinkWhenReady('user');
     if(this._revisionLinkOpened) return;

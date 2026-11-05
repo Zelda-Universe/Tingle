@@ -1,13 +1,26 @@
 /* Shared POI treatments for Link's Awakening, BotW, TotK and EoW. */
+.icon-OoT_Poe::before { content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:block; width:1em; height:1em; background:currentColor; -webkit-mask:url('data/OoT/icons/Poe.svg') center / contain no-repeat; mask:url('data/OoT/icons/Poe.svg') center / contain no-repeat; }
+.circleMap-medium > .icon-OoT_Poe, .circleMap-small > .icon-OoT_Poe { position:absolute; inset:0; }
+.category-selector .category-icon.icon-OoT_Poe::before { width:1.18em; height:1.18em; }
 .oot-preview-notice {
-  margin: 16px 24px;
-  padding: 12px;
-  border: 1px solid rgba(205,178,105,.5);
-  border-radius: 10px;
-  color: #e5cf95;
+  margin: 16px 16px 16px;
+  width:calc(100% - 32px);
+  box-sizing:border-box;
+  padding: 14px;
+  border: 1.5px solid #f5c542;
+  border-radius: 16px;
+  color: white;
+  display:flex;
+  gap:12px;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
   font-size: 14px;
   line-height: 1.4;
 }
+.oot-preview-notice > i { color:#f5c542; font-size:18px; margin-top:2px; }
+.oot-preview-notice strong { display:block; margin-bottom:4px; }
+.oot-preview-notice p { margin:0; }
 /* Game icon: the SVG is a mask so it takes the text colour, like the font glyphs other games use. */
 .icon-Ocarina-of-Time::before {
   content: '';
@@ -263,12 +276,29 @@
 #newuserform .registration-validation-icon svg { width: 16px; height: 16px; font-size: 16px; }
 .oot-floor-control { position:fixed; right:calc(10px + env(safe-area-inset-right, 0px)); z-index:900; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
 .oot-floor-control[hidden] { display:none; }
-.oot-floor-pill, .oot-floor-control select { background:rgba(16,18,17,.88); color:white; border:0; border-radius:28px; padding:6px; box-shadow:0 4px 18px #0005; -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px); }
+.oot-floor-pill, .oot-floor-control select { background:rgba(0,0,0,.8); color:white; border:0; border-radius:28px; padding:6px; box-shadow:0 4px 18px #0005; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
 .oot-floor-pill { display:flex; gap:2px; }
+.oot-dungeon-floors { flex-direction:column; }
 .oot-floor-pill button { width:40px; height:40px; padding:0; border:0; border-radius:50%; color:#ccc; background:transparent; font:inherit; cursor:pointer; }
 .oot-floor-pill button[aria-pressed="true"] { background:rgba(255,255,255,.22); color:white; }
 .oot-floor-pill button:hover { color:white; }
 .oot-age-pill button { width:64px; border-radius:24px; }
 .oot-floor-control select { max-width:260px; padding:8px 12px; }
-.oot-place-label { background:none; border:0; pointer-events:none !important; text-align:center; color:#fff0cf; font-size:13px; font-weight:600; line-height:24px; text-shadow:0 1px 3px #000,1px 0 2px #000,-1px 0 2px #000; }
-.oot-place-label span { display:inline-block; line-height:1.15; }
+.leaflet-marker-icon.oot-place-label { background:none; border:0; pointer-events:none; cursor:pointer; }
+.oot-place-label:hover, .oot-place-label:focus-visible { color:white; }
+.oot-place-label span { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); white-space:nowrap; pointer-events:auto; }
+.area-description { margin:0 24px 24px; white-space:pre-line; font-size:14px; line-height:1.5; }
+.area-header-pills { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:0 16px 16px; }
+.leaflet-control-layers .area-header-pills > .marker-coordinate-pill { margin:0 !important; }
+.area-marker-groups .poi-category-heading { margin:0; }
+.area-marker-groups section { margin:0; }
+.area-marker-groups section .marker-list { border-top:1px solid rgba(255,255,255,.2); border-bottom:1px solid rgba(255,255,255,.2); }
+.area-marker-groups section:last-child .marker-list { border-bottom:0; }
+.area-marker-groups section + section { margin-top:16px; }
+.area-marker-groups .marker-list-entry + .marker-list-entry { border-top:1px solid rgba(255,255,255,.2); }
+.search-map-preview { width:64px; height:64px; object-fit:cover; border-radius:8px; }
+.area-marker-groups .marker-list { padding:0; margin:0; list-style:none; }
+.area-empty-state { padding:0 24px 24px; }
+.area-marker-list-entry .icon { position:relative; }
+.area-marker-check { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; color:white; font-size:28px; text-shadow:0 1px 3px #000,0 0 5px #000; }
+.area-marker-completed .icon > .category-icon, .area-marker-completed .icon > img { opacity:.45; }

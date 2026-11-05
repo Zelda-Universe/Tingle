@@ -28,6 +28,7 @@
          order by 1
      ");
      $categories = seoLandingCategories($db, $map_prefix);
+     $areas = seoAreaPages($db, $map_prefix);
    } catch (\Throwable $e) {
      debug_log('Sitemap query error: ' . $e->getMessage());
      sitemapUnavailable();
@@ -43,6 +44,7 @@
    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
    foreach ($games as $game) {
+      if(in_array(strtolower($game),['oot','ootr'],true)) continue;
       echo "\t<url>\n";
       echo "\t\t<loc>" . sitemapLoc('https://zeldamaps.com/?' . http_build_query(['game' => $game])) . "</loc>\n";
       echo "\t</url>\n";
@@ -54,6 +56,8 @@
          echo "\t</url>\n";
       }
    }
+   echo "\t<url><loc>https://zeldamaps.com/?game=OoTR</loc></url>\n";
 
+   foreach($areas as $area) echo "\t<url><loc>".sitemapLoc($area['url'])."</loc></url>\n";
    echo "</urlset>\n";
 ?>

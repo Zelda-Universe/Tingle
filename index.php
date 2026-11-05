@@ -6,13 +6,14 @@
     'botw' => 'BotW',
     'totk' => 'TotK',
     'eow' => 'EoW',
-    'oot' => 'OoT'
+    'oot' => 'OoT',
+    'ootr' => 'OoT'
   ];
   $gameId = $gameAliases[$gameKey] ?? 'OoT';
   $gameMetadata = [
     'OoT' => [
-      'name' => 'Ocarina of Time',
-      'description' => 'Explore the Ocarina of Time asset-preview maps: Hyrule, child and adult regions, and dungeon floors.',
+      'name' => 'Ocarina of Time Remake (2026)',
+      'description' => 'Explore Ocarina of Time Remake (2026) with interactive maps of Hyrule (Child), Hyrule (Adult), dungeon floors, and local points of interest.',
       'image' => 'social-oot.webp',
       'themeColor' => '#b99b4b'
     ],
@@ -45,7 +46,7 @@
   $pageHeading = $metadata['name'] . ' Interactive Map';
   $pageTitle = $pageHeading . ' - Zelda Maps';
   $pageDescription = $metadata['description'];
-  $canonicalUrl = 'https://zeldamaps.com/?game=' . rawurlencode($gameId);
+  $canonicalUrl = 'https://zeldamaps.com/?game=' . rawurlencode($gameId === 'OoT' ? 'OoTR' : $gameId);
   // Link previews come from the site serving the page (so staging previews
   // show staging's images); search engines' canonical URL stays production.
   $requestHost = strtolower($_SERVER['HTTP_HOST'] ?? '');
@@ -119,6 +120,27 @@
         }
       }
     }
+  }
+  if(!empty($_GET['area'])) {
+    include_once(__DIR__ . '/lib/common/seo.php');
+    if($gameId !== 'OoT' && !isset($db)) {
+      include_once(__DIR__ . '/config.php');
+      include_once(__DIR__ . '/lib/common/database.php');
+      open();
+    }
+    try {
+      foreach(seoAreaPages($gameId === 'OoT' ? null : ($db ?? null), $map_prefix ?? '') as $area) {
+        if($area['game'] !== $gameId || $area['key'] !== (string)$_GET['area']) continue;
+        if(isset($_GET['map']) && (string)$area['map'] !== (string)$_GET['map']) continue;
+        if(isset($_GET['subMap']) && (string)$area['subMap'] !== (string)$_GET['subMap']) continue;
+        $mapTitle=($area['mapName'] ?? $area['name']).($area['variant'] ? ' ('.$area['variant'].')' : '');
+        $pageHeading=(!empty($area['isMap']) ? $mapTitle : $area['name'].' - '.$mapTitle).' - '.$metadata['name'].' Map';
+        $pageTitle=$pageHeading.' - Zelda Maps';
+        $pageDescription=$area['description'];
+        $pageUrl=$canonicalUrl=$area['url'];
+        break;
+      }
+    } catch(\Throwable $e) { error_log('Area metadata unavailable: '.$e->getMessage()); }
   }
   $pageUrl = preg_replace('#^https://zeldamaps\.com#', $siteOrigin, $pageUrl ?: $canonicalUrl);
 ?>
@@ -258,8 +280,8 @@
       <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
       <link rel="stylesheet" href="data/OoT/icons.css" />
       <?php endif; ?>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-4"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-4" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-18"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-16" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;
@@ -315,7 +337,7 @@
           var game = urlParams["game"];
 
           if(game === undefined) {
-            window.location.href = "?game=OoT";
+            window.location.href = "?game=OoTR";
             return;
           }
         })();

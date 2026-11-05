@@ -70,7 +70,7 @@ SearchMarkerHandler.prototype.createSearcher = function() {
     'searchTargetIndexEnd-markers'
   ));
   if(!Number.isInteger(endIndex)) {
-    endIndex = markers.length - 1;
+    endIndex = this.markers.length;
   }
 
   this.searchableMarkers = this.markers.slice(startIndex, endIndex);

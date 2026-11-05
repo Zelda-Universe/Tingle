@@ -183,9 +183,9 @@ CategoryMenu.prototype._initDOMElements = function() {
   }
   if(this._categoryTree) this.organizePOICategories();
   if(Object.values(this._categories || {}).some(function(c) { return String(c.container_id) === '64'; })) {
-    this.domNode.prepend($('<p class="oot-preview-notice" role="status"></p>').text(
-      'Asset preview: maps and icons are imported. This dump contains no POI coordinates, so collectibles and other markers are not placed yet.'
-    ));
+    this.domNode.prepend($('<div class="oot-preview-notice" role="status"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i><div><strong>Map Under Construction</strong><p></p></div></div>').find('p').text(
+      "We're currently working on this map, so some things might be missing. We'll be updating the Ocarina of Time Remake map frequently, so keep checking back!"
+    ).end());
   }
 };
 

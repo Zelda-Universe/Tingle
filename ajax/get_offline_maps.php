@@ -177,11 +177,12 @@
     WHERE `visible` = 1 AND `enabled` = 1
     ORDER BY " . gameOrderSql('`short_name`') . ", `id`
   ") as $gameRow) {
-    $gameRows[$gameRow['shortName']] = $gameRow;
+    if(!in_array(strtolower($gameRow['shortName']),['oot','ootr'],true)) $gameRows[$gameRow['shortName']] = $gameRow;
   }
 
   $requestedGame = isset($_GET['game']) ? (string) $_GET['game'] : '';
-  if (ootPackData('container')) $gameRows['OoT'] = ['id' => '64', 'shortName' => 'OoT', 'name' => 'Ocarina of Time'];
+  if (ootPackIsGame($requestedGame)) $requestedGame='OoT';
+  if (ootPackData('container')) $gameRows['OoT'] = ['id' => '64', 'shortName' => 'OoT', 'name' => 'Ocarina of Time (2026)'];
   $mode = isset($_GET['mode']) ? (string) $_GET['mode'] : 'summary';
   if ($mode === 'manifest') {
     if (!isset($gameRows[$requestedGame])) {

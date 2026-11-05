@@ -107,15 +107,45 @@ HeaderBar.prototype.createSearchArea = function(parent, name, categories) {
       if(this.mapControl.viewStyleBottomSlide) {
         this.showMobileSearchResults(markerListView);
       } else {
+        this.rememberSearchSelection();
         this.mapControl.setContent(markerListView.domNode, 'search');
       }
     }.bind(this),
     markerSearchClick: this.selectSearchMarker.bind(this),
     resultsFocusedHandler: this.reopenMobileSearchResults.bind(this),
-    resultsClearedHandler: this.hideMobileSearchResults.bind(this),
+    resultsClearedHandler: function() {
+      this.hideMobileSearchResults();
+      this.restoreSearchSelection();
+    }.bind(this),
     name: name,
     categories: categories
   });
+};
+
+HeaderBar.prototype.rememberSearchSelection = function() {
+  var control=this.mapControl,type=control.getContentType();
+  if(type==='search') return;
+  this._searchSelection=null;
+  if(!/^m\d+$/.test(type || '') && !/^area-/.test(type || '')) return;
+  var page=control._contents.querySelector('.menu-cat-content-inner');
+  if(!page) return;
+  this._searchSelection={type:type,content:$(page).children().clone(true,true),
+    scrollTop:control._contents.scrollTop,area:control.zMap.selectedArea,
+    backButton:control._contents.querySelector(':scope > a.back-button[aria-label^="Back to"]')};
+};
+
+HeaderBar.prototype.restoreSearchSelection = function() {
+  var control=this.mapControl,selection=this._searchSelection;
+  this._searchSelection=null;
+  if(control.getContentType()!=='search') return;
+  if(!selection) {control.resetContent();return;}
+  control.zMap.selectedArea=selection.area;
+  control._skipNextSlide=true;
+  control.setContent(selection.content,selection.type);
+  if(selection.backButton) control._contents.insertBefore(selection.backButton,control._contents.firstChild);
+  if(/^area-/.test(selection.type)) control._contents.querySelector('.menu-cat-content-inner').classList.add('area-detail-page');
+  control._contents.scrollTop=selection.scrollTop;
+  control.zMap.updateUrl();
 };
 
 HeaderBar.prototype.ensureMobileSearchResultsPanel = function() {
@@ -160,8 +190,14 @@ HeaderBar.prototype.hideMobileSearchResults = function() {
 };
 
 HeaderBar.prototype.selectSearchMarker = function(marker) {
+  this._searchSelection=null;
   this.hideMobileSearchResults();
   if(this.searchArea) this.searchArea.markerSearchField.searchInput.blur();
+
+  if(marker.areaDestination || marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
+    zMap.navigateToArea(marker);
+    return;
+  }
 
   zMap.goTo({ marker: marker.id }, true);
   if(!this.mapControl.viewStyleBottomSlide) return;

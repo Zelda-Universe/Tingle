@@ -51,7 +51,10 @@ function getPOICategoryGroups(categories) {
   var records = Object.values(categories || {});
   if(records.some(function(c) { return String(c.container_id) === '64'; })) {
     return records.filter(function(c) { return !c.parent_id; }).map(function(root) {
-      return { title: root.name, categories: records.filter(function(c) { return c.parent_id === root.id; }) };
+      return { title: root.name, categories: records.filter(function(c) { return c.parent_id === root.id; }).sort(function(a,b) {
+        var order=['64002','64001','64003'];
+        return order.indexOf(String(a.id))-order.indexOf(String(b.id));
+      }) };
     });
   }
   var game = records.some(function(c) { return String(c.container_id) === '21'; }) ? '21' :

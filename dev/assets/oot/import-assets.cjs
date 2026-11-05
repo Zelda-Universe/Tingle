@@ -110,7 +110,11 @@ async function main(source) {
       const layout = require('./world-layout.json'), scale = (layout.canvas || 4096) / 256;
       submap.placeLabels = layout.regions
         .filter(([key])=> !(key==='HyruleCastle' && submap.name==='Adult') && !(key==='GanonCastle' && submap.name==='Child'))
-        .map(([key,x,y])=>({name:names[key] || friendly(key),x:x/scale,y:-(y+(key==='HyruleField' ? -350 : 0))/scale}));
+        .map(([key,x,y])=>{
+          const box=require('./world-boxes.json').boxes[submap.name][key];
+          return {name:names[key] || friendly(key),x:x/scale,y:-(y+(key==='HyruleField' ? -350 : 0))/scale,
+            bounds:box ? [[-(box[1]+box[3])/scale,box[0]/scale],[-box[1]/scale,(box[0]+box[2])/scale]] : undefined};
+        });
       // Lon Lon Ranch is drawn inside the Hyrule Field artwork; label the ranch there.
       const field = require('./world-boxes.json').boxes[submap.name].HyruleField;
       submap.placeLabels.push({name:names.LonLonRanch, x:(field[0] + 0.447 * field[2]) / scale, y:-(field[1] + 0.598 * field[3]) / scale});
@@ -126,18 +130,19 @@ async function main(source) {
   // categories across rebuilds. The supplied icons have no Piece of Heart, so
   // HeartPiece.svg (drawn for this site) sits beside this script.
   fs.copyFileSync(path.join(__dirname,'HeartPiece.svg'), path.join(out,'icons','HeartPiece.svg'));
+  fs.copyFileSync(path.join(__dirname,'Poe.svg'),path.join(out,'icons','Poe.svg'));
   const groups = [
     ['64000', 'Collectibles', [ ['64002','Heart Pieces','HeartPiece.svg','heart'], ['64001','Gold Skulltulas','Item_Token_Gold.png','relic'],
-      ['64003','Poes','Item_Bottle_BigPoe.png','memory'] ]]
+      ['64003','Big Poes','Poe.svg','korok'] ]]
   ];
   for(const [parent, group, leaves] of groups) {
     const base = {container_id:GAME,marker_category_type_id:'1',default_checked:true,visible:true,visible_zoom:'0',zoom_min:'0',zoom_max:'6',min_zoom:'0',max_zoom:'6',color:'#cdb269'};
     categories.push({...base,id:parent,parent_id:null,name:group,img:'General_Map',poiStyle:''});
     for(const [id,name,file,style] of leaves) {
       if(!fs.existsSync(path.join(out,'icons',file))) throw new Error('Missing category icon '+file);
-      const glyph = 'OoT_' + file.replace(/\.(png|svg)$/,'');
+      const glyph = id === '64002' ? 'General_Heart' : id === '64001' ? 'BotW_Boss' : 'OoT_' + file.replace(/\.(png|svg)$/,'');
       categories.push({...base,id,parent_id:parent,name,img:glyph,poiStyle:style});
-      iconCSS.push(`.icon-${glyph}::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/${file}') center / contain no-repeat; vertical-align: middle; }`);
+      if(glyph.startsWith('OoT_') && glyph !== 'OoT_Poe') iconCSS.push(`.icon-${glyph}::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/${file}') center / contain no-repeat; vertical-align: middle; }`);
     }
   }
   fs.writeFileSync(path.join(out,'icons.css'), iconCSS.join('\n') + '\n');
@@ -161,7 +166,7 @@ async function main(source) {
     enemies:definitions('ActorMsg/Enemy.csv'),locations:(text['LocationMsg/Location.csv'] || []).map(row=>
       ({key:row.Label,name:row.USenText,coordinates:null}))};
   write('unplaced-content.json',unplaced);
-  write('container.json',[{id:GAME,name:'Ocarina of Time',shortName:'OoT',icon:'Ocarina-of-Time',markerURL:'markers/',markerExt:'png',
+  write('container.json',[{id:GAME,name:'Ocarina of Time (2026)',shortName:'OoT',icon:'Ocarina-of-Time',markerURL:'markers/',markerExt:'png',
     bgColor:'#241a0c',showMapControl:'1',showZoomControl:'1',centerX:'128',centerY:'-128',boundTopX:'10',boundTopY:'-10',
     boundBottomX:'-266',boundBottomY:'266',clusterMaxZoom:'6',clusterGridSize:'30',defaultZoom:'1',maxZoom:'6',
     tileSize:'256',iconWidth:'23',iconHeight:'23',iconSmallWidth:'16',iconSmallHeight:'16',switchIconsAtZoom:'-1',

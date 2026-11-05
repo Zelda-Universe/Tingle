@@ -953,7 +953,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var height;
     if(type === 'category') {
       height = maxHeight;
-    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type)) {
+    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type)) {
       height = this._mobileDrawerPeekHeight() || this._mobileDrawerContentHeight();
     } else if(type === 'games' || type === 'maps') {
       height = this._mobileDrawerContentHeight();
@@ -1360,7 +1360,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         this._switchMenuReturnAccount || this._switchMenuReturnLogin);
     if(switchingMenu && this._pageTransitionCleanup) this._pageTransitionCleanup();
     // A swipe back (_setupSwipeBack) has already animated the change.
-    var shouldSlide = !this._skipNextSlide && !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
+    var shouldSlide = !this._skipNextSlide && !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || !/^area-/.test(vType || '')) && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
       (!this.viewStyleBottomSlide || this._open) &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var outgoingPage;
@@ -1551,7 +1551,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // On mobile, top-level pages opened from the map or header dismiss the
     // drawer, so they get a close button. On desktop the panel stays open and
     // returns to the category list, so they keep a back button.
-    var isMapPage = /^m\d+$/.test(vType) || /^droppedPin-/.test(vType);
+    var isMapPage = /^m\d+$/.test(vType) || /^droppedPin-/.test(vType) || /^area-/.test(vType);
     var closesPage = isMapPage || ['accountPage', 'games', 'maps'].includes(vType);
     // A POI or pin opened from a list (e.g. Bookmarks) can also go back to it.
     var returnsTo = null;
@@ -1567,6 +1567,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
     if(isMapPage) {
       returnsTo = this._nextPageReturnsTo;
       this._nextPageReturnsTo = null;
+    }
+    if(returnsTo && returnsTo.area) {
+      var areaReturnButton=L.DomUtil.create('a','button back-button',this._contents);
+      areaReturnButton.innerHTML='<i class="fas fa-chevron-left"></i>';
+      areaReturnButton.setAttribute('aria-label','Back to '+(returnsTo.area.title || returnsTo.area.name));
+      L.DomEvent.on(areaReturnButton,'click',function(e) {
+        L.DomEvent.stop(e);
+        this.zMap._closeNewMarker();
+        this._navigatingBack=true;
+        this.zMap._showAreaPage(returnsTo.area,returnsTo.bounds);
+        if(this.viewStyleBottomSlide) this.openDrawerDefaultPartial();
+      },this);
     }
     if(returnsTo === 'bookmarks') {
       var returnButton = L.DomUtil.create('a', 'button back-button', this._contents);
@@ -1891,7 +1903,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
     // POIs: their coordinates as a second line, in a small pill.
     var coordinates = popup &&
-      contents.querySelector('.menu-cat-content-inner > .marker-coordinate-pill');
+      contents.querySelector('.menu-cat-content-inner > .marker-coordinate-pill, .menu-cat-content-inner > .area-header-pills');
     if(coordinates) {
       var pill = document.createElement('span');
       pill.className = 'compact-title-bar-pill';
@@ -2024,6 +2036,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   closePage: function() {
+    if(/^area-/.test(this._contentType || '')) {
+      var areaURL=new URL(window.location.href);
+      areaURL.searchParams.delete('area');
+      window.history.replaceState(window.history.state,'',areaURL.href);
+      this.zMap.selectedArea=null;
+    }
     if(/^m\d+$/.test(this._contentType || '')) {
       this._dismissPOIOnClose = true;
       this._preserveContentOnClose = false;

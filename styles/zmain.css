@@ -1882,7 +1882,8 @@ a.button.leaflet-control-layers-toggle {
 	line-height: 1;
 }
 
-.leaflet-control-layers .menu-cat-content-inner > .marker-coordinate-pill {
+.leaflet-control-layers .menu-cat-content-inner > .marker-coordinate-pill,
+.leaflet-control-layers .area-header-pills > .marker-coordinate-pill {
 	display: block;
 	width: max-content;
 	max-width: calc(100% - 32px);
@@ -3505,7 +3506,7 @@ header.ex1 {
 }
 
 
-.TotK-label {
+.TotK-label, .oot-place-label {
 	color: #f8efae;
     text-shadow: #977f41 0px 0px 3px,   #977f41 0px 0px 3px,   #977f41 0px 0px 3px,
                  #977f41 0px 0px 3px,   #977f41 0px 0px 3px,   #977f41 0px 0px 3px;

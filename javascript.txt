@@ -41,6 +41,7 @@ scripts/leaflet.contextmenu.js
 scripts/controls/ZLayers.js
 scripts/controls/SettingsControl.js
 scripts/zmap.js
+scripts/services/AreaSearch.js
 scripts/controls/OotFloors.js
 scripts/zwiki.js
 scripts/znotifications.js

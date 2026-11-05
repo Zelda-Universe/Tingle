@@ -55,6 +55,49 @@
   }
 
   function seoCategoryUrl($gameShortName, $slug) {
-    return 'https://zeldamaps.com/?' . http_build_query(['game' => $gameShortName, 'category' => $slug]);
+    return 'https://zeldamaps.com/?' . http_build_query(['game' => $gameShortName === 'OoT' ? 'OoTR' : $gameShortName, 'category' => $slug]);
+  }
+
+  // Share one area catalog between metadata and the sitemap.
+  function seoAreaPages($db = null, $prefix = '') {
+    include_once(__DIR__ . '/oot_pack.php');
+    $areas=[];
+    foreach (ootPackData('maps') ?? [] as $map) foreach ($map['subMap'] as $submap) {
+      $areas[]=['game'=>'OoT','key'=>'map-'.$map['id'],'map'=>$map['id'],'subMap'=>$submap['id'],
+        'name'=>$map['name'],'mapName'=>$map['name'],'variant'=>$submap['name'],'isMap'=>true,'description'=>''];
+      foreach ($submap['placeLabels'] ?? [] as $place) {
+        $name=seoPlainText($place['name']);
+        $areas[]=['game'=>'OoT','key'=>seoSlug($name),'map'=>$map['id'],'subMap'=>$submap['id'],
+          'name'=>$name,'mapName'=>$map['name'],'variant'=>$submap['name'],'description'=>seoPlainText($place['description'] ?? '')];
+      }
+    }
+    if($db) {
+      $rows=$db->fetchAllAssociative("SELECT c.short_name AS game, m.id, m.name, m.description,
+          sm.map_id AS mapId, m.submap_id AS subMapId, sm.name AS variant, mp.name AS mapName
+        FROM `{$prefix}marker` m
+        JOIN `{$prefix}marker_category` mc ON mc.id=m.marker_category_id
+        JOIN `{$prefix}submap` sm ON sm.id=m.submap_id
+        JOIN `{$prefix}map` mp ON mp.id=sm.map_id
+        JOIN `{$prefix}container` c ON c.id=mp.container_id
+        WHERE mc.marker_category_type_id=3 AND m.visible=1 AND mc.visible=1 AND sm.visible=1 AND mp.visible=1 AND c.visible=1 AND c.short_name NOT IN ('OoT','OoTR')");
+      foreach($rows as $row) $areas[]=['game'=>$row['game'],'key'=>(string)$row['id'],'map'=>$row['mapId'],
+        'subMap'=>$row['subMapId'],'name'=>seoPlainText($row['name']),'mapName'=>seoPlainText($row['mapName']),'variant'=>seoPlainText($row['variant']),
+        'description'=>seoPlainText($row['description'])];
+      $mapRows=$db->fetchAllAssociative("SELECT c.short_name AS game, mp.id, mp.name, sm.id AS subMapId, sm.name AS variant
+        FROM `{$prefix}map` mp JOIN `{$prefix}container` c ON c.id=mp.container_id
+        JOIN `{$prefix}submap` sm ON sm.map_id=mp.id WHERE c.visible=1 AND mp.visible=1 AND sm.visible=1 AND c.short_name NOT IN ('OoT','OoTR')");
+      foreach($mapRows as $row) $areas[]=['game'=>$row['game'],'key'=>'map-'.$row['id'],'map'=>$row['id'],
+        'subMap'=>$row['subMapId'],'name'=>seoPlainText($row['name']),'mapName'=>seoPlainText($row['name']),
+        'variant'=>seoPlainText($row['variant']),'isMap'=>true,'description'=>''];
+    }
+    foreach($areas as &$area) {
+      $area['variant']=preg_replace('/(?:\s*·\s*)?State\s*\d+/i','',$area['variant']);
+      $gameNames=['OoT'=>'Ocarina of Time Remake (2026)','BotW'=>'Breath of the Wild','TotK'=>'Tears of the Kingdom','EoW'=>'Echoes of Wisdom','LA'=>"Link's Awakening"];
+      if($area['description']==='') $area['description']='Explore '.$area['name'].(empty($area['isMap']) && !empty($area['mapName']) ? ' in '.$area['mapName'] : '').($area['variant'] ? ' ('.$area['variant'].')' : '').
+        ' on the '.($gameNames[$area['game']] ?? $area['game']).' interactive map. Find local points of interest and browse markers by category on Zelda Maps.';
+      $area['url']='https://zeldamaps.com/?'.http_build_query(['game'=>$area['game']==='OoT' ? 'OoTR' : $area['game'],'map'=>$area['map'],'subMap'=>$area['subMap'],'area'=>$area['key']]);
+    }
+    unset($area);
+    return $areas;
   }
 ?>

@@ -4,6 +4,51 @@ const vm = require('vm');
 const {csv} = require('../dev/assets/oot/import-assets.cjs');
 const read = name => JSON.parse(fs.readFileSync(path.join(__dirname,'../data/OoT',name+'.json'),'utf8'));
 
+test('OoT marker titles omit their area while retaining separate area metadata',()=>{
+  const convert=require('../dev/assets/oot/pois-to-markers.cjs');
+  const pois=require('../dev/assets/oot/pois.json');
+  const converted=convert(pois);
+  const marker=converted.find(m=>m.id==='64100010');
+  expect(marker.name).toBe('Piece of Heart - Windmill');
+  expect(JSON.parse(marker.gameData).areaName).toBe('Kakariko Village');
+  expect(converted.find(m=>m.id==='64100003').name).toBe('Piece of Heart - Tower');
+  expect(JSON.parse(converted.find(m=>m.id==='64100003').gameData).areaName).toBe('Lon Lon Ranch');
+  expect(converted.every(m=>JSON.parse(m.gameData).areaName)).toBe(true);
+  expect(converted.every(m=>!m.name.includes('—') && !m.tabText.includes('—'))).toBe(true);
+  expect(converted.every(m=>m.tabText.includes('<p>') && m.tabText.length>30)).toBe(true);
+});
+
+test('OoTR and legacy OoT both resolve to the pack and replace placeholder games',()=>{
+  const helper=path.resolve(__dirname,'../lib/common/oot_pack.php');
+  const script=`require ${JSON.stringify(helper)}; echo json_encode([ootPackIsGame('OoTR'),ootPackIsGame('OoT'),ootPackAppendGame([['id'=>'999','shortName'=>'OoTR'],['id'=>'998','shortName'=>'OoT']])]);`;
+  const result=JSON.parse(require('child_process').execFileSync('php',['-r',script],{encoding:'utf8'}));
+  expect(result[0]).toBe(true); expect(result[1]).toBe(true);
+  expect(result[2]).toHaveLength(1);
+  expect(result[2][0].id).toBe('64');
+  expect(result[2][0].shortName).toBe('OoTR');
+});
+
+test('age changes retain shared marker pins and deselect age-specific markers',()=>{
+  const source=fs.readFileSync(path.join(__dirname,'../scripts/zmap.js'),'utf8');
+  const start=source.indexOf('ZMap.prototype._reconcileOotMarkerSelection =');
+  const end=source.indexOf('\n};',start)+3;
+  const pin={markerPos:0};
+  const context={ZMap:function(){},newMarker:pin,markers:[{mapId:'65000',submapId:'650000',globalMarker:'1'}],
+    URL,window:{location:{href:'https://example.test/?marker=42'},history:{state:{},replaceState:jest.fn()}}};
+  vm.runInNewContext(source.slice(start,end),context);
+  const control={_contentType:'m42',resetContent:jest.fn()};
+  const map=Object.assign(Object.create(context.ZMap.prototype),{mapControl:control,
+    _closeNewMarker:jest.fn(()=>{context.newMarker=null;})});
+  map._reconcileOotMarkerSelection('65000','650001');
+  expect(context.newMarker).toBe(pin);
+  expect(map._closeNewMarker).not.toHaveBeenCalled();
+  context.markers[0].globalMarker='0';
+  map._reconcileOotMarkerSelection('65000','650001');
+  expect(context.newMarker).toBeNull();
+  expect(control.resetContent).toHaveBeenCalled();
+  expect(context.window.history.replaceState.mock.calls[0][2]).not.toContain('marker=');
+});
+
 test('OoT API attaches artwork hashes to tile URLs without changing source data',()=>{
   const {execFileSync}=require('child_process');
   const helper=path.resolve(__dirname,'../lib/common/oot_pack.php');
@@ -35,6 +80,10 @@ test('OoT pack exposes all distinct maps and main-texture variants',()=>{
   expect(child.placeLabels.some(p=>p.name==='Hyrule Castle')).toBe(true);
   expect(adult.placeLabels.some(p=>p.name==="Ganon's Castle")).toBe(true);
   expect(adult.placeLabels.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y))).toBe(true);
+  const boxes=require('../dev/assets/oot/world-boxes.json');
+  const kakariko=child.placeLabels.find(p=>p.name==='Kakariko Village');
+  const [x,y,w,h]=boxes.boxes.Child.KakarikoVillage;
+  expect(kakariko.bounds).toEqual([[-(y+h)/32,x/32],[-y/32,(x+w)/32]]);
   expect(maps.some(m=>m.kind==='overview' || m.kind==='region')).toBe(false);
   expect(maps.filter(m=>m.kind==='dungeon')).toHaveLength(10);
   // Markers are the hand-placed collectibles in dev/assets/oot/pois.json.
@@ -59,6 +108,11 @@ test('every category icon exists and every category belongs to a group',()=>{
     expect(categories.some(c=>c.id===category.parent_id)).toBe(true);
     // A supplied PNG, or an SVG drawn for the site (Heart Pieces).
     const name=category.img.replace(/^OoT_/, '');
+    if(!category.img.startsWith('OoT_')) {
+      const css=['style.css','poi.css'].map(file=>fs.readFileSync(path.join(__dirname,'../styles',file),'utf8')).join('\n');
+      expect(css).toMatch(new RegExp('\\.icon-'+category.img+'::?before'));
+      continue;
+    }
     expect(['.png','.svg'].some(ext=>fs.existsSync(path.join(__dirname,'../data/OoT/icons',name+ext)))).toBe(true);
   }
 });

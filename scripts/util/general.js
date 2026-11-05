@@ -15,7 +15,8 @@ var GAME_ORDER = ['OoT', 'TotK', 'BotW', 'EoW', 'LA'];
 function sortGames(list, getName) {
   getName = getName || function(item) { return item.shortName || item.id || item; };
   var rank = function(item) {
-    var index = GAME_ORDER.indexOf(getName(item));
+    var name=getName(item);
+    var index = GAME_ORDER.indexOf(name === 'OoTR' ? 'OoT' : name);
     return index === -1 ? GAME_ORDER.length : index;
   };
   return list

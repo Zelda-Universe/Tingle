@@ -119,8 +119,9 @@ function zMapInit(vResults) {
     zMap.constructor(vContainer);
 
     // Offline, another game's saved page can stand in for this one's.
-    if(vContainer.name && document.title.indexOf(vContainer.name) === -1) {
-      document.title = vContainer.name + ' Interactive Map - Zelda Maps';
+    var seoGameName=vContainer.shortName === 'OoT' ? 'Ocarina of Time Remake (2026)' : vContainer.name;
+    if(seoGameName && document.title.indexOf(seoGameName) === -1) {
+      document.title = seoGameName + ' Interactive Map - Zelda Maps';
     }
 
     // TODO: Remove when proper lang files are added for the other games,

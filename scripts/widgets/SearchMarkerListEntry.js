@@ -20,7 +20,9 @@ var markerLocationNameCache = Object.create(null);
 SearchMarkerListEntry.prototype._initDOMElements = function(marker) {
   MarkerListEntry.prototype._initDOMElements.call(this, marker);
   this.domNode.addClass('search-marker-list-entry');
-  if(marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
+  if(marker.mapDestination && marker.iconURL) {
+    this.iconNode.empty().append($('<img class="search-map-preview" alt="">').attr('src',marker.iconURL));
+  } else if(marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
     var labelCategory = this.categories[marker.categoryId || marker.markerCategoryId];
     var labelGroup = labelCategory && this.categories[labelCategory.parent_id];
     this.categoryIcon = new CategoryIcon({

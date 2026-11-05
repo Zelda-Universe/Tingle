@@ -5696,15 +5696,16 @@ div.circle:has(>.icon-EoW_Echo) {
 	line-height: 1.4;
 }
 
-/* The "visit" group's reminder to register: a banner under the header that
-   leaves the map usable. */
+/* The "visit" group's reminder to register, which leaves the map usable: in
+   the top right corner under the settings button on desktop, and across the
+   screen under the header on phones. */
 .complete-reminder {
 	position: fixed;
-	top: 76px;
-	left: 50%;
+	top: 64px;
+	right: 10px;
 	z-index: 5000;
 	box-sizing: border-box;
-	width: min(420px, calc(100vw - 32px));
+	width: min(380px, calc(100vw - 20px));
 	padding: 14px 44px 14px 16px;
 	border: 1px solid rgba(255,255,255,.14);
 	border-radius: 16px;
@@ -5715,19 +5716,27 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: white;
 	font-size: 14px;
 	line-height: 1.4;
-	transform: translateX(-50%);
 	animation: complete-reminder-in .3s cubic-bezier(.35,.91,.33,.97);
+}
+
+@media (max-width: 600px) {
+	.complete-reminder {
+		top: calc(var(--mobile-control-top) + 54px);
+		left: 10px;
+		right: 10px;
+		width: auto;
+	}
 }
 
 .complete-reminder.is-closing {
 	opacity: 0;
-	transform: translate(-50%, -8px);
+	transform: translateY(-8px);
 	transition: opacity .25s, transform .25s;
 }
 
 @keyframes complete-reminder-in {
-	from { opacity: 0; transform: translate(-50%, -12px); }
-	to { opacity: 1; transform: translate(-50%, 0); }
+	from { opacity: 0; transform: translateY(-12px); }
+	to { opacity: 1; transform: translateY(0); }
 }
 
 .complete-reminder-text {

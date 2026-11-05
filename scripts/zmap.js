@@ -1869,9 +1869,10 @@ ZMap.prototype._showCompleteRegistrationPrompt = function(markerId) {
   else this._showCompleteRegistrationDialog(markerId, count);
 };
 
-// The "visit" group's reminder: a banner under the header, like the old
-// toast but with the count and a Register button. It leaves the map usable
-// and goes away by itself after a while.
+// The "visit" group's reminder: a banner like the old toast (which stayed
+// until closed: toastr's timeOut is 0 in ZConfig.js), with the count and a
+// Register button. It leaves the map usable, and stays until it's dismissed,
+// so lasting longer isn't a difference between the test's groups.
 ZMap.prototype._showCompleteReminder = function(markerId, count, variant) {
   var _this = this;
   $('#complete-reminder').remove();
@@ -1889,9 +1890,7 @@ ZMap.prototype._showCompleteReminder = function(markerId, count, variant) {
     'You’ve completed ' + count.toLocaleString() + (count === 1 ? ' marker' : ' markers') +
     ', but they’re currently only stored on this device. Register for free to save them to our database.'
   );
-  var timer = null;
   var close = function() {
-    window.clearTimeout(timer);
     banner.addClass('is-closing');
     window.setTimeout(function() { banner.remove(); }, 250);
   };
@@ -1905,14 +1904,7 @@ ZMap.prototype._showCompleteReminder = function(markerId, count, variant) {
       close();
     }
   });
-  // Hovering or focusing keeps it up while someone's reading it.
-  var schedule = function() {
-    window.clearTimeout(timer);
-    timer = window.setTimeout(close, 12000);
-  };
-  banner.on('mouseenter focusin', function() { window.clearTimeout(timer); }).on('mouseleave focusout', schedule);
   $('body').append(banner);
-  schedule();
   this.trackFeatureEvent('reminder_shown', 'complete', variant);
 };
 

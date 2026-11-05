@@ -87,20 +87,24 @@
   $top = null;
   $droppedPins = null;
   if ($metric === 'completes' || $metric === 'bookmarks') {
+    // Counted first, then described: grouping only by marker_id keeps it
+    // valid under ONLY_FULL_GROUP_BY, which the servers use.
     $top = $db->fetchAllAssociative("
-      SELECT `t`.`marker_id` AS `markerId`, COUNT(DISTINCT `t`.`user_id`) AS `people`,
+      SELECT `top`.`markerId`, `top`.`people`,
              `m`.`name` AS `title`, `m`.`visible`, `mc`.`name` AS `category`,
              `c`.`short_name` AS `game`, `c`.`name` AS `gameName`
-        FROM $table `t`
-        JOIN `{$map_prefix}marker` `m` ON `m`.`id` = `t`.`marker_id`
+        FROM (SELECT `marker_id` AS `markerId`, COUNT(DISTINCT `user_id`) AS `people`
+                FROM $table
+               WHERE $column >= ? AND `marker_id` IS NOT NULL
+               GROUP BY `marker_id`
+               ORDER BY `people` DESC, `marker_id`
+               LIMIT 5) `top`
+        JOIN `{$map_prefix}marker` `m` ON `m`.`id` = `top`.`markerId`
         LEFT JOIN `{$map_prefix}marker_category` `mc` ON `mc`.`id` = `m`.`marker_category_id`
         LEFT JOIN `{$map_prefix}submap` `sm` ON `sm`.`id` = `m`.`submap_id`
         LEFT JOIN `{$map_prefix}map` `mp` ON `mp`.`id` = `sm`.`map_id`
         LEFT JOIN `{$map_prefix}container` `c` ON `c`.`id` = `mp`.`container_id`
-       WHERE `t`.$column >= ? AND `t`.`marker_id` IS NOT NULL
-       GROUP BY `t`.`marker_id`
-       ORDER BY `people` DESC, `t`.`marker_id`
-       LIMIT 5
+       ORDER BY `top`.`people` DESC, `top`.`markerId`
     ", [$start->format('Y-m-d')]);
     foreach ($top as &$row) {
       $row['markerId'] = (int) $row['markerId'];

@@ -4387,6 +4387,8 @@ ZMap.prototype._createAdminPage = function(opts) {
       if(!data.success) return $('#admin_chart').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load stats.');
       state.stats = data;
       showStats(data);
+    }).fail(function() {
+      if(requestId === statsRequest) $('#admin_chart').html('<p class="admin-muted">Unable to load stats. Try again.</p>');
     });
   };
   var showGraphOptions = function() {
@@ -4451,6 +4453,9 @@ ZMap.prototype._createAdminPage = function(opts) {
         }
         graph.data = data;
         show(data);
+      }).fail(function() {
+        if(requestId !== request) return;
+        section.find('.admin-activity-chart').html('<p class="admin-muted">Unable to load stats. Try again.</p>');
       });
     };
     section.find('.admin-chart-options button').click(function() {
@@ -4487,6 +4492,9 @@ ZMap.prototype._createAdminPage = function(opts) {
       if(!data.success) return $('#admin_signups').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load sign-ups.');
       state.signups = data;
       showSignups(data);
+    }).fail(function() {
+      if(requestId !== signupRequest) return;
+      $('#admin_signups, #admin_usage').html('<p class="admin-muted">Unable to load stats. Try again.</p>');
     });
   };
   $('#admin .admin-signup-ranges button').click(function() {

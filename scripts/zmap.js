@@ -996,9 +996,12 @@ ZMap.prototype._updateMarkersPresence = function(markers) {
 ZMap.prototype._updateMarkerPresence = function(marker) {
   mapBounds = this.map.getBounds().pad(0.15);
 
+  // OoT: markers for things either age can get (globalMarker) show on both
+  // the Child and Adult maps, as one marker.
+  var everySubmap = this.mapOptions.shortName === 'OoT' && marker.globalMarker == 1;
   if (
        this.mapControl.getCurrentMap().mapId    != marker.mapId
-    || this.mapControl.getCurrentMap().subMapId != marker.submapId
+    || (!everySubmap && this.mapControl.getCurrentMap().subMapId != marker.submapId)
   ) {
     this.map.removeLayer(marker);
 

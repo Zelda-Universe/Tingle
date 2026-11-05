@@ -1,12 +1,3 @@
+.icon-OoT_HeartPiece::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/HeartPiece.svg') center / contain no-repeat; vertical-align: middle; }
 .icon-OoT_Item_Token_Gold::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Token_Gold.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Item_Boomerang::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Boomerang.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Item_Ocarina_Time::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Ocarina_Time.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Item_Bottle_Milk::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Bottle_Milk.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Weapon_Sword_Master::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Weapon_Sword_Master.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Weapon_Shield_Hylian::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Weapon_Shield_Hylian.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Weapon_Range_Bow::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Weapon_Range_Bow.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Weapon_Range_SlingShot::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Weapon_Range_SlingShot.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Item_Dungeon_SmallKey::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Dungeon_SmallKey.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Item_Dungeon_BossKey::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Dungeon_BossKey.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Item_Dungeon_Map::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Dungeon_Map.png') center / contain no-repeat; vertical-align: middle; }
-.icon-OoT_Item_Dungeon_Compass::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Dungeon_Compass.png') center / contain no-repeat; vertical-align: middle; }
+.icon-OoT_Item_Bottle_BigPoe::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/Item_Bottle_BigPoe.png') center / contain no-repeat; vertical-align: middle; }

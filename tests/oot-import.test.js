@@ -10,7 +10,7 @@ test('CSV importer preserves quoted commas, newlines, escaped quotes and Unicode
   ]);
 });
 
-test('OoT pack exposes all distinct maps and main-texture variants without invented POIs',()=>{
+test('OoT pack exposes all distinct maps and main-texture variants',()=>{
   const maps=read('maps'),report=read('import-report');
   expect(maps).toHaveLength(11);
   expect(maps.flatMap(m=>m.subMap)).toHaveLength(66);
@@ -26,8 +26,10 @@ test('OoT pack exposes all distinct maps and main-texture variants without inven
   expect(adult.placeLabels.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y))).toBe(true);
   expect(maps.some(m=>m.kind==='overview' || m.kind==='region')).toBe(false);
   expect(maps.filter(m=>m.kind==='dungeon')).toHaveLength(10);
-  expect(read('markers')).toEqual([]);
-  expect(report.placedPOIs).toBe(0);
+  // Markers are the hand-placed collectibles in dev/assets/oot/pois.json.
+  const pois=JSON.parse(fs.readFileSync(path.join(__dirname,'../dev/assets/oot/pois.json'),'utf8'));
+  expect(read('markers')).toEqual(require('../dev/assets/oot/pois-to-markers.cjs')(pois));
+  expect(report.placedPOIs).toBe(pois.length);
   expect(Object.keys(read('text-catalog'))).toHaveLength(540);
   const definitions=read('unplaced-content');
   expect(definitions.items).toHaveLength(185);
@@ -40,11 +42,33 @@ test('OoT pack exposes all distinct maps and main-texture variants without inven
   }
 });
 
-test('every category icon is an actual supplied asset and every category belongs to a group',()=>{
+test('every category icon exists and every category belongs to a group',()=>{
   const categories=read('categories');
   for(const category of categories.filter(c=>c.parent_id)) {
     expect(categories.some(c=>c.id===category.parent_id)).toBe(true);
-    expect(fs.existsSync(path.join(__dirname,'../data/OoT/icons',category.img.replace(/^OoT_/, '')+'.png'))).toBe(true);
+    // A supplied PNG, or an SVG drawn for the site (Heart Pieces).
+    const name=category.img.replace(/^OoT_/, '');
+    expect(['.png','.svg'].some(ext=>fs.existsSync(path.join(__dirname,'../data/OoT/icons',name+ext)))).toBe(true);
+  }
+});
+
+test('hand-placed OoT collectibles are complete, unique and on real categories and maps',()=>{
+  const pois=JSON.parse(fs.readFileSync(path.join(__dirname,'../dev/assets/oot/pois.json'),'utf8'));
+  const categories=new Set(read('categories').map(c=>c.id));
+  const markers=read('markers');
+  expect(new Set(markers.map(m=>m.id)).size).toBe(markers.length);
+  expect(markers.every(m=>categories.has(m.markerCategoryId))).toBe(true);
+  // All 36 Pieces of Heart and 100 Gold Skulltulas in the remake.
+  expect(pois.filter(p=>p.category==='64002')).toHaveLength(36);
+  expect(pois.filter(p=>p.category==='64001')).toHaveLength(100);
+  expect(pois.filter(p=>p.category==='64003')).toHaveLength(10);
+  // Dungeon markers name a floor of their own dungeon.
+  const floors=new Map(read('maps').flatMap(m=>m.subMap.map(s=>[s.id,m.id])));
+  for(const p of pois.filter(p=>p.submap)) expect(floors.get(p.submap)).toBe(p.map);
+  for(const p of pois) {
+    expect(['child','adult','both']).toContain(p.age);
+    expect(p.x).toBeGreaterThanOrEqual(0); expect(p.x).toBeLessThanOrEqual(256);
+    expect(p.y).toBeLessThanOrEqual(0); expect(p.y).toBeGreaterThanOrEqual(-256);
   }
 });
 

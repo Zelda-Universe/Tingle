@@ -118,24 +118,22 @@ async function main(source) {
   fs.mkdirSync(path.join(out,'icons'),{recursive:true});
   for(const file of icons) await sharp(path.join(iconDir,file)).resize(128,128,{fit:'inside'}).png().toFile(path.join(out,'icons',file));
   const categories = [], iconCSS = [];
+  // The collectibles tracked for now. Ids are fixed so markers keep their
+  // categories across rebuilds. The supplied icons have no Piece of Heart, so
+  // HeartPiece.svg (drawn for this site) sits beside this script.
+  fs.copyFileSync(path.join(__dirname,'HeartPiece.svg'), path.join(out,'icons','HeartPiece.svg'));
   const groups = [
-    ['Collectibles', [ ['Gold Skulltulas','Item_Token_Gold','relic'], ['Items','Item_Boomerang','interest'],
-      ['Ocarinas & Songs','Item_Ocarina_Time','memory'], ['Bottles','Item_Bottle_Milk','memory'] ]],
-    ['Equipment', [ ['Swords','Weapon_Sword_Master','treasure'], ['Shields','Weapon_Shield_Hylian','treasure'],
-      ['Bows','Weapon_Range_Bow','treasure'], ['Slingshots','Weapon_Range_SlingShot','treasure'] ]],
-    ['Dungeon Items', [ ['Small Keys','Item_Dungeon_SmallKey','treasure'], ['Boss Keys','Item_Dungeon_BossKey','treasure'],
-      ['Dungeon Maps','Item_Dungeon_Map','location'], ['Compasses','Item_Dungeon_Compass','location'] ]]
+    ['64000', 'Collectibles', [ ['64002','Heart Pieces','HeartPiece.svg','heart'], ['64001','Gold Skulltulas','Item_Token_Gold.png','relic'],
+      ['64003','Poes','Item_Bottle_BigPoe.png','memory'] ]]
   ];
-  let categoryId = 64000;
-  for(const [group, leaves] of groups) {
-    const parent = String(categoryId++);
+  for(const [parent, group, leaves] of groups) {
     const base = {container_id:GAME,marker_category_type_id:'1',default_checked:true,visible:true,visible_zoom:'0',zoom_min:'0',zoom_max:'6',min_zoom:'0',max_zoom:'6',color:'#cdb269'};
     categories.push({...base,id:parent,parent_id:null,name:group,img:'General_Map',poiStyle:''});
-    for(const [name,icon,style] of leaves) {
-      if(!fs.existsSync(path.join(out,'icons',icon+'.png'))) throw new Error('Missing category icon '+icon);
-      const glyph = 'OoT_' + icon;
-      categories.push({...base,id:String(categoryId++),parent_id:parent,name,img:glyph,poiStyle:style});
-      iconCSS.push(`.icon-${glyph}::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/${icon}.png') center / contain no-repeat; vertical-align: middle; }`);
+    for(const [id,name,file,style] of leaves) {
+      if(!fs.existsSync(path.join(out,'icons',file))) throw new Error('Missing category icon '+file);
+      const glyph = 'OoT_' + file.replace(/\.(png|svg)$/,'');
+      categories.push({...base,id,parent_id:parent,name,img:glyph,poiStyle:style});
+      iconCSS.push(`.icon-${glyph}::before { content: ''; display: inline-block; width: 1em; height: 1em; background: url('icons/${file}') center / contain no-repeat; vertical-align: middle; }`);
     }
   }
   fs.writeFileSync(path.join(out,'icons.css'), iconCSS.join('\n') + '\n');
@@ -164,12 +162,16 @@ async function main(source) {
     boundBottomX:'-266',boundBottomY:'266',clusterMaxZoom:'6',clusterGridSize:'30',defaultZoom:'1',maxZoom:'6',
     tileSize:'256',iconWidth:'23',iconHeight:'23',iconSmallWidth:'16',iconSmallHeight:'16',switchIconsAtZoom:'-1',
     scaleP:'1',scaleN:'-1',offsetX:'0',offsetY:'0',visible:'1',assetPreview:true}]);
-  write('maps.json',maps); write('categories.json',categories); write('markers.json',[]);
+  write('maps.json',maps); write('categories.json',categories);
+  // Markers come from pois.json beside this script (see pois-to-markers.cjs),
+  // so swapping in better data later means replacing that one file.
+  const placedMarkers = require('./pois-to-markers.cjs')(JSON.parse(fs.readFileSync(path.join(__dirname,'pois.json'),'utf8')));
+  write('markers.json', placedMarkers);
   const availableKeys = new Set(['Hyrule', ...fields.map(f=>f.split('_')[0]), ...floors.map(f=>f.split('_')[0])]);
   const unplacedLocationLabels = (text['LocationMsg/Location.csv'] || []).filter(row=>!availableKeys.has(row.Label))
     .map(row=>({key:row.Label,name:row.USenText}));
   write('import-report.json',{schemaVersion:1,game:'OoT',containerId:GAME,maps:maps.length,submaps:assets.length,tileCount,
-    icons:icons.length,textFiles:Object.keys(text).length,placedPOIs:0,
+    icons:icons.length,textFiles:Object.keys(text).length,placedPOIs:placedMarkers.length,
     unplacedDefinitions:Object.fromEntries(Object.entries(unplaced).map(([kind,rows])=>[kind,rows.length])),
     unplacedLocationLabels,
     limitations:['No actor placement, scene coordinates, map transforms, or POI coordinate tables are present.',

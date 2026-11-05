@@ -55,6 +55,26 @@ Read this before writing or changing anything under `ajax/`, `lib/` or
   (`schema_migrations` there is stale since 2018).
 - Prefer the schema being right over feature-detecting columns with
   `SHOW COLUMNS` in code.
+- Everything is `utf8mb4` / `utf8mb4_unicode_ci` (since
+  `20261105010000_convert_to_utf8mb4`), and the connection speaks utf8mb4.
+  New tables take the database default: don't write `DEFAULT CHARSET` into
+  hand-run SQL, and never `latin1`. (The dev export tooling under
+  `dev/db/` still stamps `latin1_swedish_ci` on dumps and needs the same
+  change.)
+
+  Applying the conversion by hand, per database, in a quiet window:
+
+  ```
+  mysqldump --single-transaction --quick DBNAME | gzip > /root/DBNAME-pre-utf8mb4.sql.gz
+  mysql DBNAME -e "ALTER DATABASE \`DBNAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+  mysql -N DBNAME -e "SELECT CONCAT('ALTER TABLE \`', TABLE_NAME, '\` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, ROW_FORMAT=DYNAMIC;') FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE' AND TABLE_COLLATION <> 'utf8mb4_unicode_ci'" | mysql DBNAME
+  mysql DBNAME -e "SELECT TABLE_COLLATION, COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() GROUP BY 1;"
+  ```
+
+  Before the first run on a database, check that the latin1 data is real
+  Latin-1 and not UTF-8 bytes stored as latin1 (which the conversion would
+  bake in): `SELECT COUNT(*) FROM marker WHERE name LIKE '%Ã%' OR
+  description LIKE '%Ã%'` should be 0.
 
 ## Mail
 

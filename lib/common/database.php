@@ -19,8 +19,10 @@
       'user'     => $dbuser,
       'password' => $dbpasswd,
       'dbname'   => $dbname,
-      // Matches the SET NAMES 'utf8' the application has always issued.
-      'charset'  => 'utf8',
+      // utf8mb4 since the convert_to_utf8mb4 migration: every table is
+      // utf8mb4, so emoji and non-Latin text store as typed. (Before it the
+      // application issued SET NAMES 'utf8' against latin1 tables.)
+      'charset'  => 'utf8mb4',
       'driverOptions' => [
         // mysqli returned every column as a string; keep the JSON responses
         // byte-for-byte identical so nothing in the frontend changes type.

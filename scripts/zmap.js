@@ -279,7 +279,8 @@ ZMap.prototype.addMap = function(vMap) {
      // the legacy blank-base overlay path, which cannot expose these variants.
      vMap.subMap.forEach(function(submap) {
        var title = vMap.name + (vMap.subMap.length > 1 ? ' — ' + submap.name : '');
-       var layer = L.tileLayer((submap.tileBaseURL || tileBaseURL) + submap.tileURL + this.tileNameFormat + '.' + submap.tileExt, {
+       var tileVersion = submap.tileVersion ? '?v=' + encodeURIComponent(submap.tileVersion) : '';
+       var layer = L.tileLayer((submap.tileBaseURL || tileBaseURL) + submap.tileURL + this.tileNameFormat + '.' + submap.tileExt + tileVersion, {
          maxZoom: Number(this.mapOptions.maxZoom), maxNativeZoom: Number(submap.maxZoom || vMap.maxZoom),
          minZoom: 0, noWrap: true, tileSize: Number(this.mapOptions.tileSize), keepBuffer: 2,
          attribution: vMap.mapCopyright, label: title, iconURL: submap.iconURL

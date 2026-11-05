@@ -8,7 +8,7 @@
   session_write_close();
   include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
 
-  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v5';
+  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v6';
   $manifestCacheLifetime = 6 * 60 * 60;
   $tileRoot = realpath(dirname(__DIR__) . '/tiles');
   $tilePublicBaseURL = rtrim(
@@ -85,6 +85,7 @@
 
   function buildOfflineManifest($sources) {
     $filesByURL = array();
+    $ootVersions = ootPackTileVersions();
     foreach ($sources as $source) {
       $root = $source['root'];
       $directory = realpath($source['directory']);
@@ -100,6 +101,10 @@
         $absolutePath = $file->getRealPath();
         if (!$absolutePath || strpos($absolutePath, $root . DIRECTORY_SEPARATOR) !== 0) continue;
         $url = $source['base'] . encodeOfflineTilePath(substr($absolutePath, strlen($root) + 1));
+        if ($source['tile']) {
+          $relativeDirectory = trim(dirname(str_replace('\\', '/', substr($absolutePath, strlen($root) + 1))), '/');
+          if (isset($ootVersions[$relativeDirectory])) $url .= '?v=' . rawurlencode($ootVersions[$relativeDirectory]);
+        }
         $filesByURL[$url] = array(
           'url' => $url,
           'size' => $file->getSize(),

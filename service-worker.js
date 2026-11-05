@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261105-69';
+const CACHE_VERSION = '20261105-70';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +8,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=OoT',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261105-oot-3',
-  './res.php?type=css&v=20261105-oot-3',
+  './res.php?type=javascript&v=20261105-oot-4',
+  './res.php?type=css&v=20261105-oot-4',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -184,9 +184,11 @@ async function trimTileCache() {
 }
 
 function tilePath(url) {
-  const pathname = new URL(url, self.location.origin).pathname;
+  const parsed = new URL(url, self.location.origin);
+  const pathname = parsed.pathname;
   const start = pathname.indexOf('/tiles/');
-  return start < 0 ? null : pathname.slice(start);
+  // Never let an old unversioned offline tile satisfy new artwork.
+  return start < 0 ? null : pathname.slice(start) + parsed.search;
 }
 
 async function reportTileSource(clientId, source, url) {

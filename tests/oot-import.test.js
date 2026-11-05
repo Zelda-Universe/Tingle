@@ -4,6 +4,17 @@ const vm = require('vm');
 const {csv} = require('../dev/assets/oot/import-assets.cjs');
 const read = name => JSON.parse(fs.readFileSync(path.join(__dirname,'../data/OoT',name+'.json'),'utf8'));
 
+test('OoT API attaches artwork hashes to tile URLs without changing source data',()=>{
+  const {execFileSync}=require('child_process');
+  const helper=path.resolve(__dirname,'../lib/common/oot_pack.php');
+  const maps=JSON.parse(execFileSync('php',['-r',`require ${JSON.stringify(helper)}; echo json_encode(ootPackData('maps'));`],{encoding:'utf8'}));
+  const assets=read('import-report').assets;
+  for(const map of maps) for(const sub of map.subMap) {
+    const asset=assets.find(a=>a.tileURL===sub.tileURL);
+    expect(sub.tileVersion).toBe(asset.sha256.slice(0,16));
+  }
+});
+
 test('CSV importer preserves quoted commas, newlines, escaped quotes and Unicode',()=>{
   expect(csv('Label,USenText,JPjaText\r\nA,"Hello, \"\"Link\"\"\nAgain",リンク\r\n')).toEqual([
     {Label:'A',USenText:'Hello, "Link"\nAgain',JPjaText:'リンク'}

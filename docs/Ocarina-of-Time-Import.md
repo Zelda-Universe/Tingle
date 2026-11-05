@@ -54,8 +54,17 @@ SHARP_MODULE=/path/to/node_modules/sharp node dev/assets/oot/import-assets.cjs /
 
 Unchanged source images reuse their existing tile pyramids. Source files are
 never edited. Output is confined to `data/OoT`, `tiles/oot`, and
-`images/social-oot.webp`. Tiles are ignored by Git, like the other games;
-they must be copied to the tile server before any deployment.
+`images/social-oot.webp`. This preview branch includes `tiles/oot` in Git so
+other developers can pull and run it without the original dump or Sharp.
+The other games' tiles remain ignored. OoT tiles are served locally at
+`/tiles/oot/`; a deployment must preserve that directory at the same URL.
+
+## Other developers
+
+Check out `codex/oot-asset-preview`, install the site's normal dependencies,
+and run the local site as usual. Open `/?game=OoT`. The prebuilt tiles,
+previews, icons and JSON content pack are all included; no OoT database
+migration or asset-generation step is needed.
 
 Coordinates use a 256×256 local map canvas, north at y=0 and south at y=-256.
 Sources are centered in the next power-of-two tile canvas. At native zoom z:

@@ -28,7 +28,8 @@ Thumbs.db
 
 # Downloaded dependencies
 node_modules
-/tiles
+/tiles/*
+!/tiles/oot/
 /vendor
 /uploads/profile-pictures/*
 !/uploads/profile-pictures/index.html

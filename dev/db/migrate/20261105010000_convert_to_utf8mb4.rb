@@ -5,14 +5,25 @@ class ConvertToUtf8mb4 < ActiveRecord::Migration[7.1]
   # as the old server did. Everything becomes utf8mb4, and the application
   # talks utf8mb4 to the server (lib/common/database.php).
   #
-  # Rebuilds every table (ALGORITHM=COPY: reads continue, writes to the table
-  # being rebuilt wait), so it runs in a quiet window with a fresh backup.
-  # ROW_FORMAT=DYNAMIC lets VARCHAR(255) keys fit utf8mb4's 4 bytes a
-  # character. The hand-run equivalent is in docs/backend-conventions.md.
+  # Tables with text columns are rebuilt (ALGORITHM=COPY: reads continue,
+  # writes to the table being rebuilt wait), so this runs in a quiet window
+  # with a fresh backup; tables without text only get a new default, which
+  # is instant. ROW_FORMAT=DYNAMIC lets VARCHAR(255) keys fit utf8mb4's 4
+  # bytes a character. The hand-run equivalent is in
+  # docs/backend-conventions.md.
   def up
     execute "ALTER DATABASE `#{connection.current_database}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
     connection.tables.sort.each do |table|
-      execute "ALTER TABLE `#{table}` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, ROW_FORMAT=DYNAMIC"
+      has_text = connection.select_value(<<~SQL).to_i > 0
+        SELECT COUNT(*) FROM information_schema.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = #{connection.quote(table)}
+           AND CHARACTER_SET_NAME IS NOT NULL
+      SQL
+      if has_text
+        execute "ALTER TABLE `#{table}` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, ROW_FORMAT=DYNAMIC"
+      else
+        execute "ALTER TABLE `#{table}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+      end
     end
   end
 

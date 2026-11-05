@@ -62,19 +62,30 @@ Read this before writing or changing anything under `ajax/`, `lib/` or
   `dev/db/` still stamps `latin1_swedish_ci` on dumps and needs the same
   change.)
 
-  Applying the conversion by hand, per database, in a quiet window:
+  Applying the conversion by hand, per database, in a quiet window
+  (tables with text columns are rebuilt — reads continue, writes to that
+  table wait; tables without text only get a new default, instantly):
 
   ```
   mysqldump --single-transaction --quick DBNAME | gzip > /root/DBNAME-pre-utf8mb4.sql.gz
   mysql DBNAME -e "ALTER DATABASE \`DBNAME\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-  mysql -N DBNAME -e "SELECT CONCAT('ALTER TABLE \`', TABLE_NAME, '\` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, ROW_FORMAT=DYNAMIC;') FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_TYPE = 'BASE TABLE' AND TABLE_COLLATION <> 'utf8mb4_unicode_ci'" | mysql DBNAME
+  mysql -N DBNAME -e "SELECT CONCAT('ALTER TABLE \`', t.TABLE_NAME, '\` ', IF(EXISTS(SELECT 1 FROM information_schema.COLUMNS c WHERE c.TABLE_SCHEMA = t.TABLE_SCHEMA AND c.TABLE_NAME = t.TABLE_NAME AND c.CHARACTER_SET_NAME IS NOT NULL), 'CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci, ROW_FORMAT=DYNAMIC', 'DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'), ';') FROM information_schema.TABLES t WHERE t.TABLE_SCHEMA = DATABASE() AND t.TABLE_TYPE = 'BASE TABLE' AND t.TABLE_COLLATION <> 'utf8mb4_unicode_ci'" | mysql DBNAME
   mysql DBNAME -e "SELECT TABLE_COLLATION, COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() GROUP BY 1;"
   ```
 
   Before the first run on a database, check that the latin1 data is real
-  Latin-1 and not UTF-8 bytes stored as latin1 (which the conversion would
-  bake in): `SELECT COUNT(*) FROM marker WHERE name LIKE '%Ã%' OR
-  description LIKE '%Ã%'` should be 0.
+  Latin-1 and not UTF-8 bytes stored as latin1, which the conversion would
+  bake in. A row like that gets shorter when its bytes are read as UTF-8
+  (the collation is accent-insensitive, so a `LIKE '%Ã%'` probe is
+  useless):
+
+  ```
+  SELECT COUNT(*) FROM marker
+   WHERE CHAR_LENGTH(CONVERT(BINARY name USING utf8mb4)) < CHAR_LENGTH(name)
+      OR CHAR_LENGTH(CONVERT(BINARY description USING utf8mb4)) < CHAR_LENGTH(description);
+  ```
+
+  should be 0 (same for `marker_tab.tab_text`, `user.name`, `user.username`).
 
 ## Mail
 

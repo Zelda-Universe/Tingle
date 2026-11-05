@@ -38,5 +38,9 @@
       WHERE `id` = ?
    ", [$hash, $userId]);
 
+   // Other devices signed in with the old password are signed out.
+   include_once(dirname(__DIR__) . '/lib/common/auth_token.php');
+   authRevokeOtherDevices($db, $map_prefix, $userId);
+
    echo json_encode(array("success"=>true, "msg"=>"Password changed."));
 ?>

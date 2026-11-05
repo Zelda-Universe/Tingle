@@ -60,6 +60,9 @@
      WHERE `user_id` = ?
        AND `used` IS NULL
   ", [(int) $reset['user_id']]);
+  // Whoever held the old password is signed out everywhere.
+  include_once(dirname(__DIR__) . '/lib/common/auth_token.php');
+  authRevokeUser($db, $map_prefix, (int) $reset['user_id']);
   commit();
 
   echo json_encode(array("success" => true, "msg" => "Your password has been changed. You can now log in."));

@@ -9,6 +9,7 @@
     echo json_encode(array('success' => false, 'msg' => 'That account was not found or has been deleted.'));
     return;
   }
+  if (!adminCanManage($adminId, $userId, $user['level'])) return;
 
   $username = trim(is_string($_POST['username'] ?? null) ? $_POST['username'] : '');
   $name = trim(is_string($_POST['name'] ?? null) ? $_POST['name'] : '');
@@ -58,6 +59,14 @@
   }
   $params[] = $userId;
   $db->executeStatement("UPDATE `{$map_prefix}user` SET {$fields} WHERE `id` = ?", $params);
+
+  // A new password signs the account out of every device (every other
+  // device, when an admin changes their own).
+  if ($password !== '') {
+    include_once(dirname(__DIR__) . '/lib/common/auth_token.php');
+    if ($userId === $adminId) authRevokeOtherDevices($db, $map_prefix, $userId);
+    else authRevokeUser($db, $map_prefix, $userId);
+  }
 
   // The change log: each changed field as [before, after]. A new password is
   // only noted, never stored.

@@ -15,6 +15,26 @@
     echo json_encode(array('success' => false, 'msg' => 'That isn\'t a push subscription.'));
     return;
   }
+  // The server POSTs to whatever is saved here (lib/common/push.php), so
+  // only the browsers' own push services are accepted. Rejected hosts are
+  // logged, so a browser that's missing can be added.
+  $host = strtolower($url['host']);
+  $pushHosts = [
+    'fcm.googleapis.com',                 // Chrome, Edge, Opera, Brave, Vivaldi, Samsung Internet
+    'updates.push.services.mozilla.com',  // Firefox
+    'web.push.apple.com',                 // Safari (macOS, iOS)
+    'push.apple.com',
+    'notify.windows.com',                 // legacy Edge
+  ];
+  $known = false;
+  foreach ($pushHosts as $pushHost) {
+    if ($host === $pushHost || substr($host, -strlen('.' . $pushHost)) === '.' . $pushHost) { $known = true; break; }
+  }
+  if (!$known) {
+    error_log('push_subscribe: endpoint host not allowed: ' . $host);
+    echo json_encode(array('success' => false, 'msg' => 'Push notifications aren\'t supported for this browser yet.'));
+    return;
+  }
   $hash = hash('sha256', $endpoint);
   if (!empty($_POST['remove'])) {
     $db->executeStatement("DELETE FROM `{$map_prefix}push_subscription` WHERE `endpoint_hash` = ?", [$hash]);

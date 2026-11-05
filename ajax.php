@@ -52,8 +52,15 @@
     include_once(__DIR__.'/lib/common/account_status.php');
     include_once(__DIR__.'/lib/common/auth_token.php');
     // Puts back the session of anyone signed in whose session has been lost.
-    authRestoreSession($db, $map_prefix);
-    accountSessionCheck($db, $map_prefix);
+    // Neither step may take the request down: a failure here is logged and
+    // the command runs with whatever session there is.
+    try {
+      authRestoreSession($db, $map_prefix);
+      accountSessionCheck($db, $map_prefix);
+    } catch (Throwable $ex) {
+      error_log(sprintf('ajax.php [%s]: session check: %s: %s', $cmd, get_class($ex), $ex->getMessage()));
+      if (session_status() === PHP_SESSION_ACTIVE) session_write_close();
+    }
     $error=false;
     ob_start();
     try {

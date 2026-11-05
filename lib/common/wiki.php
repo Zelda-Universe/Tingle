@@ -148,6 +148,18 @@
               WHERE `gm`.`id` = {$markerColumn})";
   }
 
+  // PHP's memory_limit in bytes; 0 when unlimited.
+  function wikiMemoryLimitBytes() {
+    $limit = trim((string) ini_get('memory_limit'));
+    if ($limit === '' || $limit === '-1') return 0;
+    $unit = strtolower(substr($limit, -1));
+    $value = (int) $limit;
+    if ($unit === 'g') return $value * 1024 * 1024 * 1024;
+    if ($unit === 'm') return $value * 1024 * 1024;
+    if ($unit === 'k') return $value * 1024;
+    return $value;
+  }
+
   // Saves an uploaded image re-encoded as WebP, so nothing but pixels from
   // the client reaches the server. 'cover' crops to exactly $width x $height;
   // 'fit' only shrinks to fit within them. Returns [path] or [null, message].
@@ -160,9 +172,17 @@
     $info = @getimagesize($upload['tmp_name']);
     if (
       !$info || !in_array($info['mime'], ['image/jpeg', 'image/png', 'image/webp', 'image/gif'], true) ||
-      $info[0] < 1 || $info[1] < 1 || $info[0] * $info[1] > 40000000
+      $info[0] < 1 || $info[1] < 1
     ) {
       return [null, 'Choose a valid JPG, PNG, WebP, or GIF image.'];
+    }
+    // GD decodes to about 5 bytes a pixel (more with EXIF rotation), so an
+    // image we can't hold in PHP's memory limit is refused here rather than
+    // crashing the request. 20 megapixels is 5000 x 4000.
+    $pixels = $info[0] * $info[1];
+    $limit = wikiMemoryLimitBytes();
+    if ($pixels > 20000000 || ($limit > 0 && memory_get_usage() + $pixels * 6 > $limit)) {
+      return [null, 'That image is too large. Try one under 20 megapixels (about 5000 x 4000).'];
     }
     $bytes = file_get_contents($upload['tmp_name']);
     $source = $bytes === false ? false : @imagecreatefromstring($bytes);

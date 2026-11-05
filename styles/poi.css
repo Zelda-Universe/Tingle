@@ -1,4 +1,21 @@
 /* Shared POI treatments for Link's Awakening, BotW, TotK and EoW. */
+.oot-preview-notice {
+  margin: 16px 24px;
+  padding: 12px;
+  border: 1px solid rgba(205,178,105,.5);
+  border-radius: 10px;
+  color: #e5cf95;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.icon-OoT::before {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background: url('data/OoT/icons/Item_Ocarina_Time.png') center / contain no-repeat;
+  vertical-align: middle;
+}
 .poi-badge {
   position: relative;
   isolation: isolate;

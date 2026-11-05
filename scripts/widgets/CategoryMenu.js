@@ -182,6 +182,11 @@ CategoryMenu.prototype._initDOMElements = function() {
     }, this);
   }
   if(this._categoryTree) this.organizePOICategories();
+  if(Object.values(this._categories || {}).some(function(c) { return String(c.container_id) === '64'; })) {
+    this.domNode.prepend($('<p class="oot-preview-notice" role="status"></p>').text(
+      'Asset preview: maps and icons are imported. This dump contains no POI coordinates, so collectibles and other markers are not placed yet.'
+    ));
+  }
 };
 
 CategoryMenu.prototype.organizePOICategories = function() {

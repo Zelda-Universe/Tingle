@@ -1,7 +1,8 @@
 <?php
   $path = __DIR__;
+  include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
   if (file_exists("$path/static/games.json")) {
-    readfile("$path/static/games.json");
+    echo json_encode(ootPackAppendGame(json_decode(file_get_contents("$path/static/games.json"), true, 512, JSON_THROW_ON_ERROR)));
     return;
   }
 
@@ -17,5 +18,5 @@
     ORDER BY " . gameOrderSql('c.short_name') . ", c.id
   ");
 
-  echo json_encode($res);
+  echo json_encode(ootPackAppendGame($res));
 ?>

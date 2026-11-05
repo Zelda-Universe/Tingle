@@ -5,10 +5,17 @@
     'linksawakening' => 'LA',
     'botw' => 'BotW',
     'totk' => 'TotK',
-    'eow' => 'EoW'
+    'eow' => 'EoW',
+    'oot' => 'OoT'
   ];
   $gameId = $gameAliases[$gameKey] ?? 'TotK';
   $gameMetadata = [
+    'OoT' => [
+      'name' => 'Ocarina of Time',
+      'description' => 'Explore the Ocarina of Time asset-preview maps: Hyrule, child and adult regions, and dungeon floors.',
+      'image' => 'social-oot.webp',
+      'themeColor' => '#b99b4b'
+    ],
     'LA' => [
       'name' => "Link's Awakening",
       'description' => "Explore Koholint Island with the Zelda Maps interactive map for The Legend of Zelda: Link's Awakening.",
@@ -248,8 +255,11 @@
         }
       </script>
       <script>var zmapLandingCategoryId = <?= json_encode($landingCategoryId) ?>;</script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-groupby-1"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-groupby-1" />
+      <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
+      <link rel="stylesheet" href="data/OoT/icons.css" />
+      <?php endif; ?>
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-preview"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-preview" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

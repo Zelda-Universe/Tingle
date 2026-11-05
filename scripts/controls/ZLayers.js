@@ -2120,6 +2120,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 	// Needs improvements
   // yea..
 	changeMap: function(mapId, subMapId) {
+		if(this.zMap.mapOptions.assetPreview) { this.changeMapOnly(mapId, subMapId); return; }
 		inputs = this._form.getElementsByTagName('input'),
 		inputsLen = inputs.length;
 
@@ -2155,7 +2156,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // Default function relies on map control input elemens to contain a value.
   // Creating separate functions for other consuming code without that dependency expectation, like selecting a search result.
   changeMapOnly: function(mapId, subMapId) {
-    var newMap = this._maps.find((map) => map.originalId == mapId);
+    var newMap = this._maps.find((map) => map.originalId == mapId &&
+      (!this.zMap.mapOptions.assetPreview || !subMapId || map.defaultSubMapId == subMapId));
     if (newMap && this.currentMapLayer.id != newMap.id) {
       this._map.removeLayer(this.currentMapLayer);
       this._map.addLayer(newMap);

@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261105-65';
+const CACHE_VERSION = '20261105-66';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +8,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=TotK',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261105-groupby-1',
-  './res.php?type=css&v=20261105-groupby-1',
+  './res.php?type=javascript&v=20261105-oot-preview',
+  './res.php?type=css&v=20261105-oot-preview',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -19,6 +19,8 @@ const CORE_ASSETS = [
 ];
 
 const OPTIONAL_ASSETS = [
+  './data/OoT/icons.css',
+  './data/OoT/icons/Item_Ocarina_Time.png',
   './fonts/icomoon.ttf?xz2wpa',
   './fonts/icomoon.woff?xz2wpa',
   ...['265406_1_0', '265406_0_0', '264CA8_2_0', '264CA8_1_0', '265406_2_0', '265406_3_0', '264CA8_0_0']

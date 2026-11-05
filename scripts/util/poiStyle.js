@@ -1,5 +1,6 @@
 // Shared Zelda POI styling. Existing category records and glyphs stay intact.
 function getPOIStyle(category) {
+  if(category && String(category.container_id) === '64') return category.poiStyle || '';
   if(category && String(category.container_id || category.containerId) === '4') {
     return {
       '1951': 'interest', '1952': 'interest', '1953': 'interest', '1954': 'interest',
@@ -48,6 +49,11 @@ function getPOIStyle(category) {
 
 function getPOICategoryGroups(categories) {
   var records = Object.values(categories || {});
+  if(records.some(function(c) { return String(c.container_id) === '64'; })) {
+    return records.filter(function(c) { return !c.parent_id; }).map(function(root) {
+      return { title: root.name, categories: records.filter(function(c) { return c.parent_id === root.id; }) };
+    });
+  }
   var game = records.some(function(c) { return String(c.container_id) === '21'; }) ? '21' :
     (records.some(function(c) { return String(c.container_id) === '19'; }) ? '19' :
       (records.some(function(c) { return String(c.container_id) === '22'; }) ? '22' :

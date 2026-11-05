@@ -5230,3 +5230,40 @@ div.circle:has(>.icon-EoW_Echo) {
 	background: rgba(52,199,89,.25);
 	color: #9ff0b5;
 }
+
+/* Editing a marker: X, Y and Z side by side. */
+.marker-edit-coords {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 8px;
+	margin-bottom: 16px;
+}
+
+.marker-edit-coords .form-group {
+	margin: 0;
+	min-width: 0;
+}
+
+.menu-cat-content-inner form .marker-edit-coords .input-group {
+	border-radius: 10px;
+}
+
+.menu-cat-content-inner form .marker-edit-coords .input-group .input-group-addon.marker-edit-axis {
+	width: 30px;
+	padding: 0 0 0 12px;
+	color: rgba(255,255,255,.6);
+	font-size: 13px;
+	font-weight: 700;
+}
+
+.menu-cat-content-inner form .marker-edit-coords .form-control {
+	min-width: 0;
+	padding-right: 8px;
+	-moz-appearance: textfield;
+}
+
+.marker-edit-coords .form-control::-webkit-outer-spin-button,
+.marker-edit-coords .form-control::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}

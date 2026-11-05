@@ -2355,6 +2355,24 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   var categoryOptions = this.categoriesArr.map(function(entry) {
     return '<option value="' + esc(entry.id) + '">' + esc(entry.name) + '</option>';
   }).join('');
+  var coordinate = function(axis, id, name, required) {
+    return '<div class="form-group"><div class="input-group">' +
+      '<span class="input-group-addon marker-edit-axis" aria-hidden="true">' + axis + '</span>' +
+      '<input type="number" step="any" inputmode="decimal" class="form-control" id="' + id + '" name="' + name + '"' +
+        (required ? ' required' : ' placeholder="Optional"') + ' aria-label="' + axis + '" />' +
+    '</div></div>';
+  };
+  // Some markers (from TotK's import) keep their in-game coordinates in a
+  // hidden line of their content instead of a Z. The fields take its place.
+  var coordMarkup = /<p\b(?=[^>]*\bname\s*=\s*(['"])coord\1)[^>]*>([\s\S]*?)<\/p>/i;
+  var markupZ = null;
+  (editing && vMarker.tabText || []).some(function(text) {
+    var match = coordMarkup.exec(text || '');
+    if (!match) return false;
+    var parts = match[2].replace(/<[^>]*>/g, '').split('|');
+    if (parts.length > 2 && parts[2].trim() !== '' && isFinite(Number(parts[2]))) markupZ = Number(parts[2]);
+    return true;
+  });
   var submapId = editing && vMarker.submapId != null ? vMarker.submapId : this.mapControl.getCurrentMap().subMapId;
 
   var html =
@@ -2364,6 +2382,13 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       '<form id="newMarkerForm" class="leaflet-control-layers-list marker-edit-form" autocomplete="off">' +
         '<label for="markerTitle">Title</label>' +
         field('fa-heading', '<input type="text" class="form-control" id="markerTitle" name="markerTitle" required maxlength="255" placeholder="What is it?" />') +
+        // Where it is: X and Y place it on the map; Z (height) is optional.
+        '<label for="markerX">Coordinates</label>' +
+        '<div class="marker-edit-coords">' +
+          coordinate('X', 'markerX', 'lng', true) +
+          coordinate('Y', 'markerY', 'lat', true) +
+          coordinate('Z', 'markerZ', 'z', false) +
+        '</div>' +
         '<label for="categoryId">Category</label>' +
         field('fa-tag', '<select class="form-control" name="categoryId" id="categoryId">' + categoryOptions + '</select>') +
         '<label>Content</label>' +
@@ -2384,8 +2409,6 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
             field('fa-comment-alt', '<input type="text" class="form-control" id="markerSummary" name="summary" maxlength="255" placeholder="What did you change? (optional)" />')
           : '') +
         '<input type="hidden" name="game" value="' + esc(this.mapOptions.id) + '" />' +
-        '<input type="hidden" name="lat" value="' + esc(vLatLng.lat) + '" />' +
-        '<input type="hidden" name="lng" value="' + esc(vLatLng.lng) + '" />' +
         '<input type="hidden" name="userId" value="' + esc(user.id) + '" />' +
         (editing ? '<input type="hidden" name="markerId" value="' + esc(vMarker.id) + '" />' : '') +
         '<input type="hidden" name="submapId" value="' + esc(submapId) + '" />' +
@@ -2394,13 +2417,45 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       '</form>' +
     '</div>';
 
-  this.mapControl._nextPageBack = editing ? this._wikiBackToMarker(vMarker.id) : null;
+  // The pin follows the coordinate fields, and goes back if the edit isn't saved.
+  var pin = editing ? vMarker : newMarker;
+  var originalLatLng = pin && pin.getLatLng ? pin.getLatLng() : null;
+  var restorePin = function() {
+    if (pin && originalLatLng && pin.setLatLng) pin.setLatLng(originalLatLng);
+  };
+  var backToMarker = editing ? this._wikiBackToMarker(vMarker.id) : null;
+  var formType = editing ? 'markerEdit-' + vMarker.id : 'newMarker';
+  // Leaving the editor any other way puts the pin back too.
+  this._pendingPinRestore = { type: formType, restore: restorePin };
+  if (!this._pinRestoreWatched) {
+    this._pinRestoreWatched = true;
+    this.mapControl.addHandler('afterSetContent', function(vContent, vType) {
+      var pending = _this._pendingPinRestore;
+      if (!pending || vType === pending.type) return;
+      _this._pendingPinRestore = null;
+      pending.restore();
+    });
+  }
+  this.mapControl._nextPageBack = editing ? function() { restorePin(); backToMarker(); } : null;
   this.mapControl._navigatingForward = true;
   this.mapControl.setContent(html, editing ? 'markerEdit-' + vMarker.id : 'newMarker');
   if (this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerLarge();
 
   var form = $('#newMarkerForm');
   form.find('#markerTitle').val(editing ? vMarker.title : '');
+  // Clicked spots get two decimals; saved ones keep what they have.
+  var initial = function(value) { return editing ? String(value) : String(Math.round(value * 100) / 100); };
+  form.find('#markerX').val(initial(vLatLng.lng));
+  form.find('#markerY').val(initial(vLatLng.lat));
+  var initialZ = editing && vMarker.z != null && vMarker.z !== '' ? vMarker.z : markupZ;
+  form.find('#markerZ').val(initialZ != null ? String(initialZ) : '');
+  form.find('#markerX, #markerY').on('input', function() {
+    var x = Number(form.find('#markerX').val());
+    var y = Number(form.find('#markerY').val());
+    if (!pin || !pin.setLatLng || form.find('#markerX').val() === '' || form.find('#markerY').val() === '' ||
+        !isFinite(x) || !isFinite(y)) return;
+    pin.setLatLng([y, x]);
+  });
   if (editing) form.find('#categoryId').val(String(vMarker.categoryId));
   form.find('#markerDescription').val(editing ? (vMarker.description || '') : '');
   form.find('#isGlobal').prop('checked', editing && vMarker.globalMarker == 1);
@@ -2475,6 +2530,9 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
     });
   };
   var tabs = editing && vMarker.tabText && vMarker.tabText.length ? vMarker.tabText : [''];
+  tabs = tabs.map(function(text) {
+    return (text || '').replace(new RegExp(coordMarkup.source, 'gi'), '');
+  });
   tabs.forEach(addSection);
   $('#add_field_button').on('click', function(e) {
     e.preventDefault();
@@ -2499,6 +2557,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
         return;
       }
       if (window.tinymce) tinymce.remove();
+      _this._pendingPinRestore = null;
       if (user.level < 5) {
         _this.mapControl.resetContent();
         toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS_RESTRICTED);

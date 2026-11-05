@@ -57,6 +57,14 @@
   $x          = (float) $_POST['lng'];
   $y          = (float) $_POST['lat'];
   $isGlobal   = isset($_POST['isGlobal']) ? 1 : 0;
+  // Height, where a game has one. Blank clears it; editors from before it
+  // was a field don't send it, which keeps what's there.
+  $hasZ = array_key_exists('z', $_POST);
+  $z    = $hasZ && is_numeric(trim((string) $_POST['z'])) ? (float) $_POST['z'] : null;
+  if (!is_finite($x) || !is_finite($y) || ($z !== null && !is_finite($z))) {
+    echo json_encode(array("success" => false, "msg" => "Coordinates must be numbers."));
+    return;
+  }
 
   // Stored entity-encoded; get_markers decodes on the way out.
   // stripslashes() predates the removal of magic quotes and is kept for parity.
@@ -117,11 +125,12 @@
         , description
         , x
         , y
+        , z
         , global
         , visible
         , last_updated
-      ) VALUES (?, 2, ?, ?, ?, ?, ?, ?, ?, ?, now())
-    ", [$submapId, $categoryId, $userId, $name, $description, $x, $y, $isGlobal, $visible]);
+      ) VALUES (?, 2, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())
+    ", [$submapId, $categoryId, $userId, $name, $description, $x, $y, $z, $isGlobal, $visible]);
 
     $markerId = (int) $db->lastInsertId();
   } else {
@@ -137,6 +146,11 @@
            , last_updated       = now()
     ";
     $params = [$submapId, $categoryId, $name, $description, $x, $y, $isGlobal];
+
+    if ($hasZ) {
+      $sql     .= "   , z = ?\n";
+      $params[] = $z;
+    }
 
     if ($sessionLevel >= 10) {
       $sql     .= "   , visible = ?\n";

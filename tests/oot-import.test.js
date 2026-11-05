@@ -12,11 +12,19 @@ test('CSV importer preserves quoted commas, newlines, escaped quotes and Unicode
 
 test('OoT pack exposes all distinct maps and main-texture variants without invented POIs',()=>{
   const maps=read('maps'),report=read('import-report');
-  expect(maps).toHaveLength(32);
-  expect(maps.flatMap(m=>m.subMap)).toHaveLength(116);
+  expect(maps).toHaveLength(11);
+  expect(maps.flatMap(m=>m.subMap)).toHaveLength(66);
   expect(new Set(maps.map(m=>m.id)).size).toBe(maps.length);
-  expect(new Set(maps.flatMap(m=>m.subMap.map(s=>s.id))).size).toBe(116);
-  expect(maps.filter(m=>m.kind==='region')).toHaveLength(21);
+  expect(new Set(maps.flatMap(m=>m.subMap.map(s=>s.id))).size).toBe(66);
+  expect(maps.filter(m=>m.kind==='world').map(m=>m.name)).toEqual(['Hyrule']);
+  expect(maps.find(m=>m.kind==='world').subMap.map(s=>s.name)).toEqual(['Child','Adult']);
+  const [child,adult]=maps.find(m=>m.kind==='world').subMap;
+  expect(child.placeLabels).toHaveLength(20);
+  expect(adult.placeLabels).toHaveLength(20);
+  expect(child.placeLabels.some(p=>p.name==='Hyrule Castle')).toBe(true);
+  expect(adult.placeLabels.some(p=>p.name==="Ganon's Castle")).toBe(true);
+  expect(adult.placeLabels.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y))).toBe(true);
+  expect(maps.some(m=>m.kind==='overview' || m.kind==='region')).toBe(false);
   expect(maps.filter(m=>m.kind==='dungeon')).toHaveLength(10);
   expect(read('markers')).toEqual([]);
   expect(report.placedPOIs).toBe(0);
@@ -48,8 +56,8 @@ test('all OoT floors, age variants and room states become selectable map layers'
     mapOptions:read('container')[0],maps:[],tilesBaseURL:'https://zeldamaps.com/tiles/',tileNameFormat:'{z}_{x}_{y}'
   });
   read('maps').forEach(m=>map.addMap(m));
-  expect(map.maps).toHaveLength(116);
-  expect(new Set(map.maps.map(m=>m.id)).size).toBe(116);
+  expect(map.maps).toHaveLength(66);
+  expect(new Set(map.maps.map(m=>m.id)).size).toBe(66);
   expect(map.maps.every(m=>m._url.startsWith('/tiles/oot/'))).toBe(true);
   expect(map.maps.some(m=>/Water level 3/.test(m.title))).toBe(true);
 });

@@ -258,8 +258,8 @@
       <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
       <link rel="stylesheet" href="data/OoT/icons.css" />
       <?php endif; ?>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-preview"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-preview" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-labels"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-labels" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

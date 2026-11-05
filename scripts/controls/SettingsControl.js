@@ -144,6 +144,10 @@ L.Control.Settings = L.Control.extend({
   },
 
   setRegionAreaNames: function(checked, skipSave) {
+    if(this.zMap.mapOptions.shortName === 'OoT') {
+      this.zMap.ootPlaceLabelsVisible=checked;
+      if(this.zMap.updateOotPlaceLabels) this.zMap.updateOotPlaceLabels();
+    }
     this.labelCategories.forEach(function(category) {
       this.setCategoryChecked(category, checked);
     }, this);
@@ -272,6 +276,12 @@ L.Control.Settings = L.Control.extend({
   },
 
   syncRegionAreaNames: function() {
+    if(this.zMap.mapOptions.shortName === 'OoT' && this.regionAreaCheckbox) {
+      this.regionAreaCheckbox.disabled=false;
+      this.regionAreaCheckbox.indeterminate=false;
+      this.regionAreaCheckbox.checked=this.zMap.ootPlaceLabelsVisible === false;
+      return;
+    }
     var selected = this.labelCategories.filter(function(category) {
       return category.checked;
     }).length;

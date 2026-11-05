@@ -2,9 +2,9 @@
   "schemaVersion": 1,
   "game": "OoT",
   "containerId": "64",
-  "maps": 32,
-  "submaps": 116,
-  "tileCount": 10116,
+  "maps": 11,
+  "submaps": 117,
+  "tileCount": 10457,
   "icons": 129,
   "textFiles": 540,
   "placedPOIs": 0,
@@ -38,21 +38,11 @@
   ],
   "limitations": [
     "No actor placement, scene coordinates, map transforms, or POI coordinate tables are present.",
-    "The illustrated overview is not georeferenced to the separate regional textures.",
-    "Mini textures are thumbnails, and dungeon Back/Alpha/Grad/All files are supporting masks, not additional playable floors.",
+    "World scene layout is an editable geographic approximation, not surveyed coordinates. Illustration excluded.",
+    "Clean Mini textures form the world composites. Dungeon Back/Alpha/Grad/All files are supporting masks.",
     "Categories and icons are ready, but no collectible/NPC/item markers are invented from dialogue."
   ],
   "assets": [
-    {
-      "source": "O5gaxzr81p.webp",
-      "sha256": "483eaf07a08880701c9dda42fd35b35212055a0495a059272c3f56cae4dc53ca",
-      "width": 3840,
-      "height": 2800,
-      "maxZoom": 4,
-      "tileURL": "oot/hyrule-overview/",
-      "offsetX": 128,
-      "offsetY": 648
-    },
     {
       "source": "OoTR-110-CustomTex-Map-Field/DeathMountainCrater_Child_00.png",
       "sha256": "27c1d991f31852e2a52163257c879b2d53d2037a86fa036820e67c37f8363888",
@@ -1202,6 +1192,26 @@
       "tileURL": "oot/water-temple-b1-lv3/",
       "offsetX": 24,
       "offsetY": 304
+    },
+    {
+      "source": "../../../../var/folders/s8/cm2pmt4s1qxbdn5s6qw35l080000gn/T/oot-world-V4qQhl/Hyrule_Child.png",
+      "sha256": "e2791a432af98b7356bee0d38750f2d596ef957453e24ca3819e5097cef88c93",
+      "width": 4096,
+      "height": 4096,
+      "maxZoom": 4,
+      "tileURL": "oot/hyrule-child/",
+      "offsetX": 0,
+      "offsetY": 0
+    },
+    {
+      "source": "../../../../var/folders/s8/cm2pmt4s1qxbdn5s6qw35l080000gn/T/oot-world-V4qQhl/Hyrule_Adult.png",
+      "sha256": "45c6ae4336105c25936a8a0bdab511bdf0ffb5d2096a6fb2a7557ef2f81ed9d4",
+      "width": 4096,
+      "height": 4096,
+      "maxZoom": 4,
+      "tileURL": "oot/hyrule-adult/",
+      "offsetX": 0,
+      "offsetY": 0
     }
   ]
 }

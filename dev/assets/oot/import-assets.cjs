@@ -89,7 +89,8 @@ async function main(source) {
       mapCopyright:'Map artwork © Nintendo. Local asset preview; no coordinate data supplied.',kind,subMap});
     console.log(name + ': ' + subMap.length + ' map variants');
   }
-  await addMap('Hyrule', 'Hyrule — Illustrated Overview', [path.join(source,'O5gaxzr81p.webp')], 'overview');
+  // Reserve the old overview IDs so existing regional/dungeon links remain stable.
+  mapId++; submapId++;
   await sharp(path.join(source,'O5gaxzr81p.webp')).resize(1200,630,{fit:'cover'}).webp({quality:85})
     .toFile(path.join(ROOT,'images/social-oot.webp'));
   const fields = fs.readdirSync(field).filter(f => f.endsWith('.png') && !f.startsWith('Mini_')).sort((a,b)=>
@@ -99,6 +100,20 @@ async function main(source) {
   const floors = fs.readdirSync(dungeon).filter(f=>f.endsWith('_Main.png')).sort((a,b)=>a.localeCompare(b, 'en', {numeric:true}));
   for(const key of [...new Set(floors.map(f=>f.split('_')[0]))])
     await addMap(key, friendly(key), floors.filter(f=>f.startsWith(key+'_')).map(f=>path.join(dungeon,f)), 'dungeon');
+  const temporary = fs.mkdtempSync(path.join(require('os').tmpdir(),'oot-world-'));
+  try {
+    await require('./compose-world.cjs')(source, temporary, sharp);
+    mapId = 65000; submapId = 650000;
+    await addMap('Hyrule', 'Hyrule', ['Child','Adult'].map(age=>path.join(temporary,`Hyrule_${age}.png`)), 'world');
+    const names = {ZoraDomain:"Zora's Domain",ZoraFountain:"Zora's Fountain",ZoraRiver:"Zora's River",LonLonRanch:'Lon Lon Ranch',GanonCastle:"Ganon's Castle"};
+    maps[maps.length-1].subMap.forEach(submap=>{
+      submap.placeLabels = require('./world-layout.json').regions
+        .filter(([key])=> !(key==='HyruleCastle' && submap.name==='Adult') && !(key==='GanonCastle' && submap.name==='Child'))
+        .map(([key,x,y])=>({name:names[key] || friendly(key),x:x/16,y:-(y+(key==='HyruleField' ? -350 : 0))/16}));
+    });
+  } finally { fs.rmSync(temporary,{recursive:true,force:true}); }
+  // Regions are now part of the world, not separate destinations.
+  maps.splice(0,maps.length,...maps.filter(m=>m.kind === 'world'),...maps.filter(m=>m.kind === 'dungeon'));
   const icons = fs.readdirSync(iconDir).filter(f=>f.endsWith('.png')).sort();
   fs.mkdirSync(path.join(out,'icons'),{recursive:true});
   for(const file of icons) await sharp(path.join(iconDir,file)).resize(128,128,{fit:'inside'}).png().toFile(path.join(out,'icons',file));
@@ -158,8 +173,8 @@ async function main(source) {
     unplacedDefinitions:Object.fromEntries(Object.entries(unplaced).map(([kind,rows])=>[kind,rows.length])),
     unplacedLocationLabels,
     limitations:['No actor placement, scene coordinates, map transforms, or POI coordinate tables are present.',
-      'The illustrated overview is not georeferenced to the separate regional textures.',
-      'Mini textures are thumbnails, and dungeon Back/Alpha/Grad/All files are supporting masks, not additional playable floors.',
+      'World scene layout is an editable geographic approximation, not surveyed coordinates. Illustration excluded.',
+      'Clean Mini textures form the world composites. Dungeon Back/Alpha/Grad/All files are supporting masks.',
       'Categories and icons are ready, but no collectible/NPC/item markers are invented from dialogue.'],assets});
   console.log(JSON.stringify({maps:maps.length,submaps:assets.length,tileCount,icons:icons.length,textFiles:Object.keys(text).length}));
 }

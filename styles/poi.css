@@ -257,3 +257,14 @@
 #newuserform .username-valid .registration-validation-icon { color: #77e2a8; }
 #newuserform .registration-validation-icon i,
 #newuserform .registration-validation-icon svg { width: 16px; height: 16px; font-size: 16px; }
+.oot-floor-control { position:fixed; right:calc(10px + env(safe-area-inset-right, 0px)); z-index:900; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+.oot-floor-control[hidden] { display:none; }
+.oot-floor-pill, .oot-floor-control select { background:rgba(16,18,17,.88); color:white; border:0; border-radius:28px; padding:6px; box-shadow:0 4px 18px #0005; -webkit-backdrop-filter:blur(16px); backdrop-filter:blur(16px); }
+.oot-floor-pill { display:flex; gap:2px; }
+.oot-floor-pill button { width:40px; height:40px; padding:0; border:0; border-radius:50%; color:#ccc; background:transparent; font:inherit; cursor:pointer; }
+.oot-floor-pill button[aria-pressed="true"] { background:rgba(255,255,255,.22); color:white; }
+.oot-floor-pill button:hover { color:white; }
+.oot-age-pill button { width:64px; border-radius:24px; }
+.oot-floor-control select { max-width:260px; padding:8px 12px; }
+.oot-place-label { background:none; border:0; pointer-events:none !important; text-align:center; color:#fff0cf; font-size:13px; font-weight:600; line-height:24px; text-shadow:0 1px 3px #000,1px 0 2px #000,-1px 0 2px #000; }
+.oot-place-label span { display:inline-block; line-height:1.15; }

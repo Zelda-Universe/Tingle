@@ -1236,7 +1236,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
   createMapsMenu: function() {
     var layers = this;
     var disableFn = function() {
-      this.disabled = (layers.currentMapLayer.id === this.category.id)
+      this.disabled = (layers.zMap.mapOptions.assetPreview
+        ? layers.currentMapLayer.originalId === this.category.originalId
+        : layers.currentMapLayer.id === this.category.id)
 
       return true;
     };
@@ -1288,7 +1290,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
         return true;
       },
-      categories: this._maps,
+      categories: this.zMap.mapOptions.assetPreview ? this._maps.filter(function(layer,index,all) {
+        return all.findIndex(function(other) { return other.originalId === layer.originalId; }) === index;
+      }) : this._maps,
       defaultToggledState: true
    });
     mapsMenu.domNode.addClass('switch-menu maps-menu');

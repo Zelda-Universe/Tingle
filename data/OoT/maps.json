@@ -1,18 +1,18 @@
 [
   {
-    "id": "64000",
-    "name": "Hyrule — Illustrated Overview",
+    "id": "65000",
+    "name": "Hyrule",
     "defaultZoom": "1",
     "maxZoom": "4",
     "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "overview",
+    "kind": "world",
     "subMap": [
       {
-        "id": "640000",
-        "name": "Overview",
+        "id": "650000",
+        "name": "Child",
         "mapTypeName": "FlatMap",
         "googleDefault": "0",
-        "tileURL": "oot/hyrule-overview/",
+        "tileURL": "oot/hyrule-child/",
         "tileBaseURL": "/tiles/",
         "tileExt": "webp",
         "img404": "blank",
@@ -20,43 +20,118 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "1",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/hyrule-overview.webp",
+        "iconURL": "data/OoT/previews/hyrule-child.webp",
         "maxZoom": "4",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64001",
-    "name": "Death Mountain Crater",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640001",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/death-mountain-crater-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/death-mountain-crater-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
+        "submapLayer": [],
+        "placeLabels": [
+          {
+            "name": "Hyrule Field",
+            "x": 136.25,
+            "y": -120.625
+          },
+          {
+            "name": "Market",
+            "x": 131.25,
+            "y": -94.375
+          },
+          {
+            "name": "Hyrule Castle",
+            "x": 131.25,
+            "y": -71.875
+          },
+          {
+            "name": "Kakariko Village",
+            "x": 175.625,
+            "y": -102.5
+          },
+          {
+            "name": "Graveyard",
+            "x": 203.125,
+            "y": -101.875
+          },
+          {
+            "name": "Death Mountain Trail",
+            "x": 175.625,
+            "y": -70
+          },
+          {
+            "name": "Goron City",
+            "x": 172.5,
+            "y": -42.5
+          },
+          {
+            "name": "Death Mountain Crater",
+            "x": 195,
+            "y": -35
+          },
+          {
+            "name": "Zora's River",
+            "x": 195.625,
+            "y": -131.875
+          },
+          {
+            "name": "Zora's Domain",
+            "x": 218.75,
+            "y": -101.25
+          },
+          {
+            "name": "Zora's Fountain",
+            "x": 226.25,
+            "y": -76.875
+          },
+          {
+            "name": "Kokiri Forest",
+            "x": 195,
+            "y": -176.875
+          },
+          {
+            "name": "Lost Woods",
+            "x": 215.625,
+            "y": -153.125
+          },
+          {
+            "name": "Sacred Forest Meadow",
+            "x": 229.375,
+            "y": -125.625
+          },
+          {
+            "name": "Lake Hylia",
+            "x": 121.875,
+            "y": -201.875
+          },
+          {
+            "name": "Gerudo Valley",
+            "x": 82.5,
+            "y": -154.375
+          },
+          {
+            "name": "Gerudo Fortress",
+            "x": 56.875,
+            "y": -127.5
+          },
+          {
+            "name": "Haunted Wasteland",
+            "x": 35.625,
+            "y": -94.375
+          },
+          {
+            "name": "Desert Colossus",
+            "x": 32.5,
+            "y": -58.125
+          },
+          {
+            "name": "Lon Lon Ranch",
+            "x": 138.125,
+            "y": -145.625
+          }
+        ]
       },
       {
-        "id": "640002",
-        "name": "Adult · 00",
+        "id": "650001",
+        "name": "Adult",
         "mapTypeName": "FlatMap",
         "googleDefault": "0",
-        "tileURL": "oot/death-mountain-crater-adult-00/",
+        "tileURL": "oot/hyrule-adult/",
         "tileBaseURL": "/tiles/",
         "tileExt": "webp",
         "img404": "blank",
@@ -64,1042 +139,111 @@
         "mapMapper": "Supplied OoT asset dump; texture placement preserved",
         "isDefault": "0",
         "opacity": "1",
-        "iconURL": "data/OoT/previews/death-mountain-crater-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64002",
-    "name": "Death Mountain Trail",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640003",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/death-mountain-trail-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/death-mountain-trail-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640004",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/death-mountain-trail-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/death-mountain-trail-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64003",
-    "name": "Desert Colossus",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640005",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/desert-colossus-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/desert-colossus-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640006",
-        "name": "Child · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/desert-colossus-child-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/desert-colossus-child-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640007",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/desert-colossus-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/desert-colossus-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640008",
-        "name": "Adult · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/desert-colossus-adult-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/desert-colossus-adult-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64004",
-    "name": "Gerudo Valley",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640009",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/gerudo-valley-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/gerudo-valley-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640010",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/gerudo-valley-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/gerudo-valley-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640011",
-        "name": "Adult · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/gerudo-valley-adult-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/gerudo-valley-adult-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64005",
-    "name": "Goron City",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640012",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/goron-city-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/goron-city-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640013",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/goron-city-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/goron-city-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64006",
-    "name": "Graveyard",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640014",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/graveyard-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/graveyard-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640015",
-        "name": "Child · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/graveyard-child-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/graveyard-child-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640016",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/graveyard-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/graveyard-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640017",
-        "name": "Adult · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/graveyard-adult-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/graveyard-adult-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64007",
-    "name": "Haunted Wasteland",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640018",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/hounted-wasteland-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/hounted-wasteland-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640019",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/hounted-wasteland-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/hounted-wasteland-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64008",
-    "name": "Hyrule Castle",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640020",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/hyrule-castle-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/hyrule-castle-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64009",
-    "name": "Hyrule Field",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640021",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/hyrule-field-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/hyrule-field-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640022",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/hyrule-field-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/hyrule-field-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64010",
-    "name": "Kakariko Village",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640023",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/kakariko-village-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/kakariko-village-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640024",
-        "name": "Child · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/kakariko-village-child-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/kakariko-village-child-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640025",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/kakariko-village-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/kakariko-village-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640026",
-        "name": "Adult · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/kakariko-village-adult-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/kakariko-village-adult-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64011",
-    "name": "Kokiri Forest",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640027",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/kokiri-forest-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/kokiri-forest-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640028",
-        "name": "Child · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/kokiri-forest-child-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/kokiri-forest-child-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640029",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/kokiri-forest-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/kokiri-forest-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64012",
-    "name": "Lake Hylia",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640030",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/lake-hylia-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/lake-hylia-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640031",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/lake-hylia-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/lake-hylia-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640032",
-        "name": "Adult · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/lake-hylia-adult-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/lake-hylia-adult-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64013",
-    "name": "Lon Lon Ranch",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640033",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/lon-lon-ranch-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/lon-lon-ranch-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640034",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/lon-lon-ranch-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/lon-lon-ranch-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64014",
-    "name": "Lost Woods",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640035",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/lost-wood-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/lost-wood-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640036",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/lost-wood-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/lost-wood-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64015",
-    "name": "Market",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640037",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/market-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/market-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640038",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/market-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/market-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64016",
-    "name": "Sacred Forest Meadow",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640039",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/sacred-forest-meadow-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/sacred-forest-meadow-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640040",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/sacred-forest-meadow-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/sacred-forest-meadow-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64017",
-    "name": "Zora Domain",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640041",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/zora-domain-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/zora-domain-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640042",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/zora-domain-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/zora-domain-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640043",
-        "name": "Adult · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/zora-domain-adult-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/zora-domain-adult-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64018",
-    "name": "Zora Fountain",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640044",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/zora-fountain-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/zora-fountain-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640045",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/zora-fountain-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/zora-fountain-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640046",
-        "name": "Adult · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/zora-fountain-adult-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/zora-fountain-adult-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64019",
-    "name": "Zora River",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640047",
-        "name": "Child · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/zora-river-child-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/zora-river-child-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640048",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/zora-river-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/zora-river-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64020",
-    "name": "Ganon's Castle",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640049",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/ganon-castle-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/ganon-castle-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      },
-      {
-        "id": "640050",
-        "name": "Adult · 01",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/ganon-castle-adult-01/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "0",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/ganon-castle-adult-01.webp",
-        "maxZoom": "3",
-        "submapLayer": []
-      }
-    ]
-  },
-  {
-    "id": "64021",
-    "name": "Gerudo Fortress",
-    "defaultZoom": "1",
-    "maxZoom": "3",
-    "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",
-    "kind": "region",
-    "subMap": [
-      {
-        "id": "640051",
-        "name": "Adult · 00",
-        "mapTypeName": "FlatMap",
-        "googleDefault": "0",
-        "tileURL": "oot/gerudo-fortress-adult-00/",
-        "tileBaseURL": "/tiles/",
-        "tileExt": "webp",
-        "img404": "blank",
-        "emptyMap": "0",
-        "mapMapper": "Supplied OoT asset dump; texture placement preserved",
-        "isDefault": "1",
-        "opacity": "1",
-        "iconURL": "data/OoT/previews/gerudo-fortress-adult-00.webp",
-        "maxZoom": "3",
-        "submapLayer": []
+        "iconURL": "data/OoT/previews/hyrule-adult.webp",
+        "maxZoom": "4",
+        "submapLayer": [],
+        "placeLabels": [
+          {
+            "name": "Hyrule Field",
+            "x": 136.25,
+            "y": -120.625
+          },
+          {
+            "name": "Market",
+            "x": 131.25,
+            "y": -94.375
+          },
+          {
+            "name": "Ganon's Castle",
+            "x": 131.25,
+            "y": -71.875
+          },
+          {
+            "name": "Kakariko Village",
+            "x": 175.625,
+            "y": -102.5
+          },
+          {
+            "name": "Graveyard",
+            "x": 203.125,
+            "y": -101.875
+          },
+          {
+            "name": "Death Mountain Trail",
+            "x": 175.625,
+            "y": -70
+          },
+          {
+            "name": "Goron City",
+            "x": 172.5,
+            "y": -42.5
+          },
+          {
+            "name": "Death Mountain Crater",
+            "x": 195,
+            "y": -35
+          },
+          {
+            "name": "Zora's River",
+            "x": 195.625,
+            "y": -131.875
+          },
+          {
+            "name": "Zora's Domain",
+            "x": 218.75,
+            "y": -101.25
+          },
+          {
+            "name": "Zora's Fountain",
+            "x": 226.25,
+            "y": -76.875
+          },
+          {
+            "name": "Kokiri Forest",
+            "x": 195,
+            "y": -176.875
+          },
+          {
+            "name": "Lost Woods",
+            "x": 215.625,
+            "y": -153.125
+          },
+          {
+            "name": "Sacred Forest Meadow",
+            "x": 229.375,
+            "y": -125.625
+          },
+          {
+            "name": "Lake Hylia",
+            "x": 121.875,
+            "y": -201.875
+          },
+          {
+            "name": "Gerudo Valley",
+            "x": 82.5,
+            "y": -154.375
+          },
+          {
+            "name": "Gerudo Fortress",
+            "x": 56.875,
+            "y": -127.5
+          },
+          {
+            "name": "Haunted Wasteland",
+            "x": 35.625,
+            "y": -94.375
+          },
+          {
+            "name": "Desert Colossus",
+            "x": 32.5,
+            "y": -58.125
+          },
+          {
+            "name": "Lon Lon Ranch",
+            "x": 138.125,
+            "y": -145.625
+          }
+        ]
       }
     ]
   },

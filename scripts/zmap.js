@@ -287,7 +287,11 @@ ZMap.prototype.addMap = function(vMap) {
        layer.id = 'mID' + vMap.id + 's' + submap.id;
        layer.originalId = vMap.id;
        layer.defaultSubMapId = submap.id;
-       layer.title = title;
+       layer.ootKind = vMap.kind;
+       layer.ootGroupName = vMap.name;
+       layer.ootVariant = submap.name;
+       layer.ootPlaceLabels = submap.placeLabels || [];
+       layer.title = submap === vMap.subMap[0] ? vMap.name : title;
        layer._overlayMap = [];
        this.maps.push(layer);
      }, this);
@@ -1403,12 +1407,13 @@ ZMap.prototype.addMapControl = function(gameId) {
     }
     // END OF WORKAROUND!!!
     //console.log(e.originalId + " " + defaultSubMapId);
+    var sameOotMap = _this.mapOptions.assetPreview && _this.mapControl.currentMap == e.originalId;
     _this.mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
     _this.refreshMap();
     _this._closeNewMarker();
     //this.mapControl.resetContent();
 
-    _this.map.setView(new L.LatLng(
+    if(!sameOotMap) _this.map.setView(new L.LatLng(
       _this.mapOptions.centerY,
       _this.mapOptions.centerX
     ), _this.map.getZoom());
@@ -1416,6 +1421,7 @@ ZMap.prototype.addMapControl = function(gameId) {
   if(this.mapOptions.assetPreview) {
     var requestedMap = ZConfig.getConfig('map');
     if(requestedMap) this.mapControl.changeMapOnly(requestedMap, ZConfig.getConfig('subMap'));
+    if(this.setupOotFloors) this.setupOotFloors();
   }
 
   $(document).on('keydown', function(e) {

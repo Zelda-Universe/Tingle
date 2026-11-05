@@ -49,10 +49,13 @@ Read this before writing or changing anything under `ajax/`, `lib/` or
 
 ## Schema
 
-- Every schema change is a migration file in `dev/db/migrate/` **and** the
-  equivalent SQL run by hand on staging and production before the code that
-  needs it deploys. The migration tooling is not run against those databases
-  (`schema_migrations` there is stale since 2018).
+- Every schema change is a SQL file in `migrations/`, applied by
+  `bin/migrate.php`, which `deploy.sh` runs on every deploy — merging to
+  `staging` or `production` brings the schema with it. Read
+  `migrations/README.md` before writing one (idempotent, additive, no
+  charset clauses, heavy rebuilds by hand first). The Rails files in
+  `dev/db/migrate/` are history; the migrator is never run against the real
+  databases (`schema_migrations` there is stale since 2018).
 - Prefer the schema being right over feature-detecting columns with
   `SHOW COLUMNS` in code.
 - Everything is `utf8mb4` / `utf8mb4_swedish_ci` (since

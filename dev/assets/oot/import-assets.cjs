@@ -38,7 +38,7 @@ async function main(source) {
   const iconDir = path.join(source, 'OoTR-110-UI-Icons');
   const maps = [], assets = [];
   let mapId = 64000, submapId = 640000, tileCount = 0;
-  async function render(file, dest) {
+  async function render(file, dest, kind) {
     const buffer = fs.readFileSync(file);
     const sha256 = crypto.createHash('sha256').update(buffer).digest('hex');
     const meta = await sharp(buffer).metadata();
@@ -51,7 +51,10 @@ async function main(source) {
       return { maxZoom, tileURL: existing.tileURL };
     }
     const offsetX = Math.floor((side - meta.width) / 2), offsetY = Math.floor((side - meta.height) / 2);
-    const canvas = await sharp({ create: { width: side, height: side, channels: 4, background: '#241a0c' } })
+    // The Hyrule map paints its own background, fitted to the areas; around
+    // it the tiles are transparent. Dungeon floors fill their square.
+    const background = kind === 'world' ? {r:0, g:0, b:0, alpha:0} : '#241a0c';
+    const canvas = await sharp({ create: { width: side, height: side, channels: 4, background } })
       .composite([{input: buffer, left: offsetX, top: offsetY}]).png().toBuffer();
     const relative = 'oot/' + dest + '/';
     const dir = path.join(ROOT, 'tiles', relative);
@@ -79,7 +82,7 @@ async function main(source) {
       const stem = path.basename(file, path.extname(file));
       const suffix = stem.startsWith(key + '_') ? stem.slice(key.length + 1).replace(/_Main$/, '') : 'Overview';
       const dest = slug(key + '-' + suffix);
-      const rendered = await render(file, dest);
+      const rendered = await render(file, dest, kind);
       const variant = suffix.replace(/_/g, ' · ').replace(/State(\d+)/g, 'State $1').replace(/Lv(\d+)/g, 'Water level $1');
       subMap.push({id:String(submapId++),name:variant, mapTypeName:'FlatMap',googleDefault:'0',
         tileURL:rendered.tileURL, tileBaseURL:'/tiles/',tileExt:'webp',img404:'blank',emptyMap:'0',
@@ -92,8 +95,6 @@ async function main(source) {
   }
   // Reserve the old overview IDs so existing regional/dungeon links remain stable.
   mapId++; submapId++;
-  await sharp(path.join(source,'O5gaxzr81p.webp')).resize(1200,630,{fit:'cover'}).webp({quality:85})
-    .toFile(path.join(ROOT,'images/social-oot.webp'));
   const fields = fs.readdirSync(field).filter(f => f.endsWith('.png') && !f.startsWith('Mini_')).sort((a,b)=>
     Number(a.includes('_Adult_')) - Number(b.includes('_Adult_')) || a.localeCompare(b));
   for(const key of [...new Set(fields.map(f=>f.split('_')[0]))])
@@ -119,6 +120,10 @@ async function main(source) {
       // Lon Lon Ranch is drawn inside the Hyrule Field artwork; label the ranch there.
       const field = require('./world-boxes.json').boxes[submap.name].HyruleField;
       submap.placeLabels.push({name:names.LonLonRanch, x:(field[0] + 0.447 * field[2]) / scale, y:-(field[1] + 0.598 * field[3]) / scale});
+      submap.connections = require('./connections.cjs')(submap.placeLabels, key => names[key] || friendly(key), submap.name);
+      // The map's limits: the painted rectangle around the areas, in map units.
+      const extent = require('./world-boxes.json').extent;
+      submap.bounds = [[-extent[3]/scale, extent[0]/scale], [-extent[1]/scale, extent[2]/scale]];
     });
   } finally { fs.rmSync(temporary,{recursive:true,force:true}); }
   // Regions are now part of the world, not separate destinations.

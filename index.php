@@ -14,7 +14,7 @@
     'OoT' => [
       'name' => 'Ocarina of Time Remake (2026)',
       'description' => 'The Legend of Zelda: Ocarina of Time (2026) interactive map. Find all 36 Heart Pieces, 100 Gold Skulltulas and 10 Big Poes in Hyrule and every dungeon.',
-      'image' => 'social-oot.webp',
+      'image' => 'social-oot.jpg',
       'themeColor' => '#b99b4b'
     ],
     'LA' => [
@@ -290,8 +290,8 @@
       <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
       <link rel="stylesheet" href="data/OoT/icons.css" />
       <?php endif; ?>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-21"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-21" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-22"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-22" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

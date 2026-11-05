@@ -53,8 +53,9 @@ SHARP_MODULE=/path/to/node_modules/sharp node dev/assets/oot/import-assets.cjs /
 ```
 
 Unchanged source images reuse their existing tile pyramids. Source files are
-never edited. Output is confined to `data/OoT`, `tiles/oot`, and
-`images/social-oot.webp`. This preview branch includes `tiles/oot` in Git so
+never edited. Output is confined to `data/OoT` and `tiles/oot`. The link
+preview, `images/social-oot.jpg`, is a screenshot of the map like the other
+games': `node dev/captureSocialImages.mjs http://localhost:8080/ OoTR`. This preview branch includes `tiles/oot` in Git so
 other developers can pull and run it without the original dump or Sharp.
 The other games' tiles remain ignored. OoT tiles are served locally at
 `/tiles/oot/`; a deployment must preserve that directory at the same URL.

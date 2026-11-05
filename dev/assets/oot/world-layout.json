@@ -1,26 +1,29 @@
 {
-  "description": "Area layout registered against the MapGenie/IGN remake map: each area's clean artwork was image-matched to their map for position and scale, relative to Hyrule Field (1280px wide). Centres on an 8192px canvas; width preserves each silhouette's aspect ratio. Lost Woods, Haunted Wasteland and Sacred Forest Meadow use different art there and were placed by hand. Graveyard (not drawn separately there) sits off Kakariko's east exit. Lon Lon Ranch is part of the Hyrule Field artwork.",
+  "description": "Area layout for the Hyrule map: centres on an 8192px canvas. Width is for the Child artwork; Adult artwork is drawn at the same scale. Areas keep at least 120px apart, and connected areas are placed so their connector lines (connections.json) run straight where possible. Graveyard sits off Kakariko's east exit; Lon Lon Ranch is part of the Hyrule Field artwork. adultShift moves an area's Adult artwork by [x, y] pixels so it lines up with the Child artwork.",
   "canvas": 8192,
   "regions": [
-    ["HyruleField", 4220, 5039, 1280],
-    ["Market", 3914, 3880, 639],
-    ["HyruleCastle", 3923, 3181, 354],
-    ["GanonCastle", 3923, 3181, 354],
-    ["KakarikoVillage", 5275, 3881, 558],
-    ["Graveyard", 5752, 3963, 351],
-    ["DeathMountainTrail", 5316, 3147, 200],
-    ["GoronCity", 4898, 2659, 514],
-    ["DeathMountainCrater", 5275, 2167, 446],
-    ["ZoraRiver", 6150, 4478, 800],
-    ["ZoraDomain", 6960, 4579, 721],
-    ["ZoraFountain", 7808, 4789, 502],
-    ["KokiriForest", 5163, 6108, 754],
-    ["LostWood", 5898, 5745, 427],
-    ["SacredForestMeadow", 6484, 5460, 110],
-    ["LakeHylia", 3669, 6025, 576],
-    ["GerudoValley", 2780, 4788, 501],
-    ["GerudoFortress", 2140, 4282, 664],
-    ["HountedWasteland", 1267, 4032, 402],
-    ["DesertColossus", 435, 4072, 605]
-  ]
+    ["HyruleField", 4209, 4702, 1280],
+    ["Market", 3980, 3833, 639],
+    ["HyruleCastle", 3992, 3183, 354],
+    ["GanonCastle", 3889, 3232, 354],
+    ["KakarikoVillage", 4934, 3817, 558],
+    ["Graveyard", 5411, 3899, 351],
+    ["DeathMountainTrail", 4971, 3164, 200],
+    ["GoronCity", 4391, 2526, 514],
+    ["DeathMountainCrater", 5047, 2502, 446],
+    ["ZoraRiver", 5442, 4430, 800],
+    ["ZoraDomain", 6252, 4531, 721],
+    ["ZoraFountain", 6990, 4742, 502],
+    ["KokiriForest", 5148, 5774, 754],
+    ["LostWood", 5861, 5422, 427],
+    ["SacredForestMeadow", 6254, 5148, 110],
+    ["LakeHylia", 3849, 5543, 576],
+    ["GerudoValley", 3173, 4453, 501],
+    ["GerudoFortress", 2532, 4094, 664],
+    ["HountedWasteland", 1878, 3844, 402],
+    ["DesertColossus", 1254, 3883, 605]
+  ],
+  "adultShift": {
+    "ZoraFountain": [0, -25]
+  }
 }

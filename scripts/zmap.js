@@ -293,6 +293,8 @@ ZMap.prototype.addMap = function(vMap) {
        layer.ootGroupName = vMap.name;
        layer.ootVariant = variantName;
        layer.ootPlaceLabels = submap.placeLabels || [];
+       layer.ootConnections = submap.connections || [];
+       layer.ootBounds = submap.bounds || null;
        layer.title = submap === vMap.subMap[0] ? vMap.name : title;
        layer._overlayMap = [];
        this.maps.push(layer);
@@ -2342,7 +2344,8 @@ ZMap.prototype._limitZoomToMapBounds = function() {
   var zMap = this;
   var map = this.map;
   if(!map.options.maxBounds) return;
-  var bounds = L.latLngBounds(map.options.maxBounds);
+  // Read each time: a map can set its own limits (OoT's Hyrule map).
+  var bounds = function() { return L.latLngBounds(map.options.maxBounds); };
   // Room left around the map when it's fully zoomed out.
   var margin = 10;
   var insets = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -2393,14 +2396,14 @@ ZMap.prototype._limitZoomToMapBounds = function() {
     var drag = map.dragging;
     if(!drag || !drag._offsetLimit) return;
     drag._offsetLimit = L.bounds(
-      map.latLngToContainerPoint(bounds.getNorthWest()).multiplyBy(-1)
+      map.latLngToContainerPoint(bounds().getNorthWest()).multiplyBy(-1)
         .add(L.point(insets.left, insets.top)),
-      map.latLngToContainerPoint(bounds.getSouthEast()).multiplyBy(-1)
+      map.latLngToContainerPoint(bounds().getSouthEast()).multiplyBy(-1)
         .add(map.getSize()).subtract(L.point(insets.right, insets.bottom))
     );
   });
 
-  var update = function() {
+  var update = function(boundsChanged) {
     var size = map.getSize();
     if(!size.x || !size.y) return;
     var next = measureInsets();
@@ -2414,11 +2417,11 @@ ZMap.prototype._limitZoomToMapBounds = function() {
       insets.left + insets.right + 2 * margin, insets.top + insets.bottom + 2 * margin
     ));
     var current = map.getZoom() || 0;
-    var mapSize = L.bounds(map.project(bounds.getNorthWest(), current), map.project(bounds.getSouthEast(), current)).getSize();
+    var mapSize = L.bounds(map.project(bounds().getNorthWest(), current), map.project(bounds().getSouthEast(), current)).getSize();
     if(free.x <= 0 || free.y <= 0 || !mapSize.x || !mapSize.y) return;
     var zoom = map.getScaleZoom(Math.min(free.x / mapSize.x, free.y / mapSize.y), current);
     if(Number.isFinite(zoom)) map.setMinZoom(Math.max(0, Math.min(zoom, Number(map.getMaxZoom()))));
-    if(moved && map._loaded) map.panInsideBounds(bounds, { animate: false });
+    if((moved || boundsChanged === true) && map._loaded) map.panInsideBounds(bounds(), { animate: false });
   };
   this._updateMinZoom = update;
   update();
@@ -6721,3 +6724,15 @@ ZMap.prototype.pad = function(num, size) {
     return newNum;
 
 }
+
+// OoT's Hyrule map is a wide rectangle, not the square the dungeon floors use:
+// keep the view, and the furthest zoom out, to the current map's own limits.
+ZMap.prototype.applyOotMapBounds = function() {
+  var layer=this.mapControl && this.mapControl.currentMapLayer;
+  if(!this.map || !this.map.options.maxBounds) return;
+  if(!this._defaultMaxBounds) this._defaultMaxBounds=L.latLngBounds(this.map.options.maxBounds);
+  var next=layer && layer.ootBounds ? L.latLngBounds(layer.ootBounds) : this._defaultMaxBounds;
+  if(L.latLngBounds(this.map.options.maxBounds).equals(next)) return;
+  this.map.setMaxBounds(next);
+  if(this._updateMinZoom) this._updateMinZoom(true);
+};

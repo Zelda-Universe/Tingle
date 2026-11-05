@@ -88,8 +88,25 @@ const games = [
     `
   },
   // The whole area beside the sidebar covered by the map.
-  { id: 'EoW', setup: `cover([[0, -35.25], [482.25, 693.75]]);` }
+  { id: 'EoW', setup: `cover([[0, -35.25], [482.25, 693.75]]);` },
+  // All of Hyrule (Child), fitted beside the sidebar. The "Map Under
+  // Construction" notice is hidden so the category list shows instead.
+  {
+    id: 'OoTR', file: 'oot', settle: 8000,
+    setup: `
+      var style = document.createElement('style');
+      style.textContent = '.oot-preview-notice { display: none !important; }';
+      document.head.appendChild(style);
+      // Fully zoomed out, which is fractional; round up to a zoom where tiles
+      // span whole device pixels, or hairline seams show between them.
+      var zoom = map.getMinZoom(), tileZoom = Math.round(zoom);
+      var size = Math.ceil(256 * Math.pow(2, zoom - tileZoom) * devicePixelRatio) / devicePixelRatio;
+      centerBeside(L.latLngBounds(map.options.maxBounds).getCenter(), tileZoom + Math.log2(size / 256));
+    `
+  }
 ];
+// node dev/captureSocialImages.mjs [base URL] [game ...] captures only those games.
+const only = process.argv.slice(3);
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -154,7 +171,7 @@ const chrome = spawn(chromePath, [
 try {
   const cdp = client(await connect());
   await cdp.ready;
-  for(const game of games) {
+  for(const game of games.filter(game => !only.length || only.includes(game.id))) {
     // A fresh context each time: signed out, no saved settings or Minimal UI.
     const { browserContextId } = await cdp.send('Target.createBrowserContext');
     const { targetId } = await cdp.send('Target.createTarget', { url: 'about:blank', browserContextId });
@@ -170,9 +187,9 @@ try {
     // Tiles beyond a map's edge may never load, so don't wait on them forever.
     await waitFor(cdp, sessionId, `!document.querySelector('.leaflet-tile:not(.leaflet-tile-loaded)')`, 20000)
       .catch(() => {});
-    await sleep(1500);
+    await sleep(game.settle || 1500);
     const { data } = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 85 }, sessionId);
-    const file = `images/social-${game.id.toLowerCase()}.jpg`;
+    const file = `images/social-${(game.file || game.id).toLowerCase()}.jpg`;
     writeFileSync(join(root, file), Buffer.from(data, 'base64'));
     console.log(file);
     await cdp.send('Target.disposeBrowserContext', { browserContextId });

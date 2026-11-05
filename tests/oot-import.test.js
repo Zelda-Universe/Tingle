@@ -157,3 +157,48 @@ test('all OoT floors, age variants and room states become selectable map layers'
   expect(map.maps.every(m=>m._url.startsWith('/tiles/oot/'))).toBe(true);
   expect(map.maps.some(m=>/Water level 3/.test(m.title))).toBe(true);
 });
+
+test('Hyrule connector lines join real exits on areas that exist for each age',()=>{
+  const data=require('../dev/assets/oot/connections.json');
+  const world=read('maps').find(m=>m.id==='65000');
+  expect(world.subMap.map(s=>s.name)).toEqual(['Child','Adult']);
+  for(const submap of world.subMap) {
+    const areas=new Map(submap.placeLabels.filter(p=>p.bounds).map(p=>[p.name,p]));
+    expect(submap.connections.length).toBe(18);
+    for(const link of submap.connections) {
+      expect(['d','h','v']).toContain(link.route);
+      for(const [area,u,v] of [link.from,link.to]) {
+        expect(areas.has(area)).toBe(true);
+        // On, or within a few pixels of, the area's artwork.
+        expect(u).toBeGreaterThanOrEqual(-0.1); expect(u).toBeLessThanOrEqual(1.1);
+        expect(v).toBeGreaterThanOrEqual(-0.1); expect(v).toBeLessThanOrEqual(1.1);
+      }
+    }
+  }
+  // Every link names exits that exist, and maps.json is up to date with them.
+  for(const [from,to] of data.links) { expect(data.exits[from]).toBeDefined(); expect(data.exits[to]).toBeDefined(); }
+  const names={ZoraDomain:"Zora's Domain",ZoraFountain:"Zora's Fountain",ZoraRiver:"Zora's River",LonLonRanch:'Lon Lon Ranch',GanonCastle:"Ganon's Castle"};
+  const {friendly}=require('../dev/assets/oot/import-assets.cjs');
+  for(const submap of world.subMap)
+    expect(submap.connections).toEqual(require('../dev/assets/oot/connections.cjs')(submap.placeLabels,k=>names[k]||friendly(k),submap.name));
+});
+
+test('connectors that should run straight are level or plumb on both ages',()=>{
+  const world=read('maps').find(m=>m.id==='65000');
+  const straight={"Hyrule Field>Gerudo Valley":'H',"Hyrule Field>Zora's River":'H',"Zora's Domain>Zora's Fountain":'H',
+    "Lost Woods>Sacred Forest Meadow":'H',"Gerudo's Fortress>Haunted Wasteland":'H',"Haunted Wasteland>Desert Colossus":'H',
+    "Hyrule Field>Kokiri Forest":'V',"Market>Hyrule Castle":'V',"Market>Ganon's Castle":'V'};
+  const px=2/32; // two artwork pixels, in map units (8192px canvas, 256 units)
+  for(const submap of world.subMap) {
+    const bounds=Object.fromEntries(submap.placeLabels.filter(p=>p.bounds).map(p=>[p.name,p.bounds]));
+    const point=([area,u,v])=>{const b=bounds[area];const s=Math.min(b[0][0],b[1][0]),n=Math.max(b[0][0],b[1][0]),w=Math.min(b[0][1],b[1][1]),e=Math.max(b[0][1],b[1][1]);
+      return [n-v*(n-s),w+u*(e-w)];};
+    for(const link of submap.connections) {
+      const kind=straight[link.from[0]+'>'+link.to[0]];
+      if(!kind) continue;
+      const a=point(link.from),b=point(link.to);
+      if(kind==='H') expect(Math.abs(a[0]-b[0])).toBeLessThan(px);
+      else expect(Math.abs(a[1]-b[1])).toBeLessThan(px);
+    }
+  }
+});

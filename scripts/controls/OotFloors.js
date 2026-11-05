@@ -5,8 +5,14 @@ ZMap.prototype.setupOotFloors = function() {
   var labelPane=this.map.getPane('ootPlaceNames') || this.map.createPane('ootPlaceNames');
   labelPane.style.zIndex='625';
   labelPane.style.pointerEvents='none';
+  // Lines between area exits: above the map art, below markers and labels.
+  var connections = L.layerGroup().addTo(this.map);
+  var connectionPane=this.map.getPane('ootConnections') || this.map.createPane('ootConnections');
+  connectionPane.style.zIndex='350';
+  connectionPane.style.pointerEvents='none';
   this.ootPlaceLabelsVisible = getCookie('showRegionAreaNames') !== 'false';
   this.updateOotPlaceLabels = function() {
+    drawConnections();
     placeLabels.clearLayers();
     if(!zmap.ootPlaceLabelsVisible) return;
     var layer=zmap.mapControl.currentMapLayer;
@@ -24,6 +30,46 @@ ZMap.prototype.setupOotFloors = function() {
     });
     layoutPlaceNames();
   };
+  // Each end of a link is [area name, u, v]: a spot inside that area's
+  // artwork, placed from the area's bounds on this map version, so the lines
+  // follow the areas wherever the layout puts them. Routes: d = diagonal
+  // first then straight, h = horizontal first, v = vertical first.
+  function drawConnections() {
+    connections.clearLayers();
+    var layer=zmap.mapControl.currentMapLayer;
+    if(!layer || !(layer.ootConnections || []).length) return;
+    var bounds={};
+    (layer.ootPlaceLabels || []).forEach(function(place) { if(place.bounds) bounds[place.name]=place.bounds; });
+    var point=function(end) {
+      var b=bounds[end[0]];
+      if(!b) return null;
+      var south=Math.min(b[0][0],b[1][0]),north=Math.max(b[0][0],b[1][0]);
+      var west=Math.min(b[0][1],b[1][1]),east=Math.max(b[0][1],b[1][1]);
+      return [north-end[2]*(north-south), west+end[1]*(east-west)];
+    };
+    layer.ootConnections.forEach(function(link) {
+      var a=point(link.from),b=point(link.to);
+      if(!a || !b) return;
+      // Ends within a couple of pixels of level or plumb are meant to be: snap
+      // them, so rounding in the artwork's placement can't put a kink in.
+      var px=2/Math.pow(2,layer.options.maxNativeZoom || 5); // 2 artwork pixels, in map units
+      if(Math.abs(a[0]-b[0])<px) b=[a[0],b[1]];
+      if(Math.abs(a[1]-b[1])<px) b=[b[0],a[1]];
+      var corner;
+      if(link.route==='h') corner=[a[0],b[1]];
+      else if(link.route==='v') corner=[b[0],a[1]];
+      else {
+        var dLat=b[0]-a[0],dLng=b[1]-a[1],step=Math.min(Math.abs(dLat),Math.abs(dLng));
+        corner=[a[0]+Math.sign(dLat)*step,a[1]+Math.sign(dLng)*step];
+      }
+      L.polyline([a,corner,b],{pane:'ootConnections',interactive:false,color:'#fff',weight:1.5,opacity:.45,
+        lineJoin:'miter',lineCap:'butt',className:'oot-connection'}).addTo(connections);
+      [a,b].forEach(function(end) {
+        L.circleMarker(end,{pane:'ootConnections',interactive:false,radius:3,stroke:false,fill:true,
+          fillColor:'#fff',fillOpacity:.6,className:'oot-connection-end'}).addTo(connections);
+      });
+    });
+  }
   function layoutPlaceNames() {
     var size=Math.max(11,Math.min(18,11+(zmap.map.getZoom()-1)*1.4));
     var points=zmap.getMarkers().filter(function(marker) {
@@ -62,6 +108,7 @@ ZMap.prototype.setupOotFloors = function() {
     zmap.updateUrl();
   }
   function render() {
+    if(zmap.applyOotMapBounds) zmap.applyOotMapBounds();
     zmap.updateOotPlaceLabels();
     if(zmap.refreshSelectedAreaVariant) zmap.refreshSelectedAreaVariant();
     var current = zmap.mapControl.currentMapLayer;

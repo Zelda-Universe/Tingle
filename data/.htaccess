@@ -1,3 +1,0 @@
-# Nothing under data/ may be browsed as a directory listing. Files the site
-# uses (marker images, icons, language files) are still served by name.
-Options -Indexes

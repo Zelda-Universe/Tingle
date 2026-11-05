@@ -25,19 +25,28 @@ test('shared list icons read POI treatments from raw category records',()=>{
   expect(icon.iconClass).toBe('OoT_HeartPiece');
 });
 
-test('area SEO catalog has unique variant URLs and area-specific descriptions',()=>{
+test('area SEO catalog has one page per area and dungeon, with counted descriptions',()=>{
   const helper=require('path').resolve(__dirname,'../lib/common/seo.php');
   const areas=JSON.parse(require('child_process').execFileSync('php',['-r',`require ${JSON.stringify(helper)}; echo json_encode(seoAreaPages());`],{encoding:'utf8'}));
-  expect(areas.filter(a=>!a.isMap).length).toBe(40);
-  expect(areas.filter(a=>a.isMap).length).toBe(66);
+  // 21 Hyrule areas (both ages on one page) and 11 maps (all floors on one page).
+  expect(areas.filter(a=>!a.isMap).length).toBe(21);
+  expect(areas.filter(a=>a.isMap).length).toBe(11);
   expect(new Set(areas.map(a=>a.url)).size).toBe(areas.length);
+  expect(new Set(areas.map(a=>a.description)).size).toBe(areas.length);
   for(const area of areas) {
-    expect(area.description).toContain(area.name);
-    expect(area.description).toContain('Ocarina of Time');
-    expect(area.description).toContain('Remake (2026)');
+    expect(area.description.startsWith(area.name+' map for Ocarina of Time (2026)')).toBe(true);
+    expect(area.description.length).toBeLessThanOrEqual(150);
+    expect(area.key).not.toMatch(/[^a-z0-9-]/);
+    expect(area.keys).toContain(area.key);
+    expect(area.subMaps).toContain(area.subMap);
     expect(new URL(area.url).searchParams.get('area')).toBe(area.key);
     expect(new URL(area.url).searchParams.get('subMap')).toBe(area.subMap);
   }
+  const river=areas.find(a=>a.name==="Zora's River");
+  expect(river.key).toBe('zoras-river');
+  expect(river.keys).toContain('zora-s-river');
+  expect(river.description).toBe("Zora's River map for Ocarina of Time (2026): where to find its 4 Heart Pieces and 4 Gold Skulltulas.");
+  expect(areas.find(a=>a.key==='map-64031').subMaps.length).toBe(15); // every floor and water level
 });
 
 test('area lists only visible categories, matching maps/ages and contained POIs',()=>{

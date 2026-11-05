@@ -58,19 +58,77 @@
     return 'https://zeldamaps.com/?' . http_build_query(['game' => $gameShortName === 'OoT' ? 'OoTR' : $gameShortName, 'category' => $slug]);
   }
 
-  // Share one area catalog between metadata and the sitemap.
+  // Area addresses: apostrophes are dropped, not turned into dashes
+  // ("zoras-river", not "zora-s-river"). Category slugs keep seoSlug, so
+  // existing category links don't change.
+  function seoAreaSlug($name) {
+    return seoSlug(str_replace(["'", "\u{2019}"], '', (string) $name));
+  }
+
+  // "a, b and c".
+  function seoList($items) {
+    return count($items) > 1 ? implode(', ', array_slice($items, 0, -1)) . ' and ' . end($items) : ($items[0] ?? '');
+  }
+
+  // OoT's collectibles counted per Hyrule area (by name) and per dungeon
+  // ("map-<id>"), both ages together: [key => [categoryId => count]].
+  function seoOotCollectibleCounts() {
+    $counts = [];
+    foreach (ootPackData('markers') ?? [] as $marker) {
+      $gameData = json_decode((string) ($marker['gameData'] ?? ''), true) ?: [];
+      $key = (string) $marker['mapId'] === '65000' ? ($gameData['areaName'] ?? '') : 'map-' . $marker['mapId'];
+      if ($key === '') continue;
+      $category = (string) $marker['markerCategoryId'];
+      $counts[$key][$category] = ($counts[$key][$category] ?? 0) + 1;
+      if ((string) $marker['mapId'] === '65000') $counts['map-65000'][$category] = ($counts['map-65000'][$category] ?? 0) + 1;
+    }
+    return $counts;
+  }
+
+  // "Kakariko Village map for Ocarina of Time (2026): where to find its 4
+  // Heart Pieces and 6 Gold Skulltulas." A single one goes unnumbered ("its
+  // Heart Piece"). Kept to 150 characters, about what results pages show.
+  function seoOotDescription($name, $counts, $floors = false) {
+    $labels = ['64002' => ['Heart Piece', 'Heart Pieces'], '64001' => ['Gold Skulltula', 'Gold Skulltulas'], '64003' => ['Big Poe', 'Big Poes']];
+    $parts = [];
+    foreach ($labels as $id => $label) {
+      $count = $counts[$id] ?? 0;
+      if ($count) $parts[] = $count === 1 ? $label[0] : $count . ' ' . $label[1];
+    }
+    $lead = $name . ' map for Ocarina of Time (2026)' . ($floors ? ', floor by floor' : '');
+    if (!$parts) return $lead . ', on the Zelda Maps interactive map.';
+    return $lead . ': where to find its ' . seoList($parts) . '.';
+  }
+
+  // One page per Hyrule area (both ages) and one per map (all its floors and
+  // water levels): near-identical variant pages would compete with each
+  // other. Each page lists every submap it covers and the address keys that
+  // reach it (old "zora-s-river" style links included); 'url' is the page's
+  // canonical address, which the sitemap lists.
   function seoAreaPages($db = null, $prefix = '') {
     include_once(__DIR__ . '/oot_pack.php');
     $areas=[];
-    foreach (ootPackData('maps') ?? [] as $map) foreach ($map['subMap'] as $submap) {
-      $areas[]=['game'=>'OoT','key'=>'map-'.$map['id'],'map'=>$map['id'],'subMap'=>$submap['id'],
-        'name'=>$map['name'],'mapName'=>$map['name'],'variant'=>$submap['name'],'isMap'=>true,'description'=>''];
-      foreach ($submap['placeLabels'] ?? [] as $place) {
+    $counts = seoOotCollectibleCounts();
+    $ootAreas = [];
+    foreach (ootPackData('maps') ?? [] as $map) {
+      $subMaps = array_map(function($submap) { return (string) $submap['id']; }, $map['subMap']);
+      $isWorld = (string) $map['id'] === '65000';
+      $areas[]=['game'=>'OoT','key'=>'map-'.$map['id'],'keys'=>['map-'.$map['id']],'map'=>$map['id'],'subMap'=>$subMaps[0],
+        'subMaps'=>$subMaps,'name'=>$map['name'],'mapName'=>$map['name'],'variant'=>'','isMap'=>true,
+        'description'=>seoOotDescription($map['name'], $counts['map-'.$map['id']] ?? [], !$isWorld && count($subMaps) > 1)];
+      foreach ($map['subMap'] as $submap) foreach ($submap['placeLabels'] ?? [] as $place) {
         $name=seoPlainText($place['name']);
-        $areas[]=['game'=>'OoT','key'=>seoSlug($name),'map'=>$map['id'],'subMap'=>$submap['id'],
-          'name'=>$name,'mapName'=>$map['name'],'variant'=>$submap['name'],'description'=>seoPlainText($place['description'] ?? '')];
+        $key=seoAreaSlug($name);
+        if (!isset($ootAreas[$key])) {
+          // The child version leads, when the area exists for both ages.
+          $ootAreas[$key]=['game'=>'OoT','key'=>$key,'keys'=>array_values(array_unique([$key, seoSlug($name)])),
+            'map'=>$map['id'],'subMap'=>(string) $submap['id'],'subMaps'=>[],'name'=>$name,'mapName'=>$map['name'],'variant'=>'',
+            'description'=>seoOotDescription($name, $counts[$name] ?? [])];
+        }
+        $ootAreas[$key]['subMaps'][] = (string) $submap['id'];
       }
     }
+    foreach ($ootAreas as $area) $areas[] = $area;
     if($db) {
       $rows=$db->fetchAllAssociative("SELECT c.short_name AS game, m.id, m.name, m.description,
           sm.map_id AS mapId, m.submap_id AS subMapId, sm.name AS variant, mp.name AS mapName
@@ -91,6 +149,8 @@
         'variant'=>seoPlainText($row['variant']),'isMap'=>true,'description'=>''];
     }
     foreach($areas as &$area) {
+      $area['keys']=$area['keys'] ?? [$area['key']];
+      $area['subMaps']=$area['subMaps'] ?? [(string) $area['subMap']];
       $area['variant']=preg_replace('/(?:\s*·\s*)?State\s*\d+/i','',$area['variant']);
       $gameNames=['OoT'=>'Ocarina of Time Remake (2026)','BotW'=>'Breath of the Wild','TotK'=>'Tears of the Kingdom','EoW'=>'Echoes of Wisdom','LA'=>"Link's Awakening"];
       if($area['description']==='') $area['description']='Explore '.$area['name'].(empty($area['isMap']) && !empty($area['mapName']) ? ' in '.$area['mapName'] : '').($area['variant'] ? ' ('.$area['variant'].')' : '').

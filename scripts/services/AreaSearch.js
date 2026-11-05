@@ -22,9 +22,14 @@ ZMap.prototype.getAreaSearchEntries = function() {
   return entries;
 };
 
-ZMap.prototype.areaURLKey = function(area) {
+// Matches lib/common/seo.php: apostrophes are dropped ("zoras-river").
+// legacy gives the old form ("zora-s-river"), which links may still use.
+ZMap.prototype.areaURLKey = function(area, legacy) {
   if(area.mapDestination) return 'map-'+area.mapId;
-  return area.areaDestination ? (area.name || '').toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') : String(area.id);
+  if(!area.areaDestination) return String(area.id);
+  var name=(area.name || '').toLowerCase();
+  if(!legacy) name=name.replace(/['\u2019]/g,'');
+  return name.replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 };
 
 ZMap.prototype.restoreAreaFromURL = function() {
@@ -32,7 +37,7 @@ ZMap.prototype.restoreAreaFromURL = function() {
   if(!key) return false;
   var zmap=this,current=this.mapControl.getCurrentMap();
   var area=this.getAreaSearchEntries().concat(this.getMarkers().filter(function(m) {return m.categoryTypeId==3;}))
-    .find(function(a) {return zmap.areaURLKey(a)===key && a.mapId==current.mapId && (a.areaDestination || a.submapId==current.subMapId);});
+    .find(function(a) {return (zmap.areaURLKey(a)===key || zmap.areaURLKey(a,true)===key) && a.mapId==current.mapId && (a.areaDestination || a.submapId==current.subMapId);});
   if(!area) return false;
   var bounds=area.bounds;
   try {bounds=bounds ? L.latLngBounds(bounds) : null;} catch(e) {bounds=null;}
@@ -69,6 +74,20 @@ ZMap.prototype.navigateToArea = function(area) {
       bottom=Math.max(0,Math.min(rect.height-64,rect.bottom-targetTop));
     }
     else if(drawer.width && window.getComputedStyle(control.getContainer()).display !== 'none') left=Math.max(0,drawer.right-rect.left);
+    // Keep the area clear of the ad banner when one is showing: on desktop it
+    // sits at the bottom of the map; on phones it rides just above the drawer,
+    // and fades out while the drawer is raised above its resting height
+    // (#ads.ads-lifted), which opening an area usually does.
+    var ads=document.getElementById('ads');
+    if(ads && ads.firstChild && ads.offsetHeight && window.getComputedStyle(ads).display !== 'none') {
+      if(control.viewStyleBottomSlide) {
+        var lifted=targetTop < control._startPosition-1;
+        if(!lifted) bottom=Math.min(rect.height-64,bottom+ads.offsetHeight+(typeof AD_GAP === 'number' ? AD_GAP : 8));
+      } else {
+        var ad=ads.getBoundingClientRect();
+        if(ad.top<rect.bottom && ad.bottom>rect.top) bottom=Math.max(bottom,Math.min(rect.height-64,rect.bottom-ad.top));
+      }
+    }
     var reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Leaflet otherwise snaps when fitting a small area from a distant zoom.
     var threshold=map.options.zoomAnimationThreshold;
@@ -114,9 +133,13 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
   var activeLayer=control.currentMapLayer;
   var variant=area.variant || (activeLayer && activeLayer.ootVariant);
   var mapName=(activeLayer && (activeLayer.ootGroupName || activeLayer.title)) || '';
-  var gameName=this.mapOptions.shortName==='OoT' ? 'Ocarina of Time Remake (2026)' : this.mapOptions.name;
-  document.title=(area.mapDestination ? area.name : (area.title || area.name)+' - '+mapName)+
-    (variant ? ' ('+variant+')' : '')+' - '+gameName+' Map - Zelda Maps';
+  if(this.mapOptions.shortName==='OoT') {
+    // Same as the server's title: one page per area or dungeon, any age or floor.
+    document.title=(area.title || area.name)+' Map - Ocarina of Time (2026) - Zelda Maps';
+  } else {
+    document.title=(area.mapDestination ? area.name : (area.title || area.name)+' - '+mapName)+
+      (variant ? ' ('+variant+')' : '')+' - '+this.mapOptions.name+' Map - Zelda Maps';
+  }
   var pills=$('<div class="area-header-pills"></div>').insertAfter(page.find('h2'));
   if(variant) pills.append($('<p class="area-variant-pill marker-coordinate-pill"></p>').text(variant));
   var description=area.description;
@@ -190,4 +213,34 @@ ZMap.prototype.refreshSelectedAreaVariant = function() {
   control._skipNextSlide=true;
   try {this._showAreaPage(next,bounds);} finally {control._skipNextSlide=skipSlide;}
   this.updateUrl();
+};
+
+// The named area a marker is in: the smallest area whose borders contain it,
+// else the nearest area on that map. Null on maps without named areas.
+ZMap.prototype.getMarkerAreaName = function(marker) {
+  var cache=this._markerAreaNames || (this._markerAreaNames=Object.create(null));
+  var key=marker.mapId+':'+marker.submapId+':'+marker.id;
+  if(key in cache) return cache[key];
+  // The import names some areas itself (Lon Lon Ranch sits inside Hyrule
+  // Field's artwork, with no borders of its own); that name wins.
+  var gameData=marker.gameData;
+  if(typeof gameData === 'string') {try {gameData=JSON.parse(gameData);} catch(e) {gameData=null;}}
+  if(gameData && gameData.areaName) return cache[key]=gameData.areaName;
+  var layers=this.maps.filter(function(layer) {return layer.originalId==marker.mapId;});
+  var own=layers.filter(function(layer) {return layer.defaultSubMapId==marker.submapId;});
+  var places=((own.length ? own : layers)[0] || {}).ootPlaceLabels || [];
+  var lat=Number(marker._latlng ? marker._latlng.lat : marker.y), lng=Number(marker._latlng ? marker._latlng.lng : marker.x);
+  if(!places.length || !Number.isFinite(lat) || !Number.isFinite(lng)) return cache[key]=null;
+  var best=null,bestSize=Infinity,nearest=null,nearestDistance=Infinity;
+  places.forEach(function(place) {
+    var b=place.bounds;
+    if(b && lat>=Math.min(b[0][0],b[1][0]) && lat<=Math.max(b[0][0],b[1][0]) &&
+        lng>=Math.min(b[0][1],b[1][1]) && lng<=Math.max(b[0][1],b[1][1])) {
+      var size=Math.abs((b[1][0]-b[0][0])*(b[1][1]-b[0][1]));
+      if(size<bestSize) {best=place;bestSize=size;}
+    }
+    var d=Math.hypot(Number(place.y)-lat,Number(place.x)-lng);
+    if(d<nearestDistance) {nearest=place;nearestDistance=d;}
+  });
+  return cache[key]=(best || nearest).name;
 };

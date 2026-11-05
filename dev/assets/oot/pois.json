@@ -415,7 +415,7 @@
   {
     "id": 64100036,
     "category": "64002",
-    "title": "Piece of Heart — Desert Colossus",
+    "title": "Piece of Heart — Desert Colossus Rock Arch",
     "age": "adult",
     "map": "65000",
     "region": "DesertColossus",
@@ -498,7 +498,7 @@
   {
     "id": 64200007,
     "category": "64001",
-    "title": "Gold Skulltula — Sacred Forest Meadow",
+    "title": "Gold Skulltula — Sacred Forest Meadow Maze Wall",
     "age": "adult",
     "map": "65000",
     "region": "SacredForestMeadow",
@@ -1001,7 +1001,7 @@
   {
     "id": 64200050,
     "category": "64001",
-    "title": "Gold Skulltula — Gerudo's Fortress Wall",
+    "title": "Gold Skulltula — Gerudo's Fortress West Door",
     "age": "adult",
     "map": "65000",
     "region": "GerudoFortress",

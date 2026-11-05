@@ -22,6 +22,12 @@ SearchMarkerListEntry.prototype._initDOMElements = function(marker) {
   this.domNode.addClass('search-marker-list-entry');
   if(marker.mapDestination && marker.iconURL) {
     this.iconNode.empty().append($('<img class="search-map-preview" alt="">').attr('src',marker.iconURL));
+  } else if(marker.areaDestination) {
+    // An area within a map: a square tile like the map results, in gold so it
+    // isn't mistaken for one, with the generic Point of Interest glyph.
+    this.iconNode.empty().append(
+      '<span class="search-area-preview" aria-hidden="true"><span class="icon-BotW_Points-of-Interest"></span></span>'
+    );
   } else if(marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
     var labelCategory = this.categories[marker.categoryId || marker.markerCategoryId];
     var labelGroup = labelCategory && this.categories[labelCategory.parent_id];
@@ -49,21 +55,26 @@ function getMarkerLocationName(marker) {
   var markerMap = zMap.maps.find(function(map) {
     return map.originalId == marker.mapId;
   });
-  var mapName = markerMap ? markerMap.title : '';
+  var mapName = markerMap ? (markerMap.ootGroupName || markerMap.title) : '';
   var multipleMaps = zMap.maps.length > 1;
+
+  // A map result is its own place; repeating its name says nothing.
+  if(marker.mapDestination) return markerLocationNameCache[marker.id] = '';
 
   if(marker.markerCategoryTypeId == 3) {
     return markerLocationNameCache[marker.id] = multipleMaps ? mapName : '';
   }
 
-  var areaName = getNearestMarkerAreaName(marker);
+  // "Area, Map", e.g. "Hyrule Field, Hyrule".
+  var areaName = getNearestMarkerAreaName(marker) ||
+    (zMap.getMarkerAreaName && zMap.getMarkerAreaName(marker)) || '';
   var locationParts = [];
-  if(multipleMaps && mapName) locationParts.push(mapName);
   if(areaName && areaName.toLowerCase() !== mapName.toLowerCase()) {
     locationParts.push(areaName);
   }
+  if(multipleMaps && mapName) locationParts.push(mapName);
 
-  return markerLocationNameCache[marker.id] = locationParts.join(' - ');
+  return markerLocationNameCache[marker.id] = locationParts.join(', ');
 }
 
 function getNearestMarkerAreaName(marker) {

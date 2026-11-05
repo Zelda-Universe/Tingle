@@ -19,10 +19,13 @@ function MarkerSearchField(opts) {
 
 
 MarkerSearchField.prototype._initDOMElements = function(opts) {
+  // "Search Ocarina of Time", not "... (2026)": the year only tells the
+  // remake apart in titles, and makes the placeholder overflow.
+  var gameName = String(opts.name || '').replace(/\s*\(\d{4}\)$/, '');
   this.domNode = $('' +
     '<div class="form-group search-box">' +
       '<div class="icon-addon addon-sm">' +
-        '<input type="text" placeholder="Search ' + opts.name +'" class="form-control marker-search" id="marker-search">' +
+        '<input type="text" class="form-control marker-search" id="marker-search">' +
         '<a class="button icon-close2" href="javascript:;">×</a>' +
         '<label for="email" class="glyphicon glyphicon-search" rel="tooltip" title="email">' +
         '</label>' +
@@ -31,6 +34,7 @@ MarkerSearchField.prototype._initDOMElements = function(opts) {
   );
 
   this.searchInput = this.domNode.find('input.marker-search');
+  this.searchInput.attr('placeholder', 'Search ' + gameName);
   this.clearSearchButton = this.domNode.find('.button.icon-close2');
   this.clearSearchButton.hide();
 

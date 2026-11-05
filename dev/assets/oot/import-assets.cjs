@@ -22,7 +22,8 @@ function csv(text) {
 }
 const friendly = key => ({ HountedWasteland: 'Haunted Wasteland', LostWood: 'Lost Woods',
   InsideJabuJabuBelly: "Inside Jabu-Jabu's Belly", InsideTheDekuTree: 'Inside the Deku Tree',
-  GanonCastle: "Ganon's Castle", DodongoCavern: "Dodongo's Cavern" }[key] || key.replace(/([a-z])([A-Z])/g, '$1 $2'));
+  GanonCastle: "Ganon's Castle", DodongoCavern: "Dodongo's Cavern",
+  BottomOfTheWell: 'Bottom of the Well', GerudoFortress: "Gerudo's Fortress" }[key] || key.replace(/([a-z])([A-Z])/g, '$1 $2'));
 const slug = value => value.replace(/([a-z])([A-Z])/g, '$1-$2').replace(/_/g, '-').toLowerCase();
 async function main(source) {
   if(!source || !fs.existsSync(source)) throw new Error('Usage: node dev/assets/oot/import-assets.cjs /path/to/oot');

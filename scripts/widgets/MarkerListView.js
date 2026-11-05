@@ -19,8 +19,9 @@ MarkerListView.prototype._initSettings = function(opts) {
 MarkerListView.prototype._initDOMElements = function() {
   this.domNode = $('' +
     '<div class="marker-list-view">' +
-      '<div class="no-results">' +
-        'No results found for "<span class="query"></span>".' +
+      '<div class="no-results" role="status">' +
+        '<div class="no-results-title">No Results</div>' +
+        '<p>Nothing matched “<span class="query"></span>”. Check the spelling or try another name.</p>' +
       '</div>' +
       '<div class="results">' +
         '<div class="header">' +

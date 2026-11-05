@@ -86,6 +86,7 @@ SearchMarkerHandler.prototype._setupUIInteraction = function() {
 
 SearchMarkerHandler.prototype._displayResults = function(e, query) {
   var results = this._deduplicateSearchResults(this.searcher.search(query));
+  results = this._addMarkersInMatchedAreas(results, query);
   if (!this.showSearchStats) results = results.map(function(entry) { return entry.item; });
   this.markerListView.showMarkers(query, results);
   this.handlers["markerListViewBuilt"].forEach(function(handler) {
@@ -159,6 +160,54 @@ SearchMarkerHandler.prototype._deduplicateSearchResults = function(results) {
   });
 
   return deduplicatedResults;
+};
+
+// Searching for an area (e.g. "zora") also lists every POI in each matching
+// area, right after that area; POIs that matched by name too move under their
+// area. Only areas whose name contains what was typed expand (fuzzy matches
+// like "kak" -> Kokiri Forest don't), and whole maps don't: a map's every
+// marker would bury the results.
+SearchMarkerHandler.prototype._addMarkersInMatchedAreas = function(results, query) {
+  if(typeof zMap === 'undefined' || !zMap.getMarkerAreaName) return results;
+  function getMarker(result) { return result.item || result; }
+  function areaKey(mapId, name) { return mapId + ':' + name; }
+  function plain(text) { return String(text || '').toLowerCase().replace(/['\u2019]/g, '').replace(/\s+/g, ' ').trim(); }
+  var typed = plain(query);
+  var matchedAreas = Object.create(null);
+  results.forEach(function(result) {
+    var area = getMarker(result);
+    if(typed && area.areaDestination && !area.mapDestination && plain(area.name).indexOf(typed) !== -1) {
+      matchedAreas[areaKey(area.mapId, area.name)] = true;
+    }
+  });
+  if(!Object.keys(matchedAreas).length) return results;
+  function isPOI(marker) {
+    return !marker.areaDestination && marker.categoryTypeId != 3 &&
+      marker.markerCategoryTypeId != 3 && marker.dbVisible != 0;
+  }
+  function inMatchedArea(marker) {
+    return isPOI(marker) && matchedAreas[areaKey(marker.mapId, zMap.getMarkerAreaName(marker))];
+  }
+  var candidates = this.searchableMarkers.filter(inMatchedArea);
+  var shown = Object.create(null);
+  var expanded = [];
+  results.forEach(function(result) {
+    var area = getMarker(result);
+    if(inMatchedArea(area)) return; // listed under its area instead
+    expanded.push(result);
+    if(!matchedAreas[areaKey(area.mapId, area.name)] || !area.areaDestination || area.mapDestination) return;
+    candidates.filter(function(marker) {
+      return !shown[marker.id] && marker.mapId == area.mapId &&
+        zMap.getMarkerAreaName(marker) === area.name;
+    }).sort(function(a, b) {
+      return (a.name || a.title || '').localeCompare(b.name || b.title || '');
+    }).forEach(function(marker) {
+      shown[marker.id] = true;
+      var direct = results.find(function(r) { return getMarker(r) === marker; });
+      expanded.push(direct || (result.item ? { item: marker, matches: [], score: 1 } : marker));
+    });
+  });
+  return expanded;
 };
 
 // TODO: Make this a generic mixin, probably automatically included in all widgets, or even use a JS framework that does this already!!

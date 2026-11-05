@@ -1461,12 +1461,26 @@ a.button.leaflet-control-layers-toggle {
 	margin: 0px;
 }
 
-.menu-cat-content-inner .no-results {
+/* Same empty state as the Bookmarks page. */
+.no-results {
+	padding: 48px 24px;
+	color: rgba(255, 255, 255, .65);
 	text-align: center;
-	padding: 10px;
-	margin-left: 20px;
-    font-family: "BrandonText", sans-serif;
-	color: #c3c3c3;
+}
+
+.no-results-title {
+	margin-bottom: 8px;
+	font-size: 18px;
+	font-weight: 700;
+	color: rgba(255, 255, 255, .9);
+}
+
+.menu-cat-content-inner .no-results p,
+.no-results p {
+	margin: 0;
+	padding: 0;
+	font-size: 14px;
+	overflow-wrap: anywhere;
 }
 
 .marker-list {
@@ -1549,6 +1563,29 @@ a.button.leaflet-control-layers-toggle {
 	flex-direction: column;
 	justify-content: center;
 	vertical-align: top;
+}
+
+/* A title that wraps to two lines grows the row instead of clipping the
+   location line under it; one-line rows keep the usual 84px. */
+.search-marker-list-entry {
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+	height: auto;
+	min-height: 84px;
+}
+
+.search-marker-list-entry .icon {
+	flex: 0 0 auto;
+}
+
+.search-marker-list-entry .details {
+	flex: 1 1 auto;
+	min-width: 0;
+	width: auto;
+	height: auto;
+	min-height: 64px;
+	overflow-y: visible;
 }
 
 .search-marker-list-entry .location {

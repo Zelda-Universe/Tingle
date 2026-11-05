@@ -13,7 +13,7 @@
   $gameMetadata = [
     'OoT' => [
       'name' => 'Ocarina of Time Remake (2026)',
-      'description' => 'Explore Ocarina of Time Remake (2026) with interactive maps of Hyrule (Child), Hyrule (Adult), dungeon floors, and local points of interest.',
+      'description' => 'The Legend of Zelda: Ocarina of Time (2026) interactive map. Find all 36 Heart Pieces, 100 Gold Skulltulas and 10 Big Poes in Hyrule and every dungeon.',
       'image' => 'social-oot.webp',
       'themeColor' => '#b99b4b'
     ],
@@ -130,14 +130,24 @@
     }
     try {
       foreach(seoAreaPages($gameId === 'OoT' ? null : ($db ?? null), $map_prefix ?? '') as $area) {
-        if($area['game'] !== $gameId || $area['key'] !== (string)$_GET['area']) continue;
+        if($area['game'] !== $gameId || !in_array((string)$_GET['area'], $area['keys'], true)) continue;
         if(isset($_GET['map']) && (string)$area['map'] !== (string)$_GET['map']) continue;
-        if(isset($_GET['subMap']) && (string)$area['subMap'] !== (string)$_GET['subMap']) continue;
-        $mapTitle=($area['mapName'] ?? $area['name']).($area['variant'] ? ' ('.$area['variant'].')' : '');
-        $pageHeading=(!empty($area['isMap']) ? $mapTitle : $area['name'].' - '.$mapTitle).' - '.$metadata['name'].' Map';
+        if(isset($_GET['subMap']) && !in_array((string)$_GET['subMap'], $area['subMaps'], true)) continue;
+        if($gameId === 'OoT') {
+          // "Market Map - Ocarina of Time (2026)": one page per area or
+          // dungeon, whichever age or floor the link opened.
+          $pageHeading=$area['name'].' Map - Ocarina of Time (2026)';
+        } else {
+          $mapTitle=($area['mapName'] ?? $area['name']).($area['variant'] ? ' ('.$area['variant'].')' : '');
+          $pageHeading=(!empty($area['isMap']) ? $mapTitle : $area['name'].' - '.$mapTitle).' - '.$metadata['name'].' Map';
+        }
         $pageTitle=$pageHeading.' - Zelda Maps';
         $pageDescription=$area['description'];
-        $pageUrl=$canonicalUrl=$area['url'];
+        // Shared links keep the age or floor they opened; search engines get the one page.
+        $canonicalUrl=$area['url'];
+        $openedSubMap=isset($_GET['subMap']) ? (string)$_GET['subMap'] : (string)$area['subMap'];
+        $pageUrl='https://zeldamaps.com/?'.http_build_query(['game'=>$gameId === 'OoT' ? 'OoTR' : $gameId,
+          'map'=>$area['map'],'subMap'=>$openedSubMap,'area'=>$area['key']]);
         break;
       }
     } catch(\Throwable $e) { error_log('Area metadata unavailable: '.$e->getMessage()); }
@@ -280,8 +290,8 @@
       <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
       <link rel="stylesheet" href="data/OoT/icons.css" />
       <?php endif; ?>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-18"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-16" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261105-oot-19"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261105-oot-19" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

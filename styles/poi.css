@@ -18,9 +18,8 @@
   font-size: 14px;
   line-height: 1.4;
 }
-.oot-preview-notice > i { color:#f5c542; font-size:18px; margin-top:2px; }
 .oot-preview-notice strong { display:block; margin-bottom:4px; }
-.oot-preview-notice p { margin:0; }
+.oot-preview-notice div p { margin:0; padding:0; } /* not the sidebar's 16px paragraph inset */
 /* Game icon: the SVG is a mask so it takes the text colour, like the font glyphs other games use. */
 .icon-Ocarina-of-Time::before {
   content: '';
@@ -287,16 +286,17 @@
 .leaflet-marker-icon.oot-place-label { background:none; border:0; pointer-events:none; cursor:pointer; }
 .oot-place-label:hover, .oot-place-label:focus-visible { color:white; }
 .oot-place-label span { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); white-space:nowrap; pointer-events:auto; }
-.area-description { margin:0 24px 24px; white-space:pre-line; font-size:14px; line-height:1.5; }
+.area-description { margin:0 16px 16px; white-space:pre-line; font-size:14px; line-height:1.5; }
 .area-header-pills { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:0 16px 16px; }
 .leaflet-control-layers .area-header-pills > .marker-coordinate-pill { margin:0 !important; }
-.area-marker-groups .poi-category-heading { margin:0; }
+.area-marker-groups .poi-category-heading { margin:0; padding-left:16px; padding-right:16px; }
 .area-marker-groups section { margin:0; }
 .area-marker-groups section .marker-list { border-top:1px solid rgba(255,255,255,.2); border-bottom:1px solid rgba(255,255,255,.2); }
 .area-marker-groups section:last-child .marker-list { border-bottom:0; }
 .area-marker-groups section + section { margin-top:16px; }
 .area-marker-groups .marker-list-entry + .marker-list-entry { border-top:1px solid rgba(255,255,255,.2); }
 .search-map-preview { width:64px; height:64px; object-fit:cover; border-radius:8px; }
+.search-area-preview { display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:8px; background:#b99b4b; color:#fff; font-size:36px; }
 .area-marker-groups .marker-list { padding:0; margin:0; list-style:none; }
 .area-empty-state { padding:0 24px 24px; }
 .area-marker-list-entry .icon { position:relative; }

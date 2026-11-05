@@ -265,7 +265,7 @@
             ]
           },
           {
-            "name": "Gerudo Fortress",
+            "name": "Gerudo's Fortress",
             "x": 66.875,
             "y": -133.8125,
             "bounds": [
@@ -574,7 +574,7 @@
             ]
           },
           {
-            "name": "Gerudo Fortress",
+            "name": "Gerudo's Fortress",
             "x": 66.875,
             "y": -133.8125,
             "bounds": [
@@ -629,7 +629,7 @@
   },
   {
     "id": "64022",
-    "name": "Bottom Of The Well",
+    "name": "Bottom of the Well",
     "defaultZoom": "1",
     "maxZoom": "3",
     "mapCopyright": "Map artwork © Nintendo. Local asset preview; no coordinate data supplied.",

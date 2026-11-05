@@ -77,6 +77,9 @@
         'directory' => $siteRoot . '/' . $relativeDirectory,
         'base' => '',
         'pattern' => '/\.(?:png|jpe?g|webp|gif|svg|json|css)$/i',
+        // JSON directly in data/<game>/ is server-side pack data (the OoT
+        // import), which the web server refuses to serve; lang/ JSON is public.
+        'exclude' => '#^data/[^/]+/[^/]+\.json$#i',
         'tile' => false
       );
     }
@@ -100,6 +103,7 @@
 
         $absolutePath = $file->getRealPath();
         if (!$absolutePath || strpos($absolutePath, $root . DIRECTORY_SEPARATOR) !== 0) continue;
+        if (!empty($source['exclude']) && preg_match($source['exclude'], str_replace('\\', '/', substr($absolutePath, strlen($root) + 1)))) continue;
         $url = $source['base'] . encodeOfflineTilePath(substr($absolutePath, strlen($root) + 1));
         if ($source['tile']) {
           $relativeDirectory = trim(dirname(str_replace('\\', '/', substr($absolutePath, strlen($root) + 1))), '/');

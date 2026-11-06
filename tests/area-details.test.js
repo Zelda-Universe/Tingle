@@ -17,20 +17,43 @@ test('selected area follows the active map variant',()=>{
 });
 
 test('shared list icons read POI treatments from raw category records',()=>{
-  const context={getPOIStyle:c=>c.poiStyle,getSetOrDefaultValues:values=>values.find(v=>v!==undefined)};
+  const context={getPOIStyle:c=>({'64002':'heart'})[c.id],getSetOrDefaultValues:values=>values.find(v=>v!==undefined)};
   vm.runInNewContext(fs.readFileSync(require('path').join(__dirname,'../scripts/widgets/CategoryIcon.js'),'utf8'),context);
   const icon=Object.create(context.CategoryIcon.prototype);
-  icon._initSettings({container_id:'64',poiStyle:'heart',img:'OoT_HeartPiece',color:'#cdb269'});
+  icon._initSettings({id:'64002',container_id:'64',img:'OoT_HeartPiece',color:'#cdb269'});
   expect(icon.poiStyle).toBe('heart');
   expect(icon.iconClass).toBe('OoT_HeartPiece');
 });
 
 test('area SEO catalog has one page per area and dungeon, with counted descriptions',()=>{
+  // A small OoT: Hyrule (Child and Adult) and one dungeon with three floors,
+  // as seo.php reads them from the database.
+  const maps=[
+    {id:'65000',name:'Hyrule',kind:'world',subMaps:['650000','650001']},
+    {id:'64031',name:'Water Temple',kind:'dungeon',subMaps:['640101','640102','640103']}
+  ];
+  const labels=[
+    {name:'Hyrule Field',mapId:'65000',subMapId:'650000'},
+    {name:'Zora&#039;s River',mapId:'65000',subMapId:'650000'},
+    {name:'Hyrule Field',mapId:'65000',subMapId:'650001'},
+    {name:"Zora's River",mapId:'65000',subMapId:'650001'},
+    {name:"Ganon's Castle",mapId:'65000',subMapId:'650001'}
+  ];
+  const collectible=(mapId,categoryId,areaName='')=>({mapId,categoryId,areaName});
+  const markers=[
+    ...Array(4).fill(collectible('65000','64002',"Zora's River")),
+    ...Array(4).fill(collectible('65000','64001',"Zora's River")),
+    collectible('65000','64002','Hyrule Field'),
+    collectible('64031','64001'),collectible('64031','64001')
+  ];
   const helper=require('path').resolve(__dirname,'../lib/common/seo.php');
-  const areas=JSON.parse(require('child_process').execFileSync('php',['-r',`require ${JSON.stringify(helper)}; echo json_encode(seoAreaPages());`],{encoding:'utf8'}));
-  // 21 Hyrule areas (both ages on one page) and 11 maps (all floors on one page).
-  expect(areas.filter(a=>!a.isMap).length).toBe(21);
-  expect(areas.filter(a=>a.isMap).length).toBe(11);
+  const script=`require ${JSON.stringify(helper)}; $in=json_decode(stream_get_contents(STDIN), true);
+    echo json_encode(seoFinishAreaPages(seoOotAreaPages($in['maps'], $in['labels'], $in['markers'])));`;
+  const areas=JSON.parse(require('child_process').execFileSync('php',['-r',script],
+    {encoding:'utf8',input:JSON.stringify({maps,labels,markers})}));
+  // Each area once, both ages on one page; each map once, all floors on one page.
+  expect(areas.filter(a=>!a.isMap).map(a=>a.name)).toEqual(['Hyrule Field',"Zora's River","Ganon's Castle"]);
+  expect(areas.filter(a=>a.isMap).map(a=>a.name)).toEqual(['Hyrule','Water Temple']);
   expect(new Set(areas.map(a=>a.url)).size).toBe(areas.length);
   expect(new Set(areas.map(a=>a.description)).size).toBe(areas.length);
   for(const area of areas) {
@@ -39,14 +62,21 @@ test('area SEO catalog has one page per area and dungeon, with counted descripti
     expect(area.key).not.toMatch(/[^a-z0-9-]/);
     expect(area.keys).toContain(area.key);
     expect(area.subMaps).toContain(area.subMap);
+    expect(new URL(area.url).searchParams.get('game')).toBe('OoTR');
     expect(new URL(area.url).searchParams.get('area')).toBe(area.key);
     expect(new URL(area.url).searchParams.get('subMap')).toBe(area.subMap);
   }
   const river=areas.find(a=>a.name==="Zora's River");
   expect(river.key).toBe('zoras-river');
-  expect(river.keys).toContain('zora-s-river');
+  expect(river.keys).toContain('zora-s-river'); // older links
+  expect(river.subMaps).toEqual(['650000','650001']); // Child leads
   expect(river.description).toBe("Zora's River map for Ocarina of Time Remake: where to find its 4 Heart Pieces and 4 Gold Skulltulas.");
-  expect(areas.find(a=>a.key==='map-64031').subMaps.length).toBe(15); // every floor and water level
+  expect(areas.find(a=>a.name==='Hyrule Field').description).toBe('Hyrule Field map for Ocarina of Time Remake: where to find its Heart Piece.');
+  expect(areas.find(a=>a.name==="Ganon's Castle").subMap).toBe('650001'); // Adult only
+  const temple=areas.find(a=>a.key==='map-64031');
+  expect(temple.subMaps.length).toBe(3); // every floor
+  expect(temple.description).toBe('Water Temple map for Ocarina of Time Remake, floor by floor: where to find its 2 Gold Skulltulas.');
+  expect(areas.find(a=>a.key==='map-65000').description).toBe('Hyrule map for Ocarina of Time Remake: where to find its 5 Heart Pieces and 4 Gold Skulltulas.');
 });
 
 test('area lists only visible categories, matching maps/ages and contained POIs',()=>{

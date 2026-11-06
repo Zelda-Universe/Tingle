@@ -46,24 +46,19 @@
    echo "\t<url>\n\t\t<loc>https://zeldamaps.com/</loc>\n\t</url>\n";
 
    foreach ($games as $game) {
-      if(in_array(strtolower($game),['oot','ootr'],true)) continue;
+      // The OoT remake: OoTR in the database and its addresses, OoT in
+      // seo.php's lists. (The old N64 OoT is hidden, so never listed.)
+      $seoGame = isOcarina($game) ? 'OoT' : $game;
       echo "\t<url>\n";
       echo "\t\t<loc>" . sitemapLoc('https://zeldamaps.com/?' . http_build_query(['game' => $game])) . "</loc>\n";
       echo "\t</url>\n";
 
-      foreach ($categories[$game] ?? [] as $category) {
+      foreach ($categories[$seoGame] ?? [] as $category) {
          echo "\t<url>\n";
-         echo "\t\t<loc>" . sitemapLoc(seoCategoryUrl($game, $category['slug'])) . "</loc>\n";
+         echo "\t\t<loc>" . sitemapLoc(seoCategoryUrl($seoGame, $category['slug'])) . "</loc>\n";
          if ($category['lastUpdated']) echo "\t\t<lastmod>" . $category['lastUpdated'] . "</lastmod>\n";
          echo "\t</url>\n";
       }
-   }
-   echo "\t<url><loc>https://zeldamaps.com/?game=OoTR</loc></url>\n";
-   foreach ($categories['OoT'] ?? [] as $category) {
-      echo "\t<url>\n";
-      echo "\t\t<loc>" . sitemapLoc(seoCategoryUrl('OoT', $category['slug'])) . "</loc>\n";
-      if ($category['lastUpdated']) echo "\t\t<lastmod>" . $category['lastUpdated'] . "</lastmod>\n";
-      echo "\t</url>\n";
    }
 
    foreach($areas as $area) echo "\t<url><loc>".sitemapLoc($area['url'])."</loc></url>\n";

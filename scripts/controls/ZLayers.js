@@ -1615,7 +1615,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         this.zMap.selectedArea=null;
         // The game's own title, as closing an area page sets it.
         var options=this.zMap.mapOptions || {};
-        var gameName=options.shortName === 'OoT' ? 'Ocarina of Time Remake' : options.name;
+        var gameName=seoGameName(options);
         if(gameName) document.title=gameName+' Interactive Map - Zelda Maps';
         var restored=this.zMap.restoreAreaReturnView ? this.zMap.restoreAreaReturnView() : false;
         this._navigatingBack=true;
@@ -1638,7 +1638,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           window.history.replaceState(window.history.state,'',searchAreaURL.href);
           this.zMap.selectedArea=null;
           var searchGame=this.zMap.mapOptions || {};
-          var searchGameName=searchGame.shortName === 'OoT' ? 'Ocarina of Time Remake' : searchGame.name;
+          var searchGameName=seoGameName(searchGame);
           if(searchGameName) document.title=searchGameName+' Interactive Map - Zelda Maps';
         }
         this.zMap._closeNewMarker();
@@ -2136,7 +2136,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       if(this.zMap.restoreAreaReturnView) this.zMap.restoreAreaReturnView();
       // The game's own title, as zmain.lib.js sets it on load.
       var options=this.zMap.mapOptions || {};
-      var gameName=options.shortName === 'OoT' ? 'Ocarina of Time Remake' : options.name;
+      var gameName=seoGameName(options);
       if(gameName) document.title=gameName+' Interactive Map - Zelda Maps';
     }
     if(/^m\d+$/.test(this._contentType || '')) {

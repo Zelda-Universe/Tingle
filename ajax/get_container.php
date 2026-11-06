@@ -4,8 +4,9 @@
   $path = __DIR__;
 
   $map = $_GET["game"] ?? '';
-  include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
-  if (ootPackIsGame($map)) { echo json_encode(ootPackData('container')); return; }
+  // Ocarina of Time (2026) is OoTR. Older links and offline downloads say
+  // OoT, which in the database is the hidden N64 game.
+  if (strtolower($map) === 'oot') $map = 'OoTR';
   if ($map === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $map)) {
     echo json_encode(array());
     return;

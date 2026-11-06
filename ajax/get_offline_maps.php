@@ -6,9 +6,9 @@
     return;
   }
   session_write_close();
-  include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
+  include_once(dirname(__DIR__) . '/lib/common/game_order.php');
 
-  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v6';
+  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v7';
   $manifestCacheLifetime = 6 * 60 * 60;
   $tileRoot = realpath(dirname(__DIR__) . '/tiles');
   $tilePublicBaseURL = rtrim(
@@ -20,21 +20,20 @@
     return implode('/', array_map('rawurlencode', explode('/', str_replace('\\', '/', $path))));
   }
 
+  // Each tile folder the game's maps use, with its artwork version (OoT's
+  // tile addresses end in ?v=<version>; other games have none).
   function getOfflineTileDirectories($db, $map_prefix, $gameId) {
-    if (ootPackIsGame($gameId)) {
-      $directories = [];
-      foreach (ootPackData('maps') as $map) foreach ($map['subMap'] as $submap) $directories[] = $submap['tileURL'];
-      return array_values(array_unique(array_map(function($value) { return trim($value, '/'); }, $directories)));
-    }
+    // Downloads call the OoT remake OoT, the old N64 game's short name.
+    if (isOcarina($gameId)) $gameId = 'OoTR';
     $rows = $db->fetchAllAssociative("
-      SELECT DISTINCT `tile_url` AS `tileURL`
+      SELECT DISTINCT `tile_url` AS `tileURL`, sm.`tile_version` AS `tileVersion`
       FROM `{$map_prefix}submap` sm
       INNER JOIN `{$map_prefix}map` m ON m.id = sm.map_id
       INNER JOIN `{$map_prefix}container` c ON c.id = m.container_id
       WHERE (c.short_name = ? OR c.id = ?)
         AND sm.visible = 1
       UNION
-      SELECT DISTINCT sml.`tile_url` AS `tileURL`
+      SELECT DISTINCT sml.`tile_url` AS `tileURL`, NULL AS `tileVersion`
       FROM `{$map_prefix}submap_layer` sml
       INNER JOIN `{$map_prefix}submap` sm ON sm.id = sml.submap_id
       INNER JOIN `{$map_prefix}map` m ON m.id = sm.map_id
@@ -45,10 +44,11 @@
     $directories = array();
     foreach ($rows as $row) {
       if (!empty($row['tileURL']) && !preg_match('#^https?://#i', $row['tileURL'])) {
-        $directories[] = trim($row['tileURL'], '/');
+        $directory = trim($row['tileURL'], '/');
+        if (empty($directories[$directory])) $directories[$directory] = $row['tileVersion'] ?: null;
       }
     }
-    return array_values(array_unique($directories));
+    return $directories;
   }
 
   // Everything a downloaded game needs: its map tiles, plus the game's data
@@ -56,9 +56,8 @@
   function getOfflineSources($db, $map_prefix, $gameId, $tileRoot, $tilePublicBaseURL) {
     $sources = array();
     $siteRoot = realpath(dirname(__DIR__));
-    if (ootPackIsGame($gameId)) $tilePublicBaseURL = '/tiles/';
     $iconFolders = array();
-    foreach (getOfflineTileDirectories($db, $map_prefix, $gameId) as $relativeDirectory) {
+    foreach (getOfflineTileDirectories($db, $map_prefix, $gameId) as $relativeDirectory => $tileVersion) {
       $iconFolders[] = explode('/', $relativeDirectory)[0];
       if (!$tileRoot) continue;
       $sources[] = array(
@@ -66,7 +65,8 @@
         'directory' => $tileRoot . '/' . $relativeDirectory,
         'base' => $tilePublicBaseURL,
         'pattern' => '/^\d+_\d+_\d+\.(?:png|jpe?g|webp)$/i',
-        'tile' => true
+        'tile' => true,
+        'version' => $tileVersion
       );
     }
     $assetDirectories = array('data/' . $gameId);
@@ -89,7 +89,6 @@
 
   function buildOfflineManifest($sources) {
     $filesByURL = array();
-    $ootVersions = ootPackTileVersions();
     foreach ($sources as $source) {
       $root = $source['root'];
       $directory = realpath($source['directory']);
@@ -106,10 +105,8 @@
         if (!$absolutePath || strpos($absolutePath, $root . DIRECTORY_SEPARATOR) !== 0) continue;
         if (!empty($source['exclude']) && preg_match($source['exclude'], str_replace('\\', '/', substr($absolutePath, strlen($root) + 1)))) continue;
         $url = $source['base'] . encodeOfflineTilePath(substr($absolutePath, strlen($root) + 1));
-        if ($source['tile']) {
-          $relativeDirectory = trim(dirname(str_replace('\\', '/', substr($absolutePath, strlen($root) + 1))), '/');
-          if (isset($ootVersions[$relativeDirectory])) $url .= '?v=' . rawurlencode($ootVersions[$relativeDirectory]);
-        }
+        // The same address the page asks for, so downloads are found offline.
+        if (!empty($source['version'])) $url .= '?v=' . rawurlencode($source['version']);
         $filesByURL[$url] = array(
           'url' => $url,
           'size' => $file->getSize(),
@@ -182,12 +179,14 @@
     WHERE `visible` = 1 AND `enabled` = 1
     ORDER BY " . gameOrderSql('`short_name`') . ", `id`
   ") as $gameRow) {
-    if(!in_array(strtolower($gameRow['shortName']),['oot','ootr'],true)) $gameRows[$gameRow['shortName']] = $gameRow;
+    // Downloads have always called the OoT remake OoT: existing ones are
+    // saved under that name, so it stays.
+    if (isOcarina($gameRow['shortName'])) $gameRow['shortName'] = 'OoT';
+    $gameRows[$gameRow['shortName']] = $gameRow;
   }
 
   $requestedGame = isset($_GET['game']) ? (string) $_GET['game'] : '';
-  if (ootPackIsGame($requestedGame)) $requestedGame='OoT';
-  if (ootPackData('container')) $gameRows['OoT'] = ['id' => '64', 'shortName' => 'OoT', 'name' => 'Ocarina of Time (2026)'];
+  if (isOcarina($requestedGame)) $requestedGame = 'OoT';
   $mode = isset($_GET['mode']) ? (string) $_GET['mode'] : 'summary';
   if ($mode === 'manifest') {
     if (!isset($gameRows[$requestedGame])) {

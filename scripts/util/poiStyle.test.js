@@ -31,6 +31,10 @@ describe('TotK POI visual prototype', () => {
     expect(groups.flatMap(g => g.categories).map(c => c.id).sort()).toEqual(ids.sort());
     expect(context.getPOIStyle(records[0])).toBe('interest');
   });
+  test.each([['64002', 'heart'], ['64001', 'relic'], ['64003', 'korok'], ['64000', '']])(
+    'OoT %s uses the shared %s treatment, by category ID', (id, expected) => {
+    expect(style({ id, container_id: '64' })).toBe(expected);
+  });
   test.each([
     ['2232', 'travel'], ['2220', 'heart'], ['2221', 'memory'], ['2231', 'relic'],
     ['2211', 'korok'], ['2230', 'cave'], ['2233', 'location'], ['2278', 'treasure']

@@ -2,8 +2,6 @@
    $path = __DIR__;
 
    $map = $_GET["game"] ?? '';
-   include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
-   if (ootPackIsGame($map)) { echo json_encode(ootPackData('maps')); return; }
    if ($map === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $map)) {
      echo json_encode(array());
      return;
@@ -41,6 +39,7 @@
            , m.default_zoom                     as defaultZoom
            , coalesce(m.max_zoom, c.max_zoom)   as maxZoom
            , map_copyright                      as mapCopyright
+           , m.kind                             as kind
 
         from {$map_prefix}map m
            , {$map_prefix}container c
@@ -100,6 +99,10 @@
 
               , opacity
 
+              , sm.tile_version    as tileVersion
+              , sm.bounds          as bounds
+              , sm.connections     as connections
+
            from {$map_prefix}submap sm
            left outer join {$map_prefix}mapper m
              on sm.mapper_id = m.id
@@ -139,8 +142,16 @@
          ", [$row2['id']]);
 
          $row2['regions'] = $regionsBySubmap[$row2['id']] ?? array();
+         // OoT's extras (step 1's columns): the artwork's version, Hyrule's
+         // pan limits and connector lines. Left out where empty, as for
+         // every other game.
+         foreach (['tileVersion', 'bounds', 'connections'] as $extra) {
+            if ($row2[$extra] === null) unset($row2[$extra]);
+            elseif ($extra !== 'tileVersion') $row2[$extra] = json_decode($row2[$extra], true);
+         }
          $arr_child[] = $row2;
       }
+      if ($row['kind'] === null) unset($row['kind']);
       $row['subMap'] = $arr_child;
       $res[] = $row;
    }

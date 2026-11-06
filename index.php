@@ -78,10 +78,7 @@
     include_once(__DIR__ . '/config.php');
     include_once(__DIR__ . '/lib/common/database.php');
     include_once(__DIR__ . '/lib/common/seo.php');
-    // OoT's categories and markers come from its pack (data/OoT), not the
-    // database.
-    if ($gameId === 'OoT') $landingCategories = seoLandingCategories(null, '', 'OoT');
-    else $landingCategories = open() === 0 ? seoLandingCategories($db, $map_prefix, $gameId) : [];
+    $landingCategories = open() === 0 ? seoLandingCategories($db, $map_prefix, $gameId) : [];
 
     // A category from the category list gets its own page.
     $category = $landingCategories[seoSlug($categorySlug)] ?? null;
@@ -113,8 +110,8 @@
     // A marker keeps its own title and description for link previews, but
     // points search engines at its category's page rather than being indexed
     // on its own.
-    if ($markerId > 0 && $gameId === 'OoT') {
-      $marker = seoOotMarker($markerId);
+    if ($markerId > 0 && $gameId === 'OoT' && isset($db)) {
+      $marker = seoOotMarker($db, $map_prefix, $markerId);
       if ($marker && $marker['name'] !== '') {
         $pageHeading = $marker['name'] . ' - ' . $metadata['name'] . ' Interactive Map';
         $pageTitle = $marker['name'] . ' - ' . $metadata['name'] . ' Map - Zelda Maps';
@@ -169,13 +166,13 @@
   }
   if(!empty($_GET['area'])) {
     include_once(__DIR__ . '/lib/common/seo.php');
-    if($gameId !== 'OoT' && !isset($db)) {
+    if(!isset($db)) {
       include_once(__DIR__ . '/config.php');
       include_once(__DIR__ . '/lib/common/database.php');
       open();
     }
     try {
-      foreach(seoAreaPages($gameId === 'OoT' ? null : ($db ?? null), $map_prefix ?? '') as $area) {
+      foreach(seoAreaPages($db ?? null, $map_prefix ?? '') as $area) {
         if($area['game'] !== $gameId || !in_array((string)$_GET['area'], $area['keys'], true)) continue;
         if(isset($_GET['map']) && (string)$area['map'] !== (string)$_GET['map']) continue;
         if(isset($_GET['subMap']) && !in_array((string)$_GET['subMap'], $area['subMaps'], true)) continue;
@@ -336,8 +333,8 @@
       <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
       <link rel="stylesheet" href="data/OoT/icons.css" />
       <?php endif; ?>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261106-oot-60"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261106-oot-60" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261106-oot-69"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261106-oot-69" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

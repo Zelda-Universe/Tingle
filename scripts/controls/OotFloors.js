@@ -1,10 +1,6 @@
 /* A single destination per dungeon; floor/state switches retain the camera. */
 ZMap.prototype.setupOotFloors = function() {
   var zmap = this, panel = document.createElement('div');
-  var placeLabels = L.layerGroup().addTo(this.map);
-  var labelPane=this.map.getPane('ootPlaceNames') || this.map.createPane('ootPlaceNames');
-  labelPane.style.zIndex='625';
-  labelPane.style.pointerEvents='none';
   // Lines between area exits: above the map art, below markers and labels.
   var connections = L.layerGroup().addTo(this.map);
   var connectionPane=this.map.getPane('ootConnections') || this.map.createPane('ootConnections');
@@ -42,26 +38,9 @@ ZMap.prototype.setupOotFloors = function() {
     connectionZoomFrame=null;
     connectionPane.style.setProperty('--oot-zoom-scale', 1);
   });
-  this.ootPlaceLabelsVisible = getCookie('showRegionAreaNames') !== 'false';
-  this.updateOotPlaceLabels = function() {
-    drawConnections();
-    placeLabels.clearLayers();
-    if(!zmap.ootPlaceLabelsVisible) return;
-    var layer=zmap.mapControl.currentMapLayer;
-    if(!layer) return;
-    (layer.ootPlaceLabels || []).forEach(function(place) {
-      var text=document.createElement('span'); text.textContent=place.name;
-      L.marker([place.y,place.x],{pane:'ootPlaceNames',interactive:true,keyboard:true,title:place.name,alt:place.name,bubblingMouseEvents:false,
-        icon:L.divIcon({className:'oot-place-label',html:text.outerHTML,iconSize:[180,24],iconAnchor:[90,12]}),
-        zIndexOffset:0}).on('click',function() {
-          var area=zmap.getAreaSearchEntries().find(function(entry) {
-            return entry.name===place.name && entry.mapId==layer.originalId;
-          });
-          if(area) zmap.navigateToArea(area);
-        }).addTo(placeLabels);
-    });
-    layoutPlaceNames();
-  };
+  // Place names are label markers, drawn like every game's (zmap.js); only
+  // the connector lines between areas are drawn here.
+  this.updateOotConnections = function() { drawConnections(); };
   // Each end of a link is [area name, u, v]: a spot inside that area's
   // artwork, placed from the area's bounds on this map version, so the lines
   // follow the areas wherever the layout puts them. Routes: d = diagonal
@@ -70,8 +49,9 @@ ZMap.prototype.setupOotFloors = function() {
     connections.clearLayers();
     var layer=zmap.mapControl.currentMapLayer;
     if(!layer || !(layer.ootConnections || []).length) return;
+    // Each area's box, from its border on this map version (map_region).
     var bounds={};
-    (layer.ootPlaceLabels || []).forEach(function(place) { if(place.bounds) bounds[place.name]=place.bounds; });
+    zmap._layerRegions(layer).forEach(function(region) { if(region.kind==='area') bounds[region.name]=region.bounds; });
     var point=function(end) {
       var b=bounds[end[0]];
       if(!b) return null;
@@ -104,32 +84,6 @@ ZMap.prototype.setupOotFloors = function() {
       });
     });
   }
-  function layoutPlaceNames() {
-    var size=Math.max(11,Math.min(18,11+(zmap.map.getZoom()-1)*1.4));
-    var points=zmap.getMarkers().filter(function(marker) {
-      return marker.categoryTypeId != 3 && zmap.map.hasLayer(marker);
-    }).map(function(marker) {return zmap.map.latLngToContainerPoint(marker.getLatLng());});
-    var placed=[];
-    placeLabels.eachLayer(function(label) {
-      var element=label.getElement(),text=element && element.querySelector('span');
-      if(!text) return;
-      element.style.fontSize=size+'px';
-      var width=text.getBoundingClientRect().width,height=Math.max(16,size*1.2);
-      var origin=zmap.map.latLngToContainerPoint(label.getLatLng());
-      var best=null;
-      [[0,-18],[0,-36],[0,18],[0,36],[-28,-24],[28,-24],[0,0]].forEach(function(offset) {
-        var box={left:origin.x+offset[0]-width/2,right:origin.x+offset[0]+width/2,
-          top:origin.y+offset[1]-height/2,bottom:origin.y+offset[1]+height/2};
-        var collisions=points.filter(function(p) {return p.x>box.left-14 && p.x<box.right+14 && p.y>box.top-14 && p.y<box.bottom+14;}).length;
-        collisions+=placed.filter(function(other) {return box.left<other.right+4 && box.right>other.left-4 && box.top<other.bottom+4 && box.bottom>other.top-4;}).length*2;
-        var score=collisions*100+Math.hypot(offset[0],offset[1]);
-        if(!best || score<best.score) best={score:score,offset:offset,box:box};
-      });
-      text.style.marginLeft=best.offset[0]+'px';
-      text.style.marginTop=best.offset[1]+'px';
-      placed.push(best.box);
-    });
-  }
   panel.className = 'oot-floor-control';
   panel.setAttribute('aria-label','Map age, floors and states');
   document.body.appendChild(panel);
@@ -143,7 +97,7 @@ ZMap.prototype.setupOotFloors = function() {
   }
   function render() {
     if(zmap.applyOotMapBounds) zmap.applyOotMapBounds();
-    zmap.updateOotPlaceLabels();
+    zmap.updateOotConnections();
     if(zmap.refreshSelectedAreaVariant) zmap.refreshSelectedAreaVariant();
     var current = zmap.mapControl.currentMapLayer;
     panel.replaceChildren();
@@ -198,7 +152,6 @@ ZMap.prototype.setupOotFloors = function() {
   var observer=new MutationObserver(position);
   observer.observe(zmap.mapControl.getContainer(),{attributes:true,attributeFilter:['style','class']});
   zmap.map.on('baselayerchange',render);
-  zmap.map.on('zoomend moveend',layoutPlaceNames);
   window.addEventListener('resize',position);
   render();
 };

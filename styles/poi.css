@@ -286,9 +286,6 @@
 .oot-floor-pill button:hover { color:white; }
 .oot-age-pill button { width:64px; border-radius:24px; }
 .oot-floor-control select { max-width:260px; padding:8px 12px; }
-.leaflet-marker-icon.oot-place-label { background:none; border:0; pointer-events:none; cursor:pointer; }
-.oot-place-label:hover, .oot-place-label:focus-visible { color:white; }
-.oot-place-label span { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); white-space:nowrap; pointer-events:auto; }
 .area-description { margin:0 16px 16px; white-space:pre-line; font-size:14px; line-height:1.5; }
 .area-header-pills { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:0 16px 16px; }
 .leaflet-control-layers .area-header-pills > .marker-coordinate-pill { margin:0 !important; }

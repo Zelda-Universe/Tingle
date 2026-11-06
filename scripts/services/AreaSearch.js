@@ -22,15 +22,6 @@ ZMap.prototype.getAreaSearchEntries = function() {
         mapId:layer.originalId,submapId:region.submapId,x:region.x,y:region.y,
         markerCategoryTypeId:3,areaDestination:true,bounds:region.bounds,region:region});
     });
-    (layer.ootPlaceLabels || []).forEach(function(place,index) {
-      var key=layer.originalId+':'+place.name;
-      var entry={id:'area-'+layer.originalId+'-'+encodeURIComponent(place.name), name:place.name,description:place.description || '',
-        mapId:layer.originalId,submapId:layer.defaultSubMapId,x:place.x,y:place.y,
-        markerCategoryTypeId:3,areaDestination:true,bounds:place.bounds,variant:layer.ootVariant};
-      if(seen[key] !== undefined) {
-        if(layer.defaultSubMapId == current.subMapId) entries[seen[key]]=entry;
-      } else {seen[key]=entries.length;entries.push(entry);}
-    });
   },this);
   return entries;
 };
@@ -39,8 +30,11 @@ ZMap.prototype.getAreaSearchEntries = function() {
 // legacy gives the old form ("zora-s-river"), which links may still use.
 ZMap.prototype.areaURLKey = function(area, legacy) {
   if(area.mapDestination) return 'map-'+area.mapId;
-  if(!area.areaDestination) return String(area.id);
-  var name=(area.name || '').toLowerCase();
+  // Area names (OoT's places, BotW's and TotK's areas) are addressed by
+  // their name, like the other area pages; other labels by their ID.
+  var tier=area.categoryId && this.categories && this.categories[area.categoryId];
+  if(!area.areaDestination && !area.region && !(tier && tier.name === 'Area Labels')) return String(area.id);
+  var name=(area.name || area.title || '').toLowerCase();
   if(!legacy) name=name.replace(/['\u2019]/g,'');
   return name.replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 };
@@ -49,8 +43,13 @@ ZMap.prototype.restoreAreaFromURL = function() {
   var key=new URL(window.location.href).searchParams.get('area');
   if(!key) return false;
   var zmap=this,current=this.mapControl.getCurrentMap();
+  this._attachAreaBorders();
   var area=this.getAreaSearchEntries().concat(this.getMarkers().filter(function(m) {return m.categoryTypeId==3;}))
-    .find(function(a) {return (zmap.areaURLKey(a)===key || zmap.areaURLKey(a,true)===key) && a.mapId==current.mapId && (a.areaDestination || a.submapId==current.subMapId);});
+    .find(function(a) {
+      // Its ID too, which a place name with a border was addressed by before.
+      var matches=zmap.areaURLKey(a)===key || zmap.areaURLKey(a,true)===key || (a.categoryTypeId==3 && String(a.id)===key);
+      return matches && a.mapId==current.mapId && (a.areaDestination || a.submapId==current.subMapId);
+    });
   if(!area) return false;
   var bounds=area.bounds;
   try {bounds=bounds ? L.latLngBounds(bounds) : null;} catch(e) {bounds=null;}
@@ -61,6 +60,7 @@ ZMap.prototype.restoreAreaFromURL = function() {
 };
 
 ZMap.prototype.navigateToArea = function(area) {
+  this._attachAreaBorders();
   if(area.areaDestination) {
     var active=this.mapControl.getCurrentMap();
     var matching=this.getAreaSearchEntries().find(function(entry) {return entry.name===area.name && entry.mapId==area.mapId;});
@@ -135,6 +135,15 @@ ZMap.prototype.nearestLabel = function(marker, categoryId) {
   }));
   var point=typeof marker.getLatLng === 'function' ? marker.getLatLng() : marker._latlng;
   if(!point) return null;
+  // A label with a border (its area, from map_region) claims what's inside
+  // it, the smallest where they nest; otherwise the nearest label does.
+  this._attachAreaBorders();
+  var zmap=this,inside=null;
+  labels.forEach(function(label) {
+    if(label.region && (!inside || label.region.size<inside.region.size) &&
+        zmap._regionContains(label.region,point.lat,point.lng)) inside=label;
+  });
+  if(inside) return inside;
   var nearest=null,distance=Infinity;
   labels.forEach(function(label) {
     var at=label.getLatLng(),d=Math.hypot(at.lat-point.lat,at.lng-point.lng);
@@ -145,11 +154,15 @@ ZMap.prototype.nearestLabel = function(marker, categoryId) {
 
 ZMap.prototype._getAreaMarkers = function(area,bounds) {
   var zmap=this;
+  this._attachAreaBorders();
   return this.getMarkers().filter(function(marker) {
     var category=zmap.categories[marker.categoryId];
     if(!category || !category.checked || marker.categoryTypeId == 3 || marker.dbVisible == 0) return false;
-    if(marker.mapId != area.mapId || (marker.submapId != area.submapId && !(zmap.mapOptions.shortName==='OoT' && marker.globalMarker == 1))) return false;
+    // A global marker shows on every submap of its map (OoT's both-age ones).
+    if(marker.mapId != area.mapId || (marker.submapId != area.submapId && marker.globalMarker != 1)) return false;
     if(area.mapDestination) return true;
+    // A marker that names its own area (OoT's Lon Lon Ranch markers) is in it.
+    if(zmap._markerOwnAreaName(marker)===(area.title || area.name)) return true;
     if(area.region) {
       var at=marker.getLatLng();
       return zmap._regionContains(area.region,at.lat,at.lng);
@@ -171,7 +184,7 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
   var activeLayer=control.currentMapLayer;
   var variant=area.variant || (activeLayer && activeLayer.ootVariant);
   var mapName=(activeLayer && (activeLayer.ootGroupName || activeLayer.title)) || '';
-  if(this.mapOptions.shortName==='OoT') {
+  if(isOcarina(this.mapOptions.shortName)) {
     // Same as the server's title: one page per area or dungeon, any age or floor.
     document.title=(area.title || area.name)+' Map - Ocarina of Time Remake - Zelda Maps';
   } else {
@@ -261,34 +274,23 @@ ZMap.prototype.getMarkerAreaName = function(marker) {
   var cache=this._markerAreaNames || (this._markerAreaNames=Object.create(null));
   var key=marker.mapId+':'+marker.submapId+':'+marker.id;
   if(key in cache) return cache[key];
-  // The import names some areas itself (Lon Lon Ranch sits inside Hyrule
-  // Field's artwork, with no borders of its own); that name wins.
+  // The marker's own area name wins (OoT's Lon Lon Ranch sits inside Hyrule
+  // Field's artwork, with no border of its own); then the region it's in;
+  // then a named area that has a page of its own (TotK's Sky and Depths).
+  var own=this._markerOwnAreaName(marker);
+  if(own) return cache[key]=own;
+  this._attachAreaBorders();
+  var region=this.getMarkerRegion(marker);
+  if(region) return cache[key]=region.name;
+  var area=this.getMarkerRegion(marker,'area');
+  return cache[key]=area && !area.label ? area.name : null;
+};
+
+// The area a marker names itself in its game data, or null.
+ZMap.prototype._markerOwnAreaName = function(marker) {
   var gameData=marker.gameData;
   if(typeof gameData === 'string') {try {gameData=JSON.parse(gameData);} catch(e) {gameData=null;}}
-  if(gameData && gameData.areaName) return cache[key]=gameData.areaName;
-  var layers=this.maps.filter(function(layer) {return layer.originalId==marker.mapId;});
-  var own=layers.filter(function(layer) {return layer.defaultSubMapId==marker.submapId;});
-  var layer=(own.length ? own : layers)[0] || {};
-  var places=layer.ootPlaceLabels || [];
-  var lat=Number(marker._latlng ? marker._latlng.lat : marker.y), lng=Number(marker._latlng ? marker._latlng.lng : marker.x);
-  if(!Number.isFinite(lat) || !Number.isFinite(lng)) return cache[key]=null;
-  if(!places.length) {
-    // Regions with borders: the smallest one the marker is in, or none.
-    var region=this.getMarkerRegion(marker);
-    return cache[key]=region ? region.name : null;
-  }
-  var best=null,bestSize=Infinity,nearest=null,nearestDistance=Infinity;
-  places.forEach(function(place) {
-    var b=place.bounds;
-    if(b && lat>=Math.min(b[0][0],b[1][0]) && lat<=Math.max(b[0][0],b[1][0]) &&
-        lng>=Math.min(b[0][1],b[1][1]) && lng<=Math.max(b[0][1],b[1][1])) {
-      var size=Math.abs((b[1][0]-b[0][0])*(b[1][1]-b[0][1]));
-      if(size<bestSize) {best=place;bestSize=size;}
-    }
-    var d=Math.hypot(Number(place.y)-lat,Number(place.x)-lng);
-    if(d<nearestDistance) {nearest=place;nearestDistance=d;}
-  });
-  return cache[key]=(best || nearest).name;
+  return (gameData && gameData.areaName) || null;
 };
 
 // Closing an area puts the map back where it was before the area was opened,
@@ -403,7 +405,7 @@ ZMap.prototype._attachAreaBorders = function() {
     var category=label.categoryTypeId == 3 && zmap.categories[label.categoryId];
     if(category && category.name === 'Area Labels') labels[label.submapId+':'+(label.title || label.name)]=label;
   });
-  this.maps.forEach(function(layer) {
+  (this.maps || []).forEach(function(layer) {
     this._layerRegions(layer).forEach(function(region) {
       if(region.kind !== 'area') return;
       var label=labels[region.submapId+':'+region.name] || labels[region.submapId+':'+region.shortName];
@@ -431,6 +433,9 @@ ZMap.prototype.updateRegionBorders = function() {
   }
   this._regionBorders.clearLayers();
   var current=control.getCurrentMap(),layer=control.currentMapLayer;
+  // A map pieced together from separate artwork (OoT's Hyrule) already shows
+  // each area on its own: no borders, even for an open area page.
+  if(layer && layer.ootKind === 'world') return;
   var regions=this._layerRegions(layer).filter(function(region) {return region.submapId==current.subMapId;});
   if(!regions.length) return;
   var open=/^area-/.test(control.getContentType() || '') && this.selectedArea && this.selectedArea.region;
@@ -449,35 +454,52 @@ ZMap.prototype.updateRegionBorders = function() {
 // The region with borders a marker is in (the smallest, where they nest), or
 // null: on maps without regions, or outside them all.
 ZMap.prototype.getMarkerRegion = function(marker,kind) {
-  var layer=this.maps.find(function(layer) {return layer.originalId==marker.mapId && layer.submapRegions;});
+  // The layer with its submap's regions: a map's only layer, or (OoT, one
+  // layer per age or floor) the one for that submap.
+  var layers=this.maps.filter(function(layer) {return layer.originalId==marker.mapId && layer.submapRegions;});
+  var layer=layers.find(function(layer) {
+    return layer.submapRegions.some(function(entry) {return entry.submapId==marker.submapId;});
+  }) || layers[0];
   var lat=Number(marker._latlng ? marker._latlng.lat : marker.y), lng=Number(marker._latlng ? marker._latlng.lng : marker.x);
   if(!layer || !Number.isFinite(lat) || !Number.isFinite(lng)) return null;
   return this.regionAt(layer,marker.submapId,lat,lng,kind);
 };
 
 // The area pill on a marker's page: {label, title, area}, where area is the
-// page it opens (an entry from getAreaSearchEntries), or null.
-// - OoT: the marker's area ("Lost Woods"), else its dungeon or map.
-// - Maps with regions with borders (BotW): the region it's in, by its
-//   short name ("Great Plateau").
+// page it opens (a place name or an entry from getAreaSearchEntries), or null.
+// - A marker that names its own area (OoT: "Lost Woods"): that place.
+// - A map with tower regions (BotW, TotK): the region it's in, by its short
+//   name ("Great Plateau").
+// - A map with a kind (OoT): the map itself ("Inside the Deku Tree").
 ZMap.prototype.markerAreaLink = function(marker) {
-  var label,title,match;
-  if(this.mapOptions.shortName === 'OoT') {
-    label=(marker.gameData && marker.gameData.areaName) ||
-      ((this.maps.find(function(layer) {return layer.originalId==marker.mapId;}) || {}).ootGroupName) || 'Hyrule';
-    title=label;
-    match=function(entry) {return entry.name===label;};
-  } else {
-    var region=this.getMarkerRegion(marker);
-    if(!region) return null;
-    label=region.shortName;
-    title=region.name;
-    match=function(entry) {return entry.region && entry.region.name===region.name && entry.region.submapId==region.submapId;};
+  this._attachAreaBorders();
+  var own=this._markerOwnAreaName(marker);
+  if(own) {
+    // Its place name's page, or a page of that name (OoT's dungeons name
+    // themselves: "Inside the Deku Tree" is the dungeon's map page).
+    var place=this.getMarkers().find(function(label) {
+      return label.categoryTypeId == 3 && label.mapId == marker.mapId && label.submapId == marker.submapId &&
+        (label.title || label.name) === own;
+    }) || this.getAreaSearchEntries().find(function(entry) {
+      return entry.areaDestination && entry.mapId == marker.mapId && entry.name === own;
+    }) || null;
+    return {label:own,title:own,area:place};
   }
-  var area=this.getAreaSearchEntries().find(function(entry) {
-    return entry.areaDestination && entry.mapId==marker.mapId && match(entry);
-  }) || null;
-  return {label:label,title:title,area:area};
+  var entries=this.getAreaSearchEntries();
+  var region=this.getMarkerRegion(marker);
+  if(region) {
+    return {label:region.shortName,title:region.name,area:entries.find(function(entry) {
+      return entry.region && entry.region.name===region.name && entry.region.submapId==region.submapId;
+    }) || null};
+  }
+  var layer=this.maps.find(function(layer) {return layer.originalId==marker.mapId && layer.ootKind;});
+  if(layer) {
+    var name=layer.ootGroupName || layer.title;
+    return {label:name,title:name,area:entries.find(function(entry) {
+      return entry.mapDestination && entry.mapId==marker.mapId;
+    }) || null};
+  }
+  return null;
 };
 
 // The name pills on a marker's page, from the game's label tiers: the
@@ -490,6 +512,8 @@ ZMap.prototype.markerAreaLink = function(marker) {
 // - 'area': the area names ("West Necluda"), within a tenth of the map.
 ZMap.prototype.markerLabelLink = function(marker,level) {
   var zmap=this,pattern=level==='place' ? /^Places Labels/ : /^Area Labels$/;
+  // A marker that names its own area has that as its area pill already.
+  if(level==='area' && this._markerOwnAreaName(marker)) return null;
   // The game's named area the marker is inside, where the map has them.
   if(level==='area') {
     var border=this.getMarkerRegion(marker,'area');

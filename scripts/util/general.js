@@ -10,13 +10,25 @@ var MOBILE_LAYOUT_BREAKPOINT = 600;
 // existing order. Matches GAME_ORDER in lib/common/game_order.php.
 var GAME_ORDER = ['OoT', 'TotK', 'BotW', 'EoW', 'LA'];
 
+// The Ocarina of Time remake. Its database short name is OoTR; offline
+// downloads and older links call it OoT. Use this rather than comparing names.
+function isOcarina(shortName) {
+  return /^ootr?$/i.test(shortName || '');
+}
+
+// The name search engines know a game by: the remake is searched for as
+// "Ocarina of Time Remake", though the site shows "Ocarina of Time (2026)".
+function seoGameName(game) {
+  return isOcarina(game && game.shortName) ? 'Ocarina of Time Remake' : (game && game.name);
+}
+
 // A sorted copy of a list of games, or of their short names when getName is
 // omitted and the items are strings.
 function sortGames(list, getName) {
   getName = getName || function(item) { return item.shortName || item.id || item; };
   var rank = function(item) {
     var name=getName(item);
-    var index = GAME_ORDER.indexOf(name === 'OoTR' ? 'OoT' : name);
+    var index = GAME_ORDER.indexOf(isOcarina(name) ? 'OoT' : name);
     return index === -1 ? GAME_ORDER.length : index;
   };
   return list

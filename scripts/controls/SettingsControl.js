@@ -74,10 +74,13 @@ L.Control.Settings = L.Control.extend({
       this.setRegionAreaNames(!checked);
     }, this.labelCategories.length === 0);
 
-    // Region borders (BotW's tower regions) are off unless turned on, and
-    // only offered on maps that have regions.
+    // Region borders (BotW's and TotK's tower regions) are off unless turned
+    // on, and only offered on games that have tower regions: area outlines
+    // show only while their page is open.
     var hasRegions = this.zMap.maps.some(function(layer) {
-      return this.zMap._layerRegions && this.zMap._layerRegions(layer).length;
+      return this.zMap._layerRegions && this.zMap._layerRegions(layer).some(function(region) {
+        return region.kind === 'tower';
+      });
     }, this);
     if(hasRegions) {
       this.regionBordersCheckbox = this.addCheckbox('Show Region Borders', getCookie('showRegionBorders') === 'true', function(checked) {
@@ -156,10 +159,6 @@ L.Control.Settings = L.Control.extend({
   },
 
   setRegionAreaNames: function(checked, skipSave) {
-    if(this.zMap.mapOptions.shortName === 'OoT') {
-      this.zMap.ootPlaceLabelsVisible=checked;
-      if(this.zMap.updateOotPlaceLabels) this.zMap.updateOotPlaceLabels();
-    }
     this.labelCategories.forEach(function(category) {
       this.setCategoryChecked(category, checked);
     }, this);
@@ -298,12 +297,6 @@ L.Control.Settings = L.Control.extend({
   },
 
   syncRegionAreaNames: function() {
-    if(this.zMap.mapOptions.shortName === 'OoT' && this.regionAreaCheckbox) {
-      this.regionAreaCheckbox.disabled=false;
-      this.regionAreaCheckbox.indeterminate=false;
-      this.regionAreaCheckbox.checked=this.zMap.ootPlaceLabelsVisible === false;
-      return;
-    }
     var selected = this.labelCategories.filter(function(category) {
       return category.checked;
     }).length;

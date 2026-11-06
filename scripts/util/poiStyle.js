@@ -1,6 +1,8 @@
 // Shared Zelda POI styling. Existing category records and glyphs stay intact.
 function getPOIStyle(category) {
-  if(category && String(category.container_id) === '64') return category.poiStyle || '';
+  if(category && String(category.container_id || category.containerId) === '64') {
+    return { '64002': 'heart', '64001': 'relic', '64003': 'korok' }[String(category.id)] || '';
+  }
   if(category && String(category.container_id || category.containerId) === '4') {
     return {
       '1951': 'interest', '1952': 'interest', '1953': 'interest', '1954': 'interest',
@@ -50,7 +52,8 @@ function getPOIStyle(category) {
 function getPOICategoryGroups(categories) {
   var records = Object.values(categories || {});
   if(records.some(function(c) { return String(c.container_id) === '64'; })) {
-    return records.filter(function(c) { return !c.parent_id; }).map(function(root) {
+    // Label categories (type 3: place names) are set in Settings, not listed.
+    return records.filter(function(c) { return !c.parent_id && String(c.marker_category_type_id) !== '3'; }).map(function(root) {
       return { title: root.name, categories: records.filter(function(c) { return c.parent_id === root.id; }).sort(function(a,b) {
         var order=['64002','64001','64003'];
         return order.indexOf(String(a.id))-order.indexOf(String(b.id));

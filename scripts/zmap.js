@@ -175,7 +175,6 @@ ZMap.prototype.constructor = function(vMapOptions) {
       vMapOptions.showCompleted = true;
     }
     this.mapOptions = vMapOptions;
-    document.documentElement.classList.toggle('oot-asset-preview', !!vMapOptions.assetPreview);
   }
 
   if(!this.mapOptions.categorySelectionMethod)
@@ -330,9 +329,12 @@ ZMap.prototype.addMap = function(vMap) {
       return;
    }
    var tileBaseURL = vMap.subMap[0].tileBaseURL || this.tilesBaseURL;
-   if(this.mapOptions.assetPreview && this.mapOptions.shortName === 'OoT') {
-     // Each supplied floor/age/state is independently selectable. Do not use
-     // the legacy blank-base overlay path, which cannot expose these variants.
+   // A map with a kind (OoT's world and dungeons) makes each of its submaps
+   // (ages, floors, water levels) its own selectable layer, chosen with the
+   // floor and age switch (OotFloors.js), rather than overlays on a blank
+   // base. assetPreview is the name the rest of the code knows this by.
+   if(vMap.kind) {
+     this.mapOptions.assetPreview = true;
      vMap.subMap.forEach(function(submap) {
        var variantName=submap.name.replace(/(?:\s*·\s*)?State\s*\d+/gi,'');
        var title = vMap.name + (vMap.subMap.length > 1 ? ' — ' + variantName : '');
@@ -346,7 +348,10 @@ ZMap.prototype.addMap = function(vMap) {
          maxZoom: Number(this.mapOptions.maxZoom), maxNativeZoom: maxNativeZoom,
          minZoom: 0, noWrap: true, bounds: this._tilePyramidBounds(), tileSize: Number(this.mapOptions.tileSize), keepBuffer: 6,
          updateWhenIdle: false, updateWhenZooming: true,
-         attribution: vMap.mapCopyright, label: title, iconURL: submap.iconURL
+         attribution: vMap.mapCopyright, label: title,
+         // The Switch Map thumbnail, where every game's is, versioned with
+         // the artwork so a new picture isn't hidden by a cached old one.
+         iconURL: submap.iconURL || this.defaultIconURL + submap.tileURL + 'icon.' + submap.tileExt + tileVersion
        });
        this._addTileBackdrop(layer, tileURL, maxNativeZoom);
        layer.id = 'mID' + vMap.id + 's' + submap.id;
@@ -355,7 +360,8 @@ ZMap.prototype.addMap = function(vMap) {
        layer.ootKind = vMap.kind;
        layer.ootGroupName = vMap.name;
        layer.ootVariant = variantName;
-       layer.ootPlaceLabels = submap.placeLabels || [];
+       // Its named regions and areas with borders (map_region), as for every game.
+       layer.submapRegions = this._submapRegionData([submap]);
        layer.ootConnections = submap.connections || [];
        layer.ootBounds = submap.bounds || null;
        layer.title = submap === vMap.subMap[0] ? vMap.name : title;
@@ -529,7 +535,15 @@ ZMap.prototype.addMarker = function(vMarker) {
                                                    , icon: _this._createMarkerIcon(vMarker.markerCategoryId)
                                                    });
    } else {
-      marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
+      // Names imported from game data (gameData.source) are at the place's
+      // centre, so they're drawn centred on it. Older names were placed by
+      // hand around Leaflet's default pin, whose label sits 16px right and
+      // 28px up from its point; those keep that, so they don't move.
+      var importedLabel = false;
+      try { importedLabel = !!(vMarker.gameData && JSON.parse(vMarker.gameData).source); } catch(e) {}
+      marker = new L.marker([vMarker.y,vMarker.x], importedLabel
+        ? { opacity: 0.01, icon: this._centredLabelIcon || (this._centredLabelIcon = new L.Icon.Default({ tooltipAnchor: [0, 0] })) }
+        : { opacity: 0.01 }); //opacity may be set to zero
       // Its tier (Region, Area, Places…) sets its size (styles/zmain.css).
       var labelCategory = this.categories && this.categories[vMarker.markerCategoryId];
       var labelTier = labelCategory ? ' label-tier-' + String(labelCategory.name).toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '') : '';
@@ -960,7 +974,7 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
 
     }
 
-	if (marker.gameData == null || this.mapOptions.shortName === 'OoT') {
+	if (marker.gameData == null || isOcarina(this.mapOptions.shortName)) {
 		//content = content + "<hr>";
 
 		for (var i = 0; i < marker.tabText.length; i++) {
@@ -1229,7 +1243,7 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
 
   // OoT: markers for things either age can get (globalMarker) show on both
   // the Child and Adult maps, as one marker.
-  var everySubmap = this.mapOptions.shortName === 'OoT' && marker.globalMarker == 1;
+  var everySubmap = isOcarina(this.mapOptions.shortName) && marker.globalMarker == 1;
   if (
        this.mapControl.getCurrentMap().mapId    != marker.mapId
     || (!everySubmap && this.mapControl.getCurrentMap().subMapId != marker.submapId)
@@ -1367,9 +1381,19 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
 // joined by the close-up ones from zoom 6, both staying as you zoom in.
 ZMap.prototype._labelTierShown = function(categoryName) {
   var zoom = this._getDisplayZoom();
+  // A game with only some tiers lets the next one fill in: OoT has only area
+  // names, shown at every zoom.
+  var has = this._labelTiers || (this._labelTiers = (function(categories) {
+    var names = {};
+    Object.keys(categories).forEach(function(id) {
+      if(categories[id].marker_category_type_id == 3) names[categories[id].name] = true;
+    });
+    return names;
+  })(this.categories));
   switch(categoryName) {
     case 'Region Labels': return zoom <= 3;
-    case 'Area Labels': return zoom > 3 && zoom <= 5;
+    case 'Area Labels':
+      return (!has['Region Labels'] || zoom > 3) && (!has['Places Labels'] || zoom <= 5);
     case 'Places Labels': return zoom > 5;
     case 'Places Labels - Close': return zoom > 6;
     default: return false;
@@ -1377,10 +1401,10 @@ ZMap.prototype._labelTierShown = function(categoryName) {
 };
 
 // Region and place names (label markers) step aside from the markers they
-// would cover, as OoT's place names do (OotFloors.js layoutPlaceNames): each
-// tries a few spots near its own, nudges sized to the label, and takes the
-// one covering the fewest markers and other names, preferring the nearest.
-// Re-laid out after every pan and zoom, once the markers have updated.
+// would cover: each tries a few spots near its own, nudges sized to the
+// label, and takes the one covering the fewest markers and other names,
+// preferring the nearest. Re-laid out after every pan and zoom, once the
+// markers have updated.
 ZMap.prototype._setupLabelLayout = function() {
   var zmap = this, frame = null;
   var schedule = function() {
@@ -1404,14 +1428,31 @@ ZMap.prototype.layoutLabelMarkers = function() {
       points.push(map.latLngToContainerPoint(marker.getLatLng()));
     }
   });
+  // A game whose names are all in one tier shown at every zoom (OoT's Area
+  // Labels) grows them as you zoom in, from 11px to 18px.
+  // Always in the same order (as added), so names don't swap places as
+  // markers load in a different order.
+  labels.sort(function(a, b) { return Number(a.marker.id) - Number(b.marker.id); });
+  var zmap = this, zoom = map.getZoom();
+  var growing = Math.max(11, Math.min(18, 11 + (zoom - 1) * 1.4)) + 'px';
   var placed = [];
   labels.forEach(function(label) {
     var element = label.element;
-    var rect = element.getBoundingClientRect();
-    var width = rect.width, height = Math.max(16, rect.height);
-    if(!width) return;
+    var tier = zmap.categories[label.marker.categoryId];
+    var fontSize = tier && zmap._labelTierAtEveryZoom(tier.name) ? growing : '';
+    if(element.style.fontSize !== fontSize) {
+      element.style.fontSize = fontSize;
+      // Leaflet centres a name by its size when drawn: re-centre it at the new size.
+      label.marker.getTooltip().update();
+    }
+    // The text's own box: the name's padding is invisible, so it shouldn't
+    // count as covering a marker.
+    var rect = element.getBoundingClientRect(), style = window.getComputedStyle(element);
+    var width = rect.width - (parseFloat(style.paddingLeft) || 0) - (parseFloat(style.paddingRight) || 0);
+    var height = Math.max(16, rect.height - (parseFloat(style.paddingTop) || 0) - (parseFloat(style.paddingBottom) || 0));
+    if(!(width > 0)) return;
     var origin = map.latLngToContainerPoint(label.marker.getLatLng());
-    var dy = height * .8, dx = width * .3;
+    var dy = height + 2, dx = width * .3;
     var best = null;
     [[0, 0], [0, -dy], [0, dy], [0, -dy * 2], [0, dy * 2], [-dx, -dy], [dx, -dy], [-dx, dy], [dx, dy]].forEach(function(offset) {
       var box = {left: origin.x + offset[0] - width / 2, right: origin.x + offset[0] + width / 2,
@@ -1446,6 +1487,13 @@ ZMap.prototype._labelShownCloser = function(marker) {
     return names;
   })());
   return !!close[marker.submapId + ':' + (marker.title || marker.name)];
+};
+
+// Whether a label tier is the game's only one, so shown at every zoom.
+ZMap.prototype._labelTierAtEveryZoom = function(categoryName) {
+  this._labelTierShown(categoryName);
+  var has = this._labelTiers || {};
+  return categoryName === 'Area Labels' && !has['Region Labels'] && !has['Places Labels'];
 };
 
 ZMap.prototype.buildMap = function(gameId) {
@@ -1733,9 +1781,9 @@ ZMap.prototype.addMapControl = function(gameId) {
     //console.log(e.originalId + " " + defaultSubMapId);
     var sameOotMap = _this.mapOptions.assetPreview && _this.mapControl.currentMap == e.originalId;
     _this.mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
-    if(_this.mapOptions.shortName === 'OoT') _this._reconcileOotMarkerSelection(e.originalId, defaultSubMapId);
+    if(isOcarina(_this.mapOptions.shortName)) _this._reconcileOotMarkerSelection(e.originalId, defaultSubMapId);
     _this.refreshMap();
-    if(_this.mapOptions.shortName !== 'OoT') _this._closeNewMarker();
+    if(!isOcarina(_this.mapOptions.shortName)) _this._closeNewMarker();
     //this.mapControl.resetContent();
 
     if(!sameOotMap) _this.map.setView(new L.LatLng(
@@ -2650,7 +2698,24 @@ ZMap.prototype._limitZoomToMapBounds = function() {
     );
   });
 
+  // Not while a zoom is animating: Leaflet moves its tiles only when the zoom
+  // changes, so a pan in the middle of an animation that stays at the same
+  // zoom (as the page settles) left the artwork and place names offset from
+  // the markers until the next zoom. Wait for the animation, then update.
+  var deferred = null;
   var update = function(boundsChanged) {
+    if(map._animatingZoom) {
+      if(!deferred) {
+        deferred = { boundsChanged: false };
+        map.once('zoomend', function() {
+          var again = deferred.boundsChanged;
+          deferred = null;
+          update(again);
+        });
+      }
+      if(boundsChanged === true) deferred.boundsChanged = true;
+      return;
+    }
     var size = map.getSize();
     if(!size.x || !size.y) return;
     var next = measureInsets();
@@ -6091,7 +6156,7 @@ var ZMapOfflinePacks = {
   // A game's name for downloads. The page knows the OoT remake as OoTR, but
   // its downloads (and get_offline_maps) have always used OoT.
   gameId: function(shortName) {
-    return /^ootr?$/i.test(shortName) ? 'OoT' : shortName;
+    return isOcarina(shortName) ? 'OoT' : shortName;
   },
   cacheName: function(gameId) {
     return 'zeldamaps-offline-' + gameId;

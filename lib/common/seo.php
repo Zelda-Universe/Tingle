@@ -1,4 +1,5 @@
 <?php
+  include_once(__DIR__ . '/game_order.php');
   // Category landing pages, shared by index.php and the sitemap. A category
   // gets a page when it appears in the category list: a regular (not label)
   // category inside a group, with at least one visible marker.
@@ -16,11 +17,11 @@
 
   // [slug => [id, name, slug, count, maps, lastUpdated]] for one game, or for
   // every visible game when $gameShortName is null (keyed by game, then slug).
+  // The OoT remake is keyed OoT, index.php's name for it; in the database
+  // it's OoTR (OoT there is the old N64 map, which is hidden).
   function seoLandingCategories($db, $prefix, $gameShortName = null) {
-    // OoT's categories come from its pack, not the database.
-    if ($gameShortName === 'OoT') return seoOotLandingCategories();
     $rows = $db->fetchAllAssociative("
-      SELECT c.short_name AS game, mc.id, mc.name, COUNT(m.id) AS markers,
+      SELECT IF(LOWER(c.short_name) = 'ootr', 'OoT', c.short_name) AS game, mc.id, mc.name, COUNT(m.id) AS markers,
              GROUP_CONCAT(DISTINCT mp.name ORDER BY mp.id SEPARATOR '|') AS maps,
              DATE_FORMAT(MAX(m.last_updated), '%Y-%m-%dT%TZ') AS last_updated
         FROM `{$prefix}marker_category` mc
@@ -33,9 +34,9 @@
          AND mc.parent_id IS NOT NULL
          AND mc.marker_category_type_id = 1
          " . ($gameShortName === null ? "" : "AND c.short_name = ?") . "
-       GROUP BY c.short_name, mc.id
-       ORDER BY c.short_name, mc.id
-    ", $gameShortName === null ? [] : [$gameShortName]);
+       GROUP BY game, mc.id
+       ORDER BY game, mc.id
+    ", $gameShortName === null ? [] : [isOcarina($gameShortName) ? 'OoTR' : $gameShortName]);
 
     $categories = [];
     foreach ($rows as $row) {
@@ -53,71 +54,37 @@
         'lastUpdated' => $row['last_updated']
       ];
     }
-    if ($gameShortName === null) {
-      $oot = seoOotLandingCategories();
-      if ($oot) $categories['OoT'] = $oot;
-      return $categories;
-    }
-    return $categories[$gameShortName] ?? [];
-  }
-
-  // The same for OoT, from data/OoT: each category inside a group with at
-  // least one marker. 'maps' lists the maps its markers are on, Hyrule first.
-  function seoOotLandingCategories() {
-    include_once(__DIR__ . '/oot_pack.php');
-    $mapNames = [];
-    foreach (ootPackData('maps') ?? [] as $map) $mapNames[(string) $map['id']] = seoPlainText($map['name']);
-    $markersByCategory = [];
-    foreach (ootPackData('markers') ?? [] as $marker) {
-      if ((string) ($marker['visible'] ?? '1') !== '1') continue;
-      $markersByCategory[(string) $marker['markerCategoryId']][] = $marker;
-    }
-    $file = dirname(__DIR__, 2) . '/data/OoT/markers.json';
-    $updated = is_file($file) ? gmdate('Y-m-d\TH:i:s\Z', filemtime($file)) : null;
-    $categories = [];
-    foreach (ootPackData('categories') ?? [] as $category) {
-      $markers = $markersByCategory[(string) $category['id']] ?? [];
-      if (empty($category['parent_id']) || (string) $category['marker_category_type_id'] !== '1' || !$markers) continue;
-      $name = seoPlainText($category['name']);
-      $slug = seoSlug($name);
-      if ($slug === '' || isset($categories[$slug])) continue;
-      $maps = [];
-      foreach ($mapNames as $id => $mapName) {
-        foreach ($markers as $marker) if ((string) $marker['mapId'] === (string) $id) { $maps[] = $mapName; break; }
-      }
-      $categories[$slug] = [
-        'id' => (int) $category['id'], 'name' => $name, 'slug' => $slug, 'count' => count($markers),
-        'maps' => $maps, 'lastUpdated' => $updated
-      ];
-    }
-    return $categories;
+    if ($gameShortName === null) return $categories;
+    return $categories[isOcarina($gameShortName) ? 'OoT' : $gameShortName] ?? [];
   }
 
   // One OoT marker, for its link preview: [name, categoryId, category, place,
   // details], or null. place is its area (Kakariko Village) or its map.
-  function seoOotMarker($markerId) {
-    include_once(__DIR__ . '/oot_pack.php');
-    foreach (ootPackData('markers') ?? [] as $marker) {
-      if ((int) $marker['id'] !== (int) $markerId || (string) ($marker['visible'] ?? '1') !== '1') continue;
-      $category = '';
-      foreach (ootPackData('categories') ?? [] as $row) {
-        if ((string) $row['id'] === (string) $marker['markerCategoryId']) $category = seoPlainText($row['name']);
-      }
-      $gameData = json_decode((string) ($marker['gameData'] ?? ''), true) ?: [];
-      $place = $gameData['areaName'] ?? '';
-      if ($place === '') {
-        foreach (ootPackData('maps') ?? [] as $map) {
-          if ((string) $map['id'] === (string) $marker['mapId']) $place = $map['name'];
-        }
-      }
-      // The first paragraph says where it is and how to get it.
-      $details = preg_match('#<p>(.*?)</p>#s', (string) ($marker['tabText'] ?? ''), $match) ? seoPlainText($match[1]) : '';
-      return [
-        'name' => seoPlainText($marker['name']), 'categoryId' => (int) $marker['markerCategoryId'],
-        'category' => $category, 'place' => seoPlainText($place), 'details' => $details
-      ];
-    }
-    return null;
+  function seoOotMarker($db, $prefix, $markerId) {
+    $marker = $db->fetchAssociative("
+      SELECT m.name, m.marker_category_id AS categoryId, mc.name AS category, m.game_data AS gameData, mp.name AS map,
+             (SELECT t.tab_text FROM `{$prefix}marker_tab` t WHERE t.marker_id = m.id AND t.visible = 1
+               ORDER BY t.tab_order, t.marker_tab_id LIMIT 1) AS tabText
+        FROM `{$prefix}marker` m
+        JOIN `{$prefix}marker_category` mc ON mc.id = m.marker_category_id
+        JOIN `{$prefix}submap` smp ON smp.id = m.submap_id
+        JOIN `{$prefix}map` mp ON mp.id = smp.map_id
+        JOIN `{$prefix}container` c ON c.id = mp.container_id
+       WHERE m.id = ? AND LOWER(c.short_name) = 'ootr'
+         AND m.visible = 1 AND mc.visible = 1 AND smp.visible = 1 AND mp.visible = 1 AND c.visible = 1
+    ", [(int) $markerId]);
+    if (!$marker) return null;
+    $gameData = json_decode((string) ($marker['gameData'] ?? ''), true) ?: [];
+    $place = $gameData['areaName'] ?? '';
+    if ($place === '') $place = $marker['map'];
+    // The first paragraph says where it is and how to get it. Tab text is
+    // stored HTML-encoded.
+    $tabText = html_entity_decode((string) ($marker['tabText'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $details = preg_match('#<p>(.*?)</p>#s', $tabText, $match) ? seoPlainText($match[1]) : '';
+    return [
+      'name' => seoPlainText($marker['name']), 'categoryId' => (int) $marker['categoryId'],
+      'category' => seoPlainText($marker['category']), 'place' => seoPlainText($place), 'details' => $details
+    ];
   }
 
   function seoCategoryUrl($gameShortName, $slug) {
@@ -136,17 +103,17 @@
     return count($items) > 1 ? implode(', ', array_slice($items, 0, -1)) . ' and ' . end($items) : ($items[0] ?? '');
   }
 
-  // OoT's collectibles counted per Hyrule area (by name) and per dungeon
+  // OoT's collectibles counted per Hyrule area (by name) and per map
   // ("map-<id>"), both ages together: [key => [categoryId => count]].
-  function seoOotCollectibleCounts() {
+  // $markers: [mapId, categoryId, areaName]; $worldMapId: Hyrule's map.
+  function seoOotCollectibleCounts($markers, $worldMapId) {
     $counts = [];
-    foreach (ootPackData('markers') ?? [] as $marker) {
-      $gameData = json_decode((string) ($marker['gameData'] ?? ''), true) ?: [];
-      $key = (string) $marker['mapId'] === '65000' ? ($gameData['areaName'] ?? '') : 'map-' . $marker['mapId'];
-      if ($key === '') continue;
-      $category = (string) $marker['markerCategoryId'];
-      $counts[$key][$category] = ($counts[$key][$category] ?? 0) + 1;
-      if ((string) $marker['mapId'] === '65000') $counts['map-65000'][$category] = ($counts['map-65000'][$category] ?? 0) + 1;
+    foreach ($markers as $marker) {
+      $category = (string) $marker['categoryId'];
+      $map = 'map-' . $marker['mapId'];
+      $counts[$map][$category] = ($counts[$map][$category] ?? 0) + 1;
+      $area = (string) $marker['mapId'] === (string) $worldMapId ? ($marker['areaName'] ?? '') : '';
+      if ($area !== '') $counts[$area][$category] = ($counts[$area][$category] ?? 0) + 1;
     }
     return $counts;
   }
@@ -166,36 +133,77 @@
     return $lead . ': where to find its ' . seoList($parts) . '.';
   }
 
+  // OoT's area pages, from its rows in the database (seoAreaPages reads
+  // them): $maps [id, name, kind, subMaps (ids, in order)], $labels (place
+  // names) [name, mapId, subMapId], $markers (collectibles) [mapId,
+  // categoryId, areaName].
   // One page per Hyrule area (both ages) and one per map (all its floors and
   // water levels): near-identical variant pages would compete with each
   // other. Each page lists every submap it covers and the address keys that
-  // reach it (old "zora-s-river" style links included); 'url' is the page's
-  // canonical address, which the sitemap lists.
-  function seoAreaPages($db = null, $prefix = '') {
-    include_once(__DIR__ . '/oot_pack.php');
-    $areas=[];
-    $counts = seoOotCollectibleCounts();
-    $ootAreas = [];
-    foreach (ootPackData('maps') ?? [] as $map) {
-      $subMaps = array_map(function($submap) { return (string) $submap['id']; }, $map['subMap']);
-      $isWorld = (string) $map['id'] === '65000';
-      $areas[]=['game'=>'OoT','key'=>'map-'.$map['id'],'keys'=>['map-'.$map['id']],'map'=>$map['id'],'subMap'=>$subMaps[0],
-        'subMaps'=>$subMaps,'name'=>$map['name'],'mapName'=>$map['name'],'variant'=>'','isMap'=>true,
-        'description'=>seoOotDescription($map['name'], $counts['map-'.$map['id']] ?? [], !$isWorld && count($subMaps) > 1)];
-      foreach ($map['subMap'] as $submap) foreach ($submap['placeLabels'] ?? [] as $place) {
-        $name=seoPlainText($place['name']);
-        $key=seoAreaSlug($name);
-        if (!isset($ootAreas[$key])) {
-          // The child version leads, when the area exists for both ages.
-          $ootAreas[$key]=['game'=>'OoT','key'=>$key,'keys'=>array_values(array_unique([$key, seoSlug($name)])),
-            'map'=>$map['id'],'subMap'=>(string) $submap['id'],'subMaps'=>[],'name'=>$name,'mapName'=>$map['name'],'variant'=>'',
-            'description'=>seoOotDescription($name, $counts[$name] ?? [])];
-        }
-        $ootAreas[$key]['subMaps'][] = (string) $submap['id'];
-      }
+  // reach it (old "zora-s-river" style links included).
+  function seoOotAreaPages($maps, $labels, $markers) {
+    $worldMapId = null;
+    foreach ($maps as $map) if (($map['kind'] ?? '') === 'world') $worldMapId = (string) $map['id'];
+    $counts = seoOotCollectibleCounts($markers, $worldMapId);
+    $areas = [];
+    $mapNames = [];
+    foreach ($maps as $map) {
+      $mapNames[(string) $map['id']] = seoPlainText($map['name']);
+      $subMaps = array_map('strval', $map['subMaps']);
+      $isWorld = (string) $map['id'] === $worldMapId;
+      $areas[] = ['game'=>'OoT','key'=>'map-'.$map['id'],'keys'=>['map-'.$map['id']],'map'=>(string) $map['id'],'subMap'=>$subMaps[0],
+        'subMaps'=>$subMaps,'name'=>$mapNames[(string) $map['id']],'mapName'=>$mapNames[(string) $map['id']],'variant'=>'','isMap'=>true,
+        'description'=>seoOotDescription($mapNames[(string) $map['id']], $counts['map-'.$map['id']] ?? [], !$isWorld && count($subMaps) > 1)];
     }
-    foreach ($ootAreas as $area) $areas[] = $area;
+    $places = [];
+    foreach ($labels as $label) {
+      $name = seoPlainText($label['name']);
+      $key = seoAreaSlug($name);
+      if ($key === '') continue;
+      if (!isset($places[$key])) {
+        // The first age listed (Child) leads, when the area exists for both.
+        $places[$key] = ['game'=>'OoT','key'=>$key,'keys'=>array_values(array_unique([$key, seoSlug($name)])),
+          'map'=>(string) $label['mapId'],'subMap'=>(string) $label['subMapId'],'subMaps'=>[],'name'=>$name,
+          'mapName'=>$mapNames[(string) $label['mapId']] ?? '','variant'=>'',
+          'description'=>seoOotDescription($name, $counts[$name] ?? [])];
+      }
+      if (!in_array((string) $label['subMapId'], $places[$key]['subMaps'], true)) $places[$key]['subMaps'][] = (string) $label['subMapId'];
+    }
+    return array_merge($areas, array_values($places));
+  }
+
+  // Every game's area and map pages (the sitemap lists their 'url', each
+  // page's canonical address). OoT's are seoOotAreaPages'; other games get a
+  // page per place name and per map variant.
+  function seoAreaPages($db = null, $prefix = '') {
+    $areas=[];
     if($db) {
+      $ootMaps=[];
+      foreach($db->fetchAllAssociative("SELECT mp.id, mp.name, mp.kind, sm.id AS subMapId
+          FROM `{$prefix}map` mp JOIN `{$prefix}container` c ON c.id=mp.container_id
+          JOIN `{$prefix}submap` sm ON sm.map_id=mp.id
+          WHERE LOWER(c.short_name)='ootr' AND c.visible=1 AND mp.visible=1 AND sm.visible=1
+          ORDER BY mp.kind='world' DESC, mp.id, sm.id") as $row) {
+        $ootMaps[$row['id']]=$ootMaps[$row['id']] ?? ['id'=>$row['id'],'name'=>$row['name'],'kind'=>$row['kind'],'subMaps'=>[]];
+        $ootMaps[$row['id']]['subMaps'][]=$row['subMapId'];
+      }
+      $ootRows=function($type) use ($db, $prefix) {
+        return $db->fetchAllAssociative("SELECT m.name, sm.map_id AS mapId, m.submap_id AS subMapId,
+            m.marker_category_id AS categoryId, m.game_data AS gameData
+          FROM `{$prefix}marker` m
+          JOIN `{$prefix}marker_category` mc ON mc.id=m.marker_category_id
+          JOIN `{$prefix}submap` sm ON sm.id=m.submap_id
+          JOIN `{$prefix}map` mp ON mp.id=sm.map_id
+          JOIN `{$prefix}container` c ON c.id=mp.container_id
+          WHERE LOWER(c.short_name)='ootr' AND mc.marker_category_type_id=? AND m.visible=1 AND mc.visible=1
+            AND sm.visible=1 AND mp.visible=1 AND c.visible=1
+          ORDER BY m.submap_id, m.id", [$type]);
+      };
+      $ootMarkers=array_map(function($row) {
+        $gameData=json_decode((string) $row['gameData'], true) ?: [];
+        return ['mapId'=>$row['mapId'],'categoryId'=>$row['categoryId'],'areaName'=>$gameData['areaName'] ?? ''];
+      }, $ootRows(1));
+      $areas=seoOotAreaPages(array_values($ootMaps), $ootRows(3), $ootMarkers);
       $rows=$db->fetchAllAssociative("SELECT c.short_name AS game, m.id, m.name, m.description,
           sm.map_id AS mapId, m.submap_id AS subMapId, sm.name AS variant, mp.name AS mapName
         FROM `{$prefix}marker` m
@@ -203,17 +211,23 @@
         JOIN `{$prefix}submap` sm ON sm.id=m.submap_id
         JOIN `{$prefix}map` mp ON mp.id=sm.map_id
         JOIN `{$prefix}container` c ON c.id=mp.container_id
-        WHERE mc.marker_category_type_id=3 AND m.visible=1 AND mc.visible=1 AND sm.visible=1 AND mp.visible=1 AND c.visible=1 AND c.short_name NOT IN ('OoT','OoTR')");
+        WHERE mc.marker_category_type_id=3 AND m.visible=1 AND mc.visible=1 AND sm.visible=1 AND mp.visible=1 AND c.visible=1 AND LOWER(c.short_name) NOT IN ('oot','ootr')");
       foreach($rows as $row) $areas[]=['game'=>$row['game'],'key'=>(string)$row['id'],'map'=>$row['mapId'],
         'subMap'=>$row['subMapId'],'name'=>seoPlainText($row['name']),'mapName'=>seoPlainText($row['mapName']),'variant'=>seoPlainText($row['variant']),
         'description'=>seoPlainText($row['description'])];
       $mapRows=$db->fetchAllAssociative("SELECT c.short_name AS game, mp.id, mp.name, sm.id AS subMapId, sm.name AS variant
         FROM `{$prefix}map` mp JOIN `{$prefix}container` c ON c.id=mp.container_id
-        JOIN `{$prefix}submap` sm ON sm.map_id=mp.id WHERE c.visible=1 AND mp.visible=1 AND sm.visible=1 AND c.short_name NOT IN ('OoT','OoTR')");
+        JOIN `{$prefix}submap` sm ON sm.map_id=mp.id WHERE c.visible=1 AND mp.visible=1 AND sm.visible=1 AND LOWER(c.short_name) NOT IN ('oot','ootr')");
       foreach($mapRows as $row) $areas[]=['game'=>$row['game'],'key'=>'map-'.$row['id'],'map'=>$row['id'],
         'subMap'=>$row['subMapId'],'name'=>seoPlainText($row['name']),'mapName'=>seoPlainText($row['name']),
         'variant'=>seoPlainText($row['variant']),'isMap'=>true,'description'=>''];
     }
+    return seoFinishAreaPages($areas);
+  }
+
+  // Fills in what every area page has: its keys and submaps, a description
+  // when it has none, and its canonical address ('url').
+  function seoFinishAreaPages($areas) {
     foreach($areas as &$area) {
       $area['keys']=$area['keys'] ?? [$area['key']];
       $area['subMaps']=$area['subMaps'] ?? [(string) $area['subMap']];

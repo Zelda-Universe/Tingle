@@ -25,12 +25,6 @@ ZMap.prototype._isWikiEditor = function() {
   return !!me && me.level >= this.WIKI_EDITOR_LEVEL;
 };
 
-// OoT's markers come from data/OoT, not the marker table, so they have no
-// History or Talk, and can't be edited or deleted here.
-ZMap.prototype._isPackGame = function() {
-  return /^ootr?$/i.test((this.mapOptions && this.mapOptions.shortName) || '');
-};
-
 ZMap.prototype._canEditMarker = function(marker) {
   var me = this.getUser();
   if(!me || !marker) return false;
@@ -134,7 +128,7 @@ ZMap.prototype._wikiBackToMarker = function(markerId) {
 // Under a POI's content: who added it, and Edit, History, Talk and Delete.
 // Editors only.
 ZMap.prototype._markerEditorToolsHTML = function(marker) {
-  if(!this._isWikiEditor() || !marker || !(marker.id > 0) || this._isPackGame()) return '';
+  if(!this._isWikiEditor() || !marker || !(marker.id > 0)) return '';
   var canEdit = this._canEditMarker(marker);
   var id = Number(marker.id);
   var button = function(action, icon, label, extra) {

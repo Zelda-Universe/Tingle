@@ -83,10 +83,9 @@
     $usage[] = array('label' => 'Bookmarks', 'people' => $count("SELECT COUNT(DISTINCT `user_id`) FROM `{$map_prefix}user_bookmark`"),
       'items' => $count("SELECT COUNT(*) FROM `{$map_prefix}user_bookmark`"), 'unit' => 'bookmarks');
   }
-  if ($has('user_completed_marker')) {
-    $usage[] = array('label' => 'Completed markers', 'people' => $count("SELECT COUNT(DISTINCT `user_id`) FROM `{$map_prefix}user_completed_marker`"),
-      'items' => $count("SELECT COUNT(*) FROM `{$map_prefix}user_completed_marker`"), 'unit' => 'completes');
-  }
+  // No completed markers here: counting people across that table (tens of
+  // millions of rows) on every visit isn't worth it. Completes & Bookmarks
+  // covers them, cached.
   if ($has('push_subscription')) {
     $usage[] = array('label' => 'Push notifications', 'people' => $count("SELECT COUNT(DISTINCT `user_id`) FROM `{$map_prefix}push_subscription`"),
       'items' => $count("SELECT COUNT(*) FROM `{$map_prefix}push_subscription`"), 'unit' => 'devices');

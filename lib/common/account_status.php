@@ -31,14 +31,23 @@
     );
   }
 
-  // Ends the session of an account that's been deleted, disabled or banned
-  // since it signed in, before any request is handled (ajax.php). Pages left
-  // open would otherwise keep working, e.g. adding markers.
+  // Before any request is handled (ajax.php): ends the session of an account
+  // that's been deleted, disabled or banned since it signed in, and brings
+  // the session's role up to date when an admin has changed it. Pages left
+  // open would otherwise keep working with the old access, e.g. adding
+  // markers (add_marker.php and others read the session's level).
   function accountSessionCheck($db, $prefix) {
     if (empty($_COOKIE['zmap'])) return;
     start_session('zmap');
     $userId = (int) ($_SESSION['user_id'] ?? 0);
-    if ($userId && !accountIsUsable($db, $prefix, $userId)) {
+    $level = $userId ? $db->fetchOne(
+      "SELECT `level` FROM `{$prefix}user` WHERE `id` = ? AND " . accountUsableSql($db, $prefix),
+      [$userId]
+    ) : null;
+    if ($userId && isset($_SESSION['level']) && $level !== false && (int) $_SESSION['level'] !== (int) $level) {
+      $_SESSION['level'] = (int) $level;
+    }
+    if ($userId && $level === false) {
       session_unset();
       session_destroy();
       include_once(__DIR__ . '/auth_token.php');

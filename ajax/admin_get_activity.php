@@ -153,12 +153,18 @@
                WHERE `event` IN ('downloaded', 'updated', 'removed')
                GROUP BY `user_id`, `container_id`) `l` ON `l`.`id` = `e`.`id`
     ";
+    // The OoT remake isn't a container row (it's data/OoT, id 64), and the
+    // hidden 'OoT' row is the old N64 game: list the remake in its place.
+    include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
+    $oot = ootPackData('container')[0] ?? null;
+    $containers = "SELECT `id`, `short_name`, `name` FROM `{$map_prefix}container`" .
+      ($oot ? " WHERE LOWER(`short_name`) NOT IN ('oot', 'ootr') UNION ALL SELECT 64, 'OoT', ?" : '');
     $games = $db->fetchAllAssociative("
       SELECT `c`.`short_name` AS `game`, `c`.`name`,
              COALESCE(`now`.`people`, 0) AS `people`, COALESCE(`now`.`bytes`, 0) AS `bytes`,
              COALESCE(`all`.`downloads`, 0) AS `downloads`, COALESCE(`all`.`recent`, 0) AS `recent`,
              COALESCE(`all`.`failed`, 0) AS `failed`, COALESCE(`all`.`removed`, 0) AS `removed`
-        FROM `{$map_prefix}container` `c`
+        FROM ($containers) `c`
         LEFT JOIN (SELECT `container_id`, COUNT(*) AS `people`, SUM(`bytes`) AS `bytes`
                      FROM ($latest) `x` WHERE `event` IN ('downloaded', 'updated') GROUP BY `container_id`) `now`
                ON `now`.`container_id` = `c`.`id`
@@ -170,7 +176,7 @@
                ON `all`.`container_id` = `c`.`id`
        WHERE `now`.`people` > 0 OR `all`.`downloads` > 0 OR `all`.`failed` > 0
        ORDER BY `people` DESC, `downloads` DESC, `c`.`name`
-    ");
+    ", $oot ? [$oot['name']] : []);
     foreach ($games as &$game) {
       foreach (['people', 'bytes', 'downloads', 'recent', 'failed', 'removed'] as $key) $game[$key] = (int) $game[$key];
     }

@@ -19,7 +19,11 @@
   }
   // ajax.php keeps game to letters, numbers, - and _: an id or short name.
   $game = (string) ($_POST['game'] ?? '');
-  $containerId = $db->fetchOne(
+  include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
+  // The OoT remake isn't a container row; the hidden 'OoT' row is the old
+  // N64 game, which can't be downloaded.
+  if (ootPackIsGame($game)) $containerId = 64;
+  else $containerId = $db->fetchOne(
     "SELECT `id` FROM `{$map_prefix}container` WHERE `id` = ? OR `short_name` = ? LIMIT 1",
     [ctype_digit($game) ? (int) $game : 0, $game]
   );

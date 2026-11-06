@@ -5885,6 +5885,11 @@ var ZMapOfflinePacks = {
     visit(data);
     return Array.from(urls);
   },
+  // A game's name for downloads. The page knows the OoT remake as OoTR, but
+  // its downloads (and get_offline_maps) have always used OoT.
+  gameId: function(shortName) {
+    return /^ootr?$/i.test(shortName) ? 'OoT' : shortName;
+  },
   cacheName: function(gameId) {
     return 'zeldamaps-offline-' + gameId;
   },
@@ -6399,7 +6404,7 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
     var card = $('<section>', { class: 'offline-map-card' });
     var heading = $('<div>', { class: 'offline-map-heading' });
     var gameInfo = Object.values(games || {}).find(function(entry) {
-      return entry.shortName == game.id;
+      return ZMapOfflinePacks.gameId(entry.shortName) == game.id;
     });
     if(gameInfo) {
       heading.append(new CategoryIcon({ iconClass: gameInfo.img, color: gameInfo.color }).domNode
@@ -6519,7 +6524,7 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
   var list = $('#offline_maps_list');
   var cards = {};
   var knownGames = sortGames(Object.values(games || {})).map(function(game) {
-    return { id: game.shortName, name: game.name };
+    return { id: ZMapOfflinePacks.gameId(game.shortName), name: game.name };
   });
   if(knownGames.length) {
     list.empty();

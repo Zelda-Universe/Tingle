@@ -151,7 +151,7 @@
     return $counts;
   }
 
-  // "Kakariko Village map for Ocarina of Time (2026): where to find its 4
+  // "Kakariko Village map for Ocarina of Time Remake: where to find its 4
   // Heart Pieces and 6 Gold Skulltulas." A single one goes unnumbered ("its
   // Heart Piece"). Kept to 150 characters, about what results pages show.
   function seoOotDescription($name, $counts, $floors = false) {
@@ -161,7 +161,7 @@
       $count = $counts[$id] ?? 0;
       if ($count) $parts[] = $count === 1 ? $label[0] : $count . ' ' . $label[1];
     }
-    $lead = $name . ' map for Ocarina of Time (2026)' . ($floors ? ', floor by floor' : '');
+    $lead = $name . ' map for Ocarina of Time Remake' . ($floors ? ', floor by floor' : '');
     if (!$parts) return $lead . ', on the Zelda Maps interactive map.';
     return $lead . ': where to find its ' . seoList($parts) . '.';
   }
@@ -218,7 +218,7 @@
       $area['keys']=$area['keys'] ?? [$area['key']];
       $area['subMaps']=$area['subMaps'] ?? [(string) $area['subMap']];
       $area['variant']=preg_replace('/(?:\s*·\s*)?State\s*\d+/i','',$area['variant']);
-      $gameNames=['OoT'=>'Ocarina of Time Remake (2026)','BotW'=>'Breath of the Wild','TotK'=>'Tears of the Kingdom','EoW'=>'Echoes of Wisdom','LA'=>"Link's Awakening"];
+      $gameNames=['OoT'=>'Ocarina of Time Remake','BotW'=>'Breath of the Wild','TotK'=>'Tears of the Kingdom','EoW'=>'Echoes of Wisdom','LA'=>"Link's Awakening"];
       if($area['description']==='') $area['description']='Explore '.$area['name'].(empty($area['isMap']) && !empty($area['mapName']) ? ' in '.$area['mapName'] : '').($area['variant'] ? ' ('.$area['variant'].')' : '').
         ' on the '.($gameNames[$area['game']] ?? $area['game']).' interactive map. Find local points of interest and browse markers by category on Zelda Maps.';
       $area['url']='https://zeldamaps.com/?'.http_build_query(['game'=>$area['game']==='OoT' ? 'OoTR' : $area['game'],'map'=>$area['map'],'subMap'=>$area['subMap'],'area'=>$area['key']]);

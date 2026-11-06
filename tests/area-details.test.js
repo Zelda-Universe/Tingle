@@ -34,7 +34,7 @@ test('area SEO catalog has one page per area and dungeon, with counted descripti
   expect(new Set(areas.map(a=>a.url)).size).toBe(areas.length);
   expect(new Set(areas.map(a=>a.description)).size).toBe(areas.length);
   for(const area of areas) {
-    expect(area.description.startsWith(area.name+' map for Ocarina of Time (2026)')).toBe(true);
+    expect(area.description.startsWith(area.name+' map for Ocarina of Time Remake')).toBe(true);
     expect(area.description.length).toBeLessThanOrEqual(150);
     expect(area.key).not.toMatch(/[^a-z0-9-]/);
     expect(area.keys).toContain(area.key);
@@ -45,7 +45,7 @@ test('area SEO catalog has one page per area and dungeon, with counted descripti
   const river=areas.find(a=>a.name==="Zora's River");
   expect(river.key).toBe('zoras-river');
   expect(river.keys).toContain('zora-s-river');
-  expect(river.description).toBe("Zora's River map for Ocarina of Time (2026): where to find its 4 Heart Pieces and 4 Gold Skulltulas.");
+  expect(river.description).toBe("Zora's River map for Ocarina of Time Remake: where to find its 4 Heart Pieces and 4 Gold Skulltulas.");
   expect(areas.find(a=>a.key==='map-64031').subMaps.length).toBe(15); // every floor and water level
 });
 

@@ -119,8 +119,8 @@ function zMapInit(vResults) {
     zMap.constructor(vContainer);
 
     // Offline, another game's saved page can stand in for this one's.
-    var seoGameName=vContainer.shortName === 'OoT' ? 'Ocarina of Time Remake (2026)' : vContainer.name;
-    // Area pages say "Ocarina of Time (2026)"; either is this game's page.
+    var seoGameName=vContainer.shortName === 'OoT' ? 'Ocarina of Time Remake' : vContainer.name;
+    // Area pages say "Ocarina of Time Remake" too; any of them is this game's page.
     var titleGameName=vContainer.shortName === 'OoT' ? 'Ocarina of Time' : seoGameName;
     if(seoGameName && document.title.indexOf(titleGameName) === -1) {
       document.title = seoGameName + ' Interactive Map - Zelda Maps';

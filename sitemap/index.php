@@ -42,6 +42,8 @@
    header('Content-Type: application/xml; charset=utf-8');
    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+   // The home page: the whole site's page (index.php), linking every game.
+   echo "\t<url>\n\t\t<loc>https://zeldamaps.com/</loc>\n\t</url>\n";
 
    foreach ($games as $game) {
       if(in_array(strtolower($game),['oot','ootr'],true)) continue;

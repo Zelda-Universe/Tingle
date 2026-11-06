@@ -173,7 +173,7 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
   var mapName=(activeLayer && (activeLayer.ootGroupName || activeLayer.title)) || '';
   if(this.mapOptions.shortName==='OoT') {
     // Same as the server's title: one page per area or dungeon, any age or floor.
-    document.title=(area.title || area.name)+' Map - Ocarina of Time (2026) - Zelda Maps';
+    document.title=(area.title || area.name)+' Map - Ocarina of Time Remake - Zelda Maps';
   } else {
     document.title=(area.mapDestination ? area.name : (area.title || area.name)+' - '+mapName)+
       (variant ? ' ('+variant+')' : '')+' - '+this.mapOptions.name+' Map - Zelda Maps';

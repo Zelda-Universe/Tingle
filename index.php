@@ -12,32 +12,32 @@
   $gameId = $gameAliases[$gameKey] ?? 'OoT';
   $gameMetadata = [
     'OoT' => [
-      'name' => 'Ocarina of Time Remake (2026)',
-      'description' => 'The Legend of Zelda: Ocarina of Time (2026) interactive map. Find all 36 Heart Pieces, 100 Gold Skulltulas and 10 Big Poes in Hyrule and every dungeon.',
+      'name' => 'Ocarina of Time Remake',
+      'description' => "Interactive, searchable Ocarina of Time map with locations and guides for every Heart Piece, Gold Skulltula, Big Poe, and more.",
       'image' => 'social-oot.jpg',
       'themeColor' => '#b99b4b'
     ],
     'LA' => [
       'name' => "Link's Awakening",
-      'description' => "Explore Koholint Island with the Zelda Maps interactive map for The Legend of Zelda: Link's Awakening.",
+      'description' => "Interactive, searchable Link's Awakening map with locations and guides for every Secret Seashell, Piece of Heart, trading item, and more.",
       'image' => 'social-la.jpg',
       'themeColor' => '#43a047'
     ],
     'BotW' => [
       'name' => 'Breath of the Wild',
-      'description' => 'Explore Hyrule with the Zelda Maps interactive map for The Legend of Zelda: Breath of the Wild.',
+      'description' => "Interactive, searchable Breath of the Wild map with locations and guides for every Shrine, Korok Seed, Tower, Memory, and more.",
       'image' => 'social-botw.jpg',
       'themeColor' => '#67c6e8'
     ],
     'TotK' => [
       'name' => 'Tears of the Kingdom',
-      'description' => 'Explore the Surface, Sky, and Depths with the Zelda Maps interactive map for The Legend of Zelda: Tears of the Kingdom.',
+      'description' => "Interactive, searchable Tears of the Kingdom map with locations and guides for every Shrine, Korok Seed, Lightroot, Skyview Tower, and more.",
       'image' => 'social-totk.jpg',
       'themeColor' => '#67b9ad'
     ],
     'EoW' => [
       'name' => 'Echoes of Wisdom',
-      'description' => 'Explore Hyrule with the Zelda Maps interactive map for The Legend of Zelda: Echoes of Wisdom.',
+      'description' => "Interactive, searchable Echoes of Wisdom map with locations and guides for every Echo, Piece of Heart, Might Crystal, Stamp, and more.",
       'image' => 'social-eow.jpg',
       'themeColor' => '#d4a738'
     ]
@@ -62,6 +62,16 @@
   }
   $landingCategoryId = null;
   $pageUrl = null; // Shared link, when it differs from the canonical URL.
+  // The home page (no game named) is the whole site's page, whichever game it
+  // opens: search engines rank it for every game, so it mustn't claim to be
+  // one game's map. (It opened TotK until November 2026, and Google kept
+  // ranking it for TotK searches under the OoT title it then had.)
+  if (!isset($_GET['game']) && !isset($_GET['marker']) && !isset($_GET['category']) && !isset($_GET['area'])) {
+    $pageHeading = 'Zelda Maps: Interactive Maps for Every Zelda Game';
+    $pageTitle = 'Zelda Maps - Interactive Maps for Every Zelda Game';
+    $pageDescription = "Interactive, searchable Zelda maps with locations and guides for Tears of the Kingdom, Breath of the Wild, Ocarina of Time, and more.";
+    $canonicalUrl = 'https://zeldamaps.com/';
+  }
   $markerId = isset($_GET['marker']) ? (int) $_GET['marker'] : 0;
   $categorySlug = isset($_GET['category']) ? (string) $_GET['category'] : '';
   if ($markerId > 0 || $categorySlug !== '') {
@@ -87,14 +97,14 @@
       $pageTitle = $category['name'] . ' Map - ' . $metadata['name'] . ' - Zelda Maps';
       $pageDescription = 'All ' . $count . ' ' . $category['name'] . ' locations' . $where .
         ' in The Legend of Zelda: ' . $metadata['name'] . ', on the Zelda Maps interactive map.';
-      // OoT: "All 100 Gold Skulltulas in Ocarina of Time (2026), across
+      // OoT: "All 100 Gold Skulltulas in Ocarina of Time Remake, across
       // Hyrule and 10 dungeons, on the Zelda Maps interactive map."
       if ($gameId === 'OoT') {
         $dungeons = count(array_diff($maps, ['Hyrule']));
         $where = in_array('Hyrule', $maps, true)
           ? 'across Hyrule' . ($dungeons ? ' and ' . $dungeons . ($dungeons === 1 ? ' dungeon' : ' dungeons') : '')
           : 'across ' . $dungeons . ($dungeons === 1 ? ' dungeon' : ' dungeons');
-        $pageDescription = 'All ' . $count . ' ' . $category['name'] . ' in Ocarina of Time (2026), ' . $where .
+        $pageDescription = 'All ' . $count . ' ' . $category['name'] . ' in Ocarina of Time Remake, ' . $where .
           ', on the Zelda Maps interactive map.';
       }
       $canonicalUrl = seoCategoryUrl($gameId, $category['slug']);
@@ -112,7 +122,7 @@
         $pageDescription = $marker['details'] !== ''
           ? $marker['name'] . ' (' . $marker['category'] . $where . '): ' . $marker['details']
           : 'Location of the ' . $marker['name'] . ' (' . $marker['category'] . ')' .
-            ($marker['place'] !== '' ? ' in ' . $marker['place'] : '') . ' in Ocarina of Time (2026), on the Zelda Maps interactive map.';
+            ($marker['place'] !== '' ? ' in ' . $marker['place'] : '') . ' in Ocarina of Time Remake, on the Zelda Maps interactive map.';
         $pageDescription = mb_strimwidth($pageDescription, 0, 160, '…', 'UTF-8');
         $pageUrl = 'https://zeldamaps.com/?' . http_build_query(['game' => 'OoTR', 'marker' => $markerId]);
         foreach ($landingCategories as $landingCategory) {
@@ -170,9 +180,9 @@
         if(isset($_GET['map']) && (string)$area['map'] !== (string)$_GET['map']) continue;
         if(isset($_GET['subMap']) && !in_array((string)$_GET['subMap'], $area['subMaps'], true)) continue;
         if($gameId === 'OoT') {
-          // "Market Map - Ocarina of Time (2026)": one page per area or
+          // "Market Map - Ocarina of Time Remake": one page per area or
           // dungeon, whichever age or floor the link opened.
-          $pageHeading=$area['name'].' Map - Ocarina of Time (2026)';
+          $pageHeading=$area['name'].' Map - Ocarina of Time Remake';
         } else {
           $mapTitle=($area['mapName'] ?? $area['name']).($area['variant'] ? ' ('.$area['variant'].')' : '');
           $pageHeading=(!empty($area['isMap']) ? $mapTitle : $area['name'].' - '.$mapTitle).' - '.$metadata['name'].' Map';
@@ -326,8 +336,8 @@
       <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
       <link rel="stylesheet" href="data/OoT/icons.css" />
       <?php endif; ?>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261106-oot-57"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261106-oot-57" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261106-oot-60"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261106-oot-60" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;
@@ -382,8 +392,13 @@
 
           var game = urlParams["game"];
 
+          // Name the game in the address in place, without reloading: a
+          // reload looked to search engines like the home page redirecting
+          // to OoT's map, and dropped any other part of the link.
           if(game === undefined) {
-            window.location.href = "?game=OoTR";
+            var url = new URL(window.location.href);
+            url.searchParams.set('game', 'OoTR');
+            window.history.replaceState(window.history.state, '', url.href);
             return;
           }
         })();
@@ -394,6 +409,14 @@
     <header class="sr-only">
       <h1><?= metadataEscape($pageHeading) ?></h1>
       <p><?= metadataEscape($pageDescription) ?></p>
+      <!-- Every game's map, as plain links search engines can follow. -->
+      <nav aria-label="Zelda Maps games">
+        <ul>
+          <?php foreach (['TotK' => 'TotK', 'BotW' => 'BotW', 'OoT' => 'OoTR', 'EoW' => 'EoW', 'LA' => 'LA'] as $linkGame => $linkParam): ?>
+          <li><a href="https://zeldamaps.com/?game=<?= $linkParam ?>"><?= metadataEscape($gameMetadata[$linkGame]['name']) ?> Interactive Map</a></li>
+          <?php endforeach; ?>
+        </ul>
+      </nav>
     </header>
     <main>
       <!--

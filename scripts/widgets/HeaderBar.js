@@ -108,6 +108,7 @@ HeaderBar.prototype.createSearchArea = function(parent, name, categories) {
         this.showMobileSearchResults(markerListView);
       } else {
         this.rememberSearchSelection();
+        this._searchListView = markerListView;
         this.mapControl.setContent(markerListView.domNode, 'search');
       }
     }.bind(this),
@@ -193,6 +194,7 @@ HeaderBar.prototype.selectSearchMarker = function(marker) {
   this._searchSelection=null;
   this.hideMobileSearchResults();
   if(this.searchArea) this.searchArea.markerSearchField.searchInput.blur();
+  this._returnToSearchResults();
 
   if(marker.areaDestination || marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
     zMap.navigateToArea(marker);
@@ -204,6 +206,18 @@ HeaderBar.prototype.selectSearchMarker = function(marker) {
 
   this.mapControl.openDrawerSmall(true);
   zMap._panMarkerIntoVisibleMapArea(marker, false);
+};
+
+// On desktop the results are a page in the sidebar, which the marker's (or
+// area's) page replaces: it gets a Back button to them (ZLayers _setContent).
+// Changing pages empties the sidebar with jQuery, which also drops the result
+// rows' click handlers, so the list is detached and kept, not rebuilt.
+HeaderBar.prototype._returnToSearchResults = function() {
+  var control = this.mapControl, list = this._searchListView;
+  if(control.viewStyleBottomSlide || control.getContentType() !== 'search' || !list) return;
+  var scrollTop = control._contents.scrollTop;
+  $(list.domNode).detach();
+  control.returnNextPageTo({ search: { list: list, scrollTop: scrollTop } });
 };
 
 HeaderBar.prototype.createShrinkButton = function(parent) {

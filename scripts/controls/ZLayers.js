@@ -1615,12 +1615,37 @@ L.Control.ZLayers = L.Control.Layers.extend({
         this.zMap.selectedArea=null;
         // The game's own title, as closing an area page sets it.
         var options=this.zMap.mapOptions || {};
-        var gameName=options.shortName === 'OoT' ? 'Ocarina of Time Remake (2026)' : options.name;
+        var gameName=options.shortName === 'OoT' ? 'Ocarina of Time Remake' : options.name;
         if(gameName) document.title=gameName+' Interactive Map - Zelda Maps';
         var restored=this.zMap.restoreAreaReturnView ? this.zMap.restoreAreaReturnView() : false;
         this._navigatingBack=true;
         this.zMap.goTo({marker:returnsTo.marker,panTo:!restored},true);
         if(this.viewStyleBottomSlide) this.openDrawerDefaultPartial();
+      },this);
+    }
+    // A marker or area opened from the search results (desktop) goes back to
+    // them, as they were, scrolled where they were (HeaderBar
+    // _returnToSearchResults).
+    if(returnsTo && returnsTo.search) {
+      var searchReturnButton=L.DomUtil.create('a','button back-button',this._contents);
+      searchReturnButton.innerHTML='<i class="fas fa-chevron-left"></i>';
+      searchReturnButton.setAttribute('aria-label','Back to search results');
+      L.DomEvent.on(searchReturnButton,'click',function(e) {
+        L.DomEvent.stop(e);
+        if(/^area-/.test(this._contentType || '')) {
+          var searchAreaURL=new URL(window.location.href);
+          searchAreaURL.searchParams.delete('area');
+          window.history.replaceState(window.history.state,'',searchAreaURL.href);
+          this.zMap.selectedArea=null;
+          var searchGame=this.zMap.mapOptions || {};
+          var searchGameName=searchGame.shortName === 'OoT' ? 'Ocarina of Time Remake' : searchGame.name;
+          if(searchGameName) document.title=searchGameName+' Interactive Map - Zelda Maps';
+        }
+        this.zMap._closeNewMarker();
+        this._navigatingBack=true;
+        this.setContent(returnsTo.search.list.domNode,'search');
+        this._contents.scrollTop=returnsTo.search.scrollTop;
+        this.zMap.updateUrl();
       },this);
     }
     if(returnsTo === 'bookmarks') {
@@ -2111,7 +2136,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       if(this.zMap.restoreAreaReturnView) this.zMap.restoreAreaReturnView();
       // The game's own title, as zmain.lib.js sets it on load.
       var options=this.zMap.mapOptions || {};
-      var gameName=options.shortName === 'OoT' ? 'Ocarina of Time Remake (2026)' : options.name;
+      var gameName=options.shortName === 'OoT' ? 'Ocarina of Time Remake' : options.name;
       if(gameName) document.title=gameName+' Interactive Map - Zelda Maps';
     }
     if(/^m\d+$/.test(this._contentType || '')) {

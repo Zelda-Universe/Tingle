@@ -1560,10 +1560,22 @@ ZMap.prototype.buildMap = function(gameId) {
     );
     document.documentElement.style.setProperty('--mobile-map-height', height + 'px');
   };
+  // Resizes keep the map's top edge still, so it doesn't jump as a phone's
+  // toolbars come and go. While the page is still settling (until the map is
+  // first touched, or for a few seconds), they keep its centre instead: the
+  // map grows once its full height is set, and keeping the top edge then
+  // moved the view half that growth from where the address put it, a little
+  // further on every reload.
+  var settling = true;
+  var settled = function() { settling = false; };
+  ['mousedown', 'touchstart', 'wheel', 'keydown'].forEach(function(type) {
+    map.getContainer().addEventListener(type, settled, { once: true, passive: true });
+  });
+  window.setTimeout(settled, 5000);
   var invalidateMapSize = function() {
     updateMobileMapHeight();
     window.requestAnimationFrame(function() {
-      if(this.map === map) map.invalidateSize({ pan: false });
+      if(this.map === map) map.invalidateSize(settling ? { pan: true, animate: false } : { pan: false });
     }.bind(this));
   }.bind(this);
   window.addEventListener('resize', invalidateMapSize);
@@ -1731,11 +1743,17 @@ ZMap.prototype.addMapControl = function(gameId) {
       _this.mapOptions.centerX
     ), _this.map.getZoom());
   });
-  if(this.mapOptions.assetPreview) {
-    var requestedMap = ZConfig.getConfig('map');
-    if(requestedMap) this.mapControl.changeMapOnly(requestedMap, ZConfig.getConfig('subMap'));
-    if(this.setupOotFloors) this.setupOotFloors();
+  // Open the map the address names (?map=2101 is TotK's Surface), on every
+  // game, keeping the address's view: switching maps otherwise recentres.
+  var requestedMap = ZConfig.getConfig('map'), requestedSubMap = ZConfig.getConfig('subMap');
+  var openedMap = this.mapControl.getCurrentMap();
+  // OoT's Child and Adult are one map's two submaps.
+  if(requestedMap && (requestedMap != openedMap.mapId || (requestedSubMap && requestedSubMap != openedMap.subMapId))) {
+    var requestedView = { center: this.map.getCenter(), zoom: this.map.getZoom() };
+    this.mapControl.changeMapOnly(requestedMap, requestedSubMap);
+    this.map.setView(requestedView.center, requestedView.zoom, { animate: false });
   }
+  if(this.mapOptions.assetPreview && this.setupOotFloors) this.setupOotFloors();
 
   $(document).on('keydown', function(e) {
     if(e.key == "Escape") {

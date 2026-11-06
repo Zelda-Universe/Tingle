@@ -508,6 +508,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
           window.setTimeout(refreshMobileLayout, 350);
         });
         window.addEventListener('resize', refreshMobileLayout);
+        // Chrome on Android changes the bottom safe area as its bottom bar
+        // shows and hides, without a resize event. A hidden strip as tall as
+        // the inset tells us when it changes, so the drawer never rests on a
+        // stale inset.
+        if(window.ResizeObserver) {
+          var safeAreaProbe = document.createElement('div');
+          safeAreaProbe.setAttribute('aria-hidden', 'true');
+          safeAreaProbe.style.cssText = 'position:fixed;left:0;bottom:0;width:1px;' +
+            'height:var(--safe-area-bottom);visibility:hidden;pointer-events:none;';
+          document.body.appendChild(safeAreaProbe);
+          new ResizeObserver(refreshMobileLayout).observe(safeAreaProbe);
+        }
         if(window.visualViewport) {
           window.visualViewport.addEventListener('resize', refreshMobileLayout);
         }

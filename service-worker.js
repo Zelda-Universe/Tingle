@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261105-93';
+const CACHE_VERSION = '20261106-94';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +8,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=OoT',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261105-oot-27',
-  './res.php?type=css&v=20261105-oot-27',
+  './res.php?type=javascript&v=20261106-oot-28',
+  './res.php?type=css&v=20261106-oot-28',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',

@@ -315,6 +315,14 @@ ZMap.prototype._addTileBackdrop = function(layer, tileURL, maxNativeZoom) {
   layer.backdrop = backdrop;
 };
 
+// Each submap's named regions (BotW's tower regions), kept as get_map sends
+// them; AreaSearch.js turns them into areas when first needed.
+ZMap.prototype._submapRegionData = function(submaps) {
+  return (submaps || []).map(function(submap) {
+    return { submapId: submap.id, regions: submap.regions || [] };
+  });
+};
+
 ZMap.prototype.addMap = function(vMap) {
    // If there is no subMap, we can't add to the map
    if (vMap.subMap.length == 0) {
@@ -395,6 +403,8 @@ ZMap.prototype.addMap = function(vMap) {
     tLayer.originalId       = vMap.id           ;
     tLayer.title            = vMap.name         ;
     tLayer._overlayMap      = []                ;
+    // Named regions with borders, as get_map serves them (AreaSearch.js).
+    tLayer.submapRegions    = this._submapRegionData(vMap.subMap);
     tLayer.defaultSubMapId  = vMap.subMap[0].id ;
 
     this.maps.push(tLayer);
@@ -420,6 +430,7 @@ ZMap.prototype.addMap = function(vMap) {
     tLayer.originalId  = vMap.id;
     tLayer.title       = vMap.name;
     tLayer._overlayMap = [];
+    tLayer.submapRegions = this._submapRegionData(vMap.subMap);
     tLayer.defaultSubMapId = vMap.subMap[0].id;
 
     // Add all the submaps to the overlay array (including the first submap for control purposes)
@@ -864,8 +875,19 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
         ((this.maps.find(function(layer) {return layer.originalId==marker.mapId;}) || {}).ootGroupName) || 'Hyrule';
       coordinateText=$('<span>').text(coordinateText).html();
     }
+    // Beside the coordinates, the region the marker is in, where the map has
+    // regions with borders (BotW's tower regions): "Great Plateau".
+    var region = this.mapOptions.shortName !== 'OoT' && this.getMarkerRegion ? this.getMarkerRegion(marker) : null;
+    var pills = "<p class='marker-coordinate-pill'>" + coordinateText + "</p>";
+    // It opens the region's page, as clicking a place name on the map does.
+    if(region) {
+      pills = "<div class='area-header-pills marker-header-pills'>" + pills +
+        "<button type='button' class='marker-coordinate-pill marker-region-pill' onclick='_this.openMarkerRegion(" + marker.id + "); return false'" +
+        " title='" + $('<span>').text(region.name).html() + "'>" + $('<span>').text(region.shortName).html() +
+        "<i class='fas fa-chevron-right' aria-hidden='true'></i></button></div>";
+    }
     var content = "<h2 class='popupTitle'>" + title + "</h2>" +
-      "<p class='marker-coordinate-pill'>" + coordinateText + "</p>" +
+      pills +
       "<div class='marker-actions-row marker-actions-row-four'>" +
         "<button type='button' id='check" + marker.id + "' class='marker-action-button infoWindowIcn " + (!marker.complete ? "unchecked" : "checked") + "' onclick=\"var button = document.getElementById('check" + marker.id + "'); var complete = button.classList.contains('unchecked'); button.classList.toggle('unchecked', !complete); button.classList.toggle('checked', complete); _this._setMarkerDone(" + marker.id + ", complete); return false\">" +
           "<span class='marker-action-icon'><i class='icon-" + (!marker.complete ? "checkbox-unchecked" : "checkmark") + "'></i></span>" +
@@ -1309,21 +1331,11 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
     ); // Should we show completed markers?
   } else if (marker.categoryTypeId == 3) {
     return marker.visible
-      // @TODO: HARDCODE for TotK Release, need better handling
       && (ignoreBounds || mapBounds.contains(marker.getLatLng()))  // Is in the Map Bounds (PERFORMANCE)
       && (
-        (
-         this.mapOptions.categorySelectionMethod == "focus"
-         && this.categories[marker.categoryId].visible_zoom <= this._getDisplayZoom()
-         && (
-               (
-               (marker.categoryId == 2163 && this._getDisplayZoom() <= 3)
-               || (marker.categoryId == 2164 && this._getDisplayZoom() > 3 && this._getDisplayZoom() <= 5)
-               || (marker.categoryId == 2165 && this._getDisplayZoom() > 5 && this._getDisplayZoom() <= 6)
-               || (marker.categoryId == 2166 && this._getDisplayZoom() > 6 && this._getDisplayZoom() <= 8)
-               )
-            )
-        )
+        this.mapOptions.categorySelectionMethod == "focus"
+        && this.categories[marker.categoryId].visible_zoom <= this._getDisplayZoom()
+        && this._labelTierShown(this.categories[marker.categoryId].name)
       ) // Check if we should show for the category, and at this zoom level
       && (
         this.mapOptions.showCompleted == true || (
@@ -1335,6 +1347,20 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
      ;
    }
 }
+
+// Region and place names come in tiers (TotK's and BotW's label categories,
+// by name), one tier at a time: region names zoomed out, then areas, places,
+// and close-up places.
+ZMap.prototype._labelTierShown = function(categoryName) {
+  var zoom = this._getDisplayZoom();
+  switch(categoryName) {
+    case 'Region Labels': return zoom <= 3;
+    case 'Area Labels': return zoom > 3 && zoom <= 5;
+    case 'Places Labels': return zoom > 5 && zoom <= 6;
+    case 'Places Labels - Close': return zoom > 6 && zoom <= 8;
+    default: return false;
+  }
+};
 
 ZMap.prototype.buildMap = function(gameId) {
   // console.log("Leaflet Version: "    + L.version     );

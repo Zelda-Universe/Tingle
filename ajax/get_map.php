@@ -51,6 +51,31 @@
              , m.id
    ", [$map]);
 
+   // Named regions with borders (BotW's tower regions), by submap. Optional:
+   // until the map_region migration has run there are none, and the map
+   // works as before.
+   $regionsBySubmap = array();
+   try {
+      $regionRows = $db->fetchAllAssociative("
+         select r.submap_id, r.name, r.short_name, r.polygon
+           from {$map_prefix}map_region r
+           join {$map_prefix}submap sm on sm.id = r.submap_id
+           join {$map_prefix}map m on m.id = sm.map_id
+          where m.container_id = ?
+            and r.visible = 1
+          order by r.region_order, r.id
+      ", [$map]);
+   } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+      $regionRows = array();
+   }
+   foreach ($regionRows as $region) {
+      $regionsBySubmap[$region['submap_id']][] = array(
+         'name' => $region['name'],
+         'shortName' => $region['short_name'],
+         'polygon' => json_decode($region['polygon'], true)
+      );
+   }
+
    $res = array();
 
    foreach ($maps as $row) {
@@ -111,6 +136,7 @@
                     , sml.id
          ", [$row2['id']]);
 
+         $row2['regions'] = $regionsBySubmap[$row2['id']] ?? array();
          $arr_child[] = $row2;
       }
       $row['subMap'] = $arr_child;

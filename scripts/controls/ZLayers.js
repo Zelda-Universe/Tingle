@@ -540,7 +540,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _drawerStart: function(e) {
     if(!this.viewStyleBottomSlide) return;
-    if(e.target.closest && e.target.closest('.marker-actions-row')) return;
+    if(e.target.closest && e.target.closest('.marker-actions-row, .marker-region-pill')) return;
 
     var point = e.type.startsWith('touch') ? e.touches[0] : e;
     this._clearDrawerClickSuppression();

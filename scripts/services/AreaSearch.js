@@ -9,6 +9,15 @@ ZMap.prototype.getAreaSearchEntries = function() {
       iconURL:layer.options.iconURL,variant:layer.ootVariant || '',markerCategoryTypeId:3};
     if(seen[mapKey]===undefined) {seen[mapKey]=entries.length;entries.push(mapEntry);}
     else if(layer.defaultSubMapId==current.subMapId) entries[seen[mapKey]]=mapEntry;
+    // Named regions with borders (BotW's tower regions): one page each.
+    this._layerRegions(layer).forEach(function(region) {
+      var key=layer.originalId+':'+region.name;
+      if(seen[key] !== undefined) return;
+      seen[key]=entries.length;
+      entries.push({id:'area-'+layer.originalId+'-'+encodeURIComponent(region.name),name:region.name,description:'',
+        mapId:layer.originalId,submapId:region.submapId,x:region.x,y:region.y,
+        markerCategoryTypeId:3,areaDestination:true,bounds:region.bounds,region:region});
+    });
     (layer.ootPlaceLabels || []).forEach(function(place,index) {
       var key=layer.originalId+':'+place.name;
       var entry={id:'area-'+layer.originalId+'-'+encodeURIComponent(place.name), name:place.name,description:place.description || '',
@@ -137,6 +146,10 @@ ZMap.prototype._getAreaMarkers = function(area,bounds) {
     if(!category || !category.checked || marker.categoryTypeId == 3 || marker.dbVisible == 0) return false;
     if(marker.mapId != area.mapId || (marker.submapId != area.submapId && !(zmap.mapOptions.shortName==='OoT' && marker.globalMarker == 1))) return false;
     if(area.mapDestination) return true;
+    if(area.region) {
+      var at=marker.getLatLng();
+      return zmap._regionContains(area.region,at.lat,at.lng);
+    }
     if(bounds) return bounds.contains(marker.getLatLng());
     // Without recorded borders, a POI belongs to the nearest label of the
     // same level, so a region claims more than a single place does.
@@ -206,6 +219,7 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
   control.setContent(page.contents(),'area-'+area.id+'-variant-'+area.submapId);
   var wrapper=control._contents.querySelector('.menu-cat-content-inner');
   if(wrapper) wrapper.classList.add('area-detail-page');
+  this.updateRegionBorders();
 };
 
 ZMap.prototype.updateAreaCompletionCounts = function() {
@@ -249,9 +263,15 @@ ZMap.prototype.getMarkerAreaName = function(marker) {
   if(gameData && gameData.areaName) return cache[key]=gameData.areaName;
   var layers=this.maps.filter(function(layer) {return layer.originalId==marker.mapId;});
   var own=layers.filter(function(layer) {return layer.defaultSubMapId==marker.submapId;});
-  var places=((own.length ? own : layers)[0] || {}).ootPlaceLabels || [];
+  var layer=(own.length ? own : layers)[0] || {};
+  var places=layer.ootPlaceLabels || [];
   var lat=Number(marker._latlng ? marker._latlng.lat : marker.y), lng=Number(marker._latlng ? marker._latlng.lng : marker.x);
-  if(!places.length || !Number.isFinite(lat) || !Number.isFinite(lng)) return cache[key]=null;
+  if(!Number.isFinite(lat) || !Number.isFinite(lng)) return cache[key]=null;
+  if(!places.length) {
+    // Regions with borders: the smallest one the marker is in, or none.
+    var region=this.getMarkerRegion(marker);
+    return cache[key]=region ? region.name : null;
+  }
   var best=null,bestSize=Infinity,nearest=null,nearestDistance=Infinity;
   places.forEach(function(place) {
     var b=place.bounds;
@@ -296,4 +316,140 @@ ZMap.prototype.restoreAreaReturnView = function() {
   try { map.setView(view.center,view.zoom,{animate:!reducedMotion,duration:.25,easeLinearity:.2}); }
   finally { map.options.zoomAnimationThreshold=threshold; }
   return true;
+};
+
+// Named regions with borders, from get_map (BotW's tower regions, from the
+// game's MapTower data). Each region's polygon is a GeoJSON MultiPolygon in
+// map units ([x, y]); here it becomes Leaflet's [lat, lng] rings, with the
+// box around it and that box's centre. Built once per layer.
+ZMap.prototype._layerRegions = function(layer) {
+  if(!layer || !layer.submapRegions) return [];
+  if(layer._regions) return layer._regions;
+  var regions=[];
+  layer.submapRegions.forEach(function(entry) {
+    entry.regions.forEach(function(region) {
+      var polygon=region.polygon;
+      if(!polygon || polygon.type !== 'MultiPolygon' || !Array.isArray(polygon.coordinates)) return;
+      var south=Infinity,west=Infinity,north=-Infinity,east=-Infinity,size=0;
+      var rings=polygon.coordinates.map(function(rings) {
+        return rings.map(function(ring,index) {
+          var points=ring.map(function(point) {return [Number(point[1]),Number(point[0])];});
+          // Shoelace area of each outer ring, to rank nested regions by size.
+          var twice=0;
+          points.forEach(function(point,i) {
+            var next=points[(i+1)%points.length];
+            twice+=point[1]*next[0]-next[1]*point[0];
+            if(index === 0) {
+              south=Math.min(south,point[0]); north=Math.max(north,point[0]);
+              west=Math.min(west,point[1]); east=Math.max(east,point[1]);
+            }
+          });
+          if(index === 0) size+=Math.abs(twice)/2;
+          return points;
+        });
+      });
+      if(!Number.isFinite(south)) return;
+      regions.push({name:region.name,shortName:region.shortName || region.name,submapId:entry.submapId,rings:rings,size:size,
+        bounds:[[south,west],[north,east]],x:(west+east)/2,y:(south+north)/2});
+    });
+  });
+  return layer._regions=regions;
+};
+
+// Whether a point is inside a region: even-odd across each polygon's rings,
+// so holes count as outside.
+ZMap.prototype._regionContains = function(region,lat,lng) {
+  return region.rings.some(function(polygon) {
+    var inside=false;
+    polygon.forEach(function(ring) {
+      for(var i=0,j=ring.length-1;i<ring.length;j=i++) {
+        var yi=ring[i][0],xi=ring[i][1],yj=ring[j][0],xj=ring[j][1];
+        if((yi>lat) !== (yj>lat) && lng<(xj-xi)*(lat-yi)/(yj-yi)+xi) inside=!inside;
+      }
+    });
+    return inside;
+  });
+};
+
+// The smallest region on a map layer's submap that contains a point, or null.
+ZMap.prototype.regionAt = function(layer,submapId,lat,lng) {
+  var best=null;
+  this._layerRegions(layer).forEach(function(region) {
+    if(region.submapId != submapId || (best && region.size >= best.size)) return;
+    var b=region.bounds;
+    if(lat<b[0][0] || lat>b[1][0] || lng<b[0][1] || lng>b[1][1]) return;
+    if(this._regionContains(region,lat,lng)) best=region;
+  },this);
+  return best;
+};
+
+// Region borders on the map: the open region's, and every region's when
+// "Show Region Borders" is on in Settings. Redrawn when the page or map
+// changes.
+ZMap.prototype.updateRegionBorders = function() {
+  var map=this.map,control=this.mapControl;
+  if(!map || !control) return;
+  if(!this._regionBorders) {
+    var pane=map.getPane('regionBorders') || map.createPane('regionBorders');
+    pane.style.zIndex='360'; // over the map art, under markers and labels
+    pane.style.pointerEvents='none';
+    this._regionBorders=L.layerGroup().addTo(map);
+    var redraw=this.updateRegionBorders.bind(this);
+    control.addHandler('afterSetContent',redraw);
+    control.addHandler('afterResetContent',redraw);
+    map.on('baselayerchange',redraw);
+  }
+  this._regionBorders.clearLayers();
+  var current=control.getCurrentMap(),layer=control.currentMapLayer;
+  var regions=this._layerRegions(layer).filter(function(region) {return region.submapId==current.subMapId;});
+  if(!regions.length) return;
+  var open=/^area-/.test(control.getContentType() || '') && this.selectedArea && this.selectedArea.region;
+  var showAll=!!this.showRegionBorders;
+  regions.forEach(function(region) {
+    var selected=!!open && open.name===region.name && open.submapId==region.submapId;
+    if(!selected && !showAll) return;
+    L.polygon(region.rings,{pane:'regionBorders',interactive:false,className:'region-border'+(selected ? ' region-border-selected' : ''),
+      color:'#fff',weight:selected ? 2.5 : 1.5,opacity:selected ? .9 : .45,
+      fill:selected,fillColor:'#fff',fillOpacity:.06}).addTo(this._regionBorders);
+  },this);
+};
+
+// The region with borders a marker is in (the smallest, where they nest), or
+// null: on maps without regions, or outside them all.
+ZMap.prototype.getMarkerRegion = function(marker) {
+  var layer=this.maps.find(function(layer) {return layer.originalId==marker.mapId && layer.submapRegions;});
+  var lat=Number(marker._latlng ? marker._latlng.lat : marker.y), lng=Number(marker._latlng ? marker._latlng.lng : marker.x);
+  if(!layer || !Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  return this.regionAt(layer,marker.submapId,lat,lng);
+};
+
+// The region pill on a marker's page: opens the page of the region it's in.
+ZMap.prototype.openMarkerRegion = function(markerId) {
+  var marker=this.cachedMarkersById[markerId];
+  var region=marker && this.getMarkerRegion(marker);
+  if(!region) return;
+  var area=this.getAreaSearchEntries().find(function(entry) {
+    return entry.region && entry.region.name===region.name && entry.region.submapId==region.submapId;
+  });
+  if(area) this.navigateToArea(area);
+};
+
+// The nearest label of one level (e.g. "Area Labels") that is inside a
+// region, so a marker is never named after an area across a region border.
+ZMap.prototype.nearestLabelInRegion = function(marker,categoryId,region) {
+  var cache=this._labelsByRegion || (this._labelsByRegion=Object.create(null));
+  var key=region.submapId+':'+region.name+':'+categoryId,zmap=this;
+  var labels=cache[key] || (cache[key]=this.getMarkers().filter(function(label) {
+    if(label.categoryTypeId != 3 || label.categoryId != categoryId || label.submapId != region.submapId) return false;
+    var at=label.getLatLng();
+    return zmap._regionContains(region,at.lat,at.lng);
+  }));
+  var point=typeof marker.getLatLng === 'function' ? marker.getLatLng() : marker._latlng;
+  if(!point) return null;
+  var nearest=null,distance=Infinity;
+  labels.forEach(function(label) {
+    var at=label.getLatLng(),d=Math.hypot(at.lat-point.lat,at.lng-point.lng);
+    if(d<distance) {nearest=label;distance=d;}
+  });
+  return nearest;
 };

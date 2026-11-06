@@ -292,6 +292,12 @@
 .area-description { margin:0 16px 16px; white-space:pre-line; font-size:14px; line-height:1.5; }
 .area-header-pills { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin:0 16px 16px; }
 .leaflet-control-layers .area-header-pills > .marker-coordinate-pill { margin:0 !important; }
+/* A marker's region pill opens the region's page. */
+.leaflet-control-layers button.marker-region-pill { -webkit-appearance:none; appearance:none; border:0; color:inherit; font-family:inherit; cursor:pointer; transition:background-color .15s ease; }
+.leaflet-control-layers button.marker-region-pill:hover,
+.leaflet-control-layers button.marker-region-pill:focus-visible { background:rgba(255,255,255,.32) !important; }
+.leaflet-control-layers button.marker-region-pill i,
+.leaflet-control-layers button.marker-region-pill svg { margin-left:5px; font-size:.8em; opacity:.7; }
 .area-marker-groups .poi-category-heading { margin:0; padding-left:16px; padding-right:16px; }
 .area-marker-groups section { margin:0; }
 .area-marker-groups section .marker-list { border-top:1px solid rgba(255,255,255,.2); border-bottom:1px solid rgba(255,255,255,.2); }

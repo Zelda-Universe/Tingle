@@ -6,6 +6,7 @@
     'showCompleted',
     'showPoiLabels',
     'showRegionAreaNames',
+    'showRegionBorders',
     'showCategoryCompletionCounts',
     'minimalUI'
   ];

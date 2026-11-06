@@ -74,6 +74,18 @@ L.Control.Settings = L.Control.extend({
       this.setRegionAreaNames(!checked);
     }, this.labelCategories.length === 0);
 
+    // Region borders (BotW's tower regions) are off unless turned on, and
+    // only offered on maps that have regions.
+    var hasRegions = this.zMap.maps.some(function(layer) {
+      return this.zMap._layerRegions && this.zMap._layerRegions(layer).length;
+    }, this);
+    if(hasRegions) {
+      this.regionBordersCheckbox = this.addCheckbox('Show Region Borders', getCookie('showRegionBorders') === 'true', function(checked) {
+        this.setRegionBorders(checked);
+      });
+      this.setRegionBorders(getCookie('showRegionBorders') === 'true', true);
+    }
+
     // Counts show unless turned off.
     this.completionCountsCheckbox = this.addCheckbox(
       'Hide Completion Counts',
@@ -155,6 +167,13 @@ L.Control.Settings = L.Control.extend({
     if(!skipSave) this.saveSetting('showRegionAreaNames', checked);
   },
 
+  setRegionBorders: function(checked, skipSave) {
+    this.zMap.showRegionBorders = checked;
+    if(this.regionBordersCheckbox) this.regionBordersCheckbox.checked = checked;
+    if(this.zMap.updateRegionBorders) this.zMap.updateRegionBorders();
+    if(!skipSave) this.saveSetting('showRegionBorders', checked);
+  },
+
   showsCompletionCounts: function() {
     return getCookie('showCategoryCompletionCounts') !== 'false';
   },
@@ -215,6 +234,8 @@ L.Control.Settings = L.Control.extend({
     };
     var regionAreaNames = getCookie('showRegionAreaNames');
     if(regionAreaNames !== '') settings.showRegionAreaNames = regionAreaNames === 'true';
+    var regionBorders = getCookie('showRegionBorders');
+    if(regionBorders !== '') settings.showRegionBorders = regionBorders === 'true';
     return settings;
   },
 
@@ -268,6 +289,7 @@ L.Control.Settings = L.Control.extend({
     });
     apply('showRegionAreaNames', this.setRegionAreaNames);
     apply('showCategoryCompletionCounts', this.setCompletionCounts);
+    apply('showRegionBorders', this.setRegionBorders);
     // Leave a page opened by the link (?page=account) showing.
     apply('minimalUI', function(value) {
       if(value && getUrlParam('page')) this.rememberMinimalUI(value, true);

@@ -196,7 +196,8 @@ CategoryMenu.prototype.organizePOICategories = function() {
   this.poiCategoryGroups = [];
   this.domNode.addClass('poi-category-groups');
   this.categoryButtons.forEach(function(button) {
-    if(!button.category.parent_id || ['2162', '2204'].includes(String(button.category.parent_id))) {
+    if(!button.category.parent_id || String(button.category.marker_category_type_id) === '3' ||
+        ['2162', '2204'].includes(String(button.category.parent_id))) {
       button.domNode.closest('li').addClass('poi-original-category');
     }
   });

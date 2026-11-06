@@ -105,7 +105,9 @@ function getPOICategoryGroups(categories) {
   });
   // Preserve future leaf categories rather than silently dropping them.
   records.forEach(function(c) {
-    if(c.parent_id && !['2162', '2204'].includes(String(c.parent_id)) && !seen.has(String(c.id))) {
+    // Label categories (type 3: region and place names) are set in Settings.
+    if(c.parent_id && String(c.marker_category_type_id) !== '3' &&
+        !['2162', '2204'].includes(String(c.parent_id)) && !seen.has(String(c.id))) {
       result[result.length - 1].categories.push(c);
     }
   });

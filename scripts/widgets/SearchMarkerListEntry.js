@@ -57,12 +57,19 @@ function getMarkerLocationName(marker) {
     return markerLocationNameCache[marker.id] = multipleMaps ? mapName : '';
   }
 
-  // "Area, Map", e.g. "Hyrule Field, Hyrule".
-  var areaName = getNearestMarkerAreaName(marker) ||
-    (zMap.getMarkerAreaName && zMap.getMarkerAreaName(marker)) || '';
+  // "Area, Map", e.g. "Hyrule Field, Hyrule". Where the map has regions with
+  // borders (BotW's), "Area, Region": the nearest area name inside the
+  // region the marker is in, e.g. "East Necluda, Hateno Tower Region".
+  var region = zMap.getMarkerRegion && zMap.getMarkerRegion(marker);
   var locationParts = [];
-  if(areaName && areaName.toLowerCase() !== mapName.toLowerCase()) {
-    locationParts.push(areaName);
+  if(region) {
+    var areaInRegion = getNearestMarkerAreaName(marker, region);
+    if(areaInRegion && areaInRegion.toLowerCase() !== region.shortName.toLowerCase()) locationParts.push(areaInRegion);
+    locationParts.push(region.name);
+  } else {
+    var areaName = getNearestMarkerAreaName(marker) ||
+      (zMap.getMarkerAreaName && zMap.getMarkerAreaName(marker)) || '';
+    if(areaName && areaName.toLowerCase() !== mapName.toLowerCase()) locationParts.push(areaName);
   }
   if(multipleMaps && mapName) locationParts.push(mapName);
 
@@ -71,14 +78,20 @@ function getMarkerLocationName(marker) {
 
 // The area a POI is in, for games without area outlines: its nearest "Area
 // Labels" label where the game has that level (so TotK says "Hyrule Field",
-// not the tiny place next door), else its nearest label of any kind.
-function getNearestMarkerAreaName(marker) {
+// not the tiny place next door), else its nearest label of any kind. Given
+// the region the POI is in, only "Area Labels" inside that region count, and
+// there may be none.
+function getNearestMarkerAreaName(marker, region) {
   var mapMarker = zMap.cachedMarkersById[marker.id];
   if(!mapMarker || !zMap.nearestLabel) return '';
   var areaLevel = Object.keys(zMap.categories).find(function(id) {
     var category = zMap.categories[id];
     return category && /^Area Labels$/i.test(category.name || '');
   });
+  if(region) {
+    var inside = areaLevel && zMap.nearestLabelInRegion(mapMarker, areaLevel, region);
+    return inside ? (inside.title || inside.name || '') : '';
+  }
   var nearest = (areaLevel && zMap.nearestLabel(mapMarker, areaLevel)) || zMap.nearestLabel(mapMarker);
   return nearest ? (nearest.title || nearest.name || '') : '';
 }

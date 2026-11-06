@@ -57,15 +57,23 @@ function getMarkerLocationName(marker) {
     return markerLocationNameCache[marker.id] = multipleMaps ? mapName : '';
   }
 
-  // "Area, Map", e.g. "Hyrule Field, Hyrule". Where the map has regions with
-  // borders (BotW's), "Area, Region": the nearest area name inside the
-  // region the marker is in, e.g. "East Necluda, Hateno Tower Region".
+  // "Area, Map", e.g. "Hyrule Field, Hyrule". Where the game has place names
+  // (BotW, TotK), the same names as the marker's pills, finest first: "Place,
+  // Area, Region", e.g. "Hickaly Woods, West Necluda, Dueling Peaks Tower
+  // Region".
   var region = zMap.getMarkerRegion && zMap.getMarkerRegion(marker);
   var locationParts = [];
-  if(region) {
-    var areaInRegion = getNearestMarkerAreaName(marker, region);
-    if(areaInRegion && areaInRegion.toLowerCase() !== region.shortName.toLowerCase()) locationParts.push(areaInRegion);
-    locationParts.push(region.name);
+  var mapMarker = zMap.cachedMarkersById && zMap.cachedMarkersById[marker.id];
+  var place = mapMarker && zMap.markerLabelLink ? zMap.markerLabelLink(mapMarker, 'place') : null;
+  var area = mapMarker && zMap.markerLabelLink ? zMap.markerLabelLink(mapMarker, 'area') : null;
+  if(place || area || region) {
+    if(place) locationParts.push(place.label);
+    if(area) locationParts.push(area.label);
+    if(region) locationParts.push(region.name);
+    else if(!area) {
+      var nearestArea = getNearestMarkerAreaName(marker);
+      if(nearestArea && nearestArea.toLowerCase() !== mapName.toLowerCase()) locationParts.push(nearestArea);
+    }
   } else {
     var areaName = getNearestMarkerAreaName(marker) ||
       (zMap.getMarkerAreaName && zMap.getMarkerAreaName(marker)) || '';

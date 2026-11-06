@@ -63,3 +63,30 @@ test('the 15 tower regions place each tower inside its own region, and a marker 
   }
   expect(zmap.regionAt(layer, '1902', -96.21875, 94.046875)).toBeNull();
 });
+
+test('area borders: BotW\'s 23 areas, TotK\'s 23 per layer and its 15 tower regions, each tower in its own region', () => {
+  const sql = migration('20261106050000_area_borders.sql');
+  const rows = [...sql.matchAll(/VALUES \((\d+), '((?:[^']|'')+)', '((?:[^']|'')+)', '(\w+)', (\d+), '(.+)'\);$/gm)]
+    .map((m) => ({ submapId: m[1], name: m[2].replace(/''/g, "'"), shortName: m[3].replace(/''/g, "'"), kind: m[4], polygon: JSON.parse(m[6]) }));
+  const count = (submap, kind) => rows.filter((r) => r.submapId === submap && r.kind === kind).length;
+  expect([count('1901', 'area'), count('2101', 'tower'), count('2101', 'area'), count('2102', 'area'), count('2103', 'area')])
+    .toEqual([23, 15, 23, 23, 23]);
+  // The Sky's and Depths' areas are named for their layer; their pills aren't.
+  expect(rows.find((r) => r.name === 'Eldin Mountains Sky').shortName).toBe('Eldin Mountains');
+  // Safe to run on a table made by the BotW regions migration, without kind.
+  expect(sql).toContain("ALTER TABLE map_region ADD COLUMN IF NOT EXISTS kind");
+
+  const context = { ZMap: function() {} };
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../scripts/services/AreaSearch.js'), 'utf8'), context);
+  const zmap = Object.create(context.ZMap.prototype);
+  const layer = { submapRegions: [{ submapId: '2101', regions: rows.filter((r) => r.submapId === '2101') }] };
+  // The site's TotK Skyview Tower markers.
+  const towers = { 'Lookout Landing': [-298.85, 142.85], 'Rospro Pass': [-3679.585, 2346.404], 'Upland Zorana': [2866.062, 581.1915] };
+  for (const [name, [x, y]] of Object.entries(towers)) {
+    expect(zmap.regionAt(layer, '2101', y, x).shortName).toBe(name);
+    expect(zmap.regionAt(layer, '2101', y, x, 'area')).not.toBeNull();
+  }
+  // BotW's Toto Sah Shrine is in West Necluda.
+  const botw = { submapRegions: [{ submapId: '1901', regions: rows.filter((r) => r.submapId === '1901') }] };
+  expect(zmap.regionAt(botw, '1901', -167.1, 157.2, 'area').name).toBe('West Necluda');
+});

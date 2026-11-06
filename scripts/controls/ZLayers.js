@@ -1600,6 +1600,29 @@ L.Control.ZLayers = L.Control.Layers.extend({
         if(this.viewStyleBottomSlide) this.openDrawerDefaultPartial();
       },this);
     }
+    // An area opened from a marker's region pill goes back to that marker,
+    // and to the map view it was seen in if the map hasn't moved since.
+    if(returnsTo && returnsTo.marker) {
+      var returnMarker=this.zMap.cachedMarkersById[returnsTo.marker];
+      var markerReturnButton=L.DomUtil.create('a','button back-button',this._contents);
+      markerReturnButton.innerHTML='<i class="fas fa-chevron-left"></i>';
+      markerReturnButton.setAttribute('aria-label','Back to '+((returnMarker && (returnMarker.title || returnMarker.name)) || 'marker'));
+      L.DomEvent.on(markerReturnButton,'click',function(e) {
+        L.DomEvent.stop(e);
+        var areaURL=new URL(window.location.href);
+        areaURL.searchParams.delete('area');
+        window.history.replaceState(window.history.state,'',areaURL.href);
+        this.zMap.selectedArea=null;
+        // The game's own title, as closing an area page sets it.
+        var options=this.zMap.mapOptions || {};
+        var gameName=options.shortName === 'OoT' ? 'Ocarina of Time Remake (2026)' : options.name;
+        if(gameName) document.title=gameName+' Interactive Map - Zelda Maps';
+        var restored=this.zMap.restoreAreaReturnView ? this.zMap.restoreAreaReturnView() : false;
+        this._navigatingBack=true;
+        this.zMap.goTo({marker:returnsTo.marker,panTo:!restored},true);
+        if(this.viewStyleBottomSlide) this.openDrawerDefaultPartial();
+      },this);
+    }
     if(returnsTo === 'bookmarks') {
       var returnButton = L.DomUtil.create('a', 'button back-button', this._contents);
       returnButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
@@ -1921,18 +1944,38 @@ L.Control.ZLayers = L.Control.Layers.extend({
       text.className = 'compact-title-bar-text';
       bar.appendChild(text);
     }
-    // POIs: their coordinates as a second line, in a small pill.
-    var coordinates = popup &&
+    // POIs and areas: their pills (coordinates, area, completion) as a second
+    // line, each its own small pill. One that opens a page (a marker's area)
+    // stays tappable, by tapping the page's own; the page's is the one
+    // assistive technology and the keyboard use.
+    var pillSource = popup &&
       contents.querySelector('.menu-cat-content-inner > .marker-coordinate-pill, .menu-cat-content-inner > .area-header-pills');
-    if(coordinates) {
-      var pill = document.createElement('span');
-      pill.className = 'compact-title-bar-pill';
-      bar.appendChild(pill);
+    var pillSources = !pillSource ? [] : (pillSource.classList.contains('marker-coordinate-pill')
+      ? [pillSource] : Array.prototype.slice.call(pillSource.querySelectorAll(':scope > .marker-coordinate-pill:not(.marker-name-pill)')));
+    var pills = null;
+    if(pillSources.length) {
+      pills = document.createElement('span');
+      pills.className = 'compact-title-bar-pills';
+      pillSources.forEach(function(original) {
+        var tappable = original.tagName === 'BUTTON';
+        var pill = document.createElement(tappable ? 'button' : 'span');
+        pill.className = 'compact-title-bar-pill' + (tappable ? ' compact-title-bar-pill-button' : '');
+        if(tappable) {
+          pill.type = 'button';
+          pill.tabIndex = -1;
+          L.DomEvent.on(pill, 'click', function(e) {
+            L.DomEvent.stop(e);
+            original.click();
+          });
+        }
+        pills.appendChild(pill);
+      });
+      bar.appendChild(pills);
     }
     contents.insertBefore(bar, contents.firstChild);
     this._compactTitleBar = bar;
     this._compactTitleSource = source;
-    this._compactTitleCoordinates = coordinates || null;
+    this._compactTitlePills = pills ? pillSources : null;
     this._updateCompactTitle();
   },
 
@@ -1942,10 +1985,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // Pages change their titles (e.g. a dropped pin renamed), so copy each time.
     var title = source.textContent.trim();
     if(bar.firstChild && bar.firstChild.textContent !== title) bar.firstChild.textContent = title;
-    var coordinates = this._compactTitleCoordinates;
-    if(coordinates && bar.lastChild !== bar.firstChild) {
-      var position = coordinates.textContent.trim();
-      if(bar.lastChild.textContent !== position) bar.lastChild.textContent = position;
+    // Pills change too (an area's completion count), so copy them as well.
+    var sources = this._compactTitlePills;
+    if(sources && bar.lastChild !== bar.firstChild) {
+      sources.forEach(function(original, index) {
+        var pill = bar.lastChild.children[index], text = original.textContent.trim();
+        if(pill && pill.textContent !== text) pill.textContent = text;
+      });
     }
     // As soon as the page starts to scroll.
     bar.classList.toggle('visible', this._contents.scrollTop > 0);

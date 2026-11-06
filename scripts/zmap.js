@@ -530,7 +530,10 @@ ZMap.prototype.addMarker = function(vMarker) {
                                                    });
    } else {
       marker = new L.marker([vMarker.y,vMarker.x], { opacity: 0.01 }); //opacity may be set to zero
-      marker.bindTooltip(vMarker.name, {permanent: true, interactive:true, className: this.mapOptions.shortName + "-label",direction: 'center', offset: [0, 0] });
+      // Its tier (Region, Area, Places…) sets its size (styles/zmain.css).
+      var labelCategory = this.categories && this.categories[vMarker.markerCategoryId];
+      var labelTier = labelCategory ? ' label-tier-' + String(labelCategory.name).toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '') : '';
+      marker.bindTooltip(vMarker.name, {permanent: true, interactive:true, className: this.mapOptions.shortName + "-label" + labelTier,direction: 'center', offset: [0, 0] });
       marker.getTooltip().on('click',function(e) {
         if(e.originalEvent) L.DomEvent.stop(e.originalEvent);
         _this.navigateToArea(marker);
@@ -870,21 +873,29 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
     }
 
     this._bookmarkTarget = { markerId: marker.id };
-    if(this.mapOptions.shortName === 'OoT') {
-      coordinateText=(marker.gameData && marker.gameData.areaName) ||
-        ((this.maps.find(function(layer) {return layer.originalId==marker.mapId;}) || {}).ootGroupName) || 'Hyrule';
-      coordinateText=$('<span>').text(coordinateText).html();
-    }
-    // Beside the coordinates, the region the marker is in, where the map has
-    // regions with borders (BotW's tower regions): "Great Plateau".
-    var region = this.mapOptions.shortName !== 'OoT' && this.getMarkerRegion ? this.getMarkerRegion(marker) : null;
+    // Beside the coordinates, from finest to broadest: the nearest place name
+    // ("Hickaly Woods"), area name ("West Necluda"), and the area the marker
+    // is in (OoT's areas and dungeons, BotW's tower regions: "Dueling
+    // Peaks"). Each opens its page, as clicking a name on the map does.
+    var placeLink = this.markerLabelLink ? this.markerLabelLink(marker, 'place') : null;
+    var areaNameLink = this.markerLabelLink ? this.markerLabelLink(marker, 'area') : null;
+    var areaLink = this.markerAreaLink ? this.markerAreaLink(marker) : null;
+    // The place and area name pills are left out of the compact title bar
+    // (marker-name-pill), which keeps the coordinates and the region.
+    var pillFor = function(link, which) {
+      if(!link) return '';
+      var label = $('<span>').text(link.label).html();
+      var classes = 'marker-coordinate-pill marker-region-pill' + (which === 'area' ? '' : ' marker-name-pill');
+      return link.area
+        ? "<button type='button' class='" + classes + "' onclick='_this.openMarkerArea(" + marker.id + ", \"" + which + "\"); return false'" +
+          " title='" + $('<span>').text(link.title).html() + "'>" + label +
+          "<i class='fas fa-chevron-right' aria-hidden='true'></i></button>"
+        : "<p class='" + classes + "'>" + label + "</p>";
+    };
     var pills = "<p class='marker-coordinate-pill'>" + coordinateText + "</p>";
-    // It opens the region's page, as clicking a place name on the map does.
-    if(region) {
+    if(placeLink || areaNameLink || areaLink) {
       pills = "<div class='area-header-pills marker-header-pills'>" + pills +
-        "<button type='button' class='marker-coordinate-pill marker-region-pill' onclick='_this.openMarkerRegion(" + marker.id + "); return false'" +
-        " title='" + $('<span>').text(region.name).html() + "'>" + $('<span>').text(region.shortName).html() +
-        "<i class='fas fa-chevron-right' aria-hidden='true'></i></button></div>";
+        pillFor(placeLink, 'place') + pillFor(areaNameLink, 'area-name') + pillFor(areaLink, 'area') + "</div>";
     }
     var content = "<h2 class='popupTitle'>" + title + "</h2>" +
       pills +
@@ -1162,6 +1173,8 @@ ZMap.prototype.focusSingleMapCategory = function(category) {
 };
 
 ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
+  // Markers may appear or go: lay the place names out again afterwards.
+  if(this._scheduleLabelLayout) this._scheduleLabelLayout();
   if(affectedCategories) {
     if(!$.isArray(affectedCategories)) {
       affectedCategories = [affectedCategories];
@@ -1336,6 +1349,7 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
         this.mapOptions.categorySelectionMethod == "focus"
         && this.categories[marker.categoryId].visible_zoom <= this._getDisplayZoom()
         && this._labelTierShown(this.categories[marker.categoryId].name)
+        && !this._labelShownCloser(marker)
       ) // Check if we should show for the category, and at this zoom level
       && (
         this.mapOptions.showCompleted == true || (
@@ -1349,17 +1363,89 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
 }
 
 // Region and place names come in tiers (TotK's and BotW's label categories,
-// by name), one tier at a time: region names zoomed out, then areas, places,
-// and close-up places.
+// by name): region names zoomed out, then areas; place names from zoom 5 on,
+// joined by the close-up ones from zoom 6, both staying as you zoom in.
 ZMap.prototype._labelTierShown = function(categoryName) {
   var zoom = this._getDisplayZoom();
   switch(categoryName) {
     case 'Region Labels': return zoom <= 3;
     case 'Area Labels': return zoom > 3 && zoom <= 5;
-    case 'Places Labels': return zoom > 5 && zoom <= 6;
-    case 'Places Labels - Close': return zoom > 6 && zoom <= 8;
+    case 'Places Labels': return zoom > 5;
+    case 'Places Labels - Close': return zoom > 6;
     default: return false;
   }
+};
+
+// Region and place names (label markers) step aside from the markers they
+// would cover, as OoT's place names do (OotFloors.js layoutPlaceNames): each
+// tries a few spots near its own, nudges sized to the label, and takes the
+// one covering the fewest markers and other names, preferring the nearest.
+// Re-laid out after every pan and zoom, once the markers have updated.
+ZMap.prototype._setupLabelLayout = function() {
+  var zmap = this, frame = null;
+  var schedule = function() {
+    if(frame) window.cancelAnimationFrame(frame);
+    frame = window.requestAnimationFrame(function() { frame = null; zmap.layoutLabelMarkers(); });
+  };
+  this.map.on('zoomend moveend', schedule);
+  this._scheduleLabelLayout = schedule;
+  schedule();
+};
+
+ZMap.prototype.layoutLabelMarkers = function() {
+  var map = this.map, points = [], labels = [];
+  this.getMarkers().forEach(function(marker) {
+    if(!map.hasLayer(marker)) return;
+    if(marker.categoryTypeId == 3) {
+      var tooltip = marker.getTooltip && marker.getTooltip();
+      var element = tooltip && tooltip.getElement && tooltip.getElement();
+      if(element) labels.push({marker: marker, element: element});
+    } else {
+      points.push(map.latLngToContainerPoint(marker.getLatLng()));
+    }
+  });
+  var placed = [];
+  labels.forEach(function(label) {
+    var element = label.element;
+    var rect = element.getBoundingClientRect();
+    var width = rect.width, height = Math.max(16, rect.height);
+    if(!width) return;
+    var origin = map.latLngToContainerPoint(label.marker.getLatLng());
+    var dy = height * .8, dx = width * .3;
+    var best = null;
+    [[0, 0], [0, -dy], [0, dy], [0, -dy * 2], [0, dy * 2], [-dx, -dy], [dx, -dy], [-dx, dy], [dx, dy]].forEach(function(offset) {
+      var box = {left: origin.x + offset[0] - width / 2, right: origin.x + offset[0] + width / 2,
+        top: origin.y + offset[1] - height / 2, bottom: origin.y + offset[1] + height / 2};
+      var collisions = points.filter(function(p) {
+        return p.x > box.left - 14 && p.x < box.right + 14 && p.y > box.top - 14 && p.y < box.bottom + 14;
+      }).length;
+      collisions += placed.filter(function(other) {
+        return box.left < other.right + 4 && box.right > other.left - 4 && box.top < other.bottom + 4 && box.bottom > other.top - 4;
+      }).length * 2;
+      var score = collisions * 100 + Math.hypot(offset[0], offset[1]);
+      if(!best || score < best.score) best = {score: score, offset: offset, box: box};
+    });
+    element.style.marginLeft = Math.round(best.offset[0]) + 'px';
+    element.style.marginTop = Math.round(best.offset[1]) + 'px';
+    placed.push(best.box);
+  });
+};
+
+// Some games list a place under both place tiers (TotK's Great Sky Island).
+// Once the close-up tier is showing too, the place tier's copy steps aside.
+ZMap.prototype._labelShownCloser = function(marker) {
+  var category = this.categories[marker.categoryId];
+  if(!category || category.name !== 'Places Labels' || !this._labelTierShown('Places Labels - Close')) return false;
+  var zmap = this;
+  var close = this._closeLabelNames || (this._closeLabelNames = (function() {
+    var names = Object.create(null);
+    zmap.getMarkers().forEach(function(label) {
+      var tier = label.categoryTypeId == 3 && zmap.categories[label.categoryId];
+      if(tier && tier.name === 'Places Labels - Close') names[label.submapId + ':' + (label.title || label.name)] = true;
+    });
+    return names;
+  })());
+  return !!close[marker.submapId + ':' + (marker.title || marker.name)];
 };
 
 ZMap.prototype.buildMap = function(gameId) {
@@ -1613,6 +1699,7 @@ ZMap.prototype.addMapControl = function(gameId) {
     mapControl: this.mapControl
   }).addTo(this.map);
   if(this._updateMinZoom) this._updateMinZoom();
+  this._setupLabelLayout();
   this._setupDroppedPinGesture();
   this._setupMarkerTouchTaps();
   this._setupDoubleTapZoom();

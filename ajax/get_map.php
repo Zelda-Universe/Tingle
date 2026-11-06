@@ -51,13 +51,14 @@
              , m.id
    ", [$map]);
 
-   // Named regions with borders (BotW's tower regions), by submap. Optional:
-   // until the map_region migration has run there are none, and the map
-   // works as before.
+   // Named regions with borders, by submap: tower regions (kind tower) and
+   // the game's named areas (kind area). Optional: until the map_region
+   // migrations have run there are none (or no kind column, so all are tower
+   // regions), and the map works as before.
    $regionsBySubmap = array();
    try {
       $regionRows = $db->fetchAllAssociative("
-         select r.submap_id, r.name, r.short_name, r.polygon
+         select r.*
            from {$map_prefix}map_region r
            join {$map_prefix}submap sm on sm.id = r.submap_id
            join {$map_prefix}map m on m.id = sm.map_id
@@ -72,6 +73,7 @@
       $regionsBySubmap[$region['submap_id']][] = array(
          'name' => $region['name'],
          'shortName' => $region['short_name'],
+         'kind' => $region['kind'] ?? 'tower',
          'polygon' => json_decode($region['polygon'], true)
       );
    }

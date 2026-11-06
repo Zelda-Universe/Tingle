@@ -19,7 +19,16 @@
    $userId = (int) $_POST['userId'];
    $gameId = (int) $_POST['gameId'];
 
-   $db->executeStatement("
+   include_once(dirname(__DIR__) . '/lib/common/oot_pack.php');
+   if (ootPackIsGame($gameId)) {
+     // OoT's markers come from data/OoT, not the marker table.
+     $ids = ootPackMarkerIds();
+     if ($ids) $db->executeStatement("
+       DELETE FROM {$map_prefix}user_completed_marker
+       WHERE user_id = ?
+         AND marker_id IN (" . implode(',', array_fill(0, count($ids), '?')) . ")
+     ", array_merge([$userId], $ids));
+   } else $db->executeStatement("
      DELETE FROM {$map_prefix}user_completed_marker
      WHERE user_id = ?
        AND marker_id IN (

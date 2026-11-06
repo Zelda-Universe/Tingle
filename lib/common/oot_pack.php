@@ -46,6 +46,11 @@ function ootPackTileVersions() {
   }
   return $versions;
 }
+// The pack's marker IDs. Its markers aren't in the marker table, so queries
+// that find a game's markers by joining it must use these for OoT instead.
+function ootPackMarkerIds() {
+  return array_map('intval', array_column(ootPackData('markers') ?? [], 'id'));
+}
 function ootPackIsGame($value) {
   return in_array(strtolower((string) $value), ['oot', 'ootr', '64'], true) && ootPackData('container') !== null;
 }

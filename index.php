@@ -68,7 +68,10 @@
     include_once(__DIR__ . '/config.php');
     include_once(__DIR__ . '/lib/common/database.php');
     include_once(__DIR__ . '/lib/common/seo.php');
-    $landingCategories = open() === 0 ? seoLandingCategories($db, $map_prefix, $gameId) : [];
+    // OoT's categories and markers come from its pack (data/OoT), not the
+    // database.
+    if ($gameId === 'OoT') $landingCategories = seoLandingCategories(null, '', 'OoT');
+    else $landingCategories = open() === 0 ? seoLandingCategories($db, $map_prefix, $gameId) : [];
 
     // A category from the category list gets its own page.
     $category = $landingCategories[seoSlug($categorySlug)] ?? null;
@@ -84,13 +87,42 @@
       $pageTitle = $category['name'] . ' Map - ' . $metadata['name'] . ' - Zelda Maps';
       $pageDescription = 'All ' . $count . ' ' . $category['name'] . ' locations' . $where .
         ' in The Legend of Zelda: ' . $metadata['name'] . ', on the Zelda Maps interactive map.';
+      // OoT: "All 100 Gold Skulltulas in Ocarina of Time (2026), across
+      // Hyrule and 10 dungeons, on the Zelda Maps interactive map."
+      if ($gameId === 'OoT') {
+        $dungeons = count(array_diff($maps, ['Hyrule']));
+        $where = in_array('Hyrule', $maps, true)
+          ? 'across Hyrule' . ($dungeons ? ' and ' . $dungeons . ($dungeons === 1 ? ' dungeon' : ' dungeons') : '')
+          : 'across ' . $dungeons . ($dungeons === 1 ? ' dungeon' : ' dungeons');
+        $pageDescription = 'All ' . $count . ' ' . $category['name'] . ' in Ocarina of Time (2026), ' . $where .
+          ', on the Zelda Maps interactive map.';
+      }
       $canonicalUrl = seoCategoryUrl($gameId, $category['slug']);
     }
 
     // A marker keeps its own title and description for link previews, but
     // points search engines at its category's page rather than being indexed
     // on its own.
-    if ($markerId > 0 && isset($db)) {
+    if ($markerId > 0 && $gameId === 'OoT') {
+      $marker = seoOotMarker($markerId);
+      if ($marker && $marker['name'] !== '') {
+        $pageHeading = $marker['name'] . ' - ' . $metadata['name'] . ' Interactive Map';
+        $pageTitle = $marker['name'] . ' - ' . $metadata['name'] . ' Map - Zelda Maps';
+        $where = $marker['place'] !== '' ? ', ' . $marker['place'] : '';
+        $pageDescription = $marker['details'] !== ''
+          ? $marker['name'] . ' (' . $marker['category'] . $where . '): ' . $marker['details']
+          : 'Location of the ' . $marker['name'] . ' (' . $marker['category'] . ')' .
+            ($marker['place'] !== '' ? ' in ' . $marker['place'] : '') . ' in Ocarina of Time (2026), on the Zelda Maps interactive map.';
+        $pageDescription = mb_strimwidth($pageDescription, 0, 160, '…', 'UTF-8');
+        $pageUrl = 'https://zeldamaps.com/?' . http_build_query(['game' => 'OoTR', 'marker' => $markerId]);
+        foreach ($landingCategories as $landingCategory) {
+          if ($landingCategory['id'] === $marker['categoryId']) {
+            $canonicalUrl = seoCategoryUrl($gameId, $landingCategory['slug']);
+            break;
+          }
+        }
+      }
+    } elseif ($markerId > 0 && isset($db)) {
       $marker = $db->fetchAssociative("
         SELECT m.name, m.description, m.marker_category_id AS categoryId, mc.name AS category, mp.name AS map
           FROM `{$map_prefix}marker` m

@@ -57,6 +57,12 @@
       }
    }
    echo "\t<url><loc>https://zeldamaps.com/?game=OoTR</loc></url>\n";
+   foreach ($categories['OoT'] ?? [] as $category) {
+      echo "\t<url>\n";
+      echo "\t\t<loc>" . sitemapLoc(seoCategoryUrl('OoT', $category['slug'])) . "</loc>\n";
+      if ($category['lastUpdated']) echo "\t\t<lastmod>" . $category['lastUpdated'] . "</lastmod>\n";
+      echo "\t</url>\n";
+   }
 
    foreach($areas as $area) echo "\t<url><loc>".sitemapLoc($area['url'])."</loc></url>\n";
    echo "</urlset>\n";

@@ -76,8 +76,8 @@
     "age": "child",
     "map": "65000",
     "region": "Market",
-    "u": 0.3543,
-    "v": 0.6607,
+    "u": 0.0991,
+    "v": 0.527,
     "how": "A prize in the Treasure Chest Shop game, open at night. The Lens of Truth makes it easy.",
     "needs": "10 Rupees per game"
   },
@@ -136,8 +136,8 @@
     "age": "child",
     "map": "65000",
     "region": "KakarikoVillage",
-    "u": 0.6584,
-    "v": 0.6851,
+    "u": 0.5317,
+    "v": 0.8459,
     "how": "On the rooftop where Kaepora Gaebora drops you after flying you down from Death Mountain."
   },
   {
@@ -155,14 +155,13 @@
   {
     "id": 64100014,
     "category": "64002",
-    "title": "Piece of Heart — ReDead Grave",
+    "title": "Piece of Heart — Graveyard Grave",
     "age": "both",
     "map": "65000",
     "region": "Graveyard",
-    "u": 0.4753,
-    "v": 0.3392,
-    "how": "Push the second-row tombstone on the far right at night, drop in, and play the Sun's Song to reveal the chest.",
-    "needs": "Sun's Song"
+    "u": 0.4815,
+    "v": 0.896,
+    "how": "Pull back the southernmost tombstone in the right-hand row at night and drop in. The chest is right there, with no song or enemies needed."
   },
   {
     "id": 64100015,
@@ -336,8 +335,8 @@
     "age": "child",
     "map": "65000",
     "region": "LakeHylia",
-    "u": 0.8944,
-    "v": 0.5702,
+    "u": 0.822,
+    "v": 0.487,
     "how": "Catch a big fish (about 55 cm or more) in the Fishing Pond and show it to the owner.",
     "needs": "20 Rupees"
   },
@@ -710,8 +709,8 @@
     "age": "child",
     "map": "65000",
     "region": "DeathMountainTrail",
-    "u": 0.153,
-    "v": 0.7523,
+    "u": 0.308,
+    "v": 0.585,
     "how": "In the bug hole just outside Dodongo's Cavern. Clear the boulder with a Bomb Flower.",
     "needs": "Bugs in a bottle"
   },
@@ -722,8 +721,8 @@
     "age": "both",
     "map": "65000",
     "region": "DeathMountainTrail",
-    "u": 0.2267,
-    "v": 0.563,
+    "u": 0.263,
+    "v": 0.779,
     "how": "Bomb the cracked wall on the trail between Kakariko and Dodongo's Cavern.",
     "needs": "Bombs"
   },
@@ -899,8 +898,8 @@
     "age": "child",
     "map": "65000",
     "region": "LakeHylia",
-    "u": 0.5918,
-    "v": 0.1338,
+    "u": 0.161,
+    "v": 0.93,
     "how": "In the hidden cave past the hole guarded by Tektites."
   },
   {

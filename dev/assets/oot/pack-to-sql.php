@@ -38,6 +38,13 @@ function encoded($text) {
 // A row with its ID, skipped if that ID is already there. Not INSERT IGNORE:
 // that also turns every other error into a silent warning, and so cut "webp"
 // to "web" in a three-letter column without a word.
+// For a table with unique keys besides its ID (container's short_name): adds
+// the row only if its ID is missing, and fails loudly on any other clash.
+function insertIfMissing($table, array $row) {
+  return 'INSERT INTO ' . $table . ' (' . implode(', ', array_keys($row)) . ') SELECT ' .
+    implode(', ', array_map('sql', array_values($row))) . ' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM ' . $table .
+    ' WHERE id = ' . (int) $row['id'] . ');';
+}
 function insert($table, array $row) {
   return 'INSERT INTO ' . $table . ' (' . implode(', ', array_keys($row)) . ') VALUES (' .
     implode(', ', array_map('sql', array_values($row))) . ') ON DUPLICATE KEY UPDATE id = id;';
@@ -56,8 +63,16 @@ $lines = [
   '-- its column fails the migration rather than being cut short.',
   '-- The game is hidden until the site reads OoT from the database.',
   '',
-  '-- The game.',
-  insert('container', [
+  '-- An empty placeholder game called OoTR (staging had one, as 23) would take',
+  '-- the short name: names are unique, ignoring case. Remove it only if it has',
+  '-- no maps or categories; one with content stops the next statement instead.',
+  "DELETE FROM container WHERE LOWER(short_name) = 'ootr' AND id <> " . OOT_GAME .
+    ' AND NOT EXISTS (SELECT 1 FROM map m WHERE m.container_id = container.id)' .
+    ' AND NOT EXISTS (SELECT 1 FROM marker_category c WHERE c.container_id = container.id);',
+  '',
+  '-- The game, if its ID is free. Not ON DUPLICATE KEY: that also matches the',
+  '-- unique short name, and skipped this row silently while OoTR was taken.',
+  insertIfMissing('container', [
     'id' => OOT_GAME, 'short_name' => OOT_SHORT_NAME, 'name' => $container['name'],
     'marker_url' => $container['markerURL'], 'marker_ext' => $container['markerExt'],
     'background_color' => $container['bgColor'], 'icon' => $container['icon'],

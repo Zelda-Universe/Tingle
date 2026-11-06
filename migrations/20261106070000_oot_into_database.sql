@@ -5,8 +5,14 @@
 -- its column fails the migration rather than being cut short.
 -- The game is hidden until the site reads OoT from the database.
 
--- The game.
-INSERT INTO container (id, short_name, name, marker_url, marker_ext, background_color, icon, show_street_view, show_map_control, show_zoom_control, show_pan_control, show_category_menu, default_pos_x, default_pos_y, bound_top_pos_x, bound_top_pos_y, bound_bottom_pos_x, bound_bottom_pos_y, max_zoom, cluster_max_zoom, cluster_grid_size, tile_size, icon_width, icon_height, icon_small_width, icon_small_height, switch_icons_at_zoom, scaleP, scaleN, offsetX, offsetY, visible, enabled, default_zoom) VALUES (64, 'OoTR', 'Ocarina of Time (2026)', 'markers/', 'png', '#241a0c', 'Ocarina-of-Time', 0, 1, 1, 0, 1, 128, -128, 10, -10, -266, 266, 6, 6, 30, 256, 23, 23, 16, 16, -1, 1, -1, 0, 0, 0, 1, 1) ON DUPLICATE KEY UPDATE id = id;
+-- An empty placeholder game called OoTR (staging had one, as 23) would take
+-- the short name: names are unique, ignoring case. Remove it only if it has
+-- no maps or categories; one with content stops the next statement instead.
+DELETE FROM container WHERE LOWER(short_name) = 'ootr' AND id <> 64 AND NOT EXISTS (SELECT 1 FROM map m WHERE m.container_id = container.id) AND NOT EXISTS (SELECT 1 FROM marker_category c WHERE c.container_id = container.id);
+
+-- The game, if its ID is free. Not ON DUPLICATE KEY: that also matches the
+-- unique short name, and skipped this row silently while OoTR was taken.
+INSERT INTO container (id, short_name, name, marker_url, marker_ext, background_color, icon, show_street_view, show_map_control, show_zoom_control, show_pan_control, show_category_menu, default_pos_x, default_pos_y, bound_top_pos_x, bound_top_pos_y, bound_bottom_pos_x, bound_bottom_pos_y, max_zoom, cluster_max_zoom, cluster_grid_size, tile_size, icon_width, icon_height, icon_small_width, icon_small_height, switch_icons_at_zoom, scaleP, scaleN, offsetX, offsetY, visible, enabled, default_zoom) SELECT 64, 'OoTR', 'Ocarina of Time (2026)', 'markers/', 'png', '#241a0c', 'Ocarina-of-Time', 0, 1, 1, 0, 1, 128, -128, 10, -10, -266, 266, 6, 6, 30, 256, 23, 23, 16, 16, -1, 1, -1, 0, 0, 0, 1, 1 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM container WHERE id = 64);
 
 -- Its categories: Collectibles, then Heart Pieces, Gold Skulltulas, Big Poes.
 INSERT INTO marker_category (id, parent_id, marker_category_type_id, container_id, name, default_checked, img, color, visible_zoom, visible) VALUES (64000, NULL, 1, 64, 'Collectibles', 1, 'General_Map', '#cdb269', 0, 1) ON DUPLICATE KEY UPDATE id = id;

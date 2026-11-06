@@ -1019,7 +1019,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var containerRect = this._container.getBoundingClientRect();
     var contentsRect = this._contents.getBoundingClientRect();
     this._mobileDrawerBaseTop = containerRect.top - currentCssTop;
-    this._mobileDrawerContentsOffset = contentsRect.top - containerRect.top;
+    // Measure the contents' resting place, not the 8px entrance offset they
+    // carry while fading in. A layout that ran mid-entrance (an ad or the
+    // browser's toolbar resizing the page just as a marker opened) would
+    // otherwise keep the contents 8px too short, leaving a fitted page
+    // something to scroll.
+    var contentsShift = new DOMMatrixReadOnly(
+      window.getComputedStyle(this._contents).transform
+    ).m42;
+    this._mobileDrawerContentsOffset = contentsRect.top - contentsShift - containerRect.top;
     var baseScreenTop = this._mobileDrawerBaseTop;
     this._updateMobileDrawerSoftOpenTo(baseScreenTop);
     var desiredTop = this._viewportBottom() - collapsedHeight - 10

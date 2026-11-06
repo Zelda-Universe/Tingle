@@ -4594,8 +4594,10 @@ ZMap.prototype._createAdminPage = function(opts) {
       section.find('.admin-activity-summary').empty().append(_this._adminActivitySummary(data));
       if(key === 'markers') {
         section.find('.admin-top-markers').empty().append(_this._adminTopMarkers(data, graph.range));
-        section.find('.admin-activity-total').text(data.summary.total.current.toLocaleString() + ' ' +
-          (_this.ADMIN_CHART_NOUNS[data.metric] || ['saved'])[0]);
+        // Completes have no all-time total (admin_get_activity.php).
+        section.find('.admin-activity-total').text(data.summary.total
+          ? data.summary.total.current.toLocaleString() + ' ' + (_this.ADMIN_CHART_NOUNS[data.metric] || ['saved'])[0]
+          : '');
       }
       if(key === 'offline') {
         var offline = data.offline || {};
@@ -4945,6 +4947,7 @@ ZMap.prototype._adminActivitySummary = function(data) {
    ['week', '1 Week', 'last 7 days vs. the 7 before'],
    ['day', '1 Day', 'last 24 hours vs. the 24 before']].forEach(function(item) {
     var stat = data.summary[item[0]];
+    if(!stat) return;
     var box = $('<div class="admin-stat"><span class="admin-stat-label"></span><span class="admin-stat-value"></span>' +
       '<span class="admin-stat-change"></span></div>');
     box.attr('title', item[2]);

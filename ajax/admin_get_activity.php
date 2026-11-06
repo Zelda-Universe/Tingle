@@ -122,14 +122,18 @@
 
   // The boxes: rolling windows ending now, against the window before. An
   // hour, so "last 24 hours" is never more than an hour behind.
-  $summary = adminCached("activity-{$metric}-summary", 60 * 60, function() use ($db, $table, $column, $where) {
+  // Completes have no all-time total or people count: user_completed_marker
+  // has tens of millions of rows, and each would be a full scan.
+  $allTime = $metric !== 'completes';
+  $summary = adminCached("activity-{$metric}-summary-v2", 60 * 60, function() use ($db, $table, $column, $where, $allTime) {
     $between = function($fromHours, $toHours) use ($db, $table, $column, $where) {
       return (int) $db->fetchOne(
         "SELECT COUNT(*) FROM $table WHERE $where AND $column > NOW() - INTERVAL ? HOUR AND $column <= NOW() - INTERVAL ? HOUR",
         [$fromHours, $toHours]
       );
     };
-    $summary = ['total' => ['current' => (int) $db->fetchOne("SELECT COUNT(*) FROM $table WHERE $where"), 'previous' => null]];
+    $summary = [];
+    if ($allTime) $summary['total'] = ['current' => (int) $db->fetchOne("SELECT COUNT(*) FROM $table WHERE $where"), 'previous' => null];
     foreach (['month' => 30 * 24, 'week' => 7 * 24, 'day' => 24] as $name => $hours) {
       $summary[$name] = ['current' => $between($hours, 0), 'previous' => $between(2 * $hours, $hours)];
     }
@@ -137,9 +141,9 @@
   });
 
   // Distinct people over the whole table: a full scan, six hours.
-  $people = adminCached("activity-{$metric}-people", 6 * 60 * 60, function() use ($db, $table, $where) {
+  $people = $allTime ? adminCached("activity-{$metric}-people", 6 * 60 * 60, function() use ($db, $table, $where) {
     return ['people' => (int) $db->fetchOne("SELECT COUNT(DISTINCT `user_id`) FROM $table WHERE $where")];
-  })['people'];
+  })['people'] : null;
 
   $games = null;
   $offline = null;

@@ -273,6 +273,9 @@
 #newuserform .username-valid .registration-validation-icon { color: #77e2a8; }
 #newuserform .registration-validation-icon i,
 #newuserform .registration-validation-icon svg { width: 16px; height: 16px; font-size: 16px; }
+/* Stroke widths held steady while zooming (OotFloors.js). */
+.leaflet-ootConnections-pane .oot-connection { stroke-width:calc(1.5px / var(--oot-zoom-scale, 1)); }
+.leaflet-ootConnections-pane .oot-connection-end { stroke-width:calc(5px / var(--oot-zoom-scale, 1)); }
 .oot-floor-control { position:fixed; right:calc(10px + env(safe-area-inset-right, 0px)); z-index:900; display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
 .oot-floor-control[hidden] { display:none; }
 .oot-floor-pill, .oot-floor-control select { background:rgba(0,0,0,.8); color:white; border:0; border-radius:28px; padding:6px; box-shadow:0 4px 18px #0005; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }

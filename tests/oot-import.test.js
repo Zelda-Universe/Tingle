@@ -32,19 +32,27 @@ test('age changes retain shared marker pins and deselect age-specific markers',(
   const start=source.indexOf('ZMap.prototype._reconcileOotMarkerSelection =');
   const end=source.indexOf('\n};',start)+3;
   const pin={markerPos:0};
-  const context={ZMap:function(){},newMarker:pin,markers:[{mapId:'65000',submapId:'650000',globalMarker:'1'}],
+  const context={ZMap:function(){},newMarker:pin,markers:[{id:'42',mapId:'65000',submapId:'650000',globalMarker:'1'}],
     URL,window:{location:{href:'https://example.test/?marker=42'},history:{state:{},replaceState:jest.fn()}}};
   vm.runInNewContext(source.slice(start,end),context);
-  const control={_contentType:'m42',resetContent:jest.fn()};
+  const control={_contentType:'m42',closePage:jest.fn()};
   const map=Object.assign(Object.create(context.ZMap.prototype),{mapControl:control,
     _closeNewMarker:jest.fn(()=>{context.newMarker=null;})});
   map._reconcileOotMarkerSelection('65000','650001');
   expect(context.newMarker).toBe(pin);
   expect(map._closeNewMarker).not.toHaveBeenCalled();
+  expect(control.closePage).not.toHaveBeenCalled();
+  // An age-only marker whose page is open: closed like the drawer's X, which
+  // also collapses the drawer.
   context.markers[0].globalMarker='0';
   map._reconcileOotMarkerSelection('65000','650001');
+  expect(control.closePage).toHaveBeenCalledTimes(1);
+  // Selected while another page is open: the marker is deselected and
+  // dropped from the address, and that page stays.
+  control._contentType='category';
+  map._reconcileOotMarkerSelection('65000','650001');
   expect(context.newMarker).toBeNull();
-  expect(control.resetContent).toHaveBeenCalled();
+  expect(control.closePage).toHaveBeenCalledTimes(1);
   expect(context.window.history.replaceState.mock.calls[0][2]).not.toContain('marker=');
 });
 
@@ -134,8 +142,12 @@ test('hand-placed OoT collectibles are complete, unique and on real categories a
 
 test('all OoT floors, age variants and room states become selectable map layers',()=>{
   const source=fs.readFileSync(__dirname+'/../scripts/zmap.js','utf8');
-  const context={ZMap:function(){},L:{tileLayer:(url,options)=>({_url:url,options})}};
-  vm.runInNewContext(source.slice(source.indexOf('ZMap.prototype.addMap ='),source.indexOf('ZMap.prototype.addMarkers =')),context);
+  const context={ZMap:function(){},L:{
+    tileLayer:(url,options)=>({_url:url,options,on(){return this;}}),
+    latLng:(lat,lng)=>({lat,lng}),
+    latLngBounds:(a,b)=>({south:Math.min(a.lat,b.lat),north:Math.max(a.lat,b.lat),west:Math.min(a.lng,b.lng),east:Math.max(a.lng,b.lng)})
+  }};
+  vm.runInNewContext(source.slice(source.indexOf('ZMap.prototype._tilePyramidBounds ='),source.indexOf('ZMap.prototype.addMarkers =')),context);
   const map=Object.assign(Object.create(context.ZMap.prototype),{
     mapOptions:read('container')[0],maps:[],tilesBaseURL:'https://zeldamaps.com/tiles/',tileNameFormat:'{z}_{x}_{y}'
   });
@@ -144,6 +156,9 @@ test('all OoT floors, age variants and room states become selectable map layers'
   expect(new Set(map.maps.map(m=>m.id)).size).toBe(66);
   expect(map.maps.every(m=>m._url.startsWith('/tiles/oot/'))).toBe(true);
   expect(map.maps.some(m=>/Water level 3/.test(m.title))).toBe(true);
+  // Tiles are only requested inside the artwork's square.
+  const b=map.maps[0].options.bounds;
+  expect([b.south,b.north,b.west,b.east].map(v=>v+0)).toEqual([-256,0,0,256]);
 });
 
 test('Hyrule connector lines join real exits on areas that exist for each age',()=>{

@@ -267,6 +267,54 @@ ZMap.prototype.addGame = function(vGame) {
    games[vGame.id] = vGame;
 };
 
+// Every map's tiles form one square pyramid: zoom 0 is a single tile. Its
+// bounds, inverted through the map's projection (ZCRS, in loadMap), stop
+// requests for tiles beyond the artwork, which don't exist.
+ZMap.prototype._tilePyramidBounds = function() {
+  var o = this.mapOptions, size = Number(o.tileSize);
+  var toLatLng = function(x, y) {
+    return L.latLng((y - parseFloat(o.offsetY)) / Number(o.scaleN), (x - parseFloat(o.offsetX)) / Number(o.scaleP));
+  };
+  return L.latLngBounds(toLatLng(0, 0), toLatLng(size, size));
+};
+
+// A low-resolution copy of a layer's artwork underneath it, always kept
+// whole: zooming out, or flinging the map somewhere new, shows it straight
+// away, softly, while the sharp tiles load on top. It's one fixed tile level
+// (zoom 2: 16 tiles at most), so it's never rebuilt or dropped while
+// zooming. It lives in its own pane below the tiles, so the maps' own
+// stacking (bringToBack, overlay z-indexes) can never put it on top.
+ZMap.prototype._addTileBackdrop = function(layer, tileURL, maxNativeZoom) {
+  var backdropZoom = Math.min(2, Number(maxNativeZoom) || 0);
+  var backdrop = L.tileLayer(tileURL, {
+    pane: 'tileBackdropPane',
+    maxZoom: Math.max(Number(layer.options.maxZoom) || 0, Number(this.mapOptions.maxZoom) || 0),
+    minNativeZoom: backdropZoom, maxNativeZoom: backdropZoom,
+    minZoom: 0, noWrap: true, bounds: this._tilePyramidBounds(),
+    tileSize: Number(this.mapOptions.tileSize), opacity: layer.options.opacity,
+    keepBuffer: 64, updateWhenIdle: false, updateWhenZooming: false,
+    className: 'tile-backdrop'
+  });
+  // Load the whole level at once, not just what's on screen, so it's
+  // complete before any zoom out or fling reveals more of it.
+  backdrop._getTiledPixelBounds = function() {
+    var bounds = this.options.bounds, zoom = this._tileZoom;
+    return L.bounds(
+      this._map.project(bounds.getNorthWest(), zoom),
+      this._map.project(bounds.getSouthEast(), zoom)
+    );
+  };
+  layer.on('add', function(e) {
+    var map = e.target._map;
+    if(!map.getPane('tileBackdropPane')) map.createPane('tileBackdropPane').style.zIndex = '150';
+    map.addLayer(backdrop);
+  });
+  layer.on('remove', function() {
+    if(backdrop._map) backdrop._map.removeLayer(backdrop);
+  });
+  layer.backdrop = backdrop;
+};
+
 ZMap.prototype.addMap = function(vMap) {
    // If there is no subMap, we can't add to the map
    if (vMap.subMap.length == 0) {
@@ -281,11 +329,18 @@ ZMap.prototype.addMap = function(vMap) {
        var variantName=submap.name.replace(/(?:\s*·\s*)?State\s*\d+/gi,'');
        var title = vMap.name + (vMap.subMap.length > 1 ? ' — ' + variantName : '');
        var tileVersion = submap.tileVersion ? '?v=' + encodeURIComponent(submap.tileVersion) : '';
-       var layer = L.tileLayer((submap.tileBaseURL || tileBaseURL) + submap.tileURL + this.tileNameFormat + '.' + submap.tileExt + tileVersion, {
-         maxZoom: Number(this.mapOptions.maxZoom), maxNativeZoom: Number(submap.maxZoom || vMap.maxZoom),
-         minZoom: 0, noWrap: true, tileSize: Number(this.mapOptions.tileSize), keepBuffer: 2,
+       var tileURL = (submap.tileBaseURL || tileBaseURL) + submap.tileURL + this.tileNameFormat + '.' + submap.tileExt + tileVersion;
+       var maxNativeZoom = Number(submap.maxZoom || vMap.maxZoom);
+       // Once loaded, the map should never show gaps: load tiles while
+       // panning, not only after (Leaflet's default on phones), and keep the
+       // ones just off screen. These maps are small, so this costs little.
+       var layer = L.tileLayer(tileURL, {
+         maxZoom: Number(this.mapOptions.maxZoom), maxNativeZoom: maxNativeZoom,
+         minZoom: 0, noWrap: true, bounds: this._tilePyramidBounds(), tileSize: Number(this.mapOptions.tileSize), keepBuffer: 6,
+         updateWhenIdle: false, updateWhenZooming: true,
          attribution: vMap.mapCopyright, label: title, iconURL: submap.iconURL
        });
+       this._addTileBackdrop(layer, tileURL, maxNativeZoom);
        layer.id = 'mID' + vMap.id + 's' + submap.id;
        layer.originalId = vMap.id;
        layer.defaultSubMapId = submap.id;
@@ -334,6 +389,8 @@ ZMap.prototype.addMap = function(vMap) {
       }
     );
 
+    this._addTileBackdrop(tLayer, tLayer._url, vMap.maxZoom);
+
     tLayer.id               = 'mID' + vMap.id   ;
     tLayer.originalId       = vMap.id           ;
     tLayer.title            = vMap.name         ;
@@ -381,6 +438,8 @@ ZMap.prototype.addMap = function(vMap) {
                                             , iconURL:           vMap.subMap[i].iconURL || this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
                                           }
        );
+
+       this._addTileBackdrop(overlay, overlay._url, vMap.maxZoom);
 
        overlay.id          = 'mID' + vMap.subMap[i].id;
        overlay.originalId  = vMap.subMap[i].id;
@@ -591,14 +650,24 @@ ZMap.prototype._closeNewMarker = function() {
 
 // Selection follows map membership, not whether a marker happens to be on screen.
 ZMap.prototype._reconcileOotMarkerSelection = function(mapId, subMapId) {
-  if(!newMarker || newMarker.markerPos == null) { this._closeNewMarker(); return; }
-  var marker = markers[newMarker.markerPos];
-  if(marker && marker.mapId == mapId && (marker.globalMarker == 1 || marker.submapId == subMapId)) return;
-  this._closeNewMarker();
   var control = this.mapControl;
+  var onThisMap = function(marker) {
+    return marker && marker.mapId == mapId && (marker.globalMarker == 1 || marker.submapId == subMapId);
+  };
+  // A marker's page is open (selected on the map or opened from a link) and
+  // the marker isn't on this version: close it as the drawer's X does, which
+  // collapses the drawer on phones and returns the sidebar to the categories
+  // on desktop.
+  var page = /^m(\d+)$/.exec(control._contentType || '');
+  if(page && !onThisMap(markers.find(function(marker) { return marker && marker.id == page[1]; }))) {
+    control.closePage();
+    return;
+  }
+  if(!newMarker || newMarker.markerPos == null) { this._closeNewMarker(); return; }
+  if(onThisMap(markers[newMarker.markerPos])) return;
+  this._closeNewMarker();
   control._headerPageParent = control._mobileAccountParent = null;
   control._desktopAccountReturnMarker = control._switchMenuReturnMarker = null;
-  if(/^m\d+$/.test(control._contentType || '')) control.resetContent();
   var url = new URL(window.location.href);
   url.searchParams.delete('marker');
   var state = Object.assign({}, window.history.state);

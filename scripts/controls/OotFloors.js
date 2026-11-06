@@ -10,6 +10,38 @@ ZMap.prototype.setupOotFloors = function() {
   var connectionPane=this.map.getPane('ootConnections') || this.map.createPane('ootConnections');
   connectionPane.style.zIndex='350';
   connectionPane.style.pointerEvents='none';
+  // The lines' own SVG reaches 1.5 screens beyond each edge, so a zoom out
+  // (which shrinks the drawing until it's redrawn) still fills the screen.
+  var connectionRenderer=L.svg({pane:'ootConnections', padding:1.5});
+  // While a zoom is in progress Leaflet scales the lines' SVG with a CSS
+  // transform and only redraws it at the end, so the lines and dots would
+  // swell and shrink mid-gesture. Track that scale each frame and divide the
+  // stroke widths by it (styles/poi.css), so only their positions move.
+  var connectionZoomFrame=null;
+  var applyConnectionZoom=function() {
+    var svg=connectionPane.querySelector('svg');
+    var scale=svg ? new DOMMatrixReadOnly(getComputedStyle(svg).transform).a : 1;
+    connectionPane.style.setProperty('--oot-zoom-scale', scale>0 ? scale : 1);
+  };
+  var trackConnectionZoom=function() {
+    applyConnectionZoom();
+    connectionZoomFrame=window.requestAnimationFrame(trackConnectionZoom);
+  };
+  this.map.on('zoomstart', function() {
+    if(connectionZoomFrame===null) trackConnectionZoom();
+  });
+  // Pinching moves the zoom every frame: redraw the lines at that zoom
+  // instead of stretching the last drawing, so they stay sharp and reach
+  // everything newly on screen. (_reset is Leaflet 1.9's own full redraw.)
+  this.map.on('zoom', function() {
+    if(connectionRenderer._map) connectionRenderer._reset();
+    if(connectionZoomFrame!==null) applyConnectionZoom();
+  });
+  this.map.on('zoomend', function() {
+    if(connectionZoomFrame!==null) window.cancelAnimationFrame(connectionZoomFrame);
+    connectionZoomFrame=null;
+    connectionPane.style.setProperty('--oot-zoom-scale', 1);
+  });
   this.ootPlaceLabelsVisible = getCookie('showRegionAreaNames') !== 'false';
   this.updateOotPlaceLabels = function() {
     drawConnections();
@@ -62,11 +94,13 @@ ZMap.prototype.setupOotFloors = function() {
         var dLat=b[0]-a[0],dLng=b[1]-a[1],step=Math.min(Math.abs(dLat),Math.abs(dLng));
         corner=[a[0]+Math.sign(dLat)*step,a[1]+Math.sign(dLng)*step];
       }
-      L.polyline([a,corner,b],{pane:'ootConnections',interactive:false,color:'#fff',weight:1.5,opacity:.45,
+      L.polyline([a,corner,b],{pane:'ootConnections',renderer:connectionRenderer,interactive:false,color:'#fff',weight:1.5,opacity:.45,
         lineJoin:'miter',lineCap:'butt',className:'oot-connection'}).addTo(connections);
       [a,b].forEach(function(end) {
-        L.circleMarker(end,{pane:'ootConnections',interactive:false,radius:3,stroke:false,fill:true,
-          fillColor:'#fff',fillOpacity:.6,className:'oot-connection-end'}).addTo(connections);
+        // A dot drawn as a thick stroke round a tiny circle, so its size is
+        // a stroke width that can be held steady while zooming.
+        L.circleMarker(end,{pane:'ootConnections',renderer:connectionRenderer,interactive:false,radius:.5,stroke:true,weight:5,
+          color:'#fff',opacity:.6,fill:false,className:'oot-connection-end'}).addTo(connections);
       });
     });
   }

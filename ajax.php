@@ -2,6 +2,8 @@
     include_once(__DIR__.'/config.php');
     include_once(__DIR__.'/lib/common/database.php');
     include_once(__DIR__.'/lib/common/session.php');
+    // Every answer is JSON, including the early errors below.
+    header("Content-Type: application/json; charset=utf-8");
 
     $openRetCode = open();
     // debug_log('openRetCode: '.$openRetCode);
@@ -105,6 +107,8 @@
 
     $out = json_encode($data,$flags);
 
-    header("Content-Type: ".(isset($_GET['forcedMode'])?$_GET['forcedMode']:"application/json"));
+    // Always JSON. (A ?forcedMode= option once let the request choose, which
+    // could serve stored text as an HTML page on this site.)
+    header("Content-Type: application/json; charset=utf-8");
     header("Content-Length: ".strlen($out));
     echo $out;

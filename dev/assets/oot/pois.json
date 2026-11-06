@@ -76,8 +76,8 @@
     "age": "child",
     "map": "65000",
     "region": "Market",
-    "u": 0.0991,
-    "v": 0.527,
+    "u": 0.1252,
+    "v": 0.4928,
     "how": "A prize in the Treasure Chest Shop game, open at night. The Lens of Truth makes it easy.",
     "needs": "10 Rupees per game"
   },
@@ -347,8 +347,8 @@
     "age": "both",
     "map": "65000",
     "region": "LakeHylia",
-    "u": 0.5293,
-    "v": 0.1955,
+    "u": 0.5503,
+    "v": 0.1696,
     "how": "Dive to the bottom of the laboratory tank, then talk to the scientist.",
     "needs": "Golden Scale"
   },
@@ -909,8 +909,8 @@
     "age": "child",
     "map": "65000",
     "region": "LakeHylia",
-    "u": 0.5189,
-    "v": 0.1973,
+    "u": 0.5729,
+    "v": 0.1451,
     "how": "In the bug hole by the Lakeside Laboratory door.",
     "needs": "Bugs in a bottle"
   },
@@ -921,8 +921,8 @@
     "age": "child",
     "map": "65000",
     "region": "LakeHylia",
-    "u": 0.5494,
-    "v": 0.2212,
+    "u": 0.541,
+    "v": 0.205,
     "how": "On the back wall by the laboratory bridge. Only at night.",
     "needs": "Boomerang"
   },

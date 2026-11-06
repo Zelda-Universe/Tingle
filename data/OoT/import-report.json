@@ -6,41 +6,12 @@
   "submaps": 117,
   "tileCount": 12505,
   "icons": 129,
-  "textFiles": 540,
   "placedPOIs": 146,
-  "unplacedDefinitions": {
-    "items": 185,
-    "npcs": 90,
-    "enemies": 90,
-    "locations": 36
-  },
-  "unplacedLocationLabels": [
-    {
-      "key": "DreamWorld",
-      "name": "Hall of Fallen Foes"
-    },
-    {
-      "key": "GerudoTrainingGround",
-      "name": "Gerudo Proving Grounds"
-    },
-    {
-      "key": "IngoRanch",
-      "name": "Ingo Ranch"
-    },
-    {
-      "key": "InsideGanonCastle",
-      "name": "Inside Ganondorf's Castle"
-    },
-    {
-      "key": "TimeTemple",
-      "name": "Temple of Time"
-    }
-  ],
   "limitations": [
     "No actor placement, scene coordinates, map transforms, or POI coordinate tables are present.",
     "World scene layout is an editable geographic approximation, not surveyed coordinates. Illustration excluded.",
     "Clean Mini textures form the world composites. Dungeon Back/Alpha/Grad/All files are supporting masks.",
-    "Categories and icons are ready, but no collectible/NPC/item markers are invented from dialogue."
+    "Collectible markers are hand-placed in dev/assets/oot/pois.json."
   ],
   "assets": [
     {

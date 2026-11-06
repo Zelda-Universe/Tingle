@@ -5,21 +5,6 @@ const path = require('path');
 const crypto = require('crypto');
 const ROOT = path.resolve(__dirname, '../../..');
 const GAME = '64';
-function csv(text) {
-  const rows = []; let row = [], value = '', quoted = false;
-  for(let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if(c === '"') { if(quoted && text[i + 1] === '"') { value += '"'; i++; } else quoted = !quoted; }
-    else if(c === ',' && !quoted) { row.push(value); value = ''; }
-    else if((c === '\n' || c === '\r') && !quoted) {
-      if(c === '\r' && text[i + 1] === '\n') i++;
-      row.push(value); if(row.some(Boolean)) rows.push(row); row = []; value = '';
-    } else value += c;
-  }
-  if(value || row.length) { row.push(value); rows.push(row); }
-  const headers = rows.shift() || [];
-  return rows.map(values => Object.fromEntries(headers.map((h, i) => [h, values[i] || ''])));
-}
 const friendly = key => ({ HountedWasteland: 'Haunted Wasteland', LostWood: 'Lost Woods',
   InsideJabuJabuBelly: "Inside Jabu-Jabu's Belly", InsideTheDekuTree: 'Inside the Deku Tree',
   GanonCastle: "Ganon's Castle", DodongoCavern: "Dodongo's Cavern",
@@ -164,26 +149,6 @@ async function main(source) {
     }
   }
   fs.writeFileSync(path.join(out,'icons.css'), iconCSS.join('\n') + '\n');
-  const text = {};
-  function walk(dir) { return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]); }
-  const textRoot = path.join(source,'OoTR-Text-USen-JPja-EUde');
-  for(const file of walk(textRoot).filter(f=>f.endsWith('.csv'))) text[path.relative(textRoot,file)] = csv(fs.readFileSync(file,'utf8'));
-  write('text-catalog.json',text);
-  function definitions(table) {
-    const rows = text[table] || [];
-    return rows.filter(row=>/_Name$/.test(row.Label)).map(row=>{
-      const key = row.Label.replace(/_Name$/, '');
-      const caption = rows.find(value=>value.Label === key + '_Caption');
-      return {key,name:row.USenText,japanese:row.JPjaText,german:row.EUdeText,
-        description:caption ? caption.USenText : '',source:table,
-        icon:icons.includes(key+'.png') ? 'data/OoT/icons/'+key+'.png' : null,
-        coordinates:null};
-    });
-  }
-  const unplaced = {items:definitions('ActorMsg/PouchContent.csv'),npcs:definitions('ActorMsg/Npc.csv'),
-    enemies:definitions('ActorMsg/Enemy.csv'),locations:(text['LocationMsg/Location.csv'] || []).map(row=>
-      ({key:row.Label,name:row.USenText,coordinates:null}))};
-  write('unplaced-content.json',unplaced);
   write('container.json',[{id:GAME,name:'Ocarina of Time (2026)',shortName:'OoT',icon:'Ocarina-of-Time',markerURL:'markers/',markerExt:'png',
     bgColor:'#241a0c',showMapControl:'1',showZoomControl:'1',centerX:'128',centerY:'-128',boundTopX:'10',boundTopY:'-10',
     boundBottomX:'-266',boundBottomY:'266',clusterMaxZoom:'6',clusterGridSize:'30',defaultZoom:'1',maxZoom:'6',
@@ -194,18 +159,13 @@ async function main(source) {
   // so swapping in better data later means replacing that one file.
   const placedMarkers = require('./pois-to-markers.cjs')(JSON.parse(fs.readFileSync(path.join(__dirname,'pois.json'),'utf8')));
   write('markers.json', placedMarkers);
-  const availableKeys = new Set(['Hyrule', ...fields.map(f=>f.split('_')[0]), ...floors.map(f=>f.split('_')[0])]);
-  const unplacedLocationLabels = (text['LocationMsg/Location.csv'] || []).filter(row=>!availableKeys.has(row.Label))
-    .map(row=>({key:row.Label,name:row.USenText}));
   write('import-report.json',{schemaVersion:1,game:'OoT',containerId:GAME,maps:maps.length,submaps:assets.length,tileCount,
-    icons:icons.length,textFiles:Object.keys(text).length,placedPOIs:placedMarkers.length,
-    unplacedDefinitions:Object.fromEntries(Object.entries(unplaced).map(([kind,rows])=>[kind,rows.length])),
-    unplacedLocationLabels,
+    icons:icons.length,placedPOIs:placedMarkers.length,
     limitations:['No actor placement, scene coordinates, map transforms, or POI coordinate tables are present.',
       'World scene layout is an editable geographic approximation, not surveyed coordinates. Illustration excluded.',
       'Clean Mini textures form the world composites. Dungeon Back/Alpha/Grad/All files are supporting masks.',
-      'Categories and icons are ready, but no collectible/NPC/item markers are invented from dialogue.'],assets});
-  console.log(JSON.stringify({maps:maps.length,submaps:assets.length,tileCount,icons:icons.length,textFiles:Object.keys(text).length}));
+      'Collectible markers are hand-placed in dev/assets/oot/pois.json.'],assets});
+  console.log(JSON.stringify({maps:maps.length,submaps:assets.length,tileCount,icons:icons.length}));
 }
 if(require.main === module) main(process.argv[2]).catch(error=>{console.error(error.message);process.exitCode=1;});
-module.exports = {csv,friendly,slug};
+module.exports = {friendly,slug};

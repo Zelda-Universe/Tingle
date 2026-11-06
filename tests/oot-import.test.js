@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const {csv} = require('../dev/assets/oot/import-assets.cjs');
 const read = name => JSON.parse(fs.readFileSync(path.join(__dirname,'../data/OoT',name+'.json'),'utf8'));
 
 test('OoT marker titles omit their area while retaining separate area metadata',()=>{
@@ -60,12 +59,6 @@ test('OoT API attaches artwork hashes to tile URLs without changing source data'
   }
 });
 
-test('CSV importer preserves quoted commas, newlines, escaped quotes and Unicode',()=>{
-  expect(csv('Label,USenText,JPjaText\r\nA,"Hello, \"\"Link\"\"\nAgain",リンク\r\n')).toEqual([
-    {Label:'A',USenText:'Hello, "Link"\nAgain',JPjaText:'リンク'}
-  ]);
-});
-
 test('OoT pack exposes all distinct maps and main-texture variants',()=>{
   const maps=read('maps'),report=read('import-report');
   expect(maps).toHaveLength(11);
@@ -90,12 +83,6 @@ test('OoT pack exposes all distinct maps and main-texture variants',()=>{
   const pois=JSON.parse(fs.readFileSync(path.join(__dirname,'../dev/assets/oot/pois.json'),'utf8'));
   expect(read('markers')).toEqual(require('../dev/assets/oot/pois-to-markers.cjs')(pois));
   expect(report.placedPOIs).toBe(pois.length);
-  expect(Object.keys(read('text-catalog'))).toHaveLength(540);
-  const definitions=read('unplaced-content');
-  expect(definitions.items).toHaveLength(185);
-  expect(definitions.npcs).toHaveLength(90);
-  expect(definitions.enemies).toHaveLength(90);
-  expect(Object.values(definitions).flat().every(row=>row.coordinates===null)).toBe(true);
   for(const map of maps) for(const sub of map.subMap) {
     expect(sub.tileBaseURL).toBe('/tiles/');
     expect(fs.existsSync(path.join(__dirname,'../',sub.iconURL.split('?')[0]))).toBe(true);

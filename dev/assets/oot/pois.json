@@ -371,8 +371,8 @@
     "age": "both",
     "map": "65000",
     "region": "GerudoValley",
-    "u": 0.3376,
-    "v": 0.7704,
+    "u": 0.3872,
+    "v": 0.7743,
     "how": "On a small ledge on the far cliff, left of the bridge. Glide over with a Cucco.",
     "needs": "Cucco"
   },
@@ -383,8 +383,8 @@
     "age": "both",
     "map": "65000",
     "region": "GerudoValley",
-    "u": 0.4398,
-    "v": 0.077,
+    "u": 0.4915,
+    "v": 0.0707,
     "how": "Behind the waterfall: drop to the ledge below and follow the path north."
   },
   {
@@ -524,8 +524,8 @@
     "age": "adult",
     "map": "65000",
     "region": "HyruleField",
-    "u": 0.5461,
-    "v": 0.7996,
+    "u": 0.6557,
+    "v": 0.809,
     "how": "Bomb open the hole in the southeast wetland and look inside.",
     "needs": "Bombs"
   },
@@ -981,8 +981,8 @@
     "age": "adult",
     "map": "65000",
     "region": "GerudoValley",
-    "u": 0.1026,
-    "v": 0.5996,
+    "u": 0.2393,
+    "v": 0.6211,
     "how": "On the arch column at the carpenters' camp. Only at night.",
     "needs": "Hookshot"
   },
@@ -993,8 +993,8 @@
     "age": "adult",
     "map": "65000",
     "region": "GerudoValley",
-    "u": 0,
-    "v": 0.3812,
+    "u": 0.1695,
+    "v": 0.3367,
     "how": "On the wall behind the carpenters' tent. Only at night."
   },
   {

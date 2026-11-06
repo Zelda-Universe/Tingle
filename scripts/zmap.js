@@ -541,16 +541,32 @@ ZMap.prototype.addMarker = function(vMarker) {
       // 28px up from its point; those keep that, so they don't move.
       var importedLabel = false;
       try { importedLabel = !!(vMarker.gameData && JSON.parse(vMarker.gameData).source); } catch(e) {}
-      marker = new L.marker([vMarker.y,vMarker.x], importedLabel
-        ? { opacity: 0.01, icon: this._centredLabelIcon || (this._centredLabelIcon = new L.Icon.Default({ tooltipAnchor: [0, 0] })) }
-        : { opacity: 0.01 }); //opacity may be set to zero
+      // The pin itself is invisible and ignores taps (interactive: false),
+      // so taps beside a name reach the markers under it; the name is what
+      // you click.
+      var labelPin = { opacity: 0.01, interactive: false, keyboard: false };
+      if(importedLabel) labelPin.icon = this._centredLabelIcon || (this._centredLabelIcon = new L.Icon.Default({ tooltipAnchor: [0, 0] }));
+      marker = new L.marker([vMarker.y,vMarker.x], labelPin);
       // Its tier (Region, Area, Places…) sets its size (styles/zmain.css).
       var labelCategory = this.categories && this.categories[vMarker.markerCategoryId];
       var labelTier = labelCategory ? ' label-tier-' + String(labelCategory.name).toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '') : '';
-      marker.bindTooltip(vMarker.name, {permanent: true, interactive:true, className: this.mapOptions.shortName + "-label" + labelTier,direction: 'center', offset: [0, 0] });
+      marker.bindTooltip(vMarker.name, {permanent: true, interactive:true, opacity: 1, className: this.mapOptions.shortName + "-label" + labelTier,direction: 'center', offset: [0, 0] });
       marker.getTooltip().on('click',function(e) {
         if(e.originalEvent) L.DomEvent.stop(e.originalEvent);
         _this.navigateToArea(marker);
+      });
+      // Names are links to their area pages: reachable with Tab, opened with
+      // Enter or Space.
+      marker.on('tooltipopen', function(e) {
+        var name = e.tooltip.getElement();
+        if(!name || name.hasAttribute('tabindex')) return;
+        name.setAttribute('tabindex', '0');
+        name.setAttribute('role', 'link');
+        name.addEventListener('keydown', function(event) {
+          if(event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          _this.navigateToArea(marker);
+        });
       });
    }
 

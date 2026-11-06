@@ -3597,6 +3597,13 @@ header.ex1 {
 	line-height: 0.7;
 }
 
+/* Names open their area pages: white on hover or keyboard focus. */
+.TotK-label:hover, .BotW-label:hover, .OoTR-label:hover,
+.TotK-label:focus-visible, .BotW-label:focus-visible, .OoTR-label:focus-visible {
+	color: white;
+	outline: none;
+}
+
 /* Finer place names are smaller (ZMap _labelTierShown, addMarker). */
 .label-tier-places-labels {
 	font-size: 17px;

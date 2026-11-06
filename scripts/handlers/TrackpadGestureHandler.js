@@ -39,8 +39,10 @@ function isInteractiveUiEvent(event, container) {
     return false;
   }
 
+  // Not .leaflet-tooltip: place names are tooltips spread over the map, and
+  // a swipe passing over one must still pan it, not zoom.
   return target.closest(
-    '.leaflet-control, .leaflet-popup, .leaflet-tooltip, '
+    '.leaflet-control, .leaflet-popup, '
     + '.mobile-search-results-panel, button, input, select, textarea, a, '
     + '[contenteditable="true"]'
   ) !== null;

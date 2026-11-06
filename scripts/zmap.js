@@ -550,7 +550,7 @@ ZMap.prototype.addMarker = function(vMarker) {
       // Its tier (Region, Area, Places…) sets its size (styles/zmain.css).
       var labelCategory = this.categories && this.categories[vMarker.markerCategoryId];
       var labelTier = labelCategory ? ' label-tier-' + String(labelCategory.name).toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, '') : '';
-      marker.bindTooltip(vMarker.name, {permanent: true, interactive:true, opacity: 1, className: this.mapOptions.shortName + "-label" + labelTier,direction: 'center', offset: [0, 0] });
+      marker.bindTooltip(vMarker.name, {permanent: true, interactive:true, className: this.mapOptions.shortName + "-label" + labelTier,direction: 'center', offset: [0, 0] });
       marker.getTooltip().on('click',function(e) {
         if(e.originalEvent) L.DomEvent.stop(e.originalEvent);
         _this.navigateToArea(marker);

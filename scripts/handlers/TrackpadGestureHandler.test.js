@@ -19,6 +19,12 @@ describe('isInteractiveUiEvent', () => {
     );
   });
 
+  test('pans and pinches over place names (Leaflet tooltips) like the map', () => {
+    const selector = jest.fn(() => null);
+    isInteractiveUiEvent({target: {closest: selector}}, {});
+    expect(selector.mock.calls[0][0]).not.toContain('.leaflet-tooltip');
+  });
+
   test('allows gestures directly on the map canvas', () => {
     const mapTarget = {closest: jest.fn(() => null)};
     expect(isInteractiveUiEvent({target: mapTarget}, {})).toBe(false);

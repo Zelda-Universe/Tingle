@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261105-89';
+const CACHE_VERSION = '20261105-90';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +8,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=OoT',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261105-oot-23',
-  './res.php?type=css&v=20261105-oot-23',
+  './res.php?type=javascript&v=20261105-oot-24',
+  './res.php?type=css&v=20261105-oot-24',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -75,17 +75,10 @@ async function warmNavigationCache() {
     if (!response.ok) return;
     const games = await response.clone().json();
     if (!Array.isArray(games)) return;
+    // Only the game list, so the offline notice can name the downloaded
+    // games. Each game's data is saved as it's viewed (networkFirst) or
+    // downloaded from Offline Maps, not for every game on every update.
     await cache.put(gamesURL, response);
-    const urls = games.flatMap(game => [
-      'ajax.php?command=get_container&game=' + encodeURIComponent(game.shortName),
-      ...['get_map', 'get_categories', 'get_markers'].map(command =>
-        'ajax.php?command=' + command + '&game=' + encodeURIComponent(game.id))
-    ]);
-    await Promise.allSettled(urls.map(async path => {
-      const url = new URL(path, self.registration.scope).href;
-      const data = await fetch(url);
-      if (data.ok) await cache.put(url, data);
-    }));
   } catch (error) {
     // Keep the previous navigation data if an update occurs offline.
   }

@@ -18,7 +18,9 @@ test('offline game switches boot the current app instead of downloaded HTML with
   expect(globalMatch).not.toHaveBeenCalled();
 });
 
-test('installation saves public navigation data for every game, not only the current map', async () => {
+// Every game's data on install cost each new visitor over 10 MB. Games are
+// saved as they're viewed, or downloaded from Offline Maps.
+test('installation saves only the game list, not every game\'s map data', async () => {
   const put = jest.fn();
   const scope = { URL, self: { registration: { scope: 'https://stage.zeldamaps.com/' }, addEventListener() {} },
     caches: { open: async () => ({ put }) },
@@ -27,8 +29,7 @@ test('installation saves public navigation data for every game, not only the cur
     ] }) })) };
   vm.runInNewContext(source, scope);
   await scope.warmNavigationCache();
-  expect(put).toHaveBeenCalledTimes(9);
-  for (const command of ['get_map', 'get_categories', 'get_markers']) {
-    expect(scope.fetch).toHaveBeenCalledWith('https://stage.zeldamaps.com/ajax.php?command=' + command + '&game=22');
-  }
+  expect(scope.fetch).toHaveBeenCalledTimes(1);
+  expect(scope.fetch).toHaveBeenCalledWith('https://stage.zeldamaps.com/ajax.php?command=get_games');
+  expect(put).toHaveBeenCalledTimes(1);
 });

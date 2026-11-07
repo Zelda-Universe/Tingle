@@ -98,7 +98,11 @@ ZMap.prototype._loadAdminReports = function(status) {
         (status === 'open' ? 'Reported edits will show up here.' : 'Reports you\'ve dealt with will show up here.') + '</p></div>');
       return;
     }
-    data.reports.forEach(function(report) { list.append(_this._adminReportCard(report)); });
+    var back = function() { _this._openAdminReports(); };
+    back.label = 'Reports';
+    data.reports.forEach(function(report) {
+      list.append(_this._adminReportCard(report, { back: back, done: function() { _this._loadAdminReports(); } }));
+    });
   }).fail(function(xhr) { list.empty().append($('<p class="admin-muted"></p>').text(_this._wikiError(xhr))); });
 };
 
@@ -107,15 +111,21 @@ ZMap.prototype._setAdminReportCount = function(count) {
   badge.text(count || '').prop('hidden', !count);
 };
 
-ZMap.prototype._adminReportCard = function(report) {
+// A report: the edit, who made it (and their strikes) and who reported it
+// and why, and while it's open, what to do about it. opts.back reopens the
+// page it's on (View Edit, Open Report and links come back to it);
+// opts.done runs once it's been dealt with; opts.single is its own page.
+ZMap.prototype._adminReportCard = function(report, opts) {
   var _this = this, esc = this._wikiEscape.bind(this);
+  opts = opts || {};
   var strikes = report.warnings || 0, max = this.REPORT_STRIKES;
   var open = report.status === 'open';
   var card = $('<article class="admin-report"></article>');
   card.html(
     '<div class="admin-report-top">' + this._wikiActionBadge(report.action) +
       '<span class="wiki-revision-time">' + esc(this._wikiAgo(report.ago)) + '</span></div>' +
-    '<h4 class="admin-report-title"></h4>' +
+    (opts.single ? '' : '<button type="button" class="admin-report-open" data-report-action="open">' +
+      '<span class="admin-report-title"></span><i class="fas fa-chevron-right" aria-hidden="true"></i></button>') +
     '<p class="admin-report-meta"></p>' +
     (report.summary ? '<p class="admin-report-summary"></p>' : '') +
     '<blockquote class="admin-report-reason"></blockquote>' +
@@ -145,29 +155,29 @@ ZMap.prototype._adminReportCard = function(report) {
     ({ undone: 'Edit undone', warned: 'Editor warned', dismissed: 'Dismissed', banned: 'Editor banned' })[report.resolution] +
     (report.resolvedBy ? ' by ' + report.resolvedBy : '') +
     (report.resolvedAgo !== null ? ' · ' + this._wikiAgo(report.resolvedAgo) : ''));
-  this._wireWikiLinks(card[0], function() { _this._openAdminReports(); });
+  this._wireWikiLinks(card[0], opts.back);
   var status = card.find('.admin-user-status');
   var act = function(action, extra) {
-    card.find('[data-report-action]').prop('disabled', true);
+    card.find('[data-report-action]:not([data-report-action=open])').prop('disabled', true);
     _this._wikiPost('admin_report_action', Object.assign({ id: report.id, action: action }, extra || {})).done(function(data) {
       if(!data.success) {
         status.addClass('error').text(data.msg);
-        card.find('[data-report-action]').prop('disabled', false);
+        card.find('[data-report-action]:not([data-report-action=open])').prop('disabled', false);
         return;
       }
       toastr.success(data.msg);
-      _this._loadAdminReports();
+      if(opts.done) opts.done();
     }).fail(function(xhr) {
       status.addClass('error').text(_this._wikiError(xhr));
-      card.find('[data-report-action]').prop('disabled', false);
+      card.find('[data-report-action]:not([data-report-action=open])').prop('disabled', false);
     });
   };
   card.on('click', '[data-report-action]', function() {
     var action = this.getAttribute('data-report-action');
-    if(action === 'view') {
-      var backToReports = function() { _this._openAdminReports(); };
-      backToReports.label = 'Reports';
-      _this._openMarkerRevision(report.revisionId, backToReports);
+    if(action === 'open') {
+      _this._openReport(report.id, opts.back);
+    } else if(action === 'view') {
+      _this._openMarkerRevision(report.revisionId, opts.back);
     } else if(action === 'undo') {
       if(confirm('Undo this edit? The marker goes back to how it was before it, saved as a new revision.')) act('undo');
     } else if(action === 'warn') {
@@ -177,21 +187,69 @@ ZMap.prototype._adminReportCard = function(report) {
       var reason = prompt('Ban ' + report.editor + '? Give a reason (they won\'t be able to sign in or sign up again with this email):',
         'Problem edit (report #' + report.id + ')');
       if(!reason) return;
-      card.find('[data-report-action]').prop('disabled', true);
+      card.find('[data-report-action]:not([data-report-action=open])').prop('disabled', true);
       _this._wikiPost('admin_set_ban', { id: report.editorId, banned: 1, reason: reason }).done(function(data) {
         if(!data.success) {
           status.addClass('error').text(data.msg);
-          card.find('[data-report-action]').prop('disabled', false);
+          card.find('[data-report-action]:not([data-report-action=open])').prop('disabled', false);
           return;
         }
         act('banned');
       }).fail(function(xhr) {
         status.addClass('error').text(_this._wikiError(xhr));
-        card.find('[data-report-action]').prop('disabled', false);
+        card.find('[data-report-action]:not([data-report-action=open])').prop('disabled', false);
       });
     } else if(action === 'dismiss') {
       act('dismiss');
     }
   });
   return card;
+};
+
+// One report's own page: from its notification or link (?page=report&report=12)
+// or Admin > Reports. back defaults to Admin > Reports.
+ZMap.prototype._openReport = function(reportId, back) {
+  var _this = this;
+  reportId = Number(reportId);
+  if(!back) {
+    back = function() { _this._openAdminReports(); };
+    back.label = 'Reports';
+  }
+  var reopen = this._wikiReopen(function() { _this._openReport(reportId, back); }, null, 'Report');
+  var page = this._showWikiPage(
+    '<div id="report_page" class="wiki-page">' +
+      '<h3 class="text-center">Report</h3>' +
+      '<p class="wiki-subtitle"></p>' +
+      '<div class="report-page-body"><p class="wiki-empty">Loading…</p></div>' +
+    '</div>',
+    'report-' + reportId,
+    back,
+    reopen
+  );
+  this._wikiGet('admin_reports', { id: reportId }).done(function(data) {
+    var body = $(page).find('.report-page-body').empty();
+    if(!data.success || !data.reports || !data.reports.length) {
+      var empty = $('<div class="wiki-empty-state"><div class="wiki-empty-state-title">Report Not Found</div><p></p></div>');
+      empty.find('p').text(data.msg || 'It may have been removed.');
+      body.append(empty);
+      return;
+    }
+    var report = data.reports[0];
+    $(page).find('.wiki-subtitle').text((report.markerTitle || 'Marker #' + report.markerId) +
+      (report.status === 'open' ? ' · Open' : ' · Resolved'));
+    body.append(_this._adminReportCard(report, { back: reopen, single: true, done: function() {
+      _this.mapControl._navigatingBack = true;
+      reopen();
+    } }));
+    _this._setAdminReportCount(data.openCount);
+  }).fail(function(xhr) {
+    $(page).find('.report-page-body').empty().append($('<p class="wiki-empty"></p>').text(_this._wikiError(xhr)));
+  });
+};
+
+// ?page=report&report=12 (zmap.js's page routes).
+ZMap.prototype._routeReport = function() {
+  var id = Number(new URL(window.location.href).searchParams.get('report'));
+  if(id) this._openReport(id);
+  else this._openAdminReports();
 };

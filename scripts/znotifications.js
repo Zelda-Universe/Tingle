@@ -82,7 +82,7 @@ ZMap.prototype._wikiLinkParams = function(url) {
   return {
     marker: number('marker'), rev: number('rev'), talk: params.get('talk') === '1',
     user: number('user'), comment: number('comment'), game: params.get('game'),
-    notification: number('notification'), page: params.get('page')
+    notification: number('notification'), page: params.get('page'), report: number('report')
   };
 };
 
@@ -96,6 +96,10 @@ ZMap.prototype._openWikiURL = function(url) {
   var link = this._wikiLinkParams(url);
   if(link.page === 'notifications') {
     this._openNotificationsPage();
+    return;
+  }
+  if(link.page === 'report' && link.report && this._openReport) {
+    this._openReport(link.report);
     return;
   }
   if(link.page === 'admin-reports' && this._openAdminReports) {
@@ -217,6 +221,10 @@ ZMap.prototype._openNotificationsPage = function(back) {
         if(data.success) _this.setNotificationCount(data.unread);
       });
     }
+    // A report opens its own page, not the edit it's about.
+    var target = n.url ? _this._wikiLinkParams(n.url) : {};
+    if(target.page === 'report' && target.report) { _this._openReport(target.report, reopen); return; }
+    if(target.page === 'admin-reports') { _this._openAdminReports(); return; }
     _this._openWikiLink({
       rev: n.revisionId, talk: !n.revisionId, marker: n.markerId || (n.pageType === 'marker' ? n.pageId : 0),
       user: n.pageType === 'user' ? n.pageId : 0, comment: n.commentId
@@ -242,7 +250,7 @@ ZMap.prototype._notificationRow = function(n) {
   var avatar = n.actorPicture || 'images/default-avatar.png';
   var icon = this.NOTIFICATION_ICONS[n.type] || 'fa-bell';
   var item = $(
-    '<li class="notification" role="button" tabindex="0">' +
+    '<li class="notification notification-type-' + this._wikiEscape(n.type) + '" role="button" tabindex="0">' +
       '<span class="notification-avatar"><img src="' + this._wikiEscape(avatar) + '" alt="" loading="lazy" ' +
         'onerror="this.onerror=null;this.src=\'images/default-avatar.png\'" />' +
         '<span class="notification-kind"><i class="fas ' + icon + '" aria-hidden="true"></i></span></span>' +

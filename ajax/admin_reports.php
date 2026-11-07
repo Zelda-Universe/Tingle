@@ -1,7 +1,8 @@
 <?php
   // Admin > Reports: reported edits, open ones first (?status=open, the
   // default, or resolved), each with the edit, its editor's warnings and
-  // standing, and who reported it and why.
+  // standing, and who reported it and why. ?id= gives one report, open or
+  // not, for its own page.
   include_once(dirname(__DIR__) . '/lib/common/admin.php');
   include_once(dirname(__DIR__) . '/lib/common/wiki.php');
   $adminId = adminRequire($db, $map_prefix);
@@ -11,6 +12,8 @@
     return;
   }
   $open = ($_GET['status'] ?? 'open') !== 'resolved';
+  $one = (int) ($_GET['id'] ?? 0);
+  $where = $one ? '`rp`.`id` = ' . $one : '`rp`.`status` ' . ($open ? "= 'open'" : "<> 'open'");
   $banned = adminHasColumn($db, $map_prefix, 'banned') ? '`e`.`banned` IS NOT NULL' : '0';
   $reports = $db->fetchAllAssociative("
     SELECT `rp`.`id`, `rp`.`reason`, `rp`.`status`, `rp`.`resolution`, " . wikiAgoSql('`rp`.`created`') . " AS `ago`,
@@ -26,7 +29,7 @@
       LEFT JOIN `{$map_prefix}user` `e` ON `e`.`id` = `rv`.`user_id`
       LEFT JOIN `{$map_prefix}user` `rr` ON `rr`.`id` = `rp`.`reporter_id`
       LEFT JOIN `{$map_prefix}user` `ad` ON `ad`.`id` = `rp`.`resolved_by`
-     WHERE `rp`.`status` " . ($open ? "= 'open'" : "<> 'open'") . "
+     WHERE {$where}
      ORDER BY `rp`.`id` " . ($open ? 'ASC' : 'DESC') . "
      LIMIT 100
   ");
@@ -39,6 +42,10 @@
     $report['markerTitle'] = wikiDecode($report['markerTitle']);
   }
   unset($report);
+  if ($one && !$reports) {
+    echo json_encode(array('success' => false, 'msg' => 'That report was not found.'));
+    return;
+  }
   echo json_encode(array(
     'success' => true, 'reports' => $reports,
     'openCount' => (int) $db->fetchOne("SELECT COUNT(*) FROM `{$map_prefix}edit_report` WHERE `status` = 'open'")

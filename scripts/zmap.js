@@ -4859,6 +4859,8 @@ ZMap.prototype.restoreDrawerPage = function(page) {
     bookmarks: '_createBookmarksPage',
     admin: '_createAdminPage',
     'admin-reports': '_openAdminReports',
+    // One report (scripts/zreports.js): ?page=report&report=12.
+    report: '_routeReport',
     'change-password': '_createChangePasswordForm',
     'delete-account': '_createAccountDeleteForm',
     // Notifications (znotifications.js), editors only for now.

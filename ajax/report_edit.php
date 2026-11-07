@@ -57,7 +57,7 @@
       'actor' => (string) $db->fetchOne("SELECT `username` FROM `{$map_prefix}user` WHERE `id` = ?", [$userId]),
       'markerTitle' => $marker ? $marker['title'] : 'a marker', 'game' => $marker ? $marker['game'] : null,
       'excerpt' => notificationExcerpt($reason), 'reportId' => $reportId,
-      'link' => array('page' => 'admin-reports')
+      'link' => array('page' => 'report', 'report' => $reportId)
     )
   );
   echo json_encode(array('success' => true, 'msg' => 'Thanks. A moderator will take a look.'));

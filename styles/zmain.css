@@ -5228,6 +5228,11 @@ div.circle:has(>.icon-EoW_Echo) {
 	font-size: 9px;
 }
 
+.notification-type-edit_report .notification-kind,
+.notification-type-warning .notification-kind {
+	background: #e85040;
+}
+
 .notification-kind svg,
 .notification-kind i {
 	width: 9px;
@@ -7043,10 +7048,45 @@ div.circle:has(>.icon-EoW_Echo) {
 	margin: 4px 0;
 	padding: 0;
 }
-.admin-report-title {
+/* The report's title: in Admin > Reports, a link to its own page. */
+.admin-report-open {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	width: 100%;
 	margin: 8px 0 2px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: white;
+	font: inherit;
+	text-align: left;
+	cursor: pointer;
+}
+.admin-report-open:hover .admin-report-title,
+.admin-report-open:focus-visible .admin-report-title {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+.admin-report-open:focus-visible {
+	outline: none;
+}
+.admin-report-open i,
+.admin-report-open svg {
+	flex: none;
+	margin-left: auto;
+	color: rgba(255,255,255,.4);
+	font-size: 12px;
+}
+.admin-report-title {
+	min-width: 0;
 	color: white;
 	font-size: 15px;
+	font-weight: bold;
+}
+/* On its own page (#report_page). */
+.report-page-body {
+	margin: 0 16px 24px;
 }
 .admin-report-meta,
 .admin-report-by,

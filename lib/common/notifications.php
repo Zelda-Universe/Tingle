@@ -262,8 +262,11 @@
     }
     $comment = $row['comment_id'] ?? $row['commentId'] ?? null;
     if ($comment) $query['comment'] = $comment;
-    // Some lead elsewhere: a report opens Admin > Reports.
+    // Some lead elsewhere: a report opens its own page.
     if (!empty($data['link']) && is_array($data['link'])) $query = $data['link'];
+    if (($row['type'] ?? '') === 'edit_report' && !empty($data['reportId'])) {
+      $query = array('page' => 'report', 'report' => (int) $data['reportId']);
+    }
     return array(
       'title' => $title,
       'body' => (string) ($data['excerpt'] ?? ''),

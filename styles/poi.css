@@ -1,9 +1,13 @@
 /* Shared POI treatments for Link's Awakening, BotW, TotK and EoW. */
 /* OoT's own glyphs: SVGs in images/icons/oot/, drawn in the badge's colour. */
-.icon-OoT_FairyThought::before, .icon-OoT_Song::before, .icon-OoT_Poe::before, .icon-OoT_Kaepora::before, .icon-OoT_SilverRupee::before, .icon-OoT_GossipStone::before, .icon-OoT_Chest::before, .icon-General_Chest::before, .icon-General_HeartPiece::before {
+.icon-OoT_Weapons::before, .icon-OoT_Upgrades::before, .icon-OoT_FairyThought::before, .icon-OoT_Song::before, .icon-OoT_Poe::before, .icon-OoT_Kaepora::before, .icon-OoT_SilverRupee::before, .icon-OoT_GossipStone::before, .icon-OoT_Chest::before, .icon-General_Chest::before, .icon-General_HeartPiece::before {
   content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:block; width:1em; height:1em;
   background:currentColor; -webkit-mask:var(--oot-glyph) center / contain no-repeat; mask:var(--oot-glyph) center / contain no-repeat; }
 .icon-OoT_Poe { --oot-glyph:url('images/icons/oot/Poe.svg'); }
+.icon-OoT_Weapons { --oot-glyph:url('images/icons/oot/Weapons.svg'); }
+.icon-OoT_Upgrades { --oot-glyph:url('images/icons/oot/Upgrades.svg'); }
+.category-selector .category-icon.icon-OoT_Weapons::before,
+.category-selector .category-icon.icon-OoT_Upgrades::before { width:1em; height:1em; }
 .icon-OoT_FairyThought { --oot-glyph:url('images/icons/oot/FairyThought.svg'); }
 .icon-OoT_Song { --oot-glyph:url('images/icons/games/ocarina-of-time.svg'); }
 .icon-OoT_Kaepora { --oot-glyph:url('images/icons/oot/Kaepora.svg'); }

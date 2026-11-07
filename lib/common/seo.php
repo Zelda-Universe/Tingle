@@ -23,7 +23,12 @@
     $rows = $db->fetchAllAssociative("
       SELECT IF(LOWER(c.short_name) = 'ootr', 'OoT', c.short_name) AS game, mc.id, mc.name, COUNT(m.id) AS markers,
              GROUP_CONCAT(DISTINCT mp.name ORDER BY mp.id SEPARATOR '|') AS maps,
-             DATE_FORMAT(MAX(m.last_updated), '%Y-%m-%dT%TZ') AS last_updated
+             -- Stored in the database's own time zone: converted to UTC, and
+             -- as a date only, never later than today, since search engines
+             -- reject dates in the future (a time of day could be, by a few
+             -- seconds, if their clock and ours disagree).
+             DATE_FORMAT(LEAST(MAX(m.last_updated) - INTERVAL TIMESTAMPDIFF(SECOND, UTC_TIMESTAMP(), NOW()) SECOND, UTC_TIMESTAMP()),
+                         '%Y-%m-%d') AS last_updated
         FROM `{$prefix}marker_category` mc
         JOIN `{$prefix}container` c ON c.id = mc.container_id
         JOIN `{$prefix}marker` m ON m.marker_category_id = mc.id AND m.visible = 1

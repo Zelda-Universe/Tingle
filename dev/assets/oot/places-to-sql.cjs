@@ -46,9 +46,9 @@ const CATEGORIES = [
   [64030, null, 'Locations', 'BotW_Locations', '#8e72b9'],
   [64031, 64030, 'Shops', 'General_Store', '#8e72b9'],
   [64032, 64030, 'Great Fairy Fountains', 'BotW_Great-Fairy', '#8e72b9'],
-  [64033, 64030, 'Minigames', 'BotW_Locations', '#8e72b9'],
+  [64033, 64030, 'Minigames', 'BotW_Mini-Game', '#8e72b9'],
   [64040, null, 'Points of Interest', 'BotW_Points-of-Interest', '#4bc5ee'],
-  [64041, 64040, 'People', 'TotK_Npc', '#4bc5ee'],
+  [64041, 64040, 'NPCs', 'TotK_Npc', '#4bc5ee'],
   [64042, 64040, 'Boss Doors', 'BotW_Boss', '#ff422e']
 ];
 const CATEGORY_OF = {chest: 64021, shop: 64031, fairy: 64032, minigame: 64033, person: 64041, boss: 64042};

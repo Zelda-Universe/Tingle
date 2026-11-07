@@ -45,6 +45,9 @@ scripts/services/AreaSearch.js
 scripts/controls/OotFloors.js
 scripts/zwiki.js
 scripts/zbeta.js
+scripts/zmapsettings.js
+scripts/zreports.js
+scripts/zvideo.js
 scripts/znotifications.js
 scripts/zmain.lib.js
 scripts/zmain.js

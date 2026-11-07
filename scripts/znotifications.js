@@ -12,7 +12,9 @@ ZMap.prototype.NOTIFICATION_ICONS = {
   marker_comment: 'fa-comments',
   marker_edit: 'fa-pencil-alt',
   followed_comment: 'fa-comments',
-  followed_edit: 'fa-pencil-alt'
+  followed_edit: 'fa-pencil-alt',
+  edit_report: 'fa-flag',
+  warning: 'fa-exclamation-triangle'
 };
 
 //************************************************************************//
@@ -96,6 +98,10 @@ ZMap.prototype._openWikiURL = function(url) {
     this._openNotificationsPage();
     return;
   }
+  if(link.page === 'admin-reports' && this._openAdminReports) {
+    this._openAdminReports();
+    return;
+  }
   if(link.game && this.mapOptions && link.game !== this.mapOptions.shortName && (link.marker || link.rev)) {
     window.location.href = new URL(url, window.location.href).href;
     return;
@@ -158,7 +164,7 @@ ZMap.prototype._openRevisionLinkWhenReady = function(part) {
 ZMap.prototype._openNotificationsPage = function(back) {
   var _this = this;
   back = back || function() { _this._createAccountForm(_this.getUser()); };
-  var reopen = function() { _this._openNotificationsPage(back); };
+  var reopen = this._wikiReopen(function() { _this._openNotificationsPage(back); }, null, 'Notifications');
   var page = this._showWikiPage(
     '<div id="notifications_page" class="wiki-page">' +
       '<h3 class="text-center">Notifications</h3>' +
@@ -486,7 +492,7 @@ ZMap.prototype._pushForgetDevice = function() {
 ZMap.prototype._openFollowedMarkers = function(back) {
   var _this = this;
   back = back || function() { _this._openNotificationSettings(); };
-  var reopen = function() { _this._openFollowedMarkers(back); };
+  var reopen = this._wikiReopen(function() { _this._openFollowedMarkers(back); }, null, 'Followed Markers');
   var page = this._showWikiPage(
     '<div id="followed_markers" class="wiki-page">' +
       '<h3 class="text-center">Followed Markers</h3>' +

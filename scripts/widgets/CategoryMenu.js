@@ -228,10 +228,10 @@ CategoryMenu.prototype.organizePOICategories = function() {
           button._directMarkersOnly = true;
           button.childCategoryButtons = [];
           button.domNode.closest('li').removeClass('poi-original-category');
-          button.displayTitle = category.name === 'Point of Interest' ? 'Other POIs' : 'Other ' + category.name;
         }
-        if(String(category.id) === '2134') button.displayTitle = "Dragon's Tears";
-        if(String(category.container_id) === '4' && String(category.id) === '1968') button.displayTitle = 'Bosses';
+        // "Other POIs", "Dragon's Tears" (scripts/util/poiStyle.js).
+        var menuName = getPOIMenuName(category, Object.values(this._categories));
+        if(menuName !== category.name) button.displayTitle = menuName;
         if(button.displayTitle) button.labelNode.text(button.displayTitle);
         list.append(button.domNode.closest('li'));
       }

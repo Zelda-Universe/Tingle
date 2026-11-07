@@ -10,7 +10,10 @@
     echo json_encode(array('success' => false, 'msg' => 'Run the create_notifications migration to use notifications.'));
     return;
   }
-  $types = notificationTypes();
+  // Admins' kinds (reports) are only offered to admins.
+  $types = array_filter(notificationTypes(), function($info) use ($editor) {
+    return empty($info['admin']) || $editor['level'] >= WIKI_ADMIN_LEVEL;
+  });
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $type = (string) ($_POST['type'] ?? '');
     if (isset($types[$type])) {

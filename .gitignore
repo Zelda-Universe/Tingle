@@ -37,6 +37,8 @@ node_modules
 !/uploads/profile-banners/index.html
 /uploads/marker-images/*
 !/uploads/marker-images/index.html
+/uploads/marker-videos/*
+!/uploads/marker-videos/index.html
 
 # Debug Files
 /php_errors.log

@@ -1053,10 +1053,12 @@ ZMap.prototype._getDisplayZoom = function() {
 ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
    var poiStyle = getPOIStyle(this.categories[vCatId]);
    var poiClass = poiStyle ? ' poi-badge poi-' + poiStyle : '';
+   // The colours given in Map Settings (fill or outline, and glyph).
+   var fillStyle = getPOIStyleVars(this.categories[vCatId]);
    if(poiStyle && String(this.categories[vCatId].container_id) === '22') poiClass += ' poi-eow';
    if (this._getDisplayZoom() > this.mapOptions.switchIconsAtZoom) {
       return new markerIconMedium({className: 'map-icon-svg'
-                            ,html: "<div class='circle circleMap-medium" + poiClass + "' style='background-color: " + this.categories[vCatId].color + "; "
+                            ,html: "<div class='circle circleMap-medium" + poiClass + "' style='" + fillStyle + "background-color: " + this.categories[vCatId].color + "; "
                                                                       + "border-color: " + this.categories[vCatId].color + "'>"
                                        + "<span class='icon-" + this.categories[vCatId].img + " icnText-medium'></span>"
                                        + (vComplete?"<span class='icon-checkmark completeMarker completeMarker-Medium'></span>":"")
@@ -1064,7 +1066,7 @@ ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
       });
    } else {
       return new markerIconSmall({className: 'map-icon-svg'
-                            ,html: "<div class='circle circleMap-small" + poiClass + "' style='background-color: " + this.categories[vCatId].color + "; "
+                            ,html: "<div class='circle circleMap-small" + poiClass + "' style='" + fillStyle + "background-color: " + this.categories[vCatId].color + "; "
                                                                       + "border-color: " + this.categories[vCatId].color + "'>"
                                        + "<span class='icon-" + this.categories[vCatId].img + " icnText-small'></span>"
                                        + (vComplete?"<span class='icon-checkmark completeMarker completeMarker-Small'></span>":"")
@@ -3400,7 +3402,9 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
     statusbar: false,
     branding: false,
     plugins: 'lists link image media table code autoresize paste',
-    toolbar: 'bold italic | bullist numlist | link image media | table | removeformat code',
+    toolbar: 'bold italic | bullist numlist | link image media' + (isEditor ? ' uploadvideo' : '') + ' | table | removeformat code',
+    // Uploaded clips (scripts/zvideo.js) keep what makes them play quietly.
+    extended_valid_elements: 'video[src|muted|loop|playsinline|autoplay|controls|preload|poster|width|height|class]',
     toolbar_mode: 'wrap',
     min_height: 160,
     max_height: 520,
@@ -3420,6 +3424,16 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       'blockquote { margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid #777; background: #2a2a2d; }'
   };
   if (isEditor) {
+    // Upload Video: a clip like a Switch recording (scripts/zvideo.js).
+    editorOptions.setup = function(editor) {
+      // A video camera with an up arrow, unlike Media's embed icon.
+      editor.ui.registry.addIcon('zm-upload-video',
+        '<svg width="24" height="24" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M4 6h10a2 2 0 0 1 2 2v1.5l4-2.5v10l-4-2.5V16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm5 2.5L5.5 12H8v3h2v-3h2.5L9 8.5z"/></svg>');
+      editor.ui.registry.addButton('uploadvideo', {
+        icon: 'zm-upload-video', tooltip: 'Upload a video',
+        onAction: function() { _this._uploadEditorVideo(editor); }
+      });
+    };
     editorOptions.automatic_uploads = true;
     editorOptions.images_file_types = 'jpeg,jpg,png,gif,webp';
     editorOptions.images_upload_handler = function(blobInfo, success, failure) {
@@ -4843,6 +4857,7 @@ ZMap.prototype.restoreDrawerPage = function(page) {
     'offline-maps': '_createOfflineMapsForm',
     bookmarks: '_createBookmarksPage',
     admin: '_createAdminPage',
+    'admin-reports': '_openAdminReports',
     'change-password': '_createChangePasswordForm',
     'delete-account': '_createAccountDeleteForm',
     // Notifications (znotifications.js), editors only for now.
@@ -4940,7 +4955,11 @@ ZMap.prototype._createAdminPage = function(opts) {
           '<i class="fas fa-chart-bar" aria-hidden="true"></i>Analytics</button>' +
         '<button type="button" role="tab" id="admin_tab_users" aria-controls="admin_panel_users" data-admin-tab="users">' +
           '<i class="fas fa-users" aria-hidden="true"></i>Users</button>' +
+        // Reported edits (scripts/zreports.js).
+        '<button type="button" role="tab" id="admin_tab_reports" aria-controls="admin_panel_reports" data-admin-tab="reports">' +
+          '<i class="fas fa-flag" aria-hidden="true"></i>Reports<span class="admin-tab-count" hidden></span></button>' +
       '</div>' +
+      '<div class="admin-panel" id="admin_panel_reports" role="tabpanel" aria-labelledby="admin_tab_reports" data-admin-panel="reports" hidden></div>' +
       '<div class="admin-panel" id="admin_panel_analytics" role="tabpanel" aria-labelledby="admin_tab_analytics" data-admin-panel="analytics">' +
       // Growth: how many people sign up and come back, and what brought
       // them. Engagement: which features they use, then each in detail.
@@ -5113,17 +5132,23 @@ ZMap.prototype._createAdminPage = function(opts) {
       this.hidden = this.getAttribute('data-admin-panel') !== tab;
     });
     if(restoreScroll !== false) contents.scrollTop = state.tabScroll[tab] || 0;
+    if(tab === 'reports' && _this._loadAdminReports) _this._loadAdminReports();
   };
   $('#admin [data-admin-tab]').on('click', function() {
     showTab(this.getAttribute('data-admin-tab'));
   }).on('keydown', function(e) {
     if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     e.preventDefault();
-    var next = state.tab === 'analytics' ? 'users' : 'analytics';
+    var tabs = ['analytics', 'users', 'reports'];
+    var next = tabs[(tabs.indexOf(state.tab) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
     showTab(next);
     $('#admin [data-admin-tab="' + next + '"]').trigger('focus');
   });
   showTab(state.tab || 'analytics', false);
+  // How many reports are waiting, on the Reports tab.
+  if(state.tab !== 'reports') this._wikiGet('admin_reports', { status: 'open' }).done(function(data) {
+    if(data.success && _this._setAdminReportCount) _this._setAdminReportCount(data.openCount);
+  });
 
 
   var statsRequest = 0;

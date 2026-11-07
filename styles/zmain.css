@@ -2398,8 +2398,58 @@ a.button.back-button:hover {
 	margin-bottom: 16px;
 }
 
-.infoWindowIcn:not(:disabled):not(.disabled):not([aria-disabled="true"]):hover {
+.infoWindowIcn:not(:disabled):not(.disabled):not([aria-disabled="true"]):not([data-action="cancel"]):not(.text-button):hover {
 	background: rgba(255,255,255,.3);
+}
+
+/* Buttons that are only words (Maybe Later, Cancel, Report This Edit): no
+   button shape, ever. The text brightens on hover, like Delete Account. */
+.text-button,
+.bookmark-registration-actions [data-action="cancel"],
+.bookmark-registration-cancel,
+.complete-reminder-later {
+	background: transparent !important;
+	border: 0 !important;
+	box-shadow: none !important;
+	color: rgba(255,255,255,.7);
+	cursor: pointer;
+	transition: color .15s;
+}
+.text-button:hover,
+.bookmark-registration-actions [data-action="cancel"]:hover,
+.bookmark-registration-cancel:hover,
+.complete-reminder-later:hover {
+	color: #fff;
+}
+.text-button:focus,
+.bookmark-registration-actions [data-action="cancel"]:focus,
+.bookmark-registration-cancel:focus,
+.complete-reminder-later:focus {
+	outline: none;
+}
+.text-button:focus-visible,
+.bookmark-registration-actions [data-action="cancel"]:focus-visible,
+.bookmark-registration-cancel:focus-visible,
+.complete-reminder-later:focus-visible {
+	color: #fff;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+.text-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	padding: 8px 12px;
+	font: inherit;
+	font-size: 15px;
+}
+.text-button.text-button-bad {
+	color: #ff6b63;
+}
+.text-button.text-button-bad:hover,
+.text-button.text-button-bad:focus-visible {
+	color: #ff8c85;
 }
 
 button:disabled,
@@ -4297,6 +4347,23 @@ div.circle:has(>.icon-EoW_Echo) {
 	overflow-wrap: anywhere;
 }
 
+/* The marker's name, and Go to Marker beside it (zwiki.js). */
+.menu-cat-content-inner .wiki-page .wiki-subtitle-row {
+	align-items: center;
+	gap: 6px 10px;
+	margin: -8px 16px 16px;
+}
+.menu-cat-content-inner .wiki-page .wiki-subtitle-row p.wiki-subtitle {
+	margin: 0;
+}
+.leaflet-control-layers .wiki-subtitle-row > .wiki-marker-pill {
+	flex: none;
+	margin: 0 !important;
+	padding: 6px 12px !important;
+	font-size: 12px;
+	white-space: nowrap;
+}
+
 .wiki-page .wiki-section {
 	margin: 0 16px 24px;
 }
@@ -4334,7 +4401,8 @@ div.circle:has(>.icon-EoW_Echo) {
 }
 
 /* An empty list, like Bookmarks' (.bookmarks-empty). */
-.wiki-page .wiki-empty-state {
+.wiki-page .wiki-empty-state,
+#admin .wiki-empty-state {
 	margin: 0;
 	padding: 48px 24px;
 	list-style: none;
@@ -5671,7 +5739,8 @@ div.circle:has(>.icon-EoW_Echo) {
 /* Admin: Analytics and Users tabs. */
 .admin-tabs {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
 	gap: 2px;
 	margin: 0 16px 20px;
 	padding: 2px;
@@ -6413,4 +6482,808 @@ div.circle:has(>.icon-EoW_Echo) {
 .leaflet-control-layers .popupContent table:not(.table) th,
 .leaflet-control-layers .popupContent table:not(.table) td {
 	overflow-wrap: break-word;
+}
+
+/* Map Settings (scripts/zmapsettings.js). */
+.editing-beta-settings {
+	margin-bottom: 8px;
+}
+.map-settings-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+	margin: 0 0 8px;
+	padding: 8px 12px;
+	min-height: 48px;
+	border: 0;
+	border-radius: 12px;
+	background: rgba(255,255,255,.08);
+	color: white;
+	font: inherit;
+	font-size: 14px;
+	text-align: left;
+	cursor: pointer;
+}
+.map-settings-row:hover,
+.map-settings-row:focus-visible {
+	background: rgba(255,255,255,.14);
+	outline: none;
+}
+.map-settings-name {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.map-settings-chevron {
+	flex: none;
+	color: rgba(255,255,255,.4);
+	font-size: 12px;
+}
+.map-settings-extra {
+	flex: none;
+	min-width: 22px;
+	padding: 2px 7px;
+	box-sizing: border-box;
+	border-radius: 999px;
+	background: rgba(255,255,255,.1);
+	color: rgba(255,255,255,.65);
+	font-size: 12px;
+	text-align: center;
+}
+.map-settings-tag {
+	flex: none;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: rgba(255,255,255,.12);
+	color: rgba(255,255,255,.75);
+	font-size: 11px;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+}
+.map-settings-badge.category-icon {
+	flex: none;
+	width: 32px;
+	height: 32px;
+	margin: 0;
+	font-size: 20px;
+	line-height: 32px;
+}
+.menu-cat-content-inner .wiki-page p.map-settings-hint {
+	margin: -4px 0 12px;
+	color: rgba(255,255,255,.6);
+	font-size: 13px;
+}
+.map-settings-hint i {
+	margin: 0 2px;
+}
+.leaflet-control-layers .marker-actions-row.map-settings-actions {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	margin: 0 0 20px;
+}
+
+/* The list: sections, each with its categories, all draggable by a handle. */
+.map-settings-group {
+	margin: 0 0 16px;
+	border-radius: 14px;
+}
+.map-settings-section {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 40px;
+	margin: 0 0 6px;
+	color: white;
+	font-size: 15px;
+	font-weight: bold;
+}
+.map-settings-section-title {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.map-settings-section-rename {
+	flex: none;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	border: 0;
+	border-radius: 999px;
+	background: none;
+	color: rgba(255,255,255,.55);
+	font-size: 12px;
+	cursor: pointer;
+}
+.map-settings-section-rename:hover,
+.map-settings-section-rename:focus-visible {
+	background: rgba(255,255,255,.12);
+	color: white;
+	outline: none;
+}
+.map-settings-section-input {
+	flex: 1;
+	min-width: 0;
+	height: 34px;
+	box-sizing: border-box;
+	padding: 4px 10px;
+	border: 0;
+	border-radius: 8px;
+	background: rgba(255,255,255,.2);
+	color: white;
+	font: inherit;
+	outline: 2px solid rgba(255,255,255,.5);
+}
+.map-settings-children {
+	min-height: 8px;
+}
+.map-settings-children:empty::before {
+	content: 'Drag a category here to keep this section.';
+	display: block;
+	margin: 0 0 8px 30px;
+	padding: 12px;
+	border: 1.5px dashed rgba(255,255,255,.25);
+	border-radius: 12px;
+	color: rgba(255,255,255,.55);
+	font-size: 13px;
+}
+.map-settings-item {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	border-radius: 12px;
+}
+.map-settings-item .map-settings-row {
+	flex: 1;
+}
+.map-settings-item.is-hidden .map-settings-badge,
+.map-settings-item.is-hidden .map-settings-name {
+	opacity: .5;
+}
+.map-settings-handle {
+	flex: none;
+	align-self: stretch;
+	width: 28px;
+	min-height: 40px;
+	margin: 0 0 8px;
+	padding: 0;
+	border: 0;
+	border-radius: 8px;
+	background: none;
+	color: rgba(255,255,255,.4);
+	font-size: 14px;
+	cursor: grab;
+	touch-action: none;
+}
+.map-settings-section .map-settings-handle {
+	margin: 0;
+}
+.map-settings-handle:hover,
+.map-settings-handle:focus-visible {
+	background: rgba(255,255,255,.1);
+	color: white;
+	outline: none;
+}
+.map-settings-layout.is-sorting,
+.map-settings-layout.is-sorting * {
+	cursor: grabbing !important;
+	user-select: none;
+	-webkit-user-select: none;
+}
+.map-settings-item.is-dragging,
+.map-settings-group.is-dragging {
+	position: relative;
+	z-index: 2;
+	background: rgba(40,40,40,.95);
+	box-shadow: 0 8px 24px rgba(0,0,0,.45), 0 0 0 1.5px rgba(255,255,255,.5);
+}
+.map-settings-item.is-dragging .map-settings-handle,
+.map-settings-group.is-dragging > .map-settings-section .map-settings-handle {
+	color: white;
+}
+/* Save Changes: under the list, and held at the bottom of the drawer while
+   there's something to save. */
+.map-settings-savebar {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 4px 0 0;
+	padding: 12px 0;
+}
+.map-settings-savebar.has-changes {
+	position: sticky;
+	bottom: 0;
+	z-index: 3;
+	margin: 4px -16px 0;
+	padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+	border-top: 1px solid rgba(255,255,255,.15);
+	background: rgba(20,20,20,.94);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+}
+.menu-cat-content-inner .wiki-page p.map-settings-pending {
+	align-self: stretch;
+	margin: 0 0 10px;
+	color: rgba(255,255,255,.6);
+	font-size: 13px;
+	text-align: center;
+}
+.map-settings-savebar.has-changes .map-settings-pending {
+	color: white;
+}
+.map-settings-savebar .form-action-button.map-settings-save {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0;
+	padding: 10px;
+	color: white;
+}
+.map-settings-savebar .form-action-button.map-settings-save:disabled {
+	opacity: .45;
+	cursor: default;
+}
+.map-settings-savebar .map-settings-discard {
+	margin-top: 4px;
+	font-size: 14px;
+}
+.map-settings-layout.is-saving {
+	opacity: .7;
+	transition: opacity .2s;
+}
+
+.map-settings-change {
+	margin: 0 0 8px;
+	padding: 10px 12px;
+	border-radius: 12px;
+	background: rgba(255,255,255,.06);
+	list-style: none;
+	font-size: 13px;
+}
+.map-settings-change-top {
+	display: flex;
+	gap: 8px;
+	justify-content: space-between;
+}
+.map-settings-change-title {
+	color: white;
+	font-weight: bold;
+}
+.map-settings-change-summary {
+	margin-top: 2px;
+	color: rgba(255,255,255,.8);
+}
+
+/* A map's or category's form. */
+.menu-cat-content-inner form.map-settings-form {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 0 16px 24px;
+}
+.map-settings-form .form-group,
+.map-settings-form .input-group {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+}
+.map-settings-form .form-group {
+	margin-bottom: 0;
+}
+.map-settings-form .form-action-button {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 20px 0 0;
+}
+.map-settings-form .map-settings-label {
+	display: block;
+	margin: 16px 0 6px;
+	color: white;
+	font-size: 14px;
+	font-weight: bold;
+}
+.map-settings-preview {
+	display: flex;
+	justify-content: center;
+	margin: 4px 0 4px;
+}
+.map-settings-preview .map-settings-badge.category-icon {
+	width: 64px;
+	height: 64px;
+	font-size: 40px;
+	line-height: 64px;
+}
+.menu-cat-content-inner form.map-settings-form .map-settings-check {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	gap: 12px;
+	margin: 16px 0 0;
+	padding: 12px;
+	border-radius: 12px;
+	background: rgba(255,255,255,.08);
+	color: white;
+	font-weight: normal;
+	cursor: pointer;
+}
+.menu-cat-content-inner form.map-settings-form .map-settings-check input {
+	display: block;
+	flex: none;
+	width: 20px;
+	height: 20px;
+	margin: 1px 0 0;
+	accent-color: white;
+	cursor: pointer;
+}
+.map-settings-check span {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	font-size: 14px;
+}
+.map-settings-check small {
+	color: rgba(255,255,255,.6);
+	font-size: 12px;
+}
+.map-settings-shapes {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 6px;
+}
+.map-settings-shape {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+	padding: 10px 4px 8px;
+	border: 0;
+	border-radius: 12px;
+	background: rgba(255,255,255,.08);
+	color: rgba(255,255,255,.75);
+	font: inherit;
+	font-size: 12px;
+	cursor: pointer;
+}
+.map-settings-shape:hover,
+.map-settings-shape:focus-visible {
+	background: rgba(255,255,255,.14);
+	outline: none;
+}
+.map-settings-shape[aria-pressed="true"] {
+	background: rgba(255,255,255,.22);
+	box-shadow: inset 0 0 0 2px white;
+	color: white;
+	font-weight: bold;
+}
+.map-settings-shape-badge {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 36px;
+}
+.map-settings-colors {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+}
+.map-settings-color {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	height: 44px;
+	box-sizing: border-box;
+	padding: 4px;
+	border-radius: 10px;
+	background: rgba(255,255,255,.2);
+}
+.map-settings-color:focus-within {
+	background: rgba(255,255,255,.3);
+}
+.map-settings-color input[type=color] {
+	flex: none;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	border-radius: 8px;
+	background: none;
+	cursor: pointer;
+}
+.map-settings-color input[type=color]::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+.map-settings-color input[type=color]::-webkit-color-swatch {
+	border: 1px solid rgba(255,255,255,.35);
+	border-radius: 8px;
+}
+.map-settings-color input[type=color]::-moz-color-swatch {
+	border: 1px solid rgba(255,255,255,.35);
+	border-radius: 8px;
+}
+.map-settings-hex {
+	flex: 1;
+	min-width: 0;
+	height: 36px;
+	box-sizing: border-box;
+	padding: 0 6px;
+	border: 0;
+	background: transparent;
+	color: white;
+	font: inherit;
+	font-size: 15px;
+	font-variant-numeric: tabular-nums;
+	text-transform: lowercase;
+	outline: none;
+}
+.map-settings-icons {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+	grid-auto-rows: 44px;
+	gap: 6px;
+	height: 260px;
+	box-sizing: border-box;
+	overflow-y: auto;
+	margin: 8px 0 0;
+	padding: 8px;
+	border-radius: 12px;
+	background: rgba(255,255,255,.06);
+	overscroll-behavior: contain;
+}
+.map-settings-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: 10px;
+	background: rgba(255,255,255,.08);
+	color: white;
+	cursor: pointer;
+}
+.map-settings-icon:hover,
+.map-settings-icon:focus-visible {
+	background: rgba(255,255,255,.18);
+	outline: none;
+}
+.map-settings-icon .category-icon {
+	width: auto;
+	height: auto;
+	margin: 0;
+	background: none !important;
+	font-size: 24px;
+	line-height: 1;
+}
+.map-settings-icon.is-selected {
+	background: rgba(255,255,255,.28);
+	box-shadow: inset 0 0 0 2px white;
+}
+.map-settings-icons-empty {
+	grid-column: 1 / -1;
+	color: rgba(255,255,255,.6);
+	text-align: center;
+}
+
+/* Reports (scripts/zreports.js): the flag on a change, the report dialog and
+   Admin > Reports. */
+.wiki-report-button {
+	position: absolute;
+	right: 36px;
+	top: 10px;
+	padding: 4px 6px;
+	border: 0;
+	border-radius: 8px;
+	background: none;
+	color: rgba(255,255,255,.45);
+	font-size: 13px;
+	cursor: pointer;
+}
+.wiki-report-button:hover,
+.wiki-report-button:focus-visible {
+	color: #ff8c85;
+	background: rgba(255,255,255,.08);
+	outline: none;
+}
+.report-edit-prompt textarea {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0 0 8px;
+	padding: 10px 12px;
+	border: 0;
+	border-radius: 12px;
+	background: rgba(255,255,255,.12);
+	color: white;
+	font: inherit;
+	font-size: 15px;
+	resize: vertical;
+}
+.report-edit-prompt textarea:focus {
+	outline: 2px solid rgba(255,255,255,.5);
+	outline-offset: 0;
+	background: rgba(255,255,255,.18);
+}
+.report-edit-prompt .report-edit-status {
+	min-height: 1em;
+	margin: 0 0 12px;
+	color: #ff8c85;
+	font-size: 14px;
+}
+.admin-tab-count {
+	display: inline-block;
+	min-width: 18px;
+	margin-left: 6px;
+	padding: 0 5px;
+	border-radius: 9px;
+	background: #e85040;
+	color: white;
+	font-size: 11px;
+	line-height: 18px;
+}
+.admin-reports-options {
+	display: flex;
+	width: max-content;
+	margin: 0 auto 16px;
+}
+/* Its own row under the revision's buttons (zwiki.js). */
+.wiki-report-row {
+	display: flex;
+	justify-content: center;
+	margin: -12px 16px 16px;
+}
+.admin-report {
+	margin: 0 0 12px;
+	padding: 12px;
+	border-radius: 14px;
+	background: rgba(255,255,255,.06);
+	font-size: 14px;
+}
+.admin-report-top {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.menu-cat-content-inner .admin-report p {
+	margin: 4px 0;
+	padding: 0;
+}
+.admin-report-title {
+	margin: 8px 0 2px;
+	color: white;
+	font-size: 15px;
+}
+.admin-report-meta,
+.admin-report-by,
+.admin-report-resolution {
+	color: rgba(255,255,255,.65);
+	font-size: 13px;
+}
+.admin-report-reason {
+	margin: 8px 0;
+	padding: 8px 12px;
+	border-left: 3px solid #ff8c85;
+	border-radius: 0 8px 8px 0;
+	background: rgba(255,140,133,.08);
+	color: white;
+	white-space: pre-wrap;
+}
+.admin-report-actions {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 6px;
+	margin-top: 10px;
+}
+.admin-report-actions .infoWindowIcn {
+	width: auto;
+	margin: 0;
+	font-size: 14px;
+}
+.admin-report-actions .infoWindowIcn svg,
+.admin-report-actions .infoWindowIcn i {
+	margin-right: 6px;
+}
+.admin-report-actions [data-report-action="dismiss"] {
+	grid-column: 1 / -1;
+}
+
+
+/**** EDITOR DIALOGS: TinyMCE's image, media, link and table dialogs, styled
+      like the site's own dialogs (.bookmark-registration-prompt). "body"
+      outranks the TinyMCE skin, which loads after this file. ***/
+
+body .tox .tox-dialog-wrap__backdrop {
+	background: rgba(0,0,0,.45);
+}
+body .tox .tox-dialog {
+	overflow: hidden;
+	border: 1px solid rgba(255,255,255,.2);
+	border-radius: 22px;
+	background: rgba(0,0,0,.8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	box-shadow: 0 16px 48px rgba(0,0,0,.4);
+	color: #fff;
+	font-family: "BrandonText", sans-serif;
+}
+body .tox .tox-dialog__header,
+body .tox .tox-dialog__body,
+body .tox .tox-dialog__footer {
+	background: transparent;
+	color: #fff;
+	font-family: inherit;
+}
+body .tox .tox-dialog__header {
+	padding: 20px 24px 4px;
+}
+body .tox .tox-dialog__title {
+	font-family: inherit;
+	font-size: 20px;
+	font-weight: 700;
+}
+body .tox .tox-dialog__body-content {
+	padding: 12px 24px;
+}
+body .tox .tox-dialog__footer {
+	padding: 12px 24px 20px;
+	border-top: 0;
+}
+body .tox .tox-dialog__body-nav {
+	padding: 12px 0 12px 24px;
+}
+body .tox .tox-dialog__body-nav-item {
+	margin-bottom: 8px;
+	border-bottom: 0;
+	color: rgba(255,255,255,.7);
+	font-family: inherit;
+	font-size: 15px;
+}
+body .tox .tox-dialog__body-nav-item:hover,
+body .tox .tox-dialog__body-nav-item--active {
+	border-bottom: 0;
+	color: #fff;
+}
+body .tox .tox-dialog__body-nav-item--active {
+	font-weight: 700;
+}
+body .tox .tox-label,
+body .tox .tox-form__group label {
+	color: rgba(255,255,255,.7);
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+}
+body .tox .tox-textfield,
+body .tox .tox-textarea,
+body .tox .tox-listboxfield .tox-listbox--select,
+body .tox .tox-selectfield select,
+body .tox .tox-toolbar-textfield {
+	min-height: 44px;
+	padding: 10px 14px;
+	border: 0;
+	border-radius: 10px;
+	background: rgba(255,255,255,.2);
+	color: #fff;
+	font-family: inherit;
+	font-size: 16px;
+}
+body .tox .tox-textfield:focus,
+body .tox .tox-textarea:focus,
+body .tox .tox-listboxfield .tox-listbox--select:focus,
+body .tox .tox-selectfield select:focus {
+	border: 0;
+	background: rgba(255,255,255,.3);
+	box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+}
+body .tox .tox-form__controls-h-stack .tox-browse-url,
+body .tox .tox-form__controls-h-stack .tox-textfield {
+	border-radius: 10px;
+}
+body .tox .tox-form__controls-h-stack .tox-browse-url {
+	margin-left: 6px;
+}
+body .tox .tox-dropzone {
+	min-height: 140px;
+	border: 2px dashed rgba(255,255,255,.3);
+	border-radius: 14px;
+	background: rgba(255,255,255,.06);
+	color: rgba(255,255,255,.7);
+}
+body .tox .tox-dropzone--dragging,
+body .tox .tox-dropzone:hover {
+	border-color: rgba(255,255,255,.6);
+}
+body .tox .tox-dropzone p {
+	color: rgba(255,255,255,.7);
+	font-family: inherit;
+}
+/* Buttons: the site's rounded translucent buttons, Save brighter. */
+body .tox .tox-dialog .tox-button {
+	min-height: 40px;
+	padding: 8px 18px;
+	border: 0;
+	border-radius: 10px;
+	background: rgba(255,255,255,.3);
+	box-shadow: none;
+	color: #fff;
+	font-family: "BrandonText", sans-serif;
+	font-size: 16px;
+	font-weight: 700;
+}
+body .tox .tox-dialog .tox-button:hover:not(:disabled) {
+	background: rgba(255,255,255,.4);
+}
+body .tox .tox-dialog .tox-button--secondary {
+	background: transparent;
+	color: rgba(255,255,255,.7);
+	font-weight: 400;
+}
+body .tox .tox-dialog .tox-button--secondary:hover:not(:disabled) {
+	background: rgba(255,255,255,.1);
+	color: #fff;
+}
+body .tox .tox-dialog .tox-button--naked,
+body .tox .tox-dialog .tox-button--icon {
+	min-height: 0;
+	padding: 4px;
+	background: transparent;
+	color: rgba(255,255,255,.7);
+}
+body .tox .tox-dialog .tox-button--naked:hover:not(:disabled) {
+	background: rgba(255,255,255,.1);
+	color: #fff;
+}
+body .tox .tox-dialog .tox-button--naked svg,
+body .tox .tox-dialog .tox-browse-url svg {
+	fill: currentColor;
+}
+body .tox .tox-dialog .tox-checkbox__icons .tox-checkbox-icon__unchecked svg {
+	fill: rgba(255,255,255,.5);
+}
+/* Upload progress and errors in the editor (Upload Video). */
+body .tox .tox-notification {
+	border: 0;
+	border-radius: 10px;
+	background: rgba(0,0,0,.85);
+	color: #fff;
+	font-family: "BrandonText", sans-serif;
+}
+body .tox .tox-notification--error {
+	background: #8c2b24;
+}
+body .tox .tox-notification .tox-progress-bar .tox-bar-container {
+	background: rgba(255,255,255,.2);
+}
+body .tox .tox-notification .tox-progress-bar .tox-bar {
+	background: #fff;
+}
+@media (max-width: 767px) {
+	body .tox .tox-dialog__body-nav {
+		padding: 8px 24px 0;
+	}
+	body .tox .tox-dialog__body-nav-item {
+		margin-right: 16px;
+	}
+}
+body .tox .tox-dialog .tox-dropzone .tox-button {
+	margin-top: 4px;
+	background: rgba(255,255,255,.3);
+	color: #fff;
+	font-weight: 700;
+}
+body .tox .tox-dialog .tox-dropzone .tox-button:hover:not(:disabled) {
+	background: rgba(255,255,255,.4);
+}
+body .tox .tox-dialog__body-nav-item,
+body .tox .tox-dialog__body-nav-item:focus {
+	background: transparent;
+}
+body .tox .tox-dialog__body-nav-item:focus-visible {
+	outline: 2px solid rgba(255,255,255,.5);
+	outline-offset: 2px;
+	border-radius: 4px;
 }

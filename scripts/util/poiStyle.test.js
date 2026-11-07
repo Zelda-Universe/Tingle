@@ -130,3 +130,55 @@ describe('TotK POI visual prototype', () => {
     expect(style({ id: '2163', container_id: '21' })).toBe('');
   });
 });
+
+describe('Map Settings layouts and looks', () => {
+  const base = [
+    { id: '1901', parent_id: null, container_id: '19', marker_category_type_id: '1', name: 'Point of Interest' },
+    { id: '1916', parent_id: '1910', container_id: '19', marker_category_type_id: '1', name: 'Korok Seeds' },
+    { id: '1923', parent_id: '1920', container_id: '19', marker_category_type_id: '1', name: 'Sheikah Tower' },
+    { id: '1934', parent_id: '1901', container_id: '19', marker_category_type_id: '1', name: 'Memories' },
+    { id: '1955', parent_id: '1901', container_id: '19', marker_category_type_id: '1', name: 'NPCs' }
+  ];
+
+  test('a saved layout replaces the built-in sections, in its order', () => {
+    const records = base.map(c => Object.assign({}, c));
+    Object.assign(records[2], { menu_section: 'Collectibles', menu_order: 1 });
+    Object.assign(records[1], { menu_section: 'Collectibles', menu_order: 2 });
+    Object.assign(records[0], { menu_section: 'Points', menu_order: 3 });
+    const groups = context.getPOICategoryGroups(records);
+    expect(groups.map(g => g.title)).toEqual(['Collectibles', 'Points']);
+    expect(groups[0].categories.map(c => c.id)).toEqual(['1923', '1916']);
+    // Not in the layout: with its section's own "Other …" entry.
+    expect(groups[1].categories.map(c => c.id)).toEqual(['1901', '1934', '1955']);
+  });
+
+  test('games listed by their database sections get a layout for Map Settings', () => {
+    const records = [
+      { id: '1', parent_id: null, container_id: '1', marker_category_type_id: '1', name: 'Items' },
+      { id: '2', parent_id: '1', container_id: '1', marker_category_type_id: '1', name: 'Bombs' },
+      { id: '3', parent_id: null, container_id: '1', marker_category_type_id: '1', name: 'Shops' },
+      { id: '4', parent_id: null, container_id: '1', marker_category_type_id: '3', name: 'Labels' }
+    ];
+    expect(context.getPOIMenuLayout(records).map(g => [g.title, g.categories.map(c => c.id)])).toEqual([
+      ['Items', ['2']], ['Shops', ['3']]
+    ]);
+  });
+
+  test('a shape and colours given in Map Settings', () => {
+    const custom = { id: '1916', container_id: '19', custom_style: 1, shape: 'diamond', color: '#123456', glyph_color: '#ffcc00' };
+    expect(context.getPOIStyle(custom)).toBe('travel');
+    expect(context.getPOIStyleVars(custom)).toBe('--poi-fill: #123456; color: #ffcc00; ');
+    const none = Object.assign({}, custom, { shape: 'none' });
+    expect(context.getPOIStyle(none)).toBe('treasure');
+    expect(context.getPOIStyleVars(none)).toBe('--poi-outline: #123456; color: #ffcc00; ');
+    expect(context.getPOIFill(none)).toBeNull();
+    // Built-in styles are untouched.
+    expect(context.getPOIStyleVars({ id: '1916', container_id: '19', color: '#000000' })).toBe('');
+  });
+
+  test('menu names', () => {
+    expect(context.getPOIMenuName(base[0], base)).toBe('Other POIs');
+    expect(context.getPOIMenuName({ id: '2134', name: 'Tears' }, [])).toBe("Dragon's Tears");
+    expect(context.getPOIMenuName({ id: '2134', name: 'Dragon Tears' }, [])).toBe('Dragon Tears');
+  });
+});

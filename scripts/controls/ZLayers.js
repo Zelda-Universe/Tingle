@@ -1592,6 +1592,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       returnsTo = this._nextPageReturnsTo;
       this._nextPageReturnsTo = null;
     }
+    // Remembered, so pages opened from this one can come back to it with the
+    // same Back button (zwiki.js _wikiBackToMarker).
+    this._pageReturnsTo = isMapPage ? returnsTo : null;
     if(returnsTo && returnsTo.area) {
       var areaReturnButton=L.DomUtil.create('a','button back-button',this._contents);
       areaReturnButton.innerHTML='<i class="fas fa-chevron-left"></i>';
@@ -1650,6 +1653,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
         this.setContent(returnsTo.search.list.domNode,'search');
         this._contents.scrollTop=returnsTo.search.scrollTop;
         this.zMap.updateUrl();
+      },this);
+    }
+    // A marker opened from a wiki page's Go to Marker pill (an edit, its
+    // History or Talk: zwiki.js) goes back to that page, as it was reached.
+    if(returnsTo && returnsTo.page) {
+      var pageReturnButton=L.DomUtil.create('a','button back-button',this._contents);
+      pageReturnButton.innerHTML='<i class="fas fa-chevron-left"></i>';
+      pageReturnButton.setAttribute('aria-label','Back to '+(returnsTo.label || 'the previous page'));
+      L.DomEvent.on(pageReturnButton,'click',function(e) {
+        L.DomEvent.stop(e);
+        this.zMap._closeNewMarker();
+        this._navigatingBack=true;
+        returnsTo.page();
+        if(this.viewStyleBottomSlide) this.openDrawerLarge();
       },this);
     }
     if(returnsTo === 'bookmarks') {

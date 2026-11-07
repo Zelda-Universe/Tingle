@@ -78,6 +78,12 @@
   ";
   $params = [$game];
 
+  // One category's, when Map Settings shows a hidden category again.
+  if (isset($_GET['categoryId'])) {
+    $sql .= " and m.marker_category_id = ?";
+    $params[] = (int) $_GET['categoryId'];
+  }
+
   if (isset($_GET['newMarkerId'])) {
     $sql .= " and m.id = ?";
     $params[] = (int) $_GET['newMarkerId'];

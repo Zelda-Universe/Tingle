@@ -1,5 +1,52 @@
 // Shared Zelda POI styling. Existing category records and glyphs stay intact.
+
+// A category given its own colour or icon in Map Settings.
+function isCustomPOIStyle(category) {
+  return !!category && (category.custom_style == 1 || category.custom_style === true || category.customStyle === true);
+}
+
+// The shapes Map Settings offers, and the built-in badge style each draws
+// with (styles/poi.css): no shape is a bare glyph with an outline, like
+// treasure's.
+var POI_SHAPE_STYLES = { circle: 'interest', diamond: 'travel', square: 'location', none: 'treasure' };
+
+function getPOIShape(category) {
+  return isCustomPOIStyle(category) && POI_SHAPE_STYLES[category.shape] ? category.shape : null;
+}
+
+function isPOIHex(color) { return /^#[0-9a-f]{6}$/i.test(color || ''); }
+
+// Its badge colour: the category's own, when styled in Map Settings (null
+// keeps the built-in colour for its kind of badge). With no shape, the
+// colour is the glyph's outline instead (getPOIStyleVars).
+function getPOIFill(category) {
+  return isCustomPOIStyle(category) && getPOIShape(category) !== 'none' && isPOIHex(category.color) ? category.color : null;
+}
+
+// Inline CSS for a badge styled in Map Settings: its fill (or outline, with no
+// shape) and glyph colour. Empty for the built-in styles.
+function getPOIStyleVars(category) {
+  if(!isCustomPOIStyle(category)) return '';
+  var css = '';
+  if(isPOIHex(category.color)) css += (getPOIShape(category) === 'none' ? '--poi-outline: ' : '--poi-fill: ') + category.color + '; ';
+  if(isPOIHex(category.glyph_color)) css += 'color: ' + category.glyph_color + '; ';
+  return css;
+}
+
+// A category's name in the list: some read better than their database names,
+// and a section's own markers are listed as "Other …" beside its categories.
+function getPOIMenuName(category, records) {
+  var id = String(category.id), name = category.name || '';
+  if(id === '2134' && name === 'Tears') return "Dragon's Tears";
+  if(String(category.container_id) === '4' && id === '1968' && name === 'Boss') return 'Bosses';
+  if(!category.parent_id && (records || []).some(function(c) { return String(c.parent_id) === id; })) {
+    return name === 'Point of Interest' ? 'Other POIs' : 'Other ' + name;
+  }
+  return name;
+}
 function getPOIGlyph(category) {
+  // Styled in Map Settings: its own icon wins (scripts/zmapsettings.js).
+  if(isCustomPOIStyle(category)) return category.img;
   var game = String(category.container_id || category.containerId);
   // Equipment's weapons show the Master Sword; chests' weapons keep the plain sword.
   if(game === '64' && String(category.id) === '64061') return 'OoT_Weapons';
@@ -16,6 +63,9 @@ function getPOIGlyph(category) {
 }
 
 function getPOIStyle(category) {
+  // A shape given in Map Settings.
+  var shape = getPOIShape(category);
+  if(shape) return POI_SHAPE_STYLES[shape];
   if(category && String(category.container_id || category.containerId) === '64') {
     return {
       '64002': 'heart', '64001': 'relic', '64003': 'korok', '64004': 'heart', '64005': 'silver', '64006': 'memory', '64007': 'fairy-thought', '64008': 'song', '64021': 'treasure',
@@ -72,8 +122,55 @@ function getPOIStyle(category) {
   return '';
 }
 
+// Leaf categories the list would otherwise leave out: not labels (type 3:
+// region and place names, set in Settings), nor sections.
+function isPOIListedCategory(c) {
+  return !!c.parent_id && String(c.marker_category_type_id) !== '3' && !['2162', '2204'].includes(String(c.parent_id));
+}
+
+// A layout saved in Map Settings (menu_section, menu_order): its sections in
+// order. A category not in one goes with its siblings (or its section's own
+// "Other …" entry), else in the last section.
+function getPOISavedLayout(records) {
+  var placed = records.filter(function(c) { return c.menu_section; }).sort(function(a, b) {
+    return (Number(a.menu_order) || 0) - (Number(b.menu_order) || 0) || Number(a.id) - Number(b.id);
+  });
+  if(!placed.length) return null;
+  var groups = [], byTitle = {};
+  placed.forEach(function(c) {
+    if(!byTitle[c.menu_section]) groups.push(byTitle[c.menu_section] = { title: c.menu_section, categories: [] });
+    byTitle[c.menu_section].categories.push(c);
+  });
+  records.forEach(function(c) {
+    if(c.menu_section || !isPOIListedCategory(c)) return;
+    var has = function(test) { return groups.find(function(g) { return g.categories.some(test); }); };
+    var home = has(function(other) { return String(other.id) === String(c.parent_id); }) ||
+      has(function(other) { return String(other.parent_id) === String(c.parent_id); }) || groups[groups.length - 1];
+    home.categories.push(c);
+  });
+  return groups;
+}
+
+// The list's sections for Map Settings: as the list shows them, or for a game
+// listed by its database sections, each of those with its categories (a
+// section with none listed as itself).
+function getPOIMenuLayout(categories) {
+  var records = Object.values(categories || {});
+  var groups = getPOICategoryGroups(records);
+  if(groups) return groups.filter(function(g) { return g.categories.length; });
+  return records.filter(function(c) { return !c.parent_id && String(c.marker_category_type_id) !== '3'; })
+    .sort(function(a, b) { return Number(a.id) - Number(b.id); })
+    .map(function(root) {
+      var children = records.filter(function(c) { return String(c.parent_id) === String(root.id); })
+        .sort(function(a, b) { return Number(a.id) - Number(b.id); });
+      return { title: root.name, categories: children.length ? children : [root] };
+    });
+}
+
 function getPOICategoryGroups(categories) {
   var records = Object.values(categories || {});
+  var saved = getPOISavedLayout(records);
+  if(saved) return saved;
   if(records.some(function(c) { return String(c.container_id) === '64'; })) {
     // Label categories (type 3: place names) are set in Settings, not listed.
     // Sections in BotW's and TotK's order: Travel, Collectibles, Locations,
@@ -140,8 +237,7 @@ function getPOICategoryGroups(categories) {
   // Preserve future leaf categories rather than silently dropping them.
   records.forEach(function(c) {
     // Label categories (type 3: region and place names) are set in Settings.
-    if(c.parent_id && String(c.marker_category_type_id) !== '3' &&
-        !['2162', '2204'].includes(String(c.parent_id)) && !seen.has(String(c.id))) {
+    if(isPOIListedCategory(c) && !seen.has(String(c.id))) {
       result[result.length - 1].categories.push(c);
     }
   });

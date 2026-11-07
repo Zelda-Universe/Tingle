@@ -121,9 +121,11 @@
 .poi-treasure::after { display: none; }
 .poi-treasure:not(.poi-eow)::before,
 .poi-treasure:not(.poi-eow) > [class*='icnText-'] {
-  -webkit-text-stroke: 1px #2a2600;
+  /* --poi-outline: a no-shape badge's outline colour, from Map Settings. */
+  -webkit-text-stroke: 1px var(--poi-outline, #2a2600);
   paint-order: stroke fill;
-  filter: drop-shadow(1px 0 #2a2600) drop-shadow(-1px 0 #2a2600) drop-shadow(0 1px #2a2600) drop-shadow(0 -1px #2a2600);
+  filter: drop-shadow(1px 0 var(--poi-outline, #2a2600)) drop-shadow(-1px 0 var(--poi-outline, #2a2600))
+    drop-shadow(0 1px var(--poi-outline, #2a2600)) drop-shadow(0 -1px var(--poi-outline, #2a2600));
 }
 .category-icon.poi-treasure:not(.poi-eow)::before { -webkit-text-stroke-width: 3px; }
 .poi-badge > [class*='icnText-'] { color: inherit; }

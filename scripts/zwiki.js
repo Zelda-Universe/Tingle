@@ -117,12 +117,51 @@ ZMap.prototype._wikiCopy = function(text, what) {
 
 // Back to a marker's POI page, or the category list if it isn't on this map.
 ZMap.prototype._wikiBackToMarker = function(markerId) {
-  var _this = this;
-  return function() {
+  var _this = this, control = this.mapControl;
+  // The marker page open now keeps its own Back button (to the edit it was
+  // opened from with Go to Marker, a search, an area…) when it's come back to.
+  var returnsTo = control && control.getContentType() === 'm' + markerId ? control._pageReturnsTo : null;
+  var back = function() {
     var marker = _this.cachedMarkersById[markerId];
-    if(marker && marker.visible !== false && marker.visible !== 0) _this._createMarkerPopup(marker);
-    else _this.mapControl.resetContent();
+    if(marker && marker.visible !== false && marker.visible !== 0) {
+      if(returnsTo) control.returnNextPageTo(returnsTo);
+      _this._createMarkerPopup(marker);
+    } else {
+      _this.mapControl.resetContent();
+    }
   };
+  back.fromMarker = Number(markerId);
+  return back;
+};
+
+// A page's reopen function, which links on it come back with: label names
+// the page for its Back button, and a page reached from a marker (its POI
+// footer, or a page opened from one) passes that on in fromMarker.
+ZMap.prototype._wikiReopen = function(reopen, back, label) {
+  reopen.label = label;
+  reopen.fromMarker = back && back.fromMarker || null;
+  return reopen;
+};
+
+// The marker a page is about can be shown on the map, here or in its game.
+ZMap.prototype._wikiMarkerReachable = function(markerId, game) {
+  if(game && this.mapOptions && game !== this.mapOptions.shortName) return true;
+  var marker = this.cachedMarkersById[markerId];
+  return !!marker && marker.visible !== false && marker.visible !== 0;
+};
+
+// The marker's name under a page's title, with a Go to Marker pill unless
+// the page was reached from that marker (where Back already goes).
+ZMap.prototype._wikiSetMarkerSubtitle = function(page, title, markerId, game, reopen) {
+  var _this = this;
+  var row = $(page).find('.wiki-subtitle-row').first();
+  row.find('.wiki-subtitle').text(title || '');
+  row.find('.wiki-marker-pill').remove();
+  if(!markerId || Number(reopen && reopen.fromMarker) === Number(markerId) || !this._wikiMarkerReachable(markerId, game)) return;
+  $('<button type="button" class="marker-coordinate-pill marker-region-pill wiki-marker-pill">Go to Marker' +
+    '<i class="fas fa-chevron-right" aria-hidden="true"></i></button>')
+    .on('click', function() { _this._openMarkerLink(Number(markerId), null, reopen, game); })
+    .appendTo(row);
 };
 
 //************************************************************************//
@@ -229,7 +268,7 @@ ZMap.prototype._wireWikiLinks = function(root, back) {
     if(link.hasAttribute('data-rev')) {
       _this._openMarkerRevision(Number(link.getAttribute('data-rev')), back);
     } else if(link.hasAttribute('data-marker')) {
-      _this._openMarkerLink(Number(link.getAttribute('data-marker')));
+      _this._openMarkerLink(Number(link.getAttribute('data-marker')), null, back);
     } else if(link.hasAttribute('data-user-id')) {
       _this._openUserProfile({ id: Number(link.getAttribute('data-user-id')) }, back);
     } else if(link.hasAttribute('data-username')) {
@@ -238,11 +277,21 @@ ZMap.prototype._wireWikiLinks = function(root, back) {
   });
 };
 
-// A marker on this map opens in place; one from another game opens there.
-ZMap.prototype._openMarkerLink = function(markerId, revisionId) {
+// A marker on this map opens in place, with a Back button to back (the page
+// it was opened from); one from another game opens there.
+ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game) {
   var _this = this;
+  if(game && this.mapOptions && game !== this.mapOptions.shortName) {
+    window.location.href = this._wikiMarkerURL(markerId, game, revisionId);
+    return;
+  }
   var marker = this.cachedMarkersById[markerId];
   if(marker && !revisionId) {
+    if(back) {
+      this.mapControl.returnNextPageTo({ page: back, label: back.label });
+      // Onward, from the page it was opened from.
+      this.mapControl._navigatingForward = true;
+    }
     this.goTo({ marker: markerId });
     return;
   }
@@ -272,11 +321,12 @@ ZMap.prototype._wikiMarkerURL = function(markerId, game, revisionId) {
 ZMap.prototype._openMarkerHistory = function(markerId, back) {
   var _this = this;
   back = back || this._wikiBackToMarker(markerId);
-  var reopen = function() { _this._openMarkerHistory(markerId, back); };
+  var reopen = this._wikiReopen(function() { _this._openMarkerHistory(markerId, back); }, back, 'History');
+  reopen.historyOf = Number(markerId);
   var page = this._showWikiPage(
     '<div id="marker_history" class="wiki-page">' +
       '<h3 class="text-center">History</h3>' +
-      '<p class="wiki-subtitle"></p>' +
+      '<div class="area-header-pills wiki-subtitle-row"><p class="wiki-subtitle"></p></div>' +
       '<ul class="wiki-revisions"><li class="wiki-empty">Loading…</li></ul>' +
     '</div>',
     'markerHistory-' + markerId,
@@ -289,7 +339,7 @@ ZMap.prototype._openMarkerHistory = function(markerId, back) {
       list.append($('<li class="wiki-empty"></li>').text(data.msg));
       return;
     }
-    $(page).find('.wiki-subtitle').text(data.marker.title);
+    _this._wikiSetMarkerSubtitle(page, data.marker.title, markerId, data.marker.game, reopen);
     if(!data.revisions.length) {
       list.append('<li class="wiki-empty">No changes have been saved since history started being kept. ' +
         'The first edit saves the current version here.</li>');
@@ -336,11 +386,11 @@ ZMap.prototype._wikiRevisionRow = function(revision, opts) {
 
 ZMap.prototype._openMarkerRevision = function(revisionId, back) {
   var _this = this;
-  var reopen = function() { _this._openMarkerRevision(revisionId, back); };
+  var reopen = this._wikiReopen(function() { _this._openMarkerRevision(revisionId, back); }, back, 'Revision ' + Number(revisionId));
   var page = this._showWikiPage(
     '<div id="marker_revision" class="wiki-page">' +
       '<h3 class="text-center">Revision ' + Number(revisionId) + '</h3>' +
-      '<p class="wiki-subtitle"></p>' +
+      '<div class="area-header-pills wiki-subtitle-row"><p class="wiki-subtitle"></p></div>' +
       '<div class="wiki-revision-body"><p class="wiki-empty">Loading…</p></div>' +
     '</div>',
     'markerRevision-' + revisionId,
@@ -356,7 +406,7 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
     var revision = data.revision;
     var snapshot = revision.data || {};
     _this._setRevisionURL(revision.markerId, revisionId);
-    $(page).find('.wiki-subtitle').text(snapshot.title || 'Untitled marker');
+    _this._wikiSetMarkerSubtitle(page, snapshot.title || 'Untitled marker', revision.markerId, data.game, reopen);
     var code = '[[rev:' + revisionId + ']]';
     body.append(
       '<section class="wiki-card wiki-revision-meta">' +
@@ -376,6 +426,10 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
         '<button type="button" class="wiki-action-button" data-action="copy-url"><i class="fas fa-link" aria-hidden="true"></i>Copy Link</button>' +
         '<button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>' +
       '</div>' +
+      // Anyone signed in can report an edit (scripts/zreports.js).
+      (_this.getUser() && revision.action !== 'import' && String(revision.userId) !== String(_this.getUser().id)
+        ? '<div class="wiki-report-row"><button type="button" class="text-button text-button-bad" data-action="report">' +
+            '<i class="fas fa-flag" aria-hidden="true"></i>Report This Edit</button></div>' : '') +
       '<form class="wiki-revert-form" hidden>' +
         '<p>Restoring saves this version as a new edit, so it can be undone from History too.</p>' +
         '<div class="form-group"><div class="input-group">' +
@@ -396,7 +450,16 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
       var action = this.getAttribute('data-action');
       if(action === 'copy-code') _this._wikiCopy(code, 'Link code');
       else if(action === 'copy-url') _this._wikiCopy(_this._wikiMarkerURL(revision.markerId, data.game, revisionId), 'Link');
-      else if(action === 'history') _this._openMarkerHistory(revision.markerId, _this._wikiBackToMarker(revision.markerId));
+      else if(action === 'history') {
+        // Back to the History this was opened from, or else to this edit.
+        if(back && back.historyOf === Number(revision.markerId)) {
+          _this.mapControl._navigatingBack = true;
+          back();
+        } else {
+          _this._openMarkerHistory(revision.markerId, reopen);
+        }
+      }
+      else if(action === 'report') _this._reportEdit(revisionId, snapshot.title);
       else if(action === 'revert' || action === 'cancel-revert') {
         var opening = action === 'revert';
         body.find('.wiki-actions').prop('hidden', opening);
@@ -420,8 +483,11 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
         }
         _this._replaceMarkerFromServer(revision.markerId, result.marker);
         toastr.success('Restored revision ' + revisionId);
+        // History, now with the restore at the top: the one this was
+        // opened from, or one that goes back where this edit did.
         _this.mapControl._navigatingBack = true;
-        _this._openMarkerHistory(revision.markerId, _this._wikiBackToMarker(revision.markerId));
+        if(back && back.historyOf === Number(revision.markerId)) back();
+        else _this._openMarkerHistory(revision.markerId, back);
       }).fail(function(xhr) {
         toastr.error(_this._wikiError(xhr));
         form.find('button').prop('disabled', false);
@@ -572,11 +638,11 @@ ZMap.prototype._wikiPreviewHTML = function(snapshot) {
 ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
   var _this = this;
   opts = opts || {};
-  var reopen = function() { _this._openTalk(pageType, pageId, title, back); };
+  var reopen = this._wikiReopen(function() { _this._openTalk(pageType, pageId, title, back); }, back, 'Talk');
   var page = this._showWikiPage(
     '<div id="wiki_talk" class="wiki-page">' +
       '<h3 class="text-center">Talk</h3>' +
-      '<p class="wiki-subtitle"></p>' +
+      '<div class="area-header-pills wiki-subtitle-row"><p class="wiki-subtitle"></p></div>' +
       '<div class="wiki-follow" hidden><button type="button" class="wiki-follow-button" aria-pressed="false"></button></div>' +
       '<form class="wiki-comment-form wiki-new-comment">' +
         '<div class="form-group"><div class="input-group">' +
@@ -593,7 +659,8 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
     back,
     reopen
   );
-  $(page).find('.wiki-subtitle').text(title || '');
+  if(pageType === 'marker') this._wikiSetMarkerSubtitle(page, title, pageId, null, reopen);
+  else $(page).find('.wiki-subtitle').text(title || '');
 
   var thread = $(page).find('.wiki-thread');
   // Following a marker's Talk page (znotifications.js).
@@ -787,7 +854,7 @@ ZMap.prototype._renderUserProfile = function(data, back) {
   // Profile links use the name (syncDrawerPageURL).
   (this._profileNames = this._profileNames || {})[profile.id] = profile.username;
   var editor = this._isWikiEditor();
-  var reopen = function() { _this._openUserProfile({ id: profile.id }, back); };
+  var reopen = this._wikiReopen(function() { _this._openUserProfile({ id: profile.id }, back); }, null, profile.username);
   var avatar = profile.profilePicture || 'images/default-avatar.png';
   var stat = function(n, label) {
     return '<div><strong>' + Number(n).toLocaleString() + '</strong><span>' + label + '</span></div>';
@@ -855,8 +922,7 @@ ZMap.prototype._renderUserProfile = function(data, back) {
     // Revisions are for editors; everyone else goes to the marker.
     if(!editor) {
       var markerId = Number(this.getAttribute('data-marker')), game = this.getAttribute('data-game');
-      if(game && game !== _this.mapOptions.shortName) window.location.href = _this._wikiMarkerURL(markerId, game);
-      else _this.goTo({ marker: markerId });
+      _this._openMarkerLink(markerId, null, reopen, game);
       return;
     }
     _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);

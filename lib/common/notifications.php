@@ -19,7 +19,11 @@
       'marker_comment'   => array('label' => 'Comments on your markers', 'group' => 'Your markers', 'inApp' => true, 'email' => false),
       'marker_edit'      => array('label' => 'Changes to your markers', 'hint' => 'Edits, restores and deletions by others.', 'group' => 'Your markers', 'inApp' => true, 'email' => false),
       'followed_comment' => array('label' => 'Comments on markers you follow', 'group' => 'Markers you follow', 'inApp' => true, 'email' => false),
-      'followed_edit'    => array('label' => 'Changes to markers you follow', 'group' => 'Markers you follow', 'inApp' => true, 'email' => false)
+      'followed_edit'    => array('label' => 'Changes to markers you follow', 'group' => 'Markers you follow', 'inApp' => true, 'email' => false),
+      // Reports of problem edits (ajax/report_edit.php), for admins only.
+      'edit_report'      => array('label' => 'Reports of problem edits', 'group' => 'Admin', 'inApp' => true, 'email' => true, 'admin' => true),
+      // An admin's warning about an edit (ajax/admin_report_action.php).
+      'warning'          => array('label' => 'Warnings from admins', 'group' => 'Your account', 'inApp' => true, 'email' => true)
     );
   }
 
@@ -240,6 +244,8 @@
       case 'followed_comment': $title = "{$actor} commented on {$marker}"; break;
       case 'marker_edit':      $title = "{$actor} {$verb} your marker {$marker}"; break;
       case 'followed_edit':    $title = "{$actor} {$verb} {$marker}"; break;
+      case 'edit_report':      $title = "{$actor} reported an edit to {$marker}"; break;
+      case 'warning':          $title = "An admin warned you about your edit to {$marker} (strike " . (int) ($data['strikes'] ?? 1) . " of 3)"; break;
       default:                 $title = 'New activity';
     }
     $query = array();
@@ -256,6 +262,8 @@
     }
     $comment = $row['comment_id'] ?? $row['commentId'] ?? null;
     if ($comment) $query['comment'] = $comment;
+    // Some lead elsewhere: a report opens Admin > Reports.
+    if (!empty($data['link']) && is_array($data['link'])) $query = $data['link'];
     return array(
       'title' => $title,
       'body' => (string) ($data['excerpt'] ?? ''),

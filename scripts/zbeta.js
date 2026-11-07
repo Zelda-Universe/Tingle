@@ -62,6 +62,14 @@ ZMap.prototype._renderEditingBeta = function() {
   var game = this.mapOptions.shortName;
   var slot = $('<div class="editing-beta"></div>');
   if(this._editingRole() === 'editor') {
+    // Contributors and Admins also manage the map (scripts/zmapsettings.js).
+    if(this._canUseMapSettings && this._canUseMapSettings()) slot.append(
+      '<button type="button" class="editing-beta-changes editing-beta-settings">' +
+        '<i class="fas fa-sliders-h" aria-hidden="true"></i>' +
+        '<span>Map Settings</span>' +
+        '<i class="fas fa-chevron-right editing-beta-chevron" aria-hidden="true"></i>' +
+      '</button>'
+    );
     slot.append(
       '<button type="button" class="editing-beta-changes">' +
         '<i class="fas fa-history" aria-hidden="true"></i>' +
@@ -83,7 +91,11 @@ ZMap.prototype._renderEditingBeta = function() {
     );
   }
   slot.on('click', '.editing-beta-notice', function() { _this._showEditingBetaAlert(); });
-  slot.on('click', '.editing-beta-changes', function() {
+  slot.on('click', '.editing-beta-settings', function(e) {
+    e.stopImmediatePropagation();
+    _this._openMapSettings(function() { _this.mapControl.resetContent(); });
+  });
+  slot.on('click', '.editing-beta-changes:not(.editing-beta-settings)', function() {
     _this._openRecentChanges(game, function() { _this.mapControl.resetContent(); });
   });
   slot.on('click', '.editing-beta-recent', function() {
@@ -263,8 +275,8 @@ ZMap.prototype._applyEditingBeta = function(data) {
 // game: a game's short name, or null for every game.
 ZMap.prototype._openRecentChanges = function(game, back) {
   var _this = this;
-  var reopen = function() { _this._openRecentChanges(game, back); };
   var title = game ? 'Recent Edits' : 'All Changes';
+  var reopen = this._wikiReopen(function() { _this._openRecentChanges(game, back); }, null, title);
   var page = this._showWikiPage(
     '<div id="recent_changes" class="wiki-page">' +
       '<h3 class="text-center">' + title + '</h3>' +
@@ -298,6 +310,11 @@ ZMap.prototype._openRecentChanges = function(game, back) {
           markerTitle: change.markerTitle + (game ? '' : ' · ' + change.gameName)
         });
         row.find('.wiki-revision').attr({ 'data-marker': change.markerId, 'data-game': change.game });
+        // Report a problem edit (scripts/zreports.js), not your own.
+        var me = _this.getUser();
+        if(me && String(change.userId) !== String(me.id)) row.find('.wiki-revision').append(
+          $('<button type="button" class="wiki-report-button" aria-label="Report this edit" title="Report this edit">' +
+            '<i class="fas fa-flag" aria-hidden="true"></i></button>').attr({ 'data-report': change.id, 'data-title': change.markerTitle }));
         list.append(row);
         oldest = change.id;
       });
@@ -306,17 +323,19 @@ ZMap.prototype._openRecentChanges = function(game, back) {
       list.empty().append($('<li class="wiki-empty"></li>').text(_this._wikiError(xhr)));
     });
   };
+  list.on('click', '.wiki-report-button', function(e) {
+    e.stopPropagation();
+    _this._reportEdit(Number(this.getAttribute('data-report')), this.getAttribute('data-title'));
+  });
   list.on('click', '.wiki-revision', function(e) {
-    if($(e.target).closest('a.wiki-link').length) return;
+    if($(e.target).closest('a.wiki-link, .wiki-report-button').length) return;
     var markerId = Number(this.getAttribute('data-marker'));
     var markerGame = this.getAttribute('data-game');
     if(editor) {
       if(markerGame === _this.mapOptions.shortName) _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);
       else window.location.href = _this._wikiMarkerURL(markerId, markerGame, Number(this.getAttribute('data-rev')));
-    } else if(markerGame === _this.mapOptions.shortName) {
-      _this._openMarkerLink(markerId);
     } else {
-      window.location.href = _this._wikiMarkerURL(markerId, markerGame);
+      _this._openMarkerLink(markerId, null, reopen, markerGame);
     }
   });
   more.on('click', load);

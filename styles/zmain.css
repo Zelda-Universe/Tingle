@@ -4577,11 +4577,17 @@ div.circle:has(>.icon-EoW_Echo) {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
-	padding: 10px 36px 10px 14px;
+	padding: 10px 14px;
 	border-radius: 10px;
 	background: rgba(255,255,255,.1);
 	cursor: pointer;
 	overflow-wrap: anywhere;
+}
+
+/* The top line (badge and time) runs to the right edge; the lines under it
+   leave room for the chevron. */
+.wiki-revision > :not(.wiki-revision-top):not(.wiki-chevron) {
+	padding-right: 22px;
 }
 
 .wiki-revision:hover,
@@ -4616,9 +4622,11 @@ div.circle:has(>.icon-EoW_Echo) {
 	font-size: 12px;
 }
 
+/* Centred on the lines under the top one (20px and a 4px gap), so it never
+   meets the time. */
 .wiki-chevron {
 	position: absolute;
-	top: 50%;
+	top: calc(50% + 12px);
 	right: 14px;
 	width: 10px;
 	transform: translateY(-50%);

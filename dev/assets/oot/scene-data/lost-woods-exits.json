@@ -1,0 +1,9 @@
+{
+ "description": "Where the Lost Woods' real exits lead, by game position [x, z]. The game's map data (MapParam EntranceAnchor) leaves every Lost Woods exit unnamed; these come from the scene-change objects at the same positions in zeldamods' Owl Object Map (https://objmap-oot.zeldamods.org, FieldAndDungeonEntranceEventRequestActor NextBancParamName). The maze's other doors lead back to Kokiri Forest as wrong turns and aren't listed.",
+ "exits": [
+  {"at": [0, 7], "to": "KokiriForest"},
+  {"at": [24, -35.7], "to": "GoronCity"},
+  {"at": [24, -83.7], "to": "SacredForestMeadow"},
+  {"at": [68.5, -25.6], "to": "ZoraRiver"}
+ ]
+}

@@ -1,0 +1,3363 @@
+[
+  {
+    "scene": "SacredForestMeadow_Child",
+    "second": 2,
+    "registration": {
+      "matrix": [
+        [
+          1.15970086803769,
+          -0.00028501764355106285,
+          -484.3547061562941
+        ],
+        [
+          0.0010741398988577794,
+          1.1534937667950556,
+          168.3085799018638
+        ]
+      ],
+      "matches": 207,
+      "inliers": 90,
+      "medianInlierErrorTexturePixels": 0.5840808059445585,
+      "p95InlierErrorTexturePixels": 1.5070000246932576,
+      "heldOutMatchCount": 42,
+      "heldOutConsistentCount": 24,
+      "heldOutMedianTexturePixels": 0.4863610713073691,
+      "heldOutP95TexturePixels": 1.66759919226932
+    },
+    "detectedIcons": [],
+    "sourceCalibration": {
+      "status": "insufficient-collectibles",
+      "sourceCount": 0,
+      "visibleCount": 0
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "LostWood_Child",
+    "second": 5,
+    "registration": {
+      "matrix": [
+        [
+          0.6153650732522119,
+          -5.282373735535183e-05,
+          -254.24370401024706
+        ],
+        [
+          -0.00018612497939372432,
+          0.6155551319247191,
+          53.50655235065954
+        ]
+      ],
+      "matches": 133,
+      "inliers": 98,
+      "medianInlierErrorTexturePixels": 0.14284327945002315,
+      "p95InlierErrorTexturePixels": 0.4571853884212601,
+      "heldOutMatchCount": 27,
+      "heldOutConsistentCount": 23,
+      "heldOutMedianTexturePixels": 0.12732799484047433,
+      "heldOutP95TexturePixels": 0.2664932223872174
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1484.0,
+          807.0
+        ],
+        "confidence": 0.8948233723640442,
+        "texturePixel": [
+          658.9154359399896,
+          549.9833343444876
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1108.0,
+          768.0
+        ],
+        "confidence": 0.8826640844345093,
+        "texturePixel": [
+          427.54022852291484,
+          526.0466671916755
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1318.0,
+          562.0
+        ],
+        "confidence": 0.893877387046814,
+        "texturePixel": [
+          556.7777755957745,
+          399.20322376951077
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1112.0,
+          924.0
+        ],
+        "confidence": 0.8678386211395264,
+        "texturePixel": [
+          429.99344831289625,
+          622.0725232720141
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1292.0,
+          548.0
+        ],
+        "confidence": 0.7745384573936462,
+        "texturePixel": [
+          540.77902322354,
+          390.5902911720289
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          2.7544204374002437,
+          519.0130183634649
+        ],
+        [
+          2.4974016577798377,
+          529.9346357877424
+        ]
+      ],
+      "rmsTexturePixels": 13.564510004292945,
+      "heldOutTexturePixels": [
+        34.062483300732225,
+        8.044632328287914,
+        20.47753540385465,
+        28.34725636983132,
+        19.70743174419905
+      ],
+      "maxErrorTexturePixels": 20.765670296409414,
+      "pairs": [
+        {
+          "id": "18092305056327665421",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            48.757144927978516,
+            98.34132385253906,
+            16.034143447875977
+          ],
+          "observedTexturePixel": [
+            658.9154359399896,
+            549.9833343444876
+          ],
+          "predictedTexturePixel": [
+            653.3106948223746,
+            569.9783322155477
+          ]
+        },
+        {
+          "id": "605877630645816565",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -34.01499938964844,
+            104.5,
+            -3.744999885559082
+          ],
+          "observedTexturePixel": [
+            427.54022852291484,
+            526.0466671916755
+          ],
+          "predictedTexturePixel": [
+            425.3214088664604,
+            520.5818668651618
+          ]
+        },
+        {
+          "id": "4335656213162247230",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            14.450913429260254,
+            105.85079956054688,
+            -56.41813278198242
+          ],
+          "observedTexturePixel": [
+            556.7777755957745,
+            399.20322376951077
+          ],
+          "predictedTexturePixel": [
+            558.816909652121,
+            389.0358974491765
+          ]
+        },
+        {
+          "id": "9333354743976439033",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -33.187705993652344,
+            100.16835021972656,
+            31.416748046875
+          ],
+          "observedTexturePixel": [
+            429.99344831289625,
+            622.0725232720141
+          ],
+          "predictedTexturePixel": [
+            427.6001227041183,
+            608.3948744420595
+          ]
+        },
+        {
+          "id": "17796658857969527112",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            10.871164321899414,
+            99.77523803710938,
+            -52.065940856933594
+          ],
+          "observedTexturePixel": [
+            540.77902322354,
+            390.5902911720289
+          ],
+          "predictedTexturePixel": [
+            548.956775550041,
+            399.9050687777695
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          2.5993497351623303,
+          515.9985886070731
+        ],
+        [
+          2.64315215366481,
+          538.522235276448
+        ]
+      ],
+      "rmsTexturePixels": 8.664732006062259,
+      "heldOutTexturePixels": [
+        21.832525990113393,
+        405.93473875368613,
+        20.694024712333874
+      ],
+      "maxErrorTexturePixels": 10.884227604121001,
+      "pairs": [
+        {
+          "id": "4335656213162247230",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            14.450913429260254,
+            105.85079956054688,
+            -56.41813278198242
+          ],
+          "observedTexturePixel": [
+            556.7777755957745,
+            399.20322376951077
+          ],
+          "predictedTexturePixel": [
+            553.5615666022745,
+            389.40052610800393
+          ]
+        },
+        {
+          "id": "9333354743976439033",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -33.187705993652344,
+            100.16835021972656,
+            31.416748046875
+          ],
+          "observedTexturePixel": [
+            429.99344831289625,
+            622.0725232720141
+          ],
+          "predictedTexturePixel": [
+            429.7321338218276,
+            621.5614805376904
+          ]
+        },
+        {
+          "id": "17796658857969527112",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            10.871164321899414,
+            99.77523803710938,
+            -52.065940856933594
+          ],
+          "observedTexturePixel": [
+            540.77902322354,
+            390.5902911720289
+          ],
+          "predictedTexturePixel": [
+            544.2565467081085,
+            400.9040315678593
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "KokiriForest_Child",
+    "second": 7,
+    "registration": {
+      "matrix": [
+        [
+          0.6155773532862775,
+          8.986420373397687e-05,
+          -271.0718377656443
+        ],
+        [
+          0.00012010380530733847,
+          0.6155877083793982,
+          40.77612667938914
+        ]
+      ],
+      "matches": 506,
+      "inliers": 246,
+      "medianInlierErrorTexturePixels": 0.18710516292512996,
+      "p95InlierErrorTexturePixels": 0.6396836415717861,
+      "heldOutMatchCount": 102,
+      "heldOutConsistentCount": 64,
+      "heldOutMedianTexturePixels": 0.2390382331981233,
+      "heldOutP95TexturePixels": 0.79436316073816
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          853.0,
+          771.0
+        ],
+        "confidence": 0.8850588202476501,
+        "texturePixel": [
+          254.0849298886293,
+          515.4966983858324
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1384.0,
+          738.0
+        ],
+        "confidence": 0.7843204140663147,
+        "texturePixel": [
+          580.9535389649194,
+          495.2460791299304
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          3.551670767483563,
+          551.6799144954844
+        ],
+        [
+          3.561096597785272,
+          578.2400786143871
+        ]
+      ],
+      "rmsTexturePixels": 3.7919289934866164e-13,
+      "heldOutTexturePixels": [
+        null,
+        null
+      ],
+      "maxErrorTexturePixels": 4.823324033076557e-13,
+      "pairs": [
+        {
+          "id": "17067594426901953848",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -83.7901382446289,
+            117.85399627685547,
+            -17.619117736816406
+          ],
+          "observedTexturePixel": [
+            254.0849298886293,
+            515.4966983858324
+          ],
+          "predictedTexturePixel": [
+            254.08492988862935,
+            515.4966983858321
+          ]
+        },
+        {
+          "id": "9623998892552467148",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            8.242212295532227,
+            112.63771057128906,
+            -23.305742263793945
+          ],
+          "observedTexturePixel": [
+            580.9535389649194,
+            495.2460791299304
+          ],
+          "predictedTexturePixel": [
+            580.9535389649197,
+            495.2460791299301
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": false
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "second": 9,
+    "registration": {
+      "matrix": [
+        [
+          0.6156302600411234,
+          0.00024770422292444216,
+          -254.82173797494292
+        ],
+        [
+          -1.921353388057228e-05,
+          0.615430861153231,
+          49.248331647546564
+        ]
+      ],
+      "matches": 538,
+      "inliers": 339,
+      "medianInlierErrorTexturePixels": 0.17360413952189538,
+      "p95InlierErrorTexturePixels": 0.7910484705331357,
+      "heldOutMatchCount": 108,
+      "heldOutConsistentCount": 88,
+      "heldOutMedianTexturePixels": 0.17588797220555136,
+      "heldOutP95TexturePixels": 0.7272557418431039
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1801.0,
+          481.0
+        ],
+        "confidence": 0.9471878409385681,
+        "texturePixel": [
+          854.0475060903469,
+          345.2359722877318
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1227.0,
+          496.0
+        ],
+        "confidence": 0.9154349565505981,
+        "texturePixel": [
+          500.679452390086,
+          354.47846377347764
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1124.0,
+          660.0
+        ],
+        "confidence": 0.8880653977394104,
+        "texturePixel": [
+          437.31015909840994,
+          455.41110399659726
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1263.0,
+          496.0
+        ],
+        "confidence": 0.873386025428772,
+        "texturePixel": [
+          522.8421417515665,
+          354.4777720862579
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          793.0,
+          820.0
+        ],
+        "confidence": 0.846032977104187,
+        "texturePixel": [
+          233.576175700466,
+          553.8864014608287
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1887.0,
+          569.0
+        ],
+        "confidence": 0.7802607417106628,
+        "texturePixel": [
+          907.0135064255009,
+          399.39223570530237
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          3.9838073991694314,
+          462.1391447317147
+        ],
+        [
+          4.393090193953153,
+          598.6116667317744
+        ]
+      ],
+      "rmsTexturePixels": 19.65664438950009,
+      "heldOutTexturePixels": [
+        29.955734304594547,
+        26.327083745337923,
+        14.801033925686754,
+        40.19787902999706,
+        21.70030794944948,
+        20.12565818017646
+      ],
+      "maxErrorTexturePixels": 32.41010005198623,
+      "pairs": [
+        {
+          "id": "6961804965205481566",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            99.49999237060547,
+            120.10099792480469,
+            -61.74000930786133
+          ],
+          "observedTexturePixel": [
+            854.0475060903469,
+            345.2359722877318
+          ],
+          "predictedTexturePixel": [
+            858.5279505550347,
+            327.3822372668325
+          ]
+        },
+        {
+          "id": "18246168067761770276",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            8.985342025756836,
+            101.88587951660156,
+            -50.85173416137695
+          ],
+          "observedTexturePixel": [
+            500.679452390086,
+            354.47846377347764
+          ],
+          "predictedTexturePixel": [
+            497.9350167779928,
+            375.2154120419168
+          ]
+        },
+        {
+          "id": "3814878871658269103",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -4.000002861022949,
+            111.42150115966797,
+            -34.29999923706055
+          ],
+          "observedTexturePixel": [
+            437.31015909840994,
+            455.41110399659726
+          ],
+          "predictedTexturePixel": [
+            446.2039037372726,
+            447.9286764308431
+          ]
+        },
+        {
+          "id": "4877056571307262080",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            8.985342025756836,
+            101.88587951660156,
+            -50.85173416137695
+          ],
+          "observedTexturePixel": [
+            522.8421417515665,
+            354.4777720862579
+          ],
+          "predictedTexturePixel": [
+            497.9350167779928,
+            375.2154120419168
+          ]
+        },
+        {
+          "id": "12370559827741970774",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -54.71848678588867,
+            100.46912384033203,
+            -10.402762413024902
+          ],
+          "observedTexturePixel": [
+            233.576175700466,
+            553.8864014608287
+          ],
+          "predictedTexturePixel": [
+            244.15123220273662,
+            552.9113931850903
+          ]
+        },
+        {
+          "id": "8695975724114049706",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            112.59999084472656,
+            111.80000305175781,
+            -48.800010681152344
+          ],
+          "observedTexturePixel": [
+            907.0135064255009,
+            399.39223570530237
+          ],
+          "predictedTexturePixel": [
+            910.7158214053466,
+            384.228818343595
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "ZoraDomain_Child",
+    "second": 11,
+    "registration": {
+      "matrix": [
+        [
+          0.6155135593006908,
+          6.596693410441646e-05,
+          -250.39288808890836
+        ],
+        [
+          -3.9161384134342585e-06,
+          0.615672129847731,
+          92.5706157108933
+        ]
+      ],
+      "matches": 619,
+      "inliers": 302,
+      "medianInlierErrorTexturePixels": 0.19030441943526188,
+      "p95InlierErrorTexturePixels": 0.5732710758326997,
+      "heldOutMatchCount": 124,
+      "heldOutConsistentCount": 74,
+      "heldOutMedianTexturePixels": 0.23626326572724662,
+      "heldOutP95TexturePixels": 0.6112279521516596
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1261.0,
+          820.0
+        ],
+        "confidence": 0.9143290519714355,
+        "texturePixel": [
+          525.8238030752284,
+          597.4168239354934
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "status": "insufficient-collectibles",
+      "sourceCount": 1,
+      "visibleCount": 1
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "ZoraFountain_Child",
+    "second": 12,
+    "registration": {
+      "matrix": [
+        [
+          0.615705337146603,
+          -3.0687806681770806e-05,
+          -254.69691574898474
+        ],
+        [
+          -3.5800455788306826e-05,
+          0.6155763515697296,
+          90.23520023085835
+        ]
+      ],
+      "matches": 533,
+      "inliers": 326,
+      "medianInlierErrorTexturePixels": 0.16817580287584638,
+      "p95InlierErrorTexturePixels": 0.6216088590587776,
+      "heldOutMatchCount": 107,
+      "heldOutConsistentCount": 82,
+      "heldOutMedianTexturePixels": 0.19091282540448423,
+      "heldOutP95TexturePixels": 0.7333186245918332
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1453.0,
+          1124.0
+        ],
+        "confidence": 0.8923680186271667,
+        "texturePixel": [
+          639.8884460303191,
+          782.091001332974
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1140.0,
+          1037.5
+        ],
+        "method": "manual center measured on 2048px preview",
+        "confidence": null,
+        "texturePixel": [
+          447.1753299987103,
+          728.854852464854
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1647.5,
+          880.0
+        ],
+        "method": "manual center measured on 2048px preview",
+        "confidence": null,
+        "texturePixel": [
+          759.6506219301639,
+          631.8834083613092
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          5.4659667285955615,
+          370.4325223037327
+        ],
+        [
+          5.495255458971662,
+          605.0026680957685
+        ]
+      ],
+      "rmsTexturePixels": 1.1054045129212406,
+      "heldOutTexturePixels": [
+        3.6052830814206573,
+        2.3911645298394824,
+        7.043693803863683
+      ],
+      "maxErrorTexturePixels": 1.5362363921016255,
+      "pairs": [
+        {
+          "id": "17355397719442343054",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            49.30533981323242,
+            110.36543273925781,
+            32.040775299072266
+          ],
+          "observedTexturePixel": [
+            639.8884460303191,
+            782.091001332974
+          ],
+          "predictedTexturePixel": [
+            639.9338692649592,
+            781.0749134676797
+          ]
+        },
+        {
+          "id": "7152962033963346563",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            14.036932945251465,
+            107.78923797607422,
+            22.81756019592285
+          ],
+          "observedTexturePixel": [
+            447.1753299987103,
+            728.854852464854
+          ],
+          "predictedTexturePixel": [
+            447.1579307540041,
+            730.3909903228281
+          ]
+        },
+        {
+          "id": "9537398183107003742",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            71.20242309570312,
+            125.71682739257812,
+            4.796990871429443
+          ],
+          "observedTexturePixel": [
+            759.6506219301639,
+            631.8834083613092
+          ],
+          "predictedTexturePixel": [
+            759.6225979402302,
+            631.3633583686284
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          5.4659667285955615,
+          370.4325223037327
+        ],
+        [
+          5.495255458971662,
+          605.0026680957685
+        ]
+      ],
+      "rmsTexturePixels": 1.1054045129212406,
+      "heldOutTexturePixels": [
+        3.6052830814206573,
+        2.3911645298394824,
+        7.043693803863683
+      ],
+      "maxErrorTexturePixels": 1.5362363921016255,
+      "pairs": [
+        {
+          "id": "17355397719442343054",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            49.30533981323242,
+            110.36543273925781,
+            32.040775299072266
+          ],
+          "observedTexturePixel": [
+            639.8884460303191,
+            782.091001332974
+          ],
+          "predictedTexturePixel": [
+            639.9338692649592,
+            781.0749134676797
+          ]
+        },
+        {
+          "id": "7152962033963346563",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            14.036932945251465,
+            107.78923797607422,
+            22.81756019592285
+          ],
+          "observedTexturePixel": [
+            447.1753299987103,
+            728.854852464854
+          ],
+          "predictedTexturePixel": [
+            447.1579307540041,
+            730.3909903228281
+          ]
+        },
+        {
+          "id": "9537398183107003742",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            71.20242309570312,
+            125.71682739257812,
+            4.796990871429443
+          ],
+          "observedTexturePixel": [
+            759.6506219301639,
+            631.8834083613092
+          ],
+          "predictedTexturePixel": [
+            759.6225979402302,
+            631.3633583686284
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "GoronCity_Child",
+    "second": 14,
+    "registration": {
+      "matrix": [
+        [
+          0.6155902980686129,
+          0.00015212777796102224,
+          -254.69435984295043
+        ],
+        [
+          9.392373357854716e-06,
+          0.6156123628853627,
+          61.44496274832689
+        ]
+      ],
+      "matches": 483,
+      "inliers": 242,
+      "medianInlierErrorTexturePixels": 0.17938878713922335,
+      "p95InlierErrorTexturePixels": 0.4962684859160998,
+      "heldOutMatchCount": 97,
+      "heldOutConsistentCount": 64,
+      "heldOutMedianTexturePixels": 0.16148613305248935,
+      "heldOutP95TexturePixels": 0.4940949529726679
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1337.0,
+          766.0
+        ],
+        "confidence": 0.8360560536384583,
+        "texturePixel": [
+          568.4663985527031,
+          533.0165903216941
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          801.0,
+          683.0
+        ],
+        "confidence": 0.8046376705169678,
+        "texturePixel": [
+          238.49737218235586,
+          481.91572989008927
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          6.838736297831029,
+          568.4663985527031
+        ],
+        [
+          6.51796676492882,
+          533.0165903216941
+        ]
+      ],
+      "rmsTexturePixels": 1.2868476258827026e-13,
+      "heldOutTexturePixels": [
+        null,
+        null
+      ],
+      "maxErrorTexturePixels": 1.8198773652309366e-13,
+      "pairs": [
+        {
+          "id": "3483734707455267135",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            0,
+            105.5,
+            0
+          ],
+          "observedTexturePixel": [
+            568.4663985527031,
+            533.0165903216941
+          ],
+          "predictedTexturePixel": [
+            568.4663985527031,
+            533.0165903216941
+          ]
+        },
+        {
+          "id": "569390966671955163",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -48.25,
+            113.67526245117188,
+            -7.840000152587891
+          ],
+          "observedTexturePixel": [
+            238.49737218235586,
+            481.91572989008927
+          ],
+          "predictedTexturePixel": [
+            238.497372182356,
+            481.9157298900894
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": false
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "second": 16,
+    "registration": {
+      "matrix": [
+        [
+          1.1542153224820608,
+          -2.3241280114063285e-06,
+          -477.3759659206021
+        ],
+        [
+          -0.0008672948119726376,
+          1.1538750522719883,
+          78.08293386433832
+        ]
+      ],
+      "matches": 309,
+      "inliers": 170,
+      "medianInlierErrorTexturePixels": 0.2709767294344154,
+      "p95InlierErrorTexturePixels": 0.599569083735904,
+      "heldOutMatchCount": 62,
+      "heldOutConsistentCount": 48,
+      "heldOutMedianTexturePixels": 0.2836666958490002,
+      "heldOutP95TexturePixels": 0.60748611669634
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1198.0,
+          844.0
+        ],
+        "confidence": 0.8275529146194458,
+        "texturePixel": [
+          905.372028848865,
+          1050.9144587971532
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1147.0,
+          1084.0
+        ],
+        "confidence": 0.8668619990348816,
+        "texturePixel": [
+          846.5064896115573,
+          1327.888703377841
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1173.0,
+          873.0
+        ],
+        "confidence": 0.8313072919845581,
+        "texturePixel": [
+          876.5165783871014,
+          1084.3985176833403
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          5.103161372843512,
+          1108.0785828519402
+        ],
+        [
+          5.176319158985552,
+          1187.2544706988745
+        ]
+      ],
+      "rmsTexturePixels": 1.5888377772554394,
+      "heldOutTexturePixels": [
+        4.419153878861225,
+        32.90335694622795,
+        3.6745743563022186
+      ],
+      "maxErrorTexturePixels": 2.0635871282428737,
+      "pairs": [
+        {
+          "id": "15856934019904510189",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -39.66063690185547,
+            122.2122802734375,
+            -26.000682830810547
+          ],
+          "observedTexturePixel": [
+            905.372028848865,
+            1050.9144587971532
+          ],
+          "predictedTexturePixel": [
+            905.6839525920193,
+            1052.6666380150432
+          ]
+        },
+        {
+          "id": "351345377871782696",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -51.194190979003906,
+            102.79547882080078,
+            27.209787368774414
+          ],
+          "observedTexturePixel": [
+            846.5064896115573,
+            1327.888703377841
+          ],
+          "predictedTexturePixel": [
+            846.8263649339137,
+            1328.1010143677845
+          ]
+        },
+        {
+          "id": "17425319789138387506",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -45.49999237060547,
+            109.19584655761719,
+            -20.249996185302734
+          ],
+          "observedTexturePixel": [
+            876.5165783871014,
+            1084.3985176833403
+          ],
+          "predictedTexturePixel": [
+            875.8847793215919,
+            1082.4340274755075
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "second": 18,
+    "registration": {
+      "matrix": [
+        [
+          0.6156463861670327,
+          -9.198562190969709e-05,
+          -221.69869861891783
+        ],
+        [
+          0.00011735252558868183,
+          0.6155367851931587,
+          53.16230394659388
+        ]
+      ],
+      "matches": 435,
+      "inliers": 255,
+      "medianInlierErrorTexturePixels": 0.16207932184013701,
+      "p95InlierErrorTexturePixels": 0.6703889315011521,
+      "heldOutMatchCount": 87,
+      "heldOutConsistentCount": 57,
+      "heldOutMedianTexturePixels": 0.12523222409954438,
+      "heldOutP95TexturePixels": 0.5716418925062969
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1334.0,
+          967.0
+        ],
+        "confidence": 0.9572492837905884,
+        "texturePixel": [
+          599.4846304315172,
+          648.5429234975136
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1126.0,
+          973.0
+        ],
+        "confidence": 0.9220778942108154,
+        "texturePixel": [
+          471.4296301950429,
+          652.2117348833501
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1177.0,
+          706.0
+        ],
+        "confidence": 0.8814114332199097,
+        "texturePixel": [
+          502.8521560506114,
+          487.8693982155818
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1373.0,
+          666.0
+        ],
+        "confidence": 0.8058540225028992,
+        "texturePixel": [
+          623.5225271642262,
+          463.27092790287077
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1312.0,
+          1121.0
+        ],
+        "confidence": 0.7729028463363647,
+        "texturePixel": [
+          585.9262441500684,
+          743.333006661697
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          5.685336632517703,
+          602.2643379028697
+        ],
+        [
+          5.665457205657823,
+          466.23427004062813
+        ]
+      ],
+      "rmsTexturePixels": 1.081896690360733,
+      "heldOutTexturePixels": [
+        1.211130101158263,
+        1.3263480991036471,
+        1.275941511733564,
+        2.739419997601397,
+        3.068041019219656
+      ],
+      "maxErrorTexturePixels": 1.3525562082137015,
+      "pairs": [
+        {
+          "id": "16784485264831565984",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -0.5,
+            116.77326965332031,
+            32.34000015258789
+          ],
+          "observedTexturePixel": [
+            599.4846304315172,
+            648.5429234975136
+          ],
+          "predictedTexturePixel": [
+            599.4216695866108,
+            649.4551569360823
+          ]
+        },
+        {
+          "id": "12493798230772313904",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -23.000001907348633,
+            121.09913635253906,
+            33
+          ],
+          "observedTexturePixel": [
+            471.4296301950429,
+            652.2117348833501
+          ],
+          "predictedTexturePixel": [
+            471.50158451104346,
+            653.1943578273363
+          ]
+        },
+        {
+          "id": "12975373498949047978",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -17.500003814697266,
+            127.15058135986328,
+            3.9499969482421875
+          ],
+          "observedTexturePixel": [
+            502.8521560506114,
+            487.8693982155818
+          ],
+          "predictedTexturePixel": [
+            502.7709251459718,
+            488.6128087133732
+          ]
+        },
+        {
+          "id": "6397182598322965076",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            3.75,
+            111.22280883789062,
+            -0.75
+          ],
+          "observedTexturePixel": [
+            623.5225271642262,
+            463.27092790287077
+          ],
+          "predictedTexturePixel": [
+            623.5843502748111,
+            461.9851771363848
+          ]
+        },
+        {
+          "id": "18219295034534354574",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -2.8718931674957275,
+            128.19378662109375,
+            48.671485900878906
+          ],
+          "observedTexturePixel": [
+            585.9262441500684,
+            743.333006661697
+          ],
+          "predictedTexturePixel": [
+            585.936658473029,
+            741.9804905478356
+          ]
+        }
+      ],
+      "status": "candidate-passes-numeric-checks; identity review still required",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "Graveyard_Child",
+    "second": 20,
+    "registration": {
+      "matrix": [
+        [
+          0.6155170469893672,
+          -4.873246657185605e-05,
+          -254.4171689440658
+        ],
+        [
+          -6.984486793266307e-05,
+          0.615545000847291,
+          28.737962147458212
+        ]
+      ],
+      "matches": 450,
+      "inliers": 203,
+      "medianInlierErrorTexturePixels": 0.1628794693762723,
+      "p95InlierErrorTexturePixels": 0.4428147070169304,
+      "heldOutMatchCount": 90,
+      "heldOutConsistentCount": 58,
+      "heldOutMedianTexturePixels": 0.1623924362029684,
+      "heldOutP95TexturePixels": 0.635633293060943
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1049.0,
+          667.0
+        ],
+        "confidence": 0.9112791419029236,
+        "texturePixel": [
+          391.2277087925769,
+          439.23321044614
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1321.0,
+          997.0
+        ],
+        "confidence": 0.8792507648468018,
+        "texturePixel": [
+          558.6322638597161,
+          642.3440629216683
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          876.0,
+          622.0
+        ],
+        "confidence": 0.8088633418083191,
+        "texturePixel": [
+          284.7454526244122,
+          411.5457685701642
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          928.0,
+          587.0
+        ],
+        "confidence": 0.7804847955703735,
+        "texturePixel": [
+          316.75404470418925,
+          389.99806160737654
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          834.0,
+          1039.0
+        ],
+        "confidence": 0.7703139185905457,
+        "texturePixel": [
+          258.87341521229826,
+          668.2309674079378
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          7.24248463683094,
+          408.64210279750097
+        ],
+        [
+          7.3355107641002615,
+          471.22096948311247
+        ]
+      ],
+      "rmsTexturePixels": 12.560367414605006,
+      "heldOutTexturePixels": [
+        31.777140552746715,
+        50.7437119369106,
+        10.409842931245084,
+        15.390582778411023,
+        9.092690122022331
+      ],
+      "maxErrorTexturePixels": 24.662967288316867,
+      "pairs": [
+        {
+          "id": "10075158462075677237",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -4.634922981262207,
+            103.13032531738281,
+            -1.8201141357421875
+          ],
+          "observedTexturePixel": [
+            391.2277087925769,
+            439.23321044614
+          ],
+          "predictedTexturePixel": [
+            375.07374431281477,
+            457.8695026484846
+          ]
+        },
+        {
+          "id": "9353003823584590464",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            21.393999099731445,
+            105.05091857910156,
+            23.15399932861328
+          ],
+          "observedTexturePixel": [
+            558.6322638597161,
+            642.3440629216683
+          ],
+          "predictedTexturePixel": [
+            563.5878125976809,
+            641.0673807901254
+          ]
+        },
+        {
+          "id": "77201491298807580",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -16.580066680908203,
+            108.05950927734375,
+            -8.919678688049316
+          ],
+          "observedTexturePixel": [
+            284.7454526244122,
+            411.5457685701642
+          ],
+          "predictedTexturePixel": [
+            288.56122458339075,
+            405.79057045461104
+          ]
+        },
+        {
+          "id": "16798263777516949500",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -12.147199630737305,
+            103.36949920654297,
+            -12.197487831115723
+          ],
+          "observedTexturePixel": [
+            316.75404470418925,
+            389.99806160737654
+          ],
+          "predictedTexturePixel": [
+            320.66619609136757,
+            381.74616620298116
+          ]
+        },
+        {
+          "id": "229475726653285413",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -20.200000762939453,
+            104.30000305175781,
+            26.399999618530273
+          ],
+          "observedTexturePixel": [
+            258.87341521229826,
+            668.2309674079378
+          ],
+          "predictedTexturePixel": [
+            262.3439076079387,
+            664.8784508570841
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "second": 21,
+    "registration": {
+      "matrix": [
+        [
+          0.6155551004866299,
+          -3.8067743056529365e-05,
+          -254.48965951155938
+        ],
+        [
+          -9.041839208354938e-05,
+          0.6155835593876997,
+          45.18509043937347
+        ]
+      ],
+      "matches": 561,
+      "inliers": 343,
+      "medianInlierErrorTexturePixels": 0.1932790751102167,
+      "p95InlierErrorTexturePixels": 0.8294047636480956,
+      "heldOutMatchCount": 113,
+      "heldOutConsistentCount": 86,
+      "heldOutMedianTexturePixels": 0.16751920257818104,
+      "heldOutP95TexturePixels": 0.8707489921018448
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1379.0,
+          701.0
+        ],
+        "confidence": 0.9391573667526245,
+        "texturePixel": [
+          594.3341385716205,
+          476.58447860746776
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1644.0,
+          762.0
+        ],
+        "confidence": 0.8670881390571594,
+        "texturePixel": [
+          757.453918068251,
+          514.1111148562153
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1488.0,
+          992.0
+        ],
+        "confidence": 0.8391517400741577,
+        "texturePixel": [
+          661.4185668114338,
+          655.7094387845511
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1429.0,
+          927.0
+        ],
+        "confidence": 0.9067367911338806,
+        "texturePixel": [
+          625.1032902860213,
+          615.7018421094837
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1115.0,
+          807.0
+        ],
+        "confidence": 0.9028475880622864,
+        "texturePixel": [
+          431.82355686238634,
+          541.860206358074
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1105.0,
+          516.0
+        ],
+        "confidence": 0.8834546804428101,
+        "texturePixel": [
+          425.6790835707494,
+          362.7262947601742
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1295.0,
+          630.0
+        ],
+        "confidence": 0.88215172290802,
+        "texturePixel": [
+          542.6302129405007,
+          432.8856410358761
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1206.0,
+          920.0
+        ],
+        "confidence": 0.8821501731872559,
+        "texturePixel": [
+          487.83476935170427,
+          611.4129204952044
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          4.439713476492827,
+          759.4028899611845
+        ],
+        [
+          3.932707532924379,
+          363.5661993585559
+        ]
+      ],
+      "rmsTexturePixels": 15.563937085123985,
+      "heldOutTexturePixels": [
+        5.636160232708212,
+        19.38583264331045,
+        55.83940639504112,
+        18.92056186007485,
+        8.451068984691023,
+        17.707389702902326,
+        5.437283412914125,
+        17.22032698427358
+      ],
+      "maxErrorTexturePixels": 35.38775869098738,
+      "pairs": [
+        {
+          "id": "1416092057268113387",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -36.10409164428711,
+            107.5047836303711,
+            28.965904235839844
+          ],
+          "observedTexturePixel": [
+            594.3341385716205,
+            476.58447860746776
+          ],
+          "predictedTexturePixel": [
+            599.111067731511,
+            477.4806291448094
+          ]
+        },
+        {
+          "id": "3518965357024502806",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            1.481914758682251,
+            108.89686584472656,
+            37.5221061706543
+          ],
+          "observedTexturePixel": [
+            757.453918068251,
+            514.1111148562153
+          ],
+          "predictedTexturePixel": [
+            765.9821668863198,
+            511.12966894707637
+          ]
+        },
+        {
+          "id": "12012336414699946951",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -27.758955001831055,
+            103.20709228515625,
+            80.58808898925781
+          ],
+          "observedTexturePixel": [
+            661.4185668114338,
+            655.7094387845511
+          ],
+          "predictedTexturePixel": [
+            636.1610833461973,
+            680.4955839905903
+          ]
+        },
+        {
+          "id": "15314554401574296838",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -29.075544357299805,
+            103.08731079101562,
+            60.51190185546875
+          ],
+          "observedTexturePixel": [
+            625.1032902860213,
+            615.7018421094837
+          ],
+          "predictedTexturePixel": [
+            630.3158038417156,
+            601.5418116171386
+          ]
+        },
+        {
+          "id": "7677963516305772491",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -73.60032653808594,
+            104.45828247070312,
+            43.47663879394531
+          ],
+          "observedTexturePixel": [
+            431.82355686238634,
+            541.860206358074
+          ],
+          "predictedTexturePixel": [
+            432.63852835577177,
+            534.5471042497369
+          ]
+        },
+        {
+          "id": "11629189455828560791",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -75.00682830810547,
+            105.28756713867188,
+            2.172684669494629
+          ],
+          "observedTexturePixel": [
+            425.6790835707494,
+            362.7262947601742
+          ],
+          "predictedTexturePixel": [
+            426.394063492705,
+            372.11073272494673
+          ]
+        },
+        {
+          "id": "15118290503807073158",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -48.10788345336914,
+            110.90959167480469,
+            18.399999618530273
+          ],
+          "observedTexturePixel": [
+            542.6302129405007,
+            432.8856410358761
+          ],
+          "predictedTexturePixel": [
+            545.8176714677153,
+            435.9280164641556
+          ]
+        },
+        {
+          "id": "14107117960174262321",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -60.71241760253906,
+            102.1308364868164,
+            59.549861907958984
+          ],
+          "observedTexturePixel": [
+            487.83476935170427,
+            611.4129204952044
+          ],
+          "predictedTexturePixel": [
+            489.85715134073155,
+            597.7583898685928
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          4.342171174152439,
+          751.4231964091832
+        ],
+        [
+          4.336787748321021,
+          353.22723979952445
+        ]
+      ],
+      "rmsTexturePixels": 0.10767283663908879,
+      "heldOutTexturePixels": [
+        0.27814869641637935,
+        0.10974311272497045,
+        0.23640847927154993,
+        0.24581928194469302,
+        0.12293443977047809
+      ],
+      "maxErrorTexturePixels": 0.17063501678437032,
+      "pairs": [
+        {
+          "id": "15314554401574296838",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -29.075544357299805,
+            103.08731079101562,
+            60.51190185546875
+          ],
+          "observedTexturePixel": [
+            625.1032902860213,
+            615.7018421094837
+          ],
+          "predictedTexturePixel": [
+            625.1722058281255,
+            615.6545143939254
+          ]
+        },
+        {
+          "id": "7677963516305772491",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -73.60032653808594,
+            104.45828247070312,
+            43.47663879394531
+          ],
+          "observedTexturePixel": [
+            431.82355686238634,
+            541.860206358074
+          ],
+          "predictedTexturePixel": [
+            431.8379801072997,
+            541.7761942592849
+          ]
+        },
+        {
+          "id": "11629189455828560791",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -75.00682830810547,
+            105.28756713867188,
+            2.172684669494629
+          ],
+          "observedTexturePixel": [
+            425.6790835707494,
+            362.7262947601742
+          ],
+          "predictedTexturePixel": [
+            425.73070866512654,
+            362.64971205515366
+          ]
+        },
+        {
+          "id": "15118290503807073158",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -48.10788345336914,
+            110.90959167480469,
+            18.399999618530273
+          ],
+          "observedTexturePixel": [
+            542.6302129405007,
+            432.8856410358761
+          ],
+          "predictedTexturePixel": [
+            542.5305316284787,
+            433.02413271427804
+          ]
+        },
+        {
+          "id": "14107117960174262321",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -60.71241760253906,
+            102.1308364868164,
+            59.549861907958984
+          ],
+          "observedTexturePixel": [
+            487.83476935170427,
+            611.4129204952044
+          ],
+          "predictedTexturePixel": [
+            487.799486782333,
+            611.4823513361696
+          ]
+        }
+      ],
+      "status": "candidate-passes-numeric-checks; identity review still required",
+      "independentValidationPossible": true
+    },
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "second": 23,
+    "registration": {
+      "matrix": [
+        [
+          0.6155267627209222,
+          1.274161985840877e-05,
+          -242.16412842196902
+        ],
+        [
+          -6.622280099970303e-05,
+          0.6156167386259249,
+          59.479420547406846
+        ]
+      ],
+      "matches": 427,
+      "inliers": 240,
+      "medianInlierErrorTexturePixels": 0.16577481646262965,
+      "p95InlierErrorTexturePixels": 0.661567191101645,
+      "heldOutMatchCount": 86,
+      "heldOutConsistentCount": 54,
+      "heldOutMedianTexturePixels": 0.14256337986411016,
+      "heldOutP95TexturePixels": 0.5245075299252938
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1714.0,
+          742.0
+        ],
+        "confidence": 0.8904818296432495,
+        "texturePixel": [
+          812.8581971636265,
+          516.1535347269296
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1366.0,
+          474.0
+        ],
+        "confidence": 0.8602542281150818,
+        "texturePixel": [
+          598.6514689826236,
+          351.1912943099297
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1351.0,
+          512.0
+        ],
+        "confidence": 0.8936497569084167,
+        "texturePixel": [
+          589.4190517233643,
+          374.5857237197298
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1399.0,
+          455.0
+        ],
+        "confidence": 0.7843870520591736,
+        "texturePixel": [
+          618.9636100616367,
+          339.4923909236041
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          895.0,
+          1187.0
+        ],
+        "confidence": 0.7718459367752075,
+        "texturePixel": [
+          308.74744851602827,
+          790.1572198894851
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          2.6293205159742126,
+          1062.6688915215016
+        ],
+        [
+          2.501444703557,
+          -696.8581636884605
+        ]
+      ],
+      "rmsTexturePixels": 12.65961271406182,
+      "heldOutTexturePixels": [
+        35.537768733746574,
+        7.706286064547528,
+        8.767271422962681,
+        10.63226740517276,
+        70.69015933214673
+      ],
+      "maxErrorTexturePixels": 23.207981681736527,
+      "pairs": [
+        {
+          "id": "6175378250368022556",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -98.81968688964844,
+            134.76400756835938,
+            493.29339599609375
+          ],
+          "observedTexturePixel": [
+            812.8581971636265,
+            516.1535347269296
+          ],
+          "predictedTexturePixel": [
+            802.840261400401,
+            537.087989025614
+          ]
+        },
+        {
+          "id": "3889886157160285015",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -174.39260864257812,
+            138,
+            418.0172119140625
+          ],
+          "observedTexturePixel": [
+            598.6514689826236,
+            351.1912943099297
+          ],
+          "predictedTexturePixel": [
+            604.1348277833091,
+            348.7887770496352
+          ]
+        },
+        {
+          "id": "13944703896577680014",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -178.2529296875,
+            141.95822143554688,
+            426.4041442871094
+          ],
+          "observedTexturePixel": [
+            589.4190517233643,
+            374.5857237197298
+          ],
+          "predictedTexturePixel": [
+            593.984806461649,
+            369.768224613284
+          ]
+        },
+        {
+          "id": "7014193622407727514",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -166.364013671875,
+            137.9018096923828,
+            412.43023681640625
+          ],
+          "observedTexturePixel": [
+            618.9636100616367,
+            339.4923909236041
+          ],
+          "predictedTexturePixel": [
+            625.2445772542262,
+            334.8132677826982
+          ]
+        },
+        {
+          "id": "8655370827943125875",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -289.13690185546875,
+            130.9376983642578,
+            590.8505859375
+          ],
+          "observedTexturePixel": [
+            308.74744851602827,
+            790.1572198894851
+          ],
+          "predictedTexturePixel": [
+            302.4353035476952,
+            781.1219050984489
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          2.528532028193667,
+          1039.865668639218
+        ],
+        [
+          2.5263766267857943,
+          -702.5624499555405
+        ]
+      ],
+      "rmsTexturePixels": 0.22863279730287664,
+      "heldOutTexturePixels": [
+        0.5356157488362393,
+        0.5913508464406768,
+        5.736929800823137
+      ],
+      "maxErrorTexturePixels": 0.29278730150704346,
+      "pairs": [
+        {
+          "id": "13944703896577680014",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -178.2529296875,
+            141.95822143554688,
+            426.4041442871094
+          ],
+          "observedTexturePixel": [
+            589.4190517233643,
+            374.5857237197298
+          ],
+          "predictedTexturePixel": [
+            589.1474268050206,
+            374.6950137360101
+          ]
+        },
+        {
+          "id": "7014193622407727514",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -166.364013671875,
+            137.9018096923828,
+            412.43023681640625
+          ],
+          "observedTexturePixel": [
+            618.9636100616367,
+            339.4923909236041
+          ],
+          "predictedTexturePixel": [
+            619.208931731033,
+            339.39166051715836
+          ]
+        },
+        {
+          "id": "8655370827943125875",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -289.13690185546875,
+            130.9376983642578,
+            590.8505859375
+          ],
+          "observedTexturePixel": [
+            308.74744851602827,
+            790.1572198894851
+          ],
+          "predictedTexturePixel": [
+            308.7737517649764,
+            790.1486602796509
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "HyruleField_Child",
+    "second": 24,
+    "calibration": "four source collectibles measured; preview generated",
+    "registration": {
+      "matrix": [
+        [
+          0.6156121386159459,
+          0.00010721473695530664,
+          -262.8794259174894
+        ],
+        [
+          -3.132271055286346e-05,
+          0.6154800664950089,
+          73.4825281209206
+        ]
+      ],
+      "matches": 755,
+      "inliers": 475,
+      "medianInlierErrorTexturePixels": 0.16928053193271939,
+      "p95InlierErrorTexturePixels": 0.5307300740549473,
+      "heldOutMatchCount": 151,
+      "heldOutConsistentCount": 118,
+      "heldOutMedianTexturePixels": 0.1629850149853101,
+      "heldOutP95TexturePixels": 0.44275085223763333
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          846.0,
+          609.0
+        ],
+        "confidence": 0.9979212880134583,
+        "texturePixel": [
+          257.99373712640664,
+          448.2833896032533
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1443.0,
+          346.0
+        ],
+        "confidence": 0.8964887261390686,
+        "texturePixel": [
+          625.4859864043069,
+          286.39343245686587
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1515.0,
+          908.0
+        ],
+        "confidence": 0.9994833469390869,
+        "texturePixel": [
+          669.8703150668239,
+          632.2909745919011
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          980.0,
+          1083.0
+        ],
+        "confidence": 0.7816245555877686,
+        "texturePixel": [
+          340.5365834862601,
+          740.0167438786734
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          1.450848747380336,
+          567.5821186756649
+        ],
+        [
+          1.4567112708661083,
+          247.37481039880868
+        ]
+      ],
+      "rmsTexturePixels": 0.4906897134337529,
+      "heldOutTexturePixels": [
+        1.0050553146556331,
+        1.1174448873774594,
+        0.886718091381655,
+        0.5678043732706188
+      ],
+      "maxErrorTexturePixels": 0.6890834600716004,
+      "pairs": [
+        {
+          "id": "14128250030289710996",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -213.44728088378906,
+            133.42279052734375,
+            138.38815307617188
+          ],
+          "observedTexturePixel": [
+            257.99373712640664,
+            448.2833896032533
+          ],
+          "predictedTexturePixel": [
+            257.9023985736808,
+            448.96639273921255
+          ]
+        },
+        {
+          "id": "14825051130171187671",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            39.860008239746094,
+            152.44744873046875,
+            26.579999923706055
+          ],
+          "observedTexturePixel": [
+            625.4859864043069,
+            286.39343245686587
+          ],
+          "predictedTexturePixel": [
+            625.4129617008704,
+            286.0941958672916
+          ]
+        },
+        {
+          "id": "2177746409373494991",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            70.53002166748047,
+            167.4074249267578,
+            263.8376159667969
+          ],
+          "observedTexturePixel": [
+            669.8703150668239,
+            632.2909745919011
+          ],
+          "predictedTexturePixel": [
+            669.9105122646368,
+            631.7100392560856
+          ]
+        },
+        {
+          "id": "12007978132755687032",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -156.40594482421875,
+            144.20506286621094,
+            338.3231201171875
+          ],
+          "observedTexturePixel": [
+            340.5365834862601,
+            740.0167438786734
+          ],
+          "predictedTexturePixel": [
+            340.6607495446092,
+            740.2139126681038
+          ]
+        }
+      ],
+      "status": "candidate-passes-numeric-checks; identity review still required",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "LonLonRanch_Child",
+    "second": 27,
+    "registration": {
+      "matrix": [
+        [
+          0.6154672265942259,
+          0.00015837641072283807,
+          -238.09919604537654
+        ],
+        [
+          0.0001440983096772142,
+          0.6156234776964691,
+          53.04458132064588
+        ]
+      ],
+      "matches": 327,
+      "inliers": 137,
+      "medianInlierErrorTexturePixels": 0.13560482660333373,
+      "p95InlierErrorTexturePixels": 0.4316006230029091,
+      "heldOutMatchCount": 66,
+      "heldOutConsistentCount": 34,
+      "heldOutMedianTexturePixels": 0.15710422447177239,
+      "heldOutP95TexturePixels": 0.367240148537086
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          808.0,
+          952.0
+        ],
+        "confidence": 0.9027891159057617,
+        "texturePixel": [
+          259.3490973857662,
+          639.2345635219036
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          869.0,
+          967.0
+        ],
+        "confidence": 0.9052971601486206,
+        "texturePixel": [
+          296.89497385417485,
+          648.477705684241
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1398.0,
+          616.0
+        ],
+        "confidence": 0.9023595452308655,
+        "texturePixel": [
+          622.4215466023567,
+          432.4700930185995
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1547.0,
+          542.0
+        ],
+        "confidence": 0.7851141095161438,
+        "texturePixel": [
+          714.1144435105027,
+          386.93542631720277
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          3.866402147430229,
+          866.9497277292656
+        ],
+        [
+          3.8519327079323546,
+          -385.8728710139238
+        ]
+      ],
+      "rmsTexturePixels": 0.8489036794714503,
+      "heldOutTexturePixels": [
+        2.3406512750927178,
+        2.3258426953312448,
+        0.4527070370738627,
+        0.4826287140464385
+      ],
+      "maxErrorTexturePixels": 1.2144740438524935,
+      "pairs": [
+        {
+          "id": "11156084763374250886",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -157.15353393554688,
+            150.9308319091797,
+            266.4433288574219
+          ],
+          "observedTexturePixel": [
+            259.3490973857662,
+            639.2345635219036
+          ],
+          "predictedTexturePixel": [
+            259.3309666446179,
+            640.4489022223562
+          ]
+        },
+        {
+          "id": "2730878115209290675",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -147.4391326904297,
+            159.2058563232422,
+            268.2318115234375
+          ],
+          "observedTexturePixel": [
+            296.89497385417485,
+            648.477705684241
+          ],
+          "predictedTexturePixel": [
+            296.8907484797379,
+            647.3380171011516
+          ]
+        },
+        {
+          "id": "15889002414176907668",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -63.216087341308594,
+            156.38766479492188,
+            212.38632202148438
+          ],
+          "observedTexturePixel": [
+            622.4215466023567,
+            432.4700930185995
+          ],
+          "predictedTexturePixel": [
+            622.5309118806932,
+            432.2249494980856
+          ]
+        },
+        {
+          "id": "341792603838029977",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -39.55157470703125,
+            158.24966430664062,
+            200.6729736328125
+          ],
+          "observedTexturePixel": [
+            714.1144435105027,
+            386.93542631720277
+          ],
+          "predictedTexturePixel": [
+            714.0274343477529,
+            387.10591972035365
+          ]
+        }
+      ],
+      "status": "candidate-passes-numeric-checks; identity review still required",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          3.8666100695957644,
+          866.9610253284135
+        ],
+        [
+          3.87026225014325,
+          -389.63067614941366
+        ]
+      ],
+      "rmsTexturePixels": 0.11531842544920412,
+      "heldOutTexturePixels": [
+        1.3571622613228769,
+        0.25939326133713875,
+        0.32265322952794623
+      ],
+      "maxErrorTexturePixels": 0.15382235150468887,
+      "pairs": [
+        {
+          "id": "2730878115209290675",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -147.4391326904297,
+            159.2058563232422,
+            268.2318115234375
+          ],
+          "observedTexturePixel": [
+            296.89497385417485,
+            648.477705684241
+          ],
+          "predictedTexturePixel": [
+            296.871390215132,
+            648.4967782772858
+          ]
+        },
+        {
+          "id": "15889002414176907668",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -63.216087341308594,
+            156.38766479492188,
+            212.38632202148438
+          ],
+          "observedTexturePixel": [
+            622.4215466023567,
+            432.4700930185995
+          ],
+          "predictedTexturePixel": [
+            622.5290654540644,
+            432.3600884171054
+          ]
+        },
+        {
+          "id": "341792603838029977",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -39.55157470703125,
+            158.24966430664062,
+            200.6729736328125
+          ],
+          "observedTexturePixel": [
+            714.1144435105027,
+            386.93542631720277
+          ],
+          "predictedTexturePixel": [
+            714.0305082978373,
+            387.0263583256523
+          ]
+        }
+      ],
+      "status": "candidate-passes-numeric-checks; identity review still required",
+      "independentValidationPossible": true
+    },
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "GerudoValley_Child",
+    "second": 29,
+    "registration": {
+      "matrix": [
+        [
+          0.6155561386419885,
+          -0.00017151943560984376,
+          -254.3494861385293
+        ],
+        [
+          -0.00016327543780533249,
+          0.6156525968308778,
+          65.7045124016208
+        ]
+      ],
+      "matches": 345,
+      "inliers": 148,
+      "medianInlierErrorTexturePixels": 0.17213846351925105,
+      "p95InlierErrorTexturePixels": 0.6708559111218798,
+      "heldOutMatchCount": 69,
+      "heldOutConsistentCount": 39,
+      "heldOutMedianTexturePixels": 0.18590360878036344,
+      "heldOutP95TexturePixels": 0.5172622941084727
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1316.0,
+          289.0
+        ],
+        "confidence": 0.9595121145248413,
+        "texturePixel": [
+          555.6728231974364,
+          243.41324240959267
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1211.0,
+          1106.0
+        ],
+        "confidence": 0.8752956390380859,
+        "texturePixel": [
+          490.8992972611344,
+          746.4185579413894
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1648.0,
+          894.0
+        ],
+        "confidence": 0.8529930114746094,
+        "texturePixel": [
+          759.9336919680327,
+          615.8288560469224
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1202.5,
+          871.25
+        ],
+        "method": "manual center measured on 2048px preview",
+        "confidence": null,
+        "texturePixel": [
+          485.70733427018683,
+          601.8954986765622
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          4.437340553321083,
+          534.4185631671867
+        ],
+        [
+          4.450520424925427,
+          591.5434912794601
+        ]
+      ],
+      "rmsTexturePixels": 0.9812963034387648,
+      "heldOutTexturePixels": [
+        3.9785342908901367,
+        1.712719090988257,
+        2.756577227165587,
+        0.8756634054114071
+      ],
+      "maxErrorTexturePixels": 1.6304821374918466,
+      "pairs": [
+        {
+          "id": "1077480308077338993",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            4.853181838989258,
+            59.16404342651367,
+            -78.1605224609375
+          ],
+          "observedTexturePixel": [
+            555.6728231974364,
+            243.41324240959267
+          ],
+          "predictedTexturePixel": [
+            555.9537837539751,
+            243.68848964421517
+          ]
+        },
+        {
+          "id": "14813002874583645116",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -9.790793418884277,
+            90.43172454833984,
+            34.98228073120117
+          ],
+          "observedTexturePixel": [
+            490.8992972611344,
+            746.4185579413894
+          ],
+          "predictedTexturePixel": [
+            490.9734784803823,
+            747.2328461841462
+          ]
+        },
+        {
+          "id": "15265071047503310220",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            50.80552673339844,
+            97.40318298339844,
+            5.090764045715332
+          ],
+          "observedTexturePixel": [
+            759.9336919680327,
+            615.8288560469224
+          ],
+          "predictedTexturePixel": [
+            759.859987274134,
+            614.2000406433922
+          ]
+        },
+        {
+          "id": "8326970197618554626",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -11.040997505187988,
+            48.04132843017578,
+            2.4471940994262695
+          ],
+          "observedTexturePixel": [
+            485.70733427018683,
+            601.8954986765622
+          ],
+          "predictedTexturePixel": [
+            485.42589718829913,
+            602.4347786027137
+          ]
+        }
+      ],
+      "status": "candidate-passes-numeric-checks; identity review still required",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "second": 31,
+    "registration": {
+      "matrix": [
+        [
+          0.6154999777518565,
+          8.94532321959654e-06,
+          -266.7628485910398
+        ],
+        [
+          0.00013755276459744857,
+          0.6156083858447153,
+          61.28081654325375
+        ]
+      ],
+      "matches": 438,
+      "inliers": 224,
+      "medianInlierErrorTexturePixels": 0.14504223905937003,
+      "p95InlierErrorTexturePixels": 0.5843051392725653,
+      "heldOutMatchCount": 88,
+      "heldOutConsistentCount": 63,
+      "heldOutMedianTexturePixels": 0.14248930884041558,
+      "heldOutP95TexturePixels": 0.4815244289465809
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1022.0,
+          758.0
+        ],
+        "confidence": 0.8595882654190063,
+        "texturePixel": [
+          362.2849092263579,
+          528.0525519389665
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          907.0,
+          799.0
+        ],
+        "confidence": 0.8666579723358154,
+        "texturePixel": [
+          291.50277854314646,
+          553.2766771906712
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1382.0,
+          669.0
+        ],
+        "confidence": 0.8283579349517822,
+        "texturePixel": [
+          583.8641050832598,
+          473.312924594042
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          835.0,
+          430.0
+        ],
+        "confidence": 0.7932737469673157,
+        "texturePixel": [
+          247.18347932074477,
+          326.1072790149202
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          3.4991235666617535,
+          842.3842787259616
+        ],
+        [
+          3.4792482348166653,
+          492.68536458912126
+        ]
+      ],
+      "rmsTexturePixels": 0.7435263032451427,
+      "heldOutTexturePixels": [
+        1.8523654348999359,
+        1.5123375839020545,
+        0.9955421856698398,
+        0.20199809842437613
+      ],
+      "maxErrorTexturePixels": 1.1873039102646357,
+      "pairs": [
+        {
+          "id": "2308531337658761834",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -137.13999938964844,
+            103.5,
+            10.499994277954102
+          ],
+          "observedTexturePixel": [
+            362.2849092263579,
+            528.0525519389665
+          ],
+          "predictedTexturePixel": [
+            362.5144749296643,
+            529.2174511462781
+          ]
+        },
+        {
+          "id": "234735562946824289",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -157.46372985839844,
+            95.65901184082031,
+            17.185211181640625
+          ],
+          "observedTexturePixel": [
+            291.50277854314646,
+            553.2766771906712
+          ],
+          "predictedTexturePixel": [
+            291.3992306839797,
+            552.4769802577961
+          ]
+        },
+        {
+          "id": "11160993739666517210",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -73.9000015258789,
+            105.30000305175781,
+            -5.676787376403809
+          ],
+          "observedTexturePixel": [
+            583.8641050832598,
+            473.312924594042
+          ],
+          "predictedTexturePixel": [
+            583.7990418104191,
+            472.9344121303388
+          ]
+        },
+        {
+          "id": "15057756765324812936",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -170.1173858642578,
+            101.76375579833984,
+            -47.873783111572266
+          ],
+          "observedTexturePixel": [
+            247.18347932074477,
+            326.1072790149202
+          ],
+          "predictedTexturePixel": [
+            247.12252474944603,
+            326.1205892041876
+          ]
+        }
+      ],
+      "status": "candidate-passes-numeric-checks; identity review still required",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          3.498984449872306,
+          842.4421830390452
+        ],
+        [
+          3.4913438786286632,
+          493.22028513597985
+        ]
+      ],
+      "rmsTexturePixels": 0.06554049310772443,
+      "heldOutTexturePixels": [
+        0.21308882578793326,
+        0.3472876918583276,
+        0.3885971869368851
+      ],
+      "maxErrorTexturePixels": 0.0877992011481045,
+      "pairs": [
+        {
+          "id": "234735562946824289",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -157.46372985839844,
+            95.65901184082031,
+            17.185211181640625
+          ],
+          "observedTexturePixel": [
+            291.50277854314646,
+            553.2766771906712
+          ],
+          "predictedTexturePixel": [
+            291.4790408456155,
+            553.2197669979417
+          ]
+        },
+        {
+          "id": "11160993739666517210",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -73.9000015258789,
+            105.30000305175781,
+            -5.676787376403809
+          ],
+          "observedTexturePixel": [
+            583.8641050832598,
+            473.312924594042
+          ],
+          "predictedTexturePixel": [
+            583.8672268544551,
+            473.40066827909595
+          ]
+        },
+        {
+          "id": "15057756765324812936",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -170.1173858642578,
+            101.76375579833984,
+            -47.873783111572266
+          ],
+          "observedTexturePixel": [
+            247.18347932074477,
+            326.1072790149202
+          ],
+          "predictedTexturePixel": [
+            247.2040952470802,
+            326.07644552259575
+          ]
+        }
+      ],
+      "status": "candidate-passes-numeric-checks; identity review still required",
+      "independentValidationPossible": true
+    },
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "Market_Child",
+    "second": 33,
+    "registration": {
+      "matrix": [
+        [
+          0.6155524415332073,
+          6.366873687928601e-06,
+          -254.50261034452384
+        ],
+        [
+          -3.517890479961023e-05,
+          0.6155656690569221,
+          77.92428374588836
+        ]
+      ],
+      "matches": 685,
+      "inliers": 424,
+      "medianInlierErrorTexturePixels": 0.16797063151639446,
+      "p95InlierErrorTexturePixels": 0.5669758285167001,
+      "heldOutMatchCount": 137,
+      "heldOutConsistentCount": 112,
+      "heldOutMedianTexturePixels": 0.162350691815576,
+      "heldOutP95TexturePixels": 0.591970869486725
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1295.0,
+          931.0
+        ],
+        "confidence": 0.9167084097862244,
+        "texturePixel": [
+          542.6437290003831,
+          650.9703649561674
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          1112.0,
+          739.0
+        ],
+        "confidence": 0.8979820013046265,
+        "texturePixel": [
+          429.996409760058,
+          532.7881942368166
+        ]
+      },
+      {
+        "kind": "CollectHeart",
+        "pixel": [
+          788.0,
+          769.0
+        ],
+        "confidence": 0.886772096157074,
+        "texturePixel": [
+          230.55760970950953,
+          551.2665622736794
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1422.0,
+          1192.0
+        ],
+        "confidence": 0.8150812387466431,
+        "texturePixel": [
+          620.8205508291329,
+          811.6285368591145
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          4.851799403044461,
+          535.8899355385612
+        ],
+        [
+          5.676976533807379,
+          485.2101951280911
+        ]
+      ],
+      "rmsTexturePixels": 8.574232130747193,
+      "heldOutTexturePixels": [
+        19.79893352011946,
+        8.659207659539055,
+        8.497095730131042,
+        57.579177079011515
+      ],
+      "maxErrorTexturePixels": 14.832510505937643,
+      "pairs": [
+        {
+          "id": "8568137720802848289",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            1.6605249643325806,
+            100.0863037109375,
+            26.596019744873047
+          ],
+          "observedTexturePixel": [
+            542.6437290003831,
+            650.9703649561674
+          ],
+          "predictedTexturePixel": [
+            543.9464695692504,
+            636.1951751124132
+          ]
+        },
+        {
+          "id": "11628104451986877978",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -22.007003784179688,
+            109.96633911132812,
+            9.20832347869873
+          ],
+          "observedTexturePixel": [
+            429.996409760058,
+            532.7881942368166
+          ],
+          "predictedTexturePixel": [
+            429.116367715681,
+            537.4856314323713
+          ]
+        },
+        {
+          "id": "5215133574889185473",
+          "kind": "CollectHeart",
+          "sourcePosition": [
+            -62.895355224609375,
+            110.6692886352539,
+            12.552659034729004
+          ],
+          "observedTexturePixel": [
+            230.55760970950953,
+            551.2665622736794
+          ],
+          "predictedTexturePixel": [
+            230.73428860553213,
+            556.4713459051328
+          ]
+        },
+        {
+          "id": "8942465719711548237",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            17.38143539428711,
+            102.09561920166016,
+            58.356998443603516
+          ],
+          "observedTexturePixel": [
+            620.8205508291329,
+            811.6285368591145
+          ],
+          "predictedTexturePixel": [
+            620.2211734086193,
+            816.501505875862
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": true
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  },
+  {
+    "scene": "HyruleCastle_Child",
+    "second": 35,
+    "registration": {
+      "matrix": [
+        [
+          0.6154657843241331,
+          4.552193093884377e-06,
+          -254.38622489123208
+        ],
+        [
+          9.268252265301264e-05,
+          0.6155407366367335,
+          59.30828208301534
+        ]
+      ],
+      "matches": 580,
+      "inliers": 348,
+      "medianInlierErrorTexturePixels": 0.1785533934844854,
+      "p95InlierErrorTexturePixels": 0.7367599504256019,
+      "heldOutMatchCount": 116,
+      "heldOutConsistentCount": 86,
+      "heldOutMedianTexturePixels": 0.172522525093384,
+      "heldOutP95TexturePixels": 0.4973696014532473
+    },
+    "detectedIcons": [
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1193.0,
+          666.0
+        ],
+        "confidence": 0.9050926566123962,
+        "texturePixel": [
+          479.8674875680593,
+          469.36898293260487
+        ]
+      },
+      {
+        "kind": "CollectSign",
+        "pixel": [
+          1539.0,
+          586.0
+        ],
+        "confidence": 0.8820616006851196,
+        "texturePixel": [
+          692.8182847687619,
+          420.15779215450414
+        ]
+      }
+    ],
+    "sourceCalibration": {
+      "model": "axis-aligned X/Z to original Mini texture pixels",
+      "coefficients": [
+        [
+          4.409451748470424,
+          534.3885996630439
+        ],
+        [
+          4.386664969411465,
+          885.8805995297347
+        ]
+      ],
+      "rmsTexturePixels": 3.2405734631855066e-13,
+      "heldOutTexturePixels": [
+        null,
+        null
+      ],
+      "maxErrorTexturePixels": 3.595093471822542e-13,
+      "pairs": [
+        {
+          "id": "2504273934093629549",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            -12.364601135253906,
+            121.77613830566406,
+            -94.94949340820312
+          ],
+          "observedTexturePixel": [
+            479.8674875680593,
+            469.36898293260487
+          ],
+          "predictedTexturePixel": [
+            479.8674875680592,
+            469.3689829326052
+          ]
+        },
+        {
+          "id": "9162653017526462607",
+          "kind": "CollectSign",
+          "sourcePosition": [
+            35.9295654296875,
+            117.3347396850586,
+            -106.16785430908203
+          ],
+          "observedTexturePixel": [
+            692.8182847687619,
+            420.15779215450414
+          ],
+          "predictedTexturePixel": [
+            692.8182847687619,
+            420.1577921545044
+          ]
+        }
+      ],
+      "status": "provisional-or-inconsistent; do not apply",
+      "independentValidationPossible": false
+    },
+    "skullOnlyCalibration": null,
+    "status": "artwork-aligned; source identities not yet verified"
+  }
+]

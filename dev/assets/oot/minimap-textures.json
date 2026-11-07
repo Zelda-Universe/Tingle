@@ -1,0 +1,515 @@
+{
+ "description": "Mini_<texture>.png sizes and trim boxes [left, top, width, height], from minimap-textures.cjs.",
+ "textures": {
+  "DeathMountainCrater_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    218,
+    165,
+    634,
+    690
+   ]
+  },
+  "DeathMountainCrater_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    284,
+    165,
+    568,
+    690
+   ]
+  },
+  "DeathMountainTrail_Adult_00": {
+   "width": 2000,
+   "height": 2000,
+   "trim": [
+    721,
+    344,
+    471,
+    1256
+   ]
+  },
+  "DeathMountainTrail_Child_00": {
+   "width": 2000,
+   "height": 2000,
+   "trim": [
+    721,
+    344,
+    471,
+    1256
+   ]
+  },
+  "DesertColossus_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    110,
+    247,
+    768,
+    588
+   ]
+  },
+  "DesertColossus_Adult_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    110,
+    247,
+    768,
+    588
+   ]
+  },
+  "DesertColossus_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    110,
+    247,
+    768,
+    588
+   ]
+  },
+  "DesertColossus_Child_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    110,
+    247,
+    768,
+    588
+   ]
+  },
+  "GanonCastle_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    338,
+    216,
+    447,
+    565
+   ]
+  },
+  "GanonCastle_Adult_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    117,
+    143,
+    663,
+    701
+   ]
+  },
+  "GerudoFortress_Adult_00": {
+   "width": 2000,
+   "height": 2000,
+   "trim": [
+    170,
+    388,
+    1579,
+    1272
+   ]
+  },
+  "GerudoValley_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    212,
+    186,
+    697,
+    725
+   ]
+  },
+  "GerudoValley_Adult_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    212,
+    186,
+    697,
+    725
+   ]
+  },
+  "GerudoValley_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    276,
+    186,
+    633,
+    725
+   ]
+  },
+  "GoronCity_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    214,
+    176,
+    647,
+    651
+   ]
+  },
+  "GoronCity_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    214,
+    209,
+    647,
+    618
+   ]
+  },
+  "Graveyard_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    94,
+    334,
+    970,
+    345
+   ]
+  },
+  "Graveyard_Adult_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    94,
+    334,
+    970,
+    345
+   ]
+  },
+  "Graveyard_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    94,
+    334,
+    970,
+    345
+   ]
+  },
+  "Graveyard_Child_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    94,
+    334,
+    970,
+    345
+   ]
+  },
+  "HountedWasteland_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    236,
+    236,
+    594,
+    594
+   ]
+  },
+  "HountedWasteland_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    236,
+    236,
+    594,
+    594
+   ]
+  },
+  "HyruleCastle_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    381,
+    171,
+    450,
+    700
+   ]
+  },
+  "HyruleField_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    95,
+    239,
+    808,
+    624
+   ]
+  },
+  "HyruleField_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    95,
+    239,
+    808,
+    624
+   ]
+  },
+  "KakarikoVillage_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    172,
+    206,
+    705,
+    672
+   ]
+  },
+  "KakarikoVillage_Adult_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    172,
+    206,
+    705,
+    672
+   ]
+  },
+  "KakarikoVillage_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    172,
+    206,
+    705,
+    672
+   ]
+  },
+  "KakarikoVillage_Child_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    172,
+    206,
+    705,
+    672
+   ]
+  },
+  "KokiriForest_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    72,
+    316,
+    953,
+    473
+   ]
+  },
+  "KokiriForest_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    72,
+    316,
+    953,
+    473
+   ]
+  },
+  "KokiriForest_Child_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    72,
+    316,
+    953,
+    473
+   ]
+  },
+  "LakeHylia_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    192,
+    253,
+    735,
+    571
+   ]
+  },
+  "LakeHylia_Adult_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    192,
+    253,
+    735,
+    572
+   ]
+  },
+  "LakeHylia_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    192,
+    253,
+    735,
+    572
+   ]
+  },
+  "LonLonRanch_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    236,
+    275,
+    580,
+    518
+   ]
+  },
+  "LonLonRanch_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    236,
+    275,
+    580,
+    518
+   ]
+  },
+  "LostWood_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    236,
+    238,
+    594,
+    592
+   ]
+  },
+  "LostWood_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    236,
+    238,
+    594,
+    592
+   ]
+  },
+  "Market_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    431,
+    234,
+    504,
+    640
+   ]
+  },
+  "Market_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    127,
+    234,
+    808,
+    640
+   ]
+  },
+  "SacredForestMeadow_Adult_00": {
+   "width": 2000,
+   "height": 2000,
+   "trim": [
+    905,
+    325,
+    274,
+    1356
+   ]
+  },
+  "SacredForestMeadow_Child_00": {
+   "width": 2000,
+   "height": 2000,
+   "trim": [
+    905,
+    325,
+    274,
+    1356
+   ]
+  },
+  "ZoraDomain_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    84,
+    313,
+    915,
+    549
+   ]
+  },
+  "ZoraDomain_Adult_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    84,
+    313,
+    915,
+    549
+   ]
+  },
+  "ZoraDomain_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    84,
+    313,
+    915,
+    549
+   ]
+  },
+  "ZoraFountain_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    232,
+    204,
+    639,
+    681
+   ]
+  },
+  "ZoraFountain_Adult_01": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    232,
+    204,
+    639,
+    681
+   ]
+  },
+  "ZoraFountain_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    232,
+    268,
+    639,
+    617
+   ]
+  },
+  "ZoraRiver_Adult_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    33,
+    329,
+    1021,
+    441
+   ]
+  },
+  "ZoraRiver_Child_00": {
+   "width": 1067,
+   "height": 1067,
+   "trim": [
+    33,
+    329,
+    1021,
+    441
+   ]
+  }
+ }
+}

@@ -1,0 +1,209 @@
+{
+ "description": "Game-coordinate rectangles [[x min, x max], [z min, z max]] covered by every floor texture of a dungeon (<dungeon>_<floor>_Main.png, 2000x1440), and its floor textures. From Owl Object Map by zeldamods (https://objmap-oot.zeldamods.org, game_files/maps.json).",
+ "dungeons": {
+  "BottomOfTheWell": {
+   "bounds": [
+    [
+     -131.0,
+     107.0
+    ],
+    [
+     -117.68,
+     53.68
+    ]
+   ],
+   "floors": [
+    "B2",
+    "B1_State00",
+    "B1_State01"
+   ]
+  },
+  "DodongoCavern": {
+   "bounds": [
+    [
+     -97.0,
+     159.0
+    ],
+    [
+     -122.16,
+     62.16
+    ]
+   ],
+   "floors": [
+    "1F",
+    "2F"
+   ]
+  },
+  "FireTemple": {
+   "bounds": [
+    [
+     -93.0,
+     127.0
+    ],
+    [
+     -82.2,
+     76.2
+    ]
+   ],
+   "floors": [
+    "1F_State00",
+    "1F_State01",
+    "2F_State00",
+    "2F_State01",
+    "3F",
+    "4F",
+    "5F_State00",
+    "5F_State01"
+   ]
+  },
+  "ForestTemple": {
+   "bounds": [
+    [
+     -125.5,
+     119.5
+    ],
+    [
+     -82.2,
+     94.2
+    ]
+   ],
+   "floors": [
+    "B2",
+    "B1",
+    "1F",
+    "2F_State00",
+    "2F_State01",
+    "2F_State02",
+    "2F_State03",
+    "3F_State00",
+    "3F_State01",
+    "3F_State02",
+    "3F_State03"
+   ]
+  },
+  "IceCavern": {
+   "bounds": [
+    [
+     -132.5,
+     154.5
+    ],
+    [
+     -91.32,
+     115.32
+    ]
+   ],
+   "floors": [
+    "1F"
+   ]
+  },
+  "InsideJabuJabuBelly": {
+   "bounds": [
+    [
+     -165.0,
+     163.0
+    ],
+    [
+     -210.08,
+     26.08
+    ]
+   ],
+   "floors": [
+    "B1",
+    "1F",
+    "2F"
+   ]
+  },
+  "InsideTheDekuTree": {
+   "bounds": [
+    [
+     -98.5,
+     26.5
+    ],
+    [
+     -27.0,
+     63.0
+    ]
+   ],
+   "floors": [
+    "B2_State00",
+    "B1_State00",
+    "B1_State01",
+    "1F_State00",
+    "1F_State01",
+    "2F_State00",
+    "2F_State01",
+    "3F_State00",
+    "3F_State01"
+   ]
+  },
+  "ShadowTemple": {
+   "bounds": [
+    [
+     -238.5,
+     194.5
+    ],
+    [
+     -148.88,
+     162.88
+    ]
+   ],
+   "floors": [
+    "B4_State00",
+    "B4_State01",
+    "B3",
+    "B2",
+    "B1"
+   ]
+  },
+  "SpiritTemple": {
+   "bounds": [
+    [
+     -101.0,
+     101.0
+    ],
+    [
+     -96.72,
+     48.72
+    ]
+   ],
+   "floors": [
+    "1F",
+    "2F",
+    "3F_State00",
+    "3F_State01",
+    "3F_State02",
+    "4F_State00",
+    "4F_State01"
+   ]
+  },
+  "WaterTemple": {
+   "bounds": [
+    [
+     -155.5,
+     107.5
+    ],
+    [
+     -139.68,
+     49.68
+    ]
+   ],
+   "floors": [
+    "B1_Lv1",
+    "B1_Lv2",
+    "B1_Lv3",
+    "1F_Lv1_State00",
+    "1F_Lv1_State01",
+    "1F_Lv2_State00",
+    "1F_Lv2_State01",
+    "1F_Lv3_State00",
+    "1F_Lv3_State01",
+    "2F_Lv1",
+    "2F_Lv2",
+    "2F_Lv3",
+    "3F_Lv1",
+    "3F_Lv2",
+    "3F_Lv3"
+   ]
+  }
+ }
+}

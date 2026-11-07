@@ -1,0 +1,1052 @@
+{
+ "650000": {
+  "age": "Child",
+  "ends": [
+   {
+    "link": "Hyrule Field -> Market",
+    "end": "Hyrule Field",
+    "exitTo": "Market",
+    "offsetPixels": 8,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Market",
+    "end": "Market",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 7,
+    "candidates": 1
+   },
+   {
+    "link": "Market -> Hyrule Castle",
+    "end": "Market",
+    "exitTo": "Hyrule Castle",
+    "offsetPixels": 1,
+    "candidates": 1
+   },
+   {
+    "link": "Market -> Hyrule Castle",
+    "end": "Hyrule Castle",
+    "exitTo": "Market",
+    "offsetPixels": 2,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Kakariko Village",
+    "end": "Hyrule Field",
+    "exitTo": "Kakariko Village",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Kakariko Village",
+    "end": "Kakariko Village",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Kakariko Village -> Death Mountain Trail",
+    "end": "Kakariko Village",
+    "exitTo": "Death Mountain Trail",
+    "offsetPixels": 2,
+    "candidates": 1
+   },
+   {
+    "link": "Kakariko Village -> Death Mountain Trail",
+    "end": "Death Mountain Trail",
+    "exitTo": "Kakariko Village",
+    "offsetPixels": 1,
+    "candidates": 1
+   },
+   {
+    "link": "Kakariko Village -> Graveyard",
+    "end": "Kakariko Village",
+    "exitTo": "Graveyard",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Kakariko Village -> Graveyard",
+    "end": "Graveyard",
+    "exitTo": "Kakariko Village",
+    "offsetPixels": 13,
+    "candidates": 1
+   },
+   {
+    "link": "Death Mountain Trail -> Goron City",
+    "end": "Death Mountain Trail",
+    "exitTo": "Goron City",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Death Mountain Trail -> Goron City",
+    "end": "Goron City",
+    "exitTo": "Death Mountain Trail",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Death Mountain Trail -> Death Mountain Crater",
+    "end": "Death Mountain Trail",
+    "exitTo": "Death Mountain Crater",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Death Mountain Trail -> Death Mountain Crater",
+    "end": "Death Mountain Crater",
+    "exitTo": "Death Mountain Trail",
+    "offsetPixels": 14,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Zora's River",
+    "end": "Hyrule Field",
+    "exitTo": "Zora's River",
+    "offsetPixels": 2,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Zora's River",
+    "end": "Zora's River",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 6,
+    "candidates": 2
+   },
+   {
+    "link": "Zora's River -> Zora's Domain",
+    "end": "Zora's River",
+    "exitTo": "Zora's Domain",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Zora's River -> Zora's Domain",
+    "end": "Zora's Domain",
+    "exitTo": "Zora's River",
+    "offsetPixels": 3,
+    "candidates": 1
+   },
+   {
+    "link": "Zora's Domain -> Zora's Fountain",
+    "end": "Zora's Domain",
+    "exitTo": "Zora's Fountain",
+    "offsetPixels": 6,
+    "candidates": 1
+   },
+   {
+    "link": "Zora's Domain -> Zora's Fountain",
+    "end": "Zora's Fountain",
+    "exitTo": "Zora's Domain",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Kokiri Forest",
+    "end": "Hyrule Field",
+    "exitTo": "Kokiri Forest",
+    "offsetPixels": 11,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Kokiri Forest",
+    "end": "Kokiri Forest",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 10,
+    "candidates": 1
+   },
+   {
+    "link": "Kokiri Forest -> Lost Woods",
+    "end": "Kokiri Forest",
+    "exitTo": "Lost Woods",
+    "offsetPixels": 6,
+    "candidates": 1
+   },
+   {
+    "link": "Kokiri Forest -> Lost Woods",
+    "end": "Lost Woods",
+    "exitTo": "Kokiri Forest",
+    "offsetPixels": 179,
+    "candidates": 1
+   },
+   {
+    "link": "Lost Woods -> Sacred Forest Meadow",
+    "end": "Lost Woods",
+    "exitTo": "Sacred Forest Meadow",
+    "offsetPixels": 211,
+    "candidates": 1
+   },
+   {
+    "link": "Lost Woods -> Sacred Forest Meadow",
+    "end": "Sacred Forest Meadow",
+    "exitTo": "Lost Woods",
+    "offsetPixels": 6,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Lake Hylia",
+    "end": "Hyrule Field",
+    "exitTo": "Lake Hylia",
+    "offsetPixels": 9,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Lake Hylia",
+    "end": "Lake Hylia",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Gerudo Valley",
+    "end": "Hyrule Field",
+    "exitTo": "Gerudo Valley",
+    "offsetPixels": 8,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Gerudo Valley",
+    "end": "Gerudo Valley",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 3,
+    "candidates": 1
+   },
+   {
+    "link": "Gerudo Valley -> Gerudo's Fortress",
+    "end": "Gerudo Valley",
+    "exitTo": "Gerudo's Fortress",
+    "offsetPixels": null,
+    "candidates": 0
+   },
+   {
+    "link": "Gerudo Valley -> Gerudo's Fortress",
+    "end": "Gerudo's Fortress",
+    "exitTo": "Gerudo Valley",
+    "offsetPixels": null,
+    "candidates": 0
+   },
+   {
+    "link": "Gerudo's Fortress -> Haunted Wasteland",
+    "end": "Gerudo's Fortress",
+    "exitTo": "Haunted Wasteland",
+    "offsetPixels": null,
+    "candidates": 0
+   },
+   {
+    "link": "Gerudo's Fortress -> Haunted Wasteland",
+    "end": "Haunted Wasteland",
+    "exitTo": "Gerudo's Fortress",
+    "offsetPixels": null,
+    "candidates": 0
+   },
+   {
+    "link": "Haunted Wasteland -> Desert Colossus",
+    "end": "Haunted Wasteland",
+    "exitTo": "Desert Colossus",
+    "offsetPixels": null,
+    "candidates": 0
+   },
+   {
+    "link": "Haunted Wasteland -> Desert Colossus",
+    "end": "Desert Colossus",
+    "exitTo": "Haunted Wasteland",
+    "offsetPixels": 3,
+    "candidates": 1
+   }
+  ],
+  "updated": [
+   {
+    "from": [
+     "Hyrule Field",
+     0.584,
+     0.065
+    ],
+    "to": [
+     "Market",
+     0.492,
+     0.964
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Market",
+     0.491,
+     0.16
+    ],
+    "to": [
+     "Hyrule Castle",
+     0.452,
+     0.959
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.952,
+     0.054
+    ],
+    "to": [
+     "Kakariko Village",
+     0.034,
+     0.581
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Kakariko Village",
+     0.578,
+     0.034
+    ],
+    "to": [
+     "Death Mountain Trail",
+     0.496,
+     0.968
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Kakariko Village",
+     0.971,
+     0.656
+    ],
+    "to": [
+     "Graveyard",
+     0.022,
+     0.586
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Death Mountain Trail",
+     0.553,
+     0.316
+    ],
+    "to": [
+     "Goron City",
+     0.564,
+     0.962
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Death Mountain Trail",
+     0.818,
+     0.028
+    ],
+    "to": [
+     "Death Mountain Crater",
+     0.745,
+     0.965
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.962,
+     0.358
+    ],
+    "to": [
+     "Zora's River",
+     0.022,
+     0.873
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Zora's River",
+     0.978,
+     0.229
+    ],
+    "to": [
+     "Zora's Domain",
+     0.287,
+     0.036
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Zora's Domain",
+     0.975,
+     0.782
+    ],
+    "to": [
+     "Zora's Fountain",
+     0.052,
+     0.328
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.941,
+     0.733
+    ],
+    "to": [
+     "Kokiri Forest",
+     0.02,
+     0.264
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Kokiri Forest",
+     0.378,
+     0.037
+    ],
+    "to": [
+     "Lost Woods",
+     0.474,
+     0.535
+    ],
+    "route": "v"
+   },
+   {
+    "from": [
+     "Lost Woods",
+     0.582,
+     0.127
+    ],
+    "to": [
+     "Sacred Forest Meadow",
+     0.457,
+     0.973
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.417,
+     0.939
+    ],
+    "to": [
+     "Lake Hylia",
+     0.845,
+     0.073
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.024,
+     0.394
+    ],
+    "to": [
+     "Gerudo Valley",
+     0.96,
+     0.744
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Gerudo Valley",
+     -0.055,
+     0.519
+    ],
+    "to": [
+     "Gerudo's Fortress",
+     0.09,
+     0.506
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Gerudo's Fortress",
+     0.036,
+     0.035
+    ],
+    "to": [
+     "Haunted Wasteland",
+     0.947,
+     0.502
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Haunted Wasteland",
+     0.053,
+     0.502
+    ],
+    "to": [
+     "Desert Colossus",
+     0.973,
+     0.416
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Death Mountain Crater",
+     0,
+     0.252
+    ],
+    "to": [
+     "Goron City",
+     0.546,
+     0
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Goron City",
+     0.829,
+     0.49
+    ],
+    "to": [
+     "Lost Woods",
+     0.582,
+     0.343
+    ],
+    "route": "d"
+   }
+  ],
+  "missing": [
+   "GerudoValley <-> LakeHylia",
+   "LakeHylia <-> ZoraDomain",
+   "LostWood <-> ZoraRiver",
+   "KokiriForest <-> ZoraRiver"
+  ]
+ },
+ "650001": {
+  "age": "Adult",
+  "ends": [
+   {
+    "link": "Hyrule Field -> Market",
+    "end": "Hyrule Field",
+    "exitTo": "Market",
+    "offsetPixels": 8,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Market",
+    "end": "Market",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 2,
+    "candidates": 1
+   },
+   {
+    "link": "Market -> Ganon's Castle",
+    "end": "Market",
+    "exitTo": "Ganon's Castle",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Market -> Ganon's Castle",
+    "end": "Ganon's Castle",
+    "exitTo": "Market",
+    "offsetPixels": 46,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Kakariko Village",
+    "end": "Hyrule Field",
+    "exitTo": "Kakariko Village",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Kakariko Village",
+    "end": "Kakariko Village",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 5,
+    "candidates": 2
+   },
+   {
+    "link": "Kakariko Village -> Death Mountain Trail",
+    "end": "Kakariko Village",
+    "exitTo": "Death Mountain Trail",
+    "offsetPixels": 2,
+    "candidates": 2
+   },
+   {
+    "link": "Kakariko Village -> Death Mountain Trail",
+    "end": "Death Mountain Trail",
+    "exitTo": "Kakariko Village",
+    "offsetPixels": 1,
+    "candidates": 1
+   },
+   {
+    "link": "Kakariko Village -> Graveyard",
+    "end": "Kakariko Village",
+    "exitTo": "Graveyard",
+    "offsetPixels": 4,
+    "candidates": 2
+   },
+   {
+    "link": "Kakariko Village -> Graveyard",
+    "end": "Graveyard",
+    "exitTo": "Kakariko Village",
+    "offsetPixels": 13,
+    "candidates": 1
+   },
+   {
+    "link": "Death Mountain Trail -> Goron City",
+    "end": "Death Mountain Trail",
+    "exitTo": "Goron City",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Death Mountain Trail -> Goron City",
+    "end": "Goron City",
+    "exitTo": "Death Mountain Trail",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Death Mountain Trail -> Death Mountain Crater",
+    "end": "Death Mountain Trail",
+    "exitTo": "Death Mountain Crater",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Death Mountain Trail -> Death Mountain Crater",
+    "end": "Death Mountain Crater",
+    "exitTo": "Death Mountain Trail",
+    "offsetPixels": 23,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Zora's River",
+    "end": "Hyrule Field",
+    "exitTo": "Zora's River",
+    "offsetPixels": 2,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Zora's River",
+    "end": "Zora's River",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 6,
+    "candidates": 2
+   },
+   {
+    "link": "Zora's River -> Zora's Domain",
+    "end": "Zora's River",
+    "exitTo": "Zora's Domain",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Zora's River -> Zora's Domain",
+    "end": "Zora's Domain",
+    "exitTo": "Zora's River",
+    "offsetPixels": 3,
+    "candidates": 2
+   },
+   {
+    "link": "Zora's Domain -> Zora's Fountain",
+    "end": "Zora's Domain",
+    "exitTo": "Zora's Fountain",
+    "offsetPixels": 6,
+    "candidates": 2
+   },
+   {
+    "link": "Zora's Domain -> Zora's Fountain",
+    "end": "Zora's Fountain",
+    "exitTo": "Zora's Domain",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Kokiri Forest",
+    "end": "Hyrule Field",
+    "exitTo": "Kokiri Forest",
+    "offsetPixels": 11,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Kokiri Forest",
+    "end": "Kokiri Forest",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 10,
+    "candidates": 1
+   },
+   {
+    "link": "Kokiri Forest -> Lost Woods",
+    "end": "Kokiri Forest",
+    "exitTo": "Lost Woods",
+    "offsetPixels": 6,
+    "candidates": 1
+   },
+   {
+    "link": "Kokiri Forest -> Lost Woods",
+    "end": "Lost Woods",
+    "exitTo": "Kokiri Forest",
+    "offsetPixels": 179,
+    "candidates": 1
+   },
+   {
+    "link": "Lost Woods -> Sacred Forest Meadow",
+    "end": "Lost Woods",
+    "exitTo": "Sacred Forest Meadow",
+    "offsetPixels": 211,
+    "candidates": 1
+   },
+   {
+    "link": "Lost Woods -> Sacred Forest Meadow",
+    "end": "Sacred Forest Meadow",
+    "exitTo": "Lost Woods",
+    "offsetPixels": 6,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Lake Hylia",
+    "end": "Hyrule Field",
+    "exitTo": "Lake Hylia",
+    "offsetPixels": 9,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Lake Hylia",
+    "end": "Lake Hylia",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Gerudo Valley",
+    "end": "Hyrule Field",
+    "exitTo": "Gerudo Valley",
+    "offsetPixels": 8,
+    "candidates": 1
+   },
+   {
+    "link": "Hyrule Field -> Gerudo Valley",
+    "end": "Gerudo Valley",
+    "exitTo": "Hyrule Field",
+    "offsetPixels": 5,
+    "candidates": 1
+   },
+   {
+    "link": "Gerudo Valley -> Gerudo's Fortress",
+    "end": "Gerudo Valley",
+    "exitTo": "Gerudo's Fortress",
+    "offsetPixels": 50,
+    "candidates": 1
+   },
+   {
+    "link": "Gerudo Valley -> Gerudo's Fortress",
+    "end": "Gerudo's Fortress",
+    "exitTo": "Gerudo Valley",
+    "offsetPixels": 3,
+    "candidates": 1
+   },
+   {
+    "link": "Gerudo's Fortress -> Haunted Wasteland",
+    "end": "Gerudo's Fortress",
+    "exitTo": "Haunted Wasteland",
+    "offsetPixels": 4,
+    "candidates": 1
+   },
+   {
+    "link": "Gerudo's Fortress -> Haunted Wasteland",
+    "end": "Haunted Wasteland",
+    "exitTo": "Gerudo's Fortress",
+    "offsetPixels": null,
+    "candidates": 0
+   },
+   {
+    "link": "Haunted Wasteland -> Desert Colossus",
+    "end": "Haunted Wasteland",
+    "exitTo": "Desert Colossus",
+    "offsetPixels": null,
+    "candidates": 0
+   },
+   {
+    "link": "Haunted Wasteland -> Desert Colossus",
+    "end": "Desert Colossus",
+    "exitTo": "Haunted Wasteland",
+    "offsetPixels": 3,
+    "candidates": 1
+   }
+  ],
+  "updated": [
+   {
+    "from": [
+     "Hyrule Field",
+     0.584,
+     0.065
+    ],
+    "to": [
+     "Market",
+     0.185,
+     0.964
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Market",
+     0.177,
+     0.16
+    ],
+    "to": [
+     "Ganon's Castle",
+     0.426,
+     1
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.952,
+     0.054
+    ],
+    "to": [
+     "Kakariko Village",
+     0.034,
+     0.581
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Kakariko Village",
+     0.578,
+     0.034
+    ],
+    "to": [
+     "Death Mountain Trail",
+     0.496,
+     0.968
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Kakariko Village",
+     0.971,
+     0.656
+    ],
+    "to": [
+     "Graveyard",
+     0.022,
+     0.586
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Death Mountain Trail",
+     0.553,
+     0.316
+    ],
+    "to": [
+     "Goron City",
+     0.564,
+     0.964
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Death Mountain Trail",
+     0.818,
+     0.028
+    ],
+    "to": [
+     "Death Mountain Crater",
+     0.771,
+     0.965
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.962,
+     0.358
+    ],
+    "to": [
+     "Zora's River",
+     0.022,
+     0.873
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Zora's River",
+     0.978,
+     0.229
+    ],
+    "to": [
+     "Zora's Domain",
+     0.287,
+     0.036
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Zora's Domain",
+     0.975,
+     0.782
+    ],
+    "to": [
+     "Zora's Fountain",
+     0.052,
+     0.391
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.941,
+     0.733
+    ],
+    "to": [
+     "Kokiri Forest",
+     0.02,
+     0.264
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Kokiri Forest",
+     0.378,
+     0.037
+    ],
+    "to": [
+     "Lost Woods",
+     0.474,
+     0.535
+    ],
+    "route": "v"
+   },
+   {
+    "from": [
+     "Lost Woods",
+     0.582,
+     0.127
+    ],
+    "to": [
+     "Sacred Forest Meadow",
+     0.457,
+     0.973
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.417,
+     0.939
+    ],
+    "to": [
+     "Lake Hylia",
+     0.845,
+     0.073
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Hyrule Field",
+     0.024,
+     0.394
+    ],
+    "to": [
+     "Gerudo Valley",
+     0.964,
+     0.744
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Gerudo Valley",
+     0.036,
+     0.522
+    ],
+    "to": [
+     "Gerudo's Fortress",
+     0.089,
+     0.511
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Gerudo's Fortress",
+     0.036,
+     0.042
+    ],
+    "to": [
+     "Haunted Wasteland",
+     0.947,
+     0.502
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Haunted Wasteland",
+     0.053,
+     0.502
+    ],
+    "to": [
+     "Desert Colossus",
+     0.973,
+     0.416
+    ],
+    "route": "h"
+   },
+   {
+    "from": [
+     "Death Mountain Crater",
+     0.035,
+     0.252
+    ],
+    "to": [
+     "Goron City",
+     0.546,
+     0.026
+    ],
+    "route": "d"
+   },
+   {
+    "from": [
+     "Goron City",
+     0.829,
+     0.516
+    ],
+    "to": [
+     "Lost Woods",
+     0.582,
+     0.343
+    ],
+    "route": "d"
+   }
+  ],
+  "missing": [
+   "GerudoValley <-> LakeHylia",
+   "LakeHylia <-> ZoraDomain",
+   "LostWood <-> ZoraRiver",
+   "KokiriForest <-> ZoraRiver"
+  ]
+ }
+}

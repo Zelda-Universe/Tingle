@@ -1,0 +1,35 @@
+{
+  "source": "/Users/Jess/Desktop/all maps - child 2026-11-06 17-12-57.mp4",
+  "sha256": "d46261ab78ffd4d3d6b20c34bcbf6e96f57bf84d2d76da43dc35ab525b167a0d",
+  "durationSeconds": 49.917,
+  "frameSize": [2560,1440],
+  "extractedFrames": "/tmp/zm-child-frames/frame-<integer second>.png",
+  "samplingOffsetSeconds": 0.5,
+  "age": "Child",
+  "regions": [
+    {"scene":"SacredForestMeadow_Child","second":2},
+    {"scene":"LostWood_Child","second":5},
+    {"scene":"KokiriForest_Child","second":7},
+    {"scene":"ZoraRiver_Child","second":9},
+    {"scene":"ZoraDomain_Child","second":11},
+    {"scene":"ZoraFountain_Child","second":12},
+    {"scene":"GoronCity_Child","second":14},
+    {"scene":"DeathMountainTrail_Child","second":16},
+    {"scene":"DeathMountainCrater_Child","second":18},
+    {"scene":"Graveyard_Child","second":20},
+    {"scene":"KakarikoVillage_Child","second":21},
+    {"scene":"LakeHylia_Child","second":23},
+    {"scene":"HyruleField_Child","second":24,"calibration":"four source collectibles measured; preview generated"},
+    {"scene":"LonLonRanch_Child","second":27},
+    {"scene":"GerudoValley_Child","second":29},
+    {"scene":"DesertColossus_Child","second":31},
+    {"scene":"Market_Child","second":33},
+    {"scene":"HyruleCastle_Child","second":35}
+  ],
+  "notes": [
+    "18 regional views identified; Lon Lon Ranch is a separate in-game view but part of Hyrule Field in the composite artwork.",
+    "Final seconds show the illustrated world overview, not dungeon floor maps.",
+    "No missing icon is treated as proof that a collectible is absent.",
+    "Most video regions are indexed only, not calibrated yet. No database positions changed."
+  ]
+}

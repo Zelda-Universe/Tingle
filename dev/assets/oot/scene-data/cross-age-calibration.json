@@ -1,0 +1,1405 @@
+[
+  {
+    "region": "Market",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          1.000040712630636,
+          -3.522580031528665e-05,
+          -0.01947163372674684
+        ],
+        [
+          6.211798988307326e-05,
+          1.0000426889209568,
+          -0.06492707260516124
+        ]
+      ],
+      "matches": 299,
+      "inliers": 195,
+      "medianInlierErrorTexturePixels": 0.006922855005005712,
+      "p95InlierErrorTexturePixels": 0.07701975877368357,
+      "heldOutMatchCount": 60,
+      "heldOutConsistentCount": 47,
+      "heldOutMedianTexturePixels": 0.007567641792883509,
+      "heldOutP95TexturePixels": 0.13278609264444768
+    },
+    "samePlaceObservations": [],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "SacredForestMeadow",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.999999999999999,
+          4.002756748032455e-18,
+          9.954213028742391e-13
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "matches": 1215,
+      "inliers": 967,
+      "medianInlierErrorTexturePixels": 2.2737367544323206e-13,
+      "p95InlierErrorTexturePixels": 2.2737367544323206e-13,
+      "heldOutMatchCount": 243,
+      "heldOutConsistentCount": 243,
+      "heldOutMedianTexturePixels": 2.2737367544323206e-13,
+      "heldOutP95TexturePixels": 2.2737367544323206e-13
+    },
+    "samePlaceObservations": [],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "LostWood",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          1.0,
+          2.569891031201465e-17,
+          -1.4399710682347715e-14
+        ],
+        [
+          1.0968923084790264e-17,
+          1.0,
+          -8.237141769001337e-15
+        ]
+      ],
+      "matches": 485,
+      "inliers": 388,
+      "medianInlierErrorTexturePixels": 0.0,
+      "p95InlierErrorTexturePixels": 0.0,
+      "heldOutMatchCount": 97,
+      "heldOutConsistentCount": 97,
+      "heldOutMedianTexturePixels": 0.0,
+      "heldOutP95TexturePixels": 0.0
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          540.77902322354,
+          390.5902911720289
+        ],
+        "adultPixel": [
+          541.4174846131682,
+          390.58876230462187
+        ],
+        "errorTexturePixels": 0.6384632201478365
+      }
+    ],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "KokiriForest",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          1.0001021740918932,
+          -1.533922400394996e-05,
+          -0.03164653211726468
+        ],
+        [
+          2.5308482932361495e-05,
+          1.000104369697716,
+          -0.06765985133368686
+        ]
+      ],
+      "matches": 877,
+      "inliers": 696,
+      "medianInlierErrorTexturePixels": 0.01760909645295767,
+      "p95InlierErrorTexturePixels": 0.10531778209346507,
+      "heldOutMatchCount": 176,
+      "heldOutConsistentCount": 175,
+      "heldOutMedianTexturePixels": 0.017197329311389578,
+      "heldOutP95TexturePixels": 0.12651370482904348
+    },
+    "samePlaceObservations": [],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "ZoraRiver",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.9999999999999999,
+          -8.990426998646331e-17,
+          8.971725366006153e-14
+        ],
+        [
+          1.6785812342509233e-17,
+          1.0,
+          -5.811746845263434e-14
+        ]
+      ],
+      "matches": 1118,
+      "inliers": 886,
+      "medianInlierErrorTexturePixels": 1.1368683772161603e-13,
+      "p95InlierErrorTexturePixels": 1.1368683772161603e-13,
+      "heldOutMatchCount": 224,
+      "heldOutConsistentCount": 224,
+      "heldOutMedianTexturePixels": 1.1368683772161603e-13,
+      "heldOutP95TexturePixels": 1.1368683772161603e-13
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          854.0475060903469,
+          345.2359722877318
+        ],
+        "adultPixel": [
+          854.0528869079549,
+          345.28392432138014
+        ],
+        "errorTexturePixels": 0.04825298673811397
+      },
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          437.31015909840994,
+          455.41110399659726
+        ],
+        "adultPixel": [
+          437.3338759167656,
+          455.43296442425435
+        ],
+        "errorTexturePixels": 0.03225470152191161
+      }
+    ],
+    "childModelTransfer": null,
+    "adultModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          4.02510952146514,
+          3.639928553082297e-16,
+          453.7467261520115
+        ],
+        [
+          -6.756473308536098e-17,
+          4.0486714965043955,
+          595.4318375481423
+        ]
+      ],
+      "checks": [
+        {
+          "id": "6961804965205481566",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            854.2450928286444,
+            345.46682166948807
+          ],
+          "observedTexturePixel": [
+            854.0475060903469,
+            345.2359722877318
+          ],
+          "errorTexturePixels": 0.30386173863828736
+        },
+        {
+          "id": "18246168067761770276",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            489.91371189350616,
+            389.5498709011566
+          ],
+          "observedTexturePixel": [
+            500.679452390086,
+            354.47846377347764
+          ],
+          "errorTexturePixels": 36.68657474274631
+        },
+        {
+          "id": "3814878871658269103",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            437.6462765502202,
+            456.56240830693275
+          ],
+          "observedTexturePixel": [
+            437.31015909840994,
+            455.41110399659726
+          ],
+          "errorTexturePixels": 1.199365063860248
+        },
+        {
+          "id": "4877056571307262080",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            489.91371189350616,
+            389.5498709011566
+          ],
+          "observedTexturePixel": [
+            522.8421417515665,
+            354.4777720862579
+          ],
+          "errorTexturePixels": 48.107521326703356
+        },
+        {
+          "id": "12370559827741970774",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            233.49882398996655,
+            553.3144698816211
+          ],
+          "observedTexturePixel": [
+            233.576175700466,
+            553.8864014608287
+          ],
+          "errorTexturePixels": 0.5771386474773981
+        },
+        {
+          "id": "8695975724114049706",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            906.974021418008,
+            397.85662527425075
+          ],
+          "observedTexturePixel": [
+            907.0135064255009,
+            399.39223570530237
+          ],
+          "errorTexturePixels": 1.5361179843264856
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    }
+  },
+  {
+    "region": "ZoraDomain",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.9999788494550669,
+          1.9158154557994006e-05,
+          -0.01806288042173829
+        ],
+        [
+          -2.9277259076334622e-05,
+          0.9999133868406804,
+          0.09123512755515073
+        ]
+      ],
+      "matches": 621,
+      "inliers": 477,
+      "medianInlierErrorTexturePixels": 0.03275554516213599,
+      "p95InlierErrorTexturePixels": 0.9313208411159464,
+      "heldOutMatchCount": 125,
+      "heldOutConsistentCount": 119,
+      "heldOutMedianTexturePixels": 0.032037346581387176,
+      "heldOutP95TexturePixels": 0.4424715503255193
+    },
+    "samePlaceObservations": [],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "ZoraFountain",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          1.0000147782225055,
+          -9.02135849179165e-05,
+          0.03363910728305158
+        ],
+        [
+          -2.3374973586663813e-05,
+          0.9999856718187593,
+          0.01799061666470217
+        ]
+      ],
+      "matches": 510,
+      "inliers": 402,
+      "medianInlierErrorTexturePixels": 0.015308710096561526,
+      "p95InlierErrorTexturePixels": 0.17089795457220083,
+      "heldOutMatchCount": 102,
+      "heldOutConsistentCount": 100,
+      "heldOutMedianTexturePixels": 0.01790147083517927,
+      "heldOutP95TexturePixels": 0.2201082997190608
+    },
+    "samePlaceObservations": [],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "GoronCity",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.9999939534189554,
+          4.730707119215984e-06,
+          -0.0033121033901876156
+        ],
+        [
+          -8.717984132342435e-06,
+          0.9999922268237542,
+          0.011698505236313196
+        ]
+      ],
+      "matches": 760,
+      "inliers": 602,
+      "medianInlierErrorTexturePixels": 0.004724283769954222,
+      "p95InlierErrorTexturePixels": 0.007570382072333865,
+      "heldOutMatchCount": 152,
+      "heldOutConsistentCount": 151,
+      "heldOutMedianTexturePixels": 0.004693802650709501,
+      "heldOutP95TexturePixels": 0.0065891668815014955
+    },
+    "samePlaceObservations": [],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "DeathMountainTrail",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.9999999999999997,
+          3.393196391993768e-17,
+          2.5303905492728565e-13
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "matches": 1514,
+      "inliers": 1208,
+      "medianInlierErrorTexturePixels": 1.1368683772161603e-13,
+      "p95InlierErrorTexturePixels": 2.2737367544323206e-13,
+      "heldOutMatchCount": 303,
+      "heldOutConsistentCount": 300,
+      "heldOutMedianTexturePixels": 1.1368683772161603e-13,
+      "heldOutP95TexturePixels": 2.2737367544323206e-13
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          905.372028848865,
+          1050.9144587971532
+        ],
+        "adultPixel": [
+          905.3645234822607,
+          1050.8174429617256
+        ],
+        "errorTexturePixels": 0.09730571849367911
+      },
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          846.5064896115573,
+          1327.888703377841
+        ],
+        "adultPixel": [
+          846.514496944222,
+          1327.7678807225716
+        ],
+        "errorTexturePixels": 0.12108770128611643
+      }
+    ],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "DeathMountainCrater",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.9999816427202403,
+          7.077389952881851e-06,
+          0.009090320249324498
+        ],
+        [
+          2.4314949306124382e-06,
+          0.9999842201405611,
+          0.0059364390574447095
+        ]
+      ],
+      "matches": 830,
+      "inliers": 662,
+      "medianInlierErrorTexturePixels": 0.0034480198262151407,
+      "p95InlierErrorTexturePixels": 0.006755225060614389,
+      "heldOutMatchCount": 166,
+      "heldOutConsistentCount": 166,
+      "heldOutMedianTexturePixels": 0.0035415327086311572,
+      "heldOutP95TexturePixels": 0.006527519036281838
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          599.4846304315172,
+          648.5429234975136
+        ],
+        "adultPixel": [
+          599.4998915473382,
+          648.5587534500995
+        ],
+        "errorTexturePixels": 0.02251579528690915
+      },
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          502.8521560506114,
+          487.8693982155818
+        ],
+        "adultPixel": [
+          502.852587087045,
+          487.87625622890545
+        ],
+        "errorTexturePixels": 0.007938668668532559
+      }
+    ],
+    "childModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          5.685232265202611,
+          4.009664990580477e-05,
+          602.2656720099174
+        ],
+        [
+          1.3823867200791984e-05,
+          5.665367805539461,
+          466.23431377112325
+        ]
+      ],
+      "checks": [
+        {
+          "id": "16784485264831565984",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            599.4243526029801,
+            649.4523025548024
+          ],
+          "observedTexturePixel": [
+            599.4998915473382,
+            648.5587534500995
+          ],
+          "errorTexturePixels": 0.8967363796735404
+        },
+        {
+          "id": "12975373498949047978",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            502.7742440630765,
+            488.61225739594494
+          ],
+          "observedTexturePixel": [
+            502.852587087045,
+            487.87625622890545
+          ],
+          "errorTexturePixels": 0.7401590013558031
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    },
+    "adultModelTransfer": null
+  },
+  {
+    "region": "Graveyard",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.9999979324907662,
+          -6.418779877233467e-06,
+          0.0033968041631174425
+        ],
+        [
+          -6.939054402569415e-07,
+          0.9999897977236661,
+          0.00499492000316343
+        ]
+      ],
+      "matches": 740,
+      "inliers": 582,
+      "medianInlierErrorTexturePixels": 0.0013379213810617181,
+      "p95InlierErrorTexturePixels": 0.0026523060437830368,
+      "heldOutMatchCount": 148,
+      "heldOutConsistentCount": 147,
+      "heldOutMedianTexturePixels": 0.0012782070922400775,
+      "heldOutP95TexturePixels": 0.0025659988640717242
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          558.6322638597161,
+          642.3440629216683
+        ],
+        "adultPixel": [
+          558.7041737398391,
+          642.2878211508628
+        ],
+        "errorTexturePixels": 0.09161413735342556
+      },
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          284.7454526244122,
+          411.5457685701642
+        ],
+        "adultPixel": [
+          284.7238452805027,
+          411.51171180305033
+        ],
+        "errorTexturePixels": 0.04092793002324055
+      },
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          258.87341521229826,
+          668.2309674079378
+        ],
+        "adultPixel": [
+          258.97054500693594,
+          668.1189763410098
+        ],
+        "errorTexturePixels": 0.14768589000991356
+      }
+    ],
+    "childModelTransfer": null,
+    "adultModelTransfer": null
+  },
+  {
+    "region": "KakarikoVillage",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.99999709414858,
+          -1.983309206766787e-05,
+          0.010235084881541132
+        ],
+        [
+          2.931074594597353e-05,
+          0.9999817685494012,
+          -0.011459730671622263
+        ]
+      ],
+      "matches": 1139,
+      "inliers": 902,
+      "medianInlierErrorTexturePixels": 0.004978990823087598,
+      "p95InlierErrorTexturePixels": 0.01414203093052543,
+      "heldOutMatchCount": 228,
+      "heldOutConsistentCount": 227,
+      "heldOutMedianTexturePixels": 0.005111857646237151,
+      "heldOutP95TexturePixels": 0.014413254668251765
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          594.3341385716205,
+          476.58447860746776
+        ],
+        "adultPixel": [
+          594.3327760789347,
+          476.57694148297367
+        ],
+        "errorTexturePixels": 0.00482711029733481
+      },
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          757.453918068251,
+          514.1111148562153
+        ],
+        "adultPixel": [
+          757.448272319845,
+          514.1217596624189
+        ],
+        "errorTexturePixels": 0.009908473567819084
+      },
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          661.4185668114338,
+          655.7094387845511
+        ],
+        "adultPixel": [
+          661.4306663638166,
+          655.7255791456678
+        ],
+        "errorTexturePixels": 0.0262429169865884
+      }
+    ],
+    "childModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          4.342158556448166,
+          -8.601191069038485e-05,
+          751.4242423815347
+        ],
+        [
+          0.00012727227613951173,
+          4.33670868238943,
+          353.23136499828814
+        ]
+      ],
+      "checks": [
+        {
+          "id": "1416092057268113387",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            594.6520605127364,
+            478.84345834119404
+          ],
+          "observedTexturePixel": [
+            594.3327760789347,
+            476.57694148297367
+          ],
+          "errorTexturePixels": 2.2888951959985473
+        },
+        {
+          "id": "3518965357024502806",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            757.8557238828288,
+            515.953997216767
+          ],
+          "observedTexturePixel": [
+            757.448272319845,
+            514.1217596624189
+          ],
+          "errorTexturePixels": 1.8769952668404606
+        },
+        {
+          "id": "12012336414699946951",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            630.8835268667615,
+            702.7148972697883
+          ],
+          "observedTexturePixel": [
+            661.4306663638166,
+            655.7255791456678
+          ],
+          "errorTexturePixels": 56.0457290899346
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    },
+    "adultModelTransfer": null
+  },
+  {
+    "region": "LakeHylia",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          0.9999938280014381,
+          7.2739763358586716e-06,
+          -0.019318866467147144
+        ],
+        [
+          7.252297355971053e-05,
+          0.9999017532059671,
+          -0.017890505754885256
+        ]
+      ],
+      "matches": 371,
+      "inliers": 280,
+      "medianInlierErrorTexturePixels": 0.02511515323456171,
+      "p95InlierErrorTexturePixels": 0.5967343557313044,
+      "heldOutMatchCount": 75,
+      "heldOutConsistentCount": 72,
+      "heldOutMedianTexturePixels": 0.02558560585412566,
+      "heldOutP95TexturePixels": 1.2842904218692501
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          598.6514689826236,
+          351.1912943099297
+        ],
+        "adultPixel": [
+          598.6501106033069,
+          351.17577874084003
+        ],
+        "errorTexturePixels": 0.02018864496516039
+      },
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          308.74744851602827,
+          790.1572198894851
+        ],
+        "adultPixel": [
+          308.5417093685304,
+          790.2774037020681
+        ],
+        "errorTexturePixels": 0.27123757785340064
+      }
+    ],
+    "childModelTransfer": null,
+    "adultModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          2.5297994248535836,
+          -1.8459820925651574e-05,
+          1040.058488536902
+        ],
+        [
+          -0.0001834866037705958,
+          2.5377738583863914,
+          -708.826506093921
+        ]
+      ],
+      "checks": [
+        {
+          "id": "6175378250368022556",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            790.0553953715041,
+            543.0587108683447
+          ],
+          "observedTexturePixel": [
+            812.8581971636265,
+            516.1535347269296
+          ],
+          "errorTexturePixels": 35.26834661238596
+        },
+        {
+          "id": "3889886157160285015",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            598.8724509713159,
+            352.0386453646337
+          ],
+          "observedTexturePixel": [
+            598.6514689826236,
+            351.1912943099297
+          ],
+          "errorTexturePixels": 0.8756922114729562
+        },
+        {
+          "id": "13944703896577680014",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            589.1064581908527,
+            373.3234914102046
+          ],
+          "observedTexturePixel": [
+            589.4190517233643,
+            374.5857237197298
+          ],
+          "errorTexturePixels": 1.3003634567986746
+        },
+        {
+          "id": "7014193622407727514",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            619.1832890451428,
+            337.85869287472167
+          ],
+          "observedTexturePixel": [
+            618.9636100616367,
+            339.4923909236041
+          ],
+          "errorTexturePixels": 1.6484017018665442
+        },
+        {
+          "id": "8655370827943125875",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            308.5892135229798,
+            790.6717178586947
+          ],
+          "observedTexturePixel": [
+            308.74744851602827,
+            790.1572198894851
+          ],
+          "errorTexturePixels": 0.5382810356550649
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    }
+  },
+  {
+    "region": "HyruleField",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          1.000002839937351,
+          2.590921738660714e-05,
+          -0.014087730737233371
+        ],
+        [
+          -3.5662626652891195e-06,
+          0.9999991126434912,
+          0.0046074591597292
+        ]
+      ],
+      "matches": 1415,
+      "inliers": 1125,
+      "medianInlierErrorTexturePixels": 0.004121505236329991,
+      "p95InlierErrorTexturePixels": 0.05415153755495066,
+      "heldOutMatchCount": 283,
+      "heldOutConsistentCount": 283,
+      "heldOutMedianTexturePixels": 0.004067595298294475,
+      "heldOutP95TexturePixels": 0.05419204303533269
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          669.8703150668239,
+          632.2909745919011
+        ],
+        "adultPixel": [
+          669.8420378996127,
+          632.2865902024877
+        ],
+        "errorTexturePixels": 0.03303125764991432
+      },
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          340.5365834862601,
+          740.0167438786734
+        ],
+        "adultPixel": [
+          340.5126870132171,
+          740.0297883769437
+        ],
+        "errorTexturePixels": 0.031673432536503975
+      }
+    ],
+    "childModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          1.4508528676998844,
+          3.7742248986390755e-05,
+          567.5760521303249
+        ],
+        [
+          -5.174107720763977e-06,
+          1.4567099782438806,
+          247.37717420140095
+        ]
+      ],
+      "checks": [
+        {
+          "id": "2177746409373494991",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            669.9146941505177,
+            631.7116970863813
+          ],
+          "observedTexturePixel": [
+            669.8420378996127,
+            632.2865902024877
+          ],
+          "errorTexturePixels": 0.5794661558211173
+        },
+        {
+          "id": "12007978132755687032",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            340.66680763223457,
+            740.2166484079177
+          ],
+          "observedTexturePixel": [
+            340.5126870132171,
+            740.0297883769437
+          ],
+          "errorTexturePixels": 0.24221857150502615
+        },
+        {
+          "id": "9047381233010434881",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            625.7359407965799,
+            745.9888141934033
+          ],
+          "observedTexturePixel": [
+            625.2212594584839,
+            742.7779205206547
+          ],
+          "errorTexturePixels": 3.251881771756387
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    },
+    "adultModelTransfer": null
+  },
+  {
+    "region": "LonLonRanch",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "matches": 595,
+      "inliers": 462,
+      "medianInlierErrorTexturePixels": 0.0,
+      "p95InlierErrorTexturePixels": 0.0,
+      "heldOutMatchCount": 119,
+      "heldOutConsistentCount": 117,
+      "heldOutMedianTexturePixels": 0.0,
+      "heldOutP95TexturePixels": 0.0
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          296.89497385417485,
+          648.477705684241
+        ],
+        "adultPixel": [
+          296.8060892089079,
+          648.4714651099171
+        ],
+        "errorTexturePixels": 0.08910345073072401
+      },
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          714.1144435105027,
+          386.93542631720277
+        ],
+        "adultPixel": [
+          714.2335966399465,
+          386.9596685524482
+        ],
+        "errorTexturePixels": 0.1215942195416762
+      }
+    ],
+    "childModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          3.866402147430229,
+          0.0,
+          866.9497277292656
+        ],
+        [
+          0.0,
+          3.8519327079323546,
+          -385.8728710139238
+        ]
+      ],
+      "checks": [
+        {
+          "id": "2730878115209290675",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            296.8907484797379,
+            647.3380171011516
+          ],
+          "observedTexturePixel": [
+            296.8060892089079,
+            648.4714651099171
+          ],
+          "errorTexturePixels": 1.136605288000961
+        },
+        {
+          "id": "341792603838029977",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            714.0274343477529,
+            387.10591972035365
+          ],
+          "observedTexturePixel": [
+            714.2335966399465,
+            386.9596685524482
+          ],
+          "errorTexturePixels": 0.252769252157482
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    },
+    "adultModelTransfer": null
+  },
+  {
+    "region": "GerudoValley",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          1.000094651337426,
+          8.358707173351131e-06,
+          -0.06739369273297263
+        ],
+        [
+          6.105734378888112e-06,
+          0.9999993779439839,
+          -0.0040056216723128755
+        ]
+      ],
+      "matches": 509,
+      "inliers": 393,
+      "medianInlierErrorTexturePixels": 0.013349881031402392,
+      "p95InlierErrorTexturePixels": 0.030361919303241936,
+      "heldOutMatchCount": 102,
+      "heldOutConsistentCount": 100,
+      "heldOutMedianTexturePixels": 0.01322101189412955,
+      "heldOutP95TexturePixels": 0.03643383224392796
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          555.6728231974364,
+          243.41324240959267
+        ],
+        "adultPixel": [
+          555.6276230120901,
+          243.38979195649205
+        ],
+        "errorTexturePixels": 0.039582530602135665
+      },
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          490.8992972611344,
+          746.4185579413894
+        ],
+        "adultPixel": [
+          490.9308270369879,
+          746.4152950453355
+        ],
+        "errorTexturePixels": 0.04625475784413395
+      }
+    ],
+    "childModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          4.43776055353907,
+          3.7200597000969896e-05,
+          534.4066974450267
+        ],
+        [
+          2.7093222767246933e-05,
+          4.450517656452422,
+          591.5423807023942
+        ]
+      ],
+      "checks": [
+        {
+          "id": "1077480308077338993",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            555.941048751148,
+            243.68772694078245
+          ],
+          "observedTexturePixel": [
+            555.6276230120901,
+            243.38979195649205
+          ],
+          "errorTexturePixels": 0.43243606321406014
+        },
+        {
+          "id": "14813002874583645116",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            490.95880198457974,
+            747.2313734954332
+          ],
+          "observedTexturePixel": [
+            490.9308270369879,
+            746.4152950453355
+          ],
+          "errorTexturePixels": 0.8165577961214289
+        },
+        {
+          "id": "13584527502619061465",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            331.6788049457523,
+            433.29139084274345
+          ],
+          "observedTexturePixel": [
+            330.92217816875154,
+            434.8563430446497
+          ],
+          "errorTexturePixels": 1.7382633499920888
+        },
+        {
+          "id": "11535915511003753934",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            381.1509666932292,
+            637.3003500131637
+          ],
+          "observedTexturePixel": [
+            380.7578007098439,
+            638.6584129733251
+          ],
+          "errorTexturePixels": 1.413829726046856
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    },
+    "adultModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          4.446869796053065,
+          -3.717930866328897e-05,
+          534.2480241592757
+        ],
+        [
+          -2.715142268190619e-05,
+          4.448394585842558,
+          591.9587856298541
+        ]
+      ],
+      "checks": [
+        {
+          "id": "1077480308077338993",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            555.8323978480202,
+            244.26980891720262
+          ],
+          "observedTexturePixel": [
+            555.6728231974364,
+            243.41324240959267
+          ],
+          "errorTexturePixels": 0.8713037650946085
+        },
+        {
+          "id": "14813002874583645116",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            490.70834000843104,
+            747.5740396689243
+          ],
+          "observedTexturePixel": [
+            490.8992972611344,
+            746.4185579413894
+          ],
+          "errorTexturePixels": 1.1711544283428899
+        },
+        {
+          "id": "15265071047503310220",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            760.1733971915039,
+            614.6031334062852
+          ],
+          "observedTexturePixel": [
+            759.9336919680327,
+            615.8288560469224
+          ],
+          "errorTexturePixels": 1.2489413861066303
+        },
+        {
+          "id": "8326970197618554626",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            485.1500548501732,
+            602.8451703910379
+          ],
+          "observedTexturePixel": [
+            485.70733427018683,
+            601.8954986765622
+          ],
+          "errorTexturePixels": 1.1011070416839313
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    }
+  },
+  {
+    "region": "DesertColossus",
+    "terrainRegistration": {
+      "matrix": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          -2.130013376573851e-18,
+          1.0,
+          -2.1399324434414755e-15
+        ]
+      ],
+      "matches": 781,
+      "inliers": 624,
+      "medianInlierErrorTexturePixels": 0.0,
+      "p95InlierErrorTexturePixels": 0.0,
+      "heldOutMatchCount": 157,
+      "heldOutConsistentCount": 154,
+      "heldOutMedianTexturePixels": 0.0,
+      "heldOutP95TexturePixels": 0.0
+    },
+    "samePlaceObservations": [
+      {
+        "kind": "CollectHeart",
+        "childPixel": [
+          362.2849092263579,
+          528.0525519389665
+        ],
+        "adultPixel": [
+          362.28671061034123,
+          528.0568835992678
+        ],
+        "errorTexturePixels": 0.004691296752645071
+      },
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          583.8641050832598,
+          473.312924594042
+        ],
+        "adultPixel": [
+          583.8952761875473,
+          473.33455433324104
+        ],
+        "errorTexturePixels": 0.03794052398587617
+      },
+      {
+        "kind": "CollectSign",
+        "childPixel": [
+          247.18347932074477,
+          326.1072790149202
+        ],
+        "adultPixel": [
+          247.1781177326663,
+          326.12834803778185
+        ],
+        "errorTexturePixels": 0.021740523247324593
+      }
+    ],
+    "childModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          3.4991235666617535,
+          0.0,
+          842.3842787259616
+        ],
+        [
+          -7.453180003274338e-18,
+          3.4792482348166653,
+          492.68536458912126
+        ]
+      ],
+      "checks": [
+        {
+          "id": "2308531337658761834",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            362.5144749296643,
+            529.2174511462781
+          ],
+          "observedTexturePixel": [
+            362.28671061034123,
+            528.0568835992678
+          ],
+          "errorTexturePixels": 1.182706056604982
+        },
+        {
+          "id": "11160993739666517210",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            583.7990418104191,
+            472.9344121303388
+          ],
+          "observedTexturePixel": [
+            583.8952761875473,
+            473.33455433324104
+          ],
+          "errorTexturePixels": 0.4115517438727817
+        },
+        {
+          "id": "15057756765324812936",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            247.12252474944603,
+            326.1205892041876
+          ],
+          "observedTexturePixel": [
+            247.1781177326663,
+            326.12834803778185
+          ],
+          "errorTexturePixels": 0.056131802768770854
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    },
+    "adultModelTransfer": {
+      "sourceXZToTargetTexture": [
+        [
+          3.500173140180106,
+          0.0,
+          842.4923173061328
+        ],
+        [
+          7.455415608908126e-18,
+          3.4651394836475267,
+          492.23201246313795
+        ]
+      ],
+      "checks": [
+        {
+          "id": "2308531337658761834",
+          "kind": "CollectHeart",
+          "predictedTexturePixel": [
+            362.4785749981692,
+            528.6159572137498
+          ],
+          "observedTexturePixel": [
+            362.2849092263579,
+            528.0525519389665
+          ],
+          "errorTexturePixels": 0.5957616426263477
+        },
+        {
+          "id": "234735562946824289",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            291.34199950319044,
+            551.7811662634618
+          ],
+          "observedTexturePixel": [
+            291.50277854314646,
+            553.2766771906712
+          ],
+          "errorTexturePixels": 1.5041285959291373
+        },
+        {
+          "id": "11160993739666517210",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            583.8295169059826,
+            472.5611523848893
+          ],
+          "observedTexturePixel": [
+            583.8641050832598,
+            473.312924594042
+          ],
+          "errorTexturePixels": 0.7525674697073335
+        },
+        {
+          "id": "15057756765324812936",
+          "kind": "CollectSign",
+          "predictedTexturePixel": [
+            247.05201262640276,
+            326.3426763716508
+          ],
+          "observedTexturePixel": [
+            247.18347932074477,
+            326.1072790149202
+          ],
+          "errorTexturePixels": 0.2696208583862827
+        }
+      ],
+      "status": "diagnostic transfer only; do not apply without reviewing age-specific coordinate frames"
+    }
+  }
+]

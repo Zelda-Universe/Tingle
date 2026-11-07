@@ -1,0 +1,1304 @@
+{
+  "note": "Do not apply these estimates to production. Exit annotations are hand-placed and may identify different ends of an entrance.",
+  "calibrations": [
+    {
+      "scene": "HyruleField_Child",
+      "region": "HyruleField",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "15568226378756636967",
+          "destination": "Market",
+          "position": [
+            -0.08406098932027817,
+            150.6954345703125,
+            21.628158569335938
+          ],
+          "target": [
+            0.583,
+            0.056
+          ]
+        },
+        {
+          "id": "8972196429493960869",
+          "destination": "KakarikoVillage",
+          "position": [
+            205.18003845214844,
+            160.5115966796875,
+            16.937108993530273
+          ],
+          "target": [
+            0.95,
+            0.051
+          ]
+        },
+        {
+          "id": "6830023338446917390",
+          "destination": "ZoraRiver",
+          "position": [
+            210.5902557373047,
+            159.28802490234375,
+            147.86180114746094
+          ],
+          "target": [
+            0.963,
+            0.357
+          ]
+        },
+        {
+          "id": "5047253081999091912",
+          "destination": "KokiriForest",
+          "position": [
+            199.2338409423828,
+            163.12298583984375,
+            309.4404296875
+          ],
+          "target": [
+            0.943,
+            0.722
+          ]
+        },
+        {
+          "id": "17695789664818065157",
+          "destination": "LakeHylia",
+          "position": [
+            -92.99996185302734,
+            143.26129150390625,
+            398
+          ],
+          "target": [
+            0.416,
+            0.93
+          ]
+        },
+        {
+          "id": "7435471053006220250",
+          "destination": "GerudoValley",
+          "position": [
+            -312.018798828125,
+            137.88633728027344,
+            163.32522583007812
+          ],
+          "target": [
+            0.02,
+            0.388
+          ]
+        }
+      ],
+      "transform": {
+        "u": [
+          0.0018025834986618277,
+          0.000005840545951149318,
+          0.5817434622203381
+        ],
+        "v": [
+          0.000002765376182833761,
+          0.002309940502166035,
+          0.01022787526962044
+        ]
+      },
+      "rmsPixels": 3.241259243100305,
+      "heldOutMaxPixels": 7.362617774387813,
+      "verified": false,
+      "status": "estimated-needs-artwork-verification"
+    },
+    {
+      "scene": "Market_Child",
+      "region": "Market",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "13900700779632347206",
+          "destination": "HyruleField",
+          "position": [
+            -1.8238556385040283,
+            102.16484069824219,
+            66.68424224853516
+          ],
+          "target": [
+            0.492,
+            0.951
+          ]
+        },
+        {
+          "id": "1319590203142680608",
+          "destination": "HyruleCastle",
+          "position": [
+            -1.9765658378601074,
+            99.69596099853516,
+            -36.539546966552734
+          ],
+          "target": [
+            0.492,
+            0.161
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "HyruleCastle",
+      "region": "HyruleCastle",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "2295155229079041014",
+          "destination": "Market",
+          "position": [
+            11.585308074951172,
+            105.17620849609375,
+            -9.940455436706543
+          ],
+          "target": [
+            0.452,
+            0.955
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "KakarikoVillage_Child",
+      "region": "KakarikoVillage",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "10122827566786937315",
+          "destination": "HyruleField",
+          "position": [
+            -127.76343536376953,
+            95.48079681396484,
+            56.57090759277344
+          ],
+          "target": [
+            0.04,
+            0.574
+          ]
+        },
+        {
+          "id": "8761096748248763444",
+          "destination": "DeathMountainTrail",
+          "position": [
+            -39.37638473510742,
+            110.28218078613281,
+            -28.284507751464844
+          ],
+          "target": [
+            0.575,
+            0.036
+          ]
+        },
+        {
+          "id": "15422887915941586540",
+          "destination": "Graveyard",
+          "position": [
+            24.50870132446289,
+            105.36957550048828,
+            68.20490264892578
+          ],
+          "target": [
+            0.978,
+            0.655
+          ]
+        }
+      ],
+      "transform": {
+        "u": [
+          0.006152128833875447,
+          0.00010333486293396307,
+          0.8201713676342794
+        ],
+        "v": [
+          0.00004403048634003923,
+          0.0063860594238684155,
+          0.21836030864592082
+        ]
+      },
+      "rmsPixels": 9.794152989963617e-14,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "estimated-needs-artwork-verification"
+    },
+    {
+      "scene": "Graveyard_Child",
+      "region": "Graveyard",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "17028301165043623001",
+          "destination": "KakarikoVillage",
+          "position": [
+            -39.93865203857422,
+            98.0655517578125,
+            8.355269432067871
+          ],
+          "target": [
+            0,
+            0.5
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "DeathMountainTrail_Child",
+      "region": "DeathMountainTrail",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "8754272447021633659",
+          "destination": "KakarikoVillage",
+          "position": [
+            -29.804922103881836,
+            88.93187713623047,
+            73.26531219482422
+          ],
+          "target": [
+            0.499,
+            0.966
+          ]
+        },
+        {
+          "id": "6142450351590718650",
+          "destination": "GoronCity",
+          "position": [
+            -24.625003814697266,
+            111.70536041259766,
+            -86.5
+          ],
+          "target": [
+            0.533,
+            0.311
+          ]
+        },
+        {
+          "id": "11876634177117919432",
+          "destination": "DeathMountainCrater",
+          "position": [
+            -0.3159804046154022,
+            206.5259246826172,
+            -157.0400848388672
+          ],
+          "target": [
+            0.816,
+            0.038
+          ]
+        }
+      ],
+      "transform": {
+        "u": [
+          0.01216913011413328,
+          0.00018173594282005004,
+          0.8483850345360135
+        ],
+        "v": [
+          0.0007355230905085434,
+          0.004123610691570291,
+          0.6858045837304011
+        ]
+      },
+      "rmsPixels": 4.916694004382832e-14,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "estimated-needs-artwork-verification"
+    },
+    {
+      "scene": "GoronCity_Child",
+      "region": "GoronCity",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "16325404933151147550",
+          "destination": "DeathMountainTrail",
+          "position": [
+            1.6758195161819458,
+            116.33848571777344,
+            39.502769470214844
+          ],
+          "target": [
+            0.571,
+            0.958
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "DeathMountainCrater_Child",
+      "region": "DeathMountainCrater",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "9486051998047090784",
+          "destination": "DeathMountainTrail",
+          "position": [
+            18.5595645904541,
+            132.9324493408203,
+            64.42150115966797
+          ],
+          "target": [
+            0.733,
+            0.942
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "ZoraRiver_Child",
+      "region": "ZoraRiver",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "13362381275380272660",
+          "destination": "HyruleField",
+          "position": [
+            -98.62618255615234,
+            96.30807495117188,
+            29.849430084228516
+          ],
+          "target": [
+            0.03,
+            0.878
+          ]
+        },
+        {
+          "id": "6447671685353872960",
+          "destination": "ZoraDomain",
+          "position": [
+            143.71006774902344,
+            130.64349365234375,
+            -40.74787139892578
+          ],
+          "target": [
+            0.979,
+            0.218
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "ZoraDomain_Child",
+      "region": "ZoraDomain",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "12438920887920305865",
+          "destination": "ZoraRiver",
+          "position": [
+            3.5448670387268066,
+            103.90345001220703,
+            -42.381797790527344
+          ],
+          "target": [
+            0.29,
+            0.04
+          ]
+        },
+        {
+          "id": "2082232375686932120",
+          "destination": "ZoraFountain",
+          "position": [
+            92.5818862915039,
+            119.59912872314453,
+            15.574165344238281
+          ],
+          "target": [
+            0.983,
+            0.782
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "ZoraFountain_Child",
+      "region": "ZoraFountain",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "10642485336510338259",
+          "destination": "ZoraDomain",
+          "position": [
+            -18.997886657714844,
+            101.39837646484375,
+            -24.540414810180664
+          ],
+          "target": [
+            0.051,
+            0.318
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "KokiriForest_Child",
+      "region": "KokiriForest",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "455826459185779094",
+          "destination": "HyruleField",
+          "position": [
+            -129.4517059326172,
+            114.95726776123047,
+            -37.99314498901367
+          ],
+          "target": [
+            0.007,
+            0.255
+          ]
+        },
+        {
+          "id": "16966778132106565506",
+          "destination": "LostWood",
+          "position": [
+            -33.48947525024414,
+            121.18990325927734,
+            -68.27371978759766
+          ],
+          "target": [
+            0.373,
+            0.025
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "LostWood_Child",
+      "region": "LostWood",
+      "age": "Child",
+      "anchors": [],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "SacredForestMeadow_Child",
+      "region": "SacredForestMeadow",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "9007147724607227454",
+          "destination": "LostWood",
+          "position": [
+            -7.2316789627075195,
+            100.07536315917969,
+            77.0582046508789
+          ],
+          "target": [
+            0.436,
+            0.982
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "LakeHylia_Child",
+      "region": "LakeHylia",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "14388254154737389511",
+          "destination": "HyruleField",
+          "position": [
+            -89.30340576171875,
+            143.56906127929688,
+            395.64923095703125
+          ],
+          "target": [
+            0.841,
+            0.066
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "GerudoValley_Child",
+      "region": "GerudoValley",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "11902539335576790410",
+          "destination": "HyruleField",
+          "position": [
+            78.80245971679688,
+            92.67555236816406,
+            30.105091094970703
+          ],
+          "target": [
+            0.955,
+            0.742
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "HountedWasteland_Child",
+      "region": "HountedWasteland",
+      "age": "Child",
+      "anchors": [],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "DesertColossus_Child",
+      "region": "DesertColossus",
+      "age": "Child",
+      "anchors": [
+        {
+          "id": "2121252729684809243",
+          "destination": "HountedWasteland",
+          "position": [
+            4.442804336547852,
+            100.29707336425781,
+            0.046035900712013245
+          ],
+          "target": [
+            0.969,
+            0.419
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "HyruleField_Adult",
+      "region": "HyruleField",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "3611685082049708064",
+          "destination": "Market",
+          "position": [
+            -0.08406098932027817,
+            150.6954345703125,
+            21.628158569335938
+          ],
+          "target": [
+            0.583,
+            0.056
+          ]
+        },
+        {
+          "id": "9720327327469716415",
+          "destination": "KakarikoVillage",
+          "position": [
+            205.18003845214844,
+            160.5115966796875,
+            16.937108993530273
+          ],
+          "target": [
+            0.95,
+            0.051
+          ]
+        },
+        {
+          "id": "12392727513838515396",
+          "destination": "ZoraRiver",
+          "position": [
+            210.5902557373047,
+            159.28802490234375,
+            147.86180114746094
+          ],
+          "target": [
+            0.963,
+            0.357
+          ]
+        },
+        {
+          "id": "11815609108294342779",
+          "destination": "KokiriForest",
+          "position": [
+            199.2338409423828,
+            163.12298583984375,
+            309.4404296875
+          ],
+          "target": [
+            0.943,
+            0.722
+          ]
+        },
+        {
+          "id": "10634927169593267800",
+          "destination": "LakeHylia",
+          "position": [
+            -92.99996185302734,
+            143.26129150390625,
+            398
+          ],
+          "target": [
+            0.416,
+            0.93
+          ]
+        },
+        {
+          "id": "9895024720437575016",
+          "destination": "GerudoValley",
+          "position": [
+            -312.018798828125,
+            137.88633728027344,
+            163.32522583007812
+          ],
+          "target": [
+            0.02,
+            0.388
+          ]
+        }
+      ],
+      "transform": {
+        "u": [
+          0.0018025834986618277,
+          0.000005840545951149318,
+          0.5817434622203381
+        ],
+        "v": [
+          0.000002765376182833761,
+          0.002309940502166035,
+          0.01022787526962044
+        ]
+      },
+      "rmsPixels": 3.241259243100305,
+      "heldOutMaxPixels": 7.362617774387813,
+      "verified": false,
+      "status": "estimated-needs-artwork-verification"
+    },
+    {
+      "scene": "Market_Adult",
+      "region": "Market",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "1225485861727822549",
+          "destination": "HyruleField",
+          "position": [
+            -1.827154278755188,
+            102.38202667236328,
+            66.6851806640625
+          ],
+          "target": [
+            0.183,
+            0.96
+          ]
+        },
+        {
+          "id": "13490830920022464815",
+          "destination": "GanonCastle",
+          "position": [
+            -2.652419090270996,
+            100.71189880371094,
+            -36.539546966552734
+          ],
+          "target": [
+            0.173,
+            0.15
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "GanonCastle",
+      "region": "GanonCastle",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "6867433776789809417",
+          "destination": "Market",
+          "position": [
+            59.707855224609375,
+            82.49977111816406,
+            369.08062744140625
+          ],
+          "target": [
+            0.39,
+            0.97
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "KakarikoVillage_Adult",
+      "region": "KakarikoVillage",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "6007256568673440665",
+          "destination": "HyruleField",
+          "position": [
+            -127.76343536376953,
+            95.48079681396484,
+            56.57090759277344
+          ],
+          "target": [
+            0.04,
+            0.574
+          ]
+        },
+        {
+          "id": "9779898533827711118",
+          "destination": "DeathMountainTrail",
+          "position": [
+            -39.37638473510742,
+            110.28218078613281,
+            -28.284507751464844
+          ],
+          "target": [
+            0.575,
+            0.036
+          ]
+        },
+        {
+          "id": "1802241231630587685",
+          "destination": "Graveyard",
+          "position": [
+            24.50870132446289,
+            105.36957550048828,
+            68.20490264892578
+          ],
+          "target": [
+            0.978,
+            0.655
+          ]
+        }
+      ],
+      "transform": {
+        "u": [
+          0.006152128833875447,
+          0.00010333486293396307,
+          0.8201713676342794
+        ],
+        "v": [
+          0.00004403048634003923,
+          0.0063860594238684155,
+          0.21836030864592082
+        ]
+      },
+      "rmsPixels": 9.794152989963617e-14,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "estimated-needs-artwork-verification"
+    },
+    {
+      "scene": "Graveyard_Adult",
+      "region": "Graveyard",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "2399231783917979380",
+          "destination": "KakarikoVillage",
+          "position": [
+            -39.93865203857422,
+            98.0655517578125,
+            8.355269432067871
+          ],
+          "target": [
+            0,
+            0.5
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "DeathMountainTrail_Adult",
+      "region": "DeathMountainTrail",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "17847418558502119391",
+          "destination": "KakarikoVillage",
+          "position": [
+            -29.804922103881836,
+            88.93187713623047,
+            73.26531219482422
+          ],
+          "target": [
+            0.499,
+            0.966
+          ]
+        },
+        {
+          "id": "10650181037317691614",
+          "destination": "GoronCity",
+          "position": [
+            -24.625003814697266,
+            111.70536041259766,
+            -86.5
+          ],
+          "target": [
+            0.533,
+            0.311
+          ]
+        },
+        {
+          "id": "4239184367962104917",
+          "destination": "DeathMountainCrater",
+          "position": [
+            -0.3159804046154022,
+            206.5259246826172,
+            -157.0400848388672
+          ],
+          "target": [
+            0.816,
+            0.038
+          ]
+        }
+      ],
+      "transform": {
+        "u": [
+          0.01216913011413328,
+          0.00018173594282005004,
+          0.8483850345360135
+        ],
+        "v": [
+          0.0007355230905085434,
+          0.004123610691570291,
+          0.6858045837304011
+        ]
+      },
+      "rmsPixels": 4.916694004382832e-14,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "estimated-needs-artwork-verification"
+    },
+    {
+      "scene": "GoronCity_Adult",
+      "region": "GoronCity",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "9483264582623424780",
+          "destination": "DeathMountainTrail",
+          "position": [
+            1.6758195161819458,
+            116.33848571777344,
+            39.502769470214844
+          ],
+          "target": [
+            0.571,
+            0.958
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "DeathMountainCrater_Adult",
+      "region": "DeathMountainCrater",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "11239912113060514716",
+          "destination": "DeathMountainTrail",
+          "position": [
+            18.5595645904541,
+            132.9324493408203,
+            64.42150115966797
+          ],
+          "target": [
+            0.733,
+            0.942
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "ZoraRiver_Adult",
+      "region": "ZoraRiver",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "9555013079141952304",
+          "destination": "HyruleField",
+          "position": [
+            -98.62618255615234,
+            96.30807495117188,
+            29.849430084228516
+          ],
+          "target": [
+            0.03,
+            0.878
+          ]
+        },
+        {
+          "id": "6995222685113811812",
+          "destination": "ZoraDomain",
+          "position": [
+            143.71006774902344,
+            130.64349365234375,
+            -40.74787139892578
+          ],
+          "target": [
+            0.979,
+            0.218
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "ZoraDomain_Adult",
+      "region": "ZoraDomain",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "11849571694613337017",
+          "destination": "ZoraRiver",
+          "position": [
+            3.5448670387268066,
+            103.90345001220703,
+            -42.381797790527344
+          ],
+          "target": [
+            0.29,
+            0.04
+          ]
+        },
+        {
+          "id": "3750527591436788139",
+          "destination": "ZoraFountain",
+          "position": [
+            92.5818862915039,
+            119.59912872314453,
+            15.574165344238281
+          ],
+          "target": [
+            0.983,
+            0.782
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "ZoraFountain_Adult",
+      "region": "ZoraFountain",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "531902679675394548",
+          "destination": "ZoraDomain",
+          "position": [
+            -18.99626350402832,
+            101.41657257080078,
+            -24.5622615814209
+          ],
+          "target": [
+            0.057,
+            0.382
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "KokiriForest_Adult",
+      "region": "KokiriForest",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "2077317094562547700",
+          "destination": "HyruleField",
+          "position": [
+            -129.4517059326172,
+            114.95726776123047,
+            -37.99314498901367
+          ],
+          "target": [
+            0.007,
+            0.255
+          ]
+        },
+        {
+          "id": "14285089661251546561",
+          "destination": "LostWood",
+          "position": [
+            -33.48947525024414,
+            121.18990325927734,
+            -68.27371978759766
+          ],
+          "target": [
+            0.373,
+            0.025
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "LostWood_Adult",
+      "region": "LostWood",
+      "age": "Adult",
+      "anchors": [],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "SacredForestMeadow_Adult",
+      "region": "SacredForestMeadow",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "14308725960103065314",
+          "destination": "LostWood",
+          "position": [
+            -7.2316789627075195,
+            100.07536315917969,
+            77.0582046508789
+          ],
+          "target": [
+            0.436,
+            0.982
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "LakeHylia_Adult",
+      "region": "LakeHylia",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "12222278877302081165",
+          "destination": "HyruleField",
+          "position": [
+            -89.30340576171875,
+            143.56906127929688,
+            395.64923095703125
+          ],
+          "target": [
+            0.841,
+            0.066
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "GerudoValley_Adult",
+      "region": "GerudoValley",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "11717018555728047978",
+          "destination": "HyruleField",
+          "position": [
+            78.80245971679688,
+            92.67555236816406,
+            30.105091094970703
+          ],
+          "target": [
+            0.955,
+            0.742
+          ]
+        },
+        {
+          "id": "7393310957051979152",
+          "destination": "GerudoFortress",
+          "position": [
+            -66.64381408691406,
+            103.18023681640625,
+            -6.041898727416992
+          ],
+          "target": [
+            -0.055,
+            0.519
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "GerudoFortress_Adult",
+      "region": "GerudoFortress",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "4340104420124869670",
+          "destination": "GerudoValley",
+          "position": [
+            -31.206241607666016,
+            105.97921752929688,
+            -15.623068809509277
+          ],
+          "target": [
+            0.09,
+            0.506
+          ]
+        },
+        {
+          "id": "16821073295514755858",
+          "destination": "HountedWasteland",
+          "position": [
+            -45.3067741394043,
+            102,
+            -116.8662109375
+          ],
+          "target": [
+            0.036,
+            0.035
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "HountedWasteland_Adult",
+      "region": "HountedWasteland",
+      "age": "Adult",
+      "anchors": [],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    },
+    {
+      "scene": "DesertColossus_Adult",
+      "region": "DesertColossus",
+      "age": "Adult",
+      "anchors": [
+        {
+          "id": "14875440632287921286",
+          "destination": "HountedWasteland",
+          "position": [
+            4.442804336547852,
+            100.29707336425781,
+            0.046035900712013245
+          ],
+          "target": [
+            0.969,
+            0.419
+          ]
+        }
+      ],
+      "transform": null,
+      "rmsPixels": null,
+      "heldOutMaxPixels": null,
+      "verified": false,
+      "status": "needs-more-control-points"
+    }
+  ]
+}

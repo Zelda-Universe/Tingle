@@ -1,0 +1,1265 @@
+{
+  "BarinadeStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "BigOctoStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "BongoBongoStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "BossRushIntervalRoom": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "BottomOfTheWell": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/BottomOfTheWell.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "17589661567005251185",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -13.250926971435547,
+              78.58051300048828,
+              -53.726768493652344
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "CrumblingGanonCastle": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "DarkLinkStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "DeadHandStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "DeathMountainCrater_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/DeathMountainCrater.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "1930135350728145199",
+            "TargetZoomLevel": "",
+            "Trans": [
+              0,
+              100,
+              9.978362083435059
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "DeathMountainCrater_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/DeathMountainCrater.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "5800117300071912680",
+            "TargetZoomLevel": "",
+            "Trans": [
+              0,
+              100,
+              9.978362083435059
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "DeathMountainTrail_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/DeathMountainTrail.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "1856385916360329421",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -31.990999221801758,
+              54.400001525878906,
+              -61.04800033569336
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "DeathMountainTrail_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/DeathMountainTrail.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "11466238330773417806",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -31.990999221801758,
+              54.400001525878906,
+              -61.04800033569336
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Demo_ShootingLocation_Tapestry_ED": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "DesertColossus_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/DesertColossus.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "1543776073248045401",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -87.53900909423828,
+              83.90935516357422,
+              26.49277687072754
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "DesertColossus_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/DesertColossus.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "5155661256313568881",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -87.53900909423828,
+              83.90935516357422,
+              26.49277687072754
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "DinolfosStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "DodongoCavern": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/DodongoCavern.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "1444885030049921405",
+            "TargetZoomLevel": "",
+            "Trans": [
+              24.295997619628906,
+              -2.5,
+              -24.38500213623047
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "DodongoStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "EnemyMuseum": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/DreamWorld.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "2672889681408929391",
+            "TargetZoomLevel": "",
+            "Trans": [
+              0,
+              -10,
+              0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "FinalBattleField": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "FireTemple": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/FireTemple.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "12566053056222432570",
+            "TargetZoomLevel": "",
+            "Trans": [
+              3.5543441772460938,
+              93.22657012939453,
+              0.21541404724121094
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "FlareDancerStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "ForestTemple": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/ForestTemple.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "2017659878047367674",
+            "TargetZoomLevel": "",
+            "Trans": [
+              0,
+              40.53350830078125,
+              15.787689208984375
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "GanonCastle": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/GanonCastle.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "6489738622770534833",
+            "TargetZoomLevel": "",
+            "Trans": [
+              47.35968780517578,
+              13.637588500976562,
+              242.87879943847656
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "GanonStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "GanondorfStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "GerudoFortress_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/GerudoFortress.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "17432187847618219054",
+            "TargetZoomLevel": "",
+            "Trans": [
+              31.051513671875,
+              90.04827117919922,
+              -107.24574279785156
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "GerudoThiefStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "GerudoTrainingGround": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/GerudoTrainingGround.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "15011526036171558935",
+            "TargetZoomLevel": "",
+            "Trans": [
+              1.1498641967773438,
+              67.94257354736328,
+              -52.32097625732422
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "GerudoValley_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/GerudoValley.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "13686191881791923115",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -18.078472137451172,
+              2.7365570068359375,
+              7.85052490234375
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "GerudoValley_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/GerudoValley.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "15248018048772631562",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -18.078472137451172,
+              2.7365570068359375,
+              7.85052490234375
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "GohmaStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "GoronCity_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/GoronCity.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "16496267000312077599",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -5.5,
+              93.06109619140625,
+              -4
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "GoronCity_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/GoronCity.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "4879707948683269651",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -5.5,
+              93.06109619140625,
+              -4
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Graveyard_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/Graveyard.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "8999811350941424668",
+            "TargetZoomLevel": "",
+            "Trans": [
+              65.52994537353516,
+              108.15435791015625,
+              2.4894838333129883
+            ]
+          },
+          {
+            "InstanceID": "13689895215594120660",
+            "TargetZoomLevel": "",
+            "Trans": [
+              8.351814270019531,
+              97.86990356445312,
+              6.907447814941406
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Graveyard_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/Graveyard.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "496819786559571334",
+            "TargetZoomLevel": "",
+            "Trans": [
+              8.351814270019531,
+              97.86990356445312,
+              6.907447814941406
+            ]
+          },
+          {
+            "InstanceID": "7569589886741720443",
+            "TargetZoomLevel": "",
+            "Trans": [
+              65.52994537353516,
+              108.15435791015625,
+              2.4894838333129883
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "HountedWasteland_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/HountedWasteland.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "11538998566570940914",
+            "TargetZoomLevel": "",
+            "Trans": [
+              26.998703002929688,
+              82.35517120361328,
+              -7.119903564453125
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "HountedWasteland_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/HountedWasteland.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "1475667406023765464",
+            "TargetZoomLevel": "",
+            "Trans": [
+              26.998703002929688,
+              82.35517120361328,
+              -7.119903564453125
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "HyruleCastle": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/HyruleCastle.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "11148657527349360550",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -0.9983934760093689,
+              54.7137565612793,
+              -53.40517807006836
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "HyruleField_Adult": {
+    "Dungeon": [],
+    "LargeZone": [
+      {
+        "LocationName": "Work/Location/HyruleField.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "15197405313975159099",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -17.95423126220703,
+              -26.197860717773438,
+              255.9791717529297
+            ]
+          }
+        ]
+      }
+    ],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/LakeHylia.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "10756230597425224883",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -205.3984832763672,
+              -57.000091552734375,
+              559.1690673828125
+            ]
+          }
+        ]
+      },
+      {
+        "LocationName": "Work/Location/LonLonRanch.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "16786185422320944865",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -149.51466369628906,
+              156.03858947753906,
+              268.47967529296875
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "HyruleField_Child": {
+    "Dungeon": [],
+    "LargeZone": [
+      {
+        "LocationName": "Work/Location/HyruleField.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "4106766598661947281",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -17.95423126220703,
+              -26.197860717773438,
+              255.9791717529297
+            ]
+          }
+        ]
+      }
+    ],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/LakeHylia.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "8045651783226660049",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -205.3984832763672,
+              -57.000091552734375,
+              559.1690673828125
+            ]
+          }
+        ]
+      },
+      {
+        "LocationName": "Work/Location/LonLonRanch.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "501780128758962527",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -149.51466369628906,
+              156.03858947753906,
+              268.47967529296875
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "IceCavern": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/IceCavern.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "532051959809599792",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -5.874013900756836,
+              63.12501525878906,
+              -22.575801849365234
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "InsideGanonCastle": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/InsideGanonCastle.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "17548979707438086137",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -4.3057146072387695,
+              54.55233383178711,
+              -23.34299087524414
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "InsideJabuJabuBelly": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/InsideJabuJabuBelly.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "7223665359509324550",
+            "TargetZoomLevel": "",
+            "Trans": [
+              1.7405271530151367,
+              63.01601028442383,
+              -89.2754898071289
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "InsideTheDekuTree": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/InsideTheDekuTree.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "325963800516055037",
+            "TargetZoomLevel": "",
+            "Trans": [
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "IronKnuckleBlackStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "IronKnuckleWhiteStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "KakarikoVillage_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/KakarikoVillage.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "11789381583641632156",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -40.4627685546875,
+              79.41323852539062,
+              43.307594299316406
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "KakarikoVillage_Adult_Alternative": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/KakarikoVillage.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "8195987605984979362",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -40.4627685546875,
+              79.41323852539062,
+              43.307594299316406
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "KakarikoVillage_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/KakarikoVillage.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "13005742669170225957",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -40.4627685546875,
+              79.41323852539062,
+              43.307594299316406
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "KokiriForest_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/KokiriForest.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "1585009038938260222",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -0.5285377502441406,
+              83.99955749511719,
+              2.7203521728515625
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "KokiriForest_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/KokiriForest.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "3677568175949544084",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -0.5285377502441406,
+              83.99955749511719,
+              2.7203521728515625
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "LizalfosStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "LostWood_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/LostWood.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "137693886749723109",
+            "TargetZoomLevel": "",
+            "Trans": [
+              16.30000114440918,
+              77.55545043945312,
+              -3
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "LostWood_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/LostWood.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "17167925308542594623",
+            "TargetZoomLevel": "",
+            "Trans": [
+              16.30000114440918,
+              77.55545043945312,
+              -3
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Market_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/Market.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "14391400116108071659",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -10.077779769897461,
+              100,
+              -0.8987393379211426
+            ]
+          }
+        ]
+      },
+      {
+        "LocationName": "Work/Location/TimeTemple.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "9514953128660654811",
+            "TargetZoomLevel": "",
+            "Trans": [
+              111.6098403930664,
+              103.5,
+              -34
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "Market_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/Market.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "4099013964519079103",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -10.077779769897461,
+              96.68635559082031,
+              -0.8967708945274353
+            ]
+          }
+        ]
+      },
+      {
+        "LocationName": "Work/Location/TimeTemple.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "8538366278603784570",
+            "TargetZoomLevel": "",
+            "Trans": [
+              108.45223236083984,
+              103.5,
+              -26.866121292114258
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "MegStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "MorphaStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "NaboruStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "PhantomGanonStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "SacredForestMeadow_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/SacredForestMeadow.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "12906113848869741565",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -5.800000190734863,
+              73.59407043457031,
+              -22.4620304107666
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "SacredForestMeadow_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/SacredForestMeadow.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "13835794017473396111",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -5.800000190734863,
+              73.59407043457031,
+              -22.4620304107666
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "SageRoom": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "ShadowTemple": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/ShadowTemple.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "5458504271655478653",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -27.136085510253906,
+              -50,
+              0
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "SpiritTemple": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/SpiritTemple.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "8722899790936721458",
+            "TargetZoomLevel": "",
+            "Trans": [
+              0,
+              100,
+              0
+            ]
+          },
+          {
+            "InstanceID": "16772950849877865041",
+            "TargetZoomLevel": "",
+            "Trans": [
+              -0.000005245366537565133,
+              25,
+              -60
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "StalfosStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "StalfosWeakStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "TwinrovaStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "VolvagiaStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "WaterTemple": {
+    "Dungeon": [
+      {
+        "LocationName": "Work/Location/WaterTemple.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "1940710048289782485",
+            "TargetZoomLevel": "",
+            "Trans": [
+              0,
+              50,
+              0
+            ]
+          }
+        ]
+      }
+    ],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "WolfosStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "WolfosWhiteStage": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": []
+  },
+  "ZoraDomain_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/ZoraDomain.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "16606480289285206046",
+            "TargetZoomLevel": "",
+            "Trans": [
+              41.51549530029297,
+              74,
+              -5.87518310546875
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ZoraDomain_Adult_Alternative": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/ZoraDomain.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "14225418351659453919",
+            "TargetZoomLevel": "",
+            "Trans": [
+              41.51549530029297,
+              74,
+              -5.87518310546875
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ZoraDomain_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/ZoraDomain.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "13748121077556236044",
+            "TargetZoomLevel": "",
+            "Trans": [
+              41.51549530029297,
+              74,
+              -5.87518310546875
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ZoraFountain_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/ZoraFountain.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "256807801854835864",
+            "TargetZoomLevel": "",
+            "Trans": [
+              62.824737548828125,
+              5.218026161193848,
+              5.029069900512695
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ZoraFountain_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/ZoraFountain.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "6212134876311806266",
+            "TargetZoomLevel": "",
+            "Trans": [
+              62.82514953613281,
+              5.215278625488281,
+              5.0319013595581055
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ZoraRiver_Adult": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/ZoraRiver.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "13342113104431584652",
+            "TargetZoomLevel": "",
+            "Trans": [
+              13.595576286315918,
+              81.53964233398438,
+              -9.53980827331543
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "ZoraRiver_Child": {
+    "Dungeon": [],
+    "LargeZone": [],
+    "Zone": [
+      {
+        "LocationName": "Work/Location/ZoraRiver.game__location__Location.gyml",
+        "PointDataList": [
+          {
+            "InstanceID": "4923015937953669472",
+            "TargetZoomLevel": "",
+            "Trans": [
+              13.595576286315918,
+              81.53964233398438,
+              -9.53980827331543
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

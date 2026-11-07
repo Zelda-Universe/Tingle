@@ -1,0 +1,225 @@
+{
+ "description": "Which game Gold Skulltula (MapParam CollectSign id) each dungeon marker is, decided by hand: our dungeon markers had placeholder positions, so they can't be matched by distance. Reasons come from the objects beside each skulltula in zeldamods' Owl Object Map data and the floor artwork.",
+ "matches": [
+  {
+   "markerId": "64200070",
+   "gameId": "3889761319471426870",
+   "reason": "A Like Like is 2.6 away."
+  },
+  {
+   "markerId": "64200071",
+   "gameId": "7460556442932201772",
+   "reason": "By the small-key door."
+  },
+  {
+   "markerId": "64200072",
+   "gameId": "12165938013608963606",
+   "reason": "Among the Lens of Truth (hidden path) walls; the game puts it on B1, not B2."
+  },
+  {
+   "markerId": "64200061",
+   "gameId": "8470399761714006011",
+   "reason": "Beside a Skullwalltula on the Bomb Flower staircase wall."
+  },
+  {
+   "markerId": "64200062",
+   "gameId": "1171854281537584829",
+   "reason": "Behind a bombable wall crack."
+  },
+  {
+   "markerId": "64200063",
+   "gameId": "4565265801822094851",
+   "reason": "By the suspension bridge room's bombable wall."
+  },
+  {
+   "markerId": "64200064",
+   "gameId": "13690401647626643497",
+   "reason": "Among the block room's Armos statues."
+  },
+  {
+   "markerId": "64200065",
+   "gameId": "960362013021648957",
+   "reason": "A scarecrow (Pierre) spot is 5.6 away."
+  },
+  {
+   "markerId": "64200081",
+   "gameId": "6789992996625105554",
+   "reason": "In the first flying-tile room, by a Like Like."
+  },
+  {
+   "markerId": "64200085",
+   "gameId": "14706322686481615109",
+   "reason": "Inside a large breakable boulder (Megaton Hammer)."
+  },
+  {
+   "markerId": "64200082",
+   "gameId": "12751796212121957464",
+   "reason": "By a cracked wall in the rolling-boulder maze."
+  },
+  {
+   "markerId": "64200083",
+   "gameId": "5556173334779815044",
+   "reason": "The other top-floor skulltula, by the door; the game puts it on 5F, not 4F."
+  },
+  {
+   "markerId": "64200084",
+   "gameId": "9172014785497046138",
+   "reason": "Among the top floor's treasure chests, by a hookshot target."
+  },
+  {
+   "markerId": "64200076",
+   "gameId": "11081821111317815057",
+   "reason": "Above the entrance room, at the top of its vine tree; the game puts it on 2F, not 1F."
+  },
+  {
+   "markerId": "64200077",
+   "gameId": "17612196129225973969",
+   "reason": "By the north stairs of the main hall."
+  },
+  {
+   "markerId": "64200078",
+   "gameId": "10970805784153267902",
+   "reason": "On the west courtyard's ledge; the game puts it on 1F, not 2F."
+  },
+  {
+   "markerId": "64200079",
+   "gameId": "3072474196008424241",
+   "reason": "The only basement skulltula."
+  },
+  {
+   "markerId": "64200080",
+   "gameId": "2014780391754316762",
+   "reason": "A scarecrow (Pierre) spot is 3 away. It is in the east courtyard on this map, though the marker says west."
+  },
+  {
+   "markerId": "64200073",
+   "gameId": "7165255787572043804",
+   "reason": "In the spinning blade room, by its silver rupees."
+  },
+  {
+   "markerId": "64200074",
+   "gameId": "1612219105489330028",
+   "reason": "The east room with the ice column."
+  },
+  {
+   "markerId": "64200075",
+   "gameId": "14822647495538506998",
+   "reason": "The west room, by the second set of silver rupees (the block room)."
+  },
+  {
+   "markerId": "64200066",
+   "gameId": "11513774157335944149",
+   "reason": "In the room with the step switch."
+  },
+  {
+   "markerId": "64200067",
+   "gameId": "13852835165271311030",
+   "reason": "On the north wall of the central room."
+  },
+  {
+   "markerId": "64200068",
+   "gameId": "11283202900158580106",
+   "reason": "In the passage to the round room where Big Octo is fought."
+  },
+  {
+   "markerId": "64200069",
+   "gameId": "15983944335296207002",
+   "reason": "The only 2F skulltula."
+  },
+  {
+   "markerId": "64200057",
+   "gameId": "13609975487234437568",
+   "reason": "The only 3F skulltula, by the eye switch door."
+  },
+  {
+   "markerId": "64200058",
+   "gameId": "16101480770659370603",
+   "reason": "In the round water room you drop into through the web, by the vines."
+  },
+  {
+   "markerId": "64200059",
+   "gameId": "18075358844331090388",
+   "reason": "A switch is 5.8 away."
+  },
+  {
+   "markerId": "64200060",
+   "gameId": "17501688996789643983",
+   "reason": "Nearest the Gohma larvae, at the west tip."
+  },
+  {
+   "markerId": "64200091",
+   "gameId": "16933078188088206331",
+   "reason": "By the invisible chests; the game puts it on B3, not B1."
+  },
+  {
+   "markerId": "64200092",
+   "gameId": "15148554628675590606",
+   "reason": "By the moving spikes; the game puts it on B3, not B2."
+  },
+  {
+   "markerId": "64200093",
+   "gameId": "15564367841356014861",
+   "reason": "By the fans and a hookshot target."
+  },
+  {
+   "markerId": "64200094",
+   "gameId": "8823884712433934372",
+   "reason": "A scarecrow (Pierre) spot is 6.5 away."
+  },
+  {
+   "markerId": "64200095",
+   "gameId": "10270336409167849808",
+   "reason": "On the spinning floor with skull pots; the game puts it on B4, not B2."
+  },
+  {
+   "markerId": "64200096",
+   "gameId": "10530233152473742636",
+   "reason": "In a silver rupee room."
+  },
+  {
+   "markerId": "64200097",
+   "gameId": "12959656942046734931",
+   "reason": "By the Colossus statue room's compass chest (Zelda's Lullaby)."
+  },
+  {
+   "markerId": "64200098",
+   "gameId": "10127391959410674946",
+   "reason": "By the large barred door."
+  },
+  {
+   "markerId": "64200099",
+   "gameId": "8120267919866495114",
+   "reason": "By a Song of Time block and the rolling boulder."
+  },
+  {
+   "markerId": "64200100",
+   "gameId": "5086449036385341804",
+   "reason": "A scarecrow (Pierre) spot is 5.4 away; the game puts it on 3F, not 2F."
+  },
+  {
+   "markerId": "64200086",
+   "gameId": "16157272130665282352",
+   "reason": "The only B1 skulltula, past the gate."
+  },
+  {
+   "markerId": "64200087",
+   "gameId": "4399424945134189769",
+   "reason": "By a bombable (cracked) wall."
+  },
+  {
+   "markerId": "64200088",
+   "gameId": "15506432733081566465",
+   "reason": "By a whirlpool on the river; the game puts it on 2F, not 1F."
+  },
+  {
+   "markerId": "64200089",
+   "gameId": "11571778270592589517",
+   "reason": "Inside the central tower; the game puts it on 3F, not 1F."
+  },
+  {
+   "markerId": "64200090",
+   "gameId": "186694424287048567",
+   "reason": "In the north corridor by the waterfall; the game puts it on 1F, not 3F."
+  }
+ ]
+}

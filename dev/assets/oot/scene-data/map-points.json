@@ -1,0 +1,9231 @@
+[
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -2,
+    "kind": "TBox",
+    "id": "9466613428674883506",
+    "position": [
+      18.319231033325195,
+      87.44866180419922,
+      1.1546916961669922
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -2,
+    "kind": "TBox",
+    "id": "16654774376625985726",
+    "position": [
+      -0.04537588357925415,
+      92.42119598388672,
+      -110.26893615722656
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "7460556442932201772",
+    "position": [
+      -8.221013069152832,
+      103.80000305175781,
+      -31.854373931884766
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "12165938013608963606",
+    "position": [
+      2.6456260681152344,
+      103.80000305175781,
+      -30.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "3889761319471426870",
+    "position": [
+      31.99060821533203,
+      104.80044555664062,
+      -14.920162200927734
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "5429815628949128345",
+    "position": [
+      -0.20073986053466797,
+      96.1925277709961,
+      -5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "12988877782812797760",
+    "position": [
+      19.8576602935791,
+      97.81129455566406,
+      -18.574298858642578
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "8397646530660039355",
+    "position": [
+      10.570440292358398,
+      99.9800033569336,
+      -4.5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "8975637636514249074",
+    "position": [
+      -11.000000953674316,
+      99.9800033569336,
+      -5.4305009841918945
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "874970148260328653",
+    "position": [
+      33.85025405883789,
+      100,
+      -22.542991638183594
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "631709185320708287",
+    "position": [
+      11.97252082824707,
+      100,
+      -11.061166763305664
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "10905582354954996284",
+    "position": [
+      -29.58990478515625,
+      100,
+      -36.97732162475586
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "14911602953212243797",
+    "position": [
+      -12.394590377807617,
+      100.11688995361328,
+      -10.958719253540039
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "6064359710907908886",
+    "position": [
+      0.008443832397460938,
+      102.17013549804688,
+      -100.46894836425781
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "11718708984125260282",
+    "position": [
+      0.022019386291503906,
+      105.78045654296875,
+      -77.05462646484375
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "BottomOfTheWell",
+    "floor": -1,
+    "kind": "EntranceAnchor",
+    "id": "3982630511854138797",
+    "position": [
+      -0.014022580347955227,
+      106.036376953125,
+      49.22526168823242
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "KakarikoVillage"
+    }
+  },
+  {
+    "scene": "CrumblingGanonCastle",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10397740871223438871",
+    "position": [
+      -92.04450225830078,
+      165.64102172851562,
+      -0.02148917317390442
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "16784485264831565984",
+    "position": [
+      -0.5,
+      116.77326965332031,
+      32.34000015258789
+    ],
+    "actorId": "10331043360028932045",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "12975373498949047978",
+    "position": [
+      -17.500003814697266,
+      127.15058135986328,
+      3.9499969482421875
+    ],
+    "actorId": "744856631664786545",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "2287100600404387150",
+    "position": [
+      -34.31199645996094,
+      121.11199951171875,
+      24.410337448120117
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Wisdom",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "12580620620012682669",
+    "position": [
+      0.6367596387863159,
+      114.82669830322266,
+      -44.74990463256836
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "FireTemple"
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11198474858735332878",
+    "position": [
+      -63.72746276855469,
+      122.19634246826172,
+      -22.25321388244629
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 69,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "GoronCity"
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11239912113060514716",
+    "position": [
+      18.5595645904541,
+      132.9324493408203,
+      64.42150115966797
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 207,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainTrail"
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "16784485264831565984",
+    "position": [
+      -0.5,
+      116.77326965332031,
+      32.34000015258789
+    ],
+    "actorId": "10331043360028932045",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "12493798230772313904",
+    "position": [
+      -23.000001907348633,
+      121.09913635253906,
+      33
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "DeathMountain_Enemy_Scrub_Business_HeartPiece_01",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "12975373498949047978",
+    "position": [
+      -17.500003814697266,
+      127.15058135986328,
+      3.9499969482421875
+    ],
+    "actorId": "744856631664786545",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "6397182598322965076",
+    "position": [
+      3.75,
+      111.22280883789062,
+      -0.75
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "18219295034534354574",
+    "position": [
+      -2.8718931674957275,
+      128.19378662109375,
+      48.671485900878906
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "6914280774056091978",
+    "position": [
+      -34.31199645996094,
+      121.11199951171875,
+      24.410337448120117
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Wisdom",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10136503196354089442",
+    "position": [
+      0.6367596387863159,
+      114.82669830322266,
+      -44.74990463256836
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "FireTemple"
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10644816343472432129",
+    "position": [
+      -63.72746276855469,
+      122.19634246826172,
+      -22.25321388244629
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 69,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "GoronCity"
+    }
+  },
+  {
+    "scene": "DeathMountainCrater_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9486051998047090784",
+    "position": [
+      18.5595645904541,
+      132.9324493408203,
+      64.42150115966797
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 207,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainTrail"
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "15856934019904510189",
+    "position": [
+      -39.66063690185547,
+      122.2122802734375,
+      -26.000682830810547
+    ],
+    "actorId": "715147239509454487",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "351345377871782696",
+    "position": [
+      -51.194190979003906,
+      102.79547882080078,
+      27.209787368774414
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "17669199296215821346",
+    "position": [
+      -30.967592239379883,
+      125.08125305175781,
+      -17.964969635009766
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "832677387023638406",
+    "position": [
+      3.1727843284606934,
+      187.2981719970703,
+      -111.29439544677734
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "16222659727372624812",
+    "position": [
+      -17.735088348388672,
+      210.12100219726562,
+      -142.91079711914062
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Din",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "17847418558502119391",
+    "position": [
+      -29.804922103881836,
+      88.93187713623047,
+      73.26531219482422
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 185,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "KakarikoVillage"
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "459424188457149710",
+    "position": [
+      -50.79682922363281,
+      108.66120147705078,
+      -21.289133071899414
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 50,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "DodongoCavern"
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10650181037317691614",
+    "position": [
+      -24.625003814697266,
+      111.70536041259766,
+      -86.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 40,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "GoronCity"
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "4239184367962104917",
+    "position": [
+      -0.3159804046154022,
+      206.5259246826172,
+      -157.0400848388672
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 1,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainCrater"
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "15856934019904510189",
+    "position": [
+      -39.66063690185547,
+      122.2122802734375,
+      -26.000682830810547
+    ],
+    "actorId": "715147239509454487",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "351345377871782696",
+    "position": [
+      -51.194190979003906,
+      102.79547882080078,
+      27.209787368774414
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "17425319789138387506",
+    "position": [
+      -45.49999237060547,
+      109.19584655761719,
+      -20.249996185302734
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "9458395731419426863",
+    "position": [
+      -17.735088348388672,
+      210.12100219726562,
+      -142.91079711914062
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Din",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8754272447021633659",
+    "position": [
+      -29.804922103881836,
+      88.93187713623047,
+      73.26531219482422
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 185,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "KakarikoVillage"
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "12394626863747742346",
+    "position": [
+      -50.79683303833008,
+      108.66120147705078,
+      -21.289134979248047
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 50,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "DodongoCavern"
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "6142450351590718650",
+    "position": [
+      -24.625003814697266,
+      111.70536041259766,
+      -86.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 40,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "GoronCity"
+    }
+  },
+  {
+    "scene": "DeathMountainTrail_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11876634177117919432",
+    "position": [
+      -0.3159804046154022,
+      206.5259246826172,
+      -157.0400848388672
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 1,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainCrater"
+    }
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "2308531337658761834",
+    "position": [
+      -137.13999938964844,
+      103.5,
+      10.499994277954102
+    ],
+    "actorId": "10592092054086534681",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "15057756765324812936",
+    "position": [
+      -170.1173858642578,
+      101.76375579833984,
+      -47.873783111572266
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "11160993739666517210",
+    "position": [
+      -73.9000015258789,
+      105.30000305175781,
+      -5.676787376403809
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "TBox",
+    "id": "10012167258643363548",
+    "position": [
+      -168.62867736816406,
+      113.25,
+      -8.628860473632812
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "TBox",
+    "id": "2490063409521505179",
+    "position": [
+      -168.6367645263672,
+      113.25,
+      29.545825958251953
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "5577914011754875380",
+    "position": [
+      -49.059425354003906,
+      100.4000015258789,
+      -32.94081497192383
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Nayru",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "15296481831748669836",
+    "position": [
+      -160.941162109375,
+      96.11783599853516,
+      10.28300666809082
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 120,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "SpiritTemple"
+    }
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "14875440632287921286",
+    "position": [
+      4.442804336547852,
+      100.29707336425781,
+      0.046035900712013245
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HountedWasteland"
+    }
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "14116547164175225669",
+    "position": [
+      -164.59014892578125,
+      112.64231872558594,
+      36.037532806396484
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "SpiritTemple"
+    }
+  },
+  {
+    "scene": "DesertColossus_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "13905027162797160229",
+    "position": [
+      -164.61282348632812,
+      112.71275329589844,
+      -15.358798027038574
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "SpiritTemple"
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "2308531337658761834",
+    "position": [
+      -137.13999938964844,
+      103.5,
+      10.499994277954102
+    ],
+    "actorId": "10592092054086534681",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "234735562946824289",
+    "position": [
+      -157.46372985839844,
+      95.65901184082031,
+      17.185211181640625
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "15057756765324812936",
+    "position": [
+      -170.1173858642578,
+      101.76375579833984,
+      -47.873783111572266
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "11160993739666517210",
+    "position": [
+      -73.9000015258789,
+      105.30000305175781,
+      -5.676787376403809
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "TBox",
+    "id": "10012167258643363548",
+    "position": [
+      -168.62867736816406,
+      113.25,
+      -8.628860473632812
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "TBox",
+    "id": "2490063409521505179",
+    "position": [
+      -168.6367645263672,
+      113.25,
+      29.545825958251953
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "9172008990674192103",
+    "position": [
+      -49.059425354003906,
+      100.4000015258789,
+      -32.94081497192383
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Nayru",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "17899560835596627218",
+    "position": [
+      -160.941162109375,
+      96.11783599853516,
+      10.28300666809082
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 120,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "SpiritTemple"
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "2121252729684809243",
+    "position": [
+      4.442804336547852,
+      100.29707336425781,
+      0.046035900712013245
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HountedWasteland"
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1335319278555961197",
+    "position": [
+      -164.59014892578125,
+      112.64231872558594,
+      36.037532806396484
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "SpiritTemple"
+    }
+  },
+  {
+    "scene": "DesertColossus_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1727291514616658617",
+    "position": [
+      -164.61282348632812,
+      112.71275329589844,
+      -15.358798027038574
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "SpiritTemple"
+    }
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "13690401647626643497",
+    "position": [
+      -48.83503341674805,
+      96.5999984741211,
+      -104.25
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "1171854281537584829",
+    "position": [
+      64,
+      98.54999542236328,
+      15.853925704956055
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "960362013021648957",
+    "position": [
+      58.177188873291016,
+      104.5,
+      -19.87388801574707
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "8607798771661947511",
+    "position": [
+      -30.130901336669922,
+      100,
+      -8.00323486328125
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "8291119063305855945",
+    "position": [
+      -26.500003814697266,
+      100.25000762939453,
+      -37.999996185302734
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "7764016096998075927",
+    "position": [
+      82.99276733398438,
+      100.60016632080078,
+      -55.625
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "17531994809974271603",
+    "position": [
+      -49,
+      103.6193618774414,
+      7.500003814697266
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "Facility",
+    "id": "6735534919529993887",
+    "position": [
+      10.3158540725708,
+      92.40819549560547,
+      -77.80000305175781
+    ],
+    "actorId": null,
+    "properties": {
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 0
+    }
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "10736347592116436796",
+    "position": [
+      -0.04541786387562752,
+      102.74315643310547,
+      43.75015640258789
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "DeathMountainTrail"
+    }
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 1,
+    "kind": "CollectSign",
+    "id": "4565265801822094851",
+    "position": [
+      21.472806930541992,
+      112.4000015258789,
+      -55.92611312866211
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 1,
+    "kind": "CollectSign",
+    "id": "8470399761714006011",
+    "position": [
+      -48.42082214355469,
+      120.30813598632812,
+      -40.11746597290039
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "11582649900854566065",
+    "position": [
+      43.0438232421875,
+      113.1561508178711,
+      -8.749996185302734
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "7524527082521156886",
+    "position": [
+      -20.750003814697266,
+      113.2750015258789,
+      -36.5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "850464708089653824",
+    "position": [
+      92.50000762939453,
+      114.9749984741211,
+      -50.25001525878906
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "12161709650443144121",
+    "position": [
+      39,
+      115.71800231933594,
+      -23.000003814697266
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "DodongoCavern",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "12253889300578348965",
+    "position": [
+      -48.978641510009766,
+      116.01141357421875,
+      -63.93267822265625
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "14706322686481615109",
+    "position": [
+      11.249996185302734,
+      101.5,
+      -43.23644256591797
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "6789992996625105554",
+    "position": [
+      67.72834014892578,
+      115.30000305175781,
+      -47
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "14060099092170010696",
+    "position": [
+      -5.062701225280762,
+      100.9000015258789,
+      -8.699999809265137
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "8757492004108970488",
+    "position": [
+      -6.979769229888916,
+      102.01001739501953,
+      -33.26520538330078
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "5634724236470386190",
+    "position": [
+      -39.16148376464844,
+      104.9905014038086,
+      24.638607025146484
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "1705064956286753527",
+    "position": [
+      39.44905471801758,
+      105.2894287109375,
+      51.246742248535156
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "3949488292768750868",
+    "position": [
+      34.21538162231445,
+      105.30000305175781,
+      -46.45723342895508
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "Facility",
+    "id": "9275766067171822172",
+    "position": [
+      -38.99753189086914,
+      105,
+      0
+    ],
+    "actorId": null,
+    "properties": {
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 0
+    }
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "13327290626608728470",
+    "position": [
+      -0.022204123437404633,
+      99.99524688720703,
+      29.65715217590332
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "DeathMountainCrater"
+    }
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "16785682308850448108",
+    "position": [
+      77.43024444580078,
+      141.1256103515625,
+      0.19242799282073975
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 2,
+    "kind": "CollectSign",
+    "id": "12751796212121957464",
+    "position": [
+      59.04434585571289,
+      148.39515686035156,
+      -29.981725692749023
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "10521366928524045067",
+    "position": [
+      -37.83451843261719,
+      145.23391723632812,
+      -0.5518722534179688
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "12945617941305968586",
+    "position": [
+      -17.109039306640625,
+      146.98486328125,
+      -31.074241638183594
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "12567412825200613393",
+    "position": [
+      48.49911117553711,
+      146.9970703125,
+      -43.39179611206055
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "16713240760352215634",
+    "position": [
+      34.136070251464844,
+      147.06590270996094,
+      -5.745555877685547
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "3688520809244472975",
+    "position": [
+      58.22758483886719,
+      147.08131408691406,
+      40.551998138427734
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "9634924691849556346",
+    "position": [
+      46.55499267578125,
+      150.5,
+      33.415409088134766
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 4,
+    "kind": "CollectSign",
+    "id": "9172014785497046138",
+    "position": [
+      36.57268142700195,
+      187.70001220703125,
+      -5.178072452545166
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 4,
+    "kind": "CollectSign",
+    "id": "5556173334779815044",
+    "position": [
+      40.04562759399414,
+      189.10000610351562,
+      -19.75
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 4,
+    "kind": "TBox",
+    "id": "862385681502746018",
+    "position": [
+      30.753549575805664,
+      194.3523712158203,
+      -11.141562461853027
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 4,
+    "kind": "TBox",
+    "id": "17001858340376096722",
+    "position": [
+      36.24504470825195,
+      194.3523712158203,
+      -10.222817420959473
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 4,
+    "kind": "TBox",
+    "id": "15073195886628236505",
+    "position": [
+      30.839065551757812,
+      194.3523712158203,
+      -5.531172752380371
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "FireTemple",
+    "floor": 4,
+    "kind": "TBox",
+    "id": "12083259659219538030",
+    "position": [
+      -31.76620864868164,
+      196.10000610351562,
+      -12.711023330688477
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": -2,
+    "kind": "CollectSign",
+    "id": "3072474196008424241",
+    "position": [
+      -3.429262399673462,
+      65.60299682617188,
+      17.167165756225586
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": -2,
+    "kind": "TBox",
+    "id": "9038700938965170329",
+    "position": [
+      -16.258508682250977,
+      60.71368408203125,
+      12.604936599731445
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": -2,
+    "kind": "Facility",
+    "id": "8258358987204188069",
+    "position": [
+      -0.040486570447683334,
+      59.52628707885742,
+      -40.86104965209961
+    ],
+    "actorId": null,
+    "properties": {
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 0
+    }
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "6449977980406424425",
+    "position": [
+      16.44232749938965,
+      88.0250244140625,
+      -42.55992126464844
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "10970805784153267902",
+    "position": [
+      -38.06084442138672,
+      100.12760162353516,
+      -4.230001449584961
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -38.06084442138672,
+        112.85747528076172,
+        -4.375627517700195
+      ]
+    }
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "17612196129225973969",
+    "position": [
+      8.81517505645752,
+      109.55828857421875,
+      -23.5566463470459
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "2014780391754316762",
+    "position": [
+      44.2745246887207,
+      112.06562042236328,
+      -38.244903564453125
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "3174893090599461927",
+    "position": [
+      38.75251007080078,
+      101.41349029541016,
+      -35.749996185302734
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "15117164073907033527",
+    "position": [
+      56.030426025390625,
+      103.99652862548828,
+      -22.79631805419922
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "14776684749746592758",
+    "position": [
+      0.013999970629811287,
+      105.78541564941406,
+      -62.75
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "7535137041266964235",
+    "position": [
+      -70.23164367675781,
+      107.0999984741211,
+      -26.485614776611328
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "4045325865766928030",
+    "position": [
+      -0.04481663554906845,
+      101.65926361083984,
+      80.62588500976562
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "SacredForestMeadow"
+    }
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 1,
+    "kind": "CollectSign",
+    "id": "11081821111317815057",
+    "position": [
+      11.277002334594727,
+      119.84398651123047,
+      64
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "11082303891540711688",
+    "position": [
+      0.19999997317790985,
+      114.7607192993164,
+      -68.5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "3433400840978782007",
+    "position": [
+      -17.094999313354492,
+      114.81584167480469,
+      -63.643001556396484
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "6948525240950728236",
+    "position": [
+      17.084999084472656,
+      114.8189926147461,
+      -63.61600112915039
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "15920957434854338961",
+    "position": [
+      -52.82581329345703,
+      115.00021362304688,
+      4.233699798583984
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "1171460703078800858",
+    "position": [
+      -9.854165077209473,
+      117.50995635986328,
+      64.37187194824219
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ForestTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "5306318520835485827",
+    "position": [
+      -49.459999084472656,
+      129.5,
+      -63.70591735839844
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GanonCastle",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "5626064870824758772",
+    "position": [
+      78.40133666992188,
+      94.09721374511719,
+      328.3810729980469
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GanonCastle",
+    "floor": null,
+    "kind": "Facility",
+    "id": "5745956435634226269",
+    "position": [
+      94.75749969482422,
+      84.06295013427734,
+      319.2311706542969
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Courage",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "GanonCastle",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "6867433776789809417",
+    "position": [
+      59.707855224609375,
+      82.49977111816406,
+      369.08062744140625
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 167,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "Market"
+    }
+  },
+  {
+    "scene": "GanonCastle",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "14587697216768908454",
+    "position": [
+      40.6123046875,
+      98.62983703613281,
+      220.77212524414062
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 35,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "InsideGanonCastle"
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3389467775572858537",
+    "position": [
+      70.47989654541016,
+      115.00057983398438,
+      37.42268371582031
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "MiniGame_HorsebackArchery_GotaHeart",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "267586701490681000",
+    "position": [
+      28.977933883666992,
+      131.52438354492188,
+      -93.67167663574219
+    ],
+    "actorId": "12343753510713797715",
+    "properties": {
+      "GameDataHashName": "",
+      "IsInvisible": false,
+      "Type": 1
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "13037049463363052038",
+    "position": [
+      181.69467163085938,
+      125.55743408203125,
+      -88.60527801513672
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9362225887419425752",
+    "position": [
+      55.2983512878418,
+      131.8716583251953,
+      -70.22035217285156
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "16571168662278929289",
+    "position": [
+      33.225921630859375,
+      102.5,
+      -67.93228149414062
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "GerudoFortress_Saved_Npc_Hylia_013_Adult",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 35
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "10203030378562855776",
+    "position": [
+      11.051956176757812,
+      110,
+      -78.59705352783203
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_Gerudo_0023",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 38
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "12267542638219719797",
+    "position": [
+      5.208807945251465,
+      110.23307037353516,
+      3.2069528102874756
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "GerudoTrainingGround_MapIcon_Flag",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 3
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "1997819067132342561",
+    "position": [
+      73.07788848876953,
+      115.00057983398438,
+      41.23094177246094
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "MiniGame_HorsebackArchery_MapIcon_Flag",
+      "HeartPieceHash0": "3389467775572858537",
+      "HeartPieceHash1": "0",
+      "IconType": 7
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "2593915293912268155",
+    "position": [
+      39.85628890991211,
+      119,
+      -20.98332405090332
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "GerudoFortress_Saved_Npc_Hylia_015_Adult",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 37
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "5604092860521274101",
+    "position": [
+      73.85306549072266,
+      120.5,
+      -112.43309783935547
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "GerudoFortress_Saved_Npc_Hylia_014_Adult",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 36
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "16821073295514755858",
+    "position": [
+      -45.3067741394043,
+      102,
+      -116.8662109375
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 39,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HountedWasteland"
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "4340104420124869670",
+    "position": [
+      -31.206241607666016,
+      105.97921752929688,
+      -15.623068809509277
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 144,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "GerudoValley"
+    }
+  },
+  {
+    "scene": "GerudoFortress_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9600657620885942348",
+    "position": [
+      2.186166286468506,
+      110.63664245605469,
+      7.6628875732421875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "GerudoTrainingGround"
+    }
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "3717705376223508790",
+    "position": [
+      78.51373291015625,
+      94.02999877929688,
+      -43.900001525878906
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "11563468890171962383",
+    "position": [
+      -2.3399999141693115,
+      96.26948547363281,
+      -77.32904815673828
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "4961588221597286817",
+    "position": [
+      43.499996185302734,
+      98.00885772705078,
+      -90.85616302490234
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "1941083939696166170",
+    "position": [
+      -1.8639999628067017,
+      98.02972412109375,
+      -48
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "10696620323243142689",
+    "position": [
+      -19.25,
+      98.02999877929688,
+      -46.25
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "10743352138513225188",
+    "position": [
+      -9,
+      98.02999877929688,
+      -60
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "11683433230229591151",
+    "position": [
+      10.25,
+      98.02999877929688,
+      -50.5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "196331300747102419",
+    "position": [
+      5.5,
+      98.02999877929688,
+      -45.5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "8186301369655588602",
+    "position": [
+      -13.25,
+      98.02999877929688,
+      -60.5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "1883068192328530224",
+    "position": [
+      22.820547103881836,
+      98.02999877929688,
+      -45.62372589111328
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "13501407288943710656",
+    "position": [
+      -50.25470733642578,
+      98.13371276855469,
+      -15.586512565612793
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "4372363658229299619",
+    "position": [
+      43.290000915527344,
+      98.4449234008789,
+      -82.44000244140625
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "4709724720801091788",
+    "position": [
+      44.438899993896484,
+      98.65312957763672,
+      -5.399999618530273
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "2436665354602612279",
+    "position": [
+      4.060357093811035,
+      99.46806335449219,
+      -11.430798530578613
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "11182647876438515984",
+    "position": [
+      -7.644073486328125,
+      99.48465728759766,
+      -11.444685935974121
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "3750231902048775592",
+    "position": [
+      -39.45528030395508,
+      103.51799774169922,
+      -130.76693725585938
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "11754783663699171680",
+    "position": [
+      -53.658546447753906,
+      103.5202407836914,
+      -131.79502868652344
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "4519534997122863169",
+    "position": [
+      -55.12794876098633,
+      104.01863098144531,
+      -90.28524017333984
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "6897789835137994741",
+    "position": [
+      -42.241947174072266,
+      104.21499633789062,
+      -123.61537170410156
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "5329807728555596183",
+    "position": [
+      -42.09869384765625,
+      104.21499633789062,
+      -137.67062377929688
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "6328163564063020832",
+    "position": [
+      -1.75,
+      99.79358673095703,
+      6.912559509277344
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "9911316961118170383",
+    "position": [
+      -1.4756050109863281,
+      105.00387573242188,
+      -48.049556732177734
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoTrainingGround",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "4320448574091221496",
+    "position": [
+      -1.75,
+      105.0270004272461,
+      -37.880157470703125
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "GerudoValley_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "1077480308077338993",
+    "position": [
+      4.853181838989258,
+      59.16404342651367,
+      -78.1605224609375
+    ],
+    "actorId": "16129198288828948135",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "GerudoValley_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "14813002874583645116",
+    "position": [
+      -9.790793418884277,
+      90.43172454833984,
+      34.98228073120117
+    ],
+    "actorId": "15856256242099990922",
+    "properties": {
+      "GameDataHashName": "",
+      "IsInvisible": false,
+      "Type": 1
+    }
+  },
+  {
+    "scene": "GerudoValley_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "13584527502619061465",
+    "position": [
+      -45.68217849731445,
+      106.23309326171875,
+      -35.5576057434082
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GerudoValley_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "11535915511003753934",
+    "position": [
+      -34.53456115722656,
+      109.96247863769531,
+      10.28170394897461
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GerudoValley_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "11274015240884524847",
+    "position": [
+      -39.316837310791016,
+      106.52815246582031,
+      -16.858505249023438
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked_Special.Npc_Hylia_RunningMan_Adult_Talk_Event4",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 32
+    }
+  },
+  {
+    "scene": "GerudoValley_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1066366815461521810",
+    "position": [
+      5.415287971496582,
+      15.407526969909668,
+      68.398193359375
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "LakeHylia"
+    }
+  },
+  {
+    "scene": "GerudoValley_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11717018555728047978",
+    "position": [
+      78.80245971679688,
+      92.67555236816406,
+      30.105091094970703
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 164,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "GerudoValley_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "7393310957051979152",
+    "position": [
+      -66.64381408691406,
+      103.18023681640625,
+      -6.041898727416992
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 81,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "GerudoFortress"
+    }
+  },
+  {
+    "scene": "GerudoValley_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "1077480308077338993",
+    "position": [
+      4.853181838989258,
+      59.16404342651367,
+      -78.1605224609375
+    ],
+    "actorId": "16129198288828948135",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "GerudoValley_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "14813002874583645116",
+    "position": [
+      -9.790793418884277,
+      90.43172454833984,
+      34.98228073120117
+    ],
+    "actorId": "15856256242099990922",
+    "properties": {
+      "GameDataHashName": "",
+      "IsInvisible": false,
+      "Type": 1
+    }
+  },
+  {
+    "scene": "GerudoValley_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "8326970197618554626",
+    "position": [
+      -11.040997505187988,
+      48.04132843017578,
+      2.4471940994262695
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GerudoValley_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "15265071047503310220",
+    "position": [
+      50.80552673339844,
+      97.40318298339844,
+      5.090764045715332
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GerudoValley_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "15375553106807971059",
+    "position": [
+      5.415287971496582,
+      15.407526969909668,
+      68.398193359375
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "LakeHylia"
+    }
+  },
+  {
+    "scene": "GerudoValley_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11902539335576790410",
+    "position": [
+      78.80245971679688,
+      92.67555236816406,
+      30.105091094970703
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 164,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "GoronCity_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "18139423190738716302",
+    "position": [
+      0.4883832037448883,
+      113.35750579833984,
+      -1.2281033992767334
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GoronCity_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "14342562093695797947",
+    "position": [
+      -19.07023048400879,
+      99.89263916015625,
+      -20.121932983398438
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Goron_011_Shop_Child",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 14
+    }
+  },
+  {
+    "scene": "GoronCity_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10033338831073880787",
+    "position": [
+      -0.09140637516975403,
+      98.5628662109375,
+      -49.75128173828125
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainCrater"
+    }
+  },
+  {
+    "scene": "GoronCity_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8434731704951157993",
+    "position": [
+      26.710708618164062,
+      104.58991241455078,
+      -3.176936626434326
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 280,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "LostWood"
+    }
+  },
+  {
+    "scene": "GoronCity_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "14587642073754196739",
+    "position": [
+      26.710708618164062,
+      104.58991241455078,
+      -3.176935911178589
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 280,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "LostWood"
+    }
+  },
+  {
+    "scene": "GoronCity_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9483264582623424780",
+    "position": [
+      1.6758195161819458,
+      116.33848571777344,
+      39.502769470214844
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainTrail"
+    }
+  },
+  {
+    "scene": "GoronCity_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3483734707455267135",
+    "position": [
+      0,
+      105.5,
+      0
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "GoronLargePot_IsGetHeartPiece",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "GoronCity_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "569390966671955163",
+    "position": [
+      -48.25,
+      113.67526245117188,
+      -7.840000152587891
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "GoronCity_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "9113425669998961551",
+    "position": [
+      -19.07023048400879,
+      99.89263916015625,
+      -20.121932983398438
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Goron_011_Shop_Child",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 14
+    }
+  },
+  {
+    "scene": "GoronCity_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "17930043840817245679",
+    "position": [
+      -0.09140637516975403,
+      98.5628662109375,
+      -49.75128173828125
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "DeathMountainCrater"
+    }
+  },
+  {
+    "scene": "GoronCity_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "14800402982807584225",
+    "position": [
+      26.710708618164062,
+      104.58991241455078,
+      -3.176936626434326
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 280,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "LostWood"
+    }
+  },
+  {
+    "scene": "GoronCity_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1856568842760078087",
+    "position": [
+      26.710708618164062,
+      104.58991241455078,
+      -3.176935911178589
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 280,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "LostWood"
+    }
+  },
+  {
+    "scene": "GoronCity_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "16325404933151147550",
+    "position": [
+      1.6758195161819458,
+      116.33848571777344,
+      39.502769470214844
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainTrail"
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "13358460016985463621",
+    "position": [
+      -7.660706043243408,
+      103.4204330444336,
+      -10.921183586120605
+    ],
+    "actorId": "5534919361313859554",
+    "properties": {
+      "GameDataHashName": "",
+      "IsInvisible": true,
+      "Type": 1
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "9353003823584590464",
+    "position": [
+      21.393999099731445,
+      105.05091857910156,
+      23.15399932861328
+    ],
+    "actorId": "9622128545943056087",
+    "properties": {
+      "GameDataHashName": "",
+      "IsInvisible": false,
+      "Type": 1
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "77201491298807580",
+    "position": [
+      -16.580066680908203,
+      108.05950927734375,
+      -8.919678688049316
+    ],
+    "actorId": "2157466067026784951",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "229475726653285413",
+    "position": [
+      -20.200000762939453,
+      104.30000305175781,
+      26.399999618530273
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "7237298446423747987",
+    "position": [
+      -4.031000137329102,
+      106.1131591796875,
+      -10.782919883728027
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "UnderTheGrave_MinigameIconON",
+      "HeartPieceHash0": "13358460016985463621",
+      "HeartPieceHash1": "0",
+      "IconType": 5
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "7570618223489590705",
+    "position": [
+      -33.75593566894531,
+      87.74820709228516,
+      77.59550476074219
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "2399231783917979380",
+    "position": [
+      -39.93865203857422,
+      98.0655517578125,
+      8.355269432067871
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 87,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "KakarikoVillage"
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8018794305125818104",
+    "position": [
+      74.87334442138672,
+      108.55162048339844,
+      2.508119821548462
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "ShadowTemple"
+    }
+  },
+  {
+    "scene": "Graveyard_Adult",
+    "floor": null,
+    "kind": "PlayerIconAnchor",
+    "id": "6590823099742651777",
+    "position": [
+      -3.98142147064209,
+      103.0681381225586,
+      -10.013822555541992
+    ],
+    "actorId": null,
+    "properties": {
+      "Rotate": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "Graveyard_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "10075158462075677237",
+    "position": [
+      -4.634922981262207,
+      103.13032531738281,
+      -1.8201141357421875
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "GraveYard_DiggingHoleTour_Drop_HeartPiece",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "Graveyard_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "9353003823584590464",
+    "position": [
+      21.393999099731445,
+      105.05091857910156,
+      23.15399932861328
+    ],
+    "actorId": "9622128545943056087",
+    "properties": {
+      "GameDataHashName": "",
+      "IsInvisible": false,
+      "Type": 1
+    }
+  },
+  {
+    "scene": "Graveyard_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "77201491298807580",
+    "position": [
+      -16.580066680908203,
+      108.05950927734375,
+      -8.919678688049316
+    ],
+    "actorId": "2157466067026784951",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "Graveyard_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "16798263777516949500",
+    "position": [
+      -12.147199630737305,
+      103.36949920654297,
+      -12.197487831115723
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "Graveyard_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "229475726653285413",
+    "position": [
+      -20.200000762939453,
+      104.30000305175781,
+      26.399999618530273
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "Graveyard_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "13438738416557235401",
+    "position": [
+      -4.634922981262207,
+      103.13032531738281,
+      -1.8201141357421875
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "MiniGame_DiggingHole_MinigameIconOn",
+      "HeartPieceHash0": "10075158462075677237",
+      "HeartPieceHash1": "0",
+      "IconType": 26
+    }
+  },
+  {
+    "scene": "Graveyard_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "17028301165043623001",
+    "position": [
+      -39.93865203857422,
+      98.0655517578125,
+      8.355269432067871
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 87,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "KakarikoVillage"
+    }
+  },
+  {
+    "scene": "Graveyard_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "311744339039678362",
+    "position": [
+      74.87334442138672,
+      108.55162048339844,
+      2.508119821548462
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "ShadowTemple"
+    }
+  },
+  {
+    "scene": "HountedWasteland_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "14910672274965350769",
+    "position": [
+      16.01300048828125,
+      88.84510040283203,
+      -99.79999542236328
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "HountedWasteland_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "13756540388226076963",
+    "position": [
+      122.93973541259766,
+      96.11293029785156,
+      57.77404022216797
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "HountedWasteland_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10151104999260881916",
+    "position": [
+      -107.21185302734375,
+      99.03233337402344,
+      -55.799957275390625
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "HountedWasteland_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "14910672274965350769",
+    "position": [
+      16.01300048828125,
+      88.84510040283203,
+      -99.79999542236328
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "HountedWasteland_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1770868348614838942",
+    "position": [
+      -107.21185302734375,
+      99.03233337402344,
+      -55.799957275390625
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "HyruleCastle",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9162653017526462607",
+    "position": [
+      35.9295654296875,
+      117.3347396850586,
+      -106.16785430908203
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        39.049591064453125,
+        101.05016326904297,
+        -116.12972259521484
+      ]
+    }
+  },
+  {
+    "scene": "HyruleCastle",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "2504273934093629549",
+    "position": [
+      -12.364601135253906,
+      121.77613830566406,
+      -94.94949340820312
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "HyruleCastle",
+    "floor": null,
+    "kind": "Facility",
+    "id": "11391971170492584680",
+    "position": [
+      68.09176635742188,
+      107.72779846191406,
+      -63.33452606201172
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Power",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "HyruleCastle",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "2295155229079041014",
+    "position": [
+      11.585308074951172,
+      105.17620849609375,
+      -9.940455436706543
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 161,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "Market"
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "12007978132755687032",
+    "position": [
+      -156.40594482421875,
+      144.20506286621094,
+      338.3231201171875
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -147.92022705078125,
+        129.89300537109375,
+        322.4954833984375
+      ]
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9047381233010434881",
+    "position": [
+      40.07778549194336,
+      144.80836486816406,
+      342.2862854003906
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": true,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        56.51300048828125,
+        126.33322143554688,
+        342.5752258300781
+      ]
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "2177746409373494991",
+    "position": [
+      70.53002166748047,
+      167.4074249267578,
+      263.8376159667969
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9895024720437575016",
+    "position": [
+      -312.018798828125,
+      137.88633728027344,
+      163.32522583007812
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 54,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "GerudoValley"
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10634927169593267800",
+    "position": [
+      -92.99996185302734,
+      143.26129150390625,
+      398
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 150,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "LakeHylia"
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "3611685082049708064",
+    "position": [
+      -0.08406098932027817,
+      150.6954345703125,
+      21.628158569335938
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "Market"
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "6665735386813288448",
+    "position": [
+      199.67662048339844,
+      156.41067504882812,
+      126.95867919921875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "12392727513838515396",
+    "position": [
+      210.5902557373047,
+      159.28802490234375,
+      147.86180114746094
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 231,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraRiver"
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9720327327469716415",
+    "position": [
+      205.18003845214844,
+      160.5115966796875,
+      16.937108993530273
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 318,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "KakarikoVillage"
+    }
+  },
+  {
+    "scene": "HyruleField_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11815609108294342779",
+    "position": [
+      199.2338409423828,
+      163.12298583984375,
+      309.4404296875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 298,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "KokiriForest"
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "14128250030289710996",
+    "position": [
+      -213.44728088378906,
+      133.42279052734375,
+      138.38815307617188
+    ],
+    "actorId": "2967378296224661060",
+    "properties": {
+      "GameDataHashName": "",
+      "IsInvisible": false,
+      "Type": 1
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "14825051130171187671",
+    "position": [
+      39.860008239746094,
+      152.44744873046875,
+      26.579999923706055
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "HyruleField_Enemy_Scrub_Business_HeartPiece_01",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "12007978132755687032",
+    "position": [
+      -156.40594482421875,
+      144.20506286621094,
+      338.3231201171875
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -147.92022705078125,
+        129.89300537109375,
+        322.4954833984375
+      ]
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "2177746409373494991",
+    "position": [
+      70.53002166748047,
+      167.4074249267578,
+      263.8376159667969
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "7435471053006220250",
+    "position": [
+      -312.018798828125,
+      137.88633728027344,
+      163.32522583007812
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 54,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "GerudoValley"
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "17695789664818065157",
+    "position": [
+      -92.99996185302734,
+      143.26129150390625,
+      398
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 150,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "LakeHylia"
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "15568226378756636967",
+    "position": [
+      -0.08406098932027817,
+      150.6954345703125,
+      21.628158569335938
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "Market"
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "12962291284579815237",
+    "position": [
+      199.67662048339844,
+      156.41067504882812,
+      126.95867919921875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "6830023338446917390",
+    "position": [
+      210.5902557373047,
+      159.28802490234375,
+      147.86180114746094
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 231,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraRiver"
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8972196429493960869",
+    "position": [
+      205.18003845214844,
+      160.5115966796875,
+      16.937108993530273
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 318,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "KakarikoVillage"
+    }
+  },
+  {
+    "scene": "HyruleField_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "5047253081999091912",
+    "position": [
+      199.2338409423828,
+      163.12298583984375,
+      309.4404296875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 298,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "KokiriForest"
+    }
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "7165255787572043804",
+    "position": [
+      -1.4165087938308716,
+      107.22708129882812,
+      -6.200536727905273
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "1612219105489330028",
+    "position": [
+      83.67357635498047,
+      108.25199890136719,
+      -0.4505326747894287
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "14822647495538506998",
+    "position": [
+      -18.1279239654541,
+      108.6768569946289,
+      -16.56170654296875
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "13542013937093159888",
+    "position": [
+      90.21640014648438,
+      104.51268005371094,
+      2.9221553802490234
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "4128092231168513176",
+    "position": [
+      -53.10926818847656,
+      107.19275665283203,
+      -34.19630432128906
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "6859289214373847284",
+    "position": [
+      -46.22481155395508,
+      109.70999908447266,
+      42.527000427246094
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "11498802739257120175",
+    "position": [
+      3.380000114440918,
+      113.71260833740234,
+      -80.19999694824219
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "17335166050006259965",
+    "position": [
+      -47.74742889404297,
+      97.36715698242188,
+      78.19734191894531
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "IceCavern",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "2197412421629682964",
+    "position": [
+      16.84434700012207,
+      102.41315460205078,
+      105.14901733398438
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "ZoraFountain"
+    }
+  },
+  {
+    "scene": "InsideGanonCastle",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "18277713685010400796",
+    "position": [
+      12.584466934204102,
+      103.8997802734375,
+      -65.89408874511719
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideGanonCastle",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "7899179288432849355",
+    "position": [
+      -38.027687072753906,
+      104.00112915039062,
+      13.321775436401367
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideGanonCastle",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "17657623307936361670",
+    "position": [
+      48.28610610961914,
+      104.00733947753906,
+      -105.30329132080078
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideGanonCastle",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "2823492402119064688",
+    "position": [
+      0.038172606378793716,
+      110.25004577636719,
+      79.45436096191406
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "InsideGanonCastle",
+    "floor": 4,
+    "kind": "TBox",
+    "id": "17092385671602176550",
+    "position": [
+      0.0731363296508789,
+      149.6500244140625,
+      -24.685300827026367
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "11513774157335944149",
+    "position": [
+      17.372461318969727,
+      81.71894836425781,
+      -59.27528762817383
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "11283202900158580106",
+    "position": [
+      -15.493221282958984,
+      84.62317657470703,
+      -83.3842544555664
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -15.361268043518066,
+        90.3413314819336,
+        -82.93287658691406
+      ]
+    }
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "13852835165271311030",
+    "position": [
+      -2.2131662368774414,
+      88.40897369384766,
+      -94.95555114746094
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "14933854942830098290",
+    "position": [
+      37.70000076293945,
+      77.55000305175781,
+      -57.118343353271484
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "3609242017501283521",
+    "position": [
+      -34.1844596862793,
+      82.46908569335938,
+      -51.981082916259766
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "3510516276638146208",
+    "position": [
+      25.51691436767578,
+      92.29351806640625,
+      -175.93125915527344
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "5527401621172639818",
+    "position": [
+      -31.303817749023438,
+      92.3927993774414,
+      -131.90882873535156
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "15614298425061390012",
+    "position": [
+      -0.2704514265060425,
+      91.9050064086914,
+      4.459976673126221
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "ZoraFountain"
+    }
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": 1,
+    "kind": "CollectSign",
+    "id": "15983944335296207002",
+    "position": [
+      38.288944244384766,
+      106.12387084960938,
+      -49.08511734008789
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "InsideJabuJabuBelly",
+    "floor": 1,
+    "kind": "Facility",
+    "id": "10044298509133306592",
+    "position": [
+      41.92756652832031,
+      102.06005859375,
+      -92.74153137207031
+    ],
+    "actorId": null,
+    "properties": {
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 0
+    }
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": -2,
+    "kind": "Facility",
+    "id": "12971031847538946406",
+    "position": [
+      -29.0049991607666,
+      53,
+      46.5890007019043
+    ],
+    "actorId": null,
+    "properties": {
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 0
+    }
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "18075358844331090388",
+    "position": [
+      -18.129474639892578,
+      78.69496154785156,
+      -12.980559349060059
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "17501688996789643983",
+    "position": [
+      -81.90412139892578,
+      86.69369506835938,
+      -7.400758743286133
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "16101480770659370603",
+    "position": [
+      3.322671890258789,
+      86.86177825927734,
+      1.1332212686538696
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "12889104996486369065",
+    "position": [
+      -10.398595809936523,
+      79.38362121582031,
+      -12.559906005859375
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "137434756178773864",
+    "position": [
+      0.020135968923568726,
+      101.10841369628906,
+      17.554508209228516
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 178,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "KokiriForest"
+    }
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "8579518566955184384",
+    "position": [
+      6.513911247253418,
+      108.4000015258789,
+      7.246145248413086
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "821372075822700622",
+    "position": [
+      -54.38746643066406,
+      111.95770263671875,
+      12.210469245910645
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "13027331340815880287",
+    "position": [
+      -42.916072845458984,
+      116.20028686523438,
+      19.345672607421875
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": 2,
+    "kind": "CollectSign",
+    "id": "13609975487234437568",
+    "position": [
+      -29.764575958251953,
+      121.0026626586914,
+      13.039876937866211
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "9284193025315608699",
+    "position": [
+      -48.2940673828125,
+      120.36531066894531,
+      0
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "InsideTheDekuTree",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "11368028582977069031",
+    "position": [
+      -65.2408676147461,
+      125.62507629394531,
+      0.02361336536705494
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "12012336414699946951",
+    "position": [
+      -27.758955001831055,
+      103.20709228515625,
+      80.58808898925781
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_IsAfterSave_Npc_Hylia_025",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "1416092057268113387",
+    "position": [
+      -36.10409164428711,
+      107.5047836303711,
+      28.965904235839844
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "Npc_Hylia_001_IsGetHeartPiece",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "1051454338871863592",
+    "position": [
+      -44.07674026489258,
+      107.97144317626953,
+      112.00212097167969
+    ],
+    "actorId": "17926402522258180222",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3518965357024502806",
+    "position": [
+      1.481914758682251,
+      108.89686584472656,
+      37.5221061706543
+    ],
+    "actorId": "13389209437182306002",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "3310819903461047792",
+    "position": [
+      -38.73756790161133,
+      113.6988296508789,
+      115.47581481933594
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "8706565761040541649",
+    "position": [
+      -63.36784362792969,
+      103.29718780517578,
+      62.754066467285156
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_MiniGame_HitTarget_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 21
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "15835149565475022236",
+    "position": [
+      -27.689952850341797,
+      109.7804946899414,
+      29.26426887512207
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_ObabaShop_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 29
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "18202817486846282618",
+    "position": [
+      -72.5108642578125,
+      110.33732604980469,
+      6.703862190246582
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_NandemoShop_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 19
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "7080404750398591174",
+    "position": [
+      -37.52289581298828,
+      113.94136810302734,
+      7.816554546356201
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_DrugStore_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 17
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "5917725672645145355",
+    "position": [
+      -25.437198638916016,
+      114.50114440917969,
+      75.59127044677734
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "GatheringTokenGold_FirstTalk",
+      "HeartPieceHash0": "12012336414699946951",
+      "HeartPieceHash1": "0",
+      "IconType": 24
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "6007256568673440665",
+    "position": [
+      -127.76343536376953,
+      95.48079681396484,
+      56.57090759277344
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 66,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "5029766897786848526",
+    "position": [
+      -29.02105712890625,
+      99.38682556152344,
+      44.21874237060547
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 240,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "BottomOfTheWell"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1802241231630587685",
+    "position": [
+      24.50870132446289,
+      105.36957550048828,
+      68.20490264892578
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "Graveyard"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9779898533827711118",
+    "position": [
+      -39.37638473510742,
+      110.28218078613281,
+      -28.284507751464844
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 355,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainTrail"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "12012336414699946951",
+    "position": [
+      -27.758955001831055,
+      103.20709228515625,
+      80.58808898925781
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_IsAfterSave_Npc_Hylia_025",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "1416092057268113387",
+    "position": [
+      -36.10409164428711,
+      107.5047836303711,
+      28.965904235839844
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "Npc_Hylia_001_IsGetHeartPiece",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "1051454338871863592",
+    "position": [
+      -44.07674026489258,
+      107.97144317626953,
+      112.00212097167969
+    ],
+    "actorId": "17926402522258180222",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3518965357024502806",
+    "position": [
+      1.481914758682251,
+      108.89686584472656,
+      37.5221061706543
+    ],
+    "actorId": "13389209437182306002",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "3310819903461047792",
+    "position": [
+      -38.73756408691406,
+      113.69886016845703,
+      115.47581481933594
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "Facility",
+    "id": "598834970894493651",
+    "position": [
+      -63.36784362792969,
+      103.2972183227539,
+      62.754066467285156
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_MiniGame_HitTarget_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 21
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "Facility",
+    "id": "12634116446987675649",
+    "position": [
+      -27.68994903564453,
+      109.78052520751953,
+      29.26426887512207
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_ObabaShop_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 29
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "Facility",
+    "id": "9548135553010090942",
+    "position": [
+      -72.5108642578125,
+      110.33735656738281,
+      6.703862190246582
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_NandemoShop_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 19
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "Facility",
+    "id": "8155040155275007322",
+    "position": [
+      -37.522891998291016,
+      113.94139862060547,
+      7.816554546356201
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_DrugStore_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 17
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "Facility",
+    "id": "7204823870935714825",
+    "position": [
+      -25.437198638916016,
+      114.50114440917969,
+      75.59127044677734
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "GatheringTokenGold_FirstTalk",
+      "HeartPieceHash0": "12012336414699946951",
+      "HeartPieceHash1": "0",
+      "IconType": 24
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "7043299725059533051",
+    "position": [
+      -127.76343536376953,
+      95.48079681396484,
+      56.57090759277344
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 66,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8903353635331882508",
+    "position": [
+      -29.02105712890625,
+      99.38682556152344,
+      44.21874237060547
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 240,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "BottomOfTheWell"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "3420003129930316839",
+    "position": [
+      24.50870132446289,
+      105.36957550048828,
+      68.20490264892578
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "Graveyard"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Adult_Alternative",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "13024906702665016979",
+    "position": [
+      -39.37638473510742,
+      110.28218078613281,
+      -28.284507751464844
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 355,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainTrail"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "12012336414699946951",
+    "position": [
+      -27.758955001831055,
+      103.20709228515625,
+      80.58808898925781
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "KakarikoVillage_IsAfterSave_Npc_Hylia_025",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "1416092057268113387",
+    "position": [
+      -36.10409164428711,
+      107.5047836303711,
+      28.965904235839844
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "Npc_Hylia_001_IsGetHeartPiece",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "1051454338871863592",
+    "position": [
+      -44.07674026489258,
+      107.97144317626953,
+      112.00212097167969
+    ],
+    "actorId": "17926402522258180222",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3518965357024502806",
+    "position": [
+      1.481914758682251,
+      108.89686584472656,
+      37.5221061706543
+    ],
+    "actorId": "13389209437182306002",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "14107117960174262321",
+    "position": [
+      -60.71241760253906,
+      102.1308364868164,
+      59.549861907958984
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "15314554401574296838",
+    "position": [
+      -29.075544357299805,
+      103.08731079101562,
+      60.51190185546875
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "7677963516305772491",
+    "position": [
+      -73.60032653808594,
+      104.45828247070312,
+      43.47663879394531
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "11629189455828560791",
+    "position": [
+      -75.00682830810547,
+      105.28756713867188,
+      2.172684669494629
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "15118290503807073158",
+    "position": [
+      -48.10788345336914,
+      110.90959167480469,
+      18.399999618530273
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "11257448013383361714",
+    "position": [
+      -25.437198638916016,
+      114.50114440917969,
+      75.59127044677734
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "GatheringTokenGold_FirstTalk",
+      "HeartPieceHash0": "12012336414699946951",
+      "HeartPieceHash1": "0",
+      "IconType": 24
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10122827566786937315",
+    "position": [
+      -127.76343536376953,
+      95.48079681396484,
+      56.57090759277344
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 66,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9566987740778801223",
+    "position": [
+      -29.02105712890625,
+      99.38682556152344,
+      44.21874237060547
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 240,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "BottomOfTheWell"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "15422887915941586540",
+    "position": [
+      24.50870132446289,
+      105.36957550048828,
+      68.20490264892578
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "Graveyard"
+    }
+  },
+  {
+    "scene": "KakarikoVillage_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8761096748248763444",
+    "position": [
+      -39.37638473510742,
+      110.28218078613281,
+      -28.284507751464844
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 355,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "DeathMountainTrail"
+    }
+  },
+  {
+    "scene": "KokiriForest_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "7116603238806634901",
+    "position": [
+      18.039623260498047,
+      117.17457580566406,
+      18.87630844116211
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KokiriForest_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "13319655527711990129",
+    "position": [
+      -2.4789416790008545,
+      120.79167938232422,
+      -23.49793243408203
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Kokiri_001_Shop_Child",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 13
+    }
+  },
+  {
+    "scene": "KokiriForest_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "2077317094562547700",
+    "position": [
+      -129.4517059326172,
+      114.95726776123047,
+      -37.99314498901367
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 90,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "KokiriForest_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "4757903750127620475",
+    "position": [
+      93.44344329833984,
+      115.69992065429688,
+      -28.58326530456543
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 259,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "InsideTheDekuTree"
+    }
+  },
+  {
+    "scene": "KokiriForest_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "14285089661251546561",
+    "position": [
+      -33.48947525024414,
+      121.18990325927734,
+      -68.27371978759766
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 25,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "LostWood"
+    }
+  },
+  {
+    "scene": "KokiriForest_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9623998892552467148",
+    "position": [
+      8.242212295532227,
+      112.63771057128906,
+      -23.305742263793945
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KokiriForest_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "17067594426901953848",
+    "position": [
+      -83.7901382446289,
+      117.85399627685547,
+      -17.619117736816406
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "KokiriForest_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "17278995466843242257",
+    "position": [
+      -2.4789416790008545,
+      120.79167938232422,
+      -23.49793243408203
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Kokiri_001_Shop_Child",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 13
+    }
+  },
+  {
+    "scene": "KokiriForest_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "455826459185779094",
+    "position": [
+      -129.4517059326172,
+      114.95726776123047,
+      -37.99314498901367
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 90,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "KokiriForest_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "7038259065366708037",
+    "position": [
+      93.44344329833984,
+      115.69992065429688,
+      -28.58326530456543
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 259,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "InsideTheDekuTree"
+    }
+  },
+  {
+    "scene": "KokiriForest_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "16966778132106565506",
+    "position": [
+      -33.48947525024414,
+      121.18990325927734,
+      -68.27371978759766
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 25,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "LostWood"
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3889886157160285015",
+    "position": [
+      -174.39260864257812,
+      138,
+      418.0172119140625
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "Npc_Hylia_045_HasDived",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "8693044901437535425",
+    "position": [
+      -180.58233642578125,
+      163.08773803710938,
+      424.9721374511719
+    ],
+    "actorId": "13469300937852836203",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "7388645484070660331",
+    "position": [
+      -175.6986541748047,
+      128.46214294433594,
+      410.68499755859375
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -175.11459350585938,
+        128.46214294433594,
+        415.5933837890625
+      ]
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "8655370827943125875",
+    "position": [
+      -289.13690185546875,
+      130.9376983642578,
+      590.8505859375
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -295.6242370605469,
+        131.97518920898438,
+        597.7672119140625
+      ]
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "789492162651991711",
+    "position": [
+      -196.95042419433594,
+      150.27999877929688,
+      517.3847045898438
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "17051785726507345499",
+    "position": [
+      -97.90987396240234,
+      134,
+      492.2716064453125
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Hylia_Fishman_001_Child",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 28
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10459565833332848589",
+    "position": [
+      -185.91921997070312,
+      103.5345230102539,
+      499.4734191894531
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 150,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "WaterTemple"
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "17465374313984285128",
+    "position": [
+      -138.86956787109375,
+      124.29178619384766,
+      446.5618896484375
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "ZoraDomain"
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "7690975600063466546",
+    "position": [
+      -259.5860595703125,
+      140.51113891601562,
+      386.61138916015625
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 17,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "GerudoValley"
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "12222278877302081165",
+    "position": [
+      -89.30340576171875,
+      143.56906127929688,
+      395.64923095703125
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 325,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "LakeHylia_Adult",
+    "floor": null,
+    "kind": "PlayerIconAnchor",
+    "id": "13794020614845182797",
+    "position": [
+      -245.05282592773438,
+      135.80023193359375,
+      414.7515563964844
+    ],
+    "actorId": null,
+    "properties": {
+      "Rotate": [
+        3.1415927410125732,
+        -0.748205304145813,
+        3.1415927410125732
+      ]
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "6175378250368022556",
+    "position": [
+      -98.81968688964844,
+      134.76400756835938,
+      493.29339599609375
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "MiniGame_Fishing_GetHeartPiece",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3889886157160285015",
+    "position": [
+      -174.39260864257812,
+      138,
+      418.0172119140625
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "Npc_Hylia_045_HasDived",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "8655370827943125875",
+    "position": [
+      -289.13690185546875,
+      130.9376983642578,
+      590.8505859375
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -295.6242370605469,
+        131.97518920898438,
+        597.7672119140625
+      ]
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "7014193622407727514",
+    "position": [
+      -166.364013671875,
+      137.9018096923828,
+      412.43023681640625
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -167.69143676757812,
+        137.9018096923828,
+        413.48260498046875
+      ]
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "13944703896577680014",
+    "position": [
+      -178.2529296875,
+      141.95822143554688,
+      426.4041442871094
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "15302397914123944787",
+    "position": [
+      -97.90985870361328,
+      134.00001525878906,
+      492.2716369628906
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Hylia_Fishman_001_Child",
+      "HeartPieceHash0": "6175378250368022556",
+      "HeartPieceHash1": "0",
+      "IconType": 28
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8864544872247179703",
+    "position": [
+      -185.91921997070312,
+      103.5345230102539,
+      499.4734191894531
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 150,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "WaterTemple"
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "2019706857680771229",
+    "position": [
+      -138.86956787109375,
+      124.29178619384766,
+      446.5618896484375
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "ZoraDomain"
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10497241574170981169",
+    "position": [
+      -259.5860595703125,
+      140.51113891601562,
+      386.61138916015625
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 17,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "GerudoValley"
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "14388254154737389511",
+    "position": [
+      -89.30340576171875,
+      143.56906127929688,
+      395.64923095703125
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 325,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "LakeHylia_Child",
+    "floor": null,
+    "kind": "PlayerIconAnchor",
+    "id": "394120304979079816",
+    "position": [
+      -245.05282592773438,
+      135.80023193359375,
+      414.7515563964844
+    ],
+    "actorId": null,
+    "properties": {
+      "Rotate": [
+        3.1415927410125732,
+        -0.748205304145813,
+        3.1415927410125732
+      ]
+    }
+  },
+  {
+    "scene": "LonLonRanch_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "341792603838029977",
+    "position": [
+      -39.55157470703125,
+      158.24966430664062,
+      200.6729736328125
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "LonLonRanch_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "2730878115209290675",
+    "position": [
+      -147.4391326904297,
+      159.2058563232422,
+      268.2318115234375
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "LonLonRanch_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "11973929711281083963",
+    "position": [
+      -81.47801208496094,
+      150.63656616210938,
+      232.69818115234375
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "MiniGame_Unlock_HorseRace",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 9
+    }
+  },
+  {
+    "scene": "LonLonRanch_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8723037877803125258",
+    "position": [
+      -60.19998550415039,
+      152.446044921875,
+      180.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 350,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "LonLonRanch_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "11156084763374250886",
+    "position": [
+      -157.15353393554688,
+      150.9308319091797,
+      266.4433288574219
+    ],
+    "actorId": "9814903750835309225",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "LonLonRanch_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "15889002414176907668",
+    "position": [
+      -63.216087341308594,
+      156.38766479492188,
+      212.38632202148438
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "LonLonRanch_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "341792603838029977",
+    "position": [
+      -39.55157470703125,
+      158.24966430664062,
+      200.6729736328125
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "LonLonRanch_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "2730878115209290675",
+    "position": [
+      -147.4391326904297,
+      159.2058563232422,
+      268.2318115234375
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "LonLonRanch_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "2572680148269656531",
+    "position": [
+      -53.57651138305664,
+      150.72225952148438,
+      197.8054962158203
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "MiniGame_Unlock_FindOutCucco",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 8
+    }
+  },
+  {
+    "scene": "LonLonRanch_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1432220016039938523",
+    "position": [
+      -60.19998550415039,
+      152.446044921875,
+      180.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 350,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "4335656213162247230",
+    "position": [
+      8.576416015625,
+      105.73265075683594,
+      -55.37306594848633
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": true,
+      "OriginTrans": [
+        14.450913429260254,
+        105.85079956054688,
+        -56.41813278198242
+      ]
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "114300175950057317",
+    "position": [
+      3.820154905319214,
+      83.82705688476562,
+      -47.531986236572266
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "LostWood_ScrubForestStage_SurfaceFairPlayed",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 33
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9018891125172411797",
+    "position": [
+      68.5,
+      92.20304870605469,
+      -25.600000381469727
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8900744225176978916",
+    "position": [
+      23.999998092651367,
+      98.44999694824219,
+      -35.660614013671875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9802064756534309125",
+    "position": [
+      23.999998092651367,
+      98.44999694824219,
+      -35.660614013671875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "18334094415358101519",
+    "position": [
+      24,
+      100.0295181274414,
+      -83.70000457763672
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "7680572261519864583",
+    "position": [
+      0,
+      100.02953338623047,
+      7
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "16377535381997233414",
+    "position": [
+      0,
+      100.02953338623047,
+      -9.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10538789866658673986",
+    "position": [
+      24,
+      100.02953338623047,
+      9.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "146529487352898180",
+    "position": [
+      14.5,
+      100.02953338623047,
+      -24
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "16894056358174610269",
+    "position": [
+      47.900001525878906,
+      100.02953338623047,
+      -14.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "5572110784043795470",
+    "position": [
+      57.5,
+      100.02953338623047,
+      -48.10000228881836
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "16911510255316198454",
+    "position": [
+      57.5,
+      100.02953338623047,
+      -72
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8672210078482207969",
+    "position": [
+      47.900001525878906,
+      100.02953338623047,
+      -81.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1051350375814114536",
+    "position": [
+      14.5,
+      100.02953338623047,
+      -72
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "12903686061106478642",
+    "position": [
+      24,
+      100.02953338623047,
+      -62.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "18092305056327665421",
+    "position": [
+      48.757144927978516,
+      98.34132385253906,
+      16.034143447875977
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "Minigame_SkullKidSession_IsGetHeartPiece",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "605877630645816565",
+    "position": [
+      -34.01499938964844,
+      104.5,
+      -3.744999885559082
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "Npc_SkullKid_Child_IsGetHeartPiece",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9333354743976439033",
+    "position": [
+      -33.187705993652344,
+      100.16835021972656,
+      31.416748046875
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "17796658857969527112",
+    "position": [
+      14.453725814819336,
+      101.73279571533203,
+      -52.065940856933594
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": true,
+      "OriginTrans": [
+        10.871164321899414,
+        99.77523803710938,
+        -52.065940856933594
+      ]
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "4335656213162247230",
+    "position": [
+      8.576416015625,
+      105.73265075683594,
+      -55.37306594848633
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": true,
+      "OriginTrans": [
+        14.450913429260254,
+        105.85079956054688,
+        -56.41813278198242
+      ]
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "16570344800814741291",
+    "position": [
+      3.820154905319214,
+      83.82705688476562,
+      -47.531986236572266
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "LostWood_ScrubForestStage_SurfaceFairPlayed",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 33
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "6472942689930521371",
+    "position": [
+      45.13100051879883,
+      97.15744018554688,
+      13.880000114440918
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "Npc_SkullKid_Child_02_Talked",
+      "HeartPieceHash0": "18092305056327665421",
+      "HeartPieceHash1": "0",
+      "IconType": 31
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "3368766689657030911",
+    "position": [
+      68.5,
+      92.20304870605469,
+      -25.600000381469727
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "357049150591725886",
+    "position": [
+      23.999998092651367,
+      98.44999694824219,
+      -35.660614013671875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "4412528925774535135",
+    "position": [
+      23.999998092651367,
+      98.44999694824219,
+      -35.660614013671875
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "12238562501933768153",
+    "position": [
+      24,
+      100.0295181274414,
+      -83.70000457763672
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "2112590636888041677",
+    "position": [
+      0,
+      100.02953338623047,
+      7
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9575167445958535624",
+    "position": [
+      0,
+      100.02953338623047,
+      -9.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "3601243810634672153",
+    "position": [
+      24,
+      100.02953338623047,
+      9.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11755052975294978618",
+    "position": [
+      14.5,
+      100.02953338623047,
+      -24
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11377995656852826887",
+    "position": [
+      47.900001525878906,
+      100.02953338623047,
+      -14.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "16188873254680067767",
+    "position": [
+      57.5,
+      100.02953338623047,
+      -48.10000228881836
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "13486739078281327256",
+    "position": [
+      57.5,
+      100.02953338623047,
+      -72
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "3244420592874925915",
+    "position": [
+      47.900001525878906,
+      100.02953338623047,
+      -81.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "13685068543177306449",
+    "position": [
+      14.5,
+      100.02953338623047,
+      -72
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "LostWood_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8301350043993510040",
+    "position": [
+      24,
+      100.02953338623047,
+      -62.5
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "Market_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "5356792203116605338",
+    "position": [
+      12.525862693786621,
+      111.94062805175781,
+      57.03628921508789
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked_Special.Npc_Hylia_048_BottleShop_Talk_Event5",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 30
+    }
+  },
+  {
+    "scene": "Market_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "13490830920022464815",
+    "position": [
+      -2.652419090270996,
+      100.71189880371094,
+      -36.539546966552734
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "GanonCastle"
+    }
+  },
+  {
+    "scene": "Market_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1225485861727822549",
+    "position": [
+      -1.827154278755188,
+      102.38202667236328,
+      66.6851806640625
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "Market_Adult",
+    "floor": null,
+    "kind": "PlayerIconAnchor",
+    "id": "51222024332016310",
+    "position": [
+      51.63392639160156,
+      104.65219116210938,
+      -33.9659423828125
+    ],
+    "actorId": null,
+    "properties": {
+      "Rotate": [
+        0,
+        -1.570796251296997,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "8568137720802848289",
+    "position": [
+      1.6605249643325806,
+      100.0863037109375,
+      26.596019744873047
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "SubEvent_FindRichard_GetHeartPiece",
+      "IsInvisible": false,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "11628104451986877978",
+    "position": [
+      -22.007003784179688,
+      109.96633911132812,
+      9.20832347869873
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "MiniGame_BombchuBowling_ClearThirdTime",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "5215133574889185473",
+    "position": [
+      -62.895355224609375,
+      110.6692886352539,
+      12.552659034729004
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "MiniGame_ChoiceTreasure_IsClear",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "8942465719711548237",
+    "position": [
+      17.38143539428711,
+      102.09561920166016,
+      58.356998443603516
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "4206565430124184560",
+    "position": [
+      8.961694717407227,
+      110.25689697265625,
+      -17.69147300720215
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "Market_HappyMaskShop_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 1
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "16291444002866747860",
+    "position": [
+      20.574474334716797,
+      112.2168197631836,
+      5.434666156768799
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "Market_DrugStore_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 16
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "13432245743792133023",
+    "position": [
+      -65.03646850585938,
+      112.6457748413086,
+      11.257279396057129
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "Market_MiniGame_ChoiceTreasure_FirstTalk",
+      "HeartPieceHash0": "5215133574889185473",
+      "HeartPieceHash1": "0",
+      "IconType": 23
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "3576065904214803228",
+    "position": [
+      -12.99337387084961,
+      112.72222137451172,
+      -18.907550811767578
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "Market_MiniGame_HitTarget_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 20
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "12446007402905842523",
+    "position": [
+      19.690990447998047,
+      113.92884063720703,
+      16.762428283691406
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "Market_NandemoShop_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 18
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "11841278449200350774",
+    "position": [
+      -25.03568458557129,
+      116.7194595336914,
+      7.56142520904541
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "Market_MiniGame_BombchuBowling_FirstTalk",
+      "HeartPieceHash0": "11628104451986877978",
+      "HeartPieceHash1": "0",
+      "IconType": 22
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "3726335697603476906",
+    "position": [
+      -24.538145065307617,
+      117.71556091308594,
+      32.876121520996094
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "Market_BombchuShop_FirstTalk",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 4
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1319590203142680608",
+    "position": [
+      -1.9765658378601074,
+      99.69596099853516,
+      -36.539546966552734
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleCastle"
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "13900700779632347206",
+    "position": [
+      -1.8238556385040283,
+      102.16484069824219,
+      66.68424224853516
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "Market_Child",
+    "floor": null,
+    "kind": "PlayerIconAnchor",
+    "id": "14896969165300248745",
+    "position": [
+      51.63392639160156,
+      104.65219116210938,
+      -33.9659423828125
+    ],
+    "actorId": null,
+    "properties": {
+      "Rotate": [
+        0,
+        -1.570796251296997,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "SacredForestMeadow_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "14473218207379268379",
+    "position": [
+      7.752925395965576,
+      107.37591552734375,
+      13.20976734161377
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "SacredForestMeadow_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "14308725960103065314",
+    "position": [
+      -7.2316789627075195,
+      100.07536315917969,
+      77.0582046508789
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "LostWood"
+    }
+  },
+  {
+    "scene": "SacredForestMeadow_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "5356992539391447580",
+    "position": [
+      -6.933391094207764,
+      119.43232727050781,
+      -119.1921157836914
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "ForestTemple"
+    }
+  },
+  {
+    "scene": "SacredForestMeadow_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9007147724607227454",
+    "position": [
+      -7.2316789627075195,
+      100.07536315917969,
+      77.0582046508789
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "LostWood"
+    }
+  },
+  {
+    "scene": "SacredForestMeadow_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "18297561399723819968",
+    "position": [
+      -6.933391094207764,
+      119.43232727050781,
+      -119.1921157836914
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": "ForestTemple"
+    }
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -4,
+    "kind": "CollectSign",
+    "id": "10270336409167849808",
+    "position": [
+      -215.40936279296875,
+      41.82640075683594,
+      -43.61821365356445
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -212.26614379882812,
+        41.30322265625,
+        -37.39935302734375
+      ]
+    }
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -4,
+    "kind": "CollectSign",
+    "id": "8823884712433934372",
+    "position": [
+      104.61121368408203,
+      42.0494499206543,
+      -39.640113830566406
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        104.61121368408203,
+        52.01121520996094,
+        -39.78573989868164
+      ]
+    }
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -4,
+    "kind": "TBox",
+    "id": "9852624243105848451",
+    "position": [
+      -190.05667114257812,
+      41.28810501098633,
+      -69.42733764648438
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -4,
+    "kind": "TBox",
+    "id": "17902550525792072472",
+    "position": [
+      -181.8605194091797,
+      41.387996673583984,
+      -12.582869529724121
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -4,
+    "kind": "TBox",
+    "id": "9221365632831348137",
+    "position": [
+      -173.22999572753906,
+      41.40999984741211,
+      -69.0999984741211
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -4,
+    "kind": "Facility",
+    "id": "16286836175896403549",
+    "position": [
+      -138.51025390625,
+      41.997554779052734,
+      19.061254501342773
+    ],
+    "actorId": null,
+    "properties": {
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 0
+    }
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "CollectSign",
+    "id": "15564367841356014861",
+    "position": [
+      75.83562469482422,
+      53.40935134887695,
+      6.327821254730225
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "CollectSign",
+    "id": "15148554628675590606",
+    "position": [
+      32.92836380004883,
+      56.46761703491211,
+      86.32547760009766
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": true,
+      "OriginTrans": [
+        33.3664665222168,
+        73.76506805419922,
+        86.19779968261719
+      ]
+    }
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "CollectSign",
+    "id": "16933078188088206331",
+    "position": [
+      184.88299560546875,
+      61.91221618652344,
+      96.86360168457031
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        179.78692626953125,
+        62.47434616088867,
+        96.86360168457031
+      ]
+    }
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "TBox",
+    "id": "12345747231768877602",
+    "position": [
+      128.01904296875,
+      51.979736328125,
+      10.48712158203125
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "TBox",
+    "id": "5681107746948738726",
+    "position": [
+      101.19000244140625,
+      52.099998474121094,
+      -17.600000381469727
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "TBox",
+    "id": "169081039115821925",
+    "position": [
+      118.38680267333984,
+      52.13592529296875,
+      -17.66887664794922
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "TBox",
+    "id": "8858270325665149688",
+    "position": [
+      21.131282806396484,
+      56.400001525878906,
+      98.35862731933594
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "TBox",
+    "id": "10344372963276519235",
+    "position": [
+      175.76300048828125,
+      60.904930114746094,
+      92.23899841308594
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "TBox",
+    "id": "3718790579351798247",
+    "position": [
+      175.76300048828125,
+      60.904930114746094,
+      100.61100006103516
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -3,
+    "kind": "TBox",
+    "id": "5781953901224064730",
+    "position": [
+      -1.46999990940094,
+      63.5,
+      98.64646911621094
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -2,
+    "kind": "TBox",
+    "id": "1111717451118505545",
+    "position": [
+      98.895263671875,
+      87.18690490722656,
+      -25.659481048583984
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -2,
+    "kind": "TBox",
+    "id": "1733372171176975157",
+    "position": [
+      84.08194732666016,
+      87.31476593017578,
+      22.87545394897461
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "14535080241831873137",
+    "position": [
+      -72.6235580444336,
+      90.52069854736328,
+      -10.149049758911133
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "13528903653876646082",
+    "position": [
+      2.63100004196167,
+      90.54215240478516,
+      -26.214271545410156
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "ShadowTemple",
+    "floor": -1,
+    "kind": "EntranceAnchor",
+    "id": "11068873590510345137",
+    "position": [
+      13.778650283813477,
+      92.31242370605469,
+      67.20848846435547
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "Graveyard"
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "8120267919866495114",
+    "position": [
+      38.95558547973633,
+      104.17094421386719,
+      -62.89006042480469
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "10530233152473742636",
+    "position": [
+      -9.585224151611328,
+      107.42214965820312,
+      -55.99749755859375
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "4277978357934400600",
+    "position": [
+      48.88932800292969,
+      100.2800064086914,
+      -77.9800033569336
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "5703423643219134246",
+    "position": [
+      -15.323025703430176,
+      104.7392349243164,
+      -60.244529724121094
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "5309180490719879013",
+    "position": [
+      -56.028404235839844,
+      104.7476577758789,
+      -67.56875610351562
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "15633505270333176438",
+    "position": [
+      13,
+      104.76075744628906,
+      -63.74300003051758
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 0,
+    "kind": "EntranceAnchor",
+    "id": "4365488265954739873",
+    "position": [
+      0.0000012246675851201871,
+      99.69538879394531,
+      13.28590202331543
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "DesertColossus"
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 1,
+    "kind": "CollectSign",
+    "id": "12959656942046734931",
+    "position": [
+      14.746406555175781,
+      115.15298461914062,
+      -68.7867660522461
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "13852283723126411131",
+    "position": [
+      0,
+      114.1500015258789,
+      -57.58060073852539
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "1501288453962537671",
+    "position": [
+      -39.24767303466797,
+      119.1500015258789,
+      -39.6173210144043
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "12909857529499414969",
+    "position": [
+      43.40170669555664,
+      119.1500015258789,
+      -47.540000915527344
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "2203243501006528435",
+    "position": [
+      -10.895488739013672,
+      124.75932312011719,
+      -60.568626403808594
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "CollectSign",
+    "id": "5086449036385341804",
+    "position": [
+      -23.085262298583984,
+      129.6679229736328,
+      -66.67888641357422
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "CollectSign",
+    "id": "10127391959410674946",
+    "position": [
+      -55.689632415771484,
+      136.62864685058594,
+      -7.304373741149902
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "12042193296697281461",
+    "position": [
+      55.79999923706055,
+      130.89202880859375,
+      -50.02566146850586
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "14040210993541550542",
+    "position": [
+      58.757999420166016,
+      132.09999084472656,
+      4.736478805541992
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "9143177002861777924",
+    "position": [
+      52.95800018310547,
+      132.09999084472656,
+      4.736478805541992
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "17407066694905911064",
+    "position": [
+      -61.224998474121094,
+      132.75,
+      -27.67871856689453
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "Facility",
+    "id": "6871288692468145393",
+    "position": [
+      0,
+      135,
+      -76.69999694824219
+    ],
+    "actorId": null,
+    "properties": {
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 0
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "EntranceAnchor",
+    "id": "17977111214894828225",
+    "position": [
+      55.737274169921875,
+      132.1730194091797,
+      43.984413146972656
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 2,
+      "IsVisible": false,
+      "Location": "DesertColossus"
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 2,
+    "kind": "EntranceAnchor",
+    "id": "452821593555612172",
+    "position": [
+      -55.90397644042969,
+      132.43899536132812,
+      43.985626220703125
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 2,
+      "IsVisible": false,
+      "Location": "DesertColossus"
+    }
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 3,
+    "kind": "TBox",
+    "id": "16272168033146555902",
+    "position": [
+      19.799999237060547,
+      151.02000427246094,
+      -65.08999633789062
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "SpiritTemple",
+    "floor": 3,
+    "kind": "TBox",
+    "id": "13828480906010430010",
+    "position": [
+      -25.43305778503418,
+      158.21356201171875,
+      -51.285160064697266
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": -1,
+    "kind": "CollectSign",
+    "id": "16157272130665282352",
+    "position": [
+      1.3956254720687866,
+      95.15240478515625,
+      0.5450186729431152
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": -1,
+    "kind": "TBox",
+    "id": "11682974908842171598",
+    "position": [
+      12,
+      92.70881652832031,
+      -4.5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 0,
+    "kind": "CollectSign",
+    "id": "186694424287048567",
+    "position": [
+      18.645626068115234,
+      107.5,
+      -65.66000366210938
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "18099019250896853049",
+    "position": [
+      43.75,
+      99.97901153564453,
+      -4.5
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "2503861086004941173",
+    "position": [
+      -44,
+      102.30000305175781,
+      -19.503679275512695
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "10378828369334876242",
+    "position": [
+      33.119998931884766,
+      103.65535736083984,
+      -81.48907470703125
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 0,
+    "kind": "TBox",
+    "id": "16424266294822218796",
+    "position": [
+      -68.2562484741211,
+      104.26000213623047,
+      20.149999618530273
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 0,
+    "kind": "StoneTablet",
+    "id": "14022670497354803296",
+    "position": [
+      -6.119481086730957,
+      107.55000305175781,
+      -4.5
+    ],
+    "actorId": null,
+    "properties": {
+      "WaterLevelChange": 1
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 1,
+    "kind": "CollectSign",
+    "id": "4399424945134189769",
+    "position": [
+      35.07986831665039,
+      112.5,
+      -9.548903465270996
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 1,
+    "kind": "CollectSign",
+    "id": "15506432733081566465",
+    "position": [
+      -54.54180145263672,
+      114.00733947753906,
+      -59.25239944458008
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "3693930347660122883",
+    "position": [
+      -1.2143666744232178,
+      112,
+      -51.849998474121094
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 1,
+    "kind": "TBox",
+    "id": "16490222392193949581",
+    "position": [
+      56.8654899597168,
+      118.38999938964844,
+      -28.1200008392334
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 2,
+    "kind": "CollectSign",
+    "id": "11571778270592589517",
+    "position": [
+      -1.1885554790496826,
+      125.95437622070312,
+      -7.896000385284424
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "16384925224245172970",
+    "position": [
+      33.892723083496094,
+      119.51000213623047,
+      -4.489998817443848
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 2,
+    "kind": "TBox",
+    "id": "18059711820131847165",
+    "position": [
+      -77.9000015258789,
+      126.600341796875,
+      -99.1657485961914
+    ],
+    "actorId": null,
+    "properties": {}
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 2,
+    "kind": "Facility",
+    "id": "17144458175705251477",
+    "position": [
+      -4.5,
+      131.36000061035156,
+      -71.18000030517578
+    ],
+    "actorId": null,
+    "properties": {
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 0
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 2,
+    "kind": "EntranceAnchor",
+    "id": "18222828140606986520",
+    "position": [
+      -4.500002384185791,
+      118.66297912597656,
+      47.462100982666016
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 2,
+      "IsVisible": true,
+      "Location": "LakeHylia"
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 2,
+    "kind": "StoneTablet",
+    "id": "1765448668581635586",
+    "position": [
+      39.900001525878906,
+      121.05000305175781,
+      -4.5
+    ],
+    "actorId": null,
+    "properties": {
+      "WaterLevelChange": 0
+    }
+  },
+  {
+    "scene": "WaterTemple",
+    "floor": 2,
+    "kind": "StoneTablet",
+    "id": "15071919168581666533",
+    "position": [
+      -26,
+      124.41500091552734,
+      5
+    ],
+    "actorId": null,
+    "properties": {
+      "WaterLevelChange": 2
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9600417828645642589",
+    "position": [
+      24.770092010498047,
+      116.25045776367188,
+      3.400935649871826
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        17.287803649902344,
+        115.4747085571289,
+        2.7248196601867676
+      ]
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "10565296011097119691",
+    "position": [
+      -29.549406051635742,
+      106.71165466308594,
+      20.02583885192871
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Zora_011_Shop_Child",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 15
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1216527277933795787",
+    "position": [
+      -0.5129824280738831,
+      93.66463470458984,
+      -2.8504695892333984
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 106,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "LakeHylia"
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11849571694613337017",
+    "position": [
+      3.5448670387268066,
+      103.90345001220703,
+      -42.381797790527344
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 5,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraRiver"
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "3750527591436788139",
+    "position": [
+      92.5818862915039,
+      119.59912872314453,
+      15.574165344238281
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraFountain"
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult_Alternative",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9600417828645642589",
+    "position": [
+      24.770092010498047,
+      116.25045776367188,
+      3.400935649871826
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        17.287803649902344,
+        115.4747085571289,
+        2.7248196601867676
+      ]
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult_Alternative",
+    "floor": null,
+    "kind": "Facility",
+    "id": "9193813226464111525",
+    "position": [
+      -29.549406051635742,
+      106.71165466308594,
+      20.02583885192871
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Zora_011_Shop_Child",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 15
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult_Alternative",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "11963360973322421386",
+    "position": [
+      -0.5129824280738831,
+      93.66463470458984,
+      -2.8504695892333984
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 106,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "LakeHylia"
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult_Alternative",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "3638072841697358776",
+    "position": [
+      3.5448670387268066,
+      103.90345001220703,
+      -42.381797790527344
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 5,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraRiver"
+    }
+  },
+  {
+    "scene": "ZoraDomain_Adult_Alternative",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10815016976180741419",
+    "position": [
+      92.5818862915039,
+      119.59912872314453,
+      15.574165344238281
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraFountain"
+    }
+  },
+  {
+    "scene": "ZoraDomain_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "12099229167357371868",
+    "position": [
+      28.799999237060547,
+      100.5,
+      -4.8770270347595215
+    ],
+    "actorId": "3130048366421939233",
+    "properties": {
+      "GameDataHashName": "",
+      "IsInvisible": false,
+      "Type": 1
+    }
+  },
+  {
+    "scene": "ZoraDomain_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "8512572624471671003",
+    "position": [
+      -29.549406051635742,
+      106.71165466308594,
+      20.02583885192871
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked.Npc_Zora_011_Shop_Child",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 15
+    }
+  },
+  {
+    "scene": "ZoraDomain_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "17889680978731609886",
+    "position": [
+      24.825855255126953,
+      113.5,
+      -6.791102886199951
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "MiniGame_Diving_Mapicon",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 27
+    }
+  },
+  {
+    "scene": "ZoraDomain_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "4073170555779870971",
+    "position": [
+      -0.5129824280738831,
+      93.66463470458984,
+      -2.8504695892333984
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 106,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "LakeHylia"
+    }
+  },
+  {
+    "scene": "ZoraDomain_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "12438920887920305865",
+    "position": [
+      3.5448670387268066,
+      103.90345001220703,
+      -42.381797790527344
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 5,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraRiver"
+    }
+  },
+  {
+    "scene": "ZoraDomain_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "2082232375686932120",
+    "position": [
+      92.5818862915039,
+      119.59912872314453,
+      15.574165344238281
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraFountain"
+    }
+  },
+  {
+    "scene": "ZoraFountain_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "11514535765115882860",
+    "position": [
+      56.83169937133789,
+      70.92948150634766,
+      -27.3955020904541
+    ],
+    "actorId": "8030885465575590602",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "ZoraFountain_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "12439817999368518552",
+    "position": [
+      85.02796173095703,
+      103.07123565673828,
+      -34.74146270751953
+    ],
+    "actorId": "12406896586250888098",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "ZoraFountain_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9537398183107003742",
+    "position": [
+      71.20201110839844,
+      125.71957397460938,
+      4.794159412384033
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        79.96245574951172,
+        133.3588409423828,
+        12.896195411682129
+      ]
+    }
+  },
+  {
+    "scene": "ZoraFountain_Adult",
+    "floor": null,
+    "kind": "Facility",
+    "id": "6453185663751533626",
+    "position": [
+      60.683143615722656,
+      103.15774536132812,
+      48.068092346191406
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Frore",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "ZoraFountain_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "15880174995179541374",
+    "position": [
+      48.028839111328125,
+      87.2193832397461,
+      -55.473243713378906
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "ZoraFountain_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "531902679675394548",
+    "position": [
+      -18.99626350402832,
+      101.41657257080078,
+      -24.5622615814209
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 90,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraDomain"
+    }
+  },
+  {
+    "scene": "ZoraFountain_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "606743428032255364",
+    "position": [
+      46.96840286254883,
+      107.82453155517578,
+      -66.04472351074219
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "ZoraFountain_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "7152962033963346563",
+    "position": [
+      14.036932945251465,
+      107.78923797607422,
+      22.81756019592285
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ZoraFountain_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "17355397719442343054",
+    "position": [
+      49.30533981323242,
+      110.36543273925781,
+      32.040775299072266
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ZoraFountain_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9537398183107003742",
+    "position": [
+      71.20242309570312,
+      125.71682739257812,
+      4.796990871429443
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        79.9628677368164,
+        133.35609436035156,
+        12.899026870727539
+      ]
+    }
+  },
+  {
+    "scene": "ZoraFountain_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "18044734573932171356",
+    "position": [
+      60.683555603027344,
+      103.15499877929688,
+      48.0709228515625
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Frore",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 11
+    }
+  },
+  {
+    "scene": "ZoraFountain_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "10642485336510338259",
+    "position": [
+      -18.997886657714844,
+      101.39837646484375,
+      -24.540414810180664
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 90,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraDomain"
+    }
+  },
+  {
+    "scene": "ZoraFountain_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "1813603768657387001",
+    "position": [
+      18.077072143554688,
+      103.56507110595703,
+      -24.478004455566406
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 0,
+      "IconType": 1,
+      "IsVisible": true,
+      "Location": ""
+    }
+  },
+  {
+    "scene": "ZoraRiver_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3814878871658269103",
+    "position": [
+      -4.000002861022949,
+      111.42150115966797,
+      -34.29999923706055
+    ],
+    "actorId": "11455676800795329345",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "ZoraRiver_Adult",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "6961804965205481566",
+    "position": [
+      99.49999237060547,
+      120.10099792480469,
+      -61.74000930786133
+    ],
+    "actorId": "4189391771527808272",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "ZoraRiver_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "10917372215719266172",
+    "position": [
+      -35,
+      118.75,
+      12.50000286102295
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ZoraRiver_Adult",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "9450239379321634455",
+    "position": [
+      76.28485107421875,
+      126.80093383789062,
+      -46.406898498535156
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ZoraRiver_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "7255819240512843095",
+    "position": [
+      -98.62618255615234,
+      96.30807495117188,
+      29.849430084228516
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 97,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "ZoraRiver_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "9555013079141952304",
+    "position": [
+      -98.62618255615234,
+      96.30807495117188,
+      29.849430084228516
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 97,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "ZoraRiver_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "8066931202103895638",
+    "position": [
+      122.56658935546875,
+      117.5,
+      -10.872838973999023
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "KokiriForest"
+    }
+  },
+  {
+    "scene": "ZoraRiver_Adult",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "6995222685113811812",
+    "position": [
+      143.71006774902344,
+      130.64349365234375,
+      -40.74787139892578
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraDomain"
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "18246168067761770276",
+    "position": [
+      8.985342025756836,
+      101.88587951660156,
+      -50.85173416137695
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "MiniGame_FrogTenors_StormSong",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "4877056571307262080",
+    "position": [
+      8.985342025756836,
+      101.88587951660156,
+      -50.85173416137695
+    ],
+    "actorId": "0",
+    "properties": {
+      "GameDataHashName": "MiniGame_FrogTenors_InsectRepellent",
+      "IsInvisible": true,
+      "Type": 2
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "3814878871658269103",
+    "position": [
+      -4.000002861022949,
+      111.42150115966797,
+      -34.29999923706055
+    ],
+    "actorId": "11455676800795329345",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "CollectHeart",
+    "id": "6961804965205481566",
+    "position": [
+      99.49999237060547,
+      120.10099792480469,
+      -61.74000930786133
+    ],
+    "actorId": "4189391771527808272",
+    "properties": {
+      "IsInvisible": false,
+      "Type": 0
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "12370559827741970774",
+    "position": [
+      -54.71848678588867,
+      100.46912384033203,
+      -10.402762413024902
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        -54.55933380126953,
+        100.6044692993164,
+        -11.857033729553223
+      ]
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "CollectSign",
+    "id": "8695975724114049706",
+    "position": [
+      112.59999084472656,
+      111.80000305175781,
+      -48.800010681152344
+    ],
+    "actorId": null,
+    "properties": {
+      "IsInBox": false,
+      "IsUseOriginTrans": false,
+      "OriginTrans": [
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "8680170676917046784",
+    "position": [
+      -52.5172119140625,
+      100.43758392333984,
+      -14.379539489746094
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "MagicBean_Talked",
+      "HeartPieceHash0": "0",
+      "HeartPieceHash1": "0",
+      "IconType": 34
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "Facility",
+    "id": "18240962425598021723",
+    "position": [
+      7.061507701873779,
+      101.88587951660156,
+      -54.66533660888672
+    ],
+    "actorId": null,
+    "properties": {
+      "GameDataHashName": "HaveTalked_Animal_Frog_Blue",
+      "HeartPieceHash0": "18246168067761770276",
+      "HeartPieceHash1": "4877056571307262080",
+      "IconType": 6
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "4817481559538773613",
+    "position": [
+      -98.62618255615234,
+      96.30807495117188,
+      29.849430084228516
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 97,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "13362381275380272660",
+    "position": [
+      -98.62618255615234,
+      96.30807495117188,
+      29.849430084228516
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 97,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "HyruleField"
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "4907041179959319418",
+    "position": [
+      122.56658935546875,
+      117.5,
+      -10.872838973999023
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 180,
+      "IconType": 0,
+      "IsVisible": false,
+      "Location": "KokiriForest"
+    }
+  },
+  {
+    "scene": "ZoraRiver_Child",
+    "floor": null,
+    "kind": "EntranceAnchor",
+    "id": "6447671685353872960",
+    "position": [
+      143.71006774902344,
+      130.64349365234375,
+      -40.74787139892578
+    ],
+    "actorId": null,
+    "properties": {
+      "IconRotate": 270,
+      "IconType": 0,
+      "IsVisible": true,
+      "Location": "ZoraDomain"
+    }
+  }
+]

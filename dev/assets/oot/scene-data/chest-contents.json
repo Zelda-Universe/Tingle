@@ -1,0 +1,413 @@
+{
+ "description": "What each map chest holds. A chest's map record (MapParam TBox) has the same ID as the chest object, whose label this is, from zeldamods' Owl Object Map (https://objmap-oot.zeldamods.org).",
+ "chests": {
+  "9466613428674883506": {
+   "object": "Obj_TBox_A_02",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "16654774376625985726": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Lenses of Truth (in large chest)"
+  },
+  "5429815628949128345": {
+   "object": "Obj_TBox_A_01",
+   "label": "Blue Rupee (in chest)"
+  },
+  "12988877782812797760": {
+   "object": "Obj_TBox_A_01",
+   "label": "Blue Rupee (in chest)"
+  },
+  "8397646530660039355": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "8975637636514249074": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "874970148260328653": {
+   "object": "Obj_TBox_A_06",
+   "label": "Deku Shield (in chest, substitute item if already owned)"
+  },
+  "631709185320708287": {
+   "object": "Obj_TBox_A_01",
+   "label": "Blue Rupee (in chest)"
+  },
+  "10905582354954996284": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "14911602953212243797": {
+   "object": "Obj_TBox_A_02",
+   "label": "Compass (in large chest)"
+  },
+  "6064359710907908886": {
+   "object": "Obj_TBox_A_01",
+   "label": "Business Scrub Seed (in chest)"
+  },
+  "11718708984125260282": {
+   "object": "Obj_TBox_GlassTruth_A_01",
+   "label": "Purple Rupee (in invisible chest, Lenses of Truth)"
+  },
+  "10012167258643363548": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Mirror Shield (in large chest)"
+  },
+  "2490063409521505179": {
+   "object": "Obj_TBox_A_02",
+   "label": "Silver Gauntlets (in large chest)"
+  },
+  "8607798771661947511": {
+   "object": "Obj_TBox_A_01",
+   "label": "Blue Rupee (in chest)"
+  },
+  "8291119063305855945": {
+   "object": "Obj_TBox_A_02",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "7764016096998075927": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Red Rupee (in chest)"
+  },
+  "17531994809974271603": {
+   "object": "Obj_TBox_A_02",
+   "label": "Compass (in large chest)"
+  },
+  "11582649900854566065": {
+   "object": "Obj_TBox_A_06",
+   "label": "Deku Shield (in chest, substitute item if already owned)"
+  },
+  "7524527082521156886": {
+   "object": "Obj_TBox_A_06",
+   "label": "Deku Shield (in chest, substitute item if already owned)"
+  },
+  "850464708089653824": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Business Scrub Seed (in chest)"
+  },
+  "12161709650443144121": {
+   "object": "Obj_TBox_A_02",
+   "label": "Bomb Bag (in large chest)"
+  },
+  "12253889300578348965": {
+   "object": "Obj_TBox_A_01",
+   "label": "Business Scrub Seed (in chest)"
+  },
+  "14060099092170010696": {
+   "object": "Obj_TBox_A_03",
+   "label": "Boss Key (in Boss Key chest)"
+  },
+  "8757492004108970488": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Red Rupee (in chest)"
+  },
+  "5634724236470386190": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "1705064956286753527": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "3949488292768750868": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "16785682308850448108": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "10521366928524045067": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "12945617941305968586": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "12567412825200613393": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "16713240760352215634": {
+   "object": "Obj_TBox_A_02",
+   "label": "Compass (in large chest)"
+  },
+  "3688520809244472975": {
+   "object": "Obj_TBox_A_02",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "9634924691849556346": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "862385681502746018": {
+   "object": "Obj_TBox_A_01",
+   "label": "Purple Rupee (in chest)"
+  },
+  "17001858340376096722": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "15073195886628236505": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "12083259659219538030": {
+   "object": "Obj_TBox_A_02",
+   "label": "Megaton Hammer (in large chest)"
+  },
+  "9038700938965170329": {
+   "object": "Obj_TBox_A_01",
+   "label": "10 Arrows (in chest)"
+  },
+  "6449977980406424425": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "3174893090599461927": {
+   "object": "Obj_TBox_A_02",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "15117164073907033527": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small chest"
+  },
+  "14776684749746592758": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Small Key (in chest)"
+  },
+  "7535137041266964235": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Small Key (in chest)"
+  },
+  "11082303891540711688": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Fairy Bow (in large chest)"
+  },
+  "3433400840978782007": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Small Key (in chest)"
+  },
+  "6948525240950728236": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Compass (in large chest)"
+  },
+  "15920957434854338961": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Purple Rupee (in chest)"
+  },
+  "1171460703078800858": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "5306318520835485827": {
+   "object": "Obj_TBox_A_03_NoBake",
+   "label": "Boss Key (in Boss Key chest)"
+  },
+  "13542013937093159888": {
+   "object": "Obj_TBox_A_02",
+   "label": "Compass (in large chest)"
+  },
+  "4128092231168513176": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "6859289214373847284": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Iron Boots (in large chest)"
+  },
+  "11498802739257120175": {
+   "object": "Obj_TBox_A_02",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "14933854942830098290": {
+   "object": "Obj_TBox_A_02",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "3609242017501283521": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "3510516276638146208": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Compass (in large chest)"
+  },
+  "5527401621172639818": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Boomerang (in large chest)"
+  },
+  "12889104996486369065": {
+   "object": "Obj_TBox_A_01",
+   "label": "Three Deku Sticks (in chest)"
+  },
+  "8579518566955184384": {
+   "object": "Obj_TBox_A_02",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "821372075822700622": {
+   "object": "Obj_TBox_A_02",
+   "label": "Fairy Slingshot (in large chest)"
+  },
+  "13027331340815880287": {
+   "object": "Obj_TBox_A_01",
+   "label": "Three Deku Nuts (in chest)"
+  },
+  "9284193025315608699": {
+   "object": "Obj_TBox_A_02",
+   "label": "Compass (in large chest)"
+  },
+  "11368028582977069031": {
+   "object": "Obj_TBox_A_01",
+   "label": "Three Deku Nuts (in chest)"
+  },
+  "9852624243105848451": {
+   "object": "Obj_TBox_A_01",
+   "label": "Large Magic Jar (in chest)"
+  },
+  "17902550525792072472": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Small Key (in chest)"
+  },
+  "9221365632831348137": {
+   "object": "Obj_TBox_A_03",
+   "label": "Boss Key (in Boss Key chest)"
+  },
+  "12345747231768877602": {
+   "object": "Obj_TBox_GlassTruth_A_01",
+   "label": "Business Scrub Seed (in invisible chest, Lenses of Truth)"
+  },
+  "5681107746948738726": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Green Rupee (in chest)"
+  },
+  "169081039115821925": {
+   "object": "Obj_TBox_GlassTruth_A_01",
+   "label": "Small Key (in invisible chest, Lenses of Truth)"
+  },
+  "8858270325665149688": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "10344372963276519235": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "3718790579351798247": {
+   "object": "Obj_TBox_GlassTruth_A_01",
+   "label": "Red Rupee (in invisible chest, Lenses of Truth)"
+  },
+  "5781953901224064730": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "1111717451118505545": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "1733372171176975157": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Compass (in large chest)"
+  },
+  "14535080241831873137": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Hover Boots (in large chest)"
+  },
+  "13528903653876646082": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "4277978357934400600": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "5703423643219134246": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Small Key (in chest)"
+  },
+  "5309180490719879013": {
+   "object": "Obj_TBox_A_06",
+   "label": "Deku Shield (in chest, substitute item if already owned)"
+  },
+  "15633505270333176438": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Compass (in large chest)"
+  },
+  "13852283723126411131": {
+   "object": "Obj_TBox_A_02_NoBake",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "1501288453962537671": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Five Bombchus (in chest)"
+  },
+  "12909857529499414969": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Five Bombs (in chest)"
+  },
+  "2203243501006528435": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Small Key (in chest)"
+  },
+  "12042193296697281461": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "14040210993541550542": {
+   "object": "Obj_TBox_GlassTruth_A_01",
+   "label": "Red Rupee (in invisible chest, Lenses of Truth)"
+  },
+  "9143177002861777924": {
+   "object": "Obj_TBox_GlassTruth_A_01",
+   "label": "Red Rupee (in invisible chest, Lenses of Truth)"
+  },
+  "17407066694905911064": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Small Key (in chest)"
+  },
+  "16272168033146555902": {
+   "object": "Obj_TBox_A_03",
+   "label": "Boss Key (in Boss Key chest)"
+  },
+  "13828480906010430010": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Five Bombs (in chest)"
+  },
+  "11682974908842171598": {
+   "object": "Obj_TBox_A_01",
+   "label": "Red Rupee (in chest)"
+  },
+  "18099019250896853049": {
+   "object": "Obj_TBox_A_01_NoBake",
+   "label": "Small Key (in chest)"
+  },
+  "2503861086004941173": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "10378828369334876242": {
+   "object": "Obj_TBox_A_03",
+   "label": "Boss Key (in Boss Key chest)"
+  },
+  "16424266294822218796": {
+   "object": "Obj_TBox_A_02",
+   "label": "Compass (in large chest)"
+  },
+  "3693930347660122883": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "16490222392193949581": {
+   "object": "Obj_TBox_A_01",
+   "label": "Small Key (in chest)"
+  },
+  "16384925224245172970": {
+   "object": "Obj_TBox_A_02",
+   "label": "Dungeon Map (in large chest)"
+  },
+  "18059711820131847165": {
+   "object": "Obj_TBox_A_02",
+   "label": "Longshot (in large chest)"
+  }
+ }
+}

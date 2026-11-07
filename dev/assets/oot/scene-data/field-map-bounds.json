@@ -1,0 +1,493 @@
+{
+ "description": "Game-coordinate rectangles [[x min, x max], [z min, z max]] covered by each field area's full map texture (<area>_<age>_00.png, 2000x1440). From Owl Object Map by zeldamods (https://objmap-oot.zeldamods.org, game_files/maps.json). Overlays are areas drawn inside another area's map in the same coordinates.",
+ "maps": {
+  "DeathMountainCrater_Adult": {
+   "bounds": [
+    [
+     -106.0,
+     82.0
+    ],
+    [
+     -55.68,
+     79.68
+    ]
+   ]
+  },
+  "DeathMountainCrater_Child": {
+   "bounds": [
+    [
+     -106.0,
+     82.0
+    ],
+    [
+     -55.68,
+     79.68
+    ]
+   ]
+  },
+  "DeathMountainTrail_Adult": {
+   "bounds": [
+    [
+     -216.0,
+     174.0
+    ],
+    [
+     -176.4,
+     104.4
+    ]
+   ]
+  },
+  "DeathMountainTrail_Child": {
+   "bounds": [
+    [
+     -216.0,
+     174.0
+    ],
+    [
+     -176.4,
+     104.4
+    ]
+   ]
+  },
+  "DesertColossus_Adult": {
+   "bounds": [
+    [
+     -240.5,
+     64.5
+    ],
+    [
+     -97.8,
+     121.8
+    ]
+   ]
+  },
+  "DesertColossus_Child": {
+   "bounds": [
+    [
+     -240.5,
+     64.5
+    ],
+    [
+     -97.8,
+     121.8
+    ]
+   ]
+  },
+  "GanonCastle": {
+   "bounds": [
+    [
+     -73.0,
+     195.0
+    ],
+    [
+     200.52,
+     393.48
+    ]
+   ]
+  },
+  "GerudoFortress_Adult": {
+   "bounds": [
+    [
+     -84.0,
+     256.0
+    ],
+    [
+     -144.4,
+     100.4
+    ]
+   ]
+  },
+  "GerudoValley_Adult": {
+   "bounds": [
+    [
+     -120.0,
+     120.0
+    ],
+    [
+     -99.4,
+     73.4
+    ]
+   ]
+  },
+  "GerudoValley_Child": {
+   "bounds": [
+    [
+     -120.0,
+     120.0
+    ],
+    [
+     -99.4,
+     73.4
+    ]
+   ]
+  },
+  "GoronCity_Adult": {
+   "bounds": [
+    [
+     -83.0,
+     73.0
+    ],
+    [
+     -56.16,
+     56.16
+    ]
+   ]
+  },
+  "GoronCity_Child": {
+   "bounds": [
+    [
+     -83.0,
+     73.0
+    ],
+    [
+     -56.16,
+     56.16
+    ]
+   ]
+  },
+  "Graveyard_Adult": {
+   "bounds": [
+    [
+     -56.0,
+     92.0
+    ],
+    [
+     -45.28,
+     61.28
+    ]
+   ]
+  },
+  "Graveyard_Child": {
+   "bounds": [
+    [
+     -56.0,
+     92.0
+    ],
+    [
+     -45.28,
+     61.28
+    ]
+   ]
+  },
+  "HountedWasteland_Adult": {
+   "bounds": [
+    [
+     -316.5,
+     328.5
+    ],
+    [
+     -284.2,
+     180.2
+    ]
+   ]
+  },
+  "HountedWasteland_Child": {
+   "bounds": [
+    [
+     -316.5,
+     328.5
+    ],
+    [
+     -284.2,
+     180.2
+    ]
+   ]
+  },
+  "HyruleCastle": {
+   "bounds": [
+    [
+     -121.0,
+     121.0
+    ],
+    [
+     -167.12,
+     7.12
+    ]
+   ]
+  },
+  "HyruleField_Adult": {
+   "bounds": [
+    [
+     -391.0,
+     345.0
+    ],
+    [
+     -67.96,
+     461.96
+    ]
+   ],
+   "overlays": {
+    "LakeHylia": [
+     [
+      -411.0,
+      11.0
+     ],
+     [
+      338.08,
+      641.92
+     ]
+    ],
+    "LonLonRanch": [
+     [
+      -224.0,
+      52.0
+     ],
+     [
+      139.64,
+      338.36
+     ]
+    ]
+   }
+  },
+  "HyruleField_Child": {
+   "bounds": [
+    [
+     -391.0,
+     345.0
+    ],
+    [
+     -67.96,
+     461.96
+    ]
+   ],
+   "overlays": {
+    "LakeHylia": [
+     [
+      -411.0,
+      11.0
+     ],
+     [
+      338.08,
+      641.92
+     ]
+    ],
+    "LonLonRanch": [
+     [
+      -224.0,
+      52.0
+     ],
+     [
+      139.64,
+      338.36
+     ]
+    ]
+   }
+  },
+  "KakarikoVillage_Adult_Alternative": {
+   "bounds": [
+    [
+     -173.0,
+     73.0
+    ],
+    [
+     -46.56,
+     130.56
+    ]
+   ]
+  },
+  "KakarikoVillage_Adult": {
+   "bounds": [
+    [
+     -173.0,
+     73.0
+    ],
+    [
+     -46.56,
+     130.56
+    ]
+   ]
+  },
+  "KakarikoVillage_Child": {
+   "bounds": [
+    [
+     -173.0,
+     73.0
+    ],
+    [
+     -46.56,
+     130.56
+    ]
+   ]
+  },
+  "KokiriForest_Adult": {
+   "bounds": [
+    [
+     -155.0,
+     145.0
+    ],
+    [
+     -120.0,
+     96.0
+    ]
+   ]
+  },
+  "KokiriForest_Child": {
+   "bounds": [
+    [
+     -155.0,
+     145.0
+    ],
+    [
+     -120.0,
+     96.0
+    ]
+   ]
+  },
+  "LostWood_Adult": {
+   "bounds": [
+    [
+     -194.0,
+     206.0
+    ],
+    [
+     -145.0,
+     143.0
+    ]
+   ]
+  },
+  "LostWood_Child": {
+   "bounds": [
+    [
+     -194.0,
+     206.0
+    ],
+    [
+     -145.0,
+     143.0
+    ]
+   ]
+  },
+  "Market_Adult": {
+   "bounds": [
+    [
+     -107.0,
+     107.0
+    ],
+    [
+     -74.04,
+     80.04
+    ]
+   ]
+  },
+  "Market_Child": {
+   "bounds": [
+    [
+     -107.0,
+     107.0
+    ],
+    [
+     -74.04,
+     80.04
+    ]
+   ]
+  },
+  "SacredForestMeadow_Adult": {
+   "bounds": [
+    [
+     -170.5,
+     146.5
+    ],
+    [
+     -139.12,
+     89.12
+    ]
+   ]
+  },
+  "SacredForestMeadow_Child": {
+   "bounds": [
+    [
+     -170.5,
+     146.5
+    ],
+    [
+     -139.12,
+     89.12
+    ]
+   ]
+  },
+  "ZoraDomain_Adult_Alternative": {
+   "bounds": [
+    [
+     -45.5,
+     105.5
+    ],
+    [
+     -68.36,
+     40.36
+    ]
+   ]
+  },
+  "ZoraDomain_Adult": {
+   "bounds": [
+    [
+     -45.5,
+     105.5
+    ],
+    [
+     -68.36,
+     40.36
+    ]
+   ]
+  },
+  "ZoraDomain_Child": {
+   "bounds": [
+    [
+     -45.5,
+     105.5
+    ],
+    [
+     -68.36,
+     40.36
+    ]
+   ]
+  },
+  "ZoraFountain_Adult": {
+   "bounds": [
+    [
+     -67.5,
+     127.5
+    ],
+    [
+     -83.2,
+     57.2
+    ]
+   ]
+  },
+  "ZoraFountain_Child": {
+   "bounds": [
+    [
+     -67.5,
+     127.5
+    ],
+    [
+     -83.2,
+     57.2
+    ]
+   ]
+  },
+  "ZoraRiver_Adult": {
+   "bounds": [
+    [
+     -112.5,
+     152.5
+    ],
+    [
+     -110.4,
+     80.4
+    ]
+   ]
+  },
+  "ZoraRiver_Child": {
+   "bounds": [
+    [
+     -112.5,
+     152.5
+    ],
+    [
+     -110.4,
+     80.4
+    ]
+   ]
+  }
+ }
+}

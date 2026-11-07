@@ -1,0 +1,36 @@
+{
+  "source": "/Users/Jess/Desktop/all maps - adult 2026-11-06 17-27-03.mp4",
+  "sha256": "42294b3b66dd50490d610f3a8574dae21518ddc6db82773df1c73666b4515a53",
+  "durationSeconds": 49.017,
+  "frameSize": [2560,1440],
+  "extractedFrames": "/tmp/zm-adult-frames/frame-<integer second>.png",
+  "samplingOffsetSeconds": 0.5,
+  "age": "Adult",
+  "regions": [
+    {"scene":"Market_Adult","second":2},
+    {"scene":"SacredForestMeadow_Adult","second":6},
+    {"scene":"LostWood_Adult","second":8},
+    {"scene":"KokiriForest_Adult","second":9},
+    {"scene":"ZoraRiver_Adult","second":11},
+    {"scene":"ZoraDomain_Adult","second":13},
+    {"scene":"ZoraFountain_Adult","second":15},
+    {"scene":"GoronCity_Adult","second":17},
+    {"scene":"DeathMountainTrail_Adult","second":22},
+    {"scene":"DeathMountainCrater_Adult","second":24},
+    {"scene":"Graveyard_Adult","second":26},
+    {"scene":"KakarikoVillage_Adult","second":27},
+    {"scene":"LakeHylia_Adult","second":29},
+    {"scene":"HyruleField_Adult","second":31},
+    {"scene":"LonLonRanch_Adult","second":33},
+    {"scene":"GerudoValley_Adult","second":35},
+    {"scene":"GerudoFortress_Adult","second":36},
+    {"scene":"HountedWasteland_Adult","second":38},
+    {"scene":"DesertColossus_Adult","second":41},
+    {"scene":"GanonCastle_Adult","second":44}
+  ],
+  "notes": [
+    "20 regional views, no dungeon floors.",
+    "Child-state markers missing in the Adult video are not treated as deleted collectibles.",
+    "Matching scene artwork and source-coordinate calibration are separate validation steps."
+  ]
+}

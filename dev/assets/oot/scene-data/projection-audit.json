@@ -1,0 +1,4645 @@
+{
+  "sourceRevision": "c9027ee50e7efd36cc3109d5990f170b7f0b4611",
+  "sceneCount": 54,
+  "fieldPresence": {
+    "BossRoomId": [
+      "BottomOfTheWell",
+      "DodongoCavern",
+      "FireTemple",
+      "ForestTemple",
+      "GerudoTrainingGround",
+      "IceCavern",
+      "InsideGanonCastle",
+      "InsideJabuJabuBelly",
+      "InsideTheDekuTree",
+      "ShadowTemple",
+      "SpiritTemple",
+      "WaterTemple"
+    ],
+    "Floor": [
+      "BottomOfTheWell",
+      "DodongoCavern",
+      "FireTemple",
+      "ForestTemple",
+      "GerudoTrainingGround",
+      "IceCavern",
+      "InsideGanonCastle",
+      "InsideJabuJabuBelly",
+      "InsideTheDekuTree",
+      "ShadowTemple",
+      "SpiritTemple",
+      "WaterTemple"
+    ],
+    "FloorNum": [
+      "BottomOfTheWell",
+      "DodongoCavern",
+      "FireTemple",
+      "ForestTemple",
+      "GerudoTrainingGround",
+      "IceCavern",
+      "InsideGanonCastle",
+      "InsideJabuJabuBelly",
+      "InsideTheDekuTree",
+      "ShadowTemple",
+      "SpiritTemple",
+      "WaterTemple"
+    ],
+    "MapMode": [
+      "BottomOfTheWell",
+      "DeathMountainCrater_Adult",
+      "DeathMountainCrater_Child",
+      "DeathMountainTrail_Adult",
+      "DeathMountainTrail_Child",
+      "DesertColossus_Adult",
+      "DesertColossus_Child",
+      "DodongoCavern",
+      "FireTemple",
+      "ForestTemple",
+      "GanonCastle",
+      "GerudoFortress_Adult",
+      "GerudoValley_Adult",
+      "GerudoValley_Child",
+      "GoronCity_Adult",
+      "GoronCity_Child",
+      "Graveyard_Adult",
+      "Graveyard_Child",
+      "HountedWasteland_Adult",
+      "HountedWasteland_Child",
+      "HyruleCastle",
+      "HyruleField_Adult",
+      "HyruleField_Child",
+      "IceCavern",
+      "InsideJabuJabuBelly",
+      "InsideTheDekuTree",
+      "KakarikoVillage_Adult",
+      "KakarikoVillage_Adult_Alternative",
+      "KakarikoVillage_Child",
+      "KokiriForest_Adult",
+      "KokiriForest_Child",
+      "LakeHylia_Adult",
+      "LakeHylia_Child",
+      "LonLonRanch_Adult",
+      "LonLonRanch_Child",
+      "LostWood_Adult",
+      "LostWood_Child",
+      "Market_Child",
+      "SacredForestMeadow_Adult",
+      "ShadowTemple",
+      "SpiritTemple",
+      "WaterTemple",
+      "ZoraDomain_Adult",
+      "ZoraDomain_Adult_Alternative",
+      "ZoraDomain_Child",
+      "ZoraFountain_Adult",
+      "ZoraFountain_Child",
+      "ZoraRiver_Adult",
+      "ZoraRiver_Child"
+    ],
+    "MinFloor": [
+      "BottomOfTheWell",
+      "DodongoCavern",
+      "FireTemple",
+      "ForestTemple",
+      "GerudoTrainingGround",
+      "IceCavern",
+      "InsideGanonCastle",
+      "InsideJabuJabuBelly",
+      "InsideTheDekuTree",
+      "ShadowTemple",
+      "SpiritTemple",
+      "WaterTemple"
+    ],
+    "Room": [
+      "BottomOfTheWell",
+      "DodongoCavern",
+      "FireTemple",
+      "ForestTemple",
+      "GerudoTrainingGround",
+      "IceCavern",
+      "InsideGanonCastle",
+      "InsideJabuJabuBelly",
+      "InsideTheDekuTree",
+      "ShadowTemple",
+      "SpiritTemple",
+      "WaterTemple"
+    ],
+    "EntranceAnchor": [
+      "CrumblingGanonCastle",
+      "DeathMountainCrater_Adult",
+      "DeathMountainCrater_Child",
+      "DeathMountainTrail_Adult",
+      "DeathMountainTrail_Child",
+      "DesertColossus_Adult",
+      "DesertColossus_Child",
+      "GanonCastle",
+      "GerudoFortress_Adult",
+      "GerudoValley_Adult",
+      "GerudoValley_Child",
+      "GoronCity_Adult",
+      "GoronCity_Child",
+      "Graveyard_Adult",
+      "Graveyard_Child",
+      "HountedWasteland_Adult",
+      "HountedWasteland_Child",
+      "HyruleCastle",
+      "HyruleField_Adult",
+      "HyruleField_Child",
+      "KakarikoVillage_Adult",
+      "KakarikoVillage_Adult_Alternative",
+      "KakarikoVillage_Child",
+      "KokiriForest_Adult",
+      "KokiriForest_Child",
+      "LakeHylia_Adult",
+      "LakeHylia_Child",
+      "LonLonRanch_Adult",
+      "LonLonRanch_Child",
+      "LostWood_Adult",
+      "LostWood_Child",
+      "Market_Adult",
+      "Market_Child",
+      "SacredForestMeadow_Adult",
+      "SacredForestMeadow_Child",
+      "ZoraDomain_Adult",
+      "ZoraDomain_Adult_Alternative",
+      "ZoraDomain_Child",
+      "ZoraFountain_Adult",
+      "ZoraFountain_Child",
+      "ZoraRiver_Adult",
+      "ZoraRiver_Child"
+    ],
+    "CollectHeart": [
+      "DeathMountainCrater_Adult",
+      "DeathMountainCrater_Child",
+      "DeathMountainTrail_Adult",
+      "DeathMountainTrail_Child",
+      "DesertColossus_Adult",
+      "DesertColossus_Child",
+      "GerudoFortress_Adult",
+      "GerudoValley_Adult",
+      "GerudoValley_Child",
+      "GoronCity_Child",
+      "Graveyard_Adult",
+      "Graveyard_Child",
+      "HyruleField_Child",
+      "KakarikoVillage_Adult",
+      "KakarikoVillage_Adult_Alternative",
+      "KakarikoVillage_Child",
+      "LakeHylia_Adult",
+      "LakeHylia_Child",
+      "LonLonRanch_Child",
+      "LostWood_Child",
+      "Market_Child",
+      "ZoraDomain_Child",
+      "ZoraFountain_Adult",
+      "ZoraRiver_Adult",
+      "ZoraRiver_Child"
+    ],
+    "CollectHeartAll": [
+      "DeathMountainCrater_Adult",
+      "DeathMountainCrater_Child",
+      "DeathMountainTrail_Adult",
+      "DeathMountainTrail_Child",
+      "DesertColossus_Adult",
+      "DesertColossus_Child",
+      "GerudoFortress_Adult",
+      "GerudoValley_Adult",
+      "GerudoValley_Child",
+      "GoronCity_Adult",
+      "GoronCity_Child",
+      "Graveyard_Adult",
+      "Graveyard_Child",
+      "HyruleField_Adult",
+      "HyruleField_Child",
+      "KakarikoVillage_Adult",
+      "KakarikoVillage_Child",
+      "LakeHylia_Adult",
+      "LakeHylia_Child",
+      "LonLonRanch_Adult",
+      "LonLonRanch_Child",
+      "LostWood_Adult",
+      "LostWood_Child",
+      "Market_Adult",
+      "Market_Child",
+      "ZoraDomain_Adult",
+      "ZoraDomain_Child",
+      "ZoraFountain_Adult",
+      "ZoraFountain_Child",
+      "ZoraRiver_Adult",
+      "ZoraRiver_Child"
+    ],
+    "CollectSignAll": [
+      "DeathMountainCrater_Adult",
+      "DeathMountainCrater_Child",
+      "DeathMountainTrail_Adult",
+      "DeathMountainTrail_Child",
+      "DesertColossus_Adult",
+      "DesertColossus_Child",
+      "GanonCastle",
+      "GerudoFortress_Adult",
+      "GerudoValley_Adult",
+      "GerudoValley_Child",
+      "GoronCity_Adult",
+      "GoronCity_Child",
+      "Graveyard_Adult",
+      "Graveyard_Child",
+      "HountedWasteland_Adult",
+      "HountedWasteland_Child",
+      "HyruleCastle",
+      "HyruleField_Adult",
+      "HyruleField_Child",
+      "KakarikoVillage_Adult",
+      "KakarikoVillage_Child",
+      "KokiriForest_Adult",
+      "KokiriForest_Child",
+      "LakeHylia_Adult",
+      "LakeHylia_Child",
+      "LonLonRanch_Adult",
+      "LonLonRanch_Child",
+      "LostWood_Adult",
+      "LostWood_Child",
+      "Market_Adult",
+      "Market_Child",
+      "SacredForestMeadow_Adult",
+      "SacredForestMeadow_Child",
+      "ZoraDomain_Adult",
+      "ZoraDomain_Child",
+      "ZoraFountain_Adult",
+      "ZoraFountain_Child",
+      "ZoraRiver_Adult",
+      "ZoraRiver_Child"
+    ],
+    "Facility": [
+      "DeathMountainCrater_Adult",
+      "DeathMountainCrater_Child",
+      "DeathMountainTrail_Adult",
+      "DeathMountainTrail_Child",
+      "DesertColossus_Adult",
+      "DesertColossus_Child",
+      "GanonCastle",
+      "GerudoFortress_Adult",
+      "GerudoValley_Adult",
+      "GoronCity_Adult",
+      "GoronCity_Child",
+      "Graveyard_Adult",
+      "Graveyard_Child",
+      "HyruleCastle",
+      "KakarikoVillage_Adult",
+      "KakarikoVillage_Adult_Alternative",
+      "KakarikoVillage_Child",
+      "KokiriForest_Adult",
+      "KokiriForest_Child",
+      "LakeHylia_Adult",
+      "LakeHylia_Child",
+      "LonLonRanch_Adult",
+      "LonLonRanch_Child",
+      "LostWood_Adult",
+      "LostWood_Child",
+      "Market_Adult",
+      "Market_Child",
+      "ZoraDomain_Adult",
+      "ZoraDomain_Adult_Alternative",
+      "ZoraDomain_Child",
+      "ZoraFountain_Adult",
+      "ZoraFountain_Child",
+      "ZoraRiver_Child"
+    ],
+    "CollectSign": [
+      "DeathMountainCrater_Child",
+      "DeathMountainTrail_Adult",
+      "DeathMountainTrail_Child",
+      "DesertColossus_Adult",
+      "DesertColossus_Child",
+      "GanonCastle",
+      "GerudoFortress_Adult",
+      "GerudoValley_Adult",
+      "GerudoValley_Child",
+      "GoronCity_Adult",
+      "GoronCity_Child",
+      "Graveyard_Adult",
+      "Graveyard_Child",
+      "HountedWasteland_Adult",
+      "HountedWasteland_Child",
+      "HyruleCastle",
+      "HyruleField_Adult",
+      "HyruleField_Child",
+      "KakarikoVillage_Adult",
+      "KakarikoVillage_Adult_Alternative",
+      "KakarikoVillage_Child",
+      "KokiriForest_Adult",
+      "KokiriForest_Child",
+      "LakeHylia_Adult",
+      "LakeHylia_Child",
+      "LonLonRanch_Adult",
+      "LonLonRanch_Child",
+      "LostWood_Adult",
+      "LostWood_Child",
+      "Market_Child",
+      "SacredForestMeadow_Adult",
+      "ZoraDomain_Adult",
+      "ZoraDomain_Adult_Alternative",
+      "ZoraFountain_Adult",
+      "ZoraFountain_Child",
+      "ZoraRiver_Adult",
+      "ZoraRiver_Child"
+    ],
+    "TBox": [
+      "DesertColossus_Adult",
+      "DesertColossus_Child"
+    ],
+    "CenterTrans": [
+      "GerudoFortress_Adult",
+      "SacredForestMeadow_Adult",
+      "SacredForestMeadow_Child"
+    ],
+    "PlayerIconAnchor": [
+      "Graveyard_Adult",
+      "LakeHylia_Adult",
+      "LakeHylia_Child",
+      "Market_Adult",
+      "Market_Child"
+    ]
+  },
+  "roomCount": 274,
+  "roomZoomScales": [
+    0.25,
+    0.7799999713897705,
+    0.800000011920929,
+    0.8700000047683716,
+    0.8999999761581421,
+    1,
+    1.600000023841858
+  ],
+  "sceneCenters": {
+    "GerudoFortress_Adult": [
+      {
+        "AreaID": 1,
+        "RoomNo": -1,
+        "Trans": [
+          10,
+          100.54847717285156,
+          -60
+        ],
+        "ZoomScale": 1.7999999523162842
+      },
+      {
+        "AreaID": 2,
+        "RoomNo": -1,
+        "Trans": [
+          70,
+          0,
+          -40
+        ],
+        "ZoomScale": 1
+      }
+    ],
+    "SacredForestMeadow_Adult": [
+      {
+        "AreaID": 1,
+        "RoomNo": -1,
+        "Trans": [
+          -50,
+          104.49983215332031,
+          15
+        ],
+        "ZoomScale": 2.4000000953674316
+      },
+      {
+        "AreaID": 2,
+        "RoomNo": -1,
+        "Trans": [
+          -50,
+          104.80000305175781,
+          -45
+        ],
+        "ZoomScale": 2.4000000953674316
+      },
+      {
+        "AreaID": 3,
+        "RoomNo": -1,
+        "Trans": [
+          -50,
+          114.4000015258789,
+          -110
+        ],
+        "ZoomScale": 2.4000000953674316
+      }
+    ],
+    "SacredForestMeadow_Child": [
+      {
+        "AreaID": 1,
+        "RoomNo": -1,
+        "Trans": [
+          -50,
+          104.49983215332031,
+          15
+        ],
+        "ZoomScale": 2.4000000953674316
+      },
+      {
+        "AreaID": 2,
+        "RoomNo": -1,
+        "Trans": [
+          -50,
+          104.80000305175781,
+          -45
+        ],
+        "ZoomScale": 2.4000000953674316
+      },
+      {
+        "AreaID": 3,
+        "RoomNo": -1,
+        "Trans": [
+          -50,
+          114.4000015258789,
+          -110
+        ],
+        "ZoomScale": 2.4000000953674316
+      }
+    ]
+  },
+  "rooms": [
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 0,
+      "center": [
+        0.08513069152832031,
+        105.99999237060547,
+        34.403411865234375
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 1,
+      "center": [
+        -0.2707047462463379,
+        100,
+        -14.11285400390625
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": [
+        {
+          "AreaID": 1,
+          "Trans": [
+            0.016823887825012207,
+            100,
+            -20.077516555786133
+          ],
+          "ZoomScale": 1
+        },
+        {
+          "AreaID": 2,
+          "Trans": [
+            0.016823887825012207,
+            101.92607116699219,
+            -20.077516555786133
+          ],
+          "ZoomScale": 1
+        }
+      ]
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 2,
+      "center": [
+        -1.2058401107788086,
+        101.30721282958984,
+        -71.9089126586914
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 3,
+      "center": [
+        -54.45119094848633,
+        100,
+        -18.4990291595459
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 4,
+      "center": [
+        8.335067749023438,
+        99.98135375976562,
+        -27.802724838256836
+      ],
+      "zoom": 1,
+      "floors": [
+        -2,
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 5,
+      "center": [
+        -7.977880477905273,
+        100,
+        -27.421010971069336
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 6,
+      "center": [
+        27.270742416381836,
+        100.00362396240234,
+        -29.08811378479004
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 7,
+      "center": [
+        26.502429962158203,
+        99.99732208251953,
+        -15.72630500793457
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 8,
+      "center": [
+        0.10504531860351562,
+        92.30901336669922,
+        -102.51615142822266
+      ],
+      "zoom": 1,
+      "floors": [
+        -2,
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 9,
+      "center": [
+        1.7473783493041992,
+        90.84039306640625,
+        -20.10252571105957
+      ],
+      "zoom": 1,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 10,
+      "center": [
+        -26.303810119628906,
+        99.9955825805664,
+        -8.757333755493164
+      ],
+      "zoom": 1,
+      "floors": [
+        -2,
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 11,
+      "center": [
+        -0.04857635498046875,
+        102.17013549804688,
+        -94.98500061035156
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "BottomOfTheWell",
+      "roomIndex": 12,
+      "center": [
+        8.104955673217773,
+        97.60131072998047,
+        -81.62849426269531
+      ],
+      "zoom": 1,
+      "floors": [
+        -2,
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 0,
+      "center": [
+        0.000002447837687213905,
+        101.75,
+        28
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 1,
+      "center": [
+        -0.000002054435299214674,
+        100,
+        -23.5
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 2,
+      "center": [
+        58,
+        98.5,
+        -9.000004768371582
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 3,
+      "center": [
+        64,
+        97.24999237060547,
+        9.999994277954102
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 4,
+      "center": [
+        92.5,
+        101.30237579345703,
+        -17.009918212890625
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 5,
+      "center": [
+        87.99999237060547,
+        109.42485046386719,
+        -52.00000762939453
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 6,
+      "center": [
+        62.49999237060547,
+        100.5,
+        -75.00000762939453
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 7,
+      "center": [
+        62.49999237060547,
+        101.52556610107422,
+        -90.50000762939453
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 8,
+      "center": [
+        41.999996185302734,
+        100.00015258789062,
+        -52.000003814697266
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 9,
+      "center": [
+        35.999996185302734,
+        101.5,
+        -23.000003814697266
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 10,
+      "center": [
+        -49.000003814697266,
+        103.20000457763672,
+        -37.749996185302734
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 11,
+      "center": [
+        -49,
+        104.02144622802734,
+        -4.999996185302734
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 12,
+      "center": [
+        -49,
+        114.31520080566406,
+        -7.999995708465576
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 13,
+      "center": [
+        46.499996185302734,
+        112.25,
+        -16.500003814697266
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 14,
+      "center": [
+        73.75,
+        116.27499389648438,
+        -6.600006580352783
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 15,
+      "center": [
+        99,
+        115.25,
+        -9.000008583068848
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 16,
+      "center": [
+        110,
+        115.7750015258789,
+        -28.000009536743164
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 17,
+      "center": [
+        73.75,
+        113.77499389648438,
+        -23.000003814697266
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 18,
+      "center": [
+        21.000003814697266,
+        112,
+        -50.99999237060547
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 19,
+      "center": [
+        -7.000006675720215,
+        95.5,
+        -80
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 20,
+      "center": [
+        -41.25000762939453,
+        96.98968505859375,
+        -104.25
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 21,
+      "center": [
+        23.99999237060547,
+        92.4000015258789,
+        -78
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": true,
+      "areaAnchors": []
+    },
+    {
+      "scene": "DodongoCavern",
+      "roomIndex": 22,
+      "center": [
+        23.9999942779541,
+        73,
+        -60.500003814697266
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 0,
+      "center": [
+        0,
+        103.55494689941406,
+        12.25
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 1,
+      "center": [
+        41.42277908325195,
+        105,
+        -5.116002559661865
+      ],
+      "zoom": 0.7799999713897705,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 2,
+      "center": [
+        -25.5,
+        105,
+        0
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 3,
+      "center": [
+        -6.9711809158325195,
+        106.48513793945312,
+        -33.384613037109375
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 4,
+      "center": [
+        93.03880310058594,
+        141.0500030517578,
+        8.390891075134277
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 5,
+      "center": [
+        56.157562255859375,
+        151.42300415039062,
+        -2.511124610900879
+      ],
+      "zoom": 0.8700000047683716,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 6,
+      "center": [
+        42.07504653930664,
+        147.08474731445312,
+        0.33184146881103516
+      ],
+      "zoom": 0.8700000047683716,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 7,
+      "center": [
+        37.868324279785156,
+        179.8410186767578,
+        -13.122803688049316
+      ],
+      "zoom": 1,
+      "floors": [
+        3,
+        4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 8,
+      "center": [
+        41.75735092163086,
+        186.99847412109375,
+        0.18725979328155518
+      ],
+      "zoom": 1,
+      "floors": [
+        4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 9,
+      "center": [
+        -28.064363479614258,
+        170.27276611328125,
+        -0.007758140563964844
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 10,
+      "center": [
+        -29.531999588012695,
+        160.19561767578125,
+        0.014999999664723873
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 11,
+      "center": [
+        -44.5,
+        145.1999969482422,
+        0
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 12,
+      "center": [
+        -68.08448028564453,
+        182.13818359375,
+        9.258230209350586
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 13,
+      "center": [
+        -43.72441101074219,
+        189.5,
+        -0.06863629817962646
+      ],
+      "zoom": 1,
+      "floors": [
+        4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 14,
+      "center": [
+        -44.5,
+        180.73489379882812,
+        -19.600000381469727
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 15,
+      "center": [
+        4.174956798553467,
+        100.16407775878906,
+        -9.542149543762207
+      ],
+      "zoom": 1,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 16,
+      "center": [
+        24.033708572387695,
+        147.0279998779297,
+        0
+      ],
+      "zoom": 0.8700000047683716,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 17,
+      "center": [
+        -7.052058696746826,
+        100.20700073242188,
+        -10.801383972167969
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 18,
+      "center": [
+        10.627015113830566,
+        100,
+        -31.029560089111328
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 19,
+      "center": [
+        57,
+        113.80000305175781,
+        -46.060001373291016
+      ],
+      "zoom": 0.7799999713897705,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 20,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 21,
+      "center": [
+        90,
+        112.11282348632812,
+        0
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 22,
+      "center": [
+        39,
+        105,
+        47.53000259399414
+      ],
+      "zoom": 0.7799999713897705,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 23,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 24,
+      "center": [
+        -71.95433044433594,
+        151.21563720703125,
+        2.3607845306396484
+      ],
+      "zoom": 1,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 25,
+      "center": [
+        -29.532119750976562,
+        153.2908935546875,
+        0.014753879979252815
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 26,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 27,
+      "center": [
+        -57.54264450073242,
+        180.19317626953125,
+        -19.636659622192383
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 28,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 29,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 30,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 31,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 32,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "FireTemple",
+      "roomIndex": 33,
+      "center": [
+        -65.5,
+        105,
+        -6.01031672431418e-7
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 0,
+      "center": [
+        0.08500003814697266,
+        103.44126892089844,
+        59.70100021362305
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 1,
+      "center": [
+        -0.06999993324279785,
+        102.59500122070312,
+        34.79999923706055
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 2,
+      "center": [
+        0,
+        104.50050354003906,
+        -3.5
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 3,
+      "center": [
+        -0.06999993324279785,
+        106.42586517333984,
+        -39.41999816894531
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 4,
+      "center": [
+        -0.09554195404052734,
+        105.5,
+        -55.90857696533203
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 5,
+      "center": [
+        -34.81999969482422,
+        103.51000213623047,
+        0
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 6,
+      "center": [
+        -60.92259979248047,
+        114.1299057006836,
+        5.668999195098877
+      ],
+      "zoom": 1.600000023841858,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 7,
+      "center": [
+        -60.92300033569336,
+        109.39814758300781,
+        5.669000148773193
+      ],
+      "zoom": 1.600000023841858,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 8,
+      "center": [
+        -60.92300033569336,
+        113.10199737548828,
+        5.668998718261719
+      ],
+      "zoom": 1.600000023841858,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 9,
+      "center": [
+        -60.92300033569336,
+        126.46636962890625,
+        5.669000148773193
+      ],
+      "zoom": 1.600000023841858,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 10,
+      "center": [
+        -56.400001525878906,
+        124.69999694824219,
+        -34.49215316772461
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 11,
+      "center": [
+        -56.400001525878906,
+        126.35466766357422,
+        -59.48701477050781
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 12,
+      "center": [
+        -30.269441604614258,
+        99,
+        -27.646198272705078
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 13,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 14,
+      "center": [
+        24.64900016784668,
+        99.9919662475586,
+        -24.549999237060547
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 15,
+      "center": [
+        -7.629025936126709,
+        88.0250244140625,
+        -39.99814224243164
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 16,
+      "center": [
+        -30.915908813476562,
+        125.52500915527344,
+        -59.484222412109375
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 17,
+      "center": [
+        0.13000011444091797,
+        118.57499694824219,
+        -59.400001525878906
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 18,
+      "center": [
+        28.869998931884766,
+        125.52543640136719,
+        -59.49018859863281
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 19,
+      "center": [
+        56.9772834777832,
+        124.668212890625,
+        -59.3631477355957
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 20,
+      "center": [
+        56.7272834777832,
+        124.98468017578125,
+        -32.12375259399414
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 21,
+      "center": [
+        -56.43328857421875,
+        107.30553436279297,
+        -59.40106201171875
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 22,
+      "center": [
+        -65.6743392944336,
+        107,
+        -26.766464233398438
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 23,
+      "center": [
+        56.54100036621094,
+        124.57417297363281,
+        3.3089981079101562
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 24,
+      "center": [
+        54.524234771728516,
+        103.99652862548828,
+        -36.29630661010742
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 25,
+      "center": [
+        56.75,
+        103.94441223144531,
+        0.20000076293945312
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 26,
+      "center": [
+        35.65027618408203,
+        105.53177642822266,
+        0.22915267944335938
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 27,
+      "center": [
+        -0.06999993324279785,
+        61.77145767211914,
+        -14.657612800598145
+      ],
+      "zoom": 1,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 28,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 29,
+      "center": [
+        -0.1810014247894287,
+        74.70714569091797,
+        -62.765010833740234
+      ],
+      "zoom": 1,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ForestTemple",
+      "roomIndex": 30,
+      "center": [
+        0,
+        81,
+        -3.5
+      ],
+      "zoom": 1,
+      "floors": [
+        -1,
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 0,
+      "center": [
+        -1.8329877853393555,
+        99.25,
+        -6.094666004180908
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 1,
+      "center": [
+        -47.050411224365234,
+        97.75,
+        -5.12983512878418
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 2,
+      "center": [
+        -46.76874542236328,
+        98,
+        -42.965396881103516
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 3,
+      "center": [
+        -47.12321090698242,
+        103.9749984741211,
+        -85.33036804199219
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 4,
+      "center": [
+        -2.2071661949157715,
+        108.20706176757812,
+        -82.21226501464844
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 5,
+      "center": [
+        43.34895324707031,
+        98.35906219482422,
+        -82.4009780883789
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 6,
+      "center": [
+        43.15206527709961,
+        94.0250015258789,
+        -48.44905090332031
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 7,
+      "center": [
+        44.416744232177734,
+        98.5250015258789,
+        -5.3647589683532715
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 8,
+      "center": [
+        -1.423255205154419,
+        98.01000213623047,
+        -47.96018981933594
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 9,
+      "center": [
+        68.9062728881836,
+        94.76249694824219,
+        -43.94634246826172
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "GerudoTrainingGround",
+      "roomIndex": 10,
+      "center": [
+        -47.50806427001953,
+        103.9749984741211,
+        -126.19188690185547
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 0,
+      "center": [
+        17.342790603637695,
+        102.30471801757812,
+        79.76934051513672
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 1,
+      "center": [
+        0,
+        99.75,
+        35.910377502441406
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 2,
+      "center": [
+        2.147209644317627,
+        103.05471801757812,
+        12.300055503845215
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 3,
+      "center": [
+        7.291545867919922,
+        105.2331314086914,
+        -13.354443550109863
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 4,
+      "center": [
+        41.00480651855469,
+        104.30000305175781,
+        3.6491222381591797
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 5,
+      "center": [
+        18.431045532226562,
+        103.32041931152344,
+        -57.66689682006836
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 6,
+      "center": [
+        80.59877014160156,
+        103.02306365966797,
+        4.527828216552734
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 7,
+      "center": [
+        -13.721349716186523,
+        100.65999603271484,
+        -17.498537063598633
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 8,
+      "center": [
+        -32.06316375732422,
+        100,
+        -20.411375045776367
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 9,
+      "center": [
+        -41.75084686279297,
+        105.80604553222656,
+        8.03839111328125
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 10,
+      "center": [
+        -46.22493362426758,
+        109.615234375,
+        36.645626068115234
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "IceCavern",
+      "roomIndex": 11,
+      "center": [
+        -50.74235534667969,
+        113.1114501953125,
+        62.73600769042969
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 0,
+      "center": [
+        -0.06568479537963867,
+        106,
+        39.89494705200195
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 1,
+      "center": [
+        -0.22600173950195312,
+        109.39612579345703,
+        -20.523000717163086
+      ],
+      "zoom": 1,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 2,
+      "center": [
+        23.03504180908203,
+        103.2478256225586,
+        19.134960174560547
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 3,
+      "center": [
+        36.4867057800293,
+        102.75,
+        42.18025207519531
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 4,
+      "center": [
+        47.51960754394531,
+        102.90013122558594,
+        62.11072540283203
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 5,
+      "center": [
+        50.18444061279297,
+        104.63916778564453,
+        -20.99974822998047
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 6,
+      "center": [
+        78.36148071289062,
+        97.74540710449219,
+        -20.893335342407227
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 7,
+      "center": [
+        101.8128662109375,
+        99.74540710449219,
+        -20.994792938232422
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 8,
+      "center": [
+        38.58638000488281,
+        103.8997802734375,
+        -88.8652572631836
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 9,
+      "center": [
+        65.83685302734375,
+        105.40013122558594,
+        -135.9115753173828
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 10,
+      "center": [
+        -30.46355438232422,
+        103.70807647705078,
+        -73.80524444580078
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 11,
+      "center": [
+        -52.592403411865234,
+        103.97512817382812,
+        -103.92095947265625
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 12,
+      "center": [
+        -45.5594596862793,
+        99.76313018798828,
+        -21.04051971435547
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 13,
+      "center": [
+        -52.205543518066406,
+        99.94683074951172,
+        -21.056476593017578
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 14,
+      "center": [
+        -67.51631164550781,
+        106.44933319091797,
+        -21.01544761657715
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 15,
+      "center": [
+        -83.54680633544922,
+        102.70764923095703,
+        -20.99915313720703
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 16,
+      "center": [
+        -22.278972625732422,
+        103.9381103515625,
+        18.58959197998047
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 17,
+      "center": [
+        -30.064132690429688,
+        107.06793212890625,
+        37.41907501220703
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 18,
+      "center": [
+        -38.08346939086914,
+        105.01213836669922,
+        51.36831283569336
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 19,
+      "center": [
+        -0.010757923126220703,
+        129.90557861328125,
+        -19.682750701904297
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 20,
+      "center": [
+        0.3913578987121582,
+        136.24713134765625,
+        -24.427902221679688
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 21,
+      "center": [
+        18.55902862548828,
+        137.24691772460938,
+        -24.672786712646484
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 22,
+      "center": [
+        0.2047877311706543,
+        142.9600067138672,
+        -25.002548217773438
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 23,
+      "center": [
+        0.0514068603515625,
+        144.24691772460938,
+        -6.417619705200195
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 24,
+      "center": [
+        0.0937185287475586,
+        151.15602111816406,
+        -24.655622482299805
+      ],
+      "zoom": 1,
+      "floors": [
+        3,
+        4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 25,
+      "center": [
+        -24.087501525878906,
+        150.64691162109375,
+        -24.625751495361328
+      ],
+      "zoom": 1,
+      "floors": [
+        4,
+        5
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideGanonCastle",
+      "roomIndex": 26,
+      "center": [
+        0.0838005542755127,
+        213.2490234375,
+        -24.620731353759766
+      ],
+      "zoom": 1,
+      "floors": [
+        6
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 0,
+      "center": [
+        -0.16238343715667725,
+        92,
+        -8.627035140991211
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 1,
+      "center": [
+        0.5558982491493225,
+        91.53582763671875,
+        -42.488441467285156
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 2,
+      "center": [
+        0.05695915222167969,
+        91.09989166259766,
+        -80.63838958740234
+      ],
+      "zoom": 1,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 3,
+      "center": [
+        -0.8767557144165039,
+        82.21076965332031,
+        -79.86795806884766
+      ],
+      "zoom": 1,
+      "floors": [
+        -1,
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 4,
+      "center": [
+        -22.881160736083984,
+        99.8112564086914,
+        -59.95538330078125
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 5,
+      "center": [
+        31.89301300048828,
+        107.52568054199219,
+        -53.703224182128906
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 6,
+      "center": [
+        -32.38973617553711,
+        85.85066986083984,
+        -93.3509750366211
+      ],
+      "zoom": 1,
+      "floors": [
+        -1,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 7,
+      "center": [
+        0.5896773338317871,
+        92.35345458984375,
+        -141.61000061035156
+      ],
+      "zoom": 1,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 8,
+      "center": [
+        0.6596696376800537,
+        93.43474578857422,
+        -192.55148315429688
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 9,
+      "center": [
+        -29.7279052734375,
+        92.34881591796875,
+        -131.89024353027344
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 10,
+      "center": [
+        36.99090576171875,
+        95.75901794433594,
+        -138.9404754638672
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 11,
+      "center": [
+        -28.8190860748291,
+        92.71793365478516,
+        -181.02761840820312
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 12,
+      "center": [
+        24.236900329589844,
+        92.42320251464844,
+        -176.72801208496094
+      ],
+      "zoom": 1,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 13,
+      "center": [
+        -28.801654815673828,
+        82.12942504882812,
+        -56.12343215942383
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 14,
+      "center": [
+        29.00002098083496,
+        76.67247009277344,
+        -59.64070129394531
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 15,
+      "center": [
+        42.339847564697266,
+        102.13265991210938,
+        -112.49517822265625
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 16,
+      "center": [
+        42.74794006347656,
+        101.04142761230469,
+        -77.99867248535156
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 17,
+      "center": [
+        0.5,
+        98.47320556640625,
+        -46.060001373291016
+      ],
+      "zoom": 1,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideJabuJabuBelly",
+      "roomIndex": 18,
+      "center": [
+        0.5649774670600891,
+        75.50003814697266,
+        -42.488441467285156
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 0,
+      "center": [
+        0,
+        103.36650085449219,
+        0
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 1,
+      "center": [
+        -21.5,
+        109.30000305175781,
+        9.510933876037598
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 2,
+      "center": [
+        -40.44280242919922,
+        112.0953369140625,
+        11.468669891357422
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 3,
+      "center": [
+        -37.85116958618164,
+        120.28878784179688,
+        0
+      ],
+      "zoom": 0.800000011920929,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 4,
+      "center": [
+        -18.5,
+        78.36199951171875,
+        2.5
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 5,
+      "center": [
+        -9.211366653442383,
+        78.36199951171875,
+        26.576934814453125
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 6,
+      "center": [
+        -30.15399932861328,
+        78.66934967041016,
+        37.00400161743164
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 7,
+      "center": [
+        -57.5,
+        82.26899719238281,
+        40
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 8,
+      "center": [
+        -61.996986389160156,
+        82.30799865722656,
+        14.282899856567383
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 9,
+      "center": [
+        -27.8355655670166,
+        52.8021125793457,
+        20.277849197387695
+      ],
+      "zoom": 0.800000011920929,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 10,
+      "center": [
+        19.31399917602539,
+        53.040245056152344,
+        67.63400268554688
+      ],
+      "zoom": 1,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "InsideTheDekuTree",
+      "roomIndex": 11,
+      "center": [
+        -78.08688354492188,
+        82.26932525634766,
+        -3.573984146118164
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 0,
+      "center": [
+        13.871286392211914,
+        90.4290542602539,
+        45.50880813598633
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 1,
+      "center": [
+        42.884159088134766,
+        89.98821258544922,
+        1.0433194637298584
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 2,
+      "center": [
+        -3.525235176086426,
+        90.40025329589844,
+        -4.673563003540039
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 3,
+      "center": [
+        2.7370572090148926,
+        90.42500305175781,
+        -23.434728622436523
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 4,
+      "center": [
+        -72.65033721923828,
+        90.94583129882812,
+        -10.197958946228027
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 5,
+      "center": [
+        77.38921356201172,
+        87.18690490722656,
+        1.4566454887390137
+      ],
+      "zoom": 1,
+      "floors": [
+        -2,
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 6,
+      "center": [
+        83.50311279296875,
+        87.18690490722656,
+        -23.585052490234375
+      ],
+      "zoom": 1,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 7,
+      "center": [
+        84.239013671875,
+        87.18690490722656,
+        19.359508514404297
+      ],
+      "zoom": 1,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 8,
+      "center": [
+        106.46958923339844,
+        75.42500305175781,
+        17.4294490814209
+      ],
+      "zoom": 1,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 9,
+      "center": [
+        80,
+        65.51627349853516,
+        71.41663360595703
+      ],
+      "zoom": 0.800000011920929,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 10,
+      "center": [
+        145.3549346923828,
+        61.43832015991211,
+        96.8179702758789
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 11,
+      "center": [
+        19.23129653930664,
+        56.400001525878906,
+        92.10415649414062
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 12,
+      "center": [
+        56.94451904296875,
+        52.5,
+        33.93438720703125
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 13,
+      "center": [
+        30.96133041381836,
+        59.297847747802734,
+        32.90599822998047
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 14,
+      "center": [
+        83.73719024658203,
+        52,
+        6.325137138366699
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 15,
+      "center": [
+        124.50978088378906,
+        52,
+        6.690988540649414
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 16,
+      "center": [
+        109.65845489501953,
+        52,
+        -18.79794692993164
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 17,
+      "center": [
+        7.836338043212891,
+        42,
+        -58.36463928222656
+      ],
+      "zoom": 0.25,
+      "floors": [
+        -4
+      ],
+      "hidden": false,
+      "areaAnchors": [
+        {
+          "AreaID": 1,
+          "Trans": [
+            125,
+            19.342041015625,
+            -64.36579132080078
+          ],
+          "ZoomScale": 0.75
+        },
+        {
+          "AreaID": 2,
+          "Trans": [
+            -30,
+            19.342041015625,
+            -64.36579132080078
+          ],
+          "ZoomScale": 0.5
+        },
+        {
+          "AreaID": 3,
+          "Trans": [
+            -138.78195190429688,
+            42,
+            -43.767295837402344
+          ],
+          "ZoomScale": 1
+        }
+      ]
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 18,
+      "center": [
+        -181.6092529296875,
+        41.288108825683594,
+        -43.55806350708008
+      ],
+      "zoom": 1,
+      "floors": [
+        -4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 19,
+      "center": [
+        -181.79287719726562,
+        41.28810501098633,
+        -66.99058532714844
+      ],
+      "zoom": 1,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 20,
+      "center": [
+        -217.95162963867188,
+        41.27873229980469,
+        -43.58504867553711
+      ],
+      "zoom": 1,
+      "floors": [
+        -4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 21,
+      "center": [
+        -181.67724609375,
+        41.795650482177734,
+        -17.485267639160156
+      ],
+      "zoom": 1,
+      "floors": [
+        -4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 22,
+      "center": [
+        -138.55459594726562,
+        42.27711868286133,
+        5.226480007171631
+      ],
+      "zoom": 1,
+      "floors": [
+        -4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 23,
+      "center": [
+        -138.44082641601562,
+        41.997894287109375,
+        27.21552276611328
+      ],
+      "zoom": 1,
+      "floors": [
+        -4
+      ],
+      "hidden": true,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 24,
+      "center": [
+        -138.56752014160156,
+        -11.059608459472656,
+        29.301713943481445
+      ],
+      "zoom": 1,
+      "floors": [
+        -4
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 25,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 26,
+      "center": [
+        -43.519065856933594,
+        90.42500305175781,
+        -9.827959060668945
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 27,
+      "center": [
+        99.54325866699219,
+        65.51554107666016,
+        -43.58723068237305
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 28,
+      "center": [
+        106.46958923339844,
+        73.37300109863281,
+        17.4294490814209
+      ],
+      "zoom": 1,
+      "floors": [
+        -2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 29,
+      "center": [
+        109.65845489501953,
+        43.577449798583984,
+        -18.79794692993164
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 30,
+      "center": [
+        13.871286392211914,
+        90.4290542602539,
+        15.24053955078125
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "ShadowTemple",
+      "roomIndex": 31,
+      "center": [
+        175.65740966796875,
+        61.43832015991211,
+        96.8179702758789
+      ],
+      "zoom": 1,
+      "floors": [
+        -3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 0,
+      "center": [
+        0,
+        100,
+        -10
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 1,
+      "center": [
+        -33.56716537475586,
+        104.8305435180664,
+        -30.38441276550293
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 2,
+      "center": [
+        -52.08034896850586,
+        104.74767303466797,
+        -52.85394287109375
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 3,
+      "center": [
+        -33.38068771362305,
+        104.6827621459961,
+        -78.7350082397461
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 4,
+      "center": [
+        -15.322999954223633,
+        104.73924255371094,
+        -52.30582809448242
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 5,
+      "center": [
+        -33.599998474121094,
+        104.75,
+        -49.5
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 6,
+      "center": [
+        -32.2037467956543,
+        119.47317504882812,
+        -47.5
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 7,
+      "center": [
+        0,
+        120.74404907226562,
+        -59.1505241394043
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 8,
+      "center": [
+        -19.4429988861084,
+        129.69000244140625,
+        -30.180620193481445
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 9,
+      "center": [
+        -44.1539421081543,
+        130.7942352294922,
+        -21.832426071166992
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 10,
+      "center": [
+        -55.76719284057617,
+        132.80259704589844,
+        2.544884443283081
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 11,
+      "center": [
+        -55.88987350463867,
+        132.07708740234375,
+        21.79108238220215
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 12,
+      "center": [
+        -55.65584182739258,
+        133.7005615234375,
+        39.21263122558594
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 13,
+      "center": [
+        33.57008743286133,
+        104.74938201904297,
+        -30.737491607666016
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 14,
+      "center": [
+        18.093006134033203,
+        104.9996109008789,
+        -48.415279388427734
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 15,
+      "center": [
+        48.84455108642578,
+        100.24339294433594,
+        -54.79930877685547
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 16,
+      "center": [
+        48.88932800292969,
+        100.24386596679688,
+        -77.79999542236328
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 17,
+      "center": [
+        33.5,
+        105,
+        -49
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 18,
+      "center": [
+        35.400001525878906,
+        119.1500015258789,
+        -47.540000915527344
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 19,
+      "center": [
+        -0.48016390204429626,
+        112.84976196289062,
+        -39.9707145690918
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 20,
+      "center": [
+        20.237565994262695,
+        129.35171508789062,
+        -30.30584716796875
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 21,
+      "center": [
+        38.63376235961914,
+        129.95672607421875,
+        -22.96238136291504
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 22,
+      "center": [
+        55.76118850708008,
+        130.0003204345703,
+        -23.23699951171875
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 23,
+      "center": [
+        55.85432052612305,
+        132.09999084472656,
+        0.2927035093307495
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 24,
+      "center": [
+        55.60900115966797,
+        132.2120361328125,
+        21.786935806274414
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 25,
+      "center": [
+        55.718475341796875,
+        133.48260498046875,
+        43.75154495239258
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 26,
+      "center": [
+        55.79999923706055,
+        131.52792358398438,
+        -47.204498291015625
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 27,
+      "center": [
+        17.072969436645508,
+        139,
+        -22.71882438659668
+      ],
+      "zoom": 1,
+      "floors": [
+        2,
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 28,
+      "center": [
+        19.837932586669922,
+        154.03952026367188,
+        -47.96786117553711
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 29,
+      "center": [
+        19.799999237060547,
+        152.90643310546875,
+        -65.05300903320312
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 30,
+      "center": [
+        -0.08151538670063019,
+        153.1151580810547,
+        -49.97946548461914
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 31,
+      "center": [
+        -20.956401824951172,
+        157.04058837890625,
+        -26.86418342590332
+      ],
+      "zoom": 1,
+      "floors": [
+        3
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 32,
+      "center": [
+        0.13958391547203064,
+        137.4532470703125,
+        -88.9422378540039
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": true,
+      "areaAnchors": []
+    },
+    {
+      "scene": "SpiritTemple",
+      "roomIndex": 33,
+      "center": [
+        0.15681686997413635,
+        153.3974151611328,
+        -157.84390258789062
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 0,
+      "center": [
+        -4.5,
+        44.700286865234375,
+        -1.9600000381469727
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 1,
+      "center": [
+        -4.5,
+        111.48159790039062,
+        -1.9600000381469727
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 2,
+      "center": [
+        0,
+        89.03385162353516,
+        -1.9600000381469727
+      ],
+      "zoom": 1,
+      "floors": [
+        -1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 3,
+      "center": [
+        -36.5,
+        101,
+        19.92530632019043
+      ],
+      "zoom": 1,
+      "floors": [
+        -1,
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 4,
+      "center": [
+        36.20000076293945,
+        115.13370513916016,
+        -23.910001754760742
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 5,
+      "center": [
+        -47.97201156616211,
+        113.72491455078125,
+        -4.3937578201293945
+      ],
+      "zoom": 1,
+      "floors": [
+        -1,
+        0,
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 6,
+      "center": [
+        -81.92940521240234,
+        122.24278259277344,
+        -19.390457153320312
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 7,
+      "center": [
+        -78,
+        129.3188934326172,
+        -108.77999877929688
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 8,
+      "center": [
+        -36,
+        100,
+        -19.600000381469727
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 9,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 10,
+      "center": [
+        -26,
+        125.87361145019531,
+        3.430000066757202
+      ],
+      "zoom": 1,
+      "floors": [
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 11,
+      "center": [
+        -4.2423505783081055,
+        129.30673217773438,
+        -54.257198333740234
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 12,
+      "center": [
+        -4.5,
+        100,
+        -73.5
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 13,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 14,
+      "center": [
+        -4.5,
+        98.5,
+        -114.17000579833984
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 15,
+      "center": [
+        14.886018753051758,
+        103,
+        -98
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 16,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 17,
+      "center": [
+        25.89695930480957,
+        106.92967987060547,
+        -4.21036434173584
+      ],
+      "zoom": 1,
+      "floors": [
+        0,
+        1,
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 18,
+      "center": [
+        40.10555648803711,
+        100,
+        -4.409999847412109
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 19,
+      "center": null,
+      "zoom": null,
+      "floors": [],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 20,
+      "center": [
+        -6.5,
+        113.06175994873047,
+        -43.61000061035156
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 21,
+      "center": [
+        -59,
+        110.25,
+        -70
+      ],
+      "zoom": 0.8999999761581421,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 22,
+      "center": [
+        -78,
+        127.00064086914062,
+        -64.19000244140625
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 23,
+      "center": [
+        -4.523893356323242,
+        131.93319702148438,
+        -88.2641372680664
+      ],
+      "zoom": 1,
+      "floors": [
+        2
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 24,
+      "center": [
+        20,
+        102.5,
+        -66.63999938964844
+      ],
+      "zoom": 1,
+      "floors": [
+        0
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    },
+    {
+      "scene": "WaterTemple",
+      "roomIndex": 25,
+      "center": [
+        43,
+        110.63729858398438,
+        -4.5
+      ],
+      "zoom": 1,
+      "floors": [
+        1
+      ],
+      "hidden": false,
+      "areaAnchors": []
+    }
+  ],
+  "models": [
+    {
+      "scene": "HyruleField_Child",
+      "age": "Child",
+      "anchors": 6,
+      "axesOnly": {
+        "transform": {
+          "u": [
+            0.0018018379478172005,
+            0,
+            0.5827986413514404
+          ],
+          "v": [
+            0,
+            0.002309263253859417,
+            0.010443948282160997
+          ]
+        },
+        "rmsArtworkPixels": 3.4401441886614563,
+        "maxHeldOutArtworkPixels": 6.9178974396485895
+      },
+      "affine": {
+        "transform": {
+          "u": [
+            0.0018025834986618277,
+            0.000005840545951149318,
+            0.5817434622203381
+          ],
+          "v": [
+            0.000002765376182833761,
+            0.002309940502166035,
+            0.01022787526962044
+          ]
+        },
+        "rmsArtworkPixels": 3.241259243100305,
+        "maxHeldOutArtworkPixels": 7.362617774387813
+      }
+    },
+    {
+      "scene": "HyruleField_Adult",
+      "age": "Adult",
+      "anchors": 6,
+      "axesOnly": {
+        "transform": {
+          "u": [
+            0.0018018379478172005,
+            0,
+            0.5827986413514404
+          ],
+          "v": [
+            0,
+            0.002309263253859417,
+            0.010443948282160997
+          ]
+        },
+        "rmsArtworkPixels": 3.4401441886614563,
+        "maxHeldOutArtworkPixels": 6.9178974396485895
+      },
+      "affine": {
+        "transform": {
+          "u": [
+            0.0018025834986618277,
+            0.000005840545951149318,
+            0.5817434622203381
+          ],
+          "v": [
+            0.000002765376182833761,
+            0.002309940502166035,
+            0.01022787526962044
+          ]
+        },
+        "rmsArtworkPixels": 3.241259243100305,
+        "maxHeldOutArtworkPixels": 7.362617774387813
+      }
+    }
+  ],
+  "conclusions": [
+    "Top-level CenterTrans exists only for Gerudo Fortress and the two Sacred Forest Meadow eras, not every overworld scene.",
+    "Room centers, Floor, IsInvisibleMiniMap and ZoomScale describe local dungeon/minimap framing; no verified full-texture conversion has been identified.",
+    "Hyrule Field permits held-out testing with six independent entrance references. Other fitted scenes have only three, which cannot validate an affine fit.",
+    "Residuals measure agreement with hand-annotated exits, not true engine projection accuracy. No model is marked exact or applied to markers.",
+    "Recovering the base texture scale/origin or independently registering more landmarks is still required for verified placement."
+  ]
+}

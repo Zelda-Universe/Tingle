@@ -1,0 +1,2694 @@
+{
+ "description": "Placed objects OoT markers are made from, from zeldamods' Owl Object Map (https://objmap-oot.zeldamods.org), saved by fetch-objects.cjs. pos is the game position [x, y, z]; floor is a dungeon object's floor.",
+ "objects": [
+  {
+   "type": "silver",
+   "scene": "BottomOfTheWell",
+   "hash": "0x688ba7ae82f7d174",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Bottom of the Well, room 10)",
+   "pos": [
+    -4.61,
+    87.65,
+    0.55
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "silver",
+   "scene": "BottomOfTheWell",
+   "hash": "0x7e5292413b721c0a",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Bottom of the Well, room 10)",
+   "pos": [
+    -7.69,
+    87.75,
+    -0.45
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "silver",
+   "scene": "BottomOfTheWell",
+   "hash": "0xc7ac3c87b8dc3044",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Bottom of the Well, room 10)",
+   "pos": [
+    1.96,
+    87.54,
+    -11.4
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "silver",
+   "scene": "BottomOfTheWell",
+   "hash": "0xd3fca295920aa56f",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Bottom of the Well, room 10)",
+   "pos": [
+    -7.93,
+    87.3,
+    -12.31
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "silver",
+   "scene": "BottomOfTheWell",
+   "hash": "0xda81b3878c1deae3",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Bottom of the Well, room 10)",
+   "pos": [
+    8.72,
+    87.44,
+    4.78
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "scrub",
+   "scene": "BottomOfTheWell",
+   "hash": "0xdd499af6d469fb9f",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -32.6,
+    101,
+    0.52
+   ],
+   "floor": "B1",
+   "sells": [
+    "Item_Bottle_GreenPotion",
+    "Obj_MagicJar_Small",
+    "Item_ScrubBusinessSeed"
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DeathMountainCrater_Adult",
+   "hash": "0x08e66784458ec939",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -21.93,
+    67.22,
+    62.49
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "DeathMountainCrater_Adult",
+   "hash": "0xa7268760e39c8fbe",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    3.75,
+    110.94,
+    -0.75
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "DeathMountainCrater_Adult",
+   "hash": "0xc9d139fd0556c866",
+   "name": "Obj_DeathMtCrater_WarpPoint_A_01",
+   "label": "Obj_DeathMtCrater_WarpPoint_A_01",
+   "pos": [
+    0.42,
+    111.42,
+    -8.72
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DeathMountainCrater_Adult",
+   "hash": "0xcf23b76782e0b673",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    43.57,
+    132.32,
+    37.25
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DeathMountainCrater_Child",
+   "hash": "0x12bd541fb38bbc77",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -21.93,
+    67.22,
+    62.49
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "DeathMountainCrater_Child",
+   "hash": "0x22f23970504a8bcf",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -23,
+    119.14,
+    33
+   ],
+   "sells": [
+    "Obj_Heart_Piece"
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "DeathMountainCrater_Child",
+   "hash": "0xa7268760e39c8fbe",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    3.75,
+    110.94,
+    -0.75
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DeathMountainCrater_Child",
+   "hash": "0xaff50768985a2a3a",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    43.57,
+    132.32,
+    37.25
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "DeathMountainCrater_Child",
+   "hash": "0xd120862b13209da6",
+   "name": "Obj_DeathMtCrater_WarpPoint_A_01",
+   "label": "Obj_DeathMtCrater_WarpPoint_A_01",
+   "pos": [
+    0.42,
+    111.42,
+    -8.72
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DeathMountainTrail_Adult",
+   "hash": "0x6640af7e3da6626d",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    6.72,
+    198.46,
+    -122.29
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DeathMountainTrail_Adult",
+   "hash": "0xb808435f20b9b118",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -24.8,
+    63.9,
+    -17.5
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "DeathMountainTrail_Adult",
+   "hash": "0xdc7486389d6ec749",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -25.31,
+    63.71,
+    -13.92
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "DeathMountainTrail_Adult",
+   "hash": "0xfea9dd3f7283625c",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -45.5,
+    108.92,
+    -20.25
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DeathMountainTrail_Child",
+   "hash": "0x3e181ff237b7e683",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -24.8,
+    63.9,
+    -17.5
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "DeathMountainTrail_Child",
+   "hash": "0x56ca7a4e9f02bcc4",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -25.31,
+    63.71,
+    -13.92
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "DeathMountainTrail_Child",
+   "hash": "0xacf346b9c2ba716f",
+   "name": "Npc_Kaepora_DeathMountainTrail",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    -7.36,
+    210.01,
+    -137.57
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DeathMountainTrail_Child",
+   "hash": "0xfce3bbc03ab5d1ae",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    6.72,
+    198.46,
+    -122.29
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "DeathMountainTrail_Child",
+   "hash": "0xfea9dd3f7283625c",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -45.5,
+    108.92,
+    -20.25
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DesertColossus_Adult",
+   "hash": "0x074a390245be17d7",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -167.74,
+    95.68,
+    61.05
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "DesertColossus_Adult",
+   "hash": "0x44aa9220745c3ba8",
+   "name": "Obj_DesertColossus_WarpPoint_A_01",
+   "label": "Obj_DesertColossus_WarpPoint_A_01",
+   "pos": [
+    -125.96,
+    93.91,
+    10.47
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "DesertColossus_Adult",
+   "hash": "0xc83ecf87be2b0886",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -157.47,
+    95.38,
+    17.18
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "DesertColossus_Child",
+   "hash": "0x29693f957b65c8ca",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -167.74,
+    95.68,
+    61.05
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "DesertColossus_Child",
+   "hash": "0x714f91906273bf36",
+   "name": "Obj_DesertColossus_WarpPoint_A_01",
+   "label": "Obj_DesertColossus_WarpPoint_A_01",
+   "pos": [
+    -125.96,
+    93.91,
+    10.47
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "DesertColossus_Child",
+   "hash": "0xc83ecf87be2b0886",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -157.47,
+    95.38,
+    17.18
+   ]
+  },
+  {
+   "type": "heart",
+   "scene": "DodongoCavern",
+   "hash": "0x5262cea56c53554d",
+   "name": "Obj_Heart_Container",
+   "label": "Heart Container (boss reward)",
+   "pos": [
+    24,
+    73.25,
+    -66.5
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "scrub",
+   "scene": "DodongoCavern",
+   "hash": "0x668a130677f9947d",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    62.75,
+    100.4,
+    -94
+   ],
+   "floor": "1F",
+   "sells": []
+  },
+  {
+   "type": "gossip",
+   "scene": "DodongoCavern",
+   "hash": "0xdf1b4b78d0006e84",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    24.75,
+    99.5,
+    -36.5
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "heart",
+   "scene": "FireTemple",
+   "hash": "0x8389cafb1277d318",
+   "name": "Obj_Heart_Container",
+   "label": "Heart Container (boss reward)",
+   "pos": [
+    -76.37,
+    102.5,
+    0
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "heart",
+   "scene": "ForestTemple",
+   "hash": "0xff11593a22778e7e",
+   "name": "Obj_Heart_Container",
+   "label": "Heart Container (boss reward)",
+   "pos": [
+    -3.24,
+    74.73,
+    -64.43
+   ],
+   "floor": "B1"
+  },
+  {
+   "type": "cow",
+   "scene": "GerudoFortress_Adult",
+   "hash": "0x9d6432099eb41c5e",
+   "name": "Animal_Cow_GerudoFortress",
+   "label": "Gerudo's cow",
+   "pos": [
+    58.2,
+    115,
+    56.27
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "GerudoValley_Adult",
+   "hash": "0x5571fc66fe04c46f",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -17.79,
+    48.72,
+    -59.43
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "GerudoValley_Adult",
+   "hash": "0x96ae62bf11d410d7",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -11.04,
+    47.76,
+    2.45
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "GerudoValley_Child",
+   "hash": "0x87f581c45e5d0243",
+   "name": "Animal_Cow_GerudoValley",
+   "label": "Gerudo's cow",
+   "pos": [
+    -7.85,
+    47.2,
+    -15.23
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "GerudoValley_Child",
+   "hash": "0x96ae62bf11d410d7",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -11.04,
+    47.76,
+    2.45
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "GerudoValley_Child",
+   "hash": "0xbe1a459ce4cb494f",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -17.79,
+    48.72,
+    -59.43
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "GoronCity_Adult",
+   "hash": "0x019236bcd641d8a9",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    31.98,
+    115.69,
+    8.99
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "GoronCity_Adult",
+   "hash": "0x14a7c09fbc711f09",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -48.75,
+    113.68,
+    -3.75
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "GoronCity_Child",
+   "hash": "0xa06c2d165e31a0a5",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    31.98,
+    115.69,
+    8.99
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "GoronCity_Child",
+   "hash": "0xbc71f937c4e51715",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -48.75,
+    113.68,
+    -3.75
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Graveyard_Adult",
+   "hash": "0x18fdf9915c15b5a2",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    68.92,
+    108.5,
+    -2.34
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "Graveyard_Adult",
+   "hash": "0x518d32eca4f6483b",
+   "name": "Obj_Graveyard_WarpPoint_A_01",
+   "label": "Obj_Graveyard_WarpPoint_A_01",
+   "pos": [
+    64.65,
+    108.52,
+    2.48
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "Graveyard_Adult",
+   "hash": "0xf2ddb69c4fb84d45",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -12.15,
+    103.09,
+    -12.2
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Graveyard_Child",
+   "hash": "0x4ffa9a595008565c",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    68.92,
+    108.5,
+    -2.34
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "Graveyard_Child",
+   "hash": "0x8416423cc81c5892",
+   "name": "Obj_Graveyard_WarpPoint_A_01",
+   "label": "Obj_Graveyard_WarpPoint_A_01",
+   "pos": [
+    64.65,
+    108.52,
+    2.48
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "Graveyard_Child",
+   "hash": "0xf2ddb69c4fb84d45",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -12.15,
+    103.09,
+    -12.2
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleCastle",
+   "hash": "0x31803619cef20536",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    46.27,
+    96.65,
+    -98.76
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleCastle",
+   "hash": "0xaf1c195e436eff48",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    21.4,
+    112.22,
+    -35.47
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleCastle",
+   "hash": "0xeb3bdd1a374cfcf6",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -26.33,
+    119.61,
+    -96.96
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Adult",
+   "hash": "0x0b695ccbd033d5e4",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    172.66,
+    137.78,
+    182.1
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "HyruleField_Adult",
+   "hash": "0x18ea15c051e4af07",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -257.56,
+    120.29,
+    129.35
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "HyruleField_Adult",
+   "hash": "0x1a338ca8b7b910d2",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    25.05,
+    129.88,
+    22.06
+   ],
+   "sells": [
+    "Obj_Heart_Piece"
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Adult",
+   "hash": "0x3c3b93363e847b6d",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -269.59,
+    120.22,
+    143.32
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Adult",
+   "hash": "0x3d34d9bc133a1d65",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    51.71,
+    125.95,
+    339.7
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "HyruleField_Adult",
+   "hash": "0x553d45cd686cd21b",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -85.27,
+    150.69,
+    204.99
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Adult",
+   "hash": "0x5835e8fe32b52c91",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -235.24,
+    131.33,
+    579.11
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "HyruleField_Adult",
+   "hash": "0x5ed586d79f090861",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -167.7,
+    137.62,
+    413.48
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Adult",
+   "hash": "0xafcce44ad3e46cc1",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -192.18,
+    131.38,
+    522.6
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "HyruleField_Adult",
+   "hash": "0xcbcc3c2cc6e7529e",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -85.97,
+    150.69,
+    208.24
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Adult",
+   "hash": "0xf79bd34b6797edc9",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -330.59,
+    131.25,
+    501.64
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "HyruleField_Adult",
+   "hash": "0xf7bb7d091a76e9a9",
+   "name": "Obj_LakeHrl_WarpPoint_A_01",
+   "label": "Obj_LakeHrl_WarpPoint_A_01",
+   "pos": [
+    -202.29,
+    131.28,
+    509.83
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "HyruleField_Child",
+   "hash": "0x0f2200e1200a2af2",
+   "name": "Npc_Kaepora",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    -90.69,
+    144.84,
+    383.82
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "HyruleField_Child",
+   "hash": "0x1db1d0f5a9ce2c19",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -86.1,
+    150.69,
+    208.55
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Child",
+   "hash": "0x30e20671e8e2279f",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -192.18,
+    131.38,
+    522.6
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "HyruleField_Child",
+   "hash": "0x3714d5caf5211e65",
+   "name": "Npc_Kaepora",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    184.34,
+    166.76,
+    39.91
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "HyruleField_Child",
+   "hash": "0x42f82db64b27e1c0",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -257.56,
+    120.29,
+    129.35
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "HyruleField_Child",
+   "hash": "0x4ea09f3e1bce1879",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -85.39,
+    150.69,
+    204.94
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Child",
+   "hash": "0x5da926c47b342616",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -330.59,
+    131.25,
+    501.64
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "HyruleField_Child",
+   "hash": "0x5dc94c358170ab6a",
+   "name": "Obj_LakeHrl_WarpPoint_A_01",
+   "label": "Obj_LakeHrl_WarpPoint_A_01",
+   "pos": [
+    -202.29,
+    131.28,
+    509.83
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "HyruleField_Child",
+   "hash": "0x5ed586d79f090861",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -167.7,
+    137.62,
+    413.48
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "HyruleField_Child",
+   "hash": "0x762d0d18d647127a",
+   "name": "Npc_Kaepora_LakeHylia",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    -199.71,
+    138.64,
+    454.21
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Child",
+   "hash": "0x81359e2dbdc63ae0",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -269.59,
+    120.22,
+    143.32
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "HyruleField_Child",
+   "hash": "0x8f582dade7af4f4b",
+   "name": "Npc_Kaepora",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    194.78,
+    163.17,
+    19.61
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "HyruleField_Child",
+   "hash": "0x8fd5fcd13a29513f",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    25.05,
+    129.88,
+    22.06
+   ],
+   "sells": [
+    "Obj_Heart_Piece"
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Child",
+   "hash": "0x9736cd928f4cd7e3",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    51.71,
+    125.95,
+    339.7
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "HyruleField_Child",
+   "hash": "0x9d36a4c92734ca0d",
+   "name": "Npc_Kaepora",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    194.78,
+    163.17,
+    19.61
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "HyruleField_Child",
+   "hash": "0xa29bca24dded7a37",
+   "name": "Npc_Kaepora",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    -257.97,
+    143.44,
+    201.73
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "HyruleField_Child",
+   "hash": "0xb30ad19da5920d20",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -48.38,
+    132.66,
+    303.58
+   ],
+   "sells": [
+    "Shop_DekuSeedBundle_02",
+    "Shop_DekuSeedBundle_01",
+    "Obj_MagicJar_Small"
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Child",
+   "hash": "0xbe7b4cd5dd2c8c60",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    172.66,
+    137.78,
+    182.1
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "HyruleField_Child",
+   "hash": "0xe53711e7b698737b",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -235.24,
+    131.33,
+    579.11
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "HyruleField_Child",
+   "hash": "0xe761e1c809eb4d81",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -50.93,
+    132.66,
+    299.1
+   ],
+   "sells": [
+    "Shop_BombBundle_01",
+    "Shop_BombBundle_02",
+    "Shop_BombchuBundle_01"
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "HyruleField_Child",
+   "hash": "0xf1b951922a1c5829",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -43.83,
+    132.66,
+    305.86
+   ],
+   "sells": [
+    "Shop_DekuNutBundle_01",
+    "Item_Bottle_Bug",
+    "Item_ScrubBusinessSeed"
+   ]
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0x2d106890d9d01132",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 05)",
+   "pos": [
+    7.91,
+    101.71,
+    -10.29
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0x5af593e74aea3040",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 06)",
+   "pos": [
+    -28.16,
+    104.68,
+    -42.55
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0x5f68e628665584d6",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 06)",
+   "pos": [
+    -26.5,
+    104,
+    -16.25
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0x648096aeed9365dd",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 06)",
+   "pos": [
+    -39,
+    101.06,
+    -28.15
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0x662045239dbbe63a",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 06)",
+   "pos": [
+    -42,
+    104,
+    -18
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0x7633db754459d19d",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 05)",
+   "pos": [
+    -0.27,
+    100.88,
+    -7.92
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0x8d204d97a565b776",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 06)",
+   "pos": [
+    -33.6,
+    104,
+    -26.85
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0xa6b41aa8827c975c",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 05)",
+   "pos": [
+    6.28,
+    105.28,
+    -19.35
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0xc066e1f9eb643d09",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 05)",
+   "pos": [
+    4.42,
+    101.71,
+    -16.86
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "IceCavern",
+   "hash": "0xffa5887336519e97",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Ice Cavern, room 05)",
+   "pos": [
+    10.21,
+    101.71,
+    -15.9
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "scrub",
+   "scene": "InsideJabuJabuBelly",
+   "hash": "0x83c9e5108c604316",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -27.67,
+    74.11,
+    -42.52
+   ],
+   "floor": "B1",
+   "sells": []
+  },
+  {
+   "type": "heart",
+   "scene": "InsideJabuJabuBelly",
+   "hash": "0xf45f5319d88e7ac7",
+   "name": "Obj_Heart_Container",
+   "label": "Heart Container (boss reward)",
+   "pos": [
+    42.4,
+    102.01,
+    -108.17
+   ],
+   "floor": "2F"
+  },
+  {
+   "type": "heart",
+   "scene": "InsideTheDekuTree",
+   "hash": "0xf914fa367471a3e3",
+   "name": "Obj_Heart_Container",
+   "label": "Heart Container (boss reward)",
+   "pos": [
+    17.31,
+    47,
+    67.63
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "gossip",
+   "scene": "KakarikoVillage_Adult_Alternative",
+   "hash": "0x5790e370d5c0742f",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -8.01,
+    83.25,
+    65.05
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KakarikoVillage_Adult_Alternative",
+   "hash": "0xb405f90f0c5c5e06",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -35.86,
+    79.33,
+    13.94
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "KakarikoVillage_Adult_Alternative",
+   "hash": "0xed7e0931cbf4c081",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -46.74,
+    104.61,
+    114.64
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KakarikoVillage_Adult",
+   "hash": "0x04a94015a0673612",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -8.01,
+    83.25,
+    65.05
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KakarikoVillage_Adult",
+   "hash": "0x46e7a84ab89c4904",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -35.86,
+    79.33,
+    13.94
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "KakarikoVillage_Adult",
+   "hash": "0xbfdf9bd3d1bbda87",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -46.74,
+    104.61,
+    114.64
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "KakarikoVillage_Child",
+   "hash": "0x31b35dc157a8795d",
+   "name": "Animal_Cow",
+   "label": "Cow",
+   "pos": [
+    -46.74,
+    104.61,
+    114.64
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KakarikoVillage_Child",
+   "hash": "0x73320dac3af1e7be",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -35.86,
+    79.33,
+    13.94
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KakarikoVillage_Child",
+   "hash": "0xdea1d21e22dcc2a8",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -8.01,
+    83.25,
+    65.05
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KokiriForest_Adult",
+   "hash": "0x3384adb1f0c0d463",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    91.12,
+    115.19,
+    -54.38
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "KokiriForest_Adult",
+   "hash": "0x548d80c51011dd32",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    8.24,
+    112.36,
+    -23.31
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "KokiriForest_Adult",
+   "hash": "0x67ec5015aa8a81c0",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -128.02,
+    114.59,
+    -15.31
+   ],
+   "sells": [
+    "Item_StickBag_Medium"
+   ]
+  },
+  {
+   "type": "cow",
+   "scene": "KokiriForest_Adult",
+   "hash": "0x9aa383736d3e8587",
+   "name": "Animal_Cow_LinkHouse",
+   "label": "Cow (Malon's reward, Link's house)",
+   "pos": [
+    -44.55,
+    118.4,
+    16.64
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KokiriForest_Adult",
+   "hash": "0xba74d394ef580d7c",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -118.38,
+    114.51,
+    -16.28
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KokiriForest_Adult",
+   "hash": "0xccad64d2c7fb7b0f",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    89.16,
+    114.58,
+    -41.83
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KokiriForest_Adult",
+   "hash": "0xe8e96515a40a9d6d",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -49.22,
+    121.28,
+    -58.89
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "KokiriForest_Child",
+   "hash": "0x0286b51989353c02",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -128.02,
+    114.59,
+    -15.31
+   ],
+   "sells": [
+    "Item_StickBag_Medium"
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KokiriForest_Child",
+   "hash": "0x0d7b90650153e96e",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    91.12,
+    115.19,
+    -54.38
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "KokiriForest_Child",
+   "hash": "0x548d80c51011dd32",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    8.24,
+    112.36,
+    -23.31
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KokiriForest_Child",
+   "hash": "0xb750c1d948baa9cc",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    89.16,
+    114.58,
+    -41.83
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KokiriForest_Child",
+   "hash": "0xdb1cd80175894baf",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -49.22,
+    121.28,
+    -58.89
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "KokiriForest_Child",
+   "hash": "0xecb054a04ed6769b",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -118.38,
+    114.51,
+    -16.28
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "LostWood_Adult",
+   "hash": "0x0272bbd7298beaa1",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    10.87,
+    99.49,
+    -52.07
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "LostWood_Adult",
+   "hash": "0x48a64c7346c62c51",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -33.19,
+    99.89,
+    31.42
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Adult",
+   "hash": "0x4fff7b57ec78ef4b",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    7.3,
+    82.89,
+    -85.59
+   ],
+   "sells": [
+    "Item_NutBag_Medium"
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Adult",
+   "hash": "0x9b531635ddafa170",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -45.24,
+    95.23,
+    72.55
+   ],
+   "sells": [
+    "Item_StickBag_Medium"
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Adult",
+   "hash": "0xcae41233352d9551",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    8.79,
+    82.89,
+    -89.41
+   ],
+   "sells": [
+    "Shop_ArrowBundle_01",
+    "Shop_ArrowBundle_02",
+    "Obj_MagicJar_Small"
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "LostWood_Adult",
+   "hash": "0xdec6f6b1de2ceef7",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -35.6,
+    95.15,
+    71.58
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "LostWood_Child",
+   "hash": "0x0272bbd7298beaa1",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    10.87,
+    99.49,
+    -52.07
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Child",
+   "hash": "0x1eba012e68c1bfce",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    8.79,
+    82.89,
+    -89.41
+   ],
+   "sells": [
+    "Shop_DekuSeedBundle_02",
+    "Shop_DekuSeedBundle_01",
+    "Obj_MagicJar_Small"
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Child",
+   "hash": "0x23a8c2f3d31a1561",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    12.2,
+    100,
+    -41.2
+   ],
+   "sells": []
+  },
+  {
+   "type": "gossip",
+   "scene": "LostWood_Child",
+   "hash": "0x2f205bf3a1fc1641",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -35.6,
+    95.15,
+    71.58
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Child",
+   "hash": "0x3c12c790a6a89781",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    7.3,
+    82.89,
+    -85.59
+   ],
+   "sells": [
+    "Item_NutBag_Medium"
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "LostWood_Child",
+   "hash": "0x48a64c7346c62c51",
+   "name": "Obj_SmallFarm_A_01",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -33.19,
+    99.89,
+    31.42
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Child",
+   "hash": "0x4b08aaeb6b969caa",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    -45.24,
+    95.23,
+    72.55
+   ],
+   "sells": [
+    "Item_StickBag_Medium"
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Child",
+   "hash": "0x9dffd9ecae3594ac",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    19.23,
+    99.92,
+    -51.21
+   ],
+   "sells": [
+    "Obj_Heart",
+    "Shop_Heart_Bundle",
+    "Obj_MagicJar_Small"
+   ]
+  },
+  {
+   "type": "scrub",
+   "scene": "LostWood_Child",
+   "hash": "0xd0d58ca58fcf3884",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    19.23,
+    99.92,
+    -51.21
+   ],
+   "sells": [
+    "Item_Bottle_RedPotion",
+    "Item_Bottle_GreenPotion",
+    "Shop_Heart_Bundle"
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Market_Adult",
+   "hash": "0x1af6ccfba202e435",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    39.34,
+    103.2,
+    -5.26
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Market_Adult",
+   "hash": "0x25b193db09ad13b4",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    39.44,
+    103.11,
+    -7.26
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Market_Adult",
+   "hash": "0x3e738b179a99e236",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    39.38,
+    103.11,
+    -11.7
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Market_Adult",
+   "hash": "0x4867a76219f22af2",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    39.42,
+    102.99,
+    -9.55
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "Market_Adult",
+   "hash": "0xee1c7e854592b23e",
+   "name": "Obj_TimeTemple_WarpPoint_A_01",
+   "label": "Warp song pad (Prelude of Light)",
+   "pos": [
+    84.75,
+    103.79,
+    -34
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Market_Child",
+   "hash": "0x03e215b9567f9f03",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    39.38,
+    102.78,
+    -5.07
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Market_Child",
+   "hash": "0x554d9925837c2905",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    39.38,
+    102.79,
+    -9.59
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Market_Child",
+   "hash": "0xb5085776bb18a403",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    39.38,
+    102.78,
+    -7.25
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "Market_Child",
+   "hash": "0xb50fe382bb5034e0",
+   "name": "Npc_Kaepora",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    49.2,
+    115.57,
+    -34
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "Market_Child",
+   "hash": "0xd2008cb136ed33d8",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    39.38,
+    102.79,
+    -11.92
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "Market_Child",
+   "hash": "0xd58e09336f178d5f",
+   "name": "Obj_TimeTemple_WarpPoint_A_01",
+   "label": "Warp song pad (Prelude of Light)",
+   "pos": [
+    84.75,
+    103.79,
+    -34
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "SacredForestMeadow_Adult",
+   "hash": "0x27ab138b38e918ec",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    4.09,
+    104.5,
+    41
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "SacredForestMeadow_Adult",
+   "hash": "0x7aafbe932c37f6f8",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -16.31,
+    104.58,
+    18.65
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "SacredForestMeadow_Adult",
+   "hash": "0xa44c29de0d01854c",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    11.03,
+    95.58,
+    -78.93
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "SacredForestMeadow_Adult",
+   "hash": "0xd8b274b321030bdd",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -16.62,
+    114.4,
+    -85.37
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "SacredForestMeadow_Adult",
+   "hash": "0xf6e83707e97d5e20",
+   "name": "Obj_WarpPoint_A_02",
+   "label": "Warp song pad (Minuet of Forest)",
+   "pos": [
+    -6.95,
+    114.44,
+    -95.99
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "SacredForestMeadow_Child",
+   "hash": "0x079a41c033ff5903",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -16.62,
+    114.4,
+    -85.37
+   ]
+  },
+  {
+   "type": "warp",
+   "scene": "SacredForestMeadow_Child",
+   "hash": "0x20bfe2698f858e0c",
+   "name": "Obj_WarpPoint_A_02",
+   "label": "Warp song pad (Minuet of Forest)",
+   "pos": [
+    -6.95,
+    114.44,
+    -95.99
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "SacredForestMeadow_Child",
+   "hash": "0x2bdce40202b85be0",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    11.03,
+    95.58,
+    -78.93
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "SacredForestMeadow_Child",
+   "hash": "0x71742cdc4582d758",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    4.09,
+    104.5,
+    41
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "SacredForestMeadow_Child",
+   "hash": "0xcf5583a22feb6604",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -16.31,
+    104.58,
+    18.65
+   ]
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0x1fcdf4e539750d87",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_B)",
+   "pos": [
+    55.76,
+    58.33,
+    86.44
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0x63889e3987a9150a",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B2F_C)",
+   "pos": [
+    88.9,
+    87.19,
+    -41.86
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0x743cfd29ef59b171",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_B)",
+   "pos": [
+    49.3,
+    61.6,
+    86.37
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "scrub",
+   "scene": "ShadowTemple",
+   "hash": "0x79083cbb2d704b86",
+   "name": "Enemy_Scrub_Business",
+   "label": "Business Scrub",
+   "pos": [
+    119.01,
+    61.4,
+    85.64
+   ],
+   "floor": "B3",
+   "sells": [
+    "Item_Bottle_GreenPotion",
+    "Obj_MagicJar_Small",
+    "Item_ScrubBusinessSeed"
+   ]
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0x7ef1165429858ebc",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B2F_C)",
+   "pos": [
+    90.31,
+    89.52,
+    -34.1
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0x8241637fe67c146a",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_E)",
+   "pos": [
+    56.87,
+    53.27,
+    36.33
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0x85424388dd3c8590",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B2F_C)",
+   "pos": [
+    75.41,
+    90.2,
+    -38.78
+   ],
+   "floor": "B1"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0x88b04072b4b7644f",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_E)",
+   "pos": [
+    49.47,
+    56.52,
+    41.89
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0xb17ab77bd26f6bdf",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B2F_C)",
+   "pos": [
+    85.63,
+    87.22,
+    -22.07
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0xbd3f9202723b1441",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_B)",
+   "pos": [
+    53.88,
+    56.96,
+    76.4
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0xbd85570337f0a11d",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_B)",
+   "pos": [
+    56.93,
+    56.96,
+    64.01
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0xc0db58037d189f1c",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_E)",
+   "pos": [
+    68.2,
+    55.61,
+    33.14
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0xe09902944c952db7",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_E)",
+   "pos": [
+    50.34,
+    56.08,
+    29.47
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "heart",
+   "scene": "ShadowTemple",
+   "hash": "0xf43ccb260f5576dc",
+   "name": "Obj_Heart_Container",
+   "label": "Heart Container (boss reward)",
+   "pos": [
+    -138.33,
+    -11.46,
+    26.01
+   ],
+   "floor": "B4"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0xf49ad43d8a7275c9",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_B)",
+   "pos": [
+    65.87,
+    63.6,
+    81.17
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0xfa4541fe1a2d0d44",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B2F_C)",
+   "pos": [
+    71.93,
+    87.19,
+    -30.05
+   ],
+   "floor": "B2"
+  },
+  {
+   "type": "silver",
+   "scene": "ShadowTemple",
+   "hash": "0xfbeaa8e3bc7e4090",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Shadow Temple, room B3FB4F_E)",
+   "pos": [
+    46.36,
+    55.9,
+    29.14
+   ],
+   "floor": "B3"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x02f8a8f3bf0abf64",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 10_01)",
+   "pos": [
+    -53.64,
+    132.95,
+    -23.33
+   ],
+   "floor": "3F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x0f6a8ef57d0bbd4f",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 10_01)",
+   "pos": [
+    -38.64,
+    132.6,
+    -9.09
+   ],
+   "floor": "3F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x123a06e00ac830d0",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 05)",
+   "pos": [
+    -17.41,
+    105.24,
+    -56.83
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x175745649864338f",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 16)",
+   "pos": [
+    48.88,
+    105.23,
+    -46.42
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x188041154d2d8cf7",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 16)",
+   "pos": [
+    41.04,
+    102.92,
+    -54.6
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x3630c03fe6fa04c3",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 16)",
+   "pos": [
+    56.79,
+    102.87,
+    -50.53
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "heart",
+   "scene": "SpiritTemple",
+   "hash": "0x41811f125b1eedd5",
+   "name": "Obj_Heart_Container",
+   "label": "Heart Container (boss reward)",
+   "pos": [
+    -2.7,
+    142.25,
+    -160.58
+   ],
+   "floor": "3F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x5c4828587b70f44c",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 10_01)",
+   "pos": [
+    -43.12,
+    132.83,
+    -29.05
+   ],
+   "floor": "3F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x65332cb0488e7429",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 10_01)",
+   "pos": [
+    -38.88,
+    132.6,
+    -34.89
+   ],
+   "floor": "3F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0x822af9b03cfc75d6",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 05)",
+   "pos": [
+    -21.12,
+    110.13,
+    -56.7
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0xa76777d06730e9db",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 05)",
+   "pos": [
+    -9.63,
+    104.74,
+    -67.32
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0xab91261b450b353a",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 16)",
+   "pos": [
+    56.79,
+    102.87,
+    -58.65
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0xb19312d1918376b4",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 05)",
+   "pos": [
+    -13.16,
+    105.25,
+    -56.85
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0xd12664a0540d94e8",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 16)",
+   "pos": [
+    41.04,
+    102.87,
+    -46.5
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0xeeb9d8960e2c1c92",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 10_01)",
+   "pos": [
+    -58.72,
+    132.6,
+    -34.84
+   ],
+   "floor": "3F"
+  },
+  {
+   "type": "silver",
+   "scene": "SpiritTemple",
+   "hash": "0xf61cbd8464f4f4d8",
+   "name": "Obj_RupeeToken_Silver",
+   "label": "Silver Rupee (Spirit Temple, room 05)",
+   "pos": [
+    -9.61,
+    110.11,
+    -56.71
+   ],
+   "floor": "1F"
+  },
+  {
+   "type": "heart",
+   "scene": "WaterTemple",
+   "hash": "0xc835e1d03656bf46",
+   "name": "Obj_Heart_Container",
+   "label": "Heart Container (boss reward)",
+   "pos": [
+    -4.5,
+    124.36,
+    -88.05
+   ],
+   "floor": "3F"
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraDomain_Adult_Alternative",
+   "hash": "0x37dc78034664f337",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    55.5,
+    114.55,
+    3.84
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraDomain_Adult_Alternative",
+   "hash": "0x876186ea4a2e54a7",
+   "name": "Obj_GossipStone_A_02",
+   "label": "Gossip Stone (inactive, frozen domain)",
+   "pos": [
+    55.5,
+    114.55,
+    3.84
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraDomain_Adult",
+   "hash": "0x244aa0b2cb93a8b0",
+   "name": "Obj_GossipStone_A_02",
+   "label": "Gossip Stone (inactive, frozen domain)",
+   "pos": [
+    55.5,
+    114.55,
+    3.84
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraDomain_Adult",
+   "hash": "0xa90bf43d7839db25",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    55.5,
+    114.55,
+    3.84
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraDomain_Child",
+   "hash": "0xd1742034d014ad0b",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    55.5,
+    114.5,
+    3.84
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraFountain_Adult",
+   "hash": "0x862f02a0fb8822f5",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    64.55,
+    102.83,
+    35.4
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraFountain_Adult",
+   "hash": "0xfa978c6ab35d110d",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    21.47,
+    101.91,
+    -53.11
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraFountain_Child",
+   "hash": "0x4a6be002cf5ff482",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    21.47,
+    101.9,
+    -53.11
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraFountain_Child",
+   "hash": "0x538a9a755766819b",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    64.55,
+    102.83,
+    35.4
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraRiver_Adult",
+   "hash": "0x008058a874f05ffa",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    12.37,
+    115.3,
+    -32.06
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraRiver_Adult",
+   "hash": "0x0085f9d927f5b557",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -77.75,
+    82.04,
+    -32.59
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraRiver_Adult",
+   "hash": "0x0875f0c836d040c4",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -14.18,
+    74.55,
+    23.9
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraRiver_Adult",
+   "hash": "0x91913c2bd0c3792c",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    117.91,
+    112.07,
+    -33.72
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "ZoraRiver_Adult",
+   "hash": "0xed33bcd7f15cbac0",
+   "name": "Obj_SmallFarm_A_02",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -54.56,
+    100.32,
+    -11.86
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "ZoraRiver_Child",
+   "hash": "0x2852d5e6fe47bc97",
+   "name": "Npc_Kaepora",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    -73.19,
+    103.88,
+    7.65
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraRiver_Child",
+   "hash": "0x6557f29558a99bac",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -77.75,
+    82.04,
+    -32.59
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraRiver_Child",
+   "hash": "0xa9bb8f73048b98f0",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    117.91,
+    112.07,
+    -33.72
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraRiver_Child",
+   "hash": "0xd697ddf4c1b6d220",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    -14.18,
+    74.55,
+    23.9
+   ]
+  },
+  {
+   "type": "gossip",
+   "scene": "ZoraRiver_Child",
+   "hash": "0xdaed42ec402b2086",
+   "name": "Obj_GossipStone_A_01",
+   "label": "Gossip Stone (play the ocarina for a Fairy Spirit)",
+   "pos": [
+    12.37,
+    115.3,
+    -32.06
+   ]
+  },
+  {
+   "type": "owl",
+   "scene": "ZoraRiver_Child",
+   "hash": "0xdd5a2d1e68cf6aae",
+   "name": "Npc_Kaepora",
+   "label": "Kaepora Gaebora",
+   "pos": [
+    -73.19,
+    103.88,
+    7.65
+   ]
+  },
+  {
+   "type": "bean",
+   "scene": "ZoraRiver_Child",
+   "hash": "0xed33bcd7f15cbac0",
+   "name": "Obj_SmallFarm_A_02",
+   "label": "Soft soil (plant Magic Beans; Bugs free a Gold Skulltula)",
+   "pos": [
+    -54.56,
+    100.32,
+    -11.86
+   ]
+  }
+ ]
+}

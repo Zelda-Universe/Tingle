@@ -31,14 +31,15 @@ describe('TotK POI visual prototype', () => {
     expect(groups.flatMap(g => g.categories).map(c => c.id).sort()).toEqual(ids.sort());
     expect(context.getPOIStyle(records[0])).toBe('interest');
   });
-  test('OoT sections follow BotW and TotK: Collectibles, Locations, Points of Interest, Treasure', () => {
+  test('OoT sections follow BotW and TotK: Travel, Collectibles, Locations, Points of Interest, Treasure', () => {
     const root = (id, name) => ({ id, name, parent_id: null, container_id: '64', marker_category_type_id: '1' });
     const records = [root('64000', 'Collectibles'), {id: '64010', name: 'Labels', parent_id: null, container_id: '64', marker_category_type_id: '3'},
-      root('64020', 'Treasure'), root('64030', 'Locations'), root('64040', 'Points of Interest')];
-    expect(context.getPOICategoryGroups(records).map(g => g.title)).toEqual(['Collectibles', 'Locations', 'Points of Interest', 'Treasure']);
+      root('64020', 'Treasure'), root('64030', 'Locations'), root('64040', 'Points of Interest'), root('64050', 'Travel')];
+    expect(context.getPOICategoryGroups(records).map(g => g.title)).toEqual(['Travel', 'Collectibles', 'Locations', 'Points of Interest', 'Treasure']);
   });
   test.each([['64002', 'heart'], ['64001', 'relic'], ['64003', 'korok'], ['64000', ''], ['64021', 'treasure'],
-    ['64031', 'location'], ['64032', 'location'], ['64033', 'location'], ['64041', 'interest'], ['64042', 'enemy']])(
+    ['64031', 'location'], ['64032', 'location'], ['64033', 'location'], ['64041', 'interest'], ['64042', 'enemy'],
+    ['64004', 'heart'], ['64005', 'memory'], ['64043', 'interest'], ['64046', 'interest'], ['64051', 'travel'], ['64053', 'travel']])(
     'OoT %s uses the shared %s treatment, by category ID', (id, expected) => {
     expect(style({ id, container_id: '64' })).toBe(expected);
   });

@@ -1,7 +1,30 @@
 /* Shared POI treatments for Link's Awakening, BotW, TotK and EoW. */
-.icon-OoT_Poe::before { content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:block; width:1em; height:1em; background:currentColor; -webkit-mask:url('images/icons/oot/Poe.svg') center / contain no-repeat; mask:url('images/icons/oot/Poe.svg') center / contain no-repeat; }
-.circleMap-medium > .icon-OoT_Poe, .circleMap-small > .icon-OoT_Poe { position:absolute; inset:0; }
-.category-selector .category-icon.icon-OoT_Poe::before { width:1.18em; height:1.18em; }
+/* OoT's own glyphs: SVGs in images/icons/oot/, drawn in the badge's colour. */
+.icon-OoT_Poe::before, .icon-OoT_Kaepora::before, .icon-OoT_SilverRupee::before, .icon-OoT_GossipStone::before {
+  content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:block; width:1em; height:1em;
+  background:currentColor; -webkit-mask:var(--oot-glyph) center / contain no-repeat; mask:var(--oot-glyph) center / contain no-repeat; }
+.icon-OoT_Poe { --oot-glyph:url('images/icons/oot/Poe.svg'); }
+.icon-OoT_Kaepora { --oot-glyph:url('images/icons/oot/Kaepora.svg'); }
+.icon-OoT_SilverRupee { --oot-glyph:url('images/icons/oot/SilverRupee.svg'); }
+.icon-OoT_GossipStone { --oot-glyph:url('images/icons/oot/GossipStone.svg'); }
+.circleMap-medium > [class*='icon-OoT_'], .circleMap-small > [class*='icon-OoT_'] { position:absolute; inset:0; }
+.category-selector .category-icon[class*='icon-OoT_']::before { width:1.18em; height:1.18em; }
+.category-selector .category-icon.icon-OoT_Kaepora::before,
+.category-icon.icon-OoT_Kaepora::before { width:1.08em; height:1.08em; }
+.poi-badge > .icon-OoT_Kaepora::before { width:.92em; height:.92em; }
+.category-selector .category-icon.icon-OoT_SilverRupee::before,
+.category-icon.icon-OoT_SilverRupee::before { width:.94em; height:.94em; }
+.poi-badge > .icon-OoT_SilverRupee::before { width:.8em; height:.8em; }
+/* Use the original portal artwork without the font's clipping/advance box. */
+.category-icon.poi-travel.icon-LA_Portal::before,
+.poi-travel > .icon-LA_Portal::before {
+  content:''; position:absolute; left:50%; top:50%; display:block;
+  width:.96em; height:.96em; transform:translate(-50%,-50%);
+  background:currentColor;
+  -webkit-mask:url('images/icons/oot/WarpPad.svg') center / contain no-repeat;
+  mask:url('images/icons/oot/WarpPad.svg') center / contain no-repeat;
+}
+.poi-travel > .icon-LA_Portal::before { width:.9em; height:.9em; }
 .oot-preview-notice {
   margin: 16px 16px 16px;
   width:calc(100% - 32px);

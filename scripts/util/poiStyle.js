@@ -2,8 +2,10 @@
 function getPOIStyle(category) {
   if(category && String(category.container_id || category.containerId) === '64') {
     return {
-      '64002': 'heart', '64001': 'relic', '64003': 'korok', '64021': 'treasure',
-      '64031': 'location', '64032': 'location', '64033': 'location', '64041': 'interest', '64042': 'enemy'
+      '64002': 'heart', '64001': 'relic', '64003': 'korok', '64004': 'heart', '64005': 'memory', '64021': 'treasure',
+      '64031': 'location', '64032': 'location', '64033': 'location', '64041': 'interest', '64042': 'enemy',
+      '64043': 'interest', '64044': 'interest', '64045': 'interest', '64046': 'interest',
+      '64051': 'travel', '64052': 'travel', '64053': 'travel'
     }[String(category.id)] || '';
   }
   if(category && String(category.container_id || category.containerId) === '4') {
@@ -56,14 +58,15 @@ function getPOICategoryGroups(categories) {
   var records = Object.values(categories || {});
   if(records.some(function(c) { return String(c.container_id) === '64'; })) {
     // Label categories (type 3: place names) are set in Settings, not listed.
-    // Sections in BotW's and TotK's order: Collectibles, Locations, Points of
-    // Interest, then Treasure; any others after.
-    var sectionOrder = ['64000', '64030', '64040', '64020'];
+    // Sections in BotW's and TotK's order: Travel, Collectibles, Locations,
+    // Points of Interest, then Treasure; any others after.
+    var sectionOrder = ['64050', '64000', '64030', '64040', '64020'];
     var rank = function(c) { var i = sectionOrder.indexOf(String(c.id)); return i === -1 ? sectionOrder.length : i; };
     return records.filter(function(c) { return !c.parent_id && String(c.marker_category_type_id) !== '3'; })
       .sort(function(a, b) { return rank(a) - rank(b); }).map(function(root) {
       return { title: root.name, categories: records.filter(function(c) { return c.parent_id === root.id; }).sort(function(a,b) {
-        var order=['64002','64001','64003'];
+        // Heart Pieces and Containers together; others in the order added.
+        var order=['64002','64004','64001','64003','64005'];
         return order.indexOf(String(a.id))-order.indexOf(String(b.id));
       }) };
     });

@@ -51,3 +51,7 @@ node_modules
 /dev/db/samples/tingle-*
 *.sublime-workspace
 *.bak
+
+# PHP settings are per server (cPanel's MultiPHP INI Editor writes this): the
+# marker video upload limit (ajax/upload_marker_video.php) is set there.
+/.user.ini

@@ -3,51 +3,143 @@
 // while they're on screen. On a phone that means once the drawer is pulled
 // up and the video scrolled into view; they pause again when out of view.
 
+// Insert/Edit Video: a dialog like Insert/Edit Image's (TinyMCE 5's
+// windowManager). General takes a video's address; Upload takes a clip,
+// dropped or browsed for, sends it, and puts its address in General.
+// Opened on a video in the content, it edits that one. (TinyMCE's own drop
+// area only takes images, so Upload has one of ours, drawn the same.)
+ZMap.prototype.VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/webm'];
+
 ZMap.prototype._uploadEditorVideo = function(editor) {
   var _this = this;
-  var input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'video/mp4,video/quicktime,video/webm';
-  input.addEventListener('change', function() {
-    var file = input.files && input.files[0];
-    if(!file) return;
-    var send = function(maxBytes) {
-      if(maxBytes && file.size > maxBytes) {
-        editor.notificationManager.open({ text: 'Videos can be up to ' + Math.round(maxBytes / 1048576) + 'MB.', type: 'error', timeout: 5000 });
+  var selected = editor.selection.getNode();
+  var current = selected && selected.nodeName === 'VIDEO' ? selected : null;
+  var uploading = null;
+  var dialog;
+  var upload = function(file) {
+    if(!file || uploading) return;
+    if(_this.VIDEO_TYPES.indexOf(file.type) === -1 && !/\.(mp4|m4v|mov|webm)$/i.test(file.name)) {
+      editor.windowManager.alert('That isn\'t a video this site takes: upload an MP4, MOV or WebM.');
+      return;
+    }
+    uploading = _this._sendEditorVideo(file, function(percent) {
+      dialog.block('Uploading video… ' + percent + '%');
+    }, function(error, location) {
+      uploading = null;
+      dialog.unblock();
+      if(error) { editor.windowManager.alert(error); return; }
+      if(!location) return; // Cancelled.
+      dialog.setData({ src: { value: location } });
+      dialog.showTab('general');
+      dialog.focus('src');
+    });
+  };
+  // Upload's drop area: browsing, and dropping a file on it.
+  var wire = function() {
+    var drop = document.querySelector('.tox-dialog .zm-video-drop');
+    if(!drop || drop._wired) return;
+    drop._wired = true;
+    var zone = drop.querySelector('.tox-dropzone');
+    var input = drop.querySelector('input[type=file]');
+    drop.querySelector('.zm-video-browse').addEventListener('click', function() { input.click(); });
+    input.addEventListener('change', function() { upload(input.files && input.files[0]); input.value = ''; });
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('tox-dropzone--dragging'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('tox-dropzone--dragging'); });
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      zone.classList.remove('tox-dropzone--dragging');
+      upload(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+    });
+  };
+  dialog = editor.windowManager.open({
+    title: current ? 'Edit Video' : 'Insert Video',
+    size: 'normal',
+    body: {
+      type: 'tabpanel',
+      tabs: [
+        { name: 'general', title: 'General', items: [
+          { type: 'urlinput', name: 'src', filetype: 'media', label: 'Source' },
+          { type: 'htmlpanel', html: '<p class="zm-video-dialog-hint">Videos play muted and on a loop while they\'re on screen.</p>' }
+        ] },
+        { name: 'upload', title: 'Upload', items: [
+          { type: 'htmlpanel', html:
+            '<div class="tox-dropzone-container zm-video-drop"><div class="tox-dropzone">' +
+              '<p>Drop a video here</p>' +
+              '<button type="button" class="tox-button tox-button--secondary zm-video-browse">Browse for a video</button>' +
+              '<input type="file" accept="video/mp4,video/quicktime,video/webm,.mp4,.m4v,.mov,.webm" style="display: none;">' +
+            '</div></div>' +
+            '<p class="zm-video-dialog-hint">MP4 (like Switch clips), MOV or WebM, up to 64MB.</p>' }
+        ] }
+      ]
+    },
+    initialData: { src: { value: current ? (current.getAttribute('src') || '') : '' } },
+    buttons: [
+      { type: 'cancel', name: 'cancel', text: 'Cancel' },
+      { type: 'submit', name: 'save', text: 'Save', primary: true }
+    ],
+    onTabChange: function(api, details) {
+      if(details.newTabName === 'upload') window.setTimeout(wire, 0);
+    },
+    onCancel: function() {
+      if(uploading) uploading.abort();
+    },
+    onSubmit: function(api) {
+      var src = $.trim((api.getData().src || {}).value || '');
+      if(!src) { api.close(); return; }
+      if(!/^(https?:\/\/|\/|uploads\/)/i.test(src)) {
+        editor.windowManager.alert('Use the address of a video file, starting with https://, or upload one.');
         return;
       }
-      var note = editor.notificationManager.open({ text: 'Uploading video…', type: 'info', progressBar: true });
-      var form = new FormData();
-      form.append('file', file, file.name);
-      var xhr = new XMLHttpRequest();
-      xhr.open('POST', 'ajax.php?command=upload_marker_video');
-      xhr.upload.addEventListener('progress', function(e) {
-        if(e.lengthComputable) note.progressBar.value(Math.round(e.loaded / e.total * 100));
-      });
-      xhr.addEventListener('load', function() {
-        note.close();
-        var data = null;
-        try { data = JSON.parse(xhr.responseText); } catch(e) {}
-        if(!data || !data.success) {
-          editor.notificationManager.open({ text: (data && data.msg) || 'The video could not be uploaded.', type: 'error', timeout: 6000 });
-          return;
-        }
-        editor.insertContent('<p><video src="' + data.location + '" muted loop playsinline controls preload="metadata"></video></p><p></p>');
-      });
-      xhr.addEventListener('error', function() {
-        note.close();
-        editor.notificationManager.open({ text: 'The video could not be uploaded. Check your connection.', type: 'error', timeout: 6000 });
-      });
-      xhr.send(form);
-    };
-    // How large the server takes, once.
-    if(_this._videoMaxBytes !== undefined) send(_this._videoMaxBytes);
-    else $.getJSON('ajax.php?command=upload_marker_video', function(data) {
-      _this._videoMaxBytes = data && data.maxBytes || 0;
-      send(_this._videoMaxBytes);
-    }).fail(function() { send(0); });
+      if(current) {
+        editor.dom.setAttrib(current, 'src', src);
+        editor.undoManager.add();
+      } else {
+        editor.insertContent('<p><video src="' + editor.dom.encode(src) + '" muted loop playsinline controls preload="metadata"></video></p><p></p>');
+      }
+      api.close();
+    }
   });
-  input.click();
+  return dialog;
+};
+
+// Sends a clip to ajax/upload_marker_video.php: progress(percent) as it
+// goes, then done(error) or done(null, its address). Returns the request,
+// to abort it.
+ZMap.prototype._sendEditorVideo = function(file, progress, done) {
+  var _this = this;
+  var request = { aborted: false, xhr: null, abort: function() { this.aborted = true; if(this.xhr) this.xhr.abort(); } };
+  var send = function(maxBytes) {
+    if(request.aborted) return;
+    if(maxBytes && file.size > maxBytes) {
+      done('That video is ' + Math.round(file.size / 1048576) + 'MB. Videos can be up to ' + Math.round(maxBytes / 1048576) + 'MB.');
+      return;
+    }
+    progress(0);
+    var form = new FormData();
+    form.append('file', file, file.name);
+    var xhr = request.xhr = new XMLHttpRequest();
+    xhr.open('POST', 'ajax.php?command=upload_marker_video');
+    xhr.upload.addEventListener('progress', function(e) {
+      if(e.lengthComputable) progress(Math.round(e.loaded / e.total * 100));
+    });
+    xhr.addEventListener('load', function() {
+      var data = null;
+      try { data = JSON.parse(xhr.responseText); } catch(e) {}
+      if(xhr.status === 413) { done('That video is too large for the server to take.'); return; }
+      if(!data || !data.success) { done((data && data.msg) || 'The video could not be uploaded.'); return; }
+      done(null, data.location);
+    });
+    xhr.addEventListener('error', function() { done('The video could not be uploaded. Check your connection.'); });
+    xhr.addEventListener('abort', function() { done(null, null); });
+    xhr.send(form);
+  };
+  // How large the server takes, once.
+  if(this._videoMaxBytes !== undefined) send(this._videoMaxBytes);
+  else $.getJSON('ajax.php?command=upload_marker_video', function(data) {
+    _this._videoMaxBytes = data && data.maxBytes || 0;
+    send(_this._videoMaxBytes);
+  }).fail(function() { send(0); });
+  return request;
 };
 
 // Plays the drawer's videos only while at least half of one is on screen.

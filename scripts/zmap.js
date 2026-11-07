@@ -3419,6 +3419,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       // Videos and tables as they'll show on the marker, with cell edges
       // visible while editing.
       'iframe, video { max-width: 100%; border: 0; border-radius: 8px; }' +
+      'video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }' +
       'table { width: 100%; border-collapse: collapse; }' +
       'th, td { padding: 4px 6px; border: 1px solid #4a4a4f; text-align: left; vertical-align: top; }' +
       'blockquote { margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid #777; background: #2a2a2d; }'
@@ -3430,7 +3431,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       editor.ui.registry.addIcon('zm-upload-video',
         '<svg width="24" height="24" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M4 6h10a2 2 0 0 1 2 2v1.5l4-2.5v10l-4-2.5V16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm5 2.5L5.5 12H8v3h2v-3h2.5L9 8.5z"/></svg>');
       editor.ui.registry.addButton('uploadvideo', {
-        icon: 'zm-upload-video', tooltip: 'Upload a video',
+        icon: 'zm-upload-video', tooltip: 'Insert/edit video',
         onAction: function() { _this._uploadEditorVideo(editor); }
       });
     };

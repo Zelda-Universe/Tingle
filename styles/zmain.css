@@ -7248,6 +7248,18 @@ body .tox .tox-dialog .tox-browse-url svg {
 body .tox .tox-dialog .tox-checkbox__icons .tox-checkbox-icon__unchecked svg {
 	fill: rgba(255,255,255,.5);
 }
+/* Insert/Edit Video's notes (scripts/zvideo.js). */
+body .tox .tox-dialog .zm-video-dialog-hint {
+	margin: 4px 0 0;
+	color: rgba(255,255,255,.6);
+	font-family: "BrandonText", sans-serif;
+	font-size: 13px;
+}
+/* Blocked while a video uploads: its progress, on the dialog. */
+body .tox .tox-dialog .tox-dialog__busy-spinner {
+	background-color: rgba(0,0,0,.6);
+	color: white;
+}
 /* Upload progress and errors in the editor (Upload Video). */
 body .tox .tox-notification {
 	border: 0;

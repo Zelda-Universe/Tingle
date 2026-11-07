@@ -1,7 +1,7 @@
 // Writes the migration that adds more OoT marker types, and its undo:
 //   Travel: dungeon entrances (the game's own map icons, MapParam
 //     EntranceAnchor), warp-song pads and Kaepora Gaebora;
-//   Collectibles: Heart Containers and Silver Rupees;
+//   Collectibles: Heart Containers, Silver Rupees and Bottles;
 //   Points of Interest: Gossip Stones, Magic Bean spots, Business Scrubs, cows.
 // All but the entrances come from scene-data/objects.json (fetch-objects.cjs).
 //
@@ -10,11 +10,14 @@
 // maps.json is ajax.php?command=get_map&game=64 saved to a file. IDs:
 // categories 64004-64005, 64043-64046 and 64050-64053; markers 647xxxxx.
 // Each insert is skipped if its ID exists.
+// Use --only=bottle for the additive bottle migration. The original more-places
+// migration has shipped; never undo or regenerate it to add another category.
 const fs = require('fs');
 const path = require('path');
 const {placement, categorySQL, markerSQL, removalSQL} = require('./marker-sql.cjs');
 
-const [mapsFile, name] = process.argv.slice(2);
+const [mapsFile, name, ...options] = process.argv.slice(2);
+const only = (options.find(o => o.startsWith('--only=')) || '').split('=')[1];
 if(!mapsFile || !name) throw new Error('Usage: node objects-to-sql.cjs maps.json <migration name>');
 const maps = JSON.parse(fs.readFileSync(mapsFile, 'utf8'));
 const points = require('./scene-data/map-points.json');
@@ -23,18 +26,20 @@ const objects = require('./scene-data/objects.json').objects;
 // [id, parent, name, image, colour]: glyphs from the site's icon font, or
 // OoT_* SVGs in images/icons/oot/ (styles/poi.css).
 const CATEGORIES = [
-  [64050, null, 'Travel', 'BotW_Dungeon', '#8e72b9'],
+  [64050, null, 'Travel Points', 'BotW_Dungeon', '#8e72b9'],
   [64051, 64050, 'Dungeon Entrances', 'BotW_Dungeon', '#8e72b9'],
   [64052, 64050, 'Warp Pads', 'LA_Portal', '#8e72b9'],
   [64053, 64050, 'Kaepora Gaebora', 'OoT_Kaepora', '#8e72b9'],
   [64004, 64000, 'Heart Containers', 'General_Heart', '#cdb269'],
   [64005, 64000, 'Silver Rupees', 'OoT_SilverRupee', '#cdb269'],
+  [64006, 64000, 'Bottles', 'General_Bottle', '#cdb269'],
   [64043, 64040, 'Gossip Stones', 'OoT_GossipStone', '#4bc5ee'],
   [64044, 64040, 'Magic Bean Spots', 'BotW_Herbs', '#4bc5ee'],
   [64045, 64040, 'Business Scrubs', 'General_Store', '#4bc5ee'],
   [64046, 64040, 'Cows', 'BotW_Beef', '#4bc5ee']
 ];
-const CATEGORY_OF = {entrance: 64051, warp: 64052, owl: 64053, heart: 64004, silver: 64005, gossip: 64043, bean: 64044, scrub: 64045, cow: 64046};
+const CATEGORY_OF = {entrance: 64051, warp: 64052, owl: 64053, heart: 64004, silver: 64005, gossip: 64043, bean: 64044, scrub: 64045, cow: 64046, bottle: 64006};
+if(only && !CATEGORY_OF[only]) throw new Error('Unknown --only type: ' + only);
 
 const DUNGEON_NAMES = {
   InsideTheDekuTree: 'Inside the Deku Tree', DodongoCavern: "Dodongo's Cavern", InsideJabuJabuBelly: "Inside Jabu-Jabu's Belly",
@@ -95,6 +100,17 @@ function describe(type, list) {
     case 'owl': return {name: 'Kaepora Gaebora', text: p('The owl waits here with advice.')};
     case 'heart': return {name: 'Heart Container - ' + BOSSES[o.scene], text: p(`Appears after you defeat ${BOSSES[o.scene]}.`)};
     case 'silver': return {name: 'Silver Rupee', text: p('Collect all five in this room to open the way.')};
+    case 'bottle': {
+      const bottles = {
+        Weapon_Bottle: ['Bottle - Market', 'Receive an empty bottle during the Market bottle tutorial.'],
+        Obj_Bottle_Letter: ['Bottle - Letter', 'A bottle containing a letter, found underwater in Lake Hylia.'],
+        Npc_Hylia_049_Child: ['Bottle - Cucco Lady', 'Complete the Cucco Lady\'s Cucco-catching minigame again after the first Red Rupee reward to receive an empty bottle.'],
+        Npc_Hylia_048_BottleShop: ['Bottle - Poe Collector', 'An empty bottle rewarded by the Poe Collector through the Big Poe exchange.'],
+        Npc_Hylia_Talon_Child: ['Bottle - Talon', 'Win Talon\'s Super Cucco minigame at Lon Lon Ranch for the first time to receive a bottle of milk. Subsequent rewards refill an existing bottle.']
+      };
+      const bottle = bottles[o.name];
+      return bottle ? {name:bottle[0],text:p(bottle[1])} : {name:'Bottle',text:p(o.label)};
+    }
     case 'gossip': return /inactive/.test(o.label)
       ? {name: 'Gossip Stone', text: p("Frozen with Zora's Domain.")}
       : {name: 'Gossip Stone', text: p('Play the ocarina here for a Fairy Spirit.')};
@@ -136,11 +152,15 @@ function toAdd() {
   // Market's artwork doesn't draw: it goes where the game's own map shows
   // Link while he's in there (the Market's PlayerIconAnchor).
   const templeAnchor = scene => points.find(r => r.scene === scene && r.kind === 'PlayerIconAnchor');
-  for(const type of ['warp', 'owl', 'heart', 'silver', 'gossip', 'bean', 'scrub', 'cow']) {
+  for(const type of ['warp', 'owl', 'heart', 'silver', 'gossip', 'bean', 'scrub', 'cow', 'bottle']) {
     grouped(type).forEach(list => {
       if(type === 'silver') list = list.map(o => ({...o, floor: silver[o.label]}));
       if(type === 'warp' && list[0].name === 'Obj_TimeTemple_WarpPoint_A_01')
         list = list.map(o => ({...o, position: (templeAnchor(o.scene) || o).position || o.pos}));
+      // Lake Hylia is an overlay inside the Hyrule Field game scene. Its
+      // letter bottle must use the lake's own artwork, not the field's crop.
+      if(type === 'bottle' && list[0].name === 'Obj_Bottle_Letter')
+        list = list.map(o => ({...o,scene:o.scene.replace(/^HyruleField/, 'LakeHylia')}));
       const where = placement(list, maps);
       if(where) out.push({kind: type, gameId: String(BigInt(list[0].hash)), gameRecord: 'Object.' + list[0].name, ...describe(type, list), where});
     });
@@ -149,25 +169,33 @@ function toAdd() {
   const order = Object.keys(CATEGORY_OF);
   out.sort((a, b) => order.indexOf(a.kind) - order.indexOf(b.kind) || a.where.mapId.localeCompare(b.where.mapId) ||
     a.where.submapId.localeCompare(b.where.submapId) || a.where.y - b.where.y || a.where.x - b.where.x);
-  out.forEach((place, index) => { place.id = 64700001 + index; });
+  const bottleIds = { 'Object.Obj_Bottle_Letter':64701001, 'Object.Npc_Hylia_049_Child':64701002,
+    'Object.Weapon_Bottle':64701003, 'Object.Npc_Hylia_048_BottleShop':64701004, 'Object.Npc_Hylia_Talon_Child':64701005 };
+  let legacyIndex=0;
+  out.forEach(place => {
+    place.id = place.kind === 'bottle' ? bottleIds[place.gameRecord] : 64700001 + legacyIndex++;
+    if(!place.id) throw new Error('Allocate a stable ID for ' + place.gameRecord);
+  });
   return out;
 }
 
-const added = toAdd();
+const added = toAdd().filter(place => !only || place.kind === only);
+const categories = CATEGORIES.filter(category => !only || category[0] === CATEGORY_OF[only]);
 const up = [
-  '-- Adds more OoT marker types: dungeon entrances, warp pads and Kaepora',
-  '-- Gaebora (Travel); Heart Containers and Silver Rupees (Collectibles); Gossip',
-  '-- Stones, Magic Bean spots, Business Scrubs and cows (Points of Interest).',
+  ...(only ? ['-- Adds only OoT ' + only + ' markers; leaves existing markers and categories unchanged.'] : [
+    '-- Adds more OoT marker types: dungeon entrances, warp pads and Kaepora',
+    '-- Gaebora (Travel); Heart Containers, Silver Rupees and Bottles (Collectibles);',
+    '-- Gossip Stones, Magic Bean spots, Business Scrubs and cows (Points of Interest).']),
   '-- Positions are the game\'s, converted exactly (dev/assets/oot/game-to-map.cjs);',
   '-- generated by dev/assets/oot/objects-to-sql.cjs. Credited to account 15 (Jess)',
   '-- where it exists. Each row is skipped if its ID exists.',
   '',
-  ...CATEGORIES.map(categorySQL),
+  ...categories.map(categorySQL),
   ''
 ];
 added.forEach(place => up.push(...markerSQL({...place, category: CATEGORY_OF[place.kind]})));
 const down = ['-- Removes the markers objects-to-sql.cjs added, their text, and their categories.',
-  ...removalSQL(added.map(place => place.id), CATEGORIES)];
+  ...removalSQL(added.map(place => place.id), categories)];
 const folder = path.join(__dirname, '..', '..', '..', 'migrations');
 fs.writeFileSync(path.join(folder, name + '.sql'), up.join('\n') + '\n');
 fs.writeFileSync(path.join(folder, name + '.down.sql'), down.join('\n') + '\n');

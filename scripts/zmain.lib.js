@@ -173,6 +173,7 @@ function getMapCategories(categoriesSelectedIdPairsObject) {
     function(vResults) {
       vResults = ensureBotWNPCCategory(vResults);
       $.each(vResults, function(i, category) {
+        category.img = getPOIGlyph(category);
         zMap.addCategory(category);
 
         if (categoriesSelectedIdPairsObject) {

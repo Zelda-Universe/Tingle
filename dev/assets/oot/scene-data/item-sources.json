@@ -1,0 +1,5703 @@
+{
+  "source": "Owl Object Map placed objects; MrCheeze/oot-switch2-tools event and Banc records",
+  "sources": [
+    {
+      "key": "chest:1158729434763801603",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1158729434763801603",
+      "records": [
+        {
+          "scene": "DeathMountainCrater_Child",
+          "position": [
+            -27.03,
+            67.63,
+            65.21
+          ],
+          "floor": null,
+          "hash": "1158729434763801603"
+        },
+        {
+          "scene": "DeathMountainCrater_Adult",
+          "position": [
+            -27.03,
+            67.63,
+            65.21
+          ],
+          "floor": null,
+          "hash": "1158729434763801603"
+        }
+      ]
+    },
+    {
+      "key": "chest:9128916506605227251",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "9128916506605227251",
+      "records": [
+        {
+          "scene": "DeathMountainCrater_Child",
+          "position": [
+            -66.76,
+            70.39,
+            4.67
+          ],
+          "floor": null,
+          "hash": "9128916506605227251"
+        },
+        {
+          "scene": "DeathMountainCrater_Adult",
+          "position": [
+            -66.76,
+            70.39,
+            4.67
+          ],
+          "floor": null,
+          "hash": "9128916506605227251"
+        }
+      ]
+    },
+    {
+      "key": "chest:631709185320708287",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "631709185320708287",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            11.97,
+            100,
+            -11.06
+          ],
+          "floor": "B1",
+          "hash": "631709185320708287"
+        }
+      ]
+    },
+    {
+      "key": "chest:874970148260328653",
+      "kind": "chest",
+      "label": "Deku Shield (in chest, substitute item if already owned)",
+      "item": "Deku Shield",
+      "object": "Obj_TBox_A_06",
+      "gameId": "874970148260328653",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            33.85,
+            100,
+            -22.54
+          ],
+          "floor": "B1",
+          "hash": "874970148260328653"
+        }
+      ]
+    },
+    {
+      "key": "chest:5429815628949128345",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "5429815628949128345",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            -0.2,
+            96.19,
+            -5
+          ],
+          "floor": "B1",
+          "hash": "5429815628949128345"
+        }
+      ]
+    },
+    {
+      "key": "chest:6064359710907908886",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01",
+      "gameId": "6064359710907908886",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            0.01,
+            102.17,
+            -100.47
+          ],
+          "floor": "B1",
+          "hash": "6064359710907908886"
+        }
+      ]
+    },
+    {
+      "key": "chest:8397646530660039355",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "8397646530660039355",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            10.57,
+            99.98,
+            -4.5
+          ],
+          "floor": "B1",
+          "hash": "8397646530660039355"
+        }
+      ]
+    },
+    {
+      "key": "chest:8975637636514249074",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "8975637636514249074",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            -11,
+            99.98,
+            -5.43
+          ],
+          "floor": "B1",
+          "hash": "8975637636514249074"
+        }
+      ]
+    },
+    {
+      "key": "chest:9466613428674883506",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02",
+      "gameId": "9466613428674883506",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            18.32,
+            87.45,
+            1.15
+          ],
+          "floor": "B2",
+          "hash": "9466613428674883506"
+        }
+      ]
+    },
+    {
+      "key": "chest:10905582354954996284",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "10905582354954996284",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            -29.59,
+            100,
+            -36.98
+          ],
+          "floor": "B1",
+          "hash": "10905582354954996284"
+        }
+      ]
+    },
+    {
+      "key": "chest:11718708984125260282",
+      "kind": "chest",
+      "label": "Purple Rupee (in invisible chest, Lenses of Truth)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "11718708984125260282",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            0.02,
+            105.78,
+            -77.05
+          ],
+          "floor": "B1",
+          "hash": "11718708984125260282"
+        }
+      ]
+    },
+    {
+      "key": "chest:12988877782812797760",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "12988877782812797760",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            19.86,
+            97.81,
+            -18.57
+          ],
+          "floor": "B1",
+          "hash": "12988877782812797760"
+        }
+      ]
+    },
+    {
+      "key": "chest:14911602953212243797",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02",
+      "gameId": "14911602953212243797",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            -12.39,
+            100.12,
+            -10.96
+          ],
+          "floor": "B1",
+          "hash": "14911602953212243797"
+        }
+      ]
+    },
+    {
+      "key": "chest:16654774376625985726",
+      "kind": "chest",
+      "label": "Lenses of Truth (in large chest)",
+      "item": "Lenses of Truth",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "16654774376625985726",
+      "records": [
+        {
+          "scene": "BottomOfTheWell",
+          "position": [
+            -0.05,
+            92.42,
+            -110.27
+          ],
+          "floor": "B2",
+          "hash": "16654774376625985726"
+        }
+      ]
+    },
+    {
+      "key": "chest:9809508929088891725",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01",
+      "gameId": "9809508929088891725",
+      "records": [
+        {
+          "scene": "DeathMountainTrail_Adult",
+          "position": [
+            -29.84,
+            120.25,
+            45.61
+          ],
+          "floor": null,
+          "hash": "9809508929088891725"
+        },
+        {
+          "scene": "DeathMountainTrail_Child",
+          "position": [
+            -29.84,
+            120.25,
+            45.61
+          ],
+          "floor": null,
+          "hash": "9809508929088891725"
+        }
+      ]
+    },
+    {
+      "key": "chest:1186167733408299582",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "1186167733408299582",
+      "records": [
+        {
+          "scene": "DesertColossus_Adult",
+          "position": [
+            -129.54,
+            76.99,
+            -36.54
+          ],
+          "floor": null,
+          "hash": "1186167733408299582"
+        },
+        {
+          "scene": "DesertColossus_Child",
+          "position": [
+            -129.54,
+            76.99,
+            -36.54
+          ],
+          "floor": null,
+          "hash": "1186167733408299582"
+        }
+      ]
+    },
+    {
+      "key": "chest:2490063409521505179",
+      "kind": "chest",
+      "label": "Silver Gauntlets (in large chest)",
+      "item": "Silver Gauntlets",
+      "object": "Obj_TBox_A_02",
+      "gameId": "2490063409521505179",
+      "records": [
+        {
+          "scene": "DesertColossus_Adult",
+          "position": [
+            -168.64,
+            113.25,
+            29.55
+          ],
+          "floor": null,
+          "hash": "2490063409521505179"
+        },
+        {
+          "scene": "DesertColossus_Child",
+          "position": [
+            -168.64,
+            113.25,
+            29.55
+          ],
+          "floor": null,
+          "hash": "2490063409521505179"
+        }
+      ]
+    },
+    {
+      "key": "chest:10012167258643363548",
+      "kind": "chest",
+      "label": "Mirror Shield (in large chest)",
+      "item": "Mirror Shield",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "10012167258643363548",
+      "records": [
+        {
+          "scene": "DesertColossus_Adult",
+          "position": [
+            -168.63,
+            113.25,
+            -8.63
+          ],
+          "floor": null,
+          "hash": "10012167258643363548"
+        },
+        {
+          "scene": "DesertColossus_Child",
+          "position": [
+            -168.63,
+            113.25,
+            -8.63
+          ],
+          "floor": null,
+          "hash": "10012167258643363548"
+        }
+      ]
+    },
+    {
+      "key": "chest:850464708089653824",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "850464708089653824",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            92.5,
+            114.97,
+            -50.25
+          ],
+          "floor": "2F",
+          "hash": "850464708089653824"
+        }
+      ]
+    },
+    {
+      "key": "chest:7524527082521156886",
+      "kind": "chest",
+      "label": "Deku Shield (in chest, substitute item if already owned)",
+      "item": "Deku Shield",
+      "object": "Obj_TBox_A_06",
+      "gameId": "7524527082521156886",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            -20.75,
+            113.28,
+            -36.5
+          ],
+          "floor": "2F",
+          "hash": "7524527082521156886"
+        }
+      ]
+    },
+    {
+      "key": "chest:7764016096998075927",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "7764016096998075927",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            82.99,
+            100.6,
+            -55.62
+          ],
+          "floor": "1F",
+          "hash": "7764016096998075927"
+        }
+      ]
+    },
+    {
+      "key": "chest:8291119063305855945",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02",
+      "gameId": "8291119063305855945",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            -26.5,
+            100.25,
+            -38
+          ],
+          "floor": "1F",
+          "hash": "8291119063305855945"
+        }
+      ]
+    },
+    {
+      "key": "chest:8607798771661947511",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "8607798771661947511",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            -30.13,
+            100,
+            -8
+          ],
+          "floor": "1F",
+          "hash": "8607798771661947511"
+        }
+      ]
+    },
+    {
+      "key": "chest:11582649900854566065",
+      "kind": "chest",
+      "label": "Deku Shield (in chest, substitute item if already owned)",
+      "item": "Deku Shield",
+      "object": "Obj_TBox_A_06",
+      "gameId": "11582649900854566065",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            43.04,
+            113.16,
+            -8.75
+          ],
+          "floor": "2F",
+          "hash": "11582649900854566065"
+        }
+      ]
+    },
+    {
+      "key": "chest:12161709650443144121",
+      "kind": "chest",
+      "label": "Bomb Bag (in large chest)",
+      "item": "Bomb Bag",
+      "object": "Obj_TBox_A_02",
+      "gameId": "12161709650443144121",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            39,
+            115.72,
+            -23
+          ],
+          "floor": "2F",
+          "hash": "12161709650443144121"
+        }
+      ]
+    },
+    {
+      "key": "chest:12253889300578348965",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01",
+      "gameId": "12253889300578348965",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            -48.98,
+            116.01,
+            -63.93
+          ],
+          "floor": "2F",
+          "hash": "12253889300578348965"
+        }
+      ]
+    },
+    {
+      "key": "chest:17531994809974271603",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02",
+      "gameId": "17531994809974271603",
+      "records": [
+        {
+          "scene": "DodongoCavern",
+          "position": [
+            -49,
+            103.62,
+            7.5
+          ],
+          "floor": "1F",
+          "hash": "17531994809974271603"
+        }
+      ]
+    },
+    {
+      "key": "chest:862385681502746018",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "862385681502746018",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            31.4,
+            194.35,
+            -10.19
+          ],
+          "floor": "5F",
+          "hash": "862385681502746018"
+        }
+      ]
+    },
+    {
+      "key": "chest:1705064956286753527",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1705064956286753527",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            39.45,
+            105.29,
+            51.25
+          ],
+          "floor": "1F",
+          "hash": "1705064956286753527"
+        }
+      ]
+    },
+    {
+      "key": "chest:3688520809244472975",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02",
+      "gameId": "3688520809244472975",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            58.23,
+            147.08,
+            40.55
+          ],
+          "floor": "3F",
+          "hash": "3688520809244472975"
+        }
+      ]
+    },
+    {
+      "key": "chest:3949488292768750868",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "3949488292768750868",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            34.22,
+            105.3,
+            -46.46
+          ],
+          "floor": "1F",
+          "hash": "3949488292768750868"
+        }
+      ]
+    },
+    {
+      "key": "chest:5634724236470386190",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "5634724236470386190",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            -39.16,
+            104.99,
+            24.64
+          ],
+          "floor": "1F",
+          "hash": "5634724236470386190"
+        }
+      ]
+    },
+    {
+      "key": "chest:8757492004108970488",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "8757492004108970488",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            -6.98,
+            102.01,
+            -33.27
+          ],
+          "floor": "1F",
+          "hash": "8757492004108970488"
+        }
+      ]
+    },
+    {
+      "key": "chest:9634924691849556346",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "9634924691849556346",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            46.55,
+            150.5,
+            33.42
+          ],
+          "floor": "3F",
+          "hash": "9634924691849556346"
+        }
+      ]
+    },
+    {
+      "key": "chest:10521366928524045067",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "10521366928524045067",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            -37.83,
+            145.23,
+            -0.55
+          ],
+          "floor": "3F",
+          "hash": "10521366928524045067"
+        }
+      ]
+    },
+    {
+      "key": "chest:12083259659219538030",
+      "kind": "chest",
+      "label": "Megaton Hammer (in large chest)",
+      "item": "Megaton Hammer",
+      "object": "Obj_TBox_A_02",
+      "gameId": "12083259659219538030",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            -31.77,
+            196.1,
+            -12.71
+          ],
+          "floor": "5F",
+          "hash": "12083259659219538030"
+        }
+      ]
+    },
+    {
+      "key": "chest:12567412825200613393",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "12567412825200613393",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            48.5,
+            147,
+            -43.39
+          ],
+          "floor": "3F",
+          "hash": "12567412825200613393"
+        }
+      ]
+    },
+    {
+      "key": "chest:12945617941305968586",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "12945617941305968586",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            -17.11,
+            146.98,
+            -31.07
+          ],
+          "floor": "3F",
+          "hash": "12945617941305968586"
+        }
+      ]
+    },
+    {
+      "key": "chest:14060099092170010696",
+      "kind": "chest",
+      "label": "Boss Key (in Boss Key chest)",
+      "item": "Boss Key",
+      "object": "Obj_TBox_A_03",
+      "gameId": "14060099092170010696",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            -5.06,
+            100.9,
+            -8.7
+          ],
+          "floor": "1F",
+          "hash": "14060099092170010696"
+        }
+      ]
+    },
+    {
+      "key": "chest:15073195886628236505",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "15073195886628236505",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            31.7,
+            194.35,
+            -8.49
+          ],
+          "floor": "5F",
+          "hash": "15073195886628236505"
+        }
+      ]
+    },
+    {
+      "key": "chest:16713240760352215634",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02",
+      "gameId": "16713240760352215634",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            34.14,
+            147.07,
+            -5.75
+          ],
+          "floor": "3F",
+          "hash": "16713240760352215634"
+        }
+      ]
+    },
+    {
+      "key": "chest:16785682308850448108",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "16785682308850448108",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            77.43,
+            141.13,
+            0.19
+          ],
+          "floor": "2F",
+          "hash": "16785682308850448108"
+        }
+      ]
+    },
+    {
+      "key": "chest:17001858340376096722",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "17001858340376096722",
+      "records": [
+        {
+          "scene": "FireTemple",
+          "position": [
+            33.11,
+            194.35,
+            -9.92
+          ],
+          "floor": "5F",
+          "hash": "17001858340376096722"
+        }
+      ]
+    },
+    {
+      "key": "chest:1171460703078800858",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1171460703078800858",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            -9.85,
+            117.51,
+            64.37
+          ],
+          "floor": "2F",
+          "hash": "1171460703078800858"
+        }
+      ]
+    },
+    {
+      "key": "chest:3174893090599461927",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02",
+      "gameId": "3174893090599461927",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            38.75,
+            101.41,
+            -35.75
+          ],
+          "floor": "1F",
+          "hash": "3174893090599461927"
+        }
+      ]
+    },
+    {
+      "key": "chest:3433400840978782007",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "3433400840978782007",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            -17.09,
+            114.82,
+            -63.64
+          ],
+          "floor": "2F",
+          "hash": "3433400840978782007"
+        }
+      ]
+    },
+    {
+      "key": "chest:5306318520835485827",
+      "kind": "chest",
+      "label": "Boss Key (in Boss Key chest)",
+      "item": "Boss Key",
+      "object": "Obj_TBox_A_03_NoBake",
+      "gameId": "5306318520835485827",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            -49.46,
+            129.5,
+            -63.71
+          ],
+          "floor": "3F",
+          "hash": "5306318520835485827"
+        }
+      ]
+    },
+    {
+      "key": "chest:6449977980406424425",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "6449977980406424425",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            16.44,
+            88.03,
+            -42.56
+          ],
+          "floor": "B1",
+          "hash": "6449977980406424425"
+        }
+      ]
+    },
+    {
+      "key": "chest:6948525240950728236",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "6948525240950728236",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            17.08,
+            114.82,
+            -63.62
+          ],
+          "floor": "2F",
+          "hash": "6948525240950728236"
+        }
+      ]
+    },
+    {
+      "key": "chest:7535137041266964235",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "7535137041266964235",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            -70.23,
+            107.1,
+            -26.49
+          ],
+          "floor": "1F",
+          "hash": "7535137041266964235"
+        }
+      ]
+    },
+    {
+      "key": "chest:9038700938965170329",
+      "kind": "chest",
+      "label": "10 Arrows (in chest)",
+      "item": "10 Arrows",
+      "object": "Obj_TBox_A_01",
+      "gameId": "9038700938965170329",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            -16.26,
+            60.71,
+            12.6
+          ],
+          "floor": "B2",
+          "hash": "9038700938965170329"
+        }
+      ]
+    },
+    {
+      "key": "chest:11082303891540711688",
+      "kind": "chest",
+      "label": "Fairy Bow (in large chest)",
+      "item": "Fairy Bow",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "11082303891540711688",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            0.2,
+            114.76,
+            -68.5
+          ],
+          "floor": "2F",
+          "hash": "11082303891540711688"
+        }
+      ]
+    },
+    {
+      "key": "chest:14776684749746592758",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "14776684749746592758",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            0.01,
+            105.79,
+            -62.75
+          ],
+          "floor": "1F",
+          "hash": "14776684749746592758"
+        }
+      ]
+    },
+    {
+      "key": "chest:15920957434854338961",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "15920957434854338961",
+      "records": [
+        {
+          "scene": "ForestTemple",
+          "position": [
+            -52.83,
+            115,
+            4.23
+          ],
+          "floor": "2F",
+          "hash": "15920957434854338961"
+        }
+      ]
+    },
+    {
+      "key": "chest:12343753510713797715",
+      "kind": "chest",
+      "label": "Piece of Heart (in large chest)",
+      "item": "Piece of Heart",
+      "object": "Obj_TBox_A_02",
+      "gameId": "12343753510713797715",
+      "records": [
+        {
+          "scene": "GerudoFortress_Adult",
+          "position": [
+            28.98,
+            131.5,
+            -93.67
+          ],
+          "floor": null,
+          "hash": "12343753510713797715"
+        }
+      ]
+    },
+    {
+      "key": "chest:16619432200060282313",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "16619432200060282313",
+      "records": [
+        {
+          "scene": "GerudoFortress_Adult",
+          "position": [
+            14.97,
+            89.15,
+            -67.69
+          ],
+          "floor": null,
+          "hash": "16619432200060282313"
+        }
+      ]
+    },
+    {
+      "key": "chest:196331300747102419",
+      "kind": "chest",
+      "label": "Five Bombchus (in chest)",
+      "item": "Five Bombchus",
+      "object": "Obj_TBox_A_01",
+      "gameId": "196331300747102419",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            5.5,
+            98.03,
+            -45.5
+          ],
+          "floor": "1F",
+          "hash": "196331300747102419"
+        }
+      ]
+    },
+    {
+      "key": "chest:1883068192328530224",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1883068192328530224",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            22.82,
+            98.03,
+            -45.62
+          ],
+          "floor": "1F",
+          "hash": "1883068192328530224"
+        }
+      ]
+    },
+    {
+      "key": "chest:1941083939696166170",
+      "kind": "chest",
+      "label": "Ice Arrow (in large chest)",
+      "item": "Ice Arrow",
+      "object": "Obj_TBox_A_02",
+      "gameId": "1941083939696166170",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -1.86,
+            98.03,
+            -48
+          ],
+          "floor": "1F",
+          "hash": "1941083939696166170"
+        }
+      ]
+    },
+    {
+      "key": "chest:2436665354602612279",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "2436665354602612279",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            4.06,
+            99.47,
+            -11.43
+          ],
+          "floor": "1F",
+          "hash": "2436665354602612279"
+        }
+      ]
+    },
+    {
+      "key": "chest:3717705376223508790",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "3717705376223508790",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            78.51,
+            94.03,
+            -43.9
+          ],
+          "floor": "1F",
+          "hash": "3717705376223508790"
+        }
+      ]
+    },
+    {
+      "key": "chest:3750231902048775592",
+      "kind": "chest",
+      "label": "Five Bombs (in chest)",
+      "item": "Five Bombs",
+      "object": "Obj_TBox_A_01",
+      "gameId": "3750231902048775592",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -39.46,
+            103.52,
+            -130.77
+          ],
+          "floor": "1F",
+          "hash": "3750231902048775592"
+        }
+      ]
+    },
+    {
+      "key": "chest:4320448574091221496",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "4320448574091221496",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -1.75,
+            105.03,
+            -37.88
+          ],
+          "floor": "1F",
+          "hash": "4320448574091221496"
+        }
+      ]
+    },
+    {
+      "key": "chest:4372363658229299619",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "4372363658229299619",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            43.29,
+            98.44,
+            -82.44
+          ],
+          "floor": "1F",
+          "hash": "4372363658229299619"
+        }
+      ]
+    },
+    {
+      "key": "chest:4519534997122863169",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "4519534997122863169",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -55.13,
+            104.02,
+            -90.29
+          ],
+          "floor": "1F",
+          "hash": "4519534997122863169"
+        }
+      ]
+    },
+    {
+      "key": "chest:4709724720801091788",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "4709724720801091788",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            44.44,
+            98.65,
+            -5.4
+          ],
+          "floor": "1F",
+          "hash": "4709724720801091788"
+        }
+      ]
+    },
+    {
+      "key": "chest:5329807728555596183",
+      "kind": "chest",
+      "label": "Small Key (in invisible chest, Lenses of Truth)",
+      "item": "Small Key",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "5329807728555596183",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -42.1,
+            104.21,
+            -137.67
+          ],
+          "floor": "1F",
+          "hash": "5329807728555596183"
+        }
+      ]
+    },
+    {
+      "key": "chest:6897789835137994741",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "6897789835137994741",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -42.24,
+            104.21,
+            -123.62
+          ],
+          "floor": "1F",
+          "hash": "6897789835137994741"
+        }
+      ]
+    },
+    {
+      "key": "chest:8186301369655588602",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "8186301369655588602",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -13.25,
+            98.03,
+            -60.5
+          ],
+          "floor": "1F",
+          "hash": "8186301369655588602"
+        }
+      ]
+    },
+    {
+      "key": "chest:9911316961118170383",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "9911316961118170383",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -1.48,
+            105,
+            -48.05
+          ],
+          "floor": "1F",
+          "hash": "9911316961118170383"
+        }
+      ]
+    },
+    {
+      "key": "chest:10696620323243142689",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "10696620323243142689",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -19.25,
+            98.03,
+            -46.25
+          ],
+          "floor": "1F",
+          "hash": "10696620323243142689"
+        }
+      ]
+    },
+    {
+      "key": "chest:10743352138513225188",
+      "kind": "chest",
+      "label": "Red Rupee (in chest, substitute item if already owned)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_06",
+      "gameId": "10743352138513225188",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -9,
+            98.03,
+            -60
+          ],
+          "floor": "1F",
+          "hash": "10743352138513225188"
+        }
+      ]
+    },
+    {
+      "key": "chest:11563468890171962383",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "11563468890171962383",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -2.34,
+            96.27,
+            -77.33
+          ],
+          "floor": "1F",
+          "hash": "11563468890171962383"
+        }
+      ]
+    },
+    {
+      "key": "chest:11683433230229591151",
+      "kind": "chest",
+      "label": "Red Rupee (in chest, substitute item if already owned)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_06",
+      "gameId": "11683433230229591151",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            10.25,
+            98.03,
+            -50.5
+          ],
+          "floor": "1F",
+          "hash": "11683433230229591151"
+        }
+      ]
+    },
+    {
+      "key": "chest:11754783663699171680",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "11754783663699171680",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -53.66,
+            103.52,
+            -131.8
+          ],
+          "floor": "1F",
+          "hash": "11754783663699171680"
+        }
+      ]
+    },
+    {
+      "key": "chest:13501407288943710656",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "13501407288943710656",
+      "records": [
+        {
+          "scene": "GerudoTrainingGround",
+          "position": [
+            -50.25,
+            98.13,
+            -15.59
+          ],
+          "floor": "1F",
+          "hash": "13501407288943710656"
+        }
+      ]
+    },
+    {
+      "key": "chest:6463521162691873710",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01",
+      "gameId": "6463521162691873710",
+      "records": [
+        {
+          "scene": "GerudoValley_Adult",
+          "position": [
+            31.19,
+            -22.6,
+            37.02
+          ],
+          "floor": null,
+          "hash": "6463521162691873710"
+        },
+        {
+          "scene": "GerudoValley_Child",
+          "position": [
+            31.19,
+            -22.6,
+            37.02
+          ],
+          "floor": null,
+          "hash": "6463521162691873710"
+        }
+      ]
+    },
+    {
+      "key": "chest:13612880783193811229",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "13612880783193811229",
+      "records": [
+        {
+          "scene": "GerudoValley_Adult",
+          "position": [
+            -33.71,
+            102.19,
+            22.06
+          ],
+          "floor": null,
+          "hash": "13612880783193811229"
+        }
+      ]
+    },
+    {
+      "key": "chest:15856256242099990922",
+      "kind": "chest",
+      "label": "Piece of Heart (in large chest)",
+      "item": "Piece of Heart",
+      "object": "Obj_TBox_A_02",
+      "gameId": "15856256242099990922",
+      "records": [
+        {
+          "scene": "GerudoValley_Adult",
+          "position": [
+            -9.46,
+            90.45,
+            34.98
+          ],
+          "floor": null,
+          "hash": "15856256242099990922"
+        },
+        {
+          "scene": "GerudoValley_Child",
+          "position": [
+            -9.46,
+            90.45,
+            34.98
+          ],
+          "floor": null,
+          "hash": "15856256242099990922"
+        }
+      ]
+    },
+    {
+      "key": "chest:17750686910716887133",
+      "kind": "chest",
+      "label": "Green Rupee (in chest)",
+      "item": "Green Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "17750686910716887133",
+      "records": [
+        {
+          "scene": "GerudoValley_Adult",
+          "position": [
+            -47.27,
+            84.04,
+            -46.03
+          ],
+          "floor": null,
+          "hash": "17750686910716887133"
+        },
+        {
+          "scene": "GerudoValley_Child",
+          "position": [
+            -47.27,
+            84.04,
+            -46.03
+          ],
+          "floor": null,
+          "hash": "17750686910716887133"
+        }
+      ]
+    },
+    {
+      "key": "chest:18413589940135955604",
+      "kind": "chest",
+      "label": "Red Rupee (in invisible chest, Lenses of Truth)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "18413589940135955604",
+      "records": [
+        {
+          "scene": "GerudoValley_Adult",
+          "position": [
+            -43.27,
+            84.04,
+            -46.03
+          ],
+          "floor": null,
+          "hash": "18413589940135955604"
+        }
+      ]
+    },
+    {
+      "key": "chest:6205043616869463865",
+      "kind": "chest",
+      "label": "Red Rupee (in invisible chest, Lenses of Truth)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "6205043616869463865",
+      "records": [
+        {
+          "scene": "GerudoValley_Child",
+          "position": [
+            -43.27,
+            84.04,
+            -46.03
+          ],
+          "floor": null,
+          "hash": "6205043616869463865"
+        }
+      ]
+    },
+    {
+      "key": "chest:1176975953041865014",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1176975953041865014",
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            -47.35,
+            113.68,
+            -2.35
+          ],
+          "floor": null,
+          "hash": "1176975953041865014"
+        },
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -47.35,
+            113.68,
+            -2.35
+          ],
+          "floor": null,
+          "hash": "1176975953041865014"
+        }
+      ]
+    },
+    {
+      "key": "chest:3870071239709713434",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "3870071239709713434",
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            -43.24,
+            113.68,
+            -8.37
+          ],
+          "floor": null,
+          "hash": "3870071239709713434"
+        },
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -43.24,
+            113.68,
+            -8.37
+          ],
+          "floor": null,
+          "hash": "3870071239709713434"
+        }
+      ]
+    },
+    {
+      "key": "chest:4402942101476009858",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "4402942101476009858",
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            -48.41,
+            113.68,
+            1.99
+          ],
+          "floor": null,
+          "hash": "4402942101476009858"
+        },
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -48.41,
+            113.68,
+            1.99
+          ],
+          "floor": null,
+          "hash": "4402942101476009858"
+        }
+      ]
+    },
+    {
+      "key": "chest:9159710900681116662",
+      "kind": "chest",
+      "label": "Green Rupee (in chest)",
+      "item": "Green Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "9159710900681116662",
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            -52.17,
+            94.8,
+            31.99
+          ],
+          "floor": null,
+          "hash": "9159710900681116662"
+        },
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -52.17,
+            94.8,
+            31.99
+          ],
+          "floor": null,
+          "hash": "9159710900681116662"
+        }
+      ]
+    },
+    {
+      "key": "chest:10944569637726152230",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "10944569637726152230",
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            -52.17,
+            94.8,
+            26.31
+          ],
+          "floor": null,
+          "hash": "10944569637726152230"
+        },
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -52.17,
+            94.8,
+            26.31
+          ],
+          "floor": null,
+          "hash": "10944569637726152230"
+        }
+      ]
+    },
+    {
+      "key": "chest:14647422914070455120",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "14647422914070455120",
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            -47.35,
+            113.68,
+            -5.15
+          ],
+          "floor": null,
+          "hash": "14647422914070455120"
+        },
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -47.35,
+            113.68,
+            -5.15
+          ],
+          "floor": null,
+          "hash": "14647422914070455120"
+        }
+      ]
+    },
+    {
+      "key": "chest:234006393181394602",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "234006393181394602",
+      "records": [
+        {
+          "scene": "Graveyard_Adult",
+          "position": [
+            -5.99,
+            82.53,
+            77.63
+          ],
+          "floor": null,
+          "hash": "234006393181394602"
+        }
+      ]
+    },
+    {
+      "key": "chest:4322670163630771947",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "4322670163630771947",
+      "records": [
+        {
+          "scene": "Graveyard_Adult",
+          "position": [
+            -5.99,
+            82.53,
+            77.62
+          ],
+          "floor": null,
+          "hash": "4322670163630771947"
+        }
+      ]
+    },
+    {
+      "key": "chest:5534919361313859554",
+      "kind": "chest",
+      "label": "Piece of Heart (chest at the end of Dampé's race)",
+      "item": "Piece of Heart",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "5534919361313859554",
+      "records": [
+        {
+          "scene": "Graveyard_Adult",
+          "position": [
+            -6.03,
+            82.53,
+            77.66
+          ],
+          "floor": null,
+          "hash": "5534919361313859554"
+        }
+      ]
+    },
+    {
+      "key": "chest:9622128545943056087",
+      "kind": "chest",
+      "label": "Piece of Heart (in large chest)",
+      "item": "Piece of Heart",
+      "object": "Obj_TBox_A_02",
+      "gameId": "9622128545943056087",
+      "records": [
+        {
+          "scene": "Graveyard_Adult",
+          "position": [
+            21.41,
+            85.81,
+            39.33
+          ],
+          "floor": null,
+          "hash": "9622128545943056087"
+        },
+        {
+          "scene": "Graveyard_Child",
+          "position": [
+            21.41,
+            85.81,
+            39.33
+          ],
+          "floor": null,
+          "hash": "9622128545943056087"
+        }
+      ]
+    },
+    {
+      "key": "chest:16041366920820397198",
+      "kind": "chest",
+      "label": "Hookshot (in large chest)",
+      "item": "Hookshot",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "16041366920820397198",
+      "records": [
+        {
+          "scene": "Graveyard_Adult",
+          "position": [
+            -6.03,
+            82.54,
+            77.66
+          ],
+          "floor": null,
+          "hash": "16041366920820397198"
+        }
+      ]
+    },
+    {
+      "key": "chest:16912540161937823130",
+      "kind": "chest",
+      "label": "Hylian Shield (in chest, substitute item if already owned)",
+      "item": "Hylian Shield",
+      "object": "Obj_TBox_A_06",
+      "gameId": "16912540161937823130",
+      "records": [
+        {
+          "scene": "Graveyard_Adult",
+          "position": [
+            38.33,
+            86.29,
+            11.23
+          ],
+          "floor": null,
+          "hash": "16912540161937823130"
+        },
+        {
+          "scene": "Graveyard_Child",
+          "position": [
+            38.33,
+            86.29,
+            11.23
+          ],
+          "floor": null,
+          "hash": "16912540161937823130"
+        }
+      ]
+    },
+    {
+      "key": "chest:8825521833684392638",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "8825521833684392638",
+      "records": [
+        {
+          "scene": "HountedWasteland_Adult",
+          "position": [
+            16.01,
+            87.66,
+            -98.35
+          ],
+          "floor": null,
+          "hash": "8825521833684392638"
+        },
+        {
+          "scene": "HountedWasteland_Child",
+          "position": [
+            16.01,
+            87.66,
+            -98.35
+          ],
+          "floor": null,
+          "hash": "8825521833684392638"
+        }
+      ]
+    },
+    {
+      "key": "chest:1163740567397714729",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1163740567397714729",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            -5.73,
+            146.19,
+            406.86
+          ],
+          "floor": null,
+          "hash": "1163740567397714729"
+        }
+      ]
+    },
+    {
+      "key": "chest:2967378296224661060",
+      "kind": "chest",
+      "label": "Piece of Heart (in chest)",
+      "item": "Piece of Heart",
+      "object": "Obj_TBox_A_01_memo11",
+      "gameId": "2967378296224661060",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            -213.3,
+            133.47,
+            138.69
+          ],
+          "floor": null,
+          "hash": "2967378296224661060"
+        },
+        {
+          "scene": "HyruleField_Child",
+          "position": [
+            -213.3,
+            133.47,
+            138.69
+          ],
+          "floor": null,
+          "hash": "2967378296224661060"
+        }
+      ]
+    },
+    {
+      "key": "chest:5755485285664292988",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "5755485285664292988",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            152.23,
+            136.02,
+            16.73
+          ],
+          "floor": null,
+          "hash": "5755485285664292988"
+        },
+        {
+          "scene": "HyruleField_Child",
+          "position": [
+            152.23,
+            136.02,
+            16.73
+          ],
+          "floor": null,
+          "hash": "5755485285664292988"
+        }
+      ]
+    },
+    {
+      "key": "chest:6900843020594897860",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "6900843020594897860",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            -214.9,
+            98.02,
+            449.12
+          ],
+          "floor": null,
+          "hash": "6900843020594897860"
+        },
+        {
+          "scene": "HyruleField_Child",
+          "position": [
+            -214.9,
+            98.02,
+            449.12
+          ],
+          "floor": null,
+          "hash": "6900843020594897860"
+        }
+      ]
+    },
+    {
+      "key": "chest:9891111455604007674",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "9891111455604007674",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            84.4,
+            152.64,
+            45.36
+          ],
+          "floor": null,
+          "hash": "9891111455604007674"
+        }
+      ]
+    },
+    {
+      "key": "chest:17023457248274633121",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "17023457248274633121",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            -297.44,
+            131.29,
+            558.11
+          ],
+          "floor": null,
+          "hash": "17023457248274633121"
+        }
+      ]
+    },
+    {
+      "key": "chest:17445672702269453589",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01",
+      "gameId": "17445672702269453589",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            -151.87,
+            162.03,
+            265.29
+          ],
+          "floor": null,
+          "hash": "17445672702269453589"
+        },
+        {
+          "scene": "HyruleField_Child",
+          "position": [
+            -151.87,
+            162.03,
+            265.29
+          ],
+          "floor": null,
+          "hash": "17445672702269453589"
+        }
+      ]
+    },
+    {
+      "key": "chest:4128092231168513176",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "4128092231168513176",
+      "records": [
+        {
+          "scene": "IceCavern",
+          "position": [
+            -53.11,
+            107.19,
+            -34.2
+          ],
+          "floor": "1F",
+          "hash": "4128092231168513176"
+        }
+      ]
+    },
+    {
+      "key": "chest:6859289214373847284",
+      "kind": "chest",
+      "label": "Iron Boots (in large chest)",
+      "item": "Iron Boots",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "6859289214373847284",
+      "records": [
+        {
+          "scene": "IceCavern",
+          "position": [
+            -46.22,
+            109.71,
+            42.53
+          ],
+          "floor": "1F",
+          "hash": "6859289214373847284"
+        }
+      ]
+    },
+    {
+      "key": "chest:11498802739257120175",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02",
+      "gameId": "11498802739257120175",
+      "records": [
+        {
+          "scene": "IceCavern",
+          "position": [
+            3.38,
+            113.71,
+            -80.2
+          ],
+          "floor": "1F",
+          "hash": "11498802739257120175"
+        }
+      ]
+    },
+    {
+      "key": "chest:13542013937093159888",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02",
+      "gameId": "13542013937093159888",
+      "records": [
+        {
+          "scene": "IceCavern",
+          "position": [
+            90.22,
+            104.51,
+            2.92
+          ],
+          "floor": "1F",
+          "hash": "13542013937093159888"
+        }
+      ]
+    },
+    {
+      "key": "chest:1029712040059298120",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1029712040059298120",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            -36.03,
+            99.75,
+            -16.49
+          ],
+          "floor": "1F",
+          "hash": "1029712040059298120"
+        }
+      ]
+    },
+    {
+      "key": "chest:4733634471038136588",
+      "kind": "chest",
+      "label": "Green Rupee (in chest)",
+      "item": "Green Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "4733634471038136588",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            -52.19,
+            100,
+            -25.49
+          ],
+          "floor": "1F",
+          "hash": "4733634471038136588"
+        }
+      ]
+    },
+    {
+      "key": "chest:7461796063704896255",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "7461796063704896255",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            -45.06,
+            99.75,
+            -16.61
+          ],
+          "floor": "1F",
+          "hash": "7461796063704896255"
+        }
+      ]
+    },
+    {
+      "key": "chest:7899179288432849355",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "7899179288432849355",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            -38.03,
+            104,
+            13.32
+          ],
+          "floor": "1F",
+          "hash": "7899179288432849355"
+        }
+      ]
+    },
+    {
+      "key": "chest:14046623154429024571",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "14046623154429024571",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            -40.56,
+            99.75,
+            -27.34
+          ],
+          "floor": "1F",
+          "hash": "14046623154429024571"
+        }
+      ]
+    },
+    {
+      "key": "chest:14404733996390762670",
+      "kind": "chest",
+      "label": "Five Bombchus (in chest)",
+      "item": "Five Bombchus",
+      "object": "Obj_TBox_A_01",
+      "gameId": "14404733996390762670",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            56.39,
+            99.5,
+            -15.18
+          ],
+          "floor": "1F",
+          "hash": "14404733996390762670"
+        }
+      ]
+    },
+    {
+      "key": "chest:14962432460641118089",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "14962432460641118089",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            -40.45,
+            99.86,
+            -21
+          ],
+          "floor": "1F",
+          "hash": "14962432460641118089"
+        }
+      ]
+    },
+    {
+      "key": "chest:15320975652699461295",
+      "kind": "chest",
+      "label": "Small Key (in invisible chest, Lenses of Truth)",
+      "item": "Small Key",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "15320975652699461295",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            -52.19,
+            100,
+            -16.51
+          ],
+          "floor": "1F",
+          "hash": "15320975652699461295"
+        }
+      ]
+    },
+    {
+      "key": "chest:16913531450403950487",
+      "kind": "chest",
+      "label": "Five Arrows (in chest)",
+      "item": "Five Arrows",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "16913531450403950487",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            25.26,
+            103,
+            23.69
+          ],
+          "floor": "1F",
+          "hash": "16913531450403950487"
+        }
+      ]
+    },
+    {
+      "key": "chest:17092385671602176550",
+      "kind": "chest",
+      "label": "Boss Key (in Boss Key chest)",
+      "item": "Boss Key",
+      "object": "Obj_TBox_A_03_NoBake",
+      "gameId": "17092385671602176550",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            0.07,
+            149.65,
+            -24.69
+          ],
+          "floor": "1F",
+          "hash": "17092385671602176550"
+        }
+      ]
+    },
+    {
+      "key": "chest:17657623307936361670",
+      "kind": "chest",
+      "label": "Golden Gauntlets (in large chest)",
+      "item": "Golden Gauntlets",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "17657623307936361670",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            48.29,
+            104.01,
+            -105.3
+          ],
+          "floor": "1F",
+          "hash": "17657623307936361670"
+        }
+      ]
+    },
+    {
+      "key": "chest:18277713685010400796",
+      "kind": "chest",
+      "label": "Five Arrows (in chest)",
+      "item": "Five Arrows",
+      "object": "Obj_TBox_A_01",
+      "gameId": "18277713685010400796",
+      "records": [
+        {
+          "scene": "InsideGanonCastle",
+          "position": [
+            12.58,
+            103.9,
+            -65.89
+          ],
+          "floor": "1F",
+          "hash": "18277713685010400796"
+        }
+      ]
+    },
+    {
+      "key": "chest:3510516276638146208",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "3510516276638146208",
+      "records": [
+        {
+          "scene": "InsideJabuJabuBelly",
+          "position": [
+            25.52,
+            92.29,
+            -175.93
+          ],
+          "floor": "1F",
+          "hash": "3510516276638146208"
+        }
+      ]
+    },
+    {
+      "key": "chest:3609242017501283521",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "3609242017501283521",
+      "records": [
+        {
+          "scene": "InsideJabuJabuBelly",
+          "position": [
+            -34.18,
+            82.47,
+            -51.98
+          ],
+          "floor": "B1",
+          "hash": "3609242017501283521"
+        }
+      ]
+    },
+    {
+      "key": "chest:5527401621172639818",
+      "kind": "chest",
+      "label": "Boomerang (in large chest)",
+      "item": "Boomerang",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "5527401621172639818",
+      "records": [
+        {
+          "scene": "InsideJabuJabuBelly",
+          "position": [
+            -31.3,
+            92.39,
+            -131.91
+          ],
+          "floor": "1F",
+          "hash": "5527401621172639818"
+        }
+      ]
+    },
+    {
+      "key": "chest:14933854942830098290",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02",
+      "gameId": "14933854942830098290",
+      "records": [
+        {
+          "scene": "InsideJabuJabuBelly",
+          "position": [
+            37.7,
+            77.55,
+            -57.12
+          ],
+          "floor": "B1",
+          "hash": "14933854942830098290"
+        }
+      ]
+    },
+    {
+      "key": "chest:821372075822700622",
+      "kind": "chest",
+      "label": "Fairy Slingshot (in large chest)",
+      "item": "Fairy Slingshot",
+      "object": "Obj_TBox_A_02",
+      "gameId": "821372075822700622",
+      "records": [
+        {
+          "scene": "InsideTheDekuTree",
+          "position": [
+            -54.39,
+            111.96,
+            12.21
+          ],
+          "floor": "2F",
+          "hash": "821372075822700622"
+        }
+      ]
+    },
+    {
+      "key": "chest:8579518566955184384",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02",
+      "gameId": "8579518566955184384",
+      "records": [
+        {
+          "scene": "InsideTheDekuTree",
+          "position": [
+            6.51,
+            108.4,
+            7.25
+          ],
+          "floor": "2F",
+          "hash": "8579518566955184384"
+        }
+      ]
+    },
+    {
+      "key": "chest:9284193025315608699",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02",
+      "gameId": "9284193025315608699",
+      "records": [
+        {
+          "scene": "InsideTheDekuTree",
+          "position": [
+            -48.29,
+            120.37,
+            0
+          ],
+          "floor": "3F",
+          "hash": "9284193025315608699"
+        }
+      ]
+    },
+    {
+      "key": "chest:11368028582977069031",
+      "kind": "chest",
+      "label": "Three Deku Nuts (in chest)",
+      "item": "Three Deku Nuts",
+      "object": "Obj_TBox_A_01",
+      "gameId": "11368028582977069031",
+      "records": [
+        {
+          "scene": "InsideTheDekuTree",
+          "position": [
+            -65.24,
+            125.63,
+            0.02
+          ],
+          "floor": "3F",
+          "hash": "11368028582977069031"
+        }
+      ]
+    },
+    {
+      "key": "chest:12889104996486369065",
+      "kind": "chest",
+      "label": "Three Deku Sticks (in chest)",
+      "item": "Three Deku Sticks",
+      "object": "Obj_TBox_A_01",
+      "gameId": "12889104996486369065",
+      "records": [
+        {
+          "scene": "InsideTheDekuTree",
+          "position": [
+            -10.4,
+            79.38,
+            -12.56
+          ],
+          "floor": "B1",
+          "hash": "12889104996486369065"
+        }
+      ]
+    },
+    {
+      "key": "chest:13027331340815880287",
+      "kind": "chest",
+      "label": "Three Deku Nuts (in chest)",
+      "item": "Three Deku Nuts",
+      "object": "Obj_TBox_A_01",
+      "gameId": "13027331340815880287",
+      "records": [
+        {
+          "scene": "InsideTheDekuTree",
+          "position": [
+            -42.92,
+            116.2,
+            19.35
+          ],
+          "floor": "2F",
+          "hash": "13027331340815880287"
+        }
+      ]
+    },
+    {
+      "key": "chest:12902291359202819102",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "12902291359202819102",
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult_Alternative",
+          "position": [
+            -41.69,
+            79.72,
+            11.4
+          ],
+          "floor": null,
+          "hash": "12902291359202819102"
+        },
+        {
+          "scene": "KakarikoVillage_Adult",
+          "position": [
+            -41.69,
+            79.72,
+            11.4
+          ],
+          "floor": null,
+          "hash": "12902291359202819102"
+        },
+        {
+          "scene": "KakarikoVillage_Child",
+          "position": [
+            -41.69,
+            79.72,
+            11.4
+          ],
+          "floor": null,
+          "hash": "12902291359202819102"
+        }
+      ]
+    },
+    {
+      "key": "chest:13080955777249750889",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "13080955777249750889",
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult_Alternative",
+          "position": [
+            5.56,
+            130.17,
+            41.43
+          ],
+          "floor": null,
+          "hash": "13080955777249750889"
+        }
+      ]
+    },
+    {
+      "key": "chest:11929552275106311978",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "11929552275106311978",
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "position": [
+            5.56,
+            130.17,
+            41.43
+          ],
+          "floor": null,
+          "hash": "11929552275106311978"
+        }
+      ]
+    },
+    {
+      "key": "chest:4349272251343787229",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "4349272251343787229",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -132.18,
+            123.89,
+            -16.01
+          ],
+          "floor": null,
+          "hash": "4349272251343787229"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -132.18,
+            123.89,
+            -16.01
+          ],
+          "floor": null,
+          "hash": "4349272251343787229"
+        }
+      ]
+    },
+    {
+      "key": "chest:4555665598794293658",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "4555665598794293658",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -54.21,
+            112.26,
+            -40.88
+          ],
+          "floor": null,
+          "hash": "4555665598794293658"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -54.21,
+            112.26,
+            -40.88
+          ],
+          "floor": null,
+          "hash": "4555665598794293658"
+        }
+      ]
+    },
+    {
+      "key": "chest:9725242744547055868",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "9725242744547055868",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -49.32,
+            112.26,
+            -40.89
+          ],
+          "floor": null,
+          "hash": "9725242744547055868"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -49.32,
+            112.26,
+            -40.89
+          ],
+          "floor": null,
+          "hash": "9725242744547055868"
+        }
+      ]
+    },
+    {
+      "key": "chest:10831981390482426294",
+      "kind": "chest",
+      "label": "Green Rupee (in chest)",
+      "item": "Green Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "10831981390482426294",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -50.29,
+            112.26,
+            -42.03
+          ],
+          "floor": null,
+          "hash": "10831981390482426294"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -50.29,
+            112.26,
+            -42.03
+          ],
+          "floor": null,
+          "hash": "10831981390482426294"
+        }
+      ]
+    },
+    {
+      "key": "chest:12786193094758345086",
+      "kind": "chest",
+      "label": "Blue Rupee (in chest)",
+      "item": "Blue Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "12786193094758345086",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -53.2,
+            112.26,
+            -42.1
+          ],
+          "floor": null,
+          "hash": "12786193094758345086"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -53.2,
+            112.26,
+            -42.1
+          ],
+          "floor": null,
+          "hash": "12786193094758345086"
+        }
+      ]
+    },
+    {
+      "key": "chest:14818888396401495482",
+      "kind": "chest",
+      "label": "Green Rupee (in chest)",
+      "item": "Green Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "14818888396401495482",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -70.84,
+            103.58,
+            -63.39
+          ],
+          "floor": null,
+          "hash": "14818888396401495482"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -70.84,
+            103.58,
+            -63.39
+          ],
+          "floor": null,
+          "hash": "14818888396401495482"
+        }
+      ]
+    },
+    {
+      "key": "chest:16757992849254467386",
+      "kind": "chest",
+      "label": "Kokiri Sword (in large chest)",
+      "item": "Kokiri Sword",
+      "object": "Obj_TBox_A_02",
+      "gameId": "16757992849254467386",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -82.62,
+            122.26,
+            32.95
+          ],
+          "floor": null,
+          "hash": "16757992849254467386"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -82.62,
+            122.26,
+            32.95
+          ],
+          "floor": null,
+          "hash": "16757992849254467386"
+        }
+      ]
+    },
+    {
+      "key": "chest:17479747339356189279",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "17479747339356189279",
+      "records": [
+        {
+          "scene": "LostWood_Adult",
+          "position": [
+            -49.4,
+            104.53,
+            71.85
+          ],
+          "floor": null,
+          "hash": "17479747339356189279"
+        },
+        {
+          "scene": "LostWood_Child",
+          "position": [
+            -49.4,
+            104.53,
+            71.85
+          ],
+          "floor": null,
+          "hash": "17479747339356189279"
+        }
+      ]
+    },
+    {
+      "key": "chest:1764383515296652106",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1764383515296652106",
+      "records": [
+        {
+          "scene": "SacredForestMeadow_Adult",
+          "position": [
+            12.1,
+            95.98,
+            -73.77
+          ],
+          "floor": null,
+          "hash": "1764383515296652106"
+        },
+        {
+          "scene": "SacredForestMeadow_Child",
+          "position": [
+            12.1,
+            95.98,
+            -73.77
+          ],
+          "floor": null,
+          "hash": "1764383515296652106"
+        }
+      ]
+    },
+    {
+      "key": "chest:7995233962349162969",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "7995233962349162969",
+      "records": [
+        {
+          "scene": "SacredForestMeadow_Adult",
+          "position": [
+            -3.7,
+            82.28,
+            67.23
+          ],
+          "floor": null,
+          "hash": "7995233962349162969"
+        },
+        {
+          "scene": "SacredForestMeadow_Child",
+          "position": [
+            -3.7,
+            82.28,
+            67.23
+          ],
+          "floor": null,
+          "hash": "7995233962349162969"
+        }
+      ]
+    },
+    {
+      "key": "chest:169081039115821925",
+      "kind": "chest",
+      "label": "Small Key (in invisible chest, Lenses of Truth)",
+      "item": "Small Key",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "169081039115821925",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            118.39,
+            52.14,
+            -17.67
+          ],
+          "floor": "B3",
+          "hash": "169081039115821925"
+        }
+      ]
+    },
+    {
+      "key": "chest:1111717451118505545",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "1111717451118505545",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            98.9,
+            87.19,
+            -25.66
+          ],
+          "floor": "B2",
+          "hash": "1111717451118505545"
+        }
+      ]
+    },
+    {
+      "key": "chest:1733372171176975157",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "1733372171176975157",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            84.08,
+            87.31,
+            22.88
+          ],
+          "floor": "B2",
+          "hash": "1733372171176975157"
+        }
+      ]
+    },
+    {
+      "key": "chest:3718790579351798247",
+      "kind": "chest",
+      "label": "Red Rupee (in invisible chest, Lenses of Truth)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "3718790579351798247",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            177.76,
+            60.9,
+            98.61
+          ],
+          "floor": "B3",
+          "hash": "3718790579351798247"
+        }
+      ]
+    },
+    {
+      "key": "chest:5681107746948738726",
+      "kind": "chest",
+      "label": "Green Rupee (in chest)",
+      "item": "Green Rupee",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "5681107746948738726",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            101.19,
+            52.1,
+            -17.6
+          ],
+          "floor": "B3",
+          "hash": "5681107746948738726"
+        }
+      ]
+    },
+    {
+      "key": "chest:5781953901224064730",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "5781953901224064730",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            -1.47,
+            63.5,
+            98.65
+          ],
+          "floor": "B3",
+          "hash": "5781953901224064730"
+        }
+      ]
+    },
+    {
+      "key": "chest:8858270325665149688",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "8858270325665149688",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            21.13,
+            56.4,
+            98.36
+          ],
+          "floor": "B3",
+          "hash": "8858270325665149688"
+        }
+      ]
+    },
+    {
+      "key": "chest:9221365632831348137",
+      "kind": "chest",
+      "label": "Boss Key (in Boss Key chest)",
+      "item": "Boss Key",
+      "object": "Obj_TBox_A_03",
+      "gameId": "9221365632831348137",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            -173.23,
+            41.41,
+            -69.1
+          ],
+          "floor": "B4",
+          "hash": "9221365632831348137"
+        }
+      ]
+    },
+    {
+      "key": "chest:9852624243105848451",
+      "kind": "chest",
+      "label": "Large Magic Jar (in chest)",
+      "item": "Large Magic Jar",
+      "object": "Obj_TBox_A_01",
+      "gameId": "9852624243105848451",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            -190.06,
+            41.29,
+            -69.43
+          ],
+          "floor": "B4",
+          "hash": "9852624243105848451"
+        }
+      ]
+    },
+    {
+      "key": "chest:10344372963276519235",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "10344372963276519235",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            177.76,
+            60.9,
+            95.24
+          ],
+          "floor": "B3",
+          "hash": "10344372963276519235"
+        }
+      ]
+    },
+    {
+      "key": "chest:12345747231768877602",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in invisible chest, Lenses of Truth)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "12345747231768877602",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            128.02,
+            51.98,
+            10.49
+          ],
+          "floor": "B3",
+          "hash": "12345747231768877602"
+        }
+      ]
+    },
+    {
+      "key": "chest:13528903653876646082",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "13528903653876646082",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            2.63,
+            90.54,
+            -26.21
+          ],
+          "floor": "B1",
+          "hash": "13528903653876646082"
+        }
+      ]
+    },
+    {
+      "key": "chest:14535080241831873137",
+      "kind": "chest",
+      "label": "Hover Boots (in large chest)",
+      "item": "Hover Boots",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "14535080241831873137",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            -72.62,
+            90.52,
+            -10.15
+          ],
+          "floor": "B1",
+          "hash": "14535080241831873137"
+        }
+      ]
+    },
+    {
+      "key": "chest:17902550525792072472",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "17902550525792072472",
+      "records": [
+        {
+          "scene": "ShadowTemple",
+          "position": [
+            -181.86,
+            41.39,
+            -12.58
+          ],
+          "floor": "B4",
+          "hash": "17902550525792072472"
+        }
+      ]
+    },
+    {
+      "key": "chest:1501288453962537671",
+      "kind": "chest",
+      "label": "Five Bombchus (in chest)",
+      "item": "Five Bombchus",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "1501288453962537671",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            -39.25,
+            119.15,
+            -39.62
+          ],
+          "floor": "2F",
+          "hash": "1501288453962537671"
+        }
+      ]
+    },
+    {
+      "key": "chest:2203243501006528435",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "2203243501006528435",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            -10.9,
+            124.76,
+            -60.57
+          ],
+          "floor": "2F",
+          "hash": "2203243501006528435"
+        }
+      ]
+    },
+    {
+      "key": "chest:4277978357934400600",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "4277978357934400600",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            48.89,
+            100.28,
+            -77.98
+          ],
+          "floor": "1F",
+          "hash": "4277978357934400600"
+        }
+      ]
+    },
+    {
+      "key": "chest:5309180490719879013",
+      "kind": "chest",
+      "label": "Deku Shield (in chest, substitute item if already owned)",
+      "item": "Deku Shield",
+      "object": "Obj_TBox_A_06",
+      "gameId": "5309180490719879013",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            -56.03,
+            104.75,
+            -67.57
+          ],
+          "floor": "1F",
+          "hash": "5309180490719879013"
+        }
+      ]
+    },
+    {
+      "key": "chest:5703423643219134246",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "5703423643219134246",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            -15.32,
+            104.74,
+            -60.24
+          ],
+          "floor": "1F",
+          "hash": "5703423643219134246"
+        }
+      ]
+    },
+    {
+      "key": "chest:9143177002861777924",
+      "kind": "chest",
+      "label": "Red Rupee (in invisible chest, Lenses of Truth)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "9143177002861777924",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            53.66,
+            132.1,
+            4.74
+          ],
+          "floor": "3F",
+          "hash": "9143177002861777924"
+        }
+      ]
+    },
+    {
+      "key": "chest:12042193296697281461",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "12042193296697281461",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            55.8,
+            130.89,
+            -50.03
+          ],
+          "floor": "3F",
+          "hash": "12042193296697281461"
+        }
+      ]
+    },
+    {
+      "key": "chest:12909857529499414969",
+      "kind": "chest",
+      "label": "Five Bombs (in chest)",
+      "item": "Five Bombs",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "12909857529499414969",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            43.4,
+            119.15,
+            -47.54
+          ],
+          "floor": "2F",
+          "hash": "12909857529499414969"
+        }
+      ]
+    },
+    {
+      "key": "chest:13828480906010430010",
+      "kind": "chest",
+      "label": "Five Bombs (in chest)",
+      "item": "Five Bombs",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "13828480906010430010",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            -25.43,
+            158.21,
+            -51.29
+          ],
+          "floor": "4F",
+          "hash": "13828480906010430010"
+        }
+      ]
+    },
+    {
+      "key": "chest:13852283723126411131",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "13852283723126411131",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            0,
+            114.15,
+            -57.58
+          ],
+          "floor": "2F",
+          "hash": "13852283723126411131"
+        }
+      ]
+    },
+    {
+      "key": "chest:14040210993541550542",
+      "kind": "chest",
+      "label": "Red Rupee (in invisible chest, Lenses of Truth)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_GlassTruth_A_01",
+      "gameId": "14040210993541550542",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            57.96,
+            132.1,
+            4.74
+          ],
+          "floor": "3F",
+          "hash": "14040210993541550542"
+        }
+      ]
+    },
+    {
+      "key": "chest:15633505270333176438",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "15633505270333176438",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            13,
+            104.76,
+            -63.74
+          ],
+          "floor": "1F",
+          "hash": "15633505270333176438"
+        }
+      ]
+    },
+    {
+      "key": "chest:16272168033146555902",
+      "kind": "chest",
+      "label": "Boss Key (in Boss Key chest)",
+      "item": "Boss Key",
+      "object": "Obj_TBox_A_03",
+      "gameId": "16272168033146555902",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            19.8,
+            151.02,
+            -65.09
+          ],
+          "floor": "4F",
+          "hash": "16272168033146555902"
+        }
+      ]
+    },
+    {
+      "key": "chest:17407066694905911064",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "17407066694905911064",
+      "records": [
+        {
+          "scene": "SpiritTemple",
+          "position": [
+            -61.22,
+            132.75,
+            -27.68
+          ],
+          "floor": "3F",
+          "hash": "17407066694905911064"
+        }
+      ]
+    },
+    {
+      "key": "chest:2503861086004941173",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "2503861086004941173",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            -44,
+            102.3,
+            -19.5
+          ],
+          "floor": "1F",
+          "hash": "2503861086004941173"
+        }
+      ]
+    },
+    {
+      "key": "chest:3693930347660122883",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "3693930347660122883",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            -1.21,
+            112,
+            -51.85
+          ],
+          "floor": "2F",
+          "hash": "3693930347660122883"
+        }
+      ]
+    },
+    {
+      "key": "chest:10378828369334876242",
+      "kind": "chest",
+      "label": "Boss Key (in Boss Key chest)",
+      "item": "Boss Key",
+      "object": "Obj_TBox_A_03",
+      "gameId": "10378828369334876242",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            33.12,
+            103.66,
+            -81.49
+          ],
+          "floor": "1F",
+          "hash": "10378828369334876242"
+        }
+      ]
+    },
+    {
+      "key": "chest:11682974908842171598",
+      "kind": "chest",
+      "label": "Red Rupee (in chest)",
+      "item": "Red Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "11682974908842171598",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            12,
+            92.71,
+            -4.5
+          ],
+          "floor": "B1",
+          "hash": "11682974908842171598"
+        }
+      ]
+    },
+    {
+      "key": "chest:16384925224245172970",
+      "kind": "chest",
+      "label": "Dungeon Map (in large chest)",
+      "item": "Dungeon Map",
+      "object": "Obj_TBox_A_02",
+      "gameId": "16384925224245172970",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            36.75,
+            119.51,
+            -4.49
+          ],
+          "floor": "3F",
+          "hash": "16384925224245172970"
+        }
+      ]
+    },
+    {
+      "key": "chest:16424266294822218796",
+      "kind": "chest",
+      "label": "Compass (in large chest)",
+      "item": "Compass",
+      "object": "Obj_TBox_A_02",
+      "gameId": "16424266294822218796",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            -68.26,
+            104.26,
+            20.15
+          ],
+          "floor": "1F",
+          "hash": "16424266294822218796"
+        }
+      ]
+    },
+    {
+      "key": "chest:16490222392193949581",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01",
+      "gameId": "16490222392193949581",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            56.87,
+            118.39,
+            -28.12
+          ],
+          "floor": "3F",
+          "hash": "16490222392193949581"
+        }
+      ]
+    },
+    {
+      "key": "chest:18059711820131847165",
+      "kind": "chest",
+      "label": "Longshot (in large chest)",
+      "item": "Longshot",
+      "object": "Obj_TBox_A_02",
+      "gameId": "18059711820131847165",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            -77.9,
+            126.6,
+            -99.17
+          ],
+          "floor": "3F",
+          "hash": "18059711820131847165"
+        }
+      ]
+    },
+    {
+      "key": "chest:18099019250896853049",
+      "kind": "chest",
+      "label": "Small Key (in chest)",
+      "item": "Small Key",
+      "object": "Obj_TBox_A_01_NoBake",
+      "gameId": "18099019250896853049",
+      "records": [
+        {
+          "scene": "WaterTemple",
+          "position": [
+            43.75,
+            99.98,
+            -4.5
+          ],
+          "floor": "1F",
+          "hash": "18099019250896853049"
+        }
+      ]
+    },
+    {
+      "key": "chest:3130048366421939233",
+      "kind": "chest",
+      "label": "Piece of Heart (in large chest)",
+      "item": "Piece of Heart",
+      "object": "Obj_TBox_A_02_NoBake",
+      "gameId": "3130048366421939233",
+      "records": [
+        {
+          "scene": "ZoraDomain_Child",
+          "position": [
+            28.8,
+            100.39,
+            -4.88
+          ],
+          "floor": null,
+          "hash": "3130048366421939233"
+        }
+      ]
+    },
+    {
+      "key": "chest:15055117029957340138",
+      "kind": "chest",
+      "label": "Purple Rupee (in chest)",
+      "item": "Purple Rupee",
+      "object": "Obj_TBox_A_01",
+      "gameId": "15055117029957340138",
+      "records": [
+        {
+          "scene": "ZoraFountain_Adult",
+          "position": [
+            33.01,
+            108.49,
+            1.7
+          ],
+          "floor": null,
+          "hash": "15055117029957340138"
+        }
+      ]
+    },
+    {
+      "key": "chest:8838426083116998768",
+      "kind": "chest",
+      "label": "Business Scrub Seed (in chest)",
+      "item": "Business Scrub Seed",
+      "object": "Obj_TBox_A_01",
+      "gameId": "8838426083116998768",
+      "records": [
+        {
+          "scene": "ZoraRiver_Adult",
+          "position": [
+            -16.72,
+            74.93,
+            29.73
+          ],
+          "floor": null,
+          "hash": "8838426083116998768"
+        },
+        {
+          "scene": "ZoraRiver_Child",
+          "position": [
+            -16.72,
+            74.93,
+            29.73
+          ],
+          "floor": null,
+          "hash": "8838426083116998768"
+        }
+      ]
+    },
+    {
+      "key": "stock:GoronCity:Shop_Armor_Goron",
+      "kind": "stock",
+      "item": "Goron Tunic",
+      "object": "Shop_Armor_Goron",
+      "gameId": "15075156905719609791",
+      "group": "armor",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            -19.85,
+            99.26,
+            -18.83
+          ],
+          "floor": null,
+          "hash": "15075156905719609791"
+        },
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -19.85,
+            99.26,
+            -18.83
+          ],
+          "floor": null,
+          "hash": "9081723785715040392"
+        }
+      ]
+    },
+    {
+      "key": "stock:KakarikoVillage:Shop_Weapon_Shield_Hylian",
+      "kind": "stock",
+      "item": "Hylian Shield",
+      "object": "Shop_Weapon_Shield_Hylian",
+      "gameId": "6438218320520635418",
+      "group": "armor",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "position": [
+            -73.36,
+            105.56,
+            3.75
+          ],
+          "floor": null,
+          "hash": "6438218320520635418"
+        }
+      ]
+    },
+    {
+      "key": "stock:KokiriForest:Shop_Weapon_Shield_Deku",
+      "kind": "stock",
+      "item": "Deku Shield",
+      "object": "Shop_Weapon_Shield_Deku",
+      "gameId": "6642704364901961822",
+      "group": "armor",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -1.24,
+            111.18,
+            -26.5
+          ],
+          "floor": null,
+          "hash": "6642704364901961822"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -1.24,
+            111.18,
+            -26.5
+          ],
+          "floor": null,
+          "hash": "6236883368863181555"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Mask_Spooky",
+      "kind": "stock",
+      "item": "Spooky Mask",
+      "object": "Shop_Mask_Spooky",
+      "gameId": "3435311694892283854",
+      "group": "masks",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            7.01,
+            102.11,
+            -21.79
+          ],
+          "floor": null,
+          "hash": "3435311694892283854"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Mask_Goron",
+      "kind": "stock",
+      "item": "Goron Mask",
+      "object": "Shop_Mask_Goron",
+      "gameId": "3656390147213677788",
+      "group": "masks",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            10.92,
+            102.09,
+            -21.83
+          ],
+          "floor": null,
+          "hash": "3656390147213677788"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Mask_Skull",
+      "kind": "stock",
+      "item": "Skull Mask",
+      "object": "Shop_Mask_Skull",
+      "gameId": "3777780974748551665",
+      "group": "masks",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            7.85,
+            101.32,
+            -21.94
+          ],
+          "floor": null,
+          "hash": "3777780974748551665"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Weapon_Shield_Hylian",
+      "kind": "stock",
+      "item": "Hylian Shield",
+      "object": "Shop_Weapon_Shield_Hylian",
+      "gameId": "7804057436886816165",
+      "group": "armor",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            22.85,
+            101.82,
+            17.34
+          ],
+          "floor": null,
+          "hash": "7804057436886816165"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Mask_Keaton",
+      "kind": "stock",
+      "item": "Keaton Mask",
+      "object": "Shop_Mask_Keaton",
+      "gameId": "10663283941529417575",
+      "group": "masks",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            7.86,
+            102.09,
+            -21.93
+          ],
+          "floor": null,
+          "hash": "10663283941529417575"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Mask_Bunny",
+      "kind": "stock",
+      "item": "Bunny Hood",
+      "object": "Shop_Mask_Bunny",
+      "gameId": "10828340057543190252",
+      "group": "masks",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            6.99,
+            101.32,
+            -21.75
+          ],
+          "floor": null,
+          "hash": "10828340057543190252"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Mask_Truth",
+      "kind": "stock",
+      "item": "Mask of Truth",
+      "object": "Shop_Mask_Truth",
+      "gameId": "12366349165653624138",
+      "group": "masks",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            10.94,
+            101.32,
+            -21.83
+          ],
+          "floor": null,
+          "hash": "12366349165653624138"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Mask_Gerudo",
+      "kind": "stock",
+      "item": "Gerudo Mask",
+      "object": "Shop_Mask_Gerudo",
+      "gameId": "13546492277428144846",
+      "group": "masks",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            10.09,
+            101.33,
+            -21.96
+          ],
+          "floor": null,
+          "hash": "13546492277428144846"
+        }
+      ]
+    },
+    {
+      "key": "stock:Market:Shop_Mask_Zora",
+      "kind": "stock",
+      "item": "Zora Mask",
+      "object": "Shop_Mask_Zora",
+      "gameId": "13988066728703442945",
+      "group": "masks",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            10.05,
+            102.14,
+            -21.97
+          ],
+          "floor": null,
+          "hash": "13988066728703442945"
+        }
+      ]
+    },
+    {
+      "key": "stock:ZoraDomain:Shop_Armor_Zora",
+      "kind": "stock",
+      "item": "Zora Tunic",
+      "object": "Shop_Armor_Zora",
+      "gameId": "13166851893817035932",
+      "group": "armor",
+      "text": "Available from the shop here. Stock and access can depend on story progress.",
+      "records": [
+        {
+          "scene": "ZoraDomain_Adult",
+          "position": [
+            -29.6,
+            106.11,
+            21.24
+          ],
+          "floor": null,
+          "hash": "13166851893817035932"
+        },
+        {
+          "scene": "ZoraDomain_Child",
+          "position": [
+            -29.6,
+            106.11,
+            21.24
+          ],
+          "floor": null,
+          "hash": "1896019874810434988"
+        }
+      ]
+    },
+    {
+      "key": "reward:biggoron",
+      "kind": "reward",
+      "item": "Biggoron’s Sword",
+      "group": "weapons",
+      "gameId": "14299450766367161284",
+      "object": "Npc_Goron_Biggoron_Adult",
+      "event": "Npc_Goron_Biggoron_Adult",
+      "itemCode": "Item_Sword_Biggoron",
+      "text": "Complete Biggoron’s trading sequence to receive the repaired sword.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "DeathMountainTrail_Adult",
+          "position": [
+            25.75,
+            200.4649658203125,
+            -128.5
+          ],
+          "floor": null,
+          "hash": "14299450766367161284"
+        }
+      ]
+    },
+    {
+      "key": "reward:giant-knife",
+      "kind": "reward",
+      "item": "Giant’s Knife",
+      "group": "weapons",
+      "gameId": "17027280679108631710",
+      "object": "Npc_Goron_Medigoron_Adult",
+      "event": "Npc_Goron_Medigoron_Adult",
+      "itemCode": "Shop_Sword_Giant",
+      "text": "Buy this sword from Medigoron.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            36.25,
+            115.69131469726562,
+            6.650000095367432
+          ],
+          "floor": null,
+          "hash": "17027280679108631710"
+        }
+      ]
+    },
+    {
+      "key": "reward:goron-bracelet",
+      "kind": "reward",
+      "item": "Goron’s Bracelet",
+      "group": "tools",
+      "gameId": "16898224563281343739",
+      "object": "Npc_Goron_Darunia_Child",
+      "event": "Dm_Goron_0030",
+      "itemCode": "Item_Gauntlet_Goron",
+      "text": "Play Saria’s Song for Darunia to receive the bracelet.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -0.15000000596046448,
+            98.6246109008789,
+            -41.75
+          ],
+          "floor": null,
+          "hash": "16898224563281343739"
+        }
+      ]
+    },
+    {
+      "key": "reward:goron-tunic",
+      "kind": "reward",
+      "item": "Goron Tunic",
+      "group": "armor",
+      "gameId": "9398851766599695705",
+      "object": "Npc_Goron_DaruniaJr_Adult",
+      "event": "SageOfFire",
+      "itemCode": "Obj_Armor_Goron",
+      "text": "Stop the rolling Goron and speak to him about the Gorons and the Fire Temple.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "GoronCity_Adult",
+          "position": [
+            5.75,
+            109.90338897705078,
+            -12.100000381469727
+          ],
+          "floor": null,
+          "hash": "9398851766599695705"
+        }
+      ]
+    },
+    {
+      "key": "reward:zora-tunic",
+      "kind": "reward",
+      "item": "Zora Tunic",
+      "group": "armor",
+      "gameId": "16477889668099956463",
+      "object": "Npc_Zora_KingZora_adult",
+      "event": "SageOfWater",
+      "itemCode": "Obj_Armor_Zora",
+      "text": "Thaw King Zora with Blue Fire and speak to him.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "ZoraDomain_Adult",
+          "position": [
+            66.1192626953125,
+            119.51058197021484,
+            12.466066360473633
+          ],
+          "floor": null,
+          "hash": "16477889668099956463"
+        }
+      ]
+    },
+    {
+      "key": "reward:bomb-bag",
+      "kind": "reward",
+      "item": "Bomb Bag Upgrade",
+      "group": "upgrades",
+      "gameId": "8605079872767834211",
+      "object": "Npc_Goron_006_Child",
+      "event": "Npc_Goron_006_Child",
+      "itemCode": "Item_BombBag_Medium",
+      "text": "Stop the rolling Goron in the correct place with a bomb. The reward upgrades your Bomb Bag.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "GoronCity_Child",
+          "position": [
+            -10.267895698547363,
+            109.5510025024414,
+            -16.5
+          ],
+          "floor": null,
+          "hash": "8605079872767834211"
+        }
+      ]
+    },
+    {
+      "key": "reward:silver-scale",
+      "kind": "reward",
+      "item": "Silver Scale",
+      "group": "upgrades",
+      "event": "MiniGame_Diving",
+      "itemCode": "Item_Scale_Silver",
+      "gameId": "17889680978731609886",
+      "object": "MapParam.Facility",
+      "text": "Win the Diving Game to earn the Silver Scale.",
+      "records": [
+        {
+          "scene": "ZoraDomain_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "17889680978731609886",
+          "position": [
+            24.825855255126953,
+            113.5,
+            -6.791102886199951
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "MiniGame_Diving_Mapicon",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 27
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:gold-scale",
+      "kind": "reward",
+      "item": "Golden Scale",
+      "group": "upgrades",
+      "event": "MiniGame_Fishing",
+      "itemCode": "Item_Scale_Gold",
+      "gameId": "17051785726507345499",
+      "object": "MapParam.Facility",
+      "text": "Catch a sufficiently large fish as an adult and show it to the Fishing-Pond Man.",
+      "records": [
+        {
+          "scene": "LakeHylia_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "17051785726507345499",
+          "position": [
+            -97.90987396240234,
+            134,
+            492.2716064453125
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HaveTalked.Npc_Hylia_Fishman_001_Child",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 28
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:seed-bag-gallery",
+      "kind": "reward",
+      "item": "Deku Seed Bag Upgrade",
+      "group": "upgrades",
+      "event": "MiniGame_HitTarget",
+      "itemCode": "Item_BulletBag_Medium",
+      "gameId": "3576065904214803228",
+      "object": "MapParam.Facility",
+      "text": "Win the child’s Shooting Gallery game.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "3576065904214803228",
+          "position": [
+            -12.99337387084961,
+            112.72222137451172,
+            -18.907550811767578
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "Market_MiniGame_HitTarget_FirstTalk",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 20
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:quiver-gallery",
+      "kind": "reward",
+      "item": "Quiver Upgrade",
+      "group": "upgrades",
+      "event": "MiniGame_HitTarget",
+      "itemCode": "Item_Quiver_Medium",
+      "gameId": "8706565761040541649",
+      "object": "MapParam.Facility",
+      "text": "Win the adult’s Shooting Gallery game.",
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "8706565761040541649",
+          "position": [
+            -63.36784362792969,
+            103.29718780517578,
+            62.754066467285156
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "KakarikoVillage_MiniGame_HitTarget_FirstTalk",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 21
+          }
+        },
+        {
+          "scene": "KakarikoVillage_Adult_Alternative",
+          "floor": null,
+          "kind": "Facility",
+          "id": "598834970894493651",
+          "position": [
+            -63.36784362792969,
+            103.2972183227539,
+            62.754066467285156
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "KakarikoVillage_MiniGame_HitTarget_FirstTalk",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 21
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:quiver-archery",
+      "kind": "reward",
+      "item": "Quiver Upgrade",
+      "group": "upgrades",
+      "event": "Minigame_HorsebackArchery",
+      "itemCode": "Item_Quiver_Large",
+      "gameId": "1997819067132342561",
+      "object": "MapParam.Facility",
+      "text": "Earn the high-score reward in horseback archery.",
+      "records": [
+        {
+          "scene": "GerudoFortress_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "1997819067132342561",
+          "position": [
+            73.07788848876953,
+            115.00057983398438,
+            41.23094177246094
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "MiniGame_HorsebackArchery_MapIcon_Flag",
+            "HeartPieceHash0": "3389467775572858537",
+            "HeartPieceHash1": "0",
+            "IconType": 7
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:bomb-bag-bowling",
+      "kind": "reward",
+      "item": "Bomb Bag Upgrade",
+      "group": "upgrades",
+      "event": "MiniGame_BombchuBowling",
+      "itemCode": "Item_BombBag_Medium",
+      "gameId": "11841278449200350774",
+      "object": "MapParam.Facility",
+      "text": "Win the Bomb Bag prize at Bombchu Bowling.",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "11841278449200350774",
+          "position": [
+            -25.03568458557129,
+            116.7194595336914,
+            7.56142520904541
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "Market_MiniGame_BombchuBowling_FirstTalk",
+            "HeartPieceHash0": "11628104451986877978",
+            "HeartPieceHash1": "0",
+            "IconType": 22
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:stick-bag-stage",
+      "kind": "reward",
+      "item": "Deku Stick Capacity Upgrade",
+      "group": "upgrades",
+      "event": "LostWood_ScrubForestStageElder_SkullMaskFirst",
+      "itemCode": "Item_StickBag_Medium",
+      "gameId": "16570344800814741291",
+      "object": "MapParam.Facility",
+      "text": "Wear the Skull Mask for the Forest Stage audience.",
+      "records": [
+        {
+          "scene": "LostWood_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "16570344800814741291",
+          "position": [
+            3.820154905319214,
+            83.82705688476562,
+            -47.531986236572266
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "LostWood_ScrubForestStage_SurfaceFairPlayed",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 33
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:nut-bag-stage",
+      "kind": "reward",
+      "item": "Deku Nut Capacity Upgrade",
+      "group": "upgrades",
+      "event": "LostWood_ScrubForestStageElder_TrueMaskFirst",
+      "itemCode": "Item_NutBag_Medium",
+      "gameId": "16570344800814741291",
+      "object": "MapParam.Facility",
+      "text": "Wear the Mask of Truth for the Forest Stage audience.",
+      "records": [
+        {
+          "scene": "LostWood_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "16570344800814741291",
+          "position": [
+            3.820154905319214,
+            83.82705688476562,
+            -47.531986236572266
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "LostWood_ScrubForestStage_SurfaceFairPlayed",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 33
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:adult-wallet",
+      "kind": "reward",
+      "item": "Adult’s Wallet",
+      "group": "upgrades",
+      "event": "GatheringTokenGold",
+      "itemCode": "Item_Wallet_Medium",
+      "gameId": "5917725672645145355",
+      "object": "MapParam.Facility",
+      "text": "Bring 10 Gold Skulltula Tokens to the family.",
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "5917725672645145355",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        },
+        {
+          "scene": "KakarikoVillage_Adult_Alternative",
+          "floor": null,
+          "kind": "Facility",
+          "id": "7204823870935714825",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        },
+        {
+          "scene": "KakarikoVillage_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "11257448013383361714",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:giant-wallet",
+      "kind": "reward",
+      "item": "Giant’s Wallet",
+      "group": "upgrades",
+      "event": "GatheringTokenGold",
+      "itemCode": "Item_Wallet_Large",
+      "gameId": "5917725672645145355",
+      "object": "MapParam.Facility",
+      "text": "Bring 30 Gold Skulltula Tokens to the family.",
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "5917725672645145355",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        },
+        {
+          "scene": "KakarikoVillage_Adult_Alternative",
+          "floor": null,
+          "kind": "Facility",
+          "id": "7204823870935714825",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        },
+        {
+          "scene": "KakarikoVillage_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "11257448013383361714",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:agony-stone",
+      "kind": "reward",
+      "item": "Stone of Agony",
+      "group": "tools",
+      "event": "GatheringTokenGold",
+      "itemCode": "Item_AgonyStone",
+      "gameId": "5917725672645145355",
+      "object": "MapParam.Facility",
+      "text": "Bring 20 Gold Skulltula Tokens to the family.",
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "5917725672645145355",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        },
+        {
+          "scene": "KakarikoVillage_Adult_Alternative",
+          "floor": null,
+          "kind": "Facility",
+          "id": "7204823870935714825",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        },
+        {
+          "scene": "KakarikoVillage_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "11257448013383361714",
+          "position": [
+            -25.437198638916016,
+            114.50114440917969,
+            75.59127044677734
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "GatheringTokenGold_FirstTalk",
+            "HeartPieceHash0": "12012336414699946951",
+            "HeartPieceHash1": "0",
+            "IconType": 24
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:magic",
+      "kind": "reward",
+      "item": "Magic Meter",
+      "group": "upgrades",
+      "event": "Dm_FairyFountain_Power",
+      "itemCode": "Item_FairyBless_MP",
+      "gameId": "11391971170492584680",
+      "object": "MapParam.Facility",
+      "text": "Play Zelda’s Lullaby at the Great Fairy’s fountain and speak to her.",
+      "records": [
+        {
+          "scene": "HyruleCastle",
+          "floor": null,
+          "kind": "Facility",
+          "id": "11391971170492584680",
+          "position": [
+            68.09176635742188,
+            107.72779846191406,
+            -63.33452606201172
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Power",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:double-magic",
+      "kind": "reward",
+      "item": "Double Magic",
+      "group": "upgrades",
+      "event": "Dm_FairyFountain_Wisdom",
+      "itemCode": "Item_FairyBless_MPDouble",
+      "gameId": "2287100600404387150",
+      "object": "MapParam.Facility",
+      "text": "Play Zelda’s Lullaby at the Great Fairy’s fountain and speak to her.",
+      "records": [
+        {
+          "scene": "DeathMountainCrater_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "2287100600404387150",
+          "position": [
+            -34.31199645996094,
+            121.11199951171875,
+            24.410337448120117
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Wisdom",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        },
+        {
+          "scene": "DeathMountainCrater_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "6914280774056091978",
+          "position": [
+            -34.31199645996094,
+            121.11199951171875,
+            24.410337448120117
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Wisdom",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:double-defense",
+      "kind": "reward",
+      "item": "Double Defense",
+      "group": "upgrades",
+      "event": "Dm_FairyFountain_Courage",
+      "itemCode": "Item_FairyBless_DefenseDouble",
+      "gameId": "5745956435634226269",
+      "object": "MapParam.Facility",
+      "text": "Play Zelda’s Lullaby at the Great Fairy’s fountain and speak to her.",
+      "records": [
+        {
+          "scene": "GanonCastle",
+          "floor": null,
+          "kind": "Facility",
+          "id": "5745956435634226269",
+          "position": [
+            94.75749969482422,
+            84.06295013427734,
+            319.2311706542969
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Courage",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:din-fire",
+      "kind": "reward",
+      "item": "Din’s Fire",
+      "group": "spells",
+      "event": "Dm_FairyFountain_Din",
+      "itemCode": "Item_DinFire",
+      "gameId": "16222659727372624812",
+      "object": "MapParam.Facility",
+      "text": "Play Zelda’s Lullaby at the Great Fairy’s fountain and speak to her.",
+      "records": [
+        {
+          "scene": "DeathMountainTrail_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "16222659727372624812",
+          "position": [
+            -17.735088348388672,
+            210.12100219726562,
+            -142.91079711914062
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Din",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        },
+        {
+          "scene": "DeathMountainTrail_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "9458395731419426863",
+          "position": [
+            -17.735088348388672,
+            210.12100219726562,
+            -142.91079711914062
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Din",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:farore-wind",
+      "kind": "reward",
+      "item": "Farore’s Wind",
+      "group": "spells",
+      "event": "Dm_FairyFountain_Frore",
+      "itemCode": "Item_FaroreWind",
+      "gameId": "6453185663751533626",
+      "object": "MapParam.Facility",
+      "text": "Play Zelda’s Lullaby at the Great Fairy’s fountain and speak to her.",
+      "records": [
+        {
+          "scene": "ZoraFountain_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "6453185663751533626",
+          "position": [
+            60.683143615722656,
+            103.15774536132812,
+            48.068092346191406
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Frore",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        },
+        {
+          "scene": "ZoraFountain_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "18044734573932171356",
+          "position": [
+            60.683555603027344,
+            103.15499877929688,
+            48.0709228515625
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Frore",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:nayru-love",
+      "kind": "reward",
+      "item": "Nayru’s Love",
+      "group": "spells",
+      "event": "Dm_FairyFountain_Nayru",
+      "itemCode": "Item_NayruLove",
+      "gameId": "5577914011754875380",
+      "object": "MapParam.Facility",
+      "text": "Play Zelda’s Lullaby at the Great Fairy’s fountain and speak to her.",
+      "records": [
+        {
+          "scene": "DesertColossus_Adult",
+          "floor": null,
+          "kind": "Facility",
+          "id": "5577914011754875380",
+          "position": [
+            -49.059425354003906,
+            100.4000015258789,
+            -32.94081497192383
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Nayru",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        },
+        {
+          "scene": "DesertColossus_Child",
+          "floor": null,
+          "kind": "Facility",
+          "id": "9172008990674192103",
+          "position": [
+            -49.059425354003906,
+            100.4000015258789,
+            -32.94081497192383
+          ],
+          "actorId": null,
+          "properties": {
+            "GameDataHashName": "HavePlayedEvent.Dm_FairyFountain_Nayru",
+            "HeartPieceHash0": "0",
+            "HeartPieceHash1": "0",
+            "IconType": 11
+          }
+        }
+      ]
+    },
+    {
+      "key": "reward:master-sword",
+      "kind": "reward",
+      "item": "Master Sword",
+      "group": "weapons",
+      "gameId": "1016238122178870176",
+      "object": "Obj_TimeTemple_MasterSword_A_01",
+      "event": "DoorOfTime",
+      "itemCode": "Weapon_Sword_Master",
+      "text": "Draw the Master Sword from its pedestal inside the Temple of Time.",
+      "proxy": "temple",
+      "records": [
+        {
+          "scene": "Market_Child",
+          "position": [
+            137.63119506835938,
+            106.58348846435547,
+            -34
+          ],
+          "floor": null,
+          "hash": "1016238122178870176"
+        }
+      ]
+    },
+    {
+      "key": "reward:light-arrows",
+      "kind": "reward",
+      "item": "Light Arrows",
+      "group": "tools",
+      "gameId": "2669233513522124871",
+      "object": "Npc_Hylia_Sheik_Adult",
+      "event": "Dm_TimeTemple_0130",
+      "itemCode": "Item_Arrow_Light",
+      "text": "Return to the Temple of Time after awakening the sages.",
+      "proxy": "temple",
+      "records": [
+        {
+          "scene": "Market_Adult",
+          "position": [
+            139.02650451660156,
+            106.35363006591797,
+            -34
+          ],
+          "floor": null,
+          "hash": "2669233513522124871"
+        }
+      ]
+    },
+    {
+      "key": "reward:fire-arrows",
+      "kind": "reward",
+      "item": "Fire Arrows",
+      "group": "tools",
+      "gameId": "4598657944866228526",
+      "object": "Obj_Arrow_Fire",
+      "event": "Dm_LakeHrl_0030",
+      "itemCode": "Obj_Arrow_Fire",
+      "text": "Shoot the rising sun from the stone platform at Lake Hylia.",
+      "proxy": "lake",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            -158.13119506835938,
+            131.46099853515625,
+            523.3570556640625
+          ],
+          "floor": null,
+          "hash": "4598657944866228526"
+        }
+      ]
+    },
+    {
+      "key": "reward:fairy-ocarina",
+      "kind": "reward",
+      "item": "Fairy Ocarina",
+      "group": "tools",
+      "gameId": "9997977858748168231",
+      "object": "Npc_Kokiri_Saria_Child_OcarinaHolder",
+      "event": "Dm_Kokiri_0155",
+      "itemCode": "Item_Ocarina_Fairy",
+      "text": "Receive this ocarina from Saria when leaving Kokiri Forest.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -18.862043380737305,
+            110.0468978881836,
+            1.0620148181915283
+          ],
+          "floor": null,
+          "hash": "9997977858748168231"
+        }
+      ]
+    },
+    {
+      "key": "reward:ocarina-time",
+      "kind": "reward",
+      "item": "Ocarina of Time",
+      "group": "tools",
+      "gameId": "2802436684568022035",
+      "object": "Obj_Ocarina_Time_A_01",
+      "event": "Dm_MelodyGet_Time",
+      "itemCode": "Item_Ocarina_Time",
+      "text": "Recover the ocarina left by Zelda in the water outside the castle town.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "HyruleField_Child",
+          "position": [
+            15.504871368408203,
+            145.44859313964844,
+            43.113670349121094
+          ],
+          "floor": null,
+          "hash": "2802436684568022035"
+        }
+      ]
+    },
+    {
+      "key": "reward:zelda-letter",
+      "kind": "reward",
+      "item": "Zelda’s Letter",
+      "group": "quest",
+      "gameId": "13027585550451396507",
+      "object": "Npc_Hylia_Zelda_Child",
+      "event": "Dm_HrlCastle_0050",
+      "itemCode": "Item_ZeldaLetter",
+      "text": "Meet Princess Zelda in the castle courtyard.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "HyruleCastle",
+          "position": [
+            5.111100196838379,
+            127.82831573486328,
+            -256.53094482421875
+          ],
+          "floor": null,
+          "hash": "13027585550451396507"
+        }
+      ]
+    },
+    {
+      "key": "reward:gerudo-card",
+      "kind": "reward",
+      "item": "Gerudo Membership Card",
+      "group": "quest",
+      "gameId": "5366118530918270672",
+      "object": "Npc_Gerudo_001",
+      "event": "Dm_Gerudo_0025",
+      "itemCode": "Item_Token_Gerudo",
+      "text": "Rescue the imprisoned carpenters to receive the Gerudo Membership Card.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "GerudoFortress_Adult",
+          "position": [
+            15.760507583618164,
+            109.98400115966797,
+            -73.43464660644531
+          ],
+          "floor": null,
+          "hash": "5366118530918270672"
+        }
+      ]
+    },
+    {
+      "key": "reward:magic-beans",
+      "kind": "reward",
+      "item": "Magic Beans",
+      "group": "tools",
+      "gameId": "67200453501163901",
+      "object": "Npc_Hylia_047_Child",
+      "event": "Npc_Hylia_047_Child",
+      "itemCode": "Item_MagicBean",
+      "text": "Buy Magic Beans from the bean seller.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "ZoraRiver_Child",
+          "position": [
+            -53,
+            100.76626586914062,
+            -12.249995231628418
+          ],
+          "floor": null,
+          "hash": "67200453501163901"
+        }
+      ]
+    },
+    {
+      "key": "reward:seed-bag-target",
+      "kind": "reward",
+      "item": "Deku Seed Bag Upgrade",
+      "group": "upgrades",
+      "gameId": "11203721189701744470",
+      "object": "NPC_Scrub_Deku_TargetPractice",
+      "event": "Dm_LostWood_0040",
+      "itemCode": "Item_BulletBag_Medium",
+      "text": "Score three perfect hits on the target in the Lost Woods to earn the seed-bag upgrade.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "LostWood_Child",
+          "position": [
+            41.099998474121094,
+            102.56000518798828,
+            -4.940000057220459
+          ],
+          "floor": null,
+          "hash": "11203721189701744470"
+        }
+      ]
+    },
+    {
+      "key": "reward:scrub:KokiriForest::-128.02:-15.31:Item_StickBag_Medium",
+      "kind": "reward",
+      "group": "upgrades",
+      "item": "Deku Stick Capacity Upgrade",
+      "itemCode": "Item_StickBag_Medium",
+      "event": "Enemy_Scrub_Business_Common",
+      "object": "Enemy_Scrub_Business",
+      "gameId": "7488448334396031424",
+      "text": "Purchase the capacity upgrade from this Business Scrub.",
+      "records": [
+        {
+          "scene": "KokiriForest_Adult",
+          "position": [
+            -128.02,
+            114.59,
+            -15.31
+          ],
+          "floor": null,
+          "hash": "7488448334396031424"
+        },
+        {
+          "scene": "KokiriForest_Child",
+          "position": [
+            -128.02,
+            114.59,
+            -15.31
+          ],
+          "floor": null,
+          "hash": "182031956235860994"
+        }
+      ]
+    },
+    {
+      "key": "reward:scrub:LostWood::7.3:-85.59:Item_NutBag_Medium",
+      "kind": "reward",
+      "group": "upgrades",
+      "item": "Deku Nut Capacity Upgrade",
+      "itemCode": "Item_NutBag_Medium",
+      "event": "Enemy_Scrub_Business_Common",
+      "object": "Enemy_Scrub_Business",
+      "gameId": "5764461665617243979",
+      "text": "Purchase the capacity upgrade from this Business Scrub.",
+      "records": [
+        {
+          "scene": "LostWood_Adult",
+          "position": [
+            7.3,
+            82.89,
+            -85.59
+          ],
+          "floor": null,
+          "hash": "5764461665617243979"
+        },
+        {
+          "scene": "LostWood_Child",
+          "position": [
+            7.3,
+            82.89,
+            -85.59
+          ],
+          "floor": null,
+          "hash": "4328741615941752705"
+        }
+      ]
+    },
+    {
+      "key": "reward:scrub:LostWood::-45.24:72.55:Item_StickBag_Medium",
+      "kind": "reward",
+      "group": "upgrades",
+      "item": "Deku Stick Capacity Upgrade",
+      "itemCode": "Item_StickBag_Medium",
+      "event": "Enemy_Scrub_Business_Common",
+      "object": "Enemy_Scrub_Business",
+      "gameId": "11192313919554167152",
+      "text": "Purchase the capacity upgrade from this Business Scrub.",
+      "records": [
+        {
+          "scene": "LostWood_Adult",
+          "position": [
+            -45.24,
+            95.23,
+            72.55
+          ],
+          "floor": null,
+          "hash": "11192313919554167152"
+        },
+        {
+          "scene": "LostWood_Child",
+          "position": [
+            -45.24,
+            95.23,
+            72.55
+          ],
+          "floor": null,
+          "hash": "5406759280757349546"
+        }
+      ]
+    },
+    {
+      "key": "reward:pocket-egg",
+      "kind": "reward",
+      "item": "Pocket Egg",
+      "group": "quest",
+      "gameId": "12017054652689871297",
+      "object": "Npc_Hylia_049_Adult",
+      "event": "Npc_Hylia_049_Adult",
+      "itemCode": "Item_PocketEgg",
+      "text": "Speak to the Cucco Lady as an adult.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "position": [
+            -70.60731506347656,
+            99.29533386230469,
+            74.62088012695312
+          ],
+          "floor": null,
+          "hash": "12017054652689871297"
+        }
+      ]
+    },
+    {
+      "key": "reward:cojiro",
+      "kind": "reward",
+      "item": "Cojiro",
+      "group": "quest",
+      "gameId": "12017054652689871297",
+      "object": "Npc_Hylia_049_Adult",
+      "event": "Npc_Hylia_049_Adult",
+      "itemCode": "Item_CojiroCucco",
+      "text": "Return the awakened Pocket Cucco to the Cucco Lady.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "position": [
+            -70.60731506347656,
+            99.29533386230469,
+            74.62088012695312
+          ],
+          "floor": null,
+          "hash": "12017054652689871297"
+        }
+      ]
+    },
+    {
+      "key": "reward:mushroom",
+      "kind": "reward",
+      "item": "Odd Mushroom",
+      "group": "quest",
+      "gameId": "11959891550395380870",
+      "object": "Npc_Hylia_017_Adult",
+      "event": "Npc_Hylia_017_Adult",
+      "itemCode": "Item_OddMushroom",
+      "text": "Show Cojiro to the man in the Lost Woods.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "LostWood_Adult",
+          "position": [
+            -32.79684829711914,
+            100.53899383544922,
+            -3.8100361824035645
+          ],
+          "floor": null,
+          "hash": "11959891550395380870"
+        }
+      ]
+    },
+    {
+      "key": "reward:potion",
+      "kind": "reward",
+      "item": "Odd Potion",
+      "group": "quest",
+      "gameId": "10539403194818447006",
+      "object": "Npc_Hylia_053_Adult",
+      "event": "Npc_Hylia_053_Adult",
+      "itemCode": "Item_OddPowder",
+      "text": "Deliver the Odd Mushroom to the potion maker before time runs out.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "KakarikoVillage_Adult",
+          "position": [
+            -31.77277374267578,
+            103.79469299316406,
+            28.91749382019043
+          ],
+          "floor": null,
+          "hash": "10539403194818447006"
+        }
+      ]
+    },
+    {
+      "key": "reward:saw",
+      "kind": "reward",
+      "item": "Poacher’s Saw",
+      "group": "quest",
+      "gameId": "4375222428486358625",
+      "object": "Npc_Kokiri_Fado_Adult",
+      "event": "Npc_Kokiri_Fado_Adult",
+      "itemCode": "Item_PoacherSaw",
+      "text": "Take the Odd Potion back to the Lost Woods.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "LostWood_Adult",
+          "position": [
+            -32.49496841430664,
+            100.51742553710938,
+            -3.8611183166503906
+          ],
+          "floor": null,
+          "hash": "4375222428486358625"
+        }
+      ]
+    },
+    {
+      "key": "reward:broken-sword",
+      "kind": "reward",
+      "item": "Broken Goron’s Sword",
+      "group": "quest",
+      "gameId": "9406251474675307193",
+      "object": "Npc_Hylia_012_Adult",
+      "event": "Npc_Hylia_012_Adult",
+      "itemCode": "Item_BrokenSword",
+      "text": "Trade the Poacher’s Saw to the carpenter.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "GerudoValley_Adult",
+          "position": [
+            -49.9117546081543,
+            102.04026794433594,
+            -9.913556098937988
+          ],
+          "floor": null,
+          "hash": "9406251474675307193"
+        }
+      ]
+    },
+    {
+      "key": "reward:prescription",
+      "kind": "reward",
+      "item": "Prescription",
+      "group": "quest",
+      "gameId": "14299450766367161284",
+      "object": "Npc_Goron_Biggoron_Adult",
+      "event": "Npc_Goron_Biggoron_Adult",
+      "itemCode": "Item_Prescription",
+      "text": "Bring the broken sword to Biggoron.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "DeathMountainTrail_Adult",
+          "position": [
+            25.75,
+            200.4649658203125,
+            -128.5
+          ],
+          "floor": null,
+          "hash": "14299450766367161284"
+        }
+      ]
+    },
+    {
+      "key": "reward:frog",
+      "kind": "reward",
+      "item": "Eyeball Frog",
+      "group": "quest",
+      "gameId": "16477889668099956463",
+      "object": "Npc_Zora_KingZora_adult",
+      "event": "Npc_Zora_KingZora_adult",
+      "itemCode": "Item_EyeballFrog",
+      "text": "Show the Prescription to the thawed King Zora.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "ZoraDomain_Adult",
+          "position": [
+            66.1192626953125,
+            119.51058197021484,
+            12.466066360473633
+          ],
+          "floor": null,
+          "hash": "16477889668099956463"
+        }
+      ]
+    },
+    {
+      "key": "reward:drops",
+      "kind": "reward",
+      "item": "World’s Finest Eye Drops",
+      "group": "quest",
+      "gameId": "4654696001836528482",
+      "object": "Npc_Hylia_045_Adult",
+      "event": "Npc_Hylia_045_Adult",
+      "itemCode": "Item_EyeDrop",
+      "text": "Deliver the Eyeball Frog to the Lakeside Laboratory.",
+      "proxy": "lake",
+      "records": [
+        {
+          "scene": "HyruleField_Adult",
+          "position": [
+            -174.5869140625,
+            137.8035888671875,
+            422.0048522949219
+          ],
+          "floor": null,
+          "hash": "4654696001836528482"
+        }
+      ]
+    },
+    {
+      "key": "reward:claim-check",
+      "kind": "reward",
+      "item": "Claim Check",
+      "group": "quest",
+      "gameId": "14299450766367161284",
+      "object": "Npc_Goron_Biggoron_Adult",
+      "event": "Dm_DeathMtTrail_0050",
+      "itemCode": "Item_ClaimCheck",
+      "text": "Deliver the eye drops to Biggoron before time runs out.",
+      "proxy": null,
+      "records": [
+        {
+          "scene": "DeathMountainTrail_Adult",
+          "position": [
+            25.75,
+            200.4649658203125,
+            -128.5
+          ],
+          "floor": null,
+          "hash": "14299450766367161284"
+        }
+      ]
+    }
+  ],
+  "unresolved": []
+}

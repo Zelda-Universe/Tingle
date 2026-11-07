@@ -1,13 +1,18 @@
 /* Shared POI treatments for Link's Awakening, BotW, TotK and EoW. */
 /* OoT's own glyphs: SVGs in images/icons/oot/, drawn in the badge's colour. */
-.icon-OoT_Poe::before, .icon-OoT_Kaepora::before, .icon-OoT_SilverRupee::before, .icon-OoT_GossipStone::before, .icon-OoT_Chest::before {
+.icon-OoT_FairyThought::before, .icon-OoT_Song::before, .icon-OoT_Poe::before, .icon-OoT_Kaepora::before, .icon-OoT_SilverRupee::before, .icon-OoT_GossipStone::before, .icon-OoT_Chest::before, .icon-General_Chest::before, .icon-General_HeartPiece::before {
   content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:block; width:1em; height:1em;
   background:currentColor; -webkit-mask:var(--oot-glyph) center / contain no-repeat; mask:var(--oot-glyph) center / contain no-repeat; }
 .icon-OoT_Poe { --oot-glyph:url('images/icons/oot/Poe.svg'); }
+.icon-OoT_FairyThought { --oot-glyph:url('images/icons/oot/FairyThought.svg'); }
+.icon-OoT_Song { --oot-glyph:url('images/icons/games/ocarina-of-time.svg'); }
 .icon-OoT_Kaepora { --oot-glyph:url('images/icons/oot/Kaepora.svg'); }
 .icon-OoT_SilverRupee { --oot-glyph:url('images/icons/oot/SilverRupee.svg'); }
 .icon-OoT_GossipStone { --oot-glyph:url('images/icons/oot/GossipStone.svg'); }
-.icon-OoT_Chest { --oot-glyph:url('images/icons/oot/Chest.svg'); }
+.icon-OoT_Chest, .icon-General_Chest { --oot-glyph:url('images/icons/oot/Chest.svg'); }
+.circleMap-medium > .icon-General_Chest, .circleMap-small > .icon-General_Chest { position:absolute; inset:0; }
+.icon-General_HeartPiece { --oot-glyph:url('images/icons/HeartPiece.svg'); }
+.circleMap-medium > .icon-General_HeartPiece, .circleMap-small > .icon-General_HeartPiece { position:absolute; inset:0; }
 .circleMap-medium > [class*='icon-OoT_'], .circleMap-small > [class*='icon-OoT_'] { position:absolute; inset:0; }
 .category-selector .category-icon[class*='icon-OoT_']::before { width:1.18em; height:1.18em; }
 .category-selector .category-icon.icon-OoT_Chest::before { width:1em; height:1em; }
@@ -109,6 +114,9 @@
 .poi-korok { --poi-fill: #3dbc75; }
 .poi-heart { --poi-fill: #d94b72; }
 .poi-memory { --poi-fill: #c6c396; }
+.poi-silver { --poi-fill: #b7c4cf; color: #394a5a; }
+.poi-fairy-thought { --poi-fill: #ad91d5; }
+.poi-song { --poi-fill: #628bd4; }
 .poi-relic, .poi-location, .poi-location-round, .poi-cave { --poi-fill: #8f773a; }
 .poi-location, .poi-location-round, .poi-cave { color: #684521; }
 .poi-location::after { border-radius: 16%; }

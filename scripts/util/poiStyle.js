@@ -1,8 +1,22 @@
 // Shared Zelda POI styling. Existing category records and glyphs stay intact.
+function getPOIGlyph(category) {
+  var game = String(category.container_id || category.containerId);
+  if ((game === '64' && String(category.id) === '64002') ||
+      (game === '4' && String(category.id) === '1956') ||
+      (game === '22' && String(category.id) === '2220')) return 'General_HeartPiece';
+  if ((game === '4' || game === '22') &&
+      (category.img === 'BotW_Treasure-Chest' || /^Treasure Chests?$/i.test(category.name || ''))) {
+    return 'General_Chest';
+  }
+  return category.img;
+}
+
 function getPOIStyle(category) {
   if(category && String(category.container_id || category.containerId) === '64') {
     return {
-      '64002': 'heart', '64001': 'relic', '64003': 'korok', '64004': 'heart', '64005': 'memory', '64021': 'treasure',
+      '64002': 'heart', '64001': 'relic', '64003': 'korok', '64004': 'heart', '64005': 'silver', '64006': 'memory', '64007': 'fairy-thought', '64008': 'song', '64021': 'treasure',
+      '64022': 'treasure', '64023': 'treasure', '64024': 'treasure', '64025': 'treasure', '64026': 'treasure', '64027': 'treasure', '64028': 'treasure',
+      '64061': 'treasure', '64062': 'treasure', '64063': 'treasure', '64064': 'memory', '64065': 'interest', '64066': 'treasure',
       '64031': 'location', '64032': 'location', '64033': 'location', '64041': 'interest', '64042': 'enemy',
       '64043': 'interest', '64044': 'interest', '64045': 'interest', '64046': 'interest',
       '64051': 'travel', '64052': 'travel', '64053': 'travel'
@@ -60,13 +74,15 @@ function getPOICategoryGroups(categories) {
     // Label categories (type 3: place names) are set in Settings, not listed.
     // Sections in BotW's and TotK's order: Travel, Collectibles, Locations,
     // Points of Interest, then Treasure; any others after.
-    var sectionOrder = ['64050', '64000', '64030', '64040', '64020'];
+    var sectionOrder = ['64050', '64000', '64060', '64030', '64040', '64020'];
     var rank = function(c) { var i = sectionOrder.indexOf(String(c.id)); return i === -1 ? sectionOrder.length : i; };
     return records.filter(function(c) { return !c.parent_id && String(c.marker_category_type_id) !== '3'; })
       .sort(function(a, b) { return rank(a) - rank(b); }).map(function(root) {
       return { title: root.name, categories: records.filter(function(c) { return c.parent_id === root.id; }).sort(function(a,b) {
         // Heart Pieces and Containers together; others in the order added.
-        var order=['64002','64004','64001','64003','64005'];
+        var order=['64002','64004','64001','64003','64005','64006','64007','64008'];
+        if(String(root.id)==='64020') order=['64022','64023','64024','64025','64026','64027','64028','64021'];
+        if(String(root.id)==='64060') order=['64061','64062','64063','64064','64065','64066'];
         return order.indexOf(String(a.id))-order.indexOf(String(b.id));
       }) };
     });

@@ -85,4 +85,4 @@ function projectDungeon(scene, floor, gameX, gameZ) {
   return {floor: floorName(floor), x: (DUNGEON_OFFSET[0] + fullX) / scale, y: -(DUNGEON_OFFSET[1] + fullY) / scale};
 }
 
-module.exports = {project, projectDungeon, floorName, sceneArea};
+module.exports = {project, projectDungeon, floorName, sceneArea, areaBounds};

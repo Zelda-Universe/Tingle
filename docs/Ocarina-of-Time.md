@@ -57,6 +57,29 @@ migration (it only changes a row that is still as it was) and its undo:
   the game's exits (`scene-data/lost-woods-exits.json` names the Lost Woods').
 - `places-to-sql.cjs`: chests (contents in `scene-data/chest-contents.json`)
   and the places in `scene-data/facility-names.json`.
+- `extract-items.cjs <radar scene audit.json> <oot-switch2-tools directory>`
+  audits chest objects, equipment shop stock and verified event rewards.
+  `items-to-sql.cjs maps.json markers.json <new migration>` splits existing
+  chests by contents without changing IDs, and adds missing item sources.
+  Allocations are in `item-ids.json` (64704xxx chests, 64705xxx rewards/stock).
+  `item-import-report.json` records unplaced items; never silently treat an
+  unmapped dungeon as the overworld. Important off-map rewards explicitly
+  use an entrance reference. Starting equipment/hatching items are not
+  invented as independent geographic pickups.
+- `fetch-objects.cjs` / `objects-to-sql.cjs --only=bottle`: placed objects
+  and verified bottle rewards. Never regenerate an already shipped migration.
+- `extract-songs.cjs <oot-switch2-tools directory>` extracts song lesson
+  anchors/cutscene positions to `scene-data/song-sources.json`.
+  `guidance-to-sql.cjs maps.json <new migration>` imports those and
+  `HrlField_Note_*` Fairy Thoughts. `guidance-ids.json` preserves allocated
+  IDs (64702xxx Thoughts, 64703xxx songs). Interior lessons/Thoughts without
+  artwork are explicitly marked at their mapped entrances.
+- Fairy Thoughts are **not** `Obj_FairySpirit` healing spawns. The Zelda
+  Notes localization (`notes-default_oot/en-US.json`, `OotGossipResearch`)
+  lists 100 Gossip Quests (60 Actor, 40 Stone). These are separate from
+  ordinary Gossip Stones. Localization gives names/hints but no target
+  coordinates; do not import NPC `InterestSpotActor` schedule stops as
+  Gossip Quest targets or invent exact positions from the names.
 - `preview-collectibles.cjs` draws comparisons on the artwork for review.
 
 These read the site's own data saved to files, for example:

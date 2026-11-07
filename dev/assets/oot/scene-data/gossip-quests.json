@@ -1,0 +1,806 @@
+{
+  "source": "Zelda Notes notes-default_oot/en-US.json, OotGossipResearch",
+  "note": "Names and hints only. Target coordinates have not been recovered; these are not imported as map markers.",
+  "quests": [
+    {
+      "id": "Actor000",
+      "type": "Actor",
+      "title": "Golden Warrior",
+      "hint": "It is said that there's a brave warrior scarecrow...",
+      "solution": "The brave warrior scarecrow is the one in the Kokiri Shop.",
+      "position": null
+    },
+    {
+      "id": "Actor001",
+      "type": "Actor",
+      "title": "A Gauging Gaze",
+      "hint": "It is said there is one who lurks in the scorching heat, gauging the skill of warriors...",
+      "solution": "The one lurking in the scorching heat, gauging warriors' skills, was actually a stone statue in the Gerudo Proving Grounds.",
+      "position": null
+    },
+    {
+      "id": "Actor002",
+      "type": "Actor",
+      "title": "Moss Bench",
+      "hint": "It is said that moss sometimes makes the best bench...",
+      "solution": "The best bench is actually Mido's handmade moss bench.",
+      "position": null
+    },
+    {
+      "id": "Actor003",
+      "type": "Actor",
+      "title": "A Tribute to Rupees",
+      "hint": "It is said that there's a precious, priceless drawing...",
+      "solution": "The precious, priceless drawing is a Kokiri's depiction of rupees.",
+      "position": null
+    },
+    {
+      "id": "Actor004",
+      "type": "Actor",
+      "title": "The Sage's Perch",
+      "hint": "It is said that there is a place where those who possess wisdom descend...",
+      "solution": "The place where those who possess wisdom descend is Kaepora Gaebora's perch.",
+      "position": null
+    },
+    {
+      "id": "Actor005",
+      "type": "Actor",
+      "title": "Someone's Cart",
+      "hint": "It is said that fairies are drawn to hard workers...",
+      "solution": "The hard worker that attracted fairies is a cart placed in a field.",
+      "position": null
+    },
+    {
+      "id": "Actor006",
+      "type": "Actor",
+      "title": "Hyrule Royal Family's Stone Marker",
+      "hint": "It is said that a stone slab associated with the royal family lies in a place where remnants of castle walls stand...",
+      "solution": "The stone slab associated with the royal family, located among the remnants of the castle walls, stands quietly in Hyrule Field.",
+      "position": null
+    },
+    {
+      "id": "Actor007",
+      "type": "Actor",
+      "title": "Zora River Bridge",
+      "hint": "It is said that there is a bridge built to keep visitors' feet dry...",
+      "solution": "The lone bridge in Hyrule Field was built for visitors to Kakariko Village.",
+      "position": null
+    },
+    {
+      "id": "Actor008",
+      "type": "Actor",
+      "title": "Malanya",
+      "hint": "It is said that there is a being that is a horse—and yet, not a horse...",
+      "solution": "The true form of the horse that is not a horse is a handmade stuffed animal.",
+      "position": null
+    },
+    {
+      "id": "Actor009",
+      "type": "Actor",
+      "title": "Ranch Water Tower",
+      "hint": "It is said that there is a place where life-giving water is held...",
+      "solution": "The place where life-giving water is held is the ranch's water tower.",
+      "position": null
+    },
+    {
+      "id": "Actor010",
+      "type": "Actor",
+      "title": "A Girl's Memories",
+      "hint": "It is said that there is a place where you can catch a glimpse of a girl's memories...",
+      "solution": "The place where you can catch a glimpse of a girl's memories is Malon's room.",
+      "position": null
+    },
+    {
+      "id": "Actor011",
+      "type": "Actor",
+      "title": "A Guide to the Wind",
+      "hint": "It is said that giant whirling blades exist on the plains...",
+      "solution": "The giant whirling blades actually belong to the weather vane at Lon Lon Ranch.",
+      "position": null
+    },
+    {
+      "id": "Actor012",
+      "type": "Actor",
+      "title": "Fancy Sign",
+      "hint": "It is said that there is a fancy sign crafted by a tough-looking person...",
+      "solution": "The fancy sign turned out to be a welcome sign made by the Bazaar owner.",
+      "position": null
+    },
+    {
+      "id": "Actor013",
+      "type": "Actor",
+      "title": "Mask Shop Information Board",
+      "hint": "Apparently, there's a sign with some incredibly strange writing on it...",
+      "solution": "The sign with incredibly strange writing on it is the sign in the Happy Mask Shop.",
+      "position": null
+    },
+    {
+      "id": "Actor014",
+      "type": "Actor",
+      "title": "Overindulgent Guy",
+      "hint": "It is said that there is the laziest Hylian in Hyrule...",
+      "solution": "The laziest Hylian in Hyrule is the guy in the castle town who ate too much and couldn't move.",
+      "position": null
+    },
+    {
+      "id": "Actor015",
+      "type": "Actor",
+      "title": "A Mother's House",
+      "hint": "Apparently, there is a house built for a dog somewhere...",
+      "solution": "The house built for a dog is the home of Richard's owner.",
+      "position": null
+    },
+    {
+      "id": "Actor016",
+      "type": "Actor",
+      "title": "Li'l Miss Moo in the Valley",
+      "hint": "A deep moo echoes through the valley. The source of that sound is...",
+      "solution": "The deep mooing echoing through the valley is a cow secretly kept by a Gerudo.",
+      "position": null
+    },
+    {
+      "id": "Actor017",
+      "type": "Actor",
+      "title": "Witness to War",
+      "hint": "It is said that there is a silent witness to a land's rise and fall.",
+      "solution": "The silent witness to a land's rise and fall was a single tree that endured the ravages of war.",
+      "position": null
+    },
+    {
+      "id": "Actor018",
+      "type": "Actor",
+      "title": "Rules for Target Practice",
+      "hint": "Apparently, there's something that offers rules for playing...",
+      "solution": "The rules for playing come from the information board at the Shooting Gallery.",
+      "position": null
+    },
+    {
+      "id": "Actor019",
+      "type": "Actor",
+      "title": "A Bird's Song",
+      "hint": "It is said that there is a rare bird that tells the time...",
+      "solution": "The bird that tells time is a stone sculpture over the castle gate.",
+      "position": null
+    },
+    {
+      "id": "Actor020",
+      "type": "Actor",
+      "title": "A Cute, Unusual Visitor",
+      "hint": "It is said that a new resident has moved into Kokiri Forest...",
+      "solution": "The new resident of Kokiri Forest is a cow, a gift from Malon.",
+      "position": null
+    },
+    {
+      "id": "Actor021",
+      "type": "Actor",
+      "title": "The Royal Garden Fountain",
+      "hint": "It is said that there is a spring imbued with a wish for peace...",
+      "solution": "That spring, imbued with a wish for peace, was the fountain located in Hyrule Castle.",
+      "position": null
+    },
+    {
+      "id": "Actor022",
+      "type": "Actor",
+      "title": "A Big Bite!",
+      "hint": "Apparently, there's a fish with a mouth big enough to swallow a child...",
+      "solution": "The fish with the mouth big enough to swallow a child turned out to be the fish on the sign for a Fishing Pond.",
+      "position": null
+    },
+    {
+      "id": "Actor023",
+      "type": "Actor",
+      "title": "Weather Vane atop the Tower",
+      "hint": "Apparently, there is a suspicious device that keeps moving even though there's no wind...",
+      "solution": "This suspicious device that keeps moving even without wind was the weather vane at the Lakeside Laboratory.",
+      "position": null
+    },
+    {
+      "id": "Actor024",
+      "type": "Actor",
+      "title": "Beware of Wild Creatures!",
+      "hint": "It is said that there is a strange, bloodthirsty creature waiting in deep, dark waters.",
+      "solution": "The creature from the dark depths of the ocean was a ferocious shark.",
+      "position": null
+    },
+    {
+      "id": "Actor025",
+      "type": "Actor",
+      "title": "The Thing in the Tank",
+      "hint": "It is said that there is a mysterious thing in a tank, and that thing has eight wriggling tentacles...",
+      "solution": "Those eight tentacles belonged to an octopus that the lake scientist was researching.",
+      "position": null
+    },
+    {
+      "id": "Actor026",
+      "type": "Actor",
+      "title": "Ferryboat",
+      "hint": "It is said that, somewhere in this world, there's a ship that never floats...",
+      "solution": "The ship that never floats is a fishing-pond ferryboat that never gets any customers.",
+      "position": null
+    },
+    {
+      "id": "Actor027",
+      "type": "Actor",
+      "title": "Spirit of Hospitality",
+      "hint": "It is said that there is a note from Impa expressing her hospitality...",
+      "solution": "That note from Impa was on a banner in Kakariko Village.",
+      "position": null
+    },
+    {
+      "id": "Actor028",
+      "type": "Actor",
+      "title": "A Witness of the Sheikah",
+      "hint": "It is said that a Sheikah relic remains...",
+      "solution": "That Sheikah relic was the watchtower in Kakariko Village.",
+      "position": null
+    },
+    {
+      "id": "Actor029",
+      "type": "Actor",
+      "title": "Cursed Mansion",
+      "hint": "It is said that there is a house haunted by spiders...",
+      "solution": "The house haunted by spiders was the cursed home of a wealthy man.",
+      "position": null
+    },
+    {
+      "id": "Actor030",
+      "type": "Actor",
+      "title": "A Kid's Favorite",
+      "hint": "It is said that there is a secluded forest, far from civilization, where the playful sound of a flute echoes...",
+      "solution": "The playful sound of the flute was echoing from the Skull Kid's clearing in the Lost Woods.",
+      "position": null
+    },
+    {
+      "id": "Actor031",
+      "type": "Actor",
+      "title": "The Carpenter's Best Friend",
+      "hint": "Apparently, there's something called a \"carpenter's best friend.\"",
+      "solution": "A carpenter's best friend is, in fact, a carpenter's tools.",
+      "position": null
+    },
+    {
+      "id": "Actor032",
+      "type": "Actor",
+      "title": "Weather-Vane Bird",
+      "hint": "It is said that there is a cucco watching over the village...",
+      "solution": "The cucco watching over the village was actually a weather vane on a roof.",
+      "position": null
+    },
+    {
+      "id": "Actor033",
+      "type": "Actor",
+      "title": "An Unnamed Master",
+      "hint": "It is said that there is a one-of-a-kind special cucco...",
+      "solution": "That one-of-a-kind special cucco was actually a child's scribble in Kakariko Village.",
+      "position": null
+    },
+    {
+      "id": "Actor034",
+      "type": "Actor",
+      "title": "The Grave Where Flat the Younger Rests",
+      "hint": "It is said that a composer who has lingering feelings for this world wanders around...",
+      "solution": "The wandering composer was Flat the Younger, who served the Hyrule royal family.",
+      "position": null
+    },
+    {
+      "id": "Actor035",
+      "type": "Actor",
+      "title": "Li'l Miss Moo at the Fortress",
+      "hint": "It is said that there is a cow-like horse beloved by a particular Gerudo...",
+      "solution": "It turns out that the cow-like horse beloved by a particular Gerudo was a normal cow in the horse stable.",
+      "position": null
+    },
+    {
+      "id": "Actor036",
+      "type": "Actor",
+      "title": "Gravekeeper's Diary",
+      "hint": "It is said that someone's secrets lie hidden where souls rest...",
+      "solution": "Dampé's diary was found in the place where souls rest.",
+      "position": null
+    },
+    {
+      "id": "Actor037",
+      "type": "Actor",
+      "title": "Former Gravekeeper's Diary",
+      "hint": "It is said that a secret is hidden in an abandoned building...",
+      "solution": "Dampé's diary was the secret hidden in the abandoned building.",
+      "position": null
+    },
+    {
+      "id": "Actor038",
+      "type": "Actor",
+      "title": "Gravekeeper's Resting Place",
+      "hint": "It is said that, at night, something glows eerily...",
+      "solution": "The source of the mysterious glow was Dampé's grave.",
+      "position": null
+    },
+    {
+      "id": "Actor039",
+      "type": "Actor",
+      "title": "The Throat of the Fire Dragon",
+      "hint": "It is said that beyond the throat of the fire dragon, one will be consumed by the scorching heat...",
+      "solution": "The throat of the fire dragon was the final gate leading to the crater of Death Mountain.",
+      "position": null
+    },
+    {
+      "id": "Actor040",
+      "type": "Actor",
+      "title": "The Fish Guardians",
+      "hint": "It is said that there are three fish that swim in the air...",
+      "solution": "The fish swimming in the air turned out to be carvings at the Fishing Pond.",
+      "position": null
+    },
+    {
+      "id": "Actor041",
+      "type": "Actor",
+      "title": "Ruby Pedestal",
+      "hint": "It is said that the Goron treasure is being targeted...",
+      "solution": "Fortunately, the Goron treasure was moved to a safe location.",
+      "position": null
+    },
+    {
+      "id": "Actor042",
+      "type": "Actor",
+      "title": "Warm Welcome to Goron City",
+      "hint": "It is said that there is a pointy sign in a hot spot...",
+      "solution": "That pointy sign was the stone slab at the entrance to Goron City.",
+      "position": null
+    },
+    {
+      "id": "Actor043",
+      "type": "Actor",
+      "title": "Dancing Vessel",
+      "hint": "It is said that there is a giant Goron with three faces...",
+      "solution": "The giant Goron with three faces was the giant vessel located in Goron City.",
+      "position": null
+    },
+    {
+      "id": "Actor044",
+      "type": "Actor",
+      "title": "Frog Stage",
+      "hint": "It is said that there is a stage for little musicians...",
+      "solution": "That stage for little musicians is actually the home of frogs who love to sing.",
+      "position": null
+    },
+    {
+      "id": "Actor045",
+      "type": "Actor",
+      "title": "Before a Deity",
+      "hint": "It seems there's a place for the Zora to offer prayers...",
+      "solution": "The place where the Zora offer prayers to a deity was a mosaic of Lord Jabu-Jabu.",
+      "position": null
+    },
+    {
+      "id": "Actor046",
+      "type": "Actor",
+      "title": "Lucky Zora Fish",
+      "hint": "Supposedly a fish created by the Zora princess exists somewhere in this world...",
+      "solution": "The fish supposedly created by the Zora princess was actually a sign for a Zora shop.",
+      "position": null
+    },
+    {
+      "id": "Actor047",
+      "type": "Actor",
+      "title": "Mocking Fishy Shadows",
+      "hint": "It is said that there is a suspicious-looking Zora carrying a bottle...",
+      "solution": "It turned out that the suspicious-looking Zora was hunting fish.",
+      "position": null
+    },
+    {
+      "id": "Actor048",
+      "type": "Actor",
+      "title": "Guardian of Water",
+      "hint": "It is said that the symbol of the Zora tribe is displayed above the Zora king's head...",
+      "solution": "What was displayed above the Zora king's head was the Zora crest.",
+      "position": null
+    },
+    {
+      "id": "Actor049",
+      "type": "Actor",
+      "title": "The Gate of Silence",
+      "hint": "It is said that a wall of snow sealed the fairies' secret passage, and they all fled, shivering in the cold.",
+      "solution": "The fairies' invisible secret passage was a small ruin in the snow-covered Zora Fountain.",
+      "position": null
+    },
+    {
+      "id": "Actor050",
+      "type": "Actor",
+      "title": "Kids' Favorite",
+      "hint": "It is said that a stage deep in the woods awaits a challenger...",
+      "solution": "The stage awaiting a challenger was the Skull Kids' tree trunk in the Lost Woods.",
+      "position": null
+    },
+    {
+      "id": "Actor051",
+      "type": "Actor",
+      "title": "Old Man of the Grove",
+      "hint": "It is said that within the Sacred Grove, there is a life that is drawing to a close...",
+      "solution": "The life drawing to a close in the Sacred Grove is an old tree.",
+      "position": null
+    },
+    {
+      "id": "Actor052",
+      "type": "Actor",
+      "title": "A Meal for Carpenters",
+      "hint": "They say there is a tantalizing dish that makes you break into a sweat with just one bite and becomes impossible to stop eating after a second bite...",
+      "solution": "The tantalizing dish that makes you break into a sweat with just one bite and becomes impossible to stop eating after a second bite turned out to be the meal cooked by the master craftsman.",
+      "position": null
+    },
+    {
+      "id": "Actor053",
+      "type": "Actor",
+      "title": "Today's Cooking Duty",
+      "hint": "Apparently, there's a hidden dish that makes you break out in a sweat just by smelling it and awakens your entire body with a single taste...",
+      "solution": "The hidden dish that makes you break out in a sweat just by smelling it and awakens your entire body with a single taste was a Gerudo meal.",
+      "position": null
+    },
+    {
+      "id": "Actor054",
+      "type": "Actor",
+      "title": "Throne of Schemes",
+      "hint": "It is said that there's a special chair engraved with a symbol that represents the sun...",
+      "solution": "The special chair engraved with a symbol that represents the sun was Ganondorf's chair in his war room.",
+      "position": null
+    },
+    {
+      "id": "Actor055",
+      "type": "Actor",
+      "title": "Merciless Iron Door",
+      "hint": "Apparently, there's a door that, once walked through, does not allow you to return...",
+      "solution": "The door that, once walked through, does not allow you to return was for the prison in Gerudo Fortress.",
+      "position": null
+    },
+    {
+      "id": "Actor056",
+      "type": "Actor",
+      "title": "Sand Tower Altar",
+      "hint": "It is said that wriggling gold lies near an altar hidden deep within the sandstorm...",
+      "solution": "The wriggling gold near an altar hidden deep within the sandstorm turned out to be a Gold Skulltula.",
+      "position": null
+    },
+    {
+      "id": "Actor057",
+      "type": "Actor",
+      "title": "Veterans' Allies",
+      "hint": "It is said that there are those who carry the stories of brave Gerudo warriors...",
+      "solution": "Those who carry the stories of brave Gerudo warriors are well-worn archery targets.",
+      "position": null
+    },
+    {
+      "id": "Actor058",
+      "type": "Actor",
+      "title": "A Shop Not on the Map",
+      "hint": "It is said that numerous witnesses have seen a strange figure floating in a vast mirage...",
+      "solution": "The floating figure was the carpet-riding merchant.",
+      "position": null
+    },
+    {
+      "id": "Actor059",
+      "type": "Actor",
+      "title": "A Drop of Blessing",
+      "hint": "Apparently, there's a place where the evil deity's tears fell...",
+      "solution": "The place where the evil deity's tears fell was an oasis in the desert.",
+      "position": null
+    },
+    {
+      "id": "Stone000",
+      "type": "Stone",
+      "title": "The Timid Watcher",
+      "hint": "It is said that the one guarding children from the shadowy grass joyfully bounces up and down...",
+      "solution": "The one guarding children from the shadowy grass was a gossip stone in Kokiri Forest.",
+      "position": null
+    },
+    {
+      "id": "Stone001",
+      "type": "Stone",
+      "title": "The Ripple Watcher",
+      "hint": "It is said that the one gazing at the ripples on the water's surface joyfully surrenders to the hammer...",
+      "solution": "The one gazing at the ripples on the water's surface was a gossip stone standing at the base of an old tree on Lake Hylia.",
+      "position": null
+    },
+    {
+      "id": "Stone002",
+      "type": "Stone",
+      "title": "The Shade Watcher",
+      "hint": "It is said that the one loitering in the sunlight filtering through the large trees joyfully wobbles from side to side...",
+      "solution": "The one loitering in the sunlight filtering through the large trees was a gossip stone that quietly watches over the Great Deku Tree.",
+      "position": null
+    },
+    {
+      "id": "Stone003",
+      "type": "Stone",
+      "title": "The Storyteller Watcher",
+      "hint": "It is said that the one nestling close to the forest's storyteller joyfully wobbles from side to side...",
+      "solution": "The one nestling close to the forest's storyteller was a gossip stone standing next to the Great Deku Tree.",
+      "position": null
+    },
+    {
+      "id": "Stone004",
+      "type": "Stone",
+      "title": "The Lost Watcher",
+      "hint": "It is said that the one beckoning the lost joyfully bounces up and down...",
+      "solution": "The one beckoning the lost was a gossip stone in the Lost Woods.",
+      "position": null
+    },
+    {
+      "id": "Stone005",
+      "type": "Stone",
+      "title": "The Reverberating Watcher",
+      "hint": "It is said that the one listening carefully to the murmuring of a clear stream flowing from the depths of the earth joyfully jumps to the skies...",
+      "solution": "The one listening carefully to the murmuring of a clear stream flowing from the depths of the earth was a gossip stone standing in a hidden hole in the Zora River.",
+      "position": null
+    },
+    {
+      "id": "Stone006",
+      "type": "Stone",
+      "title": "The Inviting Watcher",
+      "hint": "It is said that the one who guides travelers to the recesses of a deep forest joyfully spins and stretches...",
+      "solution": "The one guiding travelers to the recesses of a deep forest was a gossip stone that gazes beyond a sanctuary.",
+      "position": null
+    },
+    {
+      "id": "Stone007",
+      "type": "Stone",
+      "title": "The Hospitable Watcher",
+      "hint": "It is said that the one who welcomes guests in the deep forest joyfully spins and stretches...",
+      "solution": "The one welcoming guests in the deep forest was a gossip stone loitering in a sanctuary.",
+      "position": null
+    },
+    {
+      "id": "Stone008",
+      "type": "Stone",
+      "title": "The Sanctuary Watcher",
+      "hint": "It is said that the one watching over the sanctuary joyfully jumps to the skies...",
+      "solution": "The one watching over the sanctuary was a gossip stone standing at the entrance to the Forest Temple.",
+      "position": null
+    },
+    {
+      "id": "Stone009",
+      "type": "Stone",
+      "title": "The Lake Watcher",
+      "hint": "It is said that the one watching over the lake joyfully jumps to the skies...",
+      "solution": "The one watching over the lake was a gossip stone that gazes out over Lake Hylia.",
+      "position": null
+    },
+    {
+      "id": "Stone010",
+      "type": "Stone",
+      "title": "The Watcher Held Captive by Spiders",
+      "hint": "It is said that the one held captive by the spiders in the depths still joyfully spins and stretches...",
+      "solution": "The one being held captive by spiders in the depths of the earth was a gossip stone in a hidden hole in a field.",
+      "position": null
+    },
+    {
+      "id": "Stone011",
+      "type": "Stone",
+      "title": "The Aloof Watcher",
+      "hint": "It is said that the aloof one that surrendered its body to the water joyfully bounces up and down...",
+      "solution": "The aloof one that surrendered its body to the water was a gossip stone that washed ashore on a small island.",
+      "position": null
+    },
+    {
+      "id": "Stone012",
+      "type": "Stone",
+      "title": "The Watcher Awaiting the Sound of Footsteps",
+      "hint": "It is said that the one who awaits visitors in the sanctuary that light cannot reach joyfully spins and stretches...",
+      "solution": "The one awaiting visitors in a sanctuary which light cannot reach was a gossip stone in a hidden hole.",
+      "position": null
+    },
+    {
+      "id": "Stone013",
+      "type": "Stone",
+      "title": "The Bee Watcher",
+      "hint": "It is said that the one surrounded by a dangerously sweet scent joyfully spins and stretches...",
+      "solution": "The one surrounded by a dangerously sweet scent was a gossip stone in a retreat for bees.",
+      "position": null
+    },
+    {
+      "id": "Stone014",
+      "type": "Stone",
+      "title": "The Horse-Loving Watcher",
+      "hint": "It is said that the one listening carefully to the sounds of horse hooves from the depths of the earth joyfully jumps to the skies...",
+      "solution": "The one listening carefully to the sounds of horse hooves from the depths of the earth was a gossip stone in a hidden hole in Hyrule Field.",
+      "position": null
+    },
+    {
+      "id": "Stone015",
+      "type": "Stone",
+      "title": "The Gossip-Loving Watcher",
+      "hint": "It is said that the one listening carefully for gossip from the depths of the earth joyfully spins and stretches...",
+      "solution": "The one listening carefully for gossip from the depths of the earth was a gossip stone in a hidden hole in Hyrule Field.",
+      "position": null
+    },
+    {
+      "id": "Stone016",
+      "type": "Stone",
+      "title": "The Sorrow-Speaking Watcher",
+      "hint": "It is said that the one speaking of quiet sorrow joyfully wobbles from side to side...",
+      "solution": "The one speaking of quiet sorrow was a gossip stone standing in Castle Town.",
+      "position": null
+    },
+    {
+      "id": "Stone017",
+      "type": "Stone",
+      "title": "The Delight-Speaking Watcher",
+      "hint": "It is said that the one who speaks of quiet delight joyfully spins and stretches...",
+      "solution": "The one speaking of quiet delight was a gossip stone standing in Castle Town.",
+      "position": null
+    },
+    {
+      "id": "Stone018",
+      "type": "Stone",
+      "title": "The Anger-Speaking Watcher",
+      "hint": "It is said that the one speaking of quiet anger joyfully surrenders to the hammer...",
+      "solution": "The one speaking of quiet anger was a gossip stone standing in Castle Town.",
+      "position": null
+    },
+    {
+      "id": "Stone019",
+      "type": "Stone",
+      "title": "The Joy-Speaking Watcher",
+      "hint": "It is said that the one speaking of quiet joy joyfully jumps to the skies...",
+      "solution": "The one speaking of quiet joy was a gossip stone standing in Castle Town.",
+      "position": null
+    },
+    {
+      "id": "Stone020",
+      "type": "Stone",
+      "title": "The Hidden-Stone Watcher",
+      "hint": "It is said that an observer unknown to even those of the royal family joyfully jumps to the skies...",
+      "solution": "An observer unknown to even those of the royal family was a gossip stone in a hidden hole within Hyrule Castle.",
+      "position": null
+    },
+    {
+      "id": "Stone021",
+      "type": "Stone",
+      "title": "The Evaluating Watcher",
+      "hint": "It is said that the one taking stock of the royal family's guests joyfully wobbles from side to side...",
+      "solution": "The one taking stock of the royal family's guests was a gossip stone that took up position beside the gate to Hyrule Castle.",
+      "position": null
+    },
+    {
+      "id": "Stone022",
+      "type": "Stone",
+      "title": "The Wisteria-Trellis Watcher",
+      "hint": "It is said that the one gazing at the wisteria flowers joyfully bounces up and down...",
+      "solution": "The one gazing at the wisteria flowers was a gossip stone near the wisteria trellis in Hyrule Castle.",
+      "position": null
+    },
+    {
+      "id": "Stone023",
+      "type": "Stone",
+      "title": "The Reclusive Watcher",
+      "hint": "It is said that the one hiding in a Sheikah village joyfully jumps to the skies...",
+      "solution": "The one hiding in a Sheikah village was a gossip stone in a hidden hole in Kakariko Village.",
+      "position": null
+    },
+    {
+      "id": "Stone024",
+      "type": "Stone",
+      "title": "The Shadow Watcher",
+      "hint": "It is said that the one blending into the dark night joyfully surrenders to the hammer...",
+      "solution": "The one blending into the dark night was a gossip stone standing at the entrance to the Shadow Temple.",
+      "position": null
+    },
+    {
+      "id": "Stone025",
+      "type": "Stone",
+      "title": "The Mountain-Climbing Watcher",
+      "hint": "It is said that the one escaping the rain of volcanic rocks joyfully jumps to the skies...",
+      "solution": "The one escaping the rain of volcanic rocks was a gossip stone standing on the Death Mountain Trail.",
+      "position": null
+    },
+    {
+      "id": "Stone026",
+      "type": "Stone",
+      "title": "The Cow-Protecting Watcher",
+      "hint": "It is said that the one watching over a traveler wandering about in the dark joyfully spins and stretches...",
+      "solution": "The one watching over a traveler wandering about in the dark was a gossip stone in a hidden hole along a mountain trail.",
+      "position": null
+    },
+    {
+      "id": "Stone027",
+      "type": "Stone",
+      "title": "The Rock-Spring Watcher",
+      "hint": "It is said that the one lingering at the discovery of spring water flowing in a scorching-hot land joyfully wobbles from side to side...",
+      "solution": "The one lingering at the discovery of spring water flowing in a scorching-hot land was a gossip stone in a hidden hole in a crater.",
+      "position": null
+    },
+    {
+      "id": "Stone028",
+      "type": "Stone",
+      "title": "The Flame Watcher",
+      "hint": "It is said that the one enduring obscurity in scorching heat joyfully surrenders to the hammer...",
+      "solution": "The one enduring obscurity in scorching heat was a gossip stone standing in the crater of Death Mountain.",
+      "position": null
+    },
+    {
+      "id": "Stone029",
+      "type": "Stone",
+      "title": "The Goron Watcher",
+      "hint": "It is said that the keen-eyed one lingering among the Gorons joyfully surrenders to the hammer...",
+      "solution": "The keen-eyed one lingering among the Gorons was a gossip stone standing in Goron City.",
+      "position": null
+    },
+    {
+      "id": "Stone030",
+      "type": "Stone",
+      "title": "The Blacksmith Watcher",
+      "hint": "It is said that the one guarding the immovable one joyfully bounces up and down...",
+      "solution": "The one guarding the immovable one was a gossip stone standing beside Medigoron.",
+      "position": null
+    },
+    {
+      "id": "Stone031",
+      "type": "Stone",
+      "title": "The Meal Watcher",
+      "hint": "It is said that the one expressing interest in rock roast joyfully jumps to the skies...",
+      "solution": "The one expressing interest in rock roast was a gossip stone standing in Dodongo Cavern.",
+      "position": null
+    },
+    {
+      "id": "Stone032",
+      "type": "Stone",
+      "title": "The Clear-Stream Watcher",
+      "hint": "It is said that the one listening carefully to the murmuring of a clear stream joyfully wobbles from side to side...",
+      "solution": "The one listening carefully to the murmuring of a clear stream was a gossip stone standing on the Zora River.",
+      "position": null
+    },
+    {
+      "id": "Stone033",
+      "type": "Stone",
+      "title": "The Grotto Watcher",
+      "hint": "It is said that the one who listens carefully to the sounds of water running down bare rock joyfully spins and stretches...",
+      "solution": "The one who listens carefully to the sounds of water running down bare rock was a gossip stone standing in a hidden hole on the Zora River.",
+      "position": null
+    },
+    {
+      "id": "Stone034",
+      "type": "Stone",
+      "title": "The Waterfall Watcher",
+      "hint": "It is said that the one refusing sleep joyfully wobbles from side to side...",
+      "solution": "The one refusing sleep was a gossip stone standing below the Sleepless Waterfall.",
+      "position": null
+    },
+    {
+      "id": "Stone035",
+      "type": "Stone",
+      "title": "The History Watcher",
+      "hint": "It is said that the one residing by the folk of the water joyfully bounces up and down...",
+      "solution": "The one residing by the folk of the water was a gossip stone standing in Zora Domain.",
+      "position": null
+    },
+    {
+      "id": "Stone036",
+      "type": "Stone",
+      "title": "The Great Fairy Watcher",
+      "hint": "It is said that the one watching over the prospects of the Great Fairy joyfully wobbles from side to side...",
+      "solution": "The one watching over the prospects of the Great Fairy was a gossip stone in Zora Fountain.",
+      "position": null
+    },
+    {
+      "id": "Stone037",
+      "type": "Stone",
+      "title": "The Fountain Watcher",
+      "hint": "It is said that the one watching over the transience of a fountain joyfully spins and stretches...",
+      "solution": "The one watching over the transience of a fountain was a gossip stone standing in Zora Fountain.",
+      "position": null
+    },
+    {
+      "id": "Stone038",
+      "type": "Stone",
+      "title": "The Valley-Crossing Watcher",
+      "hint": "It is said that the one being washed by a spray of water at the floor of a red valley joyfully jumps to the skies...",
+      "solution": "The one being washed by a spray of water at the floor of a red valley was a gossip stone standing at the bottom of Gerudo Valley.",
+      "position": null
+    },
+    {
+      "id": "Stone039",
+      "type": "Stone",
+      "title": "The Heat-Haze Watcher",
+      "hint": "It is said that the one guarding the goddess of the sand joyfully surrenders to the hammer...",
+      "solution": "The one guarding the goddess of the sand was a gossip stone standing beside the Evil Desert Colossus.",
+      "position": null
+    }
+  ]
+}

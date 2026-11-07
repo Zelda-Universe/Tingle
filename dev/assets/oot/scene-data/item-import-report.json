@@ -1,0 +1,279 @@
+{
+  "existingChests": 102,
+  "recategorized": 67,
+  "added": 100,
+  "counts": {
+    "64021": 72,
+    "64022": 6,
+    "64023": 6,
+    "64024": 8,
+    "64025": 10,
+    "64026": 10,
+    "64027": 27,
+    "64028": 5,
+    "64061": 3,
+    "64062": 7,
+    "64063": 19,
+    "64064": 18,
+    "64065": 3,
+    "64066": 8
+  },
+  "skipped": [
+    {
+      "key": "chest:196331300747102419",
+      "item": "Five Bombchus",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:1883068192328530224",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:2436665354602612279",
+      "item": "Blue Rupee",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:3717705376223508790",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:3750231902048775592",
+      "item": "Five Bombs",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:4320448574091221496",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:4372363658229299619",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:4519534997122863169",
+      "item": "Blue Rupee",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:4709724720801091788",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:5329807728555596183",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:6897789835137994741",
+      "item": "Red Rupee",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:8186301369655588602",
+      "item": "Red Rupee",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:9911316961118170383",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:10696620323243142689",
+      "item": "Purple Rupee",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:10743352138513225188",
+      "item": "Red Rupee",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:11563468890171962383",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:11683433230229591151",
+      "item": "Red Rupee",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:11754783663699171680",
+      "item": "Business Scrub Seed",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:13501407288943710656",
+      "item": "Small Key",
+      "scenes": [
+        "GerudoTrainingGround"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:234006393181394602",
+      "item": "Red Rupee",
+      "scenes": [
+        "Graveyard_Adult"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:4322670163630771947",
+      "item": "Blue Rupee",
+      "scenes": [
+        "Graveyard_Adult"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:1029712040059298120",
+      "item": "Blue Rupee",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:4733634471038136588",
+      "item": "Green Rupee",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:7461796063704896255",
+      "item": "Blue Rupee",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:7899179288432849355",
+      "item": "Business Scrub Seed",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:14046623154429024571",
+      "item": "Blue Rupee",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:14404733996390762670",
+      "item": "Five Bombchus",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:14962432460641118089",
+      "item": "Red Rupee",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:15320975652699461295",
+      "item": "Small Key",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:16913531450403950487",
+      "item": "Five Arrows",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:17092385671602176550",
+      "item": "Boss Key",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    },
+    {
+      "key": "chest:18277713685010400796",
+      "item": "Five Arrows",
+      "scenes": [
+        "InsideGanonCastle"
+      ],
+      "reason": "No supported artwork placement; not guessed"
+    }
+  ]
+}

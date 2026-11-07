@@ -1,0 +1,199 @@
+{
+  "source": "MrCheeze/oot-switch2-tools Banc and event scripts",
+  "songs": [
+    {
+      "id": 64703001,
+      "title": "Zelda's Lullaby",
+      "scene": "HyruleCastle",
+      "position": [
+        5.134531497955322,
+        126.82830810546875,
+        -236.39134216308594
+      ],
+      "gameId": "2031896050380468341",
+      "source": "DoorOfTime_MeetImpa_StartPos",
+      "event": "Dm_MelodyGet_Zelda",
+      "text": "Impa teaches this song after meeting Princess Zelda.",
+      "proxy": null
+    },
+    {
+      "id": 64703002,
+      "title": "Epona's Song",
+      "scene": "HyruleField_Child",
+      "position": [
+        -91.87653350830078,
+        150.62486267089844,
+        245.3553009033203
+      ],
+      "gameId": "16230097737274633186",
+      "source": "Npc_Hylia_Malon_Child",
+      "event": "SubEvent_GetEponaSong",
+      "text": "Show Malon your ocarina at Lon Lon Ranch to learn her song.",
+      "proxy": null
+    },
+    {
+      "id": 64703003,
+      "title": "Saria's Song",
+      "scene": "SacredForestMeadow_Child",
+      "position": [
+        -2.1510000228881836,
+        114.4000015258789,
+        -99.88600158691406
+      ],
+      "gameId": "11400624851672845615",
+      "source": "Dm_MelodyGet_Saria_in_front_of_Saria",
+      "event": "Dm_MelodyGet_Saria",
+      "text": "Learn this song from Saria in the Sacred Forest Meadow.",
+      "proxy": null
+    },
+    {
+      "id": 64703004,
+      "title": "Sun's Song",
+      "scene": "Graveyard_Child",
+      "position": [
+        48.364715576171875,
+        104.557861328125,
+        2.6127378940582275
+      ],
+      "gameId": "2245150612896652432",
+      "source": "GraveYard_Monument_00",
+      "event": "Dm_MelodyGet_Sun",
+      "text": "Enter the Royal Family’s Tomb and read the inscription to learn this song.",
+      "proxy": "Shown at the tomb entrance because the interior is not drawn on the overworld map."
+    },
+    {
+      "id": 64703005,
+      "title": "Song of Time",
+      "scene": "HyruleField_Child",
+      "position": [
+        17.978282928466797,
+        167.31072998046875,
+        52.717491149902344
+      ],
+      "gameId": "4847465768312838458",
+      "source": "EventRequestActor",
+      "event": "Dm_MelodyGet_Time",
+      "text": "Recover the Ocarina of Time to learn the song from Zelda’s message.",
+      "proxy": null
+    },
+    {
+      "id": 64703006,
+      "title": "Song of Storms",
+      "scene": "KakarikoVillage_Adult",
+      "position": [
+        1.5234298706054688,
+        107.64128112792969,
+        43.92481994628906
+      ],
+      "gameId": "14052687419297808140",
+      "source": "OcarinaPoint_Kakariko_WindmillHouse_Adult",
+      "event": "Dm_MelodyGet_Storm",
+      "text": "Show your ocarina to the music man inside the windmill as an adult.",
+      "proxy": null
+    },
+    {
+      "id": 64703007,
+      "title": "Minuet of Forest",
+      "scene": "SacredForestMeadow_Adult",
+      "position": [
+        -7.004223823547363,
+        114.4000015258789,
+        -84.31685638427734
+      ],
+      "gameId": "2635950690175086930",
+      "source": "Dm_MelodyGet_Forest_Position",
+      "event": "Dm_MelodyGet_Forest",
+      "text": "Learn this warp song from Sheik in the Sacred Forest Meadow.",
+      "proxy": null
+    },
+    {
+      "id": 64703008,
+      "title": "Bolero of Fire",
+      "scene": "DeathMountainCrater_Adult",
+      "position": [
+        -17.459192276000977,
+        113.95458221435547,
+        -10.189482688903809
+      ],
+      "gameId": "7405635065131269393",
+      "source": "Dm_MelodyGet_Fire_LinkPosition",
+      "event": "Dm_MelodyGet_Fire",
+      "text": "Learn this warp song from Sheik in Death Mountain Crater.",
+      "proxy": null
+    },
+    {
+      "id": 64703009,
+      "title": "Serenade of Water",
+      "scene": "IceCavern",
+      "position": [
+        -46.22481155395508,
+        109.70999908447266,
+        42.527000427246094
+      ],
+      "gameId": "6859289214373847284",
+      "source": "Obj_TBox_A_02_NoBake",
+      "event": "Dm_MelodyGet_Water",
+      "text": "Learn this warp song from Sheik in the Ice Cavern after obtaining the Iron Boots.",
+      "proxy": null
+    },
+    {
+      "id": 64703010,
+      "title": "Requiem of Spirit",
+      "scene": "DesertColossus_Child",
+      "position": [
+        -155.76116943359375,
+        97.90108489990234,
+        10
+      ],
+      "gameId": "6553787065434503832",
+      "source": "EventRequestActor",
+      "event": "Dm_MelodyGet_Spilit",
+      "text": "Learn this warp song from Sheik after leaving the Spirit Temple.",
+      "proxy": null
+    },
+    {
+      "id": 64703011,
+      "title": "Prelude of Light",
+      "scene": "Market_Adult",
+      "position": [
+        51.63392639160156,
+        104.65219116210938,
+        -33.9659423828125
+      ],
+      "gameId": "17258643134046384342",
+      "source": "Dm_TimeTemple_0065Destination",
+      "event": "Dm_MelodyGet_Shine",
+      "text": "Return to the Temple of Time and learn this warp song from Sheik.",
+      "proxy": "Shown at the Temple of Time entrance; the lesson takes place inside."
+    },
+    {
+      "id": 64703012,
+      "title": "Scarecrow's Song",
+      "scene": "LakeHylia_Child",
+      "position": [
+        -96.74714660644531,
+        133.46932983398438,
+        434.1990966796875
+      ],
+      "gameId": "8913377100760149895",
+      "source": "Npc_Pierre",
+      "event": "SubEvent_GetScarecrow",
+      "text": "Play your own tune for the scarecrow at Lake Hylia as a child, then play it again as an adult.",
+      "proxy": null
+    },
+    {
+      "id": 64703013,
+      "title": "Nocturne of Shadow",
+      "scene": "KakarikoVillage_Adult",
+      "position": [
+        -51.099998474121094,
+        96.62000274658203,
+        44.290000915527344
+      ],
+      "gameId": "Dm_MelodyGet_Shadow",
+      "source": "EventPlayerWarpToTargetPosAndRot",
+      "event": "Dm_MelodyGet_Shadow",
+      "text": "Learn this warp song from Sheik after the burning-village event in Kakariko Village."
+    }
+  ]
+}

@@ -2,6 +2,19 @@
  "description": "Placed objects OoT markers are made from, from zeldamods' Owl Object Map (https://objmap-oot.zeldamods.org), saved by fetch-objects.cjs. pos is the game position [x, y, z]; floor is a dungeon object's floor.",
  "objects": [
   {
+   "type": "thought",
+   "scene": "BottomOfTheWell",
+   "hash": "0x458e9f5a577ee18b",
+   "name": "HrlField_Note_23",
+   "label": "HrlField_Note_23",
+   "pos": [
+    -54.27,
+    101,
+    -24.66
+   ],
+   "floor": "B1"
+  },
+  {
    "type": "silver",
    "scene": "BottomOfTheWell",
    "hash": "0x688ba7ae82f7d174",
@@ -268,6 +281,18 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "DeathMountainTrail_Child",
+   "hash": "0x80d0040e8e746bda",
+   "name": "HrlField_Note_14",
+   "label": "HrlField_Note_14",
+   "pos": [
+    -9.96,
+    121.22,
+    -20
+   ]
+  },
+  {
    "type": "owl",
    "scene": "DeathMountainTrail_Child",
    "hash": "0xacf346b9c2ba716f",
@@ -328,6 +353,18 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "DesertColossus_Adult",
+   "hash": "0x948f686d158bf15c",
+   "name": "HrlField_Note_25",
+   "label": "HrlField_Note_25",
+   "pos": [
+    -159.19,
+    110.86,
+    10.3
+   ]
+  },
+  {
    "type": "bean",
    "scene": "DesertColossus_Adult",
    "hash": "0xc83ecf87be2b0886",
@@ -361,6 +398,18 @@
     -125.96,
     93.91,
     10.47
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "DesertColossus_Child",
+   "hash": "0xa92ce5138f6afab6",
+   "name": "HrlField_Note_25",
+   "label": "HrlField_Note_25",
+   "pos": [
+    -159.19,
+    110.86,
+    10.3
    ]
   },
   {
@@ -427,6 +476,45 @@
     0
    ],
    "floor": "1F"
+  },
+  {
+   "type": "thought",
+   "scene": "FireTemple",
+   "hash": "0xd04c1983fc503a8a",
+   "name": "HrlField_Note_20",
+   "label": "HrlField_Note_20",
+   "pos": [
+    -63.75,
+    194.3,
+    10.79
+   ],
+   "floor": "5F"
+  },
+  {
+   "type": "thought",
+   "scene": "ForestTemple",
+   "hash": "0x176190d25ee31f73",
+   "name": "HrlField_Note_19",
+   "label": "HrlField_Note_19",
+   "pos": [
+    62.6,
+    124.51,
+    -53.86
+   ],
+   "floor": "3F"
+  },
+  {
+   "type": "thought",
+   "scene": "ForestTemple",
+   "hash": "0xc3b961bb3a785c28",
+   "name": "HrlField_Note_19",
+   "label": "HrlField_Note_19",
+   "pos": [
+    55.01,
+    119.9,
+    -53.86
+   ],
+   "floor": "2F"
   },
   {
    "type": "heart",
@@ -574,6 +662,30 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "Graveyard_Adult",
+   "hash": "0x1d6ddbfa2fdbedbe",
+   "name": "HrlField_Note_16",
+   "label": "HrlField_Note_16",
+   "pos": [
+    53.11,
+    104.99,
+    4.01
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "Graveyard_Adult",
+   "hash": "0x447ef86a448f5988",
+   "name": "HrlField_Note_16",
+   "label": "HrlField_Note_16",
+   "pos": [
+    50.83,
+    107.44,
+    2.64
+   ]
+  },
+  {
    "type": "warp",
    "scene": "Graveyard_Adult",
    "hash": "0x518d32eca4f6483b",
@@ -583,6 +695,18 @@
     64.65,
     108.52,
     2.48
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "Graveyard_Adult",
+   "hash": "0xe8621ebf8328bdd2",
+   "name": "HrlField_Note_26",
+   "label": "HrlField_Note_26",
+   "pos": [
+    142.35,
+    98.31,
+    5.52
    ]
   },
   {
@@ -610,6 +734,18 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "Graveyard_Child",
+   "hash": "0x7b7b1c8731810944",
+   "name": "HrlField_Note_16",
+   "label": "HrlField_Note_16",
+   "pos": [
+    50.83,
+    107.44,
+    2.64
+   ]
+  },
+  {
    "type": "warp",
    "scene": "Graveyard_Child",
    "hash": "0x8416423cc81c5892",
@@ -619,6 +755,30 @@
     64.65,
     108.52,
     2.48
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "Graveyard_Child",
+   "hash": "0xc68c752f78453d1c",
+   "name": "HrlField_Note_16",
+   "label": "HrlField_Note_16",
+   "pos": [
+    53.11,
+    104.99,
+    4.01
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "Graveyard_Child",
+   "hash": "0xdb7fb76bb6e66c00",
+   "name": "HrlField_Note_26",
+   "label": "HrlField_Note_26",
+   "pos": [
+    142.35,
+    98.31,
+    5.52
    ]
   },
   {
@@ -709,6 +869,18 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "HyruleField_Adult",
+   "hash": "0x3b522cc642ece6cb",
+   "name": "HrlField_Note_15",
+   "label": "HrlField_Note_15",
+   "pos": [
+    -152.82,
+    151.22,
+    259.12
+   ]
+  },
+  {
    "type": "gossip",
    "scene": "HyruleField_Adult",
    "hash": "0x3c3b93363e847b6d",
@@ -769,6 +941,42 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "HyruleField_Adult",
+   "hash": "0x67577327d25cf4a2",
+   "name": "HrlField_Note_07",
+   "label": "HrlField_Note_07",
+   "pos": [
+    50.36,
+    149.38,
+    18.26
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Adult",
+   "hash": "0x97932088288eab31",
+   "name": "HrlField_Note_12",
+   "label": "HrlField_Note_12",
+   "pos": [
+    49.96,
+    126.6,
+    346.22
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Adult",
+   "hash": "0xa6902f6ac9a40c40",
+   "name": "HrlField_Note_11",
+   "label": "HrlField_Note_11",
+   "pos": [
+    -211.51,
+    135.01,
+    138.6
+   ]
+  },
+  {
    "type": "gossip",
    "scene": "HyruleField_Adult",
    "hash": "0xafcce44ad3e46cc1",
@@ -817,6 +1025,30 @@
    ]
   },
   {
+   "type": "bottle",
+   "scene": "HyruleField_Child",
+   "hash": "0x069478be843d2c62",
+   "name": "Obj_Bottle_Letter",
+   "label": "Bottle",
+   "pos": [
+    -151.62,
+    124.97,
+    461.04
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0x0e5f4e6697dd3f9d",
+   "name": "HrlField_Note_06",
+   "label": "HrlField_Note_06",
+   "pos": [
+    -295.72,
+    132.21,
+    560.61
+   ]
+  },
+  {
    "type": "owl",
    "scene": "HyruleField_Child",
    "hash": "0x0f2200e1200a2af2",
@@ -826,6 +1058,18 @@
     -90.69,
     144.84,
     383.82
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0x158c15b939e46485",
+   "name": "HrlField_Note_04",
+   "label": "HrlField_Note_04",
+   "pos": [
+    85.41,
+    153.47,
+    44.5
    ]
   },
   {
@@ -853,6 +1097,18 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0x333c7c8cdec8fa96",
+   "name": "HrlField_Note_00",
+   "label": "HrlField_Note_00",
+   "pos": [
+    152.24,
+    155.13,
+    27.44
+   ]
+  },
+  {
    "type": "owl",
    "scene": "HyruleField_Child",
    "hash": "0x3714d5caf5211e65",
@@ -862,6 +1118,30 @@
     184.34,
     166.76,
     39.91
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0x39468760d23367a2",
+   "name": "HrlField_Note_01",
+   "label": "HrlField_Note_01",
+   "pos": [
+    -89.25,
+    151.19,
+    207.02
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0x3cb53aaea4fc6ade",
+   "name": "HrlField_Note_12",
+   "label": "HrlField_Note_12",
+   "pos": [
+    49.96,
+    126.6,
+    346.22
    ]
   },
   {
@@ -976,6 +1256,30 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0x946c14cd4ffb2e85",
+   "name": "HrlField_Note_15",
+   "label": "HrlField_Note_15",
+   "pos": [
+    -152.82,
+    151.22,
+    259.12
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0x9683cec5ce9fc24f",
+   "name": "HrlField_Note_08",
+   "label": "HrlField_Note_08",
+   "pos": [
+    -6.04,
+    147.11,
+    405.59
+   ]
+  },
+  {
    "type": "gossip",
    "scene": "HyruleField_Child",
    "hash": "0x9736cd928f4cd7e3",
@@ -1012,6 +1316,30 @@
    ]
   },
   {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0xb07510e989d841b9",
+   "name": "HrlField_Note_09",
+   "label": "HrlField_Note_09",
+   "pos": [
+    187.15,
+    158.09,
+    186.17
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0xb260666a6502c656",
+   "name": "HrlField_Note_02",
+   "label": "HrlField_Note_02",
+   "pos": [
+    -51.96,
+    146.21,
+    17.12
+   ]
+  },
+  {
    "type": "scrub",
    "scene": "HyruleField_Child",
    "hash": "0xb30ad19da5920d20",
@@ -1039,6 +1367,19 @@
     137.78,
     182.1
    ]
+  },
+  {
+   "type": "bottle",
+   "scene": "HyruleField_Child",
+   "hash": "0xc230e4b1100e9e76",
+   "name": "Npc_Hylia_Talon_Child",
+   "label": "Talon (reward: Bottle of Milk)",
+   "pos": [
+    -52.44,
+    150.72,
+    199.32
+   ],
+   "rewardEvidence": "https://github.com/MrCheeze/oot-switch2-tools/blob/c9027ee50e7efd36cc3109d5990f170b7f0b4611/event/Minigame_FindOutCucco.c"
   },
   {
    "type": "gossip",
@@ -1085,6 +1426,31 @@
     "Item_Bottle_Bug",
     "Item_ScrubBusinessSeed"
    ]
+  },
+  {
+   "type": "thought",
+   "scene": "HyruleField_Child",
+   "hash": "0xf6c3c83a050238f3",
+   "name": "HrlField_Note_10",
+   "label": "HrlField_Note_10",
+   "pos": [
+    -141.71,
+    147.83,
+    29.69
+   ]
+  },
+  {
+   "type": "thought",
+   "scene": "IceCavern",
+   "hash": "0x0498aa0a0e5733df",
+   "name": "HrlField_Note_21",
+   "label": "HrlField_Note_21",
+   "pos": [
+    79.08,
+    104.18,
+    -3.6
+   ],
+   "floor": "1F"
   },
   {
    "type": "silver",
@@ -1351,6 +1717,19 @@
     79.33,
     13.94
    ]
+  },
+  {
+   "type": "bottle",
+   "scene": "KakarikoVillage_Child",
+   "hash": "0xa7f7412a1bcbe820",
+   "name": "Npc_Hylia_049_Child",
+   "label": "Cucco Lady (reward: Empty Bottle)",
+   "pos": [
+    -72.1,
+    99.32,
+    73.15
+   ],
+   "rewardEvidence": "https://github.com/MrCheeze/oot-switch2-tools/blob/c9027ee50e7efd36cc3109d5990f170b7f0b4611/event/Minigame_CatchCucco.c"
   },
   {
    "type": "gossip",
@@ -1788,6 +2167,19 @@
    ]
   },
   {
+   "type": "bottle",
+   "scene": "Market_Adult",
+   "hash": "0x7780c267933e8b38",
+   "name": "Npc_Hylia_048_BottleShop",
+   "label": "Poe Collector (reward: Empty Bottle)",
+   "pos": [
+    15.06,
+    102.8,
+    54.13
+   ],
+   "rewardEvidence": "https://github.com/MrCheeze/oot-switch2-tools/blob/c9027ee50e7efd36cc3109d5990f170b7f0b4611/event/Npc_Hylia_048_BottleShop.c"
+  },
+  {
    "type": "warp",
    "scene": "Market_Adult",
    "hash": "0xee1c7e854592b23e",
@@ -1821,6 +2213,18 @@
     39.38,
     102.79,
     -9.59
+   ]
+  },
+  {
+   "type": "bottle",
+   "scene": "Market_Child",
+   "hash": "0x55bae8557daa1090",
+   "name": "Weapon_Bottle",
+   "label": "Empty Bottle",
+   "pos": [
+    22.34,
+    101.18,
+    6.56
    ]
   },
   {
@@ -2218,6 +2622,19 @@
    "floor": "B3"
   },
   {
+   "type": "thought",
+   "scene": "ShadowTemple",
+   "hash": "0xfd8c8f7ad5835678",
+   "name": "HrlField_Note_24",
+   "label": "HrlField_Note_24",
+   "pos": [
+    16.91,
+    57.37,
+    86.55
+   ],
+   "floor": "B3"
+  },
+  {
    "type": "silver",
    "scene": "SpiritTemple",
    "hash": "0x02f8a8f3bf0abf64",
@@ -2437,6 +2854,19 @@
     -88.05
    ],
    "floor": "3F"
+  },
+  {
+   "type": "thought",
+   "scene": "WaterTemple",
+   "hash": "0xcb1dbd0d688ddb14",
+   "name": "HrlField_Note_22",
+   "label": "HrlField_Note_22",
+   "pos": [
+    -54.09,
+    105.67,
+    -11.5
+   ],
+   "floor": "1F"
   },
   {
    "type": "gossip",
@@ -2689,6 +3119,100 @@
     100.32,
     -11.86
    ]
+  },
+  {
+   "type": "thought",
+   "scene": "ZoraRiver_Child",
+   "hash": "0xf5a5386a3379dda5",
+   "name": "HrlField_Note_13",
+   "label": "HrlField_Note_13",
+   "pos": [
+    -27.17,
+    105.17,
+    -30.93
+   ]
   }
+ ],
+ "scannedScenes": [
+  "BottomOfTheWell",
+  "DeathMountainCrater_Adult",
+  "DeathMountainCrater_Child",
+  "DeathMountainTrail_Adult",
+  "DeathMountainTrail_Child",
+  "DesertColossus_Adult",
+  "DesertColossus_Child",
+  "DodongoCavern",
+  "BarinadeStage",
+  "BigOctoStage",
+  "BongoBongoStage",
+  "BossRushIntervalRoom",
+  "DarkLinkStage",
+  "DeadHandStage",
+  "DinolfosStage",
+  "DodongoStage",
+  "EnemyMuseum",
+  "FlareDancerStage",
+  "GanonStage",
+  "GanondorfStage",
+  "GerudoThiefStage",
+  "GohmaStage",
+  "IronKnuckleBlackStage",
+  "IronKnuckleWhiteStage",
+  "LizalfosStage",
+  "MegStage",
+  "MorphaStage",
+  "NaboruStage",
+  "PhantomGanonStage",
+  "StalfosStage",
+  "StalfosWeakStage",
+  "TwinrovaStage",
+  "VolvagiaStage",
+  "WolfosStage",
+  "WolfosWhiteStage",
+  "FireTemple",
+  "ForestTemple",
+  "CrumblingGanonCastle",
+  "FinalBattleField",
+  "GanonCastle",
+  "GerudoFortress_Adult",
+  "GerudoTrainingGround",
+  "GerudoValley_Adult",
+  "GerudoValley_Child",
+  "GoronCity_Adult",
+  "GoronCity_Child",
+  "Graveyard_Adult",
+  "Graveyard_Child",
+  "HountedWasteland_Adult",
+  "HountedWasteland_Child",
+  "HyruleCastle",
+  "HyruleField_Adult",
+  "HyruleField_Child",
+  "IceCavern",
+  "InsideGanonCastle",
+  "InsideJabuJabuBelly",
+  "InsideTheDekuTree",
+  "KakarikoVillage_Adult_Alternative",
+  "KakarikoVillage_Adult",
+  "KakarikoVillage_Child",
+  "Demo_ShootingLocation_Tapestry_ED",
+  "KokiriForest_Adult",
+  "KokiriForest_Child",
+  "LostWood_Adult",
+  "LostWood_Child",
+  "Market_Adult",
+  "Market_Child",
+  "SacredForestMeadow_Adult",
+  "SacredForestMeadow_Child",
+  "SageRoom",
+  "ShadowTemple",
+  "SpiritTemple",
+  "WaterTemple",
+  "ZoraDomain_Adult_Alternative",
+  "ZoraDomain_Adult",
+  "ZoraDomain_Child",
+  "ZoraFountain_Adult",
+  "ZoraFountain_Child",
+  "ZoraRiver_Adult",
+  "ZoraRiver_Child"
  ]
 }

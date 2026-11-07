@@ -93,6 +93,12 @@
   border-radius: 50%;
   pointer-events: none;
 }
+/* On the map, badges with a shape get a white outline, so they stand out from
+   the artwork (OoT's brown locations on brown roofs especially). Treasure has
+   no shape behind its glyph, so none. */
+.leaflet-marker-pane .poi-badge::after {
+  box-shadow: 0 0 0 1.5px #fff;
+}
 .poi-travel { --poi-fill: #4395f7; }
 .poi-travel::after { border-radius: 17%; transform: rotate(45deg) scale(.76); }
 /* A diamond has less usable corner space than a circle. Enlarge only its
@@ -176,6 +182,10 @@
   box-shadow: none !important;
   text-shadow: none !important;
   -webkit-text-stroke: 0 !important;
+}
+/* Its badges still take the map's white outline, like every game's. */
+.leaflet-marker-pane .poi-badge.poi-eow::after {
+  box-shadow: 0 0 0 1.5px #fff !important;
 }
 .poi-eow.category-icon,
 .poi-eow.circleMap-medium,

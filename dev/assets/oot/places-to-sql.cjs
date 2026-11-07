@@ -26,7 +26,7 @@ const places = require('./scene-data/facility-names.json').places;
 // [id, parent, name, image, colour]: images and colours as BotW's.
 const CATEGORIES = [
   [64020, null, 'Treasure', 'BotW_Treasure-Chest', '#3cbc75'],
-  [64021, 64020, 'Treasure Chests', 'BotW_Treasure-Chest', '#3cbc75'],
+  [64021, 64020, 'Treasure Chests', 'OoT_Chest', '#3cbc75'],
   [64030, null, 'Locations', 'BotW_Locations', '#8e72b9'],
   [64031, 64030, 'Shops', 'General_Store', '#8e72b9'],
   [64032, 64030, 'Great Fairy Fountains', 'BotW_Great-Fairy', '#8e72b9'],

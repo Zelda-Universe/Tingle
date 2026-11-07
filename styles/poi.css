@@ -1,17 +1,25 @@
 /* Shared POI treatments for Link's Awakening, BotW, TotK and EoW. */
 /* OoT's own glyphs: SVGs in images/icons/oot/, drawn in the badge's colour. */
-.icon-OoT_Poe::before, .icon-OoT_Kaepora::before, .icon-OoT_SilverRupee::before, .icon-OoT_GossipStone::before {
+.icon-OoT_Poe::before, .icon-OoT_Kaepora::before, .icon-OoT_SilverRupee::before, .icon-OoT_GossipStone::before, .icon-OoT_Chest::before {
   content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:block; width:1em; height:1em;
   background:currentColor; -webkit-mask:var(--oot-glyph) center / contain no-repeat; mask:var(--oot-glyph) center / contain no-repeat; }
 .icon-OoT_Poe { --oot-glyph:url('images/icons/oot/Poe.svg'); }
 .icon-OoT_Kaepora { --oot-glyph:url('images/icons/oot/Kaepora.svg'); }
 .icon-OoT_SilverRupee { --oot-glyph:url('images/icons/oot/SilverRupee.svg'); }
 .icon-OoT_GossipStone { --oot-glyph:url('images/icons/oot/GossipStone.svg'); }
+.icon-OoT_Chest { --oot-glyph:url('images/icons/oot/Chest.svg'); }
 .circleMap-medium > [class*='icon-OoT_'], .circleMap-small > [class*='icon-OoT_'] { position:absolute; inset:0; }
 .category-selector .category-icon[class*='icon-OoT_']::before { width:1.18em; height:1.18em; }
-.category-selector .category-icon.icon-OoT_Kaepora::before,
-.category-icon.icon-OoT_Kaepora::before { width:1.08em; height:1.08em; }
-.poi-badge > .icon-OoT_Kaepora::before { width:.92em; height:.92em; }
+.category-selector .category-icon.icon-OoT_Chest::before { width:1em; height:1em; }
+/* Keep the owl at its original size; trim only artwork crossing the backing
+   diamond. Do not clip the marker itself (its completion badge lives outside). */
+.category-icon.icon-OoT_Kaepora::before {
+  clip-path:polygon(50% -30%, 130% 50%, 50% 130%, -30% 50%);
+}
+.circleMap-medium.poi-travel > .icon-OoT_Kaepora,
+.circleMap-small.poi-travel > .icon-OoT_Kaepora {
+  clip-path:polygon(50% -13%, 113% 50%, 50% 113%, -13% 50%);
+}
 .category-selector .category-icon.icon-OoT_SilverRupee::before,
 .category-icon.icon-OoT_SilverRupee::before { width:.94em; height:.94em; }
 .poi-badge > .icon-OoT_SilverRupee::before { width:.8em; height:.8em; }

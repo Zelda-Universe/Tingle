@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261106-144';
+const CACHE_VERSION = '20261106-146';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +8,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=OoT',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261106-oot-78',
-  './res.php?type=css&v=20261106-oot-78',
+  './res.php?type=javascript&v=20261106-oot-80',
+  './res.php?type=css&v=20261106-oot-80',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -26,6 +26,7 @@ const OPTIONAL_ASSETS = [
   './images/icons/oot/SilverRupee.svg',
   './images/icons/oot/GossipStone.svg',
   './images/icons/oot/WarpPad.svg',
+  './images/icons/oot/Chest.svg',
   './fonts/icomoon.ttf?xz2wpa',
   './fonts/icomoon.woff?xz2wpa',
   ...['265406_1_0', '265406_0_0', '264CA8_2_0', '264CA8_1_0', '265406_2_0', '265406_3_0', '264CA8_0_0']

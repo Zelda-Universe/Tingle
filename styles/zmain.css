@@ -7012,6 +7012,10 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: #ff8c85;
 	font-size: 14px;
 }
+/* Hidden with no open reports: it mustn't hold space beside "Reports". */
+.admin-tab-count[hidden] {
+	display: none;
+}
 .admin-tab-count {
 	display: inline-block;
 	min-width: 18px;

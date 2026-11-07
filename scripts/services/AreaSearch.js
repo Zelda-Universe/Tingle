@@ -4,10 +4,10 @@ ZMap.prototype.getAreaSearchEntries = function() {
   this._attachAreaBorders();
   this.maps.forEach(function(layer) {
     var mapKey='map:'+layer.originalId;
-    var mapEntry={id:'map-'+layer.originalId,name:layer.ootGroupName || layer.title,description:'Map',
+    var mapEntry={id:'map-'+layer.originalId,name:layer.mapName || layer.title,description:'Map',
       areaDestination:true,mapDestination:true,mapId:layer.originalId,submapId:layer.defaultSubMapId,
       x:Number(this.mapOptions.centerX),y:Number(this.mapOptions.centerY),
-      iconURL:layer.options.iconURL,variant:layer.ootVariant || '',markerCategoryTypeId:3};
+      iconURL:layer.options.iconURL,variant:layer.submapName || '',markerCategoryTypeId:3};
     if(seen[mapKey]===undefined) {seen[mapKey]=entries.length;entries.push(mapEntry);}
     else if(layer.defaultSubMapId==current.subMapId) entries[seen[mapKey]]=mapEntry;
     // Named regions with borders (tower regions, and named areas without a
@@ -182,8 +182,8 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
   var page=$('<div class="area-detail-page"><h2 class="popupTitle"></h2><div class="area-description"></div><div class="area-marker-groups"></div></div>');
   page.find('h2').text(area.title || area.name);
   var activeLayer=control.currentMapLayer;
-  var variant=area.variant || (activeLayer && activeLayer.ootVariant);
-  var mapName=(activeLayer && (activeLayer.ootGroupName || activeLayer.title)) || '';
+  var variant=area.variant || (activeLayer && activeLayer.submapName);
+  var mapName=(activeLayer && (activeLayer.mapName || activeLayer.title)) || '';
   if(isOcarina(this.mapOptions.shortName)) {
     // Same as the server's title: one page per area or dungeon, any age or floor.
     document.title=(area.title || area.name)+' Map - Ocarina of Time Remake - Zelda Maps';
@@ -438,7 +438,7 @@ ZMap.prototype.updateRegionBorders = function() {
   var current=control.getCurrentMap(),layer=control.currentMapLayer;
   // A map pieced together from separate artwork (OoT's Hyrule) already shows
   // each area on its own: no borders, even for an open area page.
-  if(layer && layer.ootKind === 'world') return;
+  if(layer && layer.mapKind === 'world') return;
   var regions=this._layerRegions(layer).filter(function(region) {return region.submapId==current.subMapId;});
   if(!regions.length) return;
   var open=/^area-/.test(control.getContentType() || '') && this.selectedArea && this.selectedArea.region;
@@ -495,9 +495,9 @@ ZMap.prototype.markerAreaLink = function(marker) {
       return entry.region && entry.region.name===region.name && entry.region.submapId==region.submapId;
     }) || null};
   }
-  var layer=this.maps.find(function(layer) {return layer.originalId==marker.mapId && layer.ootKind;});
+  var layer=this.maps.find(function(layer) {return layer.originalId==marker.mapId && layer.mapKind;});
   if(layer) {
-    var name=layer.ootGroupName || layer.title;
+    var name=layer.mapName || layer.title;
     return {label:name,title:name,area:entries.find(function(entry) {
       return entry.mapDestination && entry.mapId==marker.mapId;
     }) || null};

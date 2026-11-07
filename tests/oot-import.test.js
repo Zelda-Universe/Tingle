@@ -1,31 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const read = name => JSON.parse(fs.readFileSync(path.join(__dirname,'../data/OoT',name+'.json'),'utf8'));
-
-test('OoT marker titles omit their area while retaining separate area metadata',()=>{
-  const convert=require('../dev/assets/oot/pois-to-markers.cjs');
-  const pois=require('../dev/assets/oot/pois.json');
-  const converted=convert(pois);
-  const marker=converted.find(m=>m.id==='64100010');
-  expect(marker.name).toBe('Piece of Heart - Windmill');
-  expect(JSON.parse(marker.gameData).areaName).toBe('Kakariko Village');
-  expect(converted.find(m=>m.id==='64100003').name).toBe('Piece of Heart - Tower');
-  expect(JSON.parse(converted.find(m=>m.id==='64100003').gameData).areaName).toBe('Lon Lon Ranch');
-  expect(converted.every(m=>JSON.parse(m.gameData).areaName)).toBe(true);
-  expect(converted.every(m=>!m.name.includes('—') && !m.tabText.includes('—'))).toBe(true);
-  expect(converted.every(m=>m.tabText.includes('<p>') && m.tabText.length>30)).toBe(true);
-});
-
-test('OoTR and legacy OoT both resolve to the pack and replace placeholder games',()=>{
-  const helper=path.resolve(__dirname,'../lib/common/oot_pack.php');
-  const script=`require ${JSON.stringify(helper)}; echo json_encode([ootPackIsGame('OoTR'),ootPackIsGame('OoT'),ootPackAppendGame([['id'=>'999','shortName'=>'OoTR'],['id'=>'998','shortName'=>'OoT']])]);`;
-  const result=JSON.parse(require('child_process').execFileSync('php',['-r',script],{encoding:'utf8'}));
-  expect(result[0]).toBe(true); expect(result[1]).toBe(true);
-  expect(result[2]).toHaveLength(1);
-  expect(result[2][0].id).toBe('64');
-  expect(result[2][0].shortName).toBe('OoTR');
-});
+const oot = name => require(path.join(__dirname, '../dev/assets/oot', name));
 
 test('age changes retain shared marker pins and deselect age-specific markers',()=>{
   const source=fs.readFileSync(path.join(__dirname,'../scripts/zmap.js'),'utf8');
@@ -56,92 +32,7 @@ test('age changes retain shared marker pins and deselect age-specific markers',(
   expect(context.window.history.replaceState.mock.calls[0][2]).not.toContain('marker=');
 });
 
-test('OoT API attaches artwork hashes to tile URLs without changing source data',()=>{
-  const {execFileSync}=require('child_process');
-  const helper=path.resolve(__dirname,'../lib/common/oot_pack.php');
-  const maps=JSON.parse(execFileSync('php',['-r',`require ${JSON.stringify(helper)}; echo json_encode(ootPackData('maps'));`],{encoding:'utf8'}));
-  const assets=read('import-report').assets;
-  for(const map of maps) for(const sub of map.subMap) {
-    const asset=assets.find(a=>a.tileURL===sub.tileURL);
-    expect(sub.tileVersion).toBe(asset.sha256.slice(0,16));
-  }
-});
-
-test('OoT pack exposes all distinct maps and main-texture variants',()=>{
-  const maps=read('maps'),report=read('import-report');
-  expect(maps).toHaveLength(11);
-  expect(maps.flatMap(m=>m.subMap)).toHaveLength(66);
-  expect(new Set(maps.map(m=>m.id)).size).toBe(maps.length);
-  expect(new Set(maps.flatMap(m=>m.subMap.map(s=>s.id))).size).toBe(66);
-  expect(maps.filter(m=>m.kind==='world').map(m=>m.name)).toEqual(['Hyrule']);
-  expect(maps.find(m=>m.kind==='world').subMap.map(s=>s.name)).toEqual(['Child','Adult']);
-  const [child,adult]=maps.find(m=>m.kind==='world').subMap;
-  expect(child.placeLabels).toHaveLength(20);
-  expect(adult.placeLabels).toHaveLength(20);
-  expect(child.placeLabels.some(p=>p.name==='Hyrule Castle')).toBe(true);
-  expect(adult.placeLabels.some(p=>p.name==="Ganon's Castle")).toBe(true);
-  expect(adult.placeLabels.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.y))).toBe(true);
-  const boxes=require('../dev/assets/oot/world-boxes.json');
-  const kakariko=child.placeLabels.find(p=>p.name==='Kakariko Village');
-  const [x,y,w,h]=boxes.boxes.Child.KakarikoVillage;
-  expect(kakariko.bounds).toEqual([[-(y+h)/32,x/32],[-y/32,(x+w)/32]]);
-  expect(maps.some(m=>m.kind==='overview' || m.kind==='region')).toBe(false);
-  expect(maps.filter(m=>m.kind==='dungeon')).toHaveLength(10);
-  // Markers are the hand-placed collectibles in dev/assets/oot/pois.json.
-  const pois=JSON.parse(fs.readFileSync(path.join(__dirname,'../dev/assets/oot/pois.json'),'utf8'));
-  expect(read('markers')).toEqual(require('../dev/assets/oot/pois-to-markers.cjs')(pois));
-  expect(report.placedPOIs).toBe(pois.length);
-  for(const map of maps) for(const sub of map.subMap) {
-    expect(sub.tileBaseURL).toBe('/tiles/');
-    // Every submap's Switch Map thumbnail is where every game's is
-    // (images/icons/<tile folder>/icon.<ext>); the page versions its address.
-    expect(fs.existsSync(path.join(__dirname,'../images/icons',sub.tileURL,'icon.'+sub.tileExt))).toBe(true);
-  }
-});
-
-test('every category icon exists and every category belongs to a group',()=>{
-  const categories=read('categories');
-  for(const category of categories.filter(c=>c.parent_id)) {
-    expect(categories.some(c=>c.id===category.parent_id)).toBe(true);
-    // A supplied PNG, or an SVG drawn for the site (Heart Pieces).
-    const name=category.img.replace(/^OoT_/, '');
-    if(!category.img.startsWith('OoT_')) {
-      const css=['style.css','poi.css'].map(file=>fs.readFileSync(path.join(__dirname,'../styles',file),'utf8')).join('\n');
-      expect(css).toMatch(new RegExp('\\.icon-'+category.img+'::?before'));
-      continue;
-    }
-    expect(['.png','.svg'].some(ext=>fs.existsSync(path.join(__dirname,'../data/OoT/icons',name+ext)))).toBe(true);
-  }
-});
-
-test('hand-placed OoT collectibles are complete, unique and on real categories and maps',()=>{
-  const pois=JSON.parse(fs.readFileSync(path.join(__dirname,'../dev/assets/oot/pois.json'),'utf8'));
-  const categories=new Set(read('categories').map(c=>c.id));
-  const markers=read('markers');
-  expect(new Set(markers.map(m=>m.id)).size).toBe(markers.length);
-  expect(markers.every(m=>categories.has(m.markerCategoryId))).toBe(true);
-  // All 36 Pieces of Heart and 100 Gold Skulltulas in the remake.
-  expect(pois.filter(p=>p.category==='64002')).toHaveLength(36);
-  expect(pois.filter(p=>p.category==='64001')).toHaveLength(100);
-  expect(pois.filter(p=>p.category==='64003')).toHaveLength(10);
-  // Dungeon markers name a floor of their own dungeon.
-  const floors=new Map(read('maps').flatMap(m=>m.subMap.map(s=>[s.id,m.id])));
-  for(const p of pois.filter(p=>p.submap)) expect(floors.get(p.submap)).toBe(p.map);
-  for(const p of pois) expect(['child','adult','both']).toContain(p.age);
-  // Overworld markers sit inside a real area of the Hyrule layout.
-  const areas=new Set(require('../dev/assets/oot/world-layout.json').regions.map(r=>r[0]));
-  for(const p of pois.filter(p=>p.map==='65000')) {
-    expect(areas.has(p.region)).toBe(true);
-    expect(p.u).toBeGreaterThanOrEqual(0); expect(p.u).toBeLessThanOrEqual(1);
-    expect(p.v).toBeGreaterThanOrEqual(0); expect(p.v).toBeLessThanOrEqual(1);
-  }
-  for(const m of markers) {
-    expect(+m.x).toBeGreaterThanOrEqual(0); expect(+m.x).toBeLessThanOrEqual(256);
-    expect(+m.y).toBeLessThanOrEqual(0); expect(+m.y).toBeGreaterThanOrEqual(-256);
-  }
-});
-
-test('all OoT floors, age variants and room states become selectable map layers',()=>{
+test('a map with a kind makes each submap its own layer, with its versioned tiles and thumbnail',()=>{
   const source=fs.readFileSync(__dirname+'/../scripts/zmap.js','utf8');
   const context={ZMap:function(){},L:{
     tileLayer:(url,options)=>({_url:url,options,on(){return this;}}),
@@ -150,59 +41,71 @@ test('all OoT floors, age variants and room states become selectable map layers'
   }};
   vm.runInNewContext(source.slice(source.indexOf('ZMap.prototype._tilePyramidBounds ='),source.indexOf('ZMap.prototype.addMarkers =')),context);
   const map=Object.assign(Object.create(context.ZMap.prototype),{
-    mapOptions:read('container')[0],maps:[],tilesBaseURL:'https://zeldamaps.com/tiles/',tileNameFormat:'{z}_{x}_{y}'
+    mapOptions:{maxZoom:'6',tileSize:'256',scaleP:'1',scaleN:'-1',offsetX:'0',offsetY:'0'},maps:[],tilesBaseURL:'https://zeldamaps.com/tiles/',tileNameFormat:'{z}_{x}_{y}',
+    defaultIconURL:'images/icons/',_addTileBackdrop(){}
   });
-  read('maps').forEach(m=>map.addMap(m));
-  expect(map.maps).toHaveLength(66);
-  expect(new Set(map.maps.map(m=>m.id)).size).toBe(66);
-  expect(map.maps.every(m=>m._url.startsWith('/tiles/oot/'))).toBe(true);
-  expect(map.maps.some(m=>/Water level 3/.test(m.title))).toBe(true);
+  // As get_map serves OoT's Water Temple (abridged).
+  const submap=(id,name,tileURL,version)=>({id,name,tileURL,tileExt:'webp',tileVersion:version,maxZoom:'3',regions:[]});
+  map.addMap({id:'64031',name:'Water Temple',kind:'dungeon',maxZoom:'3',subMap:[
+    submap('640101','1F · Water level 1 · State 0','oot/water-temple-1f-lv1-state00/','abc'),
+    submap('640115','B1 · Water level 3','oot/water-temple-b1-lv3/','def')]});
+  expect(map.mapOptions.submapLayers).toBe(true);
+  expect(map.maps).toHaveLength(2);
+  const [first,second]=map.maps;
+  expect(first.mapKind).toBe('dungeon');
+  expect(first.mapName).toBe('Water Temple');
+  expect(first.submapName).toBe('1F · Water level 1');
+  expect(second.title).toBe('Water Temple — B1 · Water level 3');
+  expect(second._url).toBe('https://zeldamaps.com/tiles/oot/water-temple-b1-lv3/{z}_{x}_{y}.webp?v=def');
+  expect(second.options.iconURL).toBe('images/icons/oot/water-temple-b1-lv3/icon.webp?v=def');
   // Tiles are only requested inside the artwork's square.
-  const b=map.maps[0].options.bounds;
+  const b=first.options.bounds;
   expect([b.south,b.north,b.west,b.east].map(v=>v+0)).toEqual([-256,0,0,256]);
 });
 
-test('Hyrule connector lines join real exits on areas that exist for each age',()=>{
-  const data=require('../dev/assets/oot/connections.json');
-  const world=read('maps').find(m=>m.id==='65000');
-  expect(world.subMap.map(s=>s.name)).toEqual(['Child','Adult']);
-  for(const submap of world.subMap) {
-    const areas=new Map(submap.placeLabels.filter(p=>p.bounds).map(p=>[p.name,p]));
-    expect(submap.connections.length).toBe(18);
-    for(const link of submap.connections) {
-      expect(['d','h','v']).toContain(link.route);
-      for(const [area,u,v] of [link.from,link.to]) {
-        expect(areas.has(area)).toBe(true);
-        // On, or within a few pixels of, the area's artwork.
-        expect(u).toBeGreaterThanOrEqual(-0.1); expect(u).toBeLessThanOrEqual(1.1);
-        expect(v).toBeGreaterThanOrEqual(-0.1); expect(v).toBeLessThanOrEqual(1.1);
-      }
-    }
+test('every OoT tile folder has its texture recorded, a full tile pyramid and a thumbnail',()=>{
+  const assets=oot('tile-report.json').assets;
+  const folders=fs.readdirSync(path.join(__dirname,'../tiles/oot')).filter(f=>fs.statSync(path.join(__dirname,'../tiles/oot',f)).isDirectory());
+  expect(assets.map(a=>a.tileURL).sort()).toEqual(folders.map(f=>'oot/'+f+'/').sort());
+  for(const asset of assets) {
+    expect(asset.sha256).toMatch(/^[0-9a-f]{64}$/);
+    const last=2**asset.maxZoom-1;
+    expect(fs.existsSync(path.join(__dirname,'../tiles',asset.tileURL,`${asset.maxZoom}_${last}_${last}.webp`))).toBe(true);
+    expect(fs.existsSync(path.join(__dirname,'../images/icons',asset.tileURL,'icon.webp'))).toBe(true);
   }
-  // Every link names exits that exist, and maps.json is up to date with them.
-  for(const [from,to] of data.links) { expect(data.exits[from]).toBeDefined(); expect(data.exits[to]).toBeDefined(); }
-  const names={ZoraDomain:"Zora's Domain",ZoraFountain:"Zora's Fountain",ZoraRiver:"Zora's River",LonLonRanch:'Lon Lon Ranch',GanonCastle:"Ganon's Castle"};
-  const {friendly}=require('../dev/assets/oot/import-assets.cjs');
-  for(const submap of world.subMap)
-    expect(submap.connections).toEqual(require('../dev/assets/oot/connections.cjs')(submap.placeLabels,k=>names[k]||friendly(k),submap.name));
 });
 
-test('connectors that should run straight are level or plumb on both ages',()=>{
-  const world=read('maps').find(m=>m.id==='65000');
-  const straight={"Hyrule Field>Gerudo Valley":'H',"Hyrule Field>Zora's River":'H',"Zora's Domain>Zora's Fountain":'H',
-    "Lost Woods>Sacred Forest Meadow":'H',"Gerudo's Fortress>Haunted Wasteland":'H',"Haunted Wasteland>Desert Colossus":'H',
-    "Hyrule Field>Kokiri Forest":'V',"Market>Hyrule Castle":'V',"Market>Ganon's Castle":'V'};
-  const px=2/32; // two artwork pixels, in map units (8192px canvas, 256 units)
-  for(const submap of world.subMap) {
-    const bounds=Object.fromEntries(submap.placeLabels.filter(p=>p.bounds).map(p=>[p.name,p.bounds]));
-    const point=([area,u,v])=>{const b=bounds[area];const s=Math.min(b[0][0],b[1][0]),n=Math.max(b[0][0],b[1][0]),w=Math.min(b[0][1],b[1][1]),e=Math.max(b[0][1],b[1][1]);
-      return [n-v*(n-s),w+u*(e-w)];};
-    for(const link of submap.connections) {
-      const kind=straight[link.from[0]+'>'+link.to[0]];
-      if(!kind) continue;
-      const a=point(link.from),b=point(link.to);
-      if(kind==='H') expect(Math.abs(a[0]-b[0])).toBeLessThan(px);
-      else expect(Math.abs(a[1]-b[1])).toBeLessThan(px);
-    }
+test('game positions convert onto the right area and floor',()=>{
+  const {project,projectDungeon,floorName}=oot('game-to-map.cjs');
+  const boxes=oot('world-boxes.json').boxes;
+  const bounds=oot('scene-data/field-map-bounds.json').maps;
+  // The middle of an area's game rectangle lands inside its box on our map.
+  for(const scene of ['KakarikoVillage_Child','ZoraRiver_Adult','HyruleField_Child','GoronCity_Adult']) {
+    const [[x0,x1],[z0,z1]]=bounds[scene].bounds;
+    const at=project(scene,(x0+x1)/2,(z0+z1)/2);
+    const [left,top,width,height]=boxes[at.age][at.region];
+    expect(at.x*32).toBeGreaterThan(left); expect(at.x*32).toBeLessThan(left+width);
+    expect(-at.y*32).toBeGreaterThan(top); expect(-at.y*32).toBeLessThan(top+height);
   }
+  // Lake Hylia and Lon Lon Ranch use Hyrule Field's coordinates.
+  expect(project('LakeHylia_Child',-200,500).region).toBe('LakeHylia');
+  expect(project('LonLonRanch_Adult',-100,250).region).toBe('HyruleField');
+  expect([0,1,-1,-3].map(floorName)).toEqual(['1F','2F','B1','B3']);
+  // A dungeon's rectangle fills its 2000x1440 floor texture, centred on 2048px.
+  const corner=projectDungeon('WaterTemple',0,-155.5,-139.68);
+  expect([corner.x,corner.y]).toEqual([24/8,-304/8]);
+});
+
+test('every dungeon Gold Skulltula is matched once, and every marked place has a name',()=>{
+  const points=oot('scene-data/map-points.json');
+  const matches=oot('scene-data/dungeon-skulltula-matches.json').matches;
+  const dungeonSkulltulas=new Set(points.filter(p=>p.kind==='CollectSign'&&p.floor!==null).map(p=>p.id));
+  expect(matches).toHaveLength(44);
+  expect(new Set(matches.map(m=>m.markerId)).size).toBe(44);
+  expect(new Set(matches.map(m=>m.gameId))).toEqual(dungeonSkulltulas);
+  expect(matches.every(m=>m.reason.length>10)).toBe(true);
+  const places=oot('scene-data/facility-names.json').places;
+  for(const p of points.filter(p=>p.kind==='Facility'))
+    expect(places[p.properties.GameDataHashName||'BossDoor:'+p.scene]).toBeDefined();
+  expect(new Set(Object.values(places).map(p=>p.category))).toEqual(new Set(['shop','fairy','minigame','person','boss']));
 });

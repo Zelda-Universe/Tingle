@@ -1256,7 +1256,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   createMapsMenu: function() {
     var layers = this;
     var disableFn = function() {
-      this.disabled = (layers.zMap.mapOptions.assetPreview
+      this.disabled = (layers.zMap.mapOptions.submapLayers
         ? layers.currentMapLayer.originalId === this.category.originalId
         : layers.currentMapLayer.id === this.category.id)
 
@@ -1310,7 +1310,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
         return true;
       },
-      categories: this.zMap.mapOptions.assetPreview ? this._maps.filter(function(layer,index,all) {
+      categories: this.zMap.mapOptions.submapLayers ? this._maps.filter(function(layer,index,all) {
         return all.findIndex(function(other) { return other.originalId === layer.originalId; }) === index;
       }) : this._maps,
       defaultToggledState: true
@@ -2243,7 +2243,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 	// Needs improvements
   // yea..
 	changeMap: function(mapId, subMapId) {
-		if(this.zMap.mapOptions.assetPreview) { this.changeMapOnly(mapId, subMapId); return; }
+		if(this.zMap.mapOptions.submapLayers) { this.changeMapOnly(mapId, subMapId); return; }
 		inputs = this._form.getElementsByTagName('input'),
 		inputsLen = inputs.length;
 
@@ -2280,7 +2280,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   // Creating separate functions for other consuming code without that dependency expectation, like selecting a search result.
   changeMapOnly: function(mapId, subMapId) {
     var newMap = this._maps.find((map) => map.originalId == mapId &&
-      (!this.zMap.mapOptions.assetPreview || !subMapId || map.defaultSubMapId == subMapId));
+      (!this.zMap.mapOptions.submapLayers || !subMapId || map.defaultSubMapId == subMapId));
     if (newMap && this.currentMapLayer.id != newMap.id) {
       this._map.removeLayer(this.currentMapLayer);
       this._map.addLayer(newMap);

@@ -332,9 +332,9 @@ ZMap.prototype.addMap = function(vMap) {
    // A map with a kind (OoT's world and dungeons) makes each of its submaps
    // (ages, floors, water levels) its own selectable layer, chosen with the
    // floor and age switch (OotFloors.js), rather than overlays on a blank
-   // base. assetPreview is the name the rest of the code knows this by.
+   // base (mapOptions.submapLayers).
    if(vMap.kind) {
-     this.mapOptions.assetPreview = true;
+     this.mapOptions.submapLayers = true;
      vMap.subMap.forEach(function(submap) {
        var variantName=submap.name.replace(/(?:\s*·\s*)?State\s*\d+/gi,'');
        var title = vMap.name + (vMap.subMap.length > 1 ? ' — ' + variantName : '');
@@ -357,13 +357,13 @@ ZMap.prototype.addMap = function(vMap) {
        layer.id = 'mID' + vMap.id + 's' + submap.id;
        layer.originalId = vMap.id;
        layer.defaultSubMapId = submap.id;
-       layer.ootKind = vMap.kind;
-       layer.ootGroupName = vMap.name;
-       layer.ootVariant = variantName;
+       layer.mapKind = vMap.kind;
+       layer.mapName = vMap.name;
+       layer.submapName = variantName;
        // Its named regions and areas with borders (map_region), as for every game.
        layer.submapRegions = this._submapRegionData([submap]);
-       layer.ootConnections = submap.connections || [];
-       layer.ootBounds = submap.bounds || null;
+       layer.mapConnections = submap.connections || [];
+       layer.mapBounds = submap.bounds || null;
        layer.title = submap === vMap.subMap[0] ? vMap.name : title;
        layer._overlayMap = [];
        this.maps.push(layer);
@@ -1795,7 +1795,7 @@ ZMap.prototype.addMapControl = function(gameId) {
     }
     // END OF WORKAROUND!!!
     //console.log(e.originalId + " " + defaultSubMapId);
-    var sameOotMap = _this.mapOptions.assetPreview && _this.mapControl.currentMap == e.originalId;
+    var sameOotMap = _this.mapOptions.submapLayers && _this.mapControl.currentMap == e.originalId;
     _this.mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
     if(isOcarina(_this.mapOptions.shortName)) _this._reconcileOotMarkerSelection(e.originalId, defaultSubMapId);
     _this.refreshMap();
@@ -1817,7 +1817,7 @@ ZMap.prototype.addMapControl = function(gameId) {
     this.mapControl.changeMapOnly(requestedMap, requestedSubMap);
     this.map.setView(requestedView.center, requestedView.zoom, { animate: false });
   }
-  if(this.mapOptions.assetPreview && this.setupOotFloors) this.setupOotFloors();
+  if(this.mapOptions.submapLayers && this.setupOotFloors) this.setupOotFloors();
 
   $(document).on('keydown', function(e) {
     if(e.key == "Escape") {
@@ -7067,7 +7067,7 @@ ZMap.prototype.applyOotMapBounds = function() {
   var layer=this.mapControl && this.mapControl.currentMapLayer;
   if(!this.map || !this.map.options.maxBounds) return;
   if(!this._defaultMaxBounds) this._defaultMaxBounds=L.latLngBounds(this.map.options.maxBounds);
-  var next=layer && layer.ootBounds ? L.latLngBounds(layer.ootBounds) : this._defaultMaxBounds;
+  var next=layer && layer.mapBounds ? L.latLngBounds(layer.mapBounds) : this._defaultMaxBounds;
   if(L.latLngBounds(this.map.options.maxBounds).equals(next)) return;
   this.map.setMaxBounds(next);
   if(this._updateMinZoom) this._updateMinZoom(true);

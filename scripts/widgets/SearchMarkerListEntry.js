@@ -47,7 +47,7 @@ function getMarkerLocationName(marker) {
   var markerMap = zMap.maps.find(function(map) {
     return map.originalId == marker.mapId;
   });
-  var mapName = markerMap ? (markerMap.ootGroupName || markerMap.title) : '';
+  var mapName = markerMap ? (markerMap.mapName || markerMap.title) : '';
   var multipleMaps = zMap.maps.length > 1;
 
   // A map result is its own place; repeating its name says nothing.

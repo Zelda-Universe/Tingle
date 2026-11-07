@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- A Piece of Heart: a heart with its top-left quarter filled. Drawn for Zelda Maps. -->
-  <path d="M32 57 C 8 41 4 28 4 20 C 4 11 11 5 19 5 C 25 5 29.5 8 32 13 C 34.5 8 39 5 45 5 C 53 5 60 11 60 20 C 60 28 56 41 32 57 Z"
-        fill="#5a1220" stroke="#fff3e0" stroke-width="3" stroke-linejoin="round"/>
-  <path d="M32 13 C 29.5 8 25 5 19 5 C 11 5 4 11 4 20 C 4 24 5 28 7.5 32 L 32 32 Z" fill="#ff3b4e"/>
-  <path d="M32 13 V 57 M 7.5 32 H 56.5" stroke="#fff3e0" stroke-width="2.5" opacity=".75"/>
-  <path d="M32 57 C 8 41 4 28 4 20 C 4 11 11 5 19 5 C 25 5 29.5 8 32 13 C 34.5 8 39 5 45 5 C 53 5 60 11 60 20 C 60 28 56 41 32 57 Z"
-        fill="none" stroke="#fff3e0" stroke-width="3" stroke-linejoin="round"/>
-</svg>

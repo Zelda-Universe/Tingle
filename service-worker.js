@@ -1,4 +1,4 @@
-const CACHE_VERSION = '20261106-140';
+const CACHE_VERSION = '20261106-141';
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +8,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=OoT',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261106-oot-74',
-  './res.php?type=css&v=20261106-oot-74',
+  './res.php?type=javascript&v=20261106-oot-75',
+  './res.php?type=css&v=20261106-oot-75',
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -21,8 +21,7 @@ const CORE_ASSETS = [
 ];
 
 const OPTIONAL_ASSETS = [
-  './data/OoT/icons.css',
-  './data/OoT/icons/Item_Ocarina_Time.png',
+  './images/icons/oot/Poe.svg',
   './fonts/icomoon.ttf?xz2wpa',
   './fonts/icomoon.woff?xz2wpa',
   ...['265406_1_0', '265406_0_0', '264CA8_2_0', '264CA8_1_0', '265406_2_0', '265406_3_0', '264CA8_0_0']

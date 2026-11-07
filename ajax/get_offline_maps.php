@@ -77,9 +77,8 @@
         'directory' => $siteRoot . '/' . $relativeDirectory,
         'base' => '',
         'pattern' => '/\.(?:png|jpe?g|webp|gif|svg|json|css)$/i',
-        // JSON directly in data/<game>/ is server-side pack data (the OoT
-        // import, read by PHP), which offline downloads never need; lang/ JSON
-        // is used by the page and stays in.
+        // JSON directly in data/<game>/ is server-side data, which offline
+        // downloads never need; lang/ JSON is used by the page and stays in.
         'exclude' => '#^data/[^/]+/[^/]+\.json$#i',
         'tile' => false
       );

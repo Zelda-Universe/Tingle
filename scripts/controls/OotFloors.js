@@ -48,7 +48,7 @@ ZMap.prototype.setupOotFloors = function() {
   function drawConnections() {
     connections.clearLayers();
     var layer=zmap.mapControl.currentMapLayer;
-    if(!layer || !(layer.ootConnections || []).length) return;
+    if(!layer || !(layer.mapConnections || []).length) return;
     // Each area's box, from its border on this map version (map_region).
     var bounds={};
     zmap._layerRegions(layer).forEach(function(region) { if(region.kind==='area') bounds[region.name]=region.bounds; });
@@ -59,7 +59,7 @@ ZMap.prototype.setupOotFloors = function() {
       var west=Math.min(b[0][1],b[1][1]),east=Math.max(b[0][1],b[1][1]);
       return [north-end[2]*(north-south), west+end[1]*(east-west)];
     };
-    layer.ootConnections.forEach(function(link) {
+    layer.mapConnections.forEach(function(link) {
       var a=point(link.from),b=point(link.to);
       if(!a || !b) return;
       // Ends within a couple of pixels of level or plumb are meant to be: snap
@@ -101,10 +101,10 @@ ZMap.prototype.setupOotFloors = function() {
     if(zmap.refreshSelectedAreaVariant) zmap.refreshSelectedAreaVariant();
     var current = zmap.mapControl.currentMapLayer;
     panel.replaceChildren();
-    panel.hidden = !current || !/^(world|dungeon)$/.test(current.ootKind);
+    panel.hidden = !current || !/^(world|dungeon)$/.test(current.mapKind);
     if(panel.hidden) return;
     var variants = zmap.maps.filter(function(l) {return l.originalId === current.originalId;});
-    function age(layer) { return (layer.ootVariant.match(/\b(Child|Adult)\b/) || [])[1] || null; }
+    function age(layer) { return (layer.submapName.match(/\b(Child|Adult)\b/) || [])[1] || null; }
     var ages = Array.from(new Set(variants.map(age).filter(Boolean)));
     var allAgeVariants = variants.slice();
     if(ages.length > 1) {
@@ -122,8 +122,8 @@ ZMap.prototype.setupOotFloors = function() {
       panel.appendChild(agePill);
       variants=variants.filter(function(v) {return age(v)===age(current);});
     }
-    if(current.ootKind === 'world') { position(); return; }
-    function floor(layer) {return (layer.ootVariant.match(/(?:^|\s)(B\d+|\d+F)(?:\s|$)/)||[])[1] || layer.ootVariant.split(' · ')[0];}
+    if(current.mapKind === 'world') { position(); return; }
+    function floor(layer) {return (layer.submapName.match(/(?:^|\s)(B\d+|\d+F)(?:\s|$)/)||[])[1] || layer.submapName.split(' · ')[0];}
     var names = Array.from(new Set(variants.map(floor))).sort(function(a,b) {
       function level(v) {return v[0] === 'B' ? -parseInt(v.slice(1)) : parseInt(v);}
       return level(b)-level(a);

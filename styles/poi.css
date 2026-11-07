@@ -1,5 +1,5 @@
 /* Shared POI treatments for Link's Awakening, BotW, TotK and EoW. */
-.icon-OoT_Poe::before { content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:block; width:1em; height:1em; background:currentColor; -webkit-mask:url('data/OoT/icons/Poe.svg') center / contain no-repeat; mask:url('data/OoT/icons/Poe.svg') center / contain no-repeat; }
+.icon-OoT_Poe::before { content:''; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); display:block; width:1em; height:1em; background:currentColor; -webkit-mask:url('images/icons/oot/Poe.svg') center / contain no-repeat; mask:url('images/icons/oot/Poe.svg') center / contain no-repeat; }
 .circleMap-medium > .icon-OoT_Poe, .circleMap-small > .icon-OoT_Poe { position:absolute; inset:0; }
 .category-selector .category-icon.icon-OoT_Poe::before { width:1.18em; height:1.18em; }
 .oot-preview-notice {

@@ -54,7 +54,7 @@
     $marker = notificationMarkerInfo($db, $map_prefix, $markerId);
     notificationDeliver($db, $map_prefix, $adminId, array($editorId => array('warning')),
       array('pageType' => 'marker', 'pageId' => $markerId, 'markerId' => $markerId, 'revisionId' => (int) $report['revisionId']),
-      array('actor' => 'An admin', 'markerTitle' => $marker ? $marker['title'] : 'a marker', 'game' => $marker ? $marker['game'] : null,
+      array('actor' => 'A moderator', 'markerTitle' => $marker ? $marker['title'] : 'a marker', 'game' => $marker ? $marker['game'] : null,
         'strikes' => $strikes, 'excerpt' => notificationExcerpt($note !== '' ? $note : $report['reason']))
     );
     $result['msg'] = 'Warned: strike ' . $strikes . ' of 3.';

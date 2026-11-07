@@ -6968,26 +6968,7 @@ div.circle:has(>.icon-EoW_Echo) {
 	text-align: center;
 }
 
-/* Reports (scripts/zreports.js): the flag on a change, the report dialog and
-   Admin > Reports. */
-.wiki-report-button {
-	position: absolute;
-	right: 36px;
-	top: 10px;
-	padding: 4px 6px;
-	border: 0;
-	border-radius: 8px;
-	background: none;
-	color: rgba(255,255,255,.45);
-	font-size: 13px;
-	cursor: pointer;
-}
-.wiki-report-button:hover,
-.wiki-report-button:focus-visible {
-	color: #ff8c85;
-	background: rgba(255,255,255,.08);
-	outline: none;
-}
+/* Reports (scripts/zreports.js): the report dialog and Admin > Reports. */
 .report-edit-prompt textarea {
 	box-sizing: border-box;
 	width: 100%;

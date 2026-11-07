@@ -310,11 +310,6 @@ ZMap.prototype._openRecentChanges = function(game, back) {
           markerTitle: change.markerTitle + (game ? '' : ' · ' + change.gameName)
         });
         row.find('.wiki-revision').attr({ 'data-marker': change.markerId, 'data-game': change.game });
-        // Report a problem edit (scripts/zreports.js), not your own.
-        var me = _this.getUser();
-        if(me && String(change.userId) !== String(me.id)) row.find('.wiki-revision').append(
-          $('<button type="button" class="wiki-report-button" aria-label="Report this edit" title="Report this edit">' +
-            '<i class="fas fa-flag" aria-hidden="true"></i></button>').attr({ 'data-report': change.id, 'data-title': change.markerTitle }));
         list.append(row);
         oldest = change.id;
       });
@@ -323,12 +318,8 @@ ZMap.prototype._openRecentChanges = function(game, back) {
       list.empty().append($('<li class="wiki-empty"></li>').text(_this._wikiError(xhr)));
     });
   };
-  list.on('click', '.wiki-report-button', function(e) {
-    e.stopPropagation();
-    _this._reportEdit(Number(this.getAttribute('data-report')), this.getAttribute('data-title'));
-  });
   list.on('click', '.wiki-revision', function(e) {
-    if($(e.target).closest('a.wiki-link, .wiki-report-button').length) return;
+    if($(e.target).closest('a.wiki-link').length) return;
     var markerId = Number(this.getAttribute('data-marker'));
     var markerGame = this.getAttribute('data-game');
     if(editor) {

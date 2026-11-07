@@ -32,7 +32,7 @@
     "SELECT 1 FROM `{$map_prefix}edit_report` WHERE `revision_id` = ? AND `reporter_id` = ? AND `status` = 'open'",
     [$revisionId, $userId]
   )) {
-    echo json_encode(array('success' => true, 'msg' => 'You\'ve already reported this edit. An admin will take a look.'));
+    echo json_encode(array('success' => true, 'msg' => 'You\'ve already reported this edit. A moderator will take a look.'));
     return;
   }
   // Enough for anyone; not for someone filling the queue.
@@ -60,5 +60,5 @@
       'link' => array('page' => 'admin-reports')
     )
   );
-  echo json_encode(array('success' => true, 'msg' => 'Thanks. An admin will take a look.'));
+  echo json_encode(array('success' => true, 'msg' => 'Thanks. A moderator will take a look.'));
 ?>

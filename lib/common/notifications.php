@@ -23,7 +23,7 @@
       // Reports of problem edits (ajax/report_edit.php), for admins only.
       'edit_report'      => array('label' => 'Reports of problem edits', 'group' => 'Admin', 'inApp' => true, 'email' => true, 'admin' => true),
       // An admin's warning about an edit (ajax/admin_report_action.php).
-      'warning'          => array('label' => 'Warnings from admins', 'group' => 'Your account', 'inApp' => true, 'email' => true)
+      'warning'          => array('label' => 'Warnings from moderators', 'group' => 'Your account', 'inApp' => true, 'email' => true)
     );
   }
 
@@ -245,7 +245,7 @@
       case 'marker_edit':      $title = "{$actor} {$verb} your marker {$marker}"; break;
       case 'followed_edit':    $title = "{$actor} {$verb} {$marker}"; break;
       case 'edit_report':      $title = "{$actor} reported an edit to {$marker}"; break;
-      case 'warning':          $title = "An admin warned you about your edit to {$marker} (strike " . (int) ($data['strikes'] ?? 1) . " of 3)"; break;
+      case 'warning':          $title = "A moderator warned you about your edit to {$marker} (strike " . (int) ($data['strikes'] ?? 1) . " of 3)"; break;
       default:                 $title = 'New activity';
     }
     $query = array();

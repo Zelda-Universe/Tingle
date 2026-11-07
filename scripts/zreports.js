@@ -26,7 +26,7 @@ ZMap.prototype._reportEdit = function(revisionId, markerTitle) {
       '</div>' +
     '</form>';
   dialog.querySelector('.report-edit-target').textContent =
-    'Revision ' + revisionId + (markerTitle ? ' of ' + markerTitle : '') + '. An admin will review it.';
+    'Revision ' + revisionId + (markerTitle ? ' of ' + markerTitle : '') + '. A moderator will review it.';
   var close = function() { if(dialog.open) dialog.close(); dialog.remove(); };
   dialog.addEventListener('cancel', function(e) { e.preventDefault(); close(); });
   dialog.querySelector('[data-action="cancel"]').addEventListener('click', close);

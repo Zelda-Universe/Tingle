@@ -30,8 +30,14 @@
   }
 
   $summary = trim(is_string($_POST['summary'] ?? null) ? $_POST['summary'] : '');
+  $snapshot = json_decode($revision['data'], true);
+  // Beta testers can't hide or show markers (lib/common/account_status.php),
+  // so their reverts leave the marker as visible as it is now.
+  if ($editor['beta']) {
+    $snapshot['visible'] = (int) $db->fetchOne("SELECT `visible` FROM `{$map_prefix}marker` WHERE `id` = ?", [$markerId]);
+  }
   begin();
-  wikiApplySnapshot($db, $map_prefix, $markerId, json_decode($revision['data'], true), $editor['id']);
+  wikiApplySnapshot($db, $map_prefix, $markerId, $snapshot, $editor['id']);
   $newId = wikiRecordRevision(
     $db, $map_prefix, $markerId, $editor['id'], 'revert',
     $summary !== '' ? $summary : 'Restored [[rev:' . (int) $revision['id'] . ']]',

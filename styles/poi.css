@@ -44,24 +44,6 @@
   mask:url('images/icons/oot/WarpPad.svg') center / contain no-repeat;
 }
 .poi-travel > .icon-LA_Portal::before { width:.9em; height:.9em; }
-.oot-preview-notice {
-  margin: 16px 16px 16px;
-  width:calc(100% - 32px);
-  box-sizing:border-box;
-  padding: 14px;
-  border: 1.5px solid #f5c542;
-  border-radius: 16px;
-  color: white;
-  display:flex;
-  gap:12px;
-  background:rgba(0,0,0,.8);
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  font-size: 14px;
-  line-height: 1.4;
-}
-.oot-preview-notice strong { display:block; margin-bottom:4px; }
-.oot-preview-notice div p { margin:0; padding:0; } /* not the sidebar's 16px paragraph inset */
 /* Game icon: the SVG is a mask so it takes the text colour, like the font glyphs other games use. */
 .icon-Ocarina-of-Time::before {
   content: '';

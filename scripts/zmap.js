@@ -729,7 +729,7 @@ ZMap.prototype._reconcileOotMarkerSelection = function(mapId, subMapId) {
 // is drawn half a pixel right of and below its point; the pin follows it, and
 // re-checks when the marker's icon switches size with the zoom.
 ZMap.prototype._createPin = function(latlng, marker) {
-  var map = this.map;
+  var map = this.map, zmap = this;
   var swordIcon = function() {
     var dx = 0, dy = 0;
     var options = marker && marker.options.icon && marker.options.icon.options;
@@ -759,13 +759,26 @@ ZMap.prototype._createPin = function(latlng, marker) {
       // A new icon would replay the stab; this is the same pin, already in.
       var image = pin.getElement() && pin.getElement().querySelector('.sword-pin-image');
       if (image) image.style.animation = 'none';
+      zmap._syncPinSpread(pin);
     };
     // After the zoom's own handlers, which swap the markers' icons.
     var followLater = function() { window.setTimeout(follow, 0); };
-    pin.on('add', function() { map.on('zoomend', followLater); });
+    // A spread marker (spreadOverlappingMarkers) is drawn away from its
+    // spot: the pin goes where it's drawn, and moves with it.
+    pin._spreadMarker = marker;
+    pin.on('add', function() { map.on('zoomend', followLater); zmap._syncPinSpread(pin); });
     pin.on('remove', function() { map.off('zoomend', followLater); });
   }
   return pin;
+};
+
+// Gives a marker's pin the same nudge as the marker's icon, if it's spread.
+ZMap.prototype._syncPinSpread = function(pin) {
+  pin = pin || newMarker;
+  if (!pin || !pin._spreadMarker || !pin._icon) return;
+  var icon = pin._spreadMarker._icon;
+  var nudge = icon ? icon.style.translate : '';
+  if (pin._icon.style.translate !== nudge) pin._icon.style.translate = nudge;
 };
 
 ZMap.prototype._panMarkerIntoVisibleMapArea = function(marker, onlyIfObscured, delay) {
@@ -1498,6 +1511,8 @@ ZMap.prototype._setupLabelLayout = function() {
   // A marker coming on screen while markers are spread takes its nudge.
   map.on('layeradd', function(e) {
     var marker = e.layer;
+    // A selected marker's pin takes that marker's nudge.
+    if(marker && marker._spreadMarker) { zmap._syncPinSpread(marker); return; }
     if(!zmap._markersSpread || !(marker instanceof L.Marker) || !marker._icon || marker.categoryTypeId == 3) return;
     var offset = (zmap._spreadOffsets || {})[marker.id];
     marker._icon.style.translate = offset ? offset[0] + 'px ' + offset[1] + 'px' : '';
@@ -1531,6 +1546,7 @@ ZMap.prototype._collapseSpreadMarkers = function() {
     if(marker && marker._icon) marker._icon.style.translate = '';
   });
   this._markersSpread = false;
+  this._syncPinSpread();
 };
 ZMap.prototype.spreadOverlappingMarkers = function(zoom) {
   if(zoom === undefined) zoom = this.map.getZoom();
@@ -1542,6 +1558,7 @@ ZMap.prototype.spreadOverlappingMarkers = function(zoom) {
     if(marker._icon.style.translate !== value) marker._icon.style.translate = value;
   });
   this._markersSpread = true;
+  this._syncPinSpread();
 };
 
 // The markers that would show on the current map at a zoom (any that aren't
@@ -2227,6 +2244,16 @@ ZMap.prototype._openDroppedPin = function(latlng) {
         "<span class='marker-action-label'>Embed Code</span>" +
       "</button>" +
     "</div>" +
+    // Editors (and beta testers) add a marker here; anyone else learns about
+    // the editing beta (scripts/zbeta.js).
+    "<div class='marker-actions-row create-community-marker-row'>" +
+      "<button type='button' id='create_community_marker' class='marker-action-button infoWindowIcn'>" +
+        "<span class='marker-action-icon create-community-marker-icon'>" +
+          "<i class='fas fa-plus' aria-hidden='true'></i><i class='fas fa-map-marker-alt' aria-hidden='true'></i>" +
+        "</span>" +
+        "<span class='marker-action-label'>Create Community Marker</span>" +
+      "</button>" +
+    "</div>" +
     "<div class='popupContent'></div>";
 
   this.mapControl.setContent(content, 'droppedPin-' + L.Util.stamp(newMarker));
@@ -2239,6 +2266,11 @@ ZMap.prototype._openDroppedPin = function(latlng) {
   });
   $('#copy_dropped_pin_embed').on('click', function() {
     zmap._copyText("<iframe src=\"" + embedLink + "\" frameborder=\"0\" allowfullscreen></iframe>", this);
+    return false;
+  });
+  $('#create_community_marker').on('click', function() {
+    if(zmap._editingRole && zmap._editingRole() === 'editor') zmap._createMarkerForm(null, latlng);
+    else if(zmap._showEditingBetaAlert) zmap._showEditingBetaAlert();
     return false;
   });
 };
@@ -3815,12 +3847,15 @@ ZMap.prototype._buildContextMenu = function() {
          hideOnSelect: true,
          callback: login
       }];
-   } else {
+   } else if (user.level >= 5) {
+      // Editors only: Contributors, Admins and the editing beta (scripts/zbeta.js).
       contextMenu = [{
          text: 'Add Marker',
          hideOnSelect: true,
          callback: addMarker
       }];
+   } else {
+      contextMenu = [];
    }
 
   contextMenu.push({
@@ -3891,7 +3926,8 @@ ZMap.prototype._createRegisterForm = function() {
    var registrationTarget = this._pendingBookmarkRegistration || completeTarget;
    this.mapControl._registrationReturnMarker = registrationTarget && registrationTarget.markerId;
    // Where this sign-up started, for Admin's sign-up sources.
-   var registrationSource = completeTarget ? 'complete' : (this._pendingBookmarkRegistration ? 'bookmark' : 'account');
+   var betaTarget = !registrationTarget && this._pendingBetaRegistration;
+   var registrationSource = completeTarget ? 'complete' : (this._pendingBookmarkRegistration ? 'bookmark' : betaTarget ? 'editing_beta' : 'account');
    this.mapControl.setContent('<div id="newuser">'+
                         '<h3 class="text-center">' + this.langMsgs.REGISTER_WELCOME + '</h3>'+
                         '<form class="leaflet-control-layers-list" role="newuserform" id="newuserform" enctype="multipart/form-data">'+
@@ -3939,7 +3975,7 @@ ZMap.prototype._createRegisterForm = function() {
                                  '<div>'+
                                     '<input type="hidden" name="source" value="' + registrationSource + '" />'+
                                     (completeTarget && this._completePromptState().variant ? '<input type="hidden" name="variant" value="' + this._completePromptState().variant + '" />' : '')+
-                                    '<button type="submit" class="infoWindowIcn form-action-button">' + (completeTarget ? 'Register &amp; Save Markers' : registrationTarget ? 'Register &amp; Add Bookmark' : 'Register') + '</button>'+
+                                    '<button type="submit" class="infoWindowIcn form-action-button">' + (completeTarget ? 'Register &amp; Save Markers' : registrationTarget ? 'Register &amp; Add Bookmark' : betaTarget ? 'Register and Start Editing' : 'Register') + '</button>'+
                                  '</div>'+
                                '</div>'+
                         '</form>'+
@@ -4054,6 +4090,10 @@ ZMap.prototype._createRegisterForm = function() {
                // page if that fails.
                var bookmarkPending = !!_this._pendingBookmarkRegistration;
                var completePending = !!_this._pendingCompleteRegistration;
+               // Registered from the editing beta's explainer (scripts/zbeta.js).
+               var betaPending = !bookmarkPending && !completePending && !!_this._pendingBetaRegistration;
+               _this._pendingBetaRegistration = false;
+               if(betaPending) _this._joinBetaAfterSignIn = false;
                var showLoginFallback = function() {
                  _this._createLoginForm(bookmarkPending
                    ? 'Your account has been created! Please log in to finish saving your bookmark.'
@@ -4080,6 +4120,7 @@ ZMap.prototype._createRegisterForm = function() {
                    }
                    if(_this.mapControl.isMobile) _this.mapControl.closeDrawer();
                    else _this.mapControl.resetContent();
+                   if(betaPending) { _this._joinEditingBeta(); return; }
                    _this._showWelcomeAlert();
                  },
                  error: showLoginFallback
@@ -4923,6 +4964,25 @@ ZMap.prototype._createAdminPage = function(opts) {
         '<div class="admin-summary admin-activity-summary"></div>' +
         '<div class="admin-top-markers"></div>' +
       '</section>' +
+      '<section data-section="editing" class="admin-section admin-analytics-section admin-activity" data-activity="editing">' +
+        '<h4 class="admin-section-heading">Community Editing <span class="admin-muted admin-section-summary admin-editing-total"></span></h4>' +
+        '<div class="admin-chart">' +
+          '<div class="admin-chart-options">' +
+            '<div class="admin-toggle admin-metrics" role="group" aria-label="Graph">' +
+              '<button type="button" data-metric="edits">Edits</button>' +
+              '<button type="button" data-metric="beta">Beta Sign-Ups</button>' +
+            '</div>' +
+            '<div class="admin-toggle admin-ranges" role="group" aria-label="Time frame">' +
+              [['7d', '1W'], ['14d', '2W'], ['30d', '30D'], ['6m', '6M'], ['1y', '1Y'], ['all', 'All']].map(function(range) {
+                return '<button type="button" data-range="' + range[0] + '">' + range[1] + '</button>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<p class="admin-chart-readout" aria-live="polite"></p>' +
+          '<div class="admin-activity-chart"><p class="admin-muted">Loading…</p></div>' +
+        '</div>' +
+        '<div class="admin-summary admin-activity-summary"></div>' +
+      '</section>' +
       '<section data-section="offline" class="admin-section admin-analytics-section admin-activity" data-activity="offline">' +
         '<h4 class="admin-section-heading">Offline Maps <span class="admin-muted admin-section-summary admin-offline-total"></span></h4>' +
         '<div class="admin-chart">' +
@@ -4960,7 +5020,7 @@ ZMap.prototype._createAdminPage = function(opts) {
         '<div id="admin_filters" class="admin-filters" hidden>' +
           [['role', 'Role', [['', 'All'], ['admin', 'Admins'], ['contributor', 'Contributors'], ['user', 'Users']]],
            ['status', 'Status', [['', 'All'], ['active', 'Active'], ['disabled', 'Disabled'], ['banned', 'Banned'], ['deleted', 'Deleted']]],
-           ['source', 'Signed Up From', [['', 'All'], ['bookmark', 'Bookmark'], ['complete', 'Complete'], ['account', 'Account'], ['unknown', 'Untracked']]],
+           ['source', 'Signed Up From', [['', 'All'], ['bookmark', 'Bookmark'], ['complete', 'Complete'], ['account', 'Account'], ['editing_beta', 'Editing Beta'], ['unknown', 'Untracked']]],
            ['sort', 'Sort', [['newest', 'Newest'], ['oldest', 'Oldest'], ['seen', 'Last Seen'], ['name', 'Username']]]
           ].map(function(filter) {
             return '<div class="admin-filter">' +
@@ -4992,7 +5052,7 @@ ZMap.prototype._createAdminPage = function(opts) {
   var state = this._adminState = saved || {
     graph: { metric: 'registrations', range: '30d' },
     signupRange: '30d',
-    activity: { markers: { metric: 'completes', range: '30d' }, offline: { metric: 'downloads', range: '30d' } },
+    activity: { markers: { metric: 'completes', range: '30d' }, editing: { metric: 'edits', range: '30d' }, offline: { metric: 'downloads', range: '30d' } },
     query: '', users: [], total: null, offset: 0, scrollTop: 0,
     tab: 'analytics', tabScroll: {},
     filters: { role: '', status: '', source: '', sort: 'newest' }
@@ -5068,7 +5128,8 @@ ZMap.prototype._createAdminPage = function(opts) {
 
   // Completes & Bookmarks and Offline Maps: a graph with the Accounts
   // graph's options, boxes beneath, and for offline maps their games.
-  state.activity = state.activity || { markers: { metric: 'completes', range: '30d' }, offline: { metric: 'downloads', range: '30d' } };
+  state.activity = state.activity || { markers: { metric: 'completes', range: '30d' }, editing: { metric: 'edits', range: '30d' }, offline: { metric: 'downloads', range: '30d' } };
+  state.activity.editing = state.activity.editing || { metric: 'edits', range: '30d' };
   $('#admin .admin-activity').each(function() {
     var section = $(this);
     var key = section.attr('data-activity');
@@ -5082,6 +5143,11 @@ ZMap.prototype._createAdminPage = function(opts) {
         // Completes have no all-time total (admin_get_activity.php).
         section.find('.admin-activity-total').text(data.summary.total
           ? data.summary.total.current.toLocaleString() + ' ' + (_this.ADMIN_CHART_NOUNS[data.metric] || ['saved'])[0]
+          : '');
+      }
+      if(key === 'editing') {
+        section.find('.admin-editing-total').text(data.summary.total
+          ? data.summary.total.current.toLocaleString() + ' ' + (_this.ADMIN_CHART_NOUNS[data.metric] || ['edits'])[0]
           : '');
       }
       if(key === 'offline') {
@@ -5272,7 +5338,9 @@ ZMap.prototype.ADMIN_CHART_NOUNS = {
   active: ['active users', 'Active users'],
   completes: ['completes', 'Completed markers'],
   bookmarks: ['bookmarks', 'Bookmarks'],
-  downloads: ['downloads', 'Offline map downloads']
+  downloads: ['downloads', 'Offline map downloads'],
+  edits: ['edits', 'Community edits'],
+  beta: ['beta testers', 'Editing beta sign-ups']
 };
 
 ZMap.prototype._adminChart = function(buckets, metric, readout) {
@@ -6046,17 +6114,32 @@ ZMap.prototype._createAccountForm = function(user) {
         '</form>' +
       '</div>' +
       '<div class="modal-footer">' +
-         '<div>' +
+         // Admins' tools first, on their own.
+         (user.level >= 10 ? '<section class="account-section"><button id="account_admin_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-shield-alt account-nav-icon" aria-hidden="true"></i>Admin</button></section>' : '') +
+         // Community editing (scripts/zbeta.js).
+         '<section class="account-section">' +
+           '<h4 class="account-section-title">Community Editing Beta</h4>' +
+           // Everyone has Profile: for anyone not editing, a preview (scripts/zbeta.js).
+           '<button id="account_profile_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-id-badge account-nav-icon" aria-hidden="true"></i>Profile</button>' +
            (user.level >= 5 ? '<button id="account_notifications_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bell account-nav-icon" aria-hidden="true"></i>Notifications<span class="account-nav-count" hidden></span></button>' : '') +
-           (user.level >= 5 ? '<button id="account_profile_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-id-badge account-nav-icon" aria-hidden="true"></i>Profile</button>' : '') +
-           (user.level >= 10 ? '<button id="account_admin_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-shield-alt account-nav-icon" aria-hidden="true"></i>Admin</button>' : '') +
-           '<button id="account_information_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-user account-nav-icon" aria-hidden="true"></i>Account Information</button>' +
+           '<hr class="account-divider">' +
+           '<button id="account_all_changes_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-history account-nav-icon" aria-hidden="true"></i>All Changes</button>' +
+           '<a id="account_discord_link" class="infoWindowIcn account-nav-button account-discord-link" href="' + this.DISCORD_URL + '" target="_blank" rel="noopener"><i class="fab fa-discord account-nav-icon" aria-hidden="true"></i>Zelda Maps Community Discord</a>' +
+           (user.betaEditor ? '<button id="account_leave_beta_btn" type="button" class="account-text-link">Leave Editing Beta</button>'
+             : user.level < 5 ? '<button id="account_join_beta_btn" type="button" class="account-text-link">Join the Editing Beta</button>' : '') +
+         '</section>' +
+         '<section class="account-section">' +
+           '<h4 class="account-section-title">Map Features</h4>' +
            '<button id="account_bookmarks_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bookmark account-nav-icon" aria-hidden="true"></i>Bookmarks</button>' +
            '<button id="account_offline_maps_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-download account-nav-icon" aria-hidden="true"></i>Download Offline Maps</button>' +
            '<button id="account_clear_completed_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-undo account-nav-icon" aria-hidden="true"></i>Reset Completed Markers</button>' +
+         '</section>' +
+         '<section class="account-section">' +
+           '<h4 class="account-section-title">Account Preferences</h4>' +
+           '<button id="account_information_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-user account-nav-icon" aria-hidden="true"></i>Account Information</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-sign-out-alt account-nav-icon" aria-hidden="true"></i>Log Out</button>' +
            '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
-         '</div>' +
+         '</section>' +
       '</div>' +
     '</div>',
     'accountPage'
@@ -6076,10 +6159,21 @@ ZMap.prototype._createAccountForm = function(user) {
   });
   if (this.setNotificationCount) this.setNotificationCount(this.notificationCount);
   $('#account_profile_btn').click(function() {
-    _this._openUserProfile({ id: user.id }, function() { _this._createAccountForm(_this.getUser()); });
+    var back = function() { _this._createAccountForm(_this.getUser()); };
+    if(_this.getUser() && _this.getUser().level >= 5) _this._openUserProfile({ id: user.id }, back);
+    else _this._openProfilePreview(back);
   });
   $('#account_information_btn').click(function() {
     _this._createAccountInformationForm();
+  });
+  $('#account_all_changes_btn').click(function() {
+    _this._openRecentChanges(null, function() { _this._createAccountForm(_this.getUser()); });
+  });
+  $('#account_join_beta_btn').click(function() {
+    _this._showEditingBetaAlert();
+  });
+  $('#account_leave_beta_btn').click(function() {
+    _this._confirmLeaveEditingBeta();
   });
   $('#account_profile_choose').click(function() {
     $('#account_profile_input').trigger('click');

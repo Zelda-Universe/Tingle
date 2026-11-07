@@ -446,9 +446,12 @@ main.leaflet-container,
 
 /* Toast Notification Styling */
 
+/* Under the settings button (top right), where the Completes reminder sits. */
 #toast-container {
-	width: 450px !important;
-	padding: 16px !important;
+	top: 64px !important;
+	right: 10px !important;
+	width: min(450px, calc(100vw - 20px)) !important;
+	padding: 0 !important;
 }
 
 .login-message,
@@ -654,10 +657,14 @@ main.leaflet-container,
 }
 
 @media only screen and (max-width: 600px) {
-	/* Mobile sizing */
+	/* Mobile sizing: across the screen under the search bar, like the
+	   Completes reminder. */
 	#toast-container {
-		width: 100vw !important;
-		padding: 72px 10px 10px 10px !important;
+		top: calc(var(--mobile-control-top) + 54px) !important;
+		left: 10px !important;
+		right: 10px !important;
+		width: auto !important;
+		padding: 0 !important;
 	}
 }
 
@@ -666,26 +673,76 @@ main.leaflet-container,
 	width: 100% !important;
 }
 
-#toast-container>.toast-info {
+/* Toasts look like the Completes reminder (.complete-reminder): dark and
+   blurred, rounded, with a border and icon in the colour each kind of toast
+   had before (toastr's green, blue, orange and red). */
+#toast-container>div {
+	--toast-color: #2f96b4;
+	--toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2zm0-8h-2V7h2z'/%3E%3C/svg%3E");
+	box-sizing: border-box;
 	width: 100% !important;
-	padding: 16px !important;
-	border-radius: 4px;
+	padding: 14px 16px 14px 46px !important;
+	border: 1.5px solid var(--toast-color);
+	border-radius: 16px;
+	background-color: rgba(0,0,0,.8) !important;
+	background-image: none !important;
 	-webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
-	background-image: none !important;
-	opacity: 0.9 !important;
-	text-shadow: rgba(0,0,0,.5) 0 0 24px;
-}
-
-#toast-container>.toast-info:hover {
+	box-shadow: 0 8px 24px rgba(0,0,0,.35) !important;
+	color: white;
+	font-size: 14px;
+	line-height: 1.4;
 	opacity: 1 !important;
-	box-shadow: 0 0 12px #999 !important;
+	text-shadow: none;
+}
+/* toastr's own icons are !important; this outranks them. */
+#toast-container>div.toast {
+	background-image: none !important;
+}
+#toast-container>div::before {
+	content: '';
+	position: absolute;
+	left: 14px;
+	top: 14px;
+	width: 20px;
+	height: 20px;
+	background: var(--toast-color);
+	-webkit-mask: var(--toast-icon) center / contain no-repeat;
+	mask: var(--toast-icon) center / contain no-repeat;
+}
+#toast-container>div:hover {
+	box-shadow: 0 8px 24px rgba(0,0,0,.35) !important;
+}
+#toast-container>.toast-success {
+	--toast-color: #51a351;
+	--toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E");
+}
+#toast-container>.toast-info {
+	--toast-color: #2f96b4;
+	--toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2zm0-8h-2V7h2z'/%3E%3C/svg%3E");
+}
+#toast-container>.toast-warning {
+	--toast-color: #f89406;
+	--toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M1 21h22L12 2zm12-3h-2v-2h2zm0-4h-2v-4h2z'/%3E%3C/svg%3E");
+}
+#toast-container>.toast-error {
+	--toast-color: #bd362f;
+	--toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm5 13.6L15.6 17 12 13.4 8.4 17 7 15.6 10.6 12 7 8.4 8.4 7 12 10.6 15.6 7 17 8.4 13.4 12z'/%3E%3C/svg%3E");
+}
+#toast-container .toast-progress {
+	background-color: var(--toast-color);
+	opacity: .6;
+}
+#toast-container .toast-close-button {
+	color: white;
+	text-shadow: none;
+	opacity: .7;
 }
 
 .toast-title {
-	font-size: 18px;
-	margin-bottom: 8px;
-	font-weight: 500;
+	font-size: 16px;
+	margin-bottom: 4px;
+	font-weight: bold;
 }
 
 /* Icon Styles */
@@ -4276,6 +4333,25 @@ div.circle:has(>.icon-EoW_Echo) {
 	list-style: none;
 }
 
+/* An empty list, like Bookmarks' (.bookmarks-empty). */
+.wiki-page .wiki-empty-state {
+	margin: 0;
+	padding: 48px 24px;
+	list-style: none;
+	color: rgba(255,255,255,.65);
+	text-align: center;
+}
+.wiki-empty-state-title {
+	margin-bottom: 8px;
+	font-size: 18px;
+	font-weight: 700;
+	color: rgba(255,255,255,.9);
+}
+.menu-cat-content-inner .wiki-empty-state p {
+	margin: 0;
+	padding: 0;
+}
+
 .wiki-hint {
 	margin: -8px 0 12px;
 	color: rgba(255,255,255,.6);
@@ -5984,4 +6060,241 @@ div.circle:has(>.icon-EoW_Echo) {
 }
 @media (prefers-reduced-motion: reduce) {
 	.leaflet-marker-icon { transition: none; }
+}
+
+/* The community editing beta (scripts/zbeta.js): a notice at the top of the
+   category list, with Recent Community Edits under it; Recent Changes there
+   for editors. */
+.editing-beta {
+	margin: 16px 16px 8px;
+}
+.editing-beta-notice,
+.editing-beta-changes {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 14px;
+	border: 1.5px solid #4395f7;
+	border-radius: 16px;
+	background: rgba(0,0,0,.8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	color: white;
+	text-align: left;
+	font: inherit;
+	font-size: 14px;
+	line-height: 1.35;
+	cursor: pointer;
+}
+/* Recent Changes: a button like the site's others, a little thinner. */
+.editing-beta-changes {
+	padding: 9px 14px;
+	border: 0;
+	border-radius: 10px;
+	background: rgba(255,255,255,.2);
+	-webkit-backdrop-filter: none;
+	backdrop-filter: none;
+}
+.editing-beta-changes:hover,
+.editing-beta-changes:focus-visible {
+	background: rgba(255,255,255,.3);
+}
+.editing-beta-notice:hover,
+.editing-beta-changes:hover,
+.editing-beta-notice:focus-visible,
+.editing-beta-changes:focus-visible {
+	border-color: #7db6ff;
+	outline: none;
+}
+.editing-beta-icon {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: #4395f7;
+}
+.editing-beta-text {
+	flex: 1;
+	min-width: 0;
+}
+.editing-beta-text strong {
+	display: block;
+	margin-bottom: 2px;
+	font-size: 15px;
+}
+.editing-beta-text span {
+	color: #a9cdfb;
+}
+.editing-beta-changes > span {
+	flex: 1;
+}
+.editing-beta-chevron {
+	flex: none;
+	opacity: .7;
+}
+.editing-beta-recent {
+	display: block;
+	margin: 6px 4px 0 auto;
+	padding: 2px 4px;
+	border: 0;
+	background: none;
+	color: rgba(255,255,255,.7);
+	font: inherit;
+	font-size: 13px;
+	cursor: pointer;
+}
+.editing-beta-recent:hover,
+.editing-beta-recent:focus-visible {
+	color: white;
+	outline: none;
+}
+.editing-beta-recent i {
+	font-size: 10px;
+	margin-left: 2px;
+}
+.editing-beta-carousel {
+	display: block;
+	margin: 0 -24px;
+	overflow: hidden;
+}
+.editing-beta-track {
+	display: flex;
+	gap: 12px;
+	transition: transform .6s cubic-bezier(.3, .7, .2, 1);
+}
+.editing-beta-slide {
+	flex: 0 0 64%;
+	display: block;
+}
+.editing-beta-image {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 12px;
+	border: 1px solid rgba(255,255,255,.15);
+}
+/* The You're in! dialog's picture of a marker's controls. */
+.editing-beta-controls {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 12px;
+	border: 1px solid rgba(255,255,255,.15);
+}
+.recent-changes-more {
+	display: block;
+	margin: 12px auto 24px;
+}
+/* A dropped pin's Create Community Marker: one more action button, under the
+   row of three, with a pin and a small plus. */
+.leaflet-control-layers .create-community-marker-row {
+	grid-template-columns: minmax(0, 1fr);
+	margin-top: 0;
+	padding-top: 16px;
+	border-top: 1px solid rgba(255,255,255,.15);
+}
+.create-community-marker-icon {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+}
+.create-community-marker-icon .fa-plus {
+	font-size: .55em;
+}
+/* The account page's sections: Community Editing Beta, Map Features and
+   Account Preferences, titled like the category list's. */
+#account .account-section {
+	margin-bottom: 24px;
+}
+#account .account-section-title {
+	margin: 8px 16px 10px;
+	color: white;
+	font-size: 16px;
+	font-weight: bold;
+	text-align: left;
+}
+#account .account-discord-link,
+#account .account-discord-link:hover,
+#account .account-discord-link:focus {
+	box-sizing: border-box;
+	color: white;
+	text-decoration: none;
+}
+/* A plain 1px line, not the site's decorative divider (hr::before). */
+#account .account-divider {
+	height: 0;
+	margin: 0 16px 8px;
+	padding: 0;
+	border: 0;
+	border-top: 1px solid rgba(255,255,255,.15);
+}
+#account .account-divider::before {
+	content: none;
+}
+/* Leaving (or joining) the beta: a plain link, less prominent than buttons. */
+#account .account-text-link {
+	display: block;
+	margin: 0 auto -8px;
+	padding: 2px 8px;
+	border: 0;
+	background: none;
+	color: rgba(255,255,255,.6);
+	font-family: "BrandonText", sans-serif;
+	font-size: 14px;
+	cursor: pointer;
+}
+#account .account-text-link:hover,
+#account .account-text-link:focus-visible {
+	color: white;
+	text-decoration: underline;
+	outline: none;
+}
+
+/* user:name search results (scripts/zbeta.js): people, with their pictures. */
+.search-user-avatar {
+	display: block;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+/* The user: hint, an empty state like Bookmarks' (.bookmarks-empty). */
+.marker-list-view .search-empty-state {
+	margin: 0;
+	padding: 48px 24px;
+	list-style: none;
+	color: rgba(255,255,255,.65);
+	text-align: center;
+}
+.search-empty-state-title {
+	margin-bottom: 8px;
+	font-size: 18px;
+	font-weight: 700;
+	color: rgba(255,255,255,.9);
+}
+.menu-cat-content-inner .search-empty-state p,
+.marker-list-view .search-empty-state p {
+	margin: 0;
+	padding: 0;
+}
+
+/* Account > Profile before joining the editing beta (scripts/zbeta.js). */
+.profile-preview-invite .wiki-card {
+	text-align: center;
+}
+.profile-preview-invite .wiki-card p {
+	margin: 0 0 12px;
+	padding: 0;
+}
+.profile-preview-invite .form-action-button {
+	width: 100%;
+	margin: 4px 0 0;
+}
+.marker-list-view .search-empty-state.is-link {
+	cursor: pointer;
 }

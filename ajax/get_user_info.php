@@ -56,6 +56,8 @@
   $user['id']       = $_SESSION['user_id'];
   $user['username'] = $_SESSION['username'];
   $user['level']    = $_SESSION['level'];
+  // Editing through the community editing beta (lib/common/account_status.php).
+  $user['betaEditor'] = !empty($_SESSION['beta_editor']);
   $details = $db->fetchAssociative("SELECT email, name FROM `{$map_prefix}user` WHERE id = ?", [(int) $user['id']]);
   $user['email'] = $details ? $details['email'] : null;
   $user['name']  = $details ? $details['name']  : null;

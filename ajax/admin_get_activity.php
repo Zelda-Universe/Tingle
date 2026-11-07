@@ -19,7 +19,12 @@
   $metrics = [
     'completes' => ['table' => 'user_completed_marker', 'column' => 'complete_date', 'where' => '1 = 1'],
     'bookmarks' => ['table' => 'user_bookmark', 'column' => 'created', 'where' => '1 = 1'],
-    'downloads' => ['table' => 'offline_map_event', 'column' => 'created', 'where' => "`event` = 'downloaded'"]
+    'downloads' => ['table' => 'offline_map_event', 'column' => 'created', 'where' => "`event` = 'downloaded'"],
+    // Community editing: saved edits (not the "Original" kept when a marker
+    // is first edited), and when the editing beta's testers joined. Leaving
+    // the beta clears beta_editor, so these are the testers there are now.
+    'edits'     => ['table' => 'marker_revision', 'column' => 'created', 'where' => "`action` <> 'import'"],
+    'beta'      => ['table' => 'user', 'column' => 'beta_editor', 'where' => '`beta_editor` IS NOT NULL', 'people' => 'id']
   ];
   $metric = isset($metrics[$_GET['metric'] ?? '']) ? $_GET['metric'] : 'completes';
   $info = $metrics[$metric];
@@ -34,6 +39,10 @@
   $range = isset($ranges[$_GET['range'] ?? '']) ? $_GET['range'] : '30d';
   $bucket = $ranges[$range]['bucket'];
 
+  if ($metric === 'beta' && !accountHasBetaColumn($db, $map_prefix)) {
+    echo json_encode(array('success' => false, 'metric' => $metric, 'msg' => 'Run the user_add_beta_editor migration to track the editing beta.'));
+    return;
+  }
   if (!$db->fetchOne("SHOW TABLES LIKE '{$map_prefix}{$info['table']}'")) {
     echo json_encode(array('success' => false, 'metric' => $metric,
       'msg' => $metric === 'downloads' ? 'Run the create_offline_map_event migration to track offline maps.' : 'Nothing to show yet.'));
@@ -141,8 +150,9 @@
   });
 
   // Distinct people over the whole table: a full scan, six hours.
-  $people = $allTime ? adminCached("activity-{$metric}-people", 6 * 60 * 60, function() use ($db, $table, $where) {
-    return ['people' => (int) $db->fetchOne("SELECT COUNT(DISTINCT `user_id`) FROM $table WHERE $where")];
+  $peopleColumn = $info['people'] ?? 'user_id';
+  $people = $allTime ? adminCached("activity-{$metric}-people", 6 * 60 * 60, function() use ($db, $table, $where, $peopleColumn) {
+    return ['people' => (int) $db->fetchOne("SELECT COUNT(DISTINCT `{$peopleColumn}`) FROM $table WHERE $where")];
   })['people'] : null;
 
   $games = null;

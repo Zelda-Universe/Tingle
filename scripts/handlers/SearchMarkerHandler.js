@@ -85,6 +85,16 @@ SearchMarkerHandler.prototype._setupUIInteraction = function() {
 };
 
 SearchMarkerHandler.prototype._displayResults = function(e, query) {
+  // user:name searches people instead (scripts/zbeta.js).
+  var userQuery = /^\s*user:\s*(.*)$/i.exec(query || '');
+  if(userQuery && typeof zMap !== 'undefined' && zMap._searchUsers) {
+    zMap._searchUsers(userQuery[1].trim(), query, this.markerListView, function() {
+      this.handlers["markerListViewBuilt"].forEach(function(handler) {
+        handler(this.markerListView);
+      }, this);
+    }.bind(this));
+    return;
+  }
   var results = this._deduplicateSearchResults(this.searcher.search(query));
   results = this._addMarkersInMatchedAreas(results, query);
   if (!this.showSearchStats) results = results.map(function(entry) { return entry.item; });

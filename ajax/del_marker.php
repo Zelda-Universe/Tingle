@@ -13,7 +13,14 @@
    }
    $sessionUserId = (int) $_SESSION['user_id'];
    $sessionLevel  = (int) $_SESSION['level'];
+   $sessionBeta   = !empty($_SESSION['beta_editor']);
    session_write_close();
+
+   // Deleting isn't part of the community editing beta.
+   if ($sessionBeta) {
+     echo json_encode(array("success"=>false, "msg"=>"Deleting markers isn't part of the editing beta."));
+     return;
+   }
 
    $markerId = (int) $_POST['markerId'];
 

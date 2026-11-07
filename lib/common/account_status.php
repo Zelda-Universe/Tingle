@@ -24,6 +24,43 @@
     return $sql;
   }
 
+  // The community editing beta: accounts that opted in (beta_editor, from the
+  // user_add_beta_editor migration) work as Contributors, level 5, except
+  // that they can't delete markers (del_marker.php). Admins and Contributors
+  // already edit, so the beta changes nothing for them.
+  const BETA_EDITOR_LEVEL = 5;
+
+  function accountHasBetaColumn($db, $prefix) {
+    static $has = null;
+    if ($has === null) $has = (bool) $db->fetchOne("SHOW COLUMNS FROM `{$prefix}user` LIKE 'beta_editor'");
+    return $has;
+  }
+
+  // SQL for the level an account works at, for a SELECT on `user`.
+  function accountLevelSql($db, $prefix, $alias = '') {
+    $table = $alias === '' ? '' : "`{$alias}`.";
+    if (!accountHasBetaColumn($db, $prefix)) return "{$table}`level`";
+    return "IF({$table}`beta_editor` IS NOT NULL AND {$table}`level` < " . BETA_EDITOR_LEVEL . ", " .
+      BETA_EDITOR_LEVEL . ", {$table}`level`)";
+  }
+
+  // SQL that's 1 for an account editing only through the beta.
+  function accountBetaSql($db, $prefix, $alias = '') {
+    $table = $alias === '' ? '' : "`{$alias}`.";
+    if (!accountHasBetaColumn($db, $prefix)) return "0";
+    return "IF({$table}`beta_editor` IS NOT NULL AND {$table}`level` < " . BETA_EDITOR_LEVEL . ", 1, 0)";
+  }
+
+  // [level, beta] for an account, or false when it can't be used.
+  function accountRole($db, $prefix, $userId) {
+    $row = $db->fetchAssociative(
+      "SELECT " . accountLevelSql($db, $prefix) . " AS `level`, " . accountBetaSql($db, $prefix) . " AS `beta`
+         FROM `{$prefix}user` WHERE `id` = ? AND " . accountUsableSql($db, $prefix),
+      [(int) $userId]
+    );
+    return $row ? [(int) $row['level'], (bool) $row['beta']] : false;
+  }
+
   function accountIsUsable($db, $prefix, $userId) {
     return (bool) $db->fetchOne(
       "SELECT 1 FROM `{$prefix}user` WHERE `id` = ? AND " . accountUsableSql($db, $prefix),
@@ -40,12 +77,11 @@
     if (empty($_COOKIE['zmap'])) return;
     start_session('zmap');
     $userId = (int) ($_SESSION['user_id'] ?? 0);
-    $level = $userId ? $db->fetchOne(
-      "SELECT `level` FROM `{$prefix}user` WHERE `id` = ? AND " . accountUsableSql($db, $prefix),
-      [$userId]
-    ) : null;
-    if ($userId && isset($_SESSION['level']) && $level !== false && (int) $_SESSION['level'] !== (int) $level) {
-      $_SESSION['level'] = (int) $level;
+    $role = $userId ? accountRole($db, $prefix, $userId) : null;
+    $level = $role === false ? false : ($role ? $role[0] : null);
+    if ($userId && isset($_SESSION['level']) && $role) {
+      if ((int) $_SESSION['level'] !== $role[0]) $_SESSION['level'] = $role[0];
+      if (!empty($_SESSION['beta_editor']) !== $role[1]) $_SESSION['beta_editor'] = $role[1];
     }
     if ($userId && $level === false) {
       session_unset();

@@ -68,7 +68,7 @@
     if (!$userIds) return array();
     $marks = implode(',', array_fill(0, count($userIds), '?'));
     return array_map('intval', $db->fetchFirstColumn(
-      "SELECT `id` FROM `{$prefix}user` WHERE `id` IN ({$marks}) AND `level` >= ? AND " . accountUsableSql($db, $prefix),
+      "SELECT `id` FROM `{$prefix}user` WHERE `id` IN ({$marks}) AND " . accountLevelSql($db, $prefix) . " >= ? AND " . accountUsableSql($db, $prefix),
       array_merge($userIds, [WIKI_EDITOR_LEVEL])
     ));
   }

@@ -182,11 +182,8 @@ CategoryMenu.prototype._initDOMElements = function() {
     }, this);
   }
   if(this._categoryTree) this.organizePOICategories();
-  if(Object.values(this._categories || {}).some(function(c) { return String(c.container_id) === '64'; })) {
-    this.domNode.prepend($('<div class="oot-preview-notice" role="status"><span class="complete-reminder-icon" aria-hidden="true"><i class="fas fa-exclamation-triangle"></i></span><div><strong>Map Under Construction</strong><p></p></div></div>').find('p').text(
-      "We're currently working on this map, so some things might be missing. We'll be updating the Ocarina of Time Remake map frequently, so keep checking back!"
-    ).end());
-  }
+  // The editing beta's notice goes at the top (scripts/zbeta.js).
+  $(document).trigger('zm:categoryMenuBuilt', [this]);
 };
 
 CategoryMenu.prototype.organizePOICategories = function() {

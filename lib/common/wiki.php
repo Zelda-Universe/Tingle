@@ -1,7 +1,7 @@
 <?php
   // Community editing, wiki-style: marker revisions (History), Talk pages
-  // and profiles. For now only editors (Contributors and Admins, level 5+)
-  // can see any of it. Tables from the create_wiki migration.
+  // and profiles. For now only editors (Contributors and Admins, level 5+,
+  // and beta testers, who work as Contributors) can see any of it. Tables from the create_wiki migration.
 
   include_once(__DIR__ . '/account_status.php');
 
@@ -15,7 +15,8 @@
     $userId = (int) ($_SESSION['user_id'] ?? 0);
     session_write_close();
     $editor = $userId ? $db->fetchAssociative(
-      "SELECT `id`, `level`, `username` FROM `{$prefix}user` WHERE `id` = ? AND " . accountUsableSql($db, $prefix),
+      "SELECT `id`, " . accountLevelSql($db, $prefix) . " AS `level`, " . accountBetaSql($db, $prefix) . " AS `beta`, `username`
+         FROM `{$prefix}user` WHERE `id` = ? AND " . accountUsableSql($db, $prefix),
       [$userId]
     ) : false;
     if (!$editor || (int) $editor['level'] < WIKI_EDITOR_LEVEL) {
@@ -25,6 +26,7 @@
     }
     $editor['id'] = (int) $editor['id'];
     $editor['level'] = (int) $editor['level'];
+    $editor['beta'] = (bool) $editor['beta'];
     return $editor;
   }
 
@@ -37,10 +39,11 @@
     return $available;
   }
 
-  // The same rule as add_marker.php and del_marker.php: admins may change
-  // any marker, other editors only their own.
+  // The same rule as add_marker.php: admins and beta testers may edit any
+  // marker, other editors only their own. (Beta testers can't delete or hide
+  // one: del_marker.php, marker_revert.php.)
   function wikiCanEditMarker($editor, $ownerId) {
-    return $editor['level'] >= WIKI_ADMIN_LEVEL ||
+    return $editor['level'] >= WIKI_ADMIN_LEVEL || !empty($editor['beta']) ||
       ($editor['level'] >= WIKI_EDITOR_LEVEL && (int) $ownerId === $editor['id']);
   }
 

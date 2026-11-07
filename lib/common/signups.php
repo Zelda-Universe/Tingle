@@ -7,7 +7,9 @@
     return array(
       'bookmark' => 'Bookmark',
       'complete' => 'Complete',
-      'account'  => 'Account button'
+      'account'  => 'Account button',
+      // The community editing beta's explainer (scripts/zbeta.js).
+      'editing_beta' => 'Editing beta'
     );
   }
 

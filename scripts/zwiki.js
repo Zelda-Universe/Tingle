@@ -28,7 +28,8 @@ ZMap.prototype._isWikiEditor = function() {
 ZMap.prototype._canEditMarker = function(marker) {
   var me = this.getUser();
   if(!me || !marker) return false;
-  return me.level >= this.WIKI_ADMIN_LEVEL ||
+  // Beta testers edit any marker too (scripts/zbeta.js), but can't delete.
+  return me.level >= this.WIKI_ADMIN_LEVEL || !!me.betaEditor ||
     (me.level >= this.WIKI_EDITOR_LEVEL && String(marker.userId) === String(me.id));
 };
 
@@ -42,9 +43,12 @@ ZMap.prototype._wikiAgo = function(seconds) {
   return this._adminTime(seconds) || '';
 };
 
-ZMap.prototype._wikiRoleLabel = function(level) {
+ZMap.prototype._wikiRoleLabel = function(level, beta) {
   level = Number(level);
   if(level >= this.WIKI_ADMIN_LEVEL) return 'Admin';
+  // In the community editing beta (scripts/zbeta.js), who edit at
+  // Contributor level.
+  if(beta) return 'Beta Editor';
   if(level >= this.WIKI_EDITOR_LEVEL) return 'Contributor';
   return 'Member';
 };
@@ -144,7 +148,8 @@ ZMap.prototype._markerEditorToolsHTML = function(marker) {
       (canEdit ? button('edit', 'fa-pencil-alt', 'Edit') : '') +
       button('history', 'fa-history', 'History') +
       button('talk', 'fa-comments', 'Talk') +
-      (canEdit ? button('delete', 'fa-trash-alt', 'Delete', ' bad') : '') +
+      // Deleting isn't part of the editing beta (scripts/zbeta.js).
+      (canEdit && !this.getUser().betaEditor ? button('delete', 'fa-trash-alt', 'Delete', ' bad') : '') +
     '</div>' +
     '<div class="marker-editor-confirm" hidden>' +
       '<p>Delete this marker? It disappears from the map, and can be brought back from its History.</p>' +
@@ -779,6 +784,7 @@ ZMap.prototype._openUserProfile = function(who, back) {
 ZMap.prototype._renderUserProfile = function(data, back) {
   var _this = this;
   var profile = data.user;
+  var editor = this._isWikiEditor();
   var reopen = function() { _this._openUserProfile({ id: profile.id }, back); };
   var avatar = profile.profilePicture || 'images/default-avatar.png';
   var stat = function(n, label) {
@@ -791,16 +797,17 @@ ZMap.prototype._renderUserProfile = function(data, back) {
         '<img class="profile-avatar" src="' + _this._wikiEscape(avatar) + '" alt="" ' +
           'onerror="this.onerror=null;this.src=\'images/default-avatar.png\'" />' +
         '<h3 class="profile-name">' + _this._wikiEscape(profile.username) + '</h3>' +
-        '<p class="profile-role">' + _this._wikiRoleLabel(profile.level) +
+        '<p class="profile-role">' + _this._wikiRoleLabel(profile.level, profile.beta) +
           ' · Joined ' + _this._wikiEscape(_this._adminTime(profile.joinedAgo, { dateOnly: true }) || '') + '</p>' +
       '</div>' +
       '<div class="profile-stats">' + stat(data.counts.markers, 'Markers') + stat(data.counts.edits, 'Edits') +
         stat(data.counts.comments, 'Comments') + '</div>' +
-      '<div class="wiki-actions profile-actions">' +
+      // Anyone can see a profile; Talk and link codes are for editors.
+      (editor ? '<div class="wiki-actions profile-actions">' +
         '<button type="button" class="wiki-action-button" data-action="talk"><i class="fas fa-comments" aria-hidden="true"></i>Talk</button>' +
         (data.canEdit ? '<button type="button" class="wiki-action-button" data-action="edit"><i class="fas fa-pencil-alt" aria-hidden="true"></i>Edit Profile</button>' : '') +
         '<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy <code>[[user:' + _this._wikiEscape(profile.username) + ']]</code></button>' +
-      '</div>' +
+      '</div>' : '') +
       '<section class="wiki-section profile-bio-section"><h4>About</h4>' +
         '<div class="wiki-card profile-bio"></div></section>' +
       (data.canEdit ?
@@ -838,9 +845,18 @@ ZMap.prototype._renderUserProfile = function(data, back) {
   var changes = $(page).find('.profile-changes');
   if(!data.changes.length) changes.append('<li class="wiki-empty">No changes yet.</li>');
   data.changes.forEach(function(change) {
-    changes.append(_this._wikiRevisionRow(change, { markerTitle: change.markerTitle || ('Marker #' + change.markerId), hideUser: true }));
+    var row = _this._wikiRevisionRow(change, { markerTitle: change.markerTitle || ('Marker #' + change.markerId), hideUser: true });
+    row.find('.wiki-revision').attr({ 'data-marker': change.markerId, 'data-game': change.game || '' });
+    changes.append(row);
   });
   changes.on('click', '.wiki-revision', function() {
+    // Revisions are for editors; everyone else goes to the marker.
+    if(!editor) {
+      var markerId = Number(this.getAttribute('data-marker')), game = this.getAttribute('data-game');
+      if(game && game !== _this.mapOptions.shortName) window.location.href = _this._wikiMarkerURL(markerId, game);
+      else _this.goTo({ marker: markerId });
+      return;
+    }
     _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);
   });
 

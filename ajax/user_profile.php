@@ -1,25 +1,37 @@
 <?php
   include_once(dirname(__DIR__) . '/lib/common/wiki.php');
-  $editor = wikiRequireEditor($db, $map_prefix);
-  if ($editor === null) return;
 
-  // A profile page: banner, picture, bio and recent changes.
+  // A profile page: banner, picture, bio and recent changes. Anyone can see
+  // the profiles of people who edit (Contributors, Admins and the editing
+  // beta's testers); other accounts have none, as far as anyone but an admin
+  // can tell. Only editors see changes to markers that aren't on the map.
+  start_session('zmap');
+  $viewerId = (int) ($_SESSION['user_id'] ?? 0);
+  session_write_close();
+  $viewerRole = $viewerId ? accountRole($db, $map_prefix, $viewerId) : false;
+  $viewerLevel = $viewerRole ? $viewerRole[0] : 0;
+  $viewerEditor = $viewerLevel >= WIKI_EDITOR_LEVEL;
   $picture = wikiHasUserColumn($db, $map_prefix, 'profile_picture') ? '`profile_picture`' : 'NULL';
   $bio = wikiHasUserColumn($db, $map_prefix, 'bio') ? '`bio`' : 'NULL';
   $banner = wikiHasUserColumn($db, $map_prefix, 'profile_banner') ? '`profile_banner`' : 'NULL';
   $select = "
-    SELECT `id`, `username`, `level`, `created`, " . wikiAgoSql('`created`') . " AS `joinedAgo`,
+    SELECT `id`, `username`, `level`, " . accountLevelSql($db, $map_prefix) . " AS `editLevel`,
+           " . accountBetaSql($db, $map_prefix) . " AS `beta`, `created`, " . wikiAgoSql('`created`') . " AS `joinedAgo`,
            {$picture} AS `profilePicture`, {$bio} AS `bio`, {$banner} AS `banner`
       FROM `{$map_prefix}user`
      WHERE `deleted` IS NULL AND ";
   $user = isset($_GET['username']) && is_string($_GET['username'])
     ? $db->fetchAssociative($select . "`username` = ?", [$_GET['username']])
-    : $db->fetchAssociative($select . "`id` = ?", [(int) ($_GET['id'] ?? $editor['id'])]);
+    : $db->fetchAssociative($select . "`id` = ?", [(int) ($_GET['id'] ?? $viewerId)]);
+  if ($user && (int) $user['editLevel'] < WIKI_EDITOR_LEVEL && $viewerLevel < WIKI_ADMIN_LEVEL) $user = false;
   if (!$user) {
     echo json_encode(array('success' => false, 'msg' => 'That user was not found.'));
     return;
   }
   foreach (['id', 'level', 'joinedAgo'] as $key) $user[$key] = (int) $user[$key];
+  unset($user['editLevel']);
+  // In the community editing beta (lib/common/account_status.php).
+  $user['beta'] = (bool) $user['beta'];
 
   $changes = [];
   $counts = ['edits' => 0, 'comments' => 0];
@@ -30,7 +42,7 @@
              " . wikiMarkerGamesSql($map_prefix, '`r`.`marker_id`') . " AS `game`
         FROM `{$map_prefix}marker_revision` `r`
         LEFT JOIN `{$map_prefix}marker` `m` ON `m`.`id` = `r`.`marker_id`
-       WHERE `r`.`user_id` = ? AND `r`.`action` <> 'import'
+       WHERE `r`.`user_id` = ? AND `r`.`action` <> 'import'" . ($viewerEditor ? "" : " AND `m`.`visible` = 1") . "
        ORDER BY `r`.`id` DESC
        LIMIT 30
     ", [$user['id']]);
@@ -55,7 +67,7 @@
     'user' => $user,
     'counts' => $counts,
     'changes' => $changes,
-    'isSelf' => $user['id'] === $editor['id'],
-    'canEdit' => $user['id'] === $editor['id'] || $editor['level'] >= WIKI_ADMIN_LEVEL
+    'isSelf' => $user['id'] === $viewerId,
+    'canEdit' => $viewerEditor && ($user['id'] === $viewerId || $viewerLevel >= WIKI_ADMIN_LEVEL)
   ));
 ?>

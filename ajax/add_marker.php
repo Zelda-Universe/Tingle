@@ -48,6 +48,7 @@
   }
   $sessionUserId = (int) $_SESSION['user_id'];
   $sessionLevel  = (int) ($_SESSION['level'] ?? 0);
+  $sessionBeta   = !empty($_SESSION['beta_editor']);
   session_write_close();
 
   $isUpdate   = isset($_POST['markerId']) && is_numeric($_POST['markerId']);
@@ -76,7 +77,7 @@
 
     // Authorisation is decided by who owns the marker in the database, not by
     // the userId the client sends. Level 10+ may edit any marker; level 5-9
-    // only their own.
+    // only their own; beta testers any (they can't change its visibility).
     $ownerId = $db->fetchOne("
       SELECT user_id
         FROM {$map_prefix}marker
@@ -93,7 +94,7 @@
 
     if (
           $sessionLevel < 5
-      ||  ($sessionLevel < 10 && (int) $ownerId !== $sessionUserId)
+      ||  ($sessionLevel < 10 && !$sessionBeta && (int) $ownerId !== $sessionUserId)
     ) {
       echo json_encode(array(
         "success"  => false,
@@ -102,8 +103,15 @@
       return;
     }
   }
-  // Otherwise anyone logged in can add a marker; it stays hidden until a
-  // level 5+ user adds it, or an admin makes it visible.
+  // New markers come from editors: Contributors, Admins and people who've
+  // opted in to the editing beta (all level 5+, lib/common/account_status.php).
+  if (!$isUpdate && $sessionLevel < 5) {
+    echo json_encode(array(
+      "success" => false,
+      "msg"     => "Join the editing beta to add markers."
+    ));
+    return;
+  }
 
   include_once(dirname(__DIR__) . '/lib/common/wiki.php');
   begin();
@@ -113,7 +121,7 @@
   if ($isUpdate) wikiEnsureBaseline($db, $map_prefix, $markerId);
 
   if (!$isUpdate) {
-    $visible = ($sessionLevel >= 5) ? 1 : 0;
+    $visible = 1;
 
     $db->executeStatement("
       INSERT INTO {$map_prefix}marker (
@@ -128,8 +136,9 @@
         , z
         , global
         , visible
+        , path
         , last_updated
-      ) VALUES (?, 2, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())
+      ) VALUES (?, 2, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', now())
     ", [$submapId, $categoryId, $userId, $name, $description, $x, $y, $z, $isGlobal, $visible]);
 
     $markerId = (int) $db->lastInsertId();

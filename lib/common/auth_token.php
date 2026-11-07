@@ -12,6 +12,7 @@
   // since parallel requests would race and sign people out.
 
   include_once(__DIR__ . '/session.php');
+  include_once(__DIR__ . '/account_status.php');
 
   const AUTH_COOKIE = 'zmap_auth';
   // Browsers cap cookie lifetimes at 400 days; it's renewed daily on use.
@@ -81,7 +82,7 @@
   // Fills the session as signing in does.
   function authFillSession($db, $prefix, $userId) {
     $row = $db->fetchAssociative("
-      SELECT `id`, `username`, `level`,
+      SELECT `id`, `username`, " . accountLevelSql($db, $prefix) . " AS `level`, " . accountBetaSql($db, $prefix) . " AS `beta`,
              `seen_version_major` AS `v1`, `seen_version_minor` AS `v2`, `seen_version_patch` AS `v3`
         FROM `{$prefix}user` WHERE `id` = ?
     ", [(int) $userId]);
@@ -92,6 +93,7 @@
     $_SESSION['username'] = $row['username'];
     $_SESSION['user_id']  = $row['id'];
     $_SESSION['level']    = $row['level'];
+    $_SESSION['beta_editor'] = (bool) $row['beta'];
     $_SESSION['v1']       = $row['v1'];
     $_SESSION['v2']       = $row['v2'];
     $_SESSION['v3']       = $row['v3'];

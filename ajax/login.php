@@ -52,7 +52,8 @@
        {$disabledSelect}           ,
        {$bannedSelect}             ,
        `password`                  ,
-       `level`                     ,
+       " . accountLevelSql($db, $map_prefix) . " AS `level`,
+       " . accountBetaSql($db, $map_prefix) . " AS `beta`,
        `seen_version_major` AS `v1`,
        `seen_version_minor` AS `v2`,
        `seen_version_patch` AS `v3`
@@ -104,6 +105,7 @@
      }
    }
    $user['level']        = $row['level'];
+   $user['betaEditor']   = (bool) $row['beta'];
    $user['seen_version'] = $row['v1'] . '.' . $row['v2'] . '.' . $row['v3'];
    include_once(dirname(__DIR__) . '/lib/common/user_settings.php');
    $user['settings']     = userSettingsLoad($db, $map_prefix, $row['id']);
@@ -117,6 +119,7 @@
    $_SESSION['username'] = $user['username'];
    $_SESSION['user_id']  = $user['id'];
    $_SESSION['level']    = $user['level'];
+   $_SESSION['beta_editor'] = (bool) $row['beta'];
    $_SESSION['v1']       = $row['v1'];
    $_SESSION['v2']       = $row['v2'];
    $_SESSION['v3']       = $row['v3'];

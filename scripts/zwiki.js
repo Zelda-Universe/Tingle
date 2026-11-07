@@ -774,7 +774,7 @@ ZMap.prototype._renderTalkThread = function(thread, comments) {
 ZMap.prototype._openUserProfile = function(who, back) {
   var _this = this;
   back = back || function() { _this.mapControl.resetContent(); };
-  var params = who.username ? { username: who.username } : { id: who.id };
+  var params = who.name !== undefined ? { name: who.name } : who.username ? { username: who.username } : { id: who.id };
   this._wikiGet('user_profile', params).done(function(data) {
     if(!data.success) { toastr.error(data.msg); return; }
     _this._renderUserProfile(data, back);
@@ -784,6 +784,8 @@ ZMap.prototype._openUserProfile = function(who, back) {
 ZMap.prototype._renderUserProfile = function(data, back) {
   var _this = this;
   var profile = data.user;
+  // Profile links use the name (syncDrawerPageURL).
+  (this._profileNames = this._profileNames || {})[profile.id] = profile.username;
   var editor = this._isWikiEditor();
   var reopen = function() { _this._openUserProfile({ id: profile.id }, back); };
   var avatar = profile.profilePicture || 'images/default-avatar.png';

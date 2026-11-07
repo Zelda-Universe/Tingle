@@ -20,9 +20,17 @@
            {$picture} AS `profilePicture`, {$bio} AS `bio`, {$banner} AS `banner`
       FROM `{$map_prefix}user`
      WHERE `deleted` IS NULL AND ";
-  $user = isset($_GET['username']) && is_string($_GET['username'])
-    ? $db->fetchAssociative($select . "`username` = ?", [$_GET['username']])
-    : $db->fetchAssociative($select . "`id` = ?", [(int) ($_GET['id'] ?? $viewerId)]);
+  // ?name= is what profile links carry: a username, or an account ID from
+  // before links used names (tried only when no one has that name).
+  $name = is_string($_GET['name'] ?? null) ? $_GET['name'] : null;
+  if ($name !== null) {
+    $user = $db->fetchAssociative($select . "`username` = ?", [$name]);
+    if (!$user && ctype_digit($name)) $user = $db->fetchAssociative($select . "`id` = ?", [(int) $name]);
+  } else {
+    $user = isset($_GET['username']) && is_string($_GET['username'])
+      ? $db->fetchAssociative($select . "`username` = ?", [$_GET['username']])
+      : $db->fetchAssociative($select . "`id` = ?", [(int) ($_GET['id'] ?? $viewerId)]);
+  }
   if ($user && (int) $user['editLevel'] < WIKI_EDITOR_LEVEL && $viewerLevel < WIKI_ADMIN_LEVEL) $user = false;
   if (!$user) {
     echo json_encode(array('success' => false, 'msg' => 'That user was not found.'));

@@ -3411,7 +3411,13 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
     content_style:
       'body { margin: 12px; background: #1e1e20; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.45; }' +
       'a { color: #8fd8ff; }' +
-      'img { max-width: 100%; height: auto; }'
+      'img { max-width: 100%; height: auto; border-radius: 8px; }' +
+      // Videos and tables as they'll show on the marker, with cell edges
+      // visible while editing.
+      'iframe, video { max-width: 100%; border: 0; border-radius: 8px; }' +
+      'table { width: 100%; border-collapse: collapse; }' +
+      'th, td { padding: 4px 6px; border: 1px solid #4a4a4f; text-align: left; vertical-align: top; }' +
+      'blockquote { margin: 0 0 12px; padding: 8px 12px; border-left: 3px solid #777; background: #2a2a2d; }'
   };
   if (isEditor) {
     editorOptions.automatic_uploads = true;
@@ -4736,6 +4742,20 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   if(!this._drawerRoutingReady) return;
   var url = new URL(window.location.href);
   var page = this.drawerPageRoutes[contentType];
+  var recent = /^recentChanges-(.+)$/.exec(contentType || '');
+  var profile = /^userProfile-(\d+)$/.exec(contentType || '');
+  if(contentType === 'allChanges') page = 'all-changes';
+  if(recent) page = 'recent-edits';
+  if(profile) page = 'profile';
+  url.searchParams.delete('edits-game');
+  url.searchParams.delete('profile');
+  if(recent) url.searchParams.set('edits-game', recent[1]);
+  // By username, which reads better and lasts; IDs from older links still work.
+  if(profile) url.searchParams.set('profile', (this._profileNames && this._profileNames[profile[1]]) || profile[1]);
+  if(contentType === 'allChanges' || recent || profile) {
+    url.searchParams.delete('marker');
+    ['talk', 'comment', 'user', 'notification'].forEach(function(key) { url.searchParams.delete(key); });
+  }
   if(/^area-/.test(contentType || '') && this.selectedArea) {
     url.searchParams.set('area',this.areaURLKey(this.selectedArea));
     url.searchParams.delete('marker');
@@ -4803,6 +4823,20 @@ ZMap.prototype.restoreDrawerPage = function(page) {
     this.syncDrawerPageURL(this.mapControl.getContentType());
     return;
   }
+  if(['all-changes', 'recent-edits', 'profile'].includes(page)) {
+    var params = new URL(window.location.href).searchParams;
+    var _this = this;
+    var back = function() { _this.mapControl.resetContent(); };
+    if(page === 'profile') {
+      // A username, or an account ID from an older link (user_profile.php).
+      var profileName = params.get('profile');
+      if(!profileName || profileName.length > 100) return;
+      this._openUserProfile({ name: profileName }, back);
+    } else {
+      this._openRecentChanges(page === 'recent-edits' ? (params.get('edits-game') || this.mapOptions.shortName) : null, back);
+    }
+    return;
+  }
   var authenticatedRoutes = {
     account: '_createAccountForm',
     'account-information': '_createAccountInformationForm',
@@ -4846,6 +4880,11 @@ ZMap.prototype.restoreResponsiveDrawer = function(snapshot) {
       control._navigatingBack = true; // Preserve the inherited parent during restoration.
       control.setContent(type === 'games' ? control._gameMenu.domNode : control._mapsMenu.domNode, type);
       (type === 'games' ? control._gamesButton : control._mapsButton)._toggle(true);
+    } else if(type === 'allChanges' || /^recentChanges-/.test(type || '') || /^userProfile-\d+$/.test(type || '')) {
+      var _this = this;
+      var back = function() { _this.mapControl.resetContent(); };
+      if(/^userProfile-/.test(type)) this._openUserProfile({ id: type.substring('userProfile-'.length) }, back);
+      else this._openRecentChanges(type === 'allChanges' ? null : type.substring('recentChanges-'.length), back);
     } else if(this.drawerPageRoutes[type]) {
       control._headerPageParent = snapshot.parent;
       control._navigatingBack = true;

@@ -9,6 +9,22 @@ ZMap.prototype.setupOotFloors = function() {
   // The lines' own SVG reaches 1.5 screens beyond each edge, so a zoom out
   // (which shrinks the drawing until it's redrawn) still fills the screen.
   var connectionRenderer=L.svg({pane:'ootConnections', padding:1.5});
+  // Leaflet re-centres the drawing after every pan (moveend) and from then on
+  // takes it to be drawn at the current zoom, but only redraws the lines at a
+  // new zoom when a zoom ends. A pan in the middle of a pinch would leave
+  // them drawn at an older zoom, the wrong size and in the wrong place: so
+  // whenever the drawing's zoom isn't the lines' zoom, redraw them.
+  var drawnZoom=null, updateDrawing=connectionRenderer._update, projectAll=connectionRenderer._onZoomEnd;
+  connectionRenderer._update=function() {
+    updateDrawing.call(this);
+    if(!this._map || this._map._animatingZoom || this._zoom===drawnZoom) return;
+    drawnZoom=this._zoom;
+    for(var id in this._layers) this._layers[id]._reset();
+  };
+  connectionRenderer._onZoomEnd=function() {
+    projectAll.call(this);
+    drawnZoom=this._map.getZoom();
+  };
   // While a zoom is in progress Leaflet scales the lines' SVG with a CSS
   // transform and only redraws it at the end, so the lines and dots would
   // swell and shrink mid-gesture. Track that scale each frame and divide the
@@ -23,15 +39,24 @@ ZMap.prototype.setupOotFloors = function() {
     applyConnectionZoom();
     connectionZoomFrame=window.requestAnimationFrame(trackConnectionZoom);
   };
-  this.map.on('zoomstart', function() {
+  // An animated zoom scales the lines with a CSS transition, so only the page
+  // knows the scale mid-animation: read it each frame.
+  this.map.on('zoomanim', function() {
     if(connectionZoomFrame===null) trackConnectionZoom();
   });
-  // Pinching moves the zoom every frame: redraw the lines at that zoom
-  // instead of stretching the last drawing, so they stay sharp and reach
-  // everything newly on screen. (_reset is Leaflet 1.9's own full redraw.)
+  // Pinching moves the zoom every frame. Redraw the lines at the new zoom
+  // after every quarter level (they reach 1.5 screens past each edge, so a
+  // drawing stays sharp and covers the screen that long), and in between
+  // work the stretch out from the zoom rather than reading it back from the
+  // page, which would make the browser recalculate styles every frame.
   this.map.on('zoom', function() {
-    if(connectionRenderer._map) connectionRenderer._reset();
-    if(connectionZoomFrame!==null) applyConnectionZoom();
+    var map=zmap.map, zoom=map.getZoom();
+    if(connectionZoomFrame!==null || !connectionRenderer._map) return;
+    if(Math.abs(zoom-connectionRenderer._zoom)>=0.25) {
+      connectionRenderer._update();
+      connectionRenderer._updateTransform(map.getCenter(), zoom);
+    }
+    connectionPane.style.setProperty('--oot-zoom-scale', map.getZoomScale(zoom, connectionRenderer._zoom));
   });
   this.map.on('zoomend', function() {
     if(connectionZoomFrame!==null) window.cancelAnimationFrame(connectionZoomFrame);

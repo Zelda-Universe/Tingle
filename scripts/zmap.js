@@ -1032,7 +1032,9 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
 }
 
 ZMap.prototype._getDisplayZoom = function() {
-   return Math.round(this.map.getZoom());
+   // While laying out for a zoom that's on its way (_markersOnThisMap), what
+   // shows is what will show there.
+   return Math.round(this._layoutZoom !== undefined ? this._layoutZoom : this.map.getZoom());
 }
 
 ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
@@ -1203,8 +1205,9 @@ ZMap.prototype.focusSingleMapCategory = function(category) {
 };
 
 ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
-  // Markers may appear or go: lay the place names out again afterwards.
-  if(this._scheduleLabelLayout) this._scheduleLabelLayout();
+  // Markers may appear or go (the layout notices those itself), or change
+  // look: lay the place names out again afterwards.
+  if(this._scheduleLabelLayout) this._scheduleLabelLayout(!!(affectedCategories || completedChanged));
   if(affectedCategories) {
     if(!$.isArray(affectedCategories)) {
       affectedCategories = [affectedCategories];
@@ -1430,27 +1433,83 @@ ZMap.prototype._labelTierShown = function(categoryName) {
   }
 };
 
-// Region and place names (label markers) step aside from the markers they
-// would cover: each tries a few spots near its own, nudges sized to the
-// label, and takes the one covering the fewest markers and other names,
-// preferring the nearest. Re-laid out after every pan and zoom, once the
-// markers have updated.
+// Leaflet places the map artwork for where a zoom animation was heading. If
+// the map moves on before it ends (a quick pinch and pan), the artwork stays
+// placed for that old spot while markers, names and lines follow the map: the
+// artwork ended up shifted under everything, by 100px or more. Each time the
+// map comes to rest, place the artwork for where it actually is.
+L.Map.addInitHook(function() {
+  this.on('moveend zoomend', function() {
+    if(this._animatingZoom) return;
+    var center = this.getCenter(), zoom = this.getZoom();
+    this.eachLayer(function(layer) {
+      if(layer instanceof L.GridLayer && layer._levels && layer._map) layer._setZoomTransforms(center, zoom);
+    });
+  });
+});
+
+// A name whose marker leaves the screen fades out for 200ms before Leaflet
+// removes it, so if the marker comes back sooner (a quick pinch or pan) the
+// same name is shown again, still holding its old, off-screen position. If a
+// zoom animation is playing, the browser glides it in from there: names
+// flew in from across the map after a pinch. A name that comes back goes
+// straight to its place, and glides with zooms again from two frames on.
+(function() {
+  var onAdd = L.Tooltip.prototype.onAdd;
+  L.Tooltip.include({
+    onAdd: function() {
+      var container = this._container;
+      if(container) container.style.transition = 'none';
+      var result = onAdd.apply(this, arguments);
+      if(container) {
+        window.cancelAnimationFrame(this._glideFrame);
+        this._glideFrame = window.requestAnimationFrame(function() {
+          this._glideFrame = window.requestAnimationFrame(function() { container.style.transition = ''; });
+        }.bind(this));
+      }
+      return result;
+    }
+  });
+})();
+
 ZMap.prototype._setupLabelLayout = function() {
-  var zmap = this, frame = null;
-  var schedule = function() {
+  var zmap = this, map = this.map, frame = null, laidOutAt = null, changed = true;
+  // Names are laid out from those on screen, so again when the zoom changes,
+  // a marker or name comes or goes, or the site says something changed
+  // (schedule(true)); not on every pan step. Spread markers come from every
+  // marker on the map, so a pan never moves them.
+  map.on('layeradd layerremove', function(e) {
+    if(e.layer instanceof L.Marker || e.layer instanceof L.Tooltip) changed = true;
+  });
+  var schedule = function(force) {
+    if(force === true) changed = true;
     if(frame) window.cancelAnimationFrame(frame);
-    frame = window.requestAnimationFrame(function() { frame = null; zmap.spreadOverlappingMarkers(); zmap.layoutLabelMarkers(); });
+    frame = window.requestAnimationFrame(function() {
+      frame = null;
+      var zoom = map.getZoom();
+      if(!changed && zoom === laidOutAt) return;
+      changed = false;
+      laidOutAt = zoom;
+      zmap.spreadOverlappingMarkers(zoom);
+      zmap.layoutLabelMarkers();
+    });
   };
-  this.map.on('zoomend moveend', schedule);
-  // Spread markers collapse onto their spots the moment a zoom heads out of
-  // spreading range (zoomanim names where an animated zoom is going; zoom
-  // fires every frame of a pinch), not once it ends.
-  this.map.on('zoomanim zoom', function(e) {
-    var zoom = e.type === 'zoomanim' ? e.zoom : zmap.map.getZoom();
-    if(zmap._markersSpread && !zmap._spreadsAtZoom(zoom)) zmap._collapseSpreadMarkers();
+  map.on('zoomend moveend', function() { schedule(); });
+  // A marker coming on screen while markers are spread takes its nudge.
+  map.on('layeradd', function(e) {
+    var marker = e.layer;
+    if(!zmap._markersSpread || !(marker instanceof L.Marker) || !marker._icon || marker.categoryTypeId == 3) return;
+    var offset = (zmap._spreadOffsets || {})[marker.id];
+    marker._icon.style.translate = offset ? offset[0] + 'px ' + offset[1] + 'px' : '';
+  });
+  // Markers spread or collapse as a zoom heads into or out of range: as an
+  // animated zoom starts, and every frame of a pinch.
+  map.on('zoomanim zoom', function(e) {
+    if(e.type === 'zoomanim') zmap.spreadOverlappingMarkers(e.zoom);
+    else if(!map._animatingZoom) zmap.spreadOverlappingMarkers(map.getZoom());
   });
   this._scheduleLabelLayout = schedule;
-  schedule();
+  schedule(true);
 };
 
 // Markers at the same spot, or near enough that their icons cover each
@@ -1461,7 +1520,8 @@ ZMap.prototype._setupLabelLayout = function() {
 // stays as near its true position as it can; they animate there from their
 // spots (and back when zooming out), so it's clear they've moved. Only the
 // icons move (CSS translate, which adds to Leaflet's own positioning), not
-// the markers. Laid out again after every pan and zoom.
+// the markers. Worked out from every marker that would show on this map, not
+// just those on screen, so panning never moves an icon (_spreadOffsetsForMap).
 ZMap.prototype.SPREAD_ZOOMS = 1;
 ZMap.prototype._spreadsAtZoom = function(zoom) {
   return zoom >= this.map.getMaxZoom() - this.SPREAD_ZOOMS - 0.001;
@@ -1472,30 +1532,68 @@ ZMap.prototype._collapseSpreadMarkers = function() {
   });
   this._markersSpread = false;
 };
-ZMap.prototype.spreadOverlappingMarkers = function() {
-  var map = this.map;
-  var close = this._spreadsAtZoom(map.getZoom());
-  if(!close) { if(this._markersSpread) this._collapseSpreadMarkers(); return; }
-  var shown = this.getMarkers().filter(function(marker) {
-    return marker && marker.categoryTypeId != 3 && marker._icon && map.hasLayer(marker);
-  }).map(function(marker) {
-    var at = map.latLngToContainerPoint(marker.getLatLng());
-    return {marker: marker, x: at.x, y: at.y, px: at.x, py: at.y, id: Number(marker.id)};
+ZMap.prototype.spreadOverlappingMarkers = function(zoom) {
+  if(zoom === undefined) zoom = this.map.getZoom();
+  if(!this._spreadsAtZoom(zoom)) { if(this._markersSpread) this._collapseSpreadMarkers(); return; }
+  var offsets = this._spreadOffsetsForMap();
+  this.getMarkers().forEach(function(marker) {
+    if(!marker || !marker._icon || marker.categoryTypeId == 3) return;
+    var offset = offsets[marker.id], value = offset ? offset[0] + 'px ' + offset[1] + 'px' : '';
+    if(marker._icon.style.translate !== value) marker._icon.style.translate = value;
   });
-  // Overlapping: icon centres closer than an icon's width (smaller when
-  // zoomed out).
-  var size = 0;
-  shown.some(function(item) { size = item.marker._icon.offsetWidth; return size > 0; });
-  size = Math.max(12, size || 22);
-  var gap = size + 1;
-  // Pairs closer than `gap`, by where they're drawn (px, py).
+  this._markersSpread = true;
+};
+
+// The markers that would show on the current map at a zoom (any that aren't
+// hidden for a reason other than being off screen), labels left out unless
+// asked for.
+ZMap.prototype._markersOnThisMap = function(labels, zoom) {
+  var zmap = this, current = this.mapControl.getCurrentMap(), ocarina = isOcarina(this.mapOptions.shortName);
+  this._layoutZoom = zoom;
+  try {
+    return this.getMarkers().filter(function(marker) {
+      if(!marker || (marker.categoryTypeId == 3) !== !!labels || marker.mapId != current.mapId) return false;
+      if(marker.submapId != current.subMapId && !(ocarina && marker.globalMarker == 1)) return false;
+      return zmap._shouldShowMarker(marker, true);
+    });
+  } finally {
+    this._layoutZoom = undefined;
+  }
+};
+
+// How far each marker is nudged, {marker id: [x, y] in pixels}. Worked out
+// once, at the zoom spreading starts, and kept for every closer zoom: zooming
+// in only parts markers further, so nudges that kept them apart there keep
+// them apart closer in, and a spread marker never moves again until it
+// collapses. Worked out afresh only when the map or what's shown changes.
+ZMap.prototype._spreadOffsetsForMap = function() {
+  var map = this.map, current = this.mapControl.getCurrentMap();
+  var zoom = map.getMaxZoom() - this.SPREAD_ZOOMS;
+  var size = Number(Math.round(zoom) > this.mapOptions.switchIconsAtZoom ? this.mapOptions.iconWidth : this.mapOptions.iconSmallWidth) || 22;
+  // Every marker that shows anywhere in spreading range (some only appear
+  // closer in), so none turns up later needing a nudge.
+  var candidates = this._markersOnThisMap(false, map.getMaxZoom());
+  var key = [current.mapId, current.subMapId, zoom, size, candidates.map(function(m) { return m.id; }).join(',')].join('|');
+  if(this._spreadKey !== key) {
+    this._spreadKey = key;
+    this._spreadOffsets = this._spreadPositions(candidates.map(function(marker) {
+      var at = map.project(marker.getLatLng(), zoom);
+      return {marker: marker, x: at.x, y: at.y, px: at.x, py: at.y, id: Number(marker.id)};
+    }), size + 1);
+  }
+  return this._spreadOffsets;
+};
+
+// Pushes overlapping items (closer than gap) apart by half the overlap each,
+// a few rounds, and returns how far each moved: {marker id: [x, y]}.
+ZMap.prototype._spreadPositions = function(items, gap) {
   var closePairs = function() {
     var cells = {}, pairs = [];
-    shown.forEach(function(item) {
+    items.forEach(function(item) {
       var key = Math.floor(item.px / gap) + ':' + Math.floor(item.py / gap);
       (cells[key] = cells[key] || []).push(item);
     });
-    shown.forEach(function(item) {
+    items.forEach(function(item) {
       var cx = Math.floor(item.px / gap), cy = Math.floor(item.py / gap);
       for(var dx = -1; dx <= 1; dx++) for(var dy = -1; dy <= 1; dy++) {
         (cells[(cx + dx) + ':' + (cy + dy)] || []).forEach(function(other) {
@@ -1505,7 +1603,6 @@ ZMap.prototype.spreadOverlappingMarkers = function() {
     });
     return pairs;
   };
-  // Push overlapping pairs apart by half the overlap each, a few rounds.
   for(var round = 0; round < 40; round++) {
     var pairs = closePairs();
     if(!pairs.length) break;
@@ -1519,11 +1616,12 @@ ZMap.prototype.spreadOverlappingMarkers = function() {
       b.px += dx / d * push; b.py += dy / d * push;
     });
   }
-  shown.forEach(function(item) {
+  var offsets = {};
+  items.forEach(function(item) {
     var tx = Math.round(item.px - item.x), ty = Math.round(item.py - item.y);
-    item.marker._icon.style.translate = tx || ty ? tx + 'px ' + ty + 'px' : '';
+    if(tx || ty) offsets[item.marker.id] = [tx, ty];
   });
-  this._markersSpread = true;
+  return offsets;
 };
 
 ZMap.prototype.layoutLabelMarkers = function() {

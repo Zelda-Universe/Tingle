@@ -115,6 +115,20 @@ TrackpadGestureHandler.prototype.limitZoom = function(zoom) {
   );
 };
 
+// Pinch events can arrive several times a frame (Safari's gesture events
+// especially), and each zoom step repositions every marker and label: apply
+// only the latest once per frame.
+TrackpadGestureHandler.prototype.requestZoomAround = function(point, zoom) {
+  this.pendingZoom = [point, zoom];
+  if(this.zoomFrame) return;
+  this.zoomFrame = window.requestAnimationFrame(function() {
+    var pending = this.pendingZoom;
+    this.zoomFrame = null;
+    this.pendingZoom = null;
+    if(pending) this.setSmoothZoomAround(pending[0], pending[1]);
+  }.bind(this));
+};
+
 TrackpadGestureHandler.prototype.setSmoothZoomAround = function(point, zoom) {
   zoom = this.limitZoom(zoom);
 
@@ -135,6 +149,14 @@ TrackpadGestureHandler.prototype.setSmoothZoomAround = function(point, zoom) {
 };
 
 TrackpadGestureHandler.prototype.finishPinch = function() {
+  // A step still waiting for its frame lands first, so the pinch ends where
+  // the fingers did.
+  if(this.zoomFrame) {
+    window.cancelAnimationFrame(this.zoomFrame);
+    this.zoomFrame = null;
+    if(this.pendingZoom) this.setSmoothZoomAround(this.pendingZoom[0], this.pendingZoom[1]);
+    this.pendingZoom = null;
+  }
   if(this.pinchActive) {
     var zoomSnap = this.map.options.zoomSnap;
     var center = this.map.getCenter();
@@ -181,7 +203,7 @@ TrackpadGestureHandler.prototype.onWheel = function(event) {
     this.pinchTargetZoom = this.limitZoom(
       this.pinchTargetZoom + zoomChange
     );
-    this.setSmoothZoomAround(
+    this.requestZoomAround(
       this.pinchPoint,
       this.pinchTargetZoom
     );
@@ -233,7 +255,7 @@ TrackpadGestureHandler.prototype.onGestureChange = function(event) {
   this.pinchTargetZoom = this.limitZoom(
     this.gestureStartZoom + Math.log(event.scale) / Math.LN2
   );
-  this.setSmoothZoomAround(
+  this.requestZoomAround(
     this.gesturePoint,
     this.pinchTargetZoom
   );
@@ -250,6 +272,7 @@ TrackpadGestureHandler.prototype.onGestureEnd = function(event) {
 
 TrackpadGestureHandler.prototype.destroy = function() {
   clearTimeout(this.pinchEndTimer);
+  if(this.zoomFrame) window.cancelAnimationFrame(this.zoomFrame);
   if(this.panFrame !== null) {
     window.cancelAnimationFrame(this.panFrame);
   }

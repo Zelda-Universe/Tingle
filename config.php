@@ -159,11 +159,14 @@
 
   # Cache / temporary control
   {
+    // One folder per site: staging and production can share a server and
+    // its temp folder, and must not read each other's cached numbers (Admin's
+    // graphs showed staging's database on production).
     $cacheFolder = get_config(
       'cacheFolder',
       'string',
       [
-        sys_get_temp_dir().'/zeldamaps'
+        sys_get_temp_dir().'/zeldamaps-'.substr(md5(__DIR__), 0, 12)
       ]
     );
 

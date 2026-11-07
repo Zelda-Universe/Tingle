@@ -5525,8 +5525,12 @@ div.circle:has(>.icon-EoW_Echo) {
 }
 
 /* Admin: completes, bookmarks and offline maps. Four boxes in a row. */
+/* Four boxes for bookmarks and downloads, three for completes (no all-time
+   total): each row fills the width either way. */
 .admin-summary.admin-activity-summary {
-	grid-template-columns: repeat(4, minmax(0, 1fr));
+	grid-template-columns: none;
+	grid-auto-flow: column;
+	grid-auto-columns: minmax(0, 1fr);
 }
 
 .admin-offline {
@@ -5970,4 +5974,14 @@ div.circle:has(>.icon-EoW_Echo) {
 @media (prefers-reduced-motion: reduce) {
 	.complete-reminder { animation: none; }
 	.complete-reminder.is-closing { transition: none; }
+}
+
+/* Markers moved apart so each can be clicked (ZMap.spreadOverlappingMarkers)
+   glide from their true spots and back, so it's clear they've moved. Only
+   the translate animates; Leaflet positions icons with transform. */
+.leaflet-marker-icon {
+	transition: translate .35s cubic-bezier(.2, .8, .3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+	.leaflet-marker-icon { transition: none; }
 }

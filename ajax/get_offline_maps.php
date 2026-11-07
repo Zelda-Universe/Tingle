@@ -8,7 +8,9 @@
   session_write_close();
   include_once(dirname(__DIR__) . '/lib/common/game_order.php');
 
-  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v7';
+  // Per site (see $cacheFolder in config.php): staging and production can
+  // share a temp folder.
+  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v7-' . substr(md5(dirname(__DIR__)), 0, 12);
   $manifestCacheLifetime = 6 * 60 * 60;
   $tileRoot = realpath(dirname(__DIR__) . '/tiles');
   $tilePublicBaseURL = rtrim(

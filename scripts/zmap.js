@@ -1248,14 +1248,24 @@ ZMap.prototype._updateMarkersVisiblilityByCategory = function(affectedCategory) 
 ZMap.prototype._updateMarkersPresence = function(markers) {
   if(!markers) return;
 
+  // The visible area, measured once for all of them rather than per marker.
+  mapBounds = this.map.getBounds().pad(0.15);
   markers.forEach(function(marker) {
-    this._updateMarkerPresence(marker);
+    this._updateMarkerPresence(marker, true);
   }, this);
   verboseFirst = true;
 };
 
-ZMap.prototype._updateMarkerPresence = function(marker) {
-  mapBounds = this.map.getBounds().pad(0.15);
+// The look of a marker's icon: its category, whether it's complete, and the
+// size it's drawn at. setIcon replaces the icon's element (it blinks), so
+// it's only called when this changes.
+ZMap.prototype._markerIconKey = function(marker) {
+  return marker.categoryId + ':' + (marker.complete ? 1 : 0) + ':' +
+    (this._getDisplayZoom() > this.mapOptions.switchIconsAtZoom ? 'medium' : 'small');
+};
+
+ZMap.prototype._updateMarkerPresence = function(marker, boundsMeasured) {
+  if(!boundsMeasured) mapBounds = this.map.getBounds().pad(0.15);
 
   // OoT: markers for things either age can get (globalMarker) show on both
   // the Child and Adult maps, as one marker.
@@ -1276,7 +1286,11 @@ ZMap.prototype._updateMarkerPresence = function(marker) {
 
   if(this._shouldShowMarker(marker)) {
     if(marker.categoryTypeId != 3) {
-      marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
+      var iconKey = this._markerIconKey(marker);
+      if(marker._iconKey !== iconKey) {
+        marker._iconKey = iconKey;
+        marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
+      }
     }
     this.map.addLayer(marker);
 
@@ -1425,11 +1439,91 @@ ZMap.prototype._setupLabelLayout = function() {
   var zmap = this, frame = null;
   var schedule = function() {
     if(frame) window.cancelAnimationFrame(frame);
-    frame = window.requestAnimationFrame(function() { frame = null; zmap.layoutLabelMarkers(); });
+    frame = window.requestAnimationFrame(function() { frame = null; zmap.spreadOverlappingMarkers(); zmap.layoutLabelMarkers(); });
   };
   this.map.on('zoomend moveend', schedule);
+  // Spread markers collapse onto their spots the moment a zoom heads out of
+  // spreading range (zoomanim names where an animated zoom is going; zoom
+  // fires every frame of a pinch), not once it ends.
+  this.map.on('zoomanim zoom', function(e) {
+    var zoom = e.type === 'zoomanim' ? e.zoom : zmap.map.getZoom();
+    if(zmap._markersSpread && !zmap._spreadsAtZoom(zoom)) zmap._collapseSpreadMarkers();
+  });
   this._scheduleLabelLayout = schedule;
   schedule();
+};
+
+// Markers at the same spot, or near enough that their icons cover each
+// other, move apart just enough to be clicked, but only when zoomed in very
+// close (within SPREAD_ZOOMS of the closest zoom). Further out, every icon
+// stays on its true spot, overlapping or not. Up close, overlapping icons
+// push each other away a little at a time until none overlaps, so each
+// stays as near its true position as it can; they animate there from their
+// spots (and back when zooming out), so it's clear they've moved. Only the
+// icons move (CSS translate, which adds to Leaflet's own positioning), not
+// the markers. Laid out again after every pan and zoom.
+ZMap.prototype.SPREAD_ZOOMS = 1;
+ZMap.prototype._spreadsAtZoom = function(zoom) {
+  return zoom >= this.map.getMaxZoom() - this.SPREAD_ZOOMS - 0.001;
+};
+ZMap.prototype._collapseSpreadMarkers = function() {
+  this.getMarkers().forEach(function(marker) {
+    if(marker && marker._icon) marker._icon.style.translate = '';
+  });
+  this._markersSpread = false;
+};
+ZMap.prototype.spreadOverlappingMarkers = function() {
+  var map = this.map;
+  var close = this._spreadsAtZoom(map.getZoom());
+  if(!close) { if(this._markersSpread) this._collapseSpreadMarkers(); return; }
+  var shown = this.getMarkers().filter(function(marker) {
+    return marker && marker.categoryTypeId != 3 && marker._icon && map.hasLayer(marker);
+  }).map(function(marker) {
+    var at = map.latLngToContainerPoint(marker.getLatLng());
+    return {marker: marker, x: at.x, y: at.y, px: at.x, py: at.y, id: Number(marker.id)};
+  });
+  // Overlapping: icon centres closer than an icon's width (smaller when
+  // zoomed out).
+  var size = 0;
+  shown.some(function(item) { size = item.marker._icon.offsetWidth; return size > 0; });
+  size = Math.max(12, size || 22);
+  var gap = size + 1;
+  // Pairs closer than `gap`, by where they're drawn (px, py).
+  var closePairs = function() {
+    var cells = {}, pairs = [];
+    shown.forEach(function(item) {
+      var key = Math.floor(item.px / gap) + ':' + Math.floor(item.py / gap);
+      (cells[key] = cells[key] || []).push(item);
+    });
+    shown.forEach(function(item) {
+      var cx = Math.floor(item.px / gap), cy = Math.floor(item.py / gap);
+      for(var dx = -1; dx <= 1; dx++) for(var dy = -1; dy <= 1; dy++) {
+        (cells[(cx + dx) + ':' + (cy + dy)] || []).forEach(function(other) {
+          if(item.id < other.id && Math.hypot(other.px - item.px, other.py - item.py) < gap) pairs.push([item, other]);
+        });
+      }
+    });
+    return pairs;
+  };
+  // Push overlapping pairs apart by half the overlap each, a few rounds.
+  for(var round = 0; round < 40; round++) {
+    var pairs = closePairs();
+    if(!pairs.length) break;
+    pairs.forEach(function(pair) {
+      var a = pair[0], b = pair[1], dx = b.px - a.px, dy = b.py - a.py, d = Math.hypot(dx, dy);
+      // Markers at the very same spot: part them in a fixed direction, by
+      // their IDs, so the same markers always open the same way.
+      if(d < 0.01) { var angle = ((a.id * 7 + b.id * 13) % 360) * Math.PI / 180; dx = Math.cos(angle); dy = Math.sin(angle); d = 1; }
+      var push = (gap - Math.hypot(b.px - a.px, b.py - a.py)) / 2 + 0.25;
+      a.px -= dx / d * push; a.py -= dy / d * push;
+      b.px += dx / d * push; b.py += dy / d * push;
+    });
+  }
+  shown.forEach(function(item) {
+    var tx = Math.round(item.px - item.x), ty = Math.round(item.py - item.y);
+    item.marker._icon.style.translate = tx || ty ? tx + 'px ' + ty + 'px' : '';
+  });
+  this._markersSpread = true;
 };
 
 ZMap.prototype.layoutLabelMarkers = function() {
@@ -1694,7 +1788,8 @@ ZMap.prototype.buildMap = function(gameId) {
 
       for (var i = markers.length -1; i >= 0; i--) {
         var m = markers[i];
-        if (mapBounds.contains(m.getLatLng())) {
+        if (mapBounds.contains(m.getLatLng()) && m.categoryTypeId != 3 && m._iconKey !== _this._markerIconKey(m)) {
+          m._iconKey = _this._markerIconKey(m);
           m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
         }
       }
@@ -1836,8 +1931,18 @@ ZMap.prototype.addMapControl = function(gameId) {
     }
   }.bind(this.mapControl));
 
+  // A trackpad pan ends a move every frame: refresh markers at most every
+  // 150ms while it goes on, and once when it stops, rather than every frame
+  // (each refresh visits every marker).
+  var refreshTimer = null, lastRefresh = 0;
+  var refreshAfterMove = function() {
+    clearTimeout(refreshTimer);
+    var wait = Math.max(0, 150 - (performance.now() - lastRefresh));
+    var run = function() { lastRefresh = performance.now(); refreshTimer = null; _this.refreshMap(); };
+    if(wait === 0) run(); else refreshTimer = setTimeout(run, wait);
+  };
   this.map.on('moveend', function(e) {
-    _this.refreshMap();
+    refreshAfterMove();
     if (
       newMarker != null
       && newMarker.markerPos != null
@@ -3448,6 +3553,7 @@ ZMap.prototype._setMarkerDone = function(vID, vComplete) {
 
 ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
    vMarker.complete = vComplete;
+   vMarker._iconKey = this._markerIconKey(vMarker);
    vMarker.setIcon(_this._createMarkerIcon(vMarker.categoryId, vComplete));
    if(this.updateAreaCompletionCounts) this.updateAreaCompletionCounts();
 }

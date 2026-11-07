@@ -333,8 +333,8 @@
       <?php if (is_file(__DIR__ . '/data/OoT/icons.css')): ?>
       <link rel="stylesheet" href="data/OoT/icons.css" />
       <?php endif; ?>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261106-oot-71"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261106-oot-71" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261106-oot-74"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261106-oot-74" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

@@ -256,7 +256,10 @@ ZMap.prototype.refreshSelectedAreaVariant = function() {
   var control=this.mapControl,selected=this.selectedArea;
   if(!selected || !/^area-/.test(control.getContentType() || '')) return;
   var zmap=this,current=control.getCurrentMap(),key=this.areaURLKey(selected);
-  var next=this.getAreaSearchEntries().find(function(area) {
+  // A place name's page is its label marker's: on another age or floor, the
+  // same place has a label marker of its own (OoT's Child and Adult names).
+  var labels=(this.getMarkers ? this.getMarkers() : []).filter(function(marker) {return marker && marker.categoryTypeId == 3;});
+  var next=this.getAreaSearchEntries().concat(labels).find(function(area) {
     return area.mapId==current.mapId && area.submapId==current.subMapId && zmap.areaURLKey(area)===key;
   });
   if(!next) {this.selectedArea=null;control.resetContent();return;}

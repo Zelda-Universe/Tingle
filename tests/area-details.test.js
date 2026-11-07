@@ -16,6 +16,21 @@ test('selected area follows the active map variant',()=>{
   expect(map.updateUrl).toHaveBeenCalled();
 });
 
+test("a place name's page follows the age switch to that age's own name",()=>{
+  const context={ZMap:function(){},L:{latLngBounds:b=>b}};
+  vm.runInNewContext(source,context);
+  const label=(id,submapId)=>({id,name:'Lake Hylia',title:'Lake Hylia',categoryId:'64011',categoryTypeId:3,mapId:'65000',submapId});
+  const child=label('64400015','650000'),adult=label('64410015','650001');
+  const map=Object.assign(Object.create(context.ZMap.prototype),{
+    selectedArea:child,categories:{'64011':{name:'Area Labels'}},
+    mapControl:{getContentType:()=> 'area-64400015-variant-650000',getCurrentMap:()=>({mapId:'65000',subMapId:'650001'}),resetContent:jest.fn()},
+    getAreaSearchEntries:()=>[],getMarkers:()=>[child,adult],_showAreaPage:jest.fn(),updateUrl:jest.fn()
+  });
+  map.refreshSelectedAreaVariant();
+  expect(map.mapControl.resetContent).not.toHaveBeenCalled();
+  expect(map._showAreaPage).toHaveBeenCalledWith(adult,null);
+});
+
 test('shared list icons read POI treatments from raw category records',()=>{
   const context={getPOIStyle:c=>({'64002':'heart'})[c.id],getSetOrDefaultValues:values=>values.find(v=>v!==undefined)};
   vm.runInNewContext(fs.readFileSync(require('path').join(__dirname,'../scripts/widgets/CategoryIcon.js'),'utf8'),context);

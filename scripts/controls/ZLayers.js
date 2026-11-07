@@ -1363,6 +1363,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._switchMenuReturnLogin = false;
     }
     var switchingBetweenPOIs = /^m\d+$/.test(previousContentType || '') && /^m\d+$/.test(vType || '');
+    // An area page redrawn for another age, floor or water level is the same
+    // page: it changes in place rather than sliding in again.
+    var switchingBetweenAreas = /^area-/.test(previousContentType || '') && /^area-/.test(vType || '');
     if(switchingBetweenPOIs && this._pageTransitionCleanup) this._pageTransitionCleanup();
     var switchingMenu = ['games', 'maps'].includes(previousContentType) || ['games', 'maps'].includes(vType);
     var desktopMenuFromCategories = (!this.viewStyleBottomSlide || this._switchMenuReturnsToCategories) && previousContentType === 'category' && ['games', 'maps'].includes(vType);
@@ -1380,7 +1383,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         this._switchMenuReturnAccount || this._switchMenuReturnLogin);
     if(switchingMenu && this._pageTransitionCleanup) this._pageTransitionCleanup();
     // A swipe back (_setupSwipeBack) has already animated the change.
-    var shouldSlide = !this._skipNextSlide && !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || !/^area-/.test(vType || '')) && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
+    var shouldSlide = !this._skipNextSlide && !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || !switchingBetweenAreas) && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
       (!this.viewStyleBottomSlide || this._open) &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var outgoingPage;
@@ -1428,8 +1431,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
         // which way they're going with _navigatingForward or _navigatingBack.
         if(/^(markerEdit|markerHistory|talk)-/.test(type)) return 3;
         if(/^(markerRevision|userProfile)-/.test(type)) return 4;
-        // Marker detail pages sit above the category list and search results.
-        if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || type === 'newMarker') return 2;
+        // Marker and area pages sit above the category list and search
+        // results, so they slide in from the right and close back to the left.
+        if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type) || type === 'newMarker') return 2;
         return 0;
       };
       var backward = this._navigatingBack || pageDepth(vType) < pageDepth(previousContentType);

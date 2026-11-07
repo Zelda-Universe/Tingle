@@ -83,8 +83,11 @@ ZMap.prototype._renderEditingBeta = function() {
     );
   }
   slot.on('click', '.editing-beta-notice', function() { _this._showEditingBetaAlert(); });
-  slot.on('click', '.editing-beta-changes, .editing-beta-recent', function() {
+  slot.on('click', '.editing-beta-changes', function() {
     _this._openRecentChanges(game, function() { _this.mapControl.resetContent(); });
+  });
+  slot.on('click', '.editing-beta-recent', function() {
+    _this._openRecentChanges(null, function() { _this.mapControl.resetContent(); });
   });
   root.prepend(slot);
 };

@@ -330,8 +330,8 @@
         }
       </script>
       <script>var zmapLandingCategoryId = <?= json_encode($landingCategoryId) ?>;</script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261106-oot-106"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261106-oot-106" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261106-oot-109"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261106-oot-109" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

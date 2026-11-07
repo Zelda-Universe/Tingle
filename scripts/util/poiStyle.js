@@ -1,8 +1,10 @@
 // Shared Zelda POI styling. Existing category records and glyphs stay intact.
 function getPOIGlyph(category) {
   var game = String(category.container_id || category.containerId);
-  if(game === '64' && ['64022','64061'].includes(String(category.id))) return 'OoT_Weapons';
-  if(game === '64' && String(category.id) === '64064') return 'OoT_Upgrades';
+  // Equipment's weapons show the Master Sword; chests' weapons keep the plain sword.
+  if(game === '64' && String(category.id) === '64061') return 'OoT_Weapons';
+  if(game === '64' && String(category.id) === '64064') return 'BotW_Food-n-Materials';
+  if(game === '64' && String(category.id) === '64052') return 'BotW_Shrine-of-Resurrection';
   if ((game === '64' && String(category.id) === '64002') ||
       (game === '4' && String(category.id) === '1956') ||
       (game === '22' && String(category.id) === '2220')) return 'General_HeartPiece';

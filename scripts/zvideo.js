@@ -86,7 +86,7 @@ ZMap.prototype._uploadEditorVideo = function(editor) {
     onSubmit: function(api) {
       var src = $.trim((api.getData().src || {}).value || '');
       if(!src) { api.close(); return; }
-      if(!/^(https?:\/\/|\/|uploads\/)/i.test(src)) {
+      if(!/^(https?:\/\/|\/|uploads\/|marker-video\.php)/i.test(src)) {
         editor.windowManager.alert('Use the address of a video file, starting with https://, or upload one.');
         return;
       }
@@ -142,8 +142,18 @@ ZMap.prototype._sendEditorVideo = function(file, progress, done) {
   return request;
 };
 
+// marker-video.php's address for this site's uploads/marker-videos/ file;
+// null for anything else.
+ZMap.prototype._markerVideoStreamURL = function(src) {
+  var url;
+  try { url = new URL(src, window.location.href); } catch(e) { return null; }
+  var match = /\/uploads\/marker-videos\/(\d+-[0-9a-f]+\.(?:mp4|mov|webm))$/.exec(url.pathname);
+  return match && url.origin === window.location.origin ? 'marker-video.php?f=' + match[1] : null;
+};
+
 // Plays the drawer's videos only while at least half of one is on screen.
 ZMap.prototype._watchContentVideos = function() {
+  var _this = this;
   var contents = this.mapControl && this.mapControl._contents;
   if(!contents) return;
   var videos = contents.querySelectorAll('.popupContent video');
@@ -166,6 +176,10 @@ ZMap.prototype._watchContentVideos = function() {
   [].forEach.call(videos, function(video) {
     if(video._zmWatched) return;
     video._zmWatched = true;
+    // Uploaded ones saved with their file's path play through marker-video.php,
+    // which iPhones need.
+    var uploaded = _this._markerVideoStreamURL(video.getAttribute('src'));
+    if(uploaded) video.setAttribute('src', uploaded);
     // Quiet, looping, inline (no full screen on iPhone); playing is ours.
     video.muted = true;
     video.defaultMuted = true;

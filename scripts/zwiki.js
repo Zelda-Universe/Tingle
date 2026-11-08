@@ -446,6 +446,7 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
       '<section class="wiki-section"><h4>This Version</h4>' +
         '<div class="wiki-card wiki-preview popupContent">' + _this._wikiPreviewHTML(snapshot) + '</div></section>'
     );
+    _this._watchContentVideos();
     body.on('click', '[data-action]', function(e) {
       var action = this.getAttribute('data-action');
       if(action === 'copy-code') _this._wikiCopy(code, 'Link code');

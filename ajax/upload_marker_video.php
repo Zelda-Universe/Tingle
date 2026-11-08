@@ -56,5 +56,5 @@
     echo json_encode(array('success' => false, 'msg' => 'The video could not be saved.'));
     return;
   }
-  echo json_encode(array('success' => true, 'location' => 'uploads/marker-videos/' . $name, 'type' => $mime));
+  echo json_encode(array('success' => true, 'location' => 'marker-video.php?f=' . $name, 'type' => $mime));
 ?>

@@ -857,7 +857,9 @@ ZMap.prototype._renderUserProfile = function(data, back) {
   var reopen = this._wikiReopen(function() { _this._openUserProfile({ id: profile.id }, back); }, null, profile.username);
   var avatar = profile.profilePicture || 'images/default-avatar.png';
   var stat = function(n, label) {
-    return '<div><strong>' + Number(n).toLocaleString() + '</strong><span>' + label + '</span></div>';
+    var count = Number(n);
+    return '<div><strong>' + count.toLocaleString() + '</strong><span>' +
+      (count === 1 ? label.replace(/s$/, '') : label) + '</span></div>';
   };
   var page = this._showWikiPage(
     '<div id="user_profile" class="wiki-page">' +

@@ -230,8 +230,39 @@ describe('marker edit form Save Changes dirty state', () => {
     }
     expect(form.disabled()).toBe(true);
     expect(form.pendingHidden()).toBe(false);
+    expect(form.$button.text()).toBe('Save Changes');
     expect(window.tinymce.get('tabText0')).toBeNull();
     expect($('#markerTitle').val()).toBe('Zelda the Brave');
+  });
+
+  test('the button itself reads "Saving..." while the request is in flight', async () => {
+    const form = openEditForm(['Just some notes.']);
+    await flush();
+    $('#markerTitle').val('Zelda the Brave').trigger('input');
+    let resolveDone;
+    const ajax = jest.spyOn($, 'ajax').mockImplementation(options => ({
+      done(cb) {
+        resolveDone = cb;
+        return this;
+      },
+      fail() { return this; }
+    }));
+    try {
+      $('#newMarkerForm').trigger('submit');
+      expect(form.$button.prop('disabled')).toBe(true);
+      expect(form.$button.text()).toBe('Saving...');
+      // The status line above the button no longer carries the indicator.
+      expect($('.admin-user-status').text()).toBe('');
+      resolveDone({
+        success: true,
+        action: 'UPDATE',
+        marker: JSON.stringify([{ id: '42', title: 'Zelda the Brave' }])
+      });
+      expect(form.$button.text()).toBe('Save Changes');
+      expect(form.disabled()).toBe(true);
+    } finally {
+      ajax.mockRestore();
+    }
   });
 
   test('a failed save keeps the button on so the edit can be retried', async () => {
@@ -248,6 +279,7 @@ describe('marker edit form Save Changes dirty state', () => {
       ajax.mockRestore();
     }
     expect(form.disabled()).toBe(false);
+    expect(form.$button.text()).toBe('Save Changes');
     expect($('.admin-user-status').text()).toBe('The title is too long.');
   });
 

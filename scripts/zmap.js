@@ -3560,13 +3560,18 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
     e.preventDefault();
     if (window.tinymce) tinymce.triggerSave();
     var submit = form.find('button[type="submit"]').prop('disabled', true);
-    status.removeClass('error success').text('Saving…');
+    // The button itself is the saving indicator: its label swaps while the
+    // request is in flight and comes back when it settles.
+    var submitLabel = submit.text();
+    submit.text('Saving...');
+    status.removeClass('error success').text('');
     $.ajax({
       type: 'POST',
       url: 'ajax.php?command=add_marker',
       data: form.serialize(),
       dataType: 'json'
     }).done(function(data) {
+      submit.text(submitLabel);
       if (editing) updateMarkerDirty();
       else submit.prop('disabled', false);
       if (!data.success) {
@@ -3607,6 +3612,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       if (editing) toastr.success('Saved your changes to marker ' + saved.id + '.');
       else toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS.format(saved.id));
     }).fail(function(xhr) {
+      submit.text(submitLabel);
       if (editing) updateMarkerDirty();
       else submit.prop('disabled', false);
       status.addClass('error').text(_this._wikiError(xhr, 'The marker could not be saved. Check your connection.'));

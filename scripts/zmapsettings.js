@@ -36,7 +36,8 @@ ZMap.prototype._openMapSettings = function(back) {
     '</div>',
     'mapSettings',
     leave,
-    reopen
+    reopen,
+    { settles: true }
   );
   this._mapSettingsChanges = [];
   var scroll = this._mapSettingsScroll;

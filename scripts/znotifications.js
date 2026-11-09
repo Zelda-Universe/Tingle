@@ -181,7 +181,8 @@ ZMap.prototype._openNotificationsPage = function(back) {
     '</div>',
     'notificationsPage',
     back,
-    reopen
+    reopen,
+    { settles: true }
   );
   var list = $(page).find('.notification-list');
   var more = $(page).find('.notification-more');
@@ -291,7 +292,8 @@ ZMap.prototype._openNotificationSettings = function(back) {
     '</div>',
     'notificationSettingsPage',
     back,
-    reopen
+    reopen,
+    { settles: true }
   );
   var body = $(page).find('.notification-settings-body');
   this._wikiGet('notification_settings').done(function(data) {
@@ -518,7 +520,8 @@ ZMap.prototype._openFollowedMarkers = function(back) {
     '</div>',
     'followedMarkersPage',
     back,
-    reopen
+    reopen,
+    { settles: true }
   );
   var list = $(page).find('.followed-list');
   var toggle = $(page).find('.followed-toggle');

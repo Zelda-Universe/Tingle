@@ -75,10 +75,14 @@ ZMap.prototype._wikiUserLink = function(userId, username) {
 
 // Opens a wiki page in the drawer. back runs from its Back button (and
 // swiping back); it's passed on so pages can be reopened the same way.
-// Links on it open pages that come back to it with reopen.
-ZMap.prototype._showWikiPage = function(html, type, back, reopen) {
+// Links on it open pages that come back to it with reopen. opts.settles
+// marks a page whose content loads after it opens (a list from the
+// server): the drawer keeps its height until the content does, rather than
+// shrinking to the Loading placeholder (scripts/controls/ZLayers.js).
+ZMap.prototype._showWikiPage = function(html, type, back, reopen, opts) {
   var control = this.mapControl;
   control._nextPageBack = back || null;
+  control._nextPageSettles = !!(opts && opts.settles);
   control._navigatingForward = !control._navigatingBack;
   control.setContent(html, type);
   if(control.viewStyleBottomSlide) {
@@ -331,7 +335,8 @@ ZMap.prototype._openMarkerHistory = function(markerId, back) {
     '</div>',
     'markerHistory-' + markerId,
     back,
-    reopen
+    reopen,
+    { settles: true }
   );
   this._wikiGet('marker_history', { markerId: markerId }).done(function(data) {
     var list = $(page).find('.wiki-revisions').empty();
@@ -395,7 +400,8 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
     '</div>',
     'markerRevision-' + revisionId,
     back,
-    reopen
+    reopen,
+    { settles: true }
   );
   this._wikiGet('marker_revision', { id: revisionId }).done(function(data) {
     var body = $(page).find('.wiki-revision-body').empty();
@@ -658,7 +664,8 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
     '</div>',
     'talk-' + pageType + '-' + pageId,
     back,
-    reopen
+    reopen,
+    { settles: true }
   );
   if(pageType === 'marker') this._wikiSetMarkerSubtitle(page, title, pageId, null, reopen);
   else $(page).find('.wiki-subtitle').text(title || '');

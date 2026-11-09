@@ -224,7 +224,8 @@ ZMap.prototype._openReport = function(reportId, back) {
     '</div>',
     'report-' + reportId,
     back,
-    reopen
+    reopen,
+    { settles: true }
   );
   this._wikiGet('admin_reports', { id: reportId }).done(function(data) {
     var body = $(page).find('.report-page-body').empty();

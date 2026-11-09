@@ -1061,6 +1061,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // Measured, as Leaflet's cached size lags a window resize.
     var mapHeight = this._map.getContainer().clientHeight;
     var maxHeight = mapHeight - 250;
+    // A settling page (setContent) pins the drawer's height above its short
+    // placeholder; the space below the list isn't real, so don't count it
+    // against the cap until the pin releases.
+    var belowContents = this._settleHeightPinned ? 0 : null;
     // Once the ads are settled, run down to the bottom of the map: clear of the
     // space reserved for a banner, which can slide underneath, or with the
     // same margin as at the top when there is none.
@@ -1069,18 +1073,43 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var container = this._container.getBoundingClientRect();
       var contents = this._contents.getBoundingClientRect();
       var bottomMargin = this._bottomReserve || container.top - mapTop;
+      if(belowContents === null) belowContents = container.bottom - contents.bottom;
       maxHeight = mapHeight - bottomMargin
-        - (contents.top - mapTop) - (container.bottom - contents.bottom);
+        - (contents.top - mapTop) - belowContents;
     }
     // Portrait tablets: at most 60% of the height, which leaves the map
     // (and the banner below the sidebar) room.
     if(mapHeight > this._map.getContainer().clientWidth) {
       var drawer = this._container.getBoundingClientRect();
       var list = this._contents.getBoundingClientRect();
+      var belowList = belowContents === null ? drawer.bottom - list.bottom : belowContents;
       maxHeight = Math.min(maxHeight,
-        mapHeight * .6 - (list.top - drawer.top) - (drawer.bottom - list.bottom));
+        mapHeight * .6 - (list.top - drawer.top) - belowList);
     }
     this._contents.style.maxHeight = Math.max(maxHeight, 250) + 'px';
+  },
+
+  // A settling page (setContent) pins the drawer's height and watches its
+  // contents until they load; abandon the pin and the watch when the drawer
+  // takes on a different page.
+  _releaseSettleWatch: function() {
+    if(this._settleFitTimer) {
+      window.clearTimeout(this._settleFitTimer);
+      this._settleFitTimer = null;
+    }
+    if(this._settleFitObserver) {
+      this._settleFitObserver.disconnect();
+      this._settleFitObserver = null;
+    }
+    if(this._settleFitAnimation) {
+      this._settleFitAnimation.cancel();
+      this._settleFitAnimation = null;
+    }
+    this._settleFit = null;
+    if(this._settleHeightPinned) {
+      this._settleHeightPinned = false;
+      this._container.style.height = '';
+    }
   },
 
   setBottomReserve: function(height) {
@@ -1341,6 +1370,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   setContent: function(vContent, vType) {
     var previousContentType = this._contentType;
+    // Set by pages whose content loads after they open (zwiki.js):
+    // keep the drawer's height until the content settles (below).
+    var pageSettles = !!this._nextPageSettles;
+    this._nextPageSettles = false;
     var siblingPages = ['games', 'maps', 'accountPage', 'loginForm'];
     var swappingSiblingPages = siblingPages.includes(previousContentType) && siblingPages.includes(vType);
     if(siblingPages.includes(vType) && !this._navigatingBack && !swappingSiblingPages &&
@@ -1391,6 +1424,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var outgoingDrawerHeight;
     if(shouldSlide && this._contents.animate) {
       if(this._pageTransitionCleanup) this._pageTransitionCleanup();
+      // A settling page may still pin the drawer's height; release it before
+      // measuring this page's outgoing height.
+      this._releaseSettleWatch();
       if(!this.viewStyleBottomSlide) outgoingDrawerHeight = this._container.getBoundingClientRect().height;
       outgoingBounds = {
         top: this._contents.offsetTop,
@@ -1481,6 +1517,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       // The outgoing snapshot already retains its own measured height.
       var drawerResizing;
       var previousDrawerOverflow = this._container.style.overflow;
+      var contentsObserver;
       if(!this.viewStyleBottomSlide && typeof this._container.animate === 'function') {
         var incomingDrawerHeight = this._container.getBoundingClientRect().height;
         var drawerStyle = window.getComputedStyle(this._container);
@@ -1489,7 +1526,38 @@ L.Control.ZLayers = L.Control.Layers.extend({
           (Number.parseFloat(drawerStyle.paddingBottom) || 0) +
           (Number.parseFloat(drawerStyle.borderTopWidth) || 0) +
           (Number.parseFloat(drawerStyle.borderBottomWidth) || 0);
-        if(Math.abs(incomingDrawerHeight - outgoingDrawerHeight) > .5) {
+        if(pageSettles) {
+          // A page that loads its content after it opens (a list from the
+          // server) would shrink to its Loading placeholder during the slide
+          // and jump back when the content arrives. Instead fit the drawer
+          // to the page as its content settles: the moment the page's height
+          // changes (the list arrives, Show More appends rows), or after a
+          // beat if it never does. The pin releases into the fit.
+          var fitSettledHeight = function() {
+            if(this._settleFitTimer) {
+              window.clearTimeout(this._settleFitTimer);
+              this._settleFitTimer = null;
+            }
+            var currentHeight = this._container.getBoundingClientRect().height;
+            if(this._settleHeightPinned) {
+              this._settleHeightPinned = false;
+              this._container.style.height = '';
+            }
+            var targetHeight = this._container.getBoundingClientRect().height;
+            if(Math.abs(targetHeight - currentHeight) <= .5) return;
+            if(this._settleFitAnimation) this._settleFitAnimation.cancel();
+            this._settleFitAnimation = this._container.animate([
+              { height: Math.max(0, currentHeight - verticalExtras) + 'px' },
+              { height: Math.max(0, targetHeight - verticalExtras) + 'px' }
+            ], { duration: 300, easing: timing.easing });
+          }.bind(this);
+          this._settleFit = fitSettledHeight;
+          this._settleFitTimer = window.setTimeout(fitSettledHeight, 4000);
+        }
+        if(pageSettles && Math.abs(incomingDrawerHeight - outgoingDrawerHeight) > .5) {
+          this._container.style.height = Math.max(0, outgoingDrawerHeight - verticalExtras) + 'px';
+          this._settleHeightPinned = true;
+        } else if(Math.abs(incomingDrawerHeight - outgoingDrawerHeight) > .5) {
           this._container.style.overflow = 'hidden';
           drawerResizing = this._container.animate([
             { height: Math.max(0, outgoingDrawerHeight - verticalExtras) + 'px' },
@@ -1506,6 +1574,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
             var contentsHeight = this._contents.getBoundingClientRect().height;
             if(Math.abs(contentsHeight - incomingContentsHeight) <= .5) return;
             incomingContentsHeight = contentsHeight;
+            if(pageSettles) {
+              if(this._settleFit) this._settleFit();
+              return;
+            }
             var currentHeight = this._container.getBoundingClientRect().height;
             if(drawerResizing) drawerResizing.cancel();
             var targetHeight = this._container.getBoundingClientRect().height;
@@ -1520,14 +1592,17 @@ L.Control.ZLayers = L.Control.Layers.extend({
               easing: timing.easing
             });
           }.bind(this);
-          var contentsObserver = new ResizeObserver(retarget);
+          contentsObserver = new ResizeObserver(retarget);
           contentsObserver.observe(this._contents);
+          // Kept past the slide: it is how a settling page gets fitted.
+          if(pageSettles) this._settleFitObserver = contentsObserver;
         }
       }
       var cleanup = function() {
         entering.cancel();
         leaving.cancel();
-        if(contentsObserver) contentsObserver.disconnect();
+        // A settling page keeps watching its contents for the fit.
+        if(contentsObserver && !pageSettles) contentsObserver.disconnect();
         if(drawerResizing) {
           drawerResizing.cancel();
           this._container.style.overflow = previousDrawerOverflow;
@@ -1544,6 +1619,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     } else if(previousContentType !== vType) {
       // Without a slide the kept pages may no longer lead back here, except
       // after a swipe back, which returned to the last of them.
+      this._releaseSettleWatch();
       if(this._skipNextSlide) { if(this._backPages) this._backPages.pop(); }
       else this._backPages = [];
     }

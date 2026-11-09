@@ -287,7 +287,8 @@ ZMap.prototype._openRecentChanges = function(game, back) {
     '</div>',
     game ? 'recentChanges-' + game : 'allChanges',
     back,
-    reopen
+    reopen,
+    { settles: true }
   );
   var list = $(page).find('.wiki-revisions');
   var more = $(page).find('.recent-changes-more');

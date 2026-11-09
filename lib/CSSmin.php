@@ -465,7 +465,14 @@ class CSSmin
 
             if ($found_terminator) {
                 $token = $this->str_slice($css, $start_index, $end_index);
-                $token = preg_replace('/\s+/', '', $token);
+                // Only base64 data-urls are whitespace-insensitive. A
+                // url-encoded one (e.g. an inline SVG, which is what the toast
+                // and button icons are) uses spaces inside its content as
+                // separators; deleting them corrupts the image, so keep those
+                // tokens exactly as written.
+                if (strpos($token, ';base64,') !== false) {
+                    $token = preg_replace('/\s+/', '', $token);
+                }
                 $this->preserved_tokens[] = $token;
 
                 $preserver = 'url(' . self::TOKEN . (count($this->preserved_tokens) - 1) . '___)';

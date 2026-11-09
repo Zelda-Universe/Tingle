@@ -408,7 +408,10 @@ ZMap.prototype._pushSubscription = function() {
 };
 
 ZMap.prototype._pushKey = function(base64) {
-  var padded = (base64 + '===='.slice((base64.length + 3) % 4)).replace(/-/g, '+').replace(/_/g, '/');
+  // base64url to base64, then pad to a multiple of 4 (a length of 1 mod 4 is
+  // invalid, and atob throws, so the padding count must land exactly on 4).
+  var normalized = (base64 || '').replace(/-/g, '+').replace(/_/g, '/');
+  var padded = normalized + '===='.slice((normalized.length % 4) || 4);
   var raw = atob(padded);
   var bytes = new Uint8Array(raw.length);
   for(var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);

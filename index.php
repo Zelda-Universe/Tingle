@@ -1,4 +1,9 @@
 <?php
+  // Version for the bundled assets (lib/common/assets.php). Used for the
+  // res.php tags below and injected into the service worker, so both always
+  // name the exact bytes res.php will serve.
+  include_once(__DIR__ . '/lib/common/assets.php');
+
   $gameKey = isset($_GET['game']) ? strtolower((string) $_GET['game']) : 'oot';
   $gameAliases = [
     'la' => 'LA',
@@ -330,8 +335,8 @@
         }
       </script>
       <script>var zmapLandingCategoryId = <?= json_encode($landingCategoryId) ?>;</script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=20261107-oot-158"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=20261107-oot-158" />
+      <script type="text/javascript" src="res.php?type=javascript&amp;v=<?= asset_version() ?>"></script>
+      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=<?= asset_version() ?>" />
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

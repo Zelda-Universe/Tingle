@@ -5107,6 +5107,19 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: white;
 }
 
+#marker_edit .marker-edit-form > .form-action-button:disabled {
+	opacity: .45;
+	cursor: default;
+}
+
+/* Shown while an edit hasn't diverged from its marker, above the button. */
+#marker_edit .marker-edit-form .marker-edit-pending {
+	margin: 4px 0 0;
+	color: rgba(255,255,255,.6);
+	font-size: 13px;
+	text-align: center;
+}
+
 /* TinyMCE's menus and dialogs float above the drawer. */
 .tox.tox-silver-sink,
 .tox-tinymce-aux {

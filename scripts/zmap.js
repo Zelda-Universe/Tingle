@@ -3346,7 +3346,8 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
         (editing ? '<input type="hidden" name="markerId" value="' + esc(vMarker.id) + '" />' : '') +
         '<input type="hidden" name="submapId" value="' + esc(submapId) + '" />' +
         '<p class="admin-user-status" role="status" aria-live="polite"></p>' +
-        '<button type="submit" class="infoWindowIcn form-action-button">' + (editing ? 'Save Changes' : 'Add Marker') + '</button>' +
+        (editing ? '<p class="marker-edit-pending" role="status" aria-live="polite">No changes to save.</p>' : '') +
+        '<button type="submit" class="infoWindowIcn form-action-button"' + (editing ? ' disabled' : '') + '>' + (editing ? 'Save Changes' : 'Add Marker') + '</button>' +
       '</form>' +
     '</div>';
 
@@ -3395,12 +3396,36 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   form.find('#isVisible').prop('checked', editing && vMarker.dbVisible == 1);
 
   var sections = form.find('.marker-edit-sections');
+  // "Save Changes" flips on when an edit diverges from the marker it opened on,
+  // so a no-op save can't log an empty revision. It's wired up after the fields
+  // are filled; the rich-text editors reach it through the setup below.
+  var updateMarkerDirty;
+  // Typing fires keyup; paste, link/image-dialog inserts, and mobile soft
+  // keyboards fire change per editing burst; nodeChange fires when the caret
+  // moves. Any of them may have changed the document, and re-checking is
+  // cheap, so all three are safe.
+  var bindEditorDirty = function(editor) {
+    editor._zmInit = false;
+    editor.on('keyup change nodeChange', function() { if (updateMarkerDirty) updateMarkerDirty(); });
+    // TinyMCE rewrites the loaded HTML once it finishes initializing (plain
+    // text becomes <p>…), which a moment later would look like an edit. Re-take
+    // the baseline at that point, but only while the button is still disabled,
+    // so an edit the user makes first is never absorbed into it.
+    editor.on('init', function() {
+      editor._zmInit = true;
+      if (!updateMarkerDirty || !markerSubmit || !markerSubmit.prop('disabled')) return;
+      markerBaseline = markerSnapshot();
+      updateMarkerDirty();
+    });
+  };
   var editorOptions = {
     skin: 'oxide-dark',
     content_css: 'dark',
     menubar: false,
     statusbar: false,
     branding: false,
+    // An edit in the rich text should enable the save, whatever the field.
+    setup: bindEditorDirty,
     plugins: 'lists link image media table code autoresize paste',
     toolbar: 'bold italic | bullist numlist | link image media' + (isEditor ? ' uploadvideo' : '') + ' | table | removeformat code',
     // Uploaded clips (scripts/zvideo.js) keep what makes them play quietly.
@@ -3427,6 +3452,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   if (isEditor) {
     // Upload Video: a clip like a Switch recording (scripts/zvideo.js).
     editorOptions.setup = function(editor) {
+      bindEditorDirty(editor);
       // A video camera with an up arrow, unlike Media's embed icon.
       editor.ui.registry.addIcon('zm-upload-video',
         '<svg width="24" height="24" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M4 6h10a2 2 0 0 1 2 2v1.5l4-2.5v10l-4-2.5V16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm5 2.5L5.5 12H8v3h2v-3h2.5L9 8.5z"/></svg>');
@@ -3479,6 +3505,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       if (editor) editor.remove();
       section.remove();
       renumber();
+      if (updateMarkerDirty) updateMarkerDirty();
     });
   };
   var tabs = editing && vMarker.tabText && vMarker.tabText.length ? vMarker.tabText : [''];
@@ -3489,7 +3516,44 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   $('#add_field_button').on('click', function(e) {
     e.preventDefault();
     addSection('');
+    if (updateMarkerDirty) updateMarkerDirty();
   });
+
+  // A new marker has nothing to compare to, so its "Add Marker" is always on.
+  var markerSubmit = form.find('button[type="submit"]');
+  if (editing) {
+    var markerSnapshot = function() {
+      return JSON.stringify({
+        title: form.find('#markerTitle').val() || '',
+        x: form.find('#markerX').val() || '',
+        y: form.find('#markerY').val() || '',
+        z: form.find('#markerZ').val() || '',
+        category: form.find('#categoryId').val() || '',
+        description: form.find('#markerDescription').val() || '',
+        isGlobal: !!form.find('#isGlobal').prop('checked'),
+        isVisible: !!form.find('#isVisible').prop('checked'),
+        // Edit Summary is deliberately excluded: it describes the change, it
+        // is not one, and typing in it must never enable the button.
+        // The rich text lives in the editors, not the textareas, until saved.
+        // An editor still mid-init reports an empty document, so a
+        // created-but-uninitialized one is read from its textarea, which
+        // holds the original content until the editor takes over.
+        sections: sections.find('textarea.tabText').map(function() {
+          var editor = window.tinymce ? tinymce.get(this.id) : null;
+          return editor && editor._zmInit ? editor.getContent() : (this.value || '');
+        }).get()
+      });
+    };
+    var markerBaseline = markerSnapshot();
+    var markerPending = form.find('.marker-edit-pending');
+    updateMarkerDirty = function() {
+      var dirty = markerSnapshot() !== markerBaseline;
+      markerSubmit.prop('disabled', !dirty);
+      markerPending.prop('hidden', dirty);
+    };
+    form.on('input change', updateMarkerDirty);
+    updateMarkerDirty();
+  }
 
   var status = form.find('.admin-user-status');
   form.on('submit', function(e) {
@@ -3503,12 +3567,21 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       data: form.serialize(),
       dataType: 'json'
     }).done(function(data) {
-      submit.prop('disabled', false);
+      if (editing) updateMarkerDirty();
+      else submit.prop('disabled', false);
       if (!data.success) {
         status.addClass('error').text(data.msg || 'The marker could not be saved.');
         return;
       }
       if (window.tinymce) tinymce.remove();
+      if (editing) {
+        // The save succeeded, so the form now matches the marker: make that
+        // the new baseline and dim the button again until the next real
+        // edit. (After remove() the sections are read from the textareas
+        // that triggerSave() just synced.)
+        markerBaseline = markerSnapshot();
+        updateMarkerDirty();
+      }
       _this._pendingPinRestore = null;
       if (user.level < 5) {
         _this.mapControl.resetContent();
@@ -3534,7 +3607,8 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       if (editing) toastr.success('Saved your changes to marker ' + saved.id + '.');
       else toastr.success(_this.langMsgs.MARKER_ADD_SUCCESS.format(saved.id));
     }).fail(function(xhr) {
-      submit.prop('disabled', false);
+      if (editing) updateMarkerDirty();
+      else submit.prop('disabled', false);
       status.addClass('error').text(_this._wikiError(xhr, 'The marker could not be saved. Check your connection.'));
     });
   });

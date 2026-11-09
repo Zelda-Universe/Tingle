@@ -1,4 +1,7 @@
-const CACHE_VERSION = '20261107-225';
+// service-worker.php injects a version computed from the bundled assets;
+// a statically served copy of this file (no PHP) falls back to a fixed one.
+const ASSET_VERSION = typeof SERVER_ASSET_VERSION !== 'undefined' ? SERVER_ASSET_VERSION : 'static';
+const CACHE_VERSION = ASSET_VERSION;
 const APP_CACHE = `zeldamaps-app-${CACHE_VERSION}`;
 const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
@@ -8,8 +11,8 @@ const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
 const CORE_ASSETS = [
   './?game=OoT',
   './manifest.webmanifest',
-  './res.php?type=javascript&v=20261107-oot-146',
-  './res.php?type=css&v=20261107-oot-146',
+  './res.php?type=javascript&v=' + ASSET_VERSION,
+  './res.php?type=css&v=' + ASSET_VERSION,
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',

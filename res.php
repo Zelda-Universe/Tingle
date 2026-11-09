@@ -255,9 +255,10 @@
       }
     }
 
-    ### Check for a minifier update, which changes the output too
+    ### Check for a bundler update, which changes the output without touching the sources
     if(!$update && $cacheDestFileMTime !== false) {
-      foreach(array('lib/minify.php', 'lib/CSSmin.php', 'lib/JSMin.php') as $minifierFile) {
+      // res.php itself and .env (the minify switch) too.
+      foreach(array('res.php', 'lib/minify.php', 'lib/CSSmin.php', 'lib/JSMin.php', '.env') as $minifierFile) {
         if(filemtime(__DIR__."/$minifierFile") > $cacheDestFileMTime) {
           $update = true;
           break;

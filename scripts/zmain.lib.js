@@ -365,10 +365,12 @@ function finalLoad() {
     }
   }
 
-  // A category page fits its markers, unless the link sets its own zoom.
+  // A landing category page focuses its markers, unless the link sets its
+  // own zoom. Its page (restoreDrawerPage) raises the closed phone drawer,
+  // so the fit happens there, once the drawer has settled.
   var landingCategory = window.zmapLandingCategoryId && zMap.categories[window.zmapLandingCategoryId];
   if(landingCategory && !getUrlParam('zoom')) {
-    zMap.focusSingleMapCategory(landingCategory);
+    zMap.focusSingleMapCategory(landingCategory, !!(zMap.mapControl && zMap.mapControl.viewStyleBottomSlide && !zMap.mapControl._open));
     return;
   }
 

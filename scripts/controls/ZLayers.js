@@ -965,7 +965,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var height;
     if(type === 'category') {
       height = maxHeight;
-    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type)) {
+    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type) || /^category-\d+$/.test(type)) {
       height = this._mobileDrawerPeekHeight() || this._mobileDrawerContentHeight();
     } else if(type === 'games' || type === 'maps') {
       height = this._mobileDrawerContentHeight();
@@ -1467,9 +1467,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
         // which way they're going with _navigatingForward or _navigatingBack.
         if(/^(markerEdit|markerHistory|talk)-/.test(type)) return 3;
         if(/^(markerRevision|userProfile)-/.test(type)) return 4;
-        // Marker and area pages sit above the category list and search
-        // results, so they slide in from the right and close back to the left.
-        if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type) || type === 'newMarker') return 2;
+        // Marker, area and category pages sit above the category list and
+        // search results, so they slide in from the right and close back to
+        // the left.
+        if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type) || /^category-\d+$/.test(type) || type === 'newMarker') return 2;
         return 0;
       };
       var backward = this._navigatingBack || pageDepth(vType) < pageDepth(previousContentType);
@@ -1680,6 +1681,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
         this.zMap._closeNewMarker();
         this._navigatingBack=true;
         this.zMap._showAreaPage(returnsTo.area,returnsTo.bounds);
+        if(this.viewStyleBottomSlide) this.openDrawerDefaultPartial();
+      },this);
+    }
+    // A marker opened from a category page's list goes back to that page,
+    // which re-opens the category (still focused) rather than the list.
+    if(returnsTo && returnsTo.category) {
+      var categoryReturnButton=L.DomUtil.create('a','button back-button',this._contents);
+      categoryReturnButton.innerHTML='<i class="fas fa-chevron-left"></i>';
+      categoryReturnButton.setAttribute('aria-label','Back to '+(returnsTo.category.name || 'categories'));
+      L.DomEvent.on(categoryReturnButton,'click',function(e) {
+        L.DomEvent.stop(e);
+        this.zMap._closeNewMarker();
+        this._navigatingBack=true;
+        this.zMap._showCategoryPage(returnsTo.category);
         if(this.viewStyleBottomSlide) this.openDrawerDefaultPartial();
       },this);
     }

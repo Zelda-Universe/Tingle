@@ -42,6 +42,7 @@ scripts/controls/ZLayers.js
 scripts/controls/SettingsControl.js
 scripts/zmap.js
 scripts/services/AreaSearch.js
+scripts/services/CategoryPage.js
 scripts/controls/OotFloors.js
 scripts/zwiki.js
 scripts/zbeta.js

@@ -1161,7 +1161,7 @@ ZMap.prototype.refreshMapCompleted = function() {
   this.refreshMap(null, true);
 }
 
-ZMap.prototype.focusSingleMapCategory = function(category) {
+ZMap.prototype.focusSingleMapCategory = function(category, deferFit) {
   var navigationRequest = this._categoryNavigationRequest;
   var categories = [];
   var collect = function(c) {
@@ -1194,12 +1194,18 @@ ZMap.prototype.focusSingleMapCategory = function(category) {
     if(candidates.some(function(m) {
       return String(m.mapId) !== String(first.mapId) || String(m.submapId) !== String(first.submapId);
     })) return;
+    // The map changes: there is no pre-focus view to come back to.
+    this._categoryReturnView = null;
     this.mapControl.changeMapOnly(first.mapId, first.submapId);
     this.mapControl.setCurrentMap(first.mapId, first.submapId);
     this.refreshMap();
   }
   var fit = function() {
-    if(navigationRequest !== this._categoryNavigationRequest || !category.checked) return;
+    // The fit can wait (a drawer to settle first): if the user went back in
+    // the meantime, the unfocus re-checked everything, so don't refocus.
+    var menu = this.mapControl && this.mapControl._categoryMenu;
+    if(navigationRequest !== this._categoryNavigationRequest || !category.checked ||
+      (menu && menu.modeAutomatic)) return;
     var rect = this.map.getContainer().getBoundingClientRect();
     var drawer = this.mapControl._container.getBoundingClientRect();
     var topLeft = [32, 72], bottomRight = [32, 32];
@@ -1210,13 +1216,26 @@ ZMap.prototype.focusSingleMapCategory = function(category) {
       else bottomRight[0] += drawer.width;
     }
     var bounds = L.latLngBounds(candidates.map(function(m) { return m.getLatLng(); }));
-    this.map.fitBounds(bounds, { paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
-      maxZoom: stayOnCurrentMap ? previousZoom : this.map.getMaxZoom(), animate: true });
+    var fitOptions = { paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
+      maxZoom: stayOnCurrentMap ? previousZoom : this.map.getMaxZoom(), animate: true };
+    // Where the map was before the fit moved it, and where the fit lands:
+    // the category page's Back (CategoryPage.js) returns it here when the
+    // map hasn't been panned or zoomed since.
+    if(this._rememberCategoryReturnView) this._rememberCategoryReturnView();
+    var arrival = null;
+    try { arrival = this.map._getBoundsCenterZoom ? this.map._getBoundsCenterZoom(bounds, fitOptions) : null; } catch (e) {}
+    this.map.fitBounds(bounds, fitOptions);
+    if(this._recordCategoryReturnArrival) this._recordCategoryReturnArrival(arrival);
   }.bind(this);
   if(this.mapControl.viewStyleBottomSlide && this.mapControl._open && !this.mapControl._partialDrawerMode) {
     this.mapControl.openDrawerDefaultPartial();
     window.setTimeout(fit, 400);
-  } else fit();
+  } else if(!deferFit) {
+    // deferFit: the phone drawer is closed and a page that raises it follows
+    // (a landing category page); that page fits once the drawer settles, so
+    // fitting now would frame the space below the closed drawer.
+    fit();
+  }
 };
 
 ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
@@ -3787,6 +3806,7 @@ ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
    vMarker._iconKey = this._markerIconKey(vMarker);
    vMarker.setIcon(_this._createMarkerIcon(vMarker.categoryId, vComplete));
    if(this.updateAreaCompletionCounts) this.updateAreaCompletionCounts();
+   if(this.updateCategoryCompletionCounts) this.updateCategoryCompletionCounts();
 }
 
 ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
@@ -4855,6 +4875,13 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
     url.searchParams.set('area',this.areaURLKey(this.selectedArea));
     url.searchParams.delete('marker');
   } else url.searchParams.delete('area');
+  // ?category= is the category page's address (lib/common/seo.php slugs the
+  // same name), held only while that page is the one showing, as ?area= is.
+  if(/^category-\d+$/.test(contentType || '') && this.selectedCategory) {
+    url.searchParams.set('category', this.categoryURLKey(this.selectedCategory));
+    url.searchParams.delete('marker');
+    url.searchParams.delete('area');
+  } else url.searchParams.delete('category');
   if(page) url.searchParams.set('page', page);
   else url.searchParams.delete('page');
   // Revision links (?marker=1&rev=2) last only while the revision is open.
@@ -4875,6 +4902,7 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
 ZMap.prototype.restoreDrawerPage = function(page) {
   this._drawerRoutingReady = true;
   if(this.restoreAreaFromURL && this.restoreAreaFromURL()) return;
+  if(this.restoreCategoryFromURL && this.restoreCategoryFromURL()) return;
   if(this._hasWikiLink && this._hasWikiLink()) {
     this._openRevisionLinkWhenReady('user');
     if(this._revisionLinkOpened) return;

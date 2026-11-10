@@ -127,11 +127,12 @@ HeaderBar.prototype.rememberSearchSelection = function() {
   var control=this.mapControl,type=control.getContentType();
   if(type==='search') return;
   this._searchSelection=null;
-  if(!/^m\d+$/.test(type || '') && !/^area-/.test(type || '')) return;
+  if(!/^m\d+$/.test(type || '') && !/^area-/.test(type || '') && !/^category-\d+$/.test(type || '')) return;
   var page=control._contents.querySelector('.menu-cat-content-inner');
   if(!page) return;
   this._searchSelection={type:type,content:$(page).children().clone(true,true),
     scrollTop:control._contents.scrollTop,area:control.zMap.selectedArea,
+    category:control.zMap.selectedCategory,
     backButton:control._contents.querySelector(':scope > a.back-button[aria-label^="Back to"]')};
 };
 
@@ -141,10 +142,12 @@ HeaderBar.prototype.restoreSearchSelection = function() {
   if(control.getContentType()!=='search') return;
   if(!selection) {control.resetContent();return;}
   control.zMap.selectedArea=selection.area;
+  control.zMap.selectedCategory=selection.category;
+  if(/^category-\d+$/.test(selection.type)) control._nextPageBack=control.zMap._categoryPageBackAction(control);
   control._skipNextSlide=true;
   control.setContent(selection.content,selection.type);
   if(selection.backButton) control._contents.insertBefore(selection.backButton,control._contents.firstChild);
-  if(/^area-/.test(selection.type)) control._contents.querySelector('.menu-cat-content-inner').classList.add('area-detail-page');
+  if(/^area-/.test(selection.type) || /^category-\d+$/.test(selection.type)) control._contents.querySelector('.menu-cat-content-inner').classList.add('area-detail-page');
   control._contents.scrollTop=selection.scrollTop;
   control.zMap.updateUrl();
 };

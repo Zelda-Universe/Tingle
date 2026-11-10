@@ -245,6 +245,9 @@ CategoryButton.prototype._setupUserInputListener = function() {
       if(selectingCategory && this.categoryMenu && this.categoryMenu._categoryTree && this.category.checked &&
         typeof zMap.focusSingleMapCategory === 'function') {
         zMap.focusSingleMapCategory(this.category);
+        // The focused category's page, if it has one (scripts/services/
+        // CategoryPage.js). Sections and labels focus as before.
+        if(typeof zMap.openCategoryPage === 'function') zMap.openCategoryPage(this.category);
       }
     }
   }.bind(this));

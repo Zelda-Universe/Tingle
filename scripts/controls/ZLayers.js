@@ -1369,6 +1369,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var mapsMenu = new CategoryMenu({
       categoryButtonOptions: {
         afterToggle: function () {
+          var parent = layers._headerPageParent;
           layers._map.removeLayer(layers.currentMapLayer);
           layers._map.addLayer(this.category);
           layers.currentMapLayer = this.category;
@@ -1379,14 +1380,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
             layers._mapsMenu,
             this
           );
-          layers._headerPageParent = null;
-          layers._pageReturnsTo = null;
-          layers.zMap._unfocusCategories();
-          layers.zMap._closeCategoryPage();
-          layers.reset();
-          if(layers.viewStyleBottomSlide) {
-            layers.openDrawerDefaultPartial();
-          }
+          layers._finishMapMenuSelection(parent);
 
           return true;
         },
@@ -1428,6 +1422,31 @@ L.Control.ZLayers = L.Control.Layers.extend({
       '<h2 class="popupTitle switch-menu-title">Switch Map</h2>'
     );
     return mapsMenu;
+  },
+
+  _finishMapMenuSelection: function(parent) {
+    var category = parent && parent.category || this.zMap.selectedCategory;
+    this._headerPageParent = this._mobileAccountParent = null;
+    this._pageReturnsTo = this._nextPageReturnsTo = null;
+    this._desktopAccountReturnMarker = this._switchMenuReturnMarker = null;
+    // The new map was explicitly selected, so Back must not undo that choice.
+    this.zMap._categoryReturnView = null;
+    this.zMap._markerReturnView = null;
+    if(category) {
+      this.zMap._showCategoryPage(category);
+      this._contents.scrollTop = parent && parent.scrollTop || 0;
+      this._mapsButton.clear();
+      this._gamesButton.clear();
+    } else {
+      this.zMap._unfocusCategories();
+      this.zMap._closeCategoryPage();
+      this.reset();
+    }
+    if(this.viewStyleBottomSlide) {
+      if(!parent) this.closeDrawer();
+      else if(parent.top > this.options.openTo + 1) this.openDrawerDefaultPartial();
+      else this.openDrawerLarge();
+    }
   },
 
   setDefaultFocus: function() {

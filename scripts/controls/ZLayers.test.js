@@ -49,6 +49,28 @@ describe('header pages return to category and area lists', () => {
   }
 });
 
+describe('map selection preserves the originating drawer level and category', () => {
+  for(const categoryList of [false,true]) for(const level of ['closed','partial','full']) {
+    test(`${categoryList ? 'single-category' : 'main category'} list, ${level}`, () => {
+      const methods=drawerMethods();
+      const category=categoryList ? {id:64003} : null;
+      const parent=level==='closed' ? null : {top:level==='full'?10:400,category,scrollTop:80};
+      const drawer={viewStyleBottomSlide:true,options:{openTo:10},_contents:{scrollTop:0},
+        zMap:{selectedCategory:category,_showCategoryPage:jest.fn(),_unfocusCategories:jest.fn(),_closeCategoryPage:jest.fn()},
+        _mapsButton:{clear:jest.fn()},_gamesButton:{clear:jest.fn()},reset:jest.fn(),
+        closeDrawer:jest.fn(),openDrawerDefaultPartial:jest.fn(),openDrawerLarge:jest.fn()};
+      methods._finishMapMenuSelection.call(drawer,parent);
+      const expected=level==='closed'?'closeDrawer':level==='partial'?'openDrawerDefaultPartial':'openDrawerLarge';
+      expect(drawer[expected]).toHaveBeenCalledTimes(1);
+      if(categoryList) {
+        expect(drawer.zMap._showCategoryPage).toHaveBeenCalledWith(category);
+        expect(drawer.zMap._unfocusCategories).not.toHaveBeenCalled();
+        expect(drawer.reset).not.toHaveBeenCalled();
+      } else expect(drawer.reset).toHaveBeenCalledTimes(1);
+    });
+  }
+});
+
 test('a downward pull at the top hands content scrolling to the drawer', () => {
   const handlers={};
   const methods=drawerMethods({performance:{now:()=>0}});

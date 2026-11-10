@@ -218,15 +218,15 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
     group.attr('data-category-id',id);
     group.find('h3').text(zmap.categories[id].name+' ('+groups[id].filter(completed).length+'/'+groups[id].length+' Complete)');
     groups[id].sort(function(a,b) {return (a.title || a.name || '').localeCompare(b.title || b.name || '');}).forEach(function(marker) {
-      var entry=new MarkerListEntry(marker,{categories:zmap.categories,onClick:function() {
+      var entry=new MarkerListEntry(marker,{categories:zmap.categories,completionCheckbox:true,onClick:function() {
         control.returnNextPageTo({area:area,bounds:bounds});
         zmap.goTo({marker:marker.id,panTo:false},true);
         if(control.viewStyleBottomSlide) control.openDrawerDefaultPartial();
       }});
       entry.domNode.addClass('search-marker-list-entry area-marker-list-entry');
-      if(marker.complete === true || marker.complete == 1) {
-        entry.domNode.addClass('area-marker-completed');
-        entry.iconNode.append('<span class="area-marker-check" aria-label="Completed"><i class="fas fa-check" aria-hidden="true"></i></span>');
+      if(typeof getMarkerLocationName === 'function') {
+        var location = getMarkerLocationName(marker);
+        if(location) entry.domNode.find('.details').append($('<div class="location"></div>').text(location));
       }
       group.find('ul').append(entry.domNode);
     });
@@ -333,6 +333,15 @@ ZMap.prototype.restoreAreaReturnView = function() {
 // map units ([x, y]); here it becomes Leaflet's [lat, lng] rings, with the
 // box around it and that box's centre. Built once per layer.
 ZMap.prototype._layerRegions = function(layer) {
+  if(layer && layer.mapKind === 'dungeon' && isOcarina(this.mapOptions.shortName)) {
+    if(layer._regions) return layer._regions;
+    var box = L.latLngBounds(layer.mapBounds || this._tilePyramidBounds());
+    var south = box.getSouth(), north = box.getNorth(), west = box.getWest(), east = box.getEast();
+    return layer._regions = [{name: layer.mapName, shortName: layer.mapName, kind: 'area',
+      submapId: layer.defaultSubMapId, bounds: [[south,west],[north,east]],
+      x: (west+east)/2, y: (south+north)/2, size: (north-south)*(east-west),
+      rings: [[[[south,west],[south,east],[north,east],[north,west],[south,west]]]]}];
+  }
   if(!layer || !layer.submapRegions) return [];
   if(layer._regions) return layer._regions;
   var regions=[];
@@ -442,6 +451,7 @@ ZMap.prototype.updateRegionBorders = function() {
   var regions=this._layerRegions(layer).filter(function(region) {return region.submapId==current.subMapId;});
   if(!regions.length) return;
   var open=/^area-/.test(control.getContentType() || '') && this.selectedArea && this.selectedArea.region;
+  if(/^category-/.test(control.getContentType() || '') && this._categoryZoomRegion) open=this._categoryZoomRegion;
   var showAll=!!this.showRegionBorders;
   regions.forEach(function(region) {
     var selected=!!open && open.name===region.name && open.submapId==region.submapId;

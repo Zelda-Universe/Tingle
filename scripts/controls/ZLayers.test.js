@@ -12,6 +12,43 @@ function drawerMethods(globals = {}) {
   return context.L.Control.ZLayers.prototype;
 }
 
+describe('header pages return to category and area lists', () => {
+  test('account and login slide forward from detail lists and backward on return', () => {
+    const source = fs.readFileSync(__dirname + '/ZLayers.js', 'utf8');
+    const start = source.indexOf('      if(((/^(m');
+    const rule = source.slice(start, source.indexOf('// Explicit Back actions', start));
+    for(const detail of ['m123', 'category-64003', 'area-hyrule-field']) {
+      for(const account of ['accountPage', 'loginForm']) {
+        const forward = {previousContentType:detail, vType:account, backward:true};
+        vm.runInNewContext(rule, forward);
+        expect(forward.backward).toBe(false);
+        const back = {previousContentType:account, vType:detail, backward:false};
+        vm.runInNewContext(rule, back);
+        expect(back.backward).toBe(true);
+      }
+    }
+  });
+  for(const mobile of [false, true]) for(const kind of ['category', 'area']) {
+    test(`${kind} parent restores on ${mobile ? 'mobile' : 'desktop'}`, () => {
+      const methods = drawerMethods();
+      const destination = {id: 123, name: 'Previous list'};
+      const bounds = [[0,0],[10,10]];
+      const drawer = {
+        _headerPageParent: {[kind]:destination, bounds, top:400, scrollTop:75},
+        viewStyleBottomSlide:mobile, options:{openTo:10}, _contents:{scrollTop:0},
+        zMap:{_showCategoryPage:jest.fn(), _showAreaPage:jest.fn()},
+        openDrawerManual:jest.fn()
+      };
+      expect(methods._restoreHeaderListParent.call(drawer)).toBe(true);
+      if(kind==='category') expect(drawer.zMap._showCategoryPage).toHaveBeenCalledWith(destination);
+      else expect(drawer.zMap._showAreaPage).toHaveBeenCalledWith(destination,bounds);
+      expect(drawer._contents.scrollTop).toBe(75);
+      if(mobile) expect(drawer.openDrawerManual).toHaveBeenCalledWith(400);
+      expect(drawer._headerPageParent).toBeNull();
+    });
+  }
+});
+
 test('switch controls retain Map then Game visually across repeated rotations', () => {
   const methods = drawerMethods();
   const children = [];
@@ -118,5 +155,70 @@ describe('shared mobile drawer resize animation', () => {
     h.menu.style.top = '250px';
     h.advance(180);
     expect(h.menu.style.top).toBe('250px');
+  });
+});
+
+describe('Switch Map menu follows programmatic map switches', () => {
+  const methods = drawerMethods();
+
+  function harness(submapLayers) {
+    const hyrule = { id: 11, originalId: 11, defaultSubMapId: 11, bringToBack: jest.fn() };
+    const deku = { id: 12, originalId: 12, defaultSubMapId: 12, bringToBack: jest.fn() };
+    const updateSelection = jest.fn();
+    const drawer = {
+      zMap: { mapOptions: { submapLayers } },
+      _maps: [hyrule, deku],
+      currentMapLayer: hyrule,
+      _map: { removeLayer: jest.fn(), addLayer: jest.fn(), fire: jest.fn() },
+      setCurrentMap: jest.fn(),
+      _syncMapsMenuSelection: methods._syncMapsMenuSelection,
+      _mapButtonIsCurrent: methods._mapButtonIsCurrent,
+      _mapsMenu: {
+        categoryButtons: [{ category: hyrule }, { category: deku }],
+        updateCategorySelectionFn: updateSelection
+      }
+    };
+    return { drawer, deku, updateSelection };
+  }
+
+  test('selecting an item on another map marks that map in the menu', () => {
+    const h = harness(false);
+    methods.changeMapOnly.call(h.drawer, 12, undefined);
+    expect(h.drawer._map.addLayer).toHaveBeenCalledWith(h.deku);
+    expect(h.drawer.setCurrentMap).toHaveBeenCalledWith(12, undefined);
+    expect(h.updateSelection).toHaveBeenCalledTimes(1);
+    expect(h.updateSelection).toHaveBeenCalledWith(h.drawer._mapsMenu.categoryButtons[1]);
+  });
+
+  test('a submapped game matches the map\'s single button by map id, not layer id', () => {
+    // OoT's Hyrule Child/Adult are two layers of one map: the menu holds the
+    // first, a switch can land on the other.
+    const child = { id: 11, originalId: 11, defaultSubMapId: 11, bringToBack: jest.fn() };
+    const adult = { id: 112, originalId: 11, defaultSubMapId: 112, bringToBack: jest.fn() };
+    const deku = { id: 12, originalId: 12, defaultSubMapId: 12, bringToBack: jest.fn() };
+    const updateSelection = jest.fn();
+    const drawer = {
+      zMap: { mapOptions: { submapLayers: true } },
+      _maps: [child, adult, deku],
+      currentMapLayer: child,
+      _map: { removeLayer: jest.fn(), addLayer: jest.fn(), fire: jest.fn() },
+      setCurrentMap: jest.fn(),
+      _syncMapsMenuSelection: methods._syncMapsMenuSelection,
+      _mapButtonIsCurrent: methods._mapButtonIsCurrent,
+      _mapsMenu: {
+        categoryButtons: [{ category: child }, { category: deku }],
+        updateCategorySelectionFn: updateSelection
+      }
+    };
+    methods.changeMapOnly.call(drawer, 11, 112); // Hyrule Child → Adult
+    expect(drawer.setCurrentMap).toHaveBeenCalledWith(11, 112);
+    expect(updateSelection).toHaveBeenCalledWith({ category: child });
+  });
+
+  test('staying on the current map leaves the menu untouched', () => {
+    const h = harness(false);
+    methods.changeMapOnly.call(h.drawer, 11, undefined);
+    expect(h.drawer._map.addLayer).not.toHaveBeenCalled();
+    expect(h.updateSelection).not.toHaveBeenCalled();
   });
 });

@@ -40,21 +40,27 @@ SearchMarkerListEntry.prototype._initDOMElements = function(marker) {
 };
 
 function getMarkerLocationName(marker) {
-  if(Object.prototype.hasOwnProperty.call(markerLocationNameCache, marker.id)) {
-    return markerLocationNameCache[marker.id];
+  var current = zMap.mapControl && zMap.mapControl.getCurrentMap();
+  var submapId = marker.submapId || marker.subMapId;
+  if(marker.globalMarker == 1 && current && current.mapId == marker.mapId) submapId = current.subMapId;
+  var cacheKey = [zMap.mapOptions && zMap.mapOptions.shortName, marker.id, marker.mapId, submapId, marker.globalMarker == 1].join(':');
+  if(Object.prototype.hasOwnProperty.call(markerLocationNameCache, cacheKey)) {
+    return markerLocationNameCache[cacheKey];
   }
 
   var markerMap = zMap.maps.find(function(map) {
-    return map.originalId == marker.mapId;
-  });
+    return map.originalId == marker.mapId && map.defaultSubMapId == submapId;
+  }) || zMap.maps.find(function(map) { return map.originalId == marker.mapId; });
   var mapName = markerMap ? (markerMap.mapName || markerMap.title) : '';
+  var variant = marker.globalMarker == 1 ? '' : markerMap && markerMap.submapName;
+  var mapDisplayName = mapName + (variant ? ' (' + variant + ')' : '');
   var multipleMaps = zMap.maps.length > 1;
 
   // A map result is its own place; repeating its name says nothing.
-  if(marker.mapDestination) return markerLocationNameCache[marker.id] = '';
+  if(marker.mapDestination) return markerLocationNameCache[cacheKey] = '';
 
   if(marker.markerCategoryTypeId == 3) {
-    return markerLocationNameCache[marker.id] = multipleMaps ? mapName : '';
+    return markerLocationNameCache[cacheKey] = multipleMaps || variant ? mapDisplayName : '';
   }
 
   // "Area, Map", e.g. "Hyrule Field, Hyrule". Where the game has place names
@@ -79,9 +85,9 @@ function getMarkerLocationName(marker) {
       (zMap.getMarkerAreaName && zMap.getMarkerAreaName(marker)) || '';
     if(areaName && areaName.toLowerCase() !== mapName.toLowerCase()) locationParts.push(areaName);
   }
-  if(multipleMaps && mapName) locationParts.push(mapName);
+  if((multipleMaps || variant) && mapName) locationParts.push(mapDisplayName);
 
-  return markerLocationNameCache[marker.id] = locationParts.join(', ');
+  return markerLocationNameCache[cacheKey] = locationParts.join(', ');
 }
 
 // The area a POI is in, for games without area outlines: its nearest "Area

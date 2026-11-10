@@ -15,13 +15,30 @@
     return trim(preg_replace('/\s+/u', ' ', str_replace('`', "'", $text)));
   }
 
+  // Shared by page metadata and the category editor's placeholder.
+  function seoCategoryDescription($category, $game, $gameName) {
+    $count = number_format($category['count']);
+    $maps = $category['maps'];
+    if (isOcarina($game)) {
+      $dungeons = count(array_diff($maps, ['Hyrule']));
+      $where = in_array('Hyrule', $maps, true)
+        ? 'across Hyrule' . ($dungeons ? ' and ' . $dungeons . ($dungeons === 1 ? ' dungeon' : ' dungeons') : '')
+        : 'across ' . $dungeons . ($dungeons === 1 ? ' dungeon' : ' dungeons');
+      return 'All ' . $count . ' ' . $category['name'] . ' in Ocarina of Time Remake, ' . $where . ', on the Zelda Maps interactive map.';
+    }
+    $where = count($maps) > 1 && count($maps) <= 3
+      ? ' across the ' . implode(', ', array_slice($maps, 0, -1)) . ' and ' . end($maps) : '';
+    return 'All ' . $count . ' ' . $category['name'] . ' locations' . $where .
+      ' in The Legend of Zelda: ' . $gameName . ', on the Zelda Maps interactive map.';
+  }
+
   // [slug => [id, name, slug, count, maps, lastUpdated]] for one game, or for
   // every visible game when $gameShortName is null (keyed by game, then slug).
   // The OoT remake is keyed OoT, index.php's name for it; in the database
   // it's OoTR (OoT there is the old N64 map, which is hidden).
   function seoLandingCategories($db, $prefix, $gameShortName = null) {
     $rows = $db->fetchAllAssociative("
-      SELECT IF(LOWER(c.short_name) = 'ootr', 'OoT', c.short_name) AS game, mc.id, mc.name, COUNT(m.id) AS markers,
+      SELECT IF(LOWER(c.short_name) = 'ootr', 'OoT', c.short_name) AS game, mc.id, mc.name, mc.description, mc.seo_description, COUNT(m.id) AS markers,
              GROUP_CONCAT(DISTINCT mp.name ORDER BY mp.id SEPARATOR '|') AS maps,
              -- Stored in the database's own time zone: converted to UTC, and
              -- as a date only, never later than today, since search engines
@@ -53,6 +70,8 @@
       $categories[$row['game']][$slug] = [
         'id' => (int) $row['id'],
         'name' => $name,
+        'description' => seoPlainText($row['description'] ?? ''),
+        'seoDescription' => seoPlainText($row['seo_description'] ?? ''),
         'slug' => $slug,
         'count' => (int) $row['markers'],
         'maps' => array_map('seoPlainText', explode('|', $row['maps'])),

@@ -11,6 +11,7 @@ function fakeJq(selector) {
     text(value){this._text=value===undefined ? this._text||'' : value;return this;},
     toggle(){return this;},
     attr(){return this;},
+    on(){return this;},
     addClass(){return this;},
     append(...args){(this._appended=this._appended||[]).push(...args);return this;},
     insertAfter(){return this;},
@@ -54,6 +55,45 @@ function loadCategoryPage(overrides) {
 const section=(id,name)=>({id,name,parent_id:null,marker_category_type_id:'1',visible:true,childrenArr:[]});
 const category=(id,name,extra={})=>Object.assign({id,name,parent_id:'10',marker_category_type_id:'1',visible:true,childrenArr:[]},extra);
 const marker=(id,categoryId,extra={})=>Object.assign({id,categoryId,categoryTypeId:1,dbVisible:1},extra);
+
+test.each([false,true])('region Zoom preserves the current submap (global marker: %s)', global => {
+  const bounds={isValid:()=>true};
+  const context=loadCategoryPage({
+    L:{latLngBounds:()=>bounds}, isOcarina:()=>true,
+    window:{getComputedStyle:()=>({display:'none'}),matchMedia:()=>({matches:false})}
+  });
+  const map=Object.assign(Object.create(context.ZMap.prototype),{
+    mapOptions:{shortName:'OoTR'},
+    map:{options:{},getContainer:()=>({getBoundingClientRect:()=>({bottom:600})}),fitBounds:jest.fn(),getMaxZoom:()=>8},
+    mapControl:{getCurrentMap:()=>({mapId:65000,subMapId:650001}),changeMapOnly:jest.fn(),
+      getContainer:()=>({getBoundingClientRect:()=>({top:400})})},
+    getMarkerRegion:jest.fn(()=>({bounds}))
+  });
+  const child=marker(1,11,{mapId:65000,submapId:650000,globalMarker:global?1:0});
+  const adult=marker(2,11,{mapId:65000,submapId:650001});
+  map.zoomToCategoryRegion(global ? [child] : [child,adult]);
+  expect(map.mapControl.changeMapOnly).toHaveBeenCalledWith(65000,650001);
+  expect(map.getMarkerRegion.mock.calls[0][0].submapId).toBe(650001);
+});
+
+test('region Zoom fits named area boundaries, not the marker cluster', () => {
+  const rawBounds=[[-256,0],[0,256]], bounds={isValid:()=>true};
+  const convert=jest.fn(()=>bounds);
+  const context=loadCategoryPage({L:{latLngBounds:convert},isOcarina:()=>true,
+    window:{getComputedStyle:()=>({display:'none'}),matchMedia:()=>({matches:false})}});
+  const region={name:'Fire Temple',submapId:640061,bounds:rawBounds};
+  const layer={originalId:64024,defaultSubMapId:640061};
+  const map=Object.assign(Object.create(context.ZMap.prototype),{
+    maps:[layer],mapOptions:{shortName:'OoTR'},_layerRegions:()=>[region],
+    getMarkerRegion:jest.fn(()=>null),
+    map:{options:{},getContainer:()=>({getBoundingClientRect:()=>({bottom:600})}),fitBounds:jest.fn(),getMaxZoom:()=>8},
+    mapControl:{getCurrentMap:()=>({mapId:64024,subMapId:640061}),changeMapOnly:jest.fn(),getContainer:()=>({getBoundingClientRect:()=>({top:400})})}
+  });
+  map.zoomToCategoryRegion([marker(1,11,{mapId:64024,submapId:640061})],'Fire Temple');
+  expect(convert).toHaveBeenCalledWith(rawBounds);
+  expect(map.map.fitBounds).toHaveBeenCalledWith(bounds,expect.any(Object));
+  expect(map.getMarkerRegion).not.toHaveBeenCalled();
+});
 
 test('category addresses match the server slugs',()=>{
   // The PHP side: seo.php's seoSlug(seoPlainText(name)), as index.php and the
@@ -112,6 +152,7 @@ test('the page is an area-style listing with the server title and an unfocusing 
   const added=[];
   const control={
     viewStyleBottomSlide:false,
+    getCurrentMap:()=>({mapId:19}),
     _contents:{querySelector:()=>({classList:{add:c=>added.push(c)}})},
     setContent:jest.fn(),
     getContentType:()=> 'category'
@@ -121,22 +162,23 @@ test('the page is an area-style listing with the server title and an unfocusing 
     mapOptions:{shortName:'BotW',name:'Breath of the Wild'},
     categories:{11:seeds,12:blue},
     categoriesArr:[seeds,blue],
-    getMarkers:()=>[marker(1,11,{title:'Alpha',complete:1}),marker(2,12,{title:'Beta'})],
+    getMarkerRegion:m=>({name:m.id===1 ? 'West Necluda' : 'Great Plateau'}),
+    getMarkers:()=>[marker(1,11,{title:'Alpha',complete:1,mapId:19}),marker(2,12,{title:'Beta',mapId:64})],
     _categoryListOrder:()=>({11:0,12:1}),
     _closeNewMarker:jest.fn()
   });
   map._showCategoryPage(seeds);
+  // West Necluda sorts before Great Plateau because it is on the current map.
+  expect(context.entries.map(entry=>entry.marker.id)).toEqual([1,2]);
   expect(control.setContent.mock.calls[0][1]).toBe('category-11');
   expect(map.selectedCategory).toBe(seeds);
-  expect(context.document.title).toBe('Korok Seeds Map - Breath of the Wild - Zelda Maps');
+  expect(context.document.title).toBe('Korok Seeds - Breath of the Wild - Zelda Maps');
   expect(added).toContain('area-detail-page');
   expect(typeof control._nextPageBack).toBe('function');
-  // No description under the title, and the category's own group has no
-  // heading repeating the title (a child category's keeps its).
-  expect(control.setContent.mock.calls[0][0].selector).not.toContain('area-description');
+  expect(context.created).not.toContain('<div class="area-description"></div>');
   const sections=context.created.filter(s=>s.indexOf('poi-category-groups') !== -1);
   expect(sections).toHaveLength(2);
-  expect(sections.filter(s=>s.indexOf('poi-category-heading') !== -1)).toHaveLength(1);
+  expect(sections.filter(s=>s.indexOf('poi-category-heading') !== -1)).toHaveLength(2);
 });
 
 test('entries show the location under the name, as search results do',()=>{

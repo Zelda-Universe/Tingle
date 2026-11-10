@@ -96,7 +96,7 @@
         ? ' across the ' . implode(', ', array_slice($maps, 0, -1)) . ' and ' . end($maps)
         : '';
       $pageHeading = $category['name'] . ' - ' . $metadata['name'] . ' Interactive Map';
-      $pageTitle = $category['name'] . ' Map - ' . $metadata['name'] . ' - Zelda Maps';
+      $pageTitle = $category['name'] . ' - ' . $metadata['name'] . ' - Zelda Maps';
       $pageDescription = 'All ' . $count . ' ' . $category['name'] . ' locations' . $where .
         ' in The Legend of Zelda: ' . $metadata['name'] . ', on the Zelda Maps interactive map.';
       // OoT: "All 100 Gold Skulltulas in Ocarina of Time Remake, across
@@ -109,6 +109,8 @@
         $pageDescription = 'All ' . $count . ' ' . $category['name'] . ' in Ocarina of Time Remake, ' . $where .
           ', on the Zelda Maps interactive map.';
       }
+      $pageDescription = !empty($category['seoDescription']) ? $category['seoDescription']
+        : seoCategoryDescription($category, $gameId, $metadata['name']);
       $canonicalUrl = seoCategoryUrl($gameId, $category['slug']);
     }
 

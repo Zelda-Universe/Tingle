@@ -59,7 +59,8 @@ ZMap.prototype._mapSettingsRecords = function(data) {
   return data.categories.map(function(c) {
     var record = {
       id: c.id, parent_id: c.parentId, container_id: data.game.id, marker_category_type_id: c.typeId,
-      name: c.name, img: c.img, color: c.color, glyph_color: c.glyphColor, shape: c.shape,
+      name: c.name, description: c.description, seo_description: c.seo_description,
+      defaultSeoDescription: c.defaultSeoDescription, img: c.img, color: c.color, glyph_color: c.glyphColor, shape: c.shape,
       custom_style: c.customStyle ? 1 : 0, visible: c.visible, menu_section: c.menuSection, menu_order: c.menuOrder
     };
     record.glyph = getPOIGlyph(record);
@@ -668,8 +669,8 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
           this._mapSettingsField('New Section', 'fa-folder',
             '<input type="text" class="form-control" name="newSection" maxlength="45" placeholder="Section name" />') +
         '</div>' +
-        '<label class="map-settings-check"><input type="checkbox" name="visible" />' +
-          '<span><strong>Show this category</strong><small>Hidden categories and their markers aren\'t on the map.</small></span></label>' +
+        this._mapSettingsField('Page Description', 'fa-align-left', '<textarea class="form-control" name="description" maxlength="5000" rows="4"></textarea>') +
+        this._mapSettingsField('SEO Description', 'fa-search', '<textarea class="form-control" name="seo_description" maxlength="5000" rows="3" placeholder="Leave blank for the standard category SEO description"></textarea>') +
         '<label class="map-settings-label">Shape</label>' +
         '<div class="map-settings-shapes" role="group" aria-label="Shape">' + shapes + '</div>' +
         '<div class="map-settings-colors">' + colour('color', 'Background Colour') + colour('glyphColor', 'Glyph Colour') + '</div>' +
@@ -679,6 +680,8 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
           '<input type="search" class="form-control" name="iconSearch" placeholder="Search icons" />' +
         '</div></div>' +
         '<div class="map-settings-icons" role="listbox" aria-label="Icons"></div>' +
+        '<label class="map-settings-check"><input type="checkbox" name="visible" />' +
+          '<span><strong>Show this category</strong><small>Hidden categories and their markers aren\'t on the map.</small></span></label>' +
         (isNew ? '' : this._mapSettingsField('Summary', 'fa-comment',
           '<input type="text" class="form-control" name="summary" maxlength="255" placeholder="What changed and why (optional)" />')) +
         '<p class="admin-user-status" role="status" aria-live="polite"></p>' +
@@ -692,6 +695,9 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
   var menuName = record ? getPOIMenuName(record, records) : '';
   $(page).find('.wiki-subtitle').text(menuName);
   form.find('[name=name]').val(record ? record.name : '');
+  form.find('[name=description]').val(record ? record.description || '' : '');
+  form.find('[name=seo_description]').val(record ? record.seo_description || '' : '');
+  form.find('[name=seo_description]').attr('placeholder', record ? record.defaultSeoDescription : 'Generated from the category name, marker count, and maps after saving.');
   if(sectionOf) form.find('[name=section]').val(sectionOf.title);
   form.find('[name=visible]').prop('checked', isNew || !!record.visible);
   var styleTouched = isNew;
@@ -793,6 +799,8 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
     if(!section) { status.addClass('error').text('Name the new section.'); return; }
     var fields = { kind: 'category', id: record ? record.id : 0, game: data.game.shortName,
       name: form.find('[name=name]').val(), visible: form.find('[name=visible]').prop('checked') ? '1' : '0',
+      description: form.find('[name=description]').val(),
+      seo_description: form.find('[name=seo_description]').val(),
       summary: form.find('[name=summary]').val() || '' };
     if(styleTouched) Object.assign(fields, { style: '1', shape: state.shape, color: state.color, glyphColor: state.glyphColor, img: state.img });
     if(isNew) {
@@ -877,7 +885,7 @@ ZMap.prototype._applyMapSettingsCategory = function(row, isNew) {
     this.addCategory(row);
     category = this.categories[row.id];
   } else {
-    ['name', 'img', 'color', 'glyph_color', 'shape', 'custom_style', 'menu_section', 'menu_order'].forEach(function(key) {
+    ['name', 'description', 'seo_description', 'img', 'color', 'glyph_color', 'shape', 'custom_style', 'menu_section', 'menu_order'].forEach(function(key) {
       category[key] = row[key];
     });
   }

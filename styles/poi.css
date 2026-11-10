@@ -347,3 +347,15 @@
 .area-marker-list-entry .icon { position:relative; }
 .area-marker-check { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; color:white; font-size:28px; text-shadow:0 1px 3px #000,0 0 5px #000; }
 .area-marker-completed .icon > .category-icon, .area-marker-completed .icon > img { opacity:.45; }
+.marker-list-entry .icon { position:relative; }
+.marker-list-entry:not(.area-marker-completed) .area-marker-check { display:none; }
+.marker-list-entry.area-marker-completed .details { opacity:.6; }
+.marker-list-completion-control { position:relative; display:block; flex:0 0 20px; width:20px; height:20px; margin:0 8px 0 0; align-self:center; cursor:pointer; }
+.marker-list-completion { appearance:none; -webkit-appearance:none; display:block; box-sizing:border-box; width:20px; height:20px; margin:0; padding:0; border:2px solid rgba(255,255,255,.5); border-radius:4px; background:rgba(255,255,255,.08); cursor:pointer; transition:border-color .15s,background-color .15s; }
+.marker-list-completion-control > input.marker-list-completion { position:absolute; inset:0; margin:0; }
+.marker-list-completion-control > .fa-check { position:absolute; inset:auto; top:50%; left:50%; transform:translate(-50%,-50%); width:12px; height:12px; margin:0; padding:0; display:block; font-size:12px; line-height:1; vertical-align:0; color:rgba(255,255,255,.8); pointer-events:none; visibility:hidden; }
+.marker-list-completion:checked + .fa-check { visibility:visible; }
+.marker-list-completion-control:hover .marker-list-completion:not(:disabled) { border-color:rgba(255,255,255,.85); background:rgba(255,255,255,.2); }
+.marker-list-completion-control:hover .marker-list-completion:not(:disabled) + .fa-check { color:#fff; }
+.marker-list-completion-control > input.marker-list-completion:focus { outline:none !important; box-shadow:none !important; }
+.marker-list-completion-control > input.marker-list-completion:focus-visible { outline:2px solid white !important; outline-offset:3px; }

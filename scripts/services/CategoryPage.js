@@ -65,14 +65,12 @@ ZMap.prototype._showCategoryPage = function(category) {
   this.selectedCategory = category;
   this.selectedArea = null; // Its address is cleared, too.
   var name = category.displayTitle || category.name;
-  // No description: the title says what the page is, and the list is the
-  // point (the area page's description has no category equivalent).
   var page = $('<div class="area-detail-page category-detail-page">' +
     '<h2 class="popupTitle"></h2><div class="area-marker-groups"></div></div>');
   page.find('h2').text(name);
   // The database's name in the tab title: the same one the server's page
   // title uses (index.php), so a reload doesn't change it.
-  document.title = category.name + ' Map - ' + seoGameName(this.mapOptions) + ' - Zelda Maps';
+  document.title = category.name + ' - ' + seoGameName(this.mapOptions) + ' - Zelda Maps';
   var pills = $('<div class="area-header-pills"></div>').insertAfter(page.find('h2'));
   var markers = this._getCategoryMarkers(category);
   function completed(marker) { return marker.complete === true || marker.complete == 1; }
@@ -83,28 +81,45 @@ ZMap.prototype._showCategoryPage = function(category) {
   }
   var groups = Object.create(null);
   markers.forEach(function(marker) {
-    (groups[marker.categoryId] || (groups[marker.categoryId] = [])).push(marker);
+    var region = zmap.getMarkerRegion && zmap.getMarkerRegion(marker);
+    var location = region && (region.name || region.shortName);
+    if(!location && zmap.markerAreaLink) {
+      var area = zmap.markerAreaLink(marker);
+      location = area && (area.title || area.label);
+    }
+    if(!location) {
+      var layer = (zmap.maps || []).find(function(layer) { return layer.originalId == marker.mapId; });
+      location = layer && (layer.mapName || layer.title) || 'Other Locations';
+    }
+    (groups[location] || (groups[location] = [])).push(marker);
   });
   var content = page.find('.area-marker-groups');
-  // In the order of the category list, as drawn (grouped or not).
-  var listOrder = this._categoryListOrder();
-  var position = function(id) { return id in listOrder ? listOrder[id] : Infinity; };
+  if(category.description) {
+    $('<div class="area-description"></div>').text(category.description).insertAfter(pills);
+  }
+  var currentMap = control.getCurrentMap ? control.getCurrentMap().mapId : null;
+  var onCurrentMap = function(name) {
+    return groups[name].some(function(marker) { return String(marker.mapId) === String(currentMap); });
+  };
+  // Current-map regions first, alphabetical within both sets.
   Object.keys(groups).sort(function(a, b) {
-    return position(a) - position(b);
+    return Number(onCurrentMap(b)) - Number(onCurrentMap(a)) || a.localeCompare(b);
   }).forEach(function(id) {
-    // The category's own markers list under the page's title (whose small
-    // heading would repeat it); a child category's keep their own.
-    var isSelf = String(id) === String(category.id);
     var group = $('<section class="poi-category-groups">' +
-      (isSelf ? '' : '<div class="poi-category-heading"><h3 class="area-category-title"></h3></div>') +
+      '<div class="poi-category-heading"><h3 class="area-category-title"></h3></div>' +
       '<ul class="marker-list"></ul></section>');
-    group.attr('data-category-id', id);
-    if(!isSelf) {
-      var groupCompleted = groups[id].filter(completed).length;
-      group.find('h3').text((zmap.categories[id] && zmap.categories[id].name || '') + ' (' + groupCompleted + '/' + groups[id].length + ' Complete)');
-    }
+    group.attr('data-region', id);
+    group.attr('data-region-marker-ids', JSON.stringify(groups[id].map(function(marker) { return String(marker.id); })));
+    group.attr('data-region-maps', JSON.stringify(groups[id].map(function(marker) { return String(marker.mapId); })));
+    var groupCompleted = groups[id].filter(completed).length;
+    group.find('h3').text(id + ' (' + groupCompleted + '/' + groups[id].length + ' Complete)');
+    group.find('.poi-category-heading').append(
+      $('<button type="button" class="poi-category-toggle category-region-zoom">Zoom</button>')
+        .attr('aria-label', 'Zoom to ' + id)
+        .on('click', function() { zmap.zoomToCategoryRegion(groups[id], id); })
+    );
     groups[id].sort(function(a, b) { return (a.title || a.name || '').localeCompare(b.title || b.name || ''); }).forEach(function(marker) {
-      var entry = new MarkerListEntry(marker, { categories: zmap.categories, onClick: function() {
+      var entry = new MarkerListEntry(marker, { categories: zmap.categories, completionCheckbox: true, onClick: function() {
         control.returnNextPageTo({ category: category });
         zMap.goTo({ marker: marker.id, panTo: false }, true);
         if(control.viewStyleBottomSlide) control.openDrawerDefaultPartial();
@@ -117,10 +132,6 @@ ZMap.prototype._showCategoryPage = function(category) {
         var locationText = getMarkerLocationName(marker);
         if(locationText) entry.domNode.find('.details').append($('<div class="location"></div>').text(locationText));
       }
-      if(marker.complete === true || marker.complete == 1) {
-        entry.domNode.addClass('area-marker-completed');
-        entry.iconNode.append('<span class="area-marker-check" aria-label="Completed"><i class="fas fa-check" aria-hidden="true"></i></span>');
-      }
       group.find('ul').append(entry.domNode);
     });
     content.append(group);
@@ -132,6 +143,67 @@ ZMap.prototype._showCategoryPage = function(category) {
   control.setContent(page.contents(), 'category-' + category.id);
   var wrapper = control._contents.querySelector('.menu-cat-content-inner');
   if(wrapper) wrapper.classList.add('area-detail-page');
+};
+
+ZMap.prototype.sortCategoryRegionsForCurrentMap = function() {
+  var control = this.mapControl;
+  if(!control || !/^category-/.test(control.getContentType() || '')) return;
+  var root = control._contents.querySelector('.area-marker-groups');
+  if(!root) return;
+  var mapId = String(control.getCurrentMap().mapId);
+  var sections = Array.from(root.children);
+  var current = function(section) {
+    return JSON.parse(section.getAttribute('data-region-maps') || '[]').includes(mapId);
+  };
+  sections.sort(function(a, b) {
+    return Number(current(b)) - Number(current(a)) ||
+      (a.getAttribute('data-region') || '').localeCompare(b.getAttribute('data-region') || '');
+  }).forEach(function(section) { root.appendChild(section); });
+};
+
+// Fit the region artwork, never just this category's points within it.
+ZMap.prototype.zoomToCategoryRegion = function(markers, regionName) {
+  if(!markers || !markers.length) return;
+  var map = this.map, control = this.mapControl, current = control.getCurrentMap();
+  var first = markers.find(function(marker) {
+    return marker.mapId == current.mapId && marker.submapId == current.subMapId;
+  }) || markers.find(function(marker) { return marker.mapId == current.mapId; }) || markers[0];
+  var targetSubmap = first.submapId;
+  if(first.mapId == current.mapId && first.globalMarker == 1) targetSubmap = current.subMapId;
+  var layer = (this.maps || []).find(function(layer) {
+    return layer.originalId == first.mapId && layer.defaultSubMapId == targetSubmap;
+  }) || (this.maps || []).find(function(layer) { return layer.originalId == first.mapId; });
+  var region = layer && regionName && this._layerRegions(layer).find(function(region) {
+    return region.submapId == targetSubmap && (region.name === regionName || region.shortName === regionName);
+  });
+  var targetMarker = targetSubmap == first.submapId ? first : Object.assign({}, first, {submapId: targetSubmap});
+  if(!region && this.getMarkerRegion) {
+    region = this.getMarkerRegion(targetMarker) || this.getMarkerRegion(targetMarker, 'area');
+  }
+  var bounds = region && region.bounds;
+  if(!bounds && layer && (!regionName || regionName === (layer.mapName || layer.title))) {
+    bounds = layer.mapBounds || layer.options && layer.options.bounds;
+  }
+  try { bounds = bounds && L.latLngBounds(bounds); } catch(e) { bounds = null; }
+  if(!bounds || !bounds.isValid()) return;
+  control.changeMapOnly(first.mapId, targetSubmap);
+  this._categoryZoomRegion = !isOcarina(this.mapOptions.shortName) ? region : null;
+  if(this.updateRegionBorders) this.updateRegionBorders();
+  var rect = map.getContainer().getBoundingClientRect();
+  var drawer = control.getContainer().getBoundingClientRect();
+  var topLeft = [24, 72], bottomRight = [24, 24];
+  if(control.viewStyleBottomSlide) bottomRight[1] += Math.max(0, rect.bottom - drawer.top);
+  else if(window.getComputedStyle(control.getContainer()).display !== 'none') {
+    if(control.options.position.endsWith('left')) topLeft[0] += drawer.width;
+    else bottomRight[0] += drawer.width;
+  }
+  var threshold = map.options.zoomAnimationThreshold;
+  map.options.zoomAnimationThreshold = Infinity;
+  try {
+    map.fitBounds(bounds, {paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
+      maxZoom: map.getMaxZoom(), animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      duration: .25, easeLinearity: .2});
+  } finally { map.options.zoomAnimationThreshold = threshold; }
 };
 
 // From the category list: focus first (CategoryButton does it), then the
@@ -227,6 +299,8 @@ ZMap.prototype._recordCategoryReturnArrival = function(arrival) {
   // where the map actually ends up is where \"hasn't moved\" is measured
   // from. A once-only listener: a later move of the user's is not it.
   var settle = function() {
+    map.off('moveend', settle);
+    map.off('zoomend', settle);
     if(zmap._categoryReturnView !== view) return; // consumed or superseded
     view.arrived = { center: map.getCenter(), zoom: map.getZoom() };
   };
@@ -283,6 +357,7 @@ ZMap.prototype._unfocusCategories = function() {
 // category out of the address (syncDrawerPageURL keeps it that way from
 // then on, but the button should not wait for the content swap).
 ZMap.prototype._closeCategoryPage = function() {
+  this._categoryZoomRegion = null;
   if(!this.selectedCategory) return;
   this.selectedCategory = null;
   var gameName = seoGameName(this.mapOptions || {});
@@ -304,8 +379,8 @@ ZMap.prototype.updateCategoryCompletionCounts = function() {
     return rows.filter(function(m) { return m.complete === true || m.complete == 1; }).length + '/' + rows.length + ' Complete';
   }
   $(control._contents).find('.area-completion-pill').text(markers.length ? count(markers) : '');
-  $(control._contents).find('section[data-category-id]').each(function() {
-    var id = this.getAttribute('data-category-id');
-    $(this).find('h3').text((zmap.categories[id] && zmap.categories[id].name || '') + ' (' + count(markers.filter(function(m) { return m.categoryId == id; })) + ')');
+  $(control._contents).find('section[data-region-marker-ids]').each(function() {
+    var ids = JSON.parse(this.getAttribute('data-region-marker-ids'));
+    $(this).find('h3').text(this.getAttribute('data-region') + ' (' + count(markers.filter(function(m) { return ids.includes(String(m.id)); })) + ')');
   });
 };

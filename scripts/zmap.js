@@ -363,7 +363,7 @@ ZMap.prototype.addMap = function(vMap) {
        // Its named regions and areas with borders (map_region), as for every game.
        layer.submapRegions = this._submapRegionData([submap]);
        layer.mapConnections = submap.connections || [];
-       layer.mapBounds = submap.bounds || null;
+       layer.mapBounds = vMap.kind === 'dungeon' ? this._tilePyramidBounds() : submap.bounds || null;
        layer.title = submap === vMap.subMap[0] ? vMap.name : title;
        layer._overlayMap = [];
        this.maps.push(layer);
@@ -544,8 +544,9 @@ ZMap.prototype.addMarker = function(vMarker) {
       // The pin itself is invisible and ignores taps (interactive: false),
       // so taps beside a name reach the markers under it; the name is what
       // you click.
-      var labelPin = { opacity: 0.01, interactive: false, keyboard: false };
-      if(importedLabel) labelPin.icon = this._centredLabelIcon || (this._centredLabelIcon = new L.Icon.Default({ tooltipAnchor: [0, 0] }));
+      var labelPin = { interactive: false, keyboard: false,
+        icon: L.divIcon({className: 'map-label-anchor', html: '', iconSize: [0, 0],
+          tooltipAnchor: importedLabel ? [0, 0] : [16, -28]}) };
       marker = new L.marker([vMarker.y,vMarker.x], labelPin);
       // Its tier (Region, Area, Places…) sets its size (styles/zmain.css).
       var labelCategory = this.categories && this.categories[vMarker.markerCategoryId];
@@ -2028,6 +2029,7 @@ ZMap.prototype.addMapControl = function(gameId) {
     //console.log(e.originalId + " " + defaultSubMapId);
     var sameOotMap = _this.mapOptions.submapLayers && _this.mapControl.currentMap == e.originalId;
     _this.mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
+    if(_this.sortCategoryRegionsForCurrentMap) _this.sortCategoryRegionsForCurrentMap();
     if(isOcarina(_this.mapOptions.shortName)) _this._reconcileOotMarkerSelection(e.originalId, defaultSubMapId);
     _this.refreshMap();
     if(!isOcarina(_this.mapOptions.shortName)) _this._closeNewMarker();
@@ -2037,6 +2039,13 @@ ZMap.prototype.addMapControl = function(gameId) {
       _this.mapOptions.centerY,
       _this.mapOptions.centerX
     ), _this.map.getZoom());
+    if(isOcarina(_this.mapOptions.shortName)) {
+      _this.applyOotMapBounds();
+      if(!sameOotMap && e.mapKind === 'dungeon') {
+        var dungeonBounds = L.latLngBounds(e.mapBounds);
+        _this.map.setView(dungeonBounds.getCenter(), _this.map.getMinZoom(), {animate: false});
+      }
+    }
   });
   // Open the map the address names (?map=2101 is TotK's Surface), on every
   // game, keeping the address's view: switching maps otherwise recentres.
@@ -2049,6 +2058,13 @@ ZMap.prototype.addMapControl = function(gameId) {
     this.map.setView(requestedView.center, requestedView.zoom, { animate: false });
   }
   if(this.mapOptions.submapLayers && this.setupOotFloors) this.setupOotFloors();
+  if(isOcarina(this.mapOptions.shortName)) {
+    this.applyOotMapBounds();
+    var initialLayer = this.mapControl.currentMapLayer;
+    if(initialLayer.mapKind === 'dungeon' && !new URL(window.location.href).searchParams.has('zoom')) {
+      this.map.setView(L.latLngBounds(initialLayer.mapBounds).getCenter(), this.map.getMinZoom(), {animate: false});
+    }
+  }
 
   $(document).on('keydown', function(e) {
     if(e.key == "Escape") {
@@ -3776,11 +3792,11 @@ ZMap.prototype.addCompletedMarkers = function(vComplete) {
    completedMarkers = vComplete;
 };
 
-ZMap.prototype._setMarkerDone = function(vID, vComplete) {
+ZMap.prototype._setMarkerDone = function(vID, vComplete, onSettled) {
   if (vComplete) {
-    _this._doSetMarkerDoneAndCookie(zMap.cachedMarkersById[vID]);
+    _this._doSetMarkerDoneAndCookie(zMap.cachedMarkersById[vID], onSettled);
   } else {
-    _this._doSetMarkerUndoneAndCookie(zMap.cachedMarkersById[vID]);
+    _this._doSetMarkerUndoneAndCookie(zMap.cachedMarkersById[vID], onSettled);
   }
 
   var buttonComplete = document.getElementById('check' + vID);
@@ -3803,14 +3819,20 @@ ZMap.prototype._setMarkerDone = function(vID, vComplete) {
 
 ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
    vMarker.complete = vComplete;
+   document.querySelectorAll('[data-list-marker-id="' + vMarker.id + '"]').forEach(function(row) {
+     row.classList.toggle('area-marker-completed', !!vComplete);
+     var checkbox = row.querySelector('.marker-list-completion');
+     if(checkbox) checkbox.checked = !!vComplete;
+   });
    vMarker._iconKey = this._markerIconKey(vMarker);
    vMarker.setIcon(_this._createMarkerIcon(vMarker.categoryId, vComplete));
    if(this.updateAreaCompletionCounts) this.updateAreaCompletionCounts();
    if(this.updateCategoryCompletionCounts) this.updateCategoryCompletionCounts();
 }
 
-ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
+ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker, onSettled) {
   if (completedMarkers.some((cMId) => cMId == vMarker.id)) {
+    if(onSettled) onSettled();
     return;
   }
 
@@ -3829,10 +3851,13 @@ ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker) {
             _this.langMsgs.MARKER_ADD_COMPLETE_ERROR.format(data.msg)
           );
         }
-      }
+        if(onSettled) onSettled();
+      },
+      error: function() { if(onSettled) onSettled(); }
     });
   } else {
     this._completeSetMarkerDoneAndCookie(vMarker);
+    if(onSettled) onSettled();
   }
 }
 
@@ -3852,12 +3877,12 @@ ZMap.prototype._completeSetMarkerDoneAndCookie = function(vMarker) {
     // If we need to hide completed markers, remove the pin on top of the marker and reset the content of the map control
     // Issue: https://github.com/Zelda-Universe/Zelda-Maps/issues/231
     _this._closeNewMarker();
-    _this.mapControl.resetContent();
+    if(!/^(category-|area-)/.test(_this.mapControl.getContentType() || '')) _this.mapControl.resetContent();
     _this.refreshMap();
   }
 }
 
-ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
+ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker, onSettled) {
   if (user != null || user != undefined) {
     ZOfflineSync.send({
       command: "del_complete_marker",
@@ -3874,7 +3899,9 @@ ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
         } else {
           toastr.error(_this.langMsgs.MARKER_DEL_COMPLETE_ERROR.format(data.msg));
         }
-      }
+        if(onSettled) onSettled();
+      },
+      error: function() { if(onSettled) onSettled(); }
     });
   } else {
     vMIdx = completedMarkers.indexOf(vMarker.id);
@@ -3882,8 +3909,8 @@ ZMap.prototype._doSetMarkerUndoneAndCookie = function(vMarker) {
     _this._doSetMarkerDoneIcon(vMarker, false);
     setCookie('completedMarkers', JSON.stringify(completedMarkers));
     _this.categories[vMarker.categoryId].complete--;
+    if(onSettled) onSettled();
   }
-  vMarker.complete = false;
   if (!_this.mapOptions.showCompleted) {
     _this.refreshMap();
   }
@@ -7380,6 +7407,10 @@ ZMap.prototype._openMarker = function(
 ) {
   var marker = this.cachedMarkersById[vMarkerId];
   if (marker) {
+    // The view this move leaves, remembered before the map may change (there
+    // is no "before" across a map switch): the page's Back restores it while
+    // the map is still at the marker, as the category and area pages do.
+    this._rememberMarkerReturnView();
     if (notByInput === true) {
       this.mapControl.changeMapToMarker(marker);
     } else {
@@ -7406,6 +7437,10 @@ ZMap.prototype._openMarker = function(
      */
      var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
      _this._createMarkerPopup(marker, centerInVisibleArea);
+     // The arrival is read only after the map switch, right before the move:
+     // a listener attached earlier would be consumed by the switch's own
+     // settling (the baselayer change settles the map before we move it).
+     this._recordMarkerReturnArrival();
      if(centerInVisibleArea) {
        this._setViewAtMarkerInVisibleArea(marker, vZoom);
      } else {
@@ -7424,6 +7459,78 @@ ZMap.prototype._openMarker = function(
 
    toastr.error(_this.langMsgs.GO_TO_MARKER_ERROR.format(vMarkerId));
 }
+
+// The map view before a marker's navigation moved it, and where the move
+// actually landed (the artwork's bounds can clamp it after the set): the
+// page's Back restores the earlier view while the map is still at the marker,
+// as the category and area pages do (_rememberCategoryReturnView in
+// scripts/services/CategoryPage.js, _rememberAreaReturnView in
+// scripts/services/AreaSearch.js). A pan or zoom in the meantime is the user's
+// own and stays where it is.
+ZMap.prototype._rememberMarkerReturnView = function() {
+  var current = this.mapControl.getCurrentMap();
+  this._markerReturnView = {
+    mapId: current.mapId, subMapId: current.subMapId,
+    center: this.map.getCenter(), zoom: this.map.getZoom(),
+    arrived: null
+  };
+};
+
+ZMap.prototype._recordMarkerReturnArrival = function(arrival) {
+  var zmap = this, view = this._markerReturnView;
+  if(!view) return;
+  var map = this.map;
+  // Where the map ends up, and on which map: a marker can live on another
+  // map (OoT's and LA's dungeons), and \"hasn't moved\" must include the map.
+  var record = function() {
+    var current = zmap.mapControl.getCurrentMap();
+    view.arrived = { center: map.getCenter(), zoom: map.getZoom(),
+      mapId: current.mapId, subMapId: current.subMapId };
+  };
+  if(arrival) {
+    var current = zmap.mapControl.getCurrentMap();
+    view.arrived = { center: arrival.center, zoom: arrival.zoom,
+      mapId: current.mapId, subMapId: current.subMapId };
+  } else {
+    record();
+  }
+  // The set can be clamped once it lands (the artwork's bounds, the drawer
+  // and ad insets), or the map size can still be settling on phones: where
+  // the map actually ends up is where \"hasn't moved\" is measured from. A
+  // once-only listener: a later move of the user's is not it.
+  var settle = function() {
+    map.off('moveend', settle);
+    map.off('zoomend', settle);
+    if(zmap._markerReturnView !== view) return; // consumed or superseded
+    record();
+  };
+  map.once('moveend', settle);
+  map.once('zoomend', settle);
+};
+
+// Called as the marker page closes. Returns true when it moved the map back
+// to the view the marker was opened from. A marker on another map (OoT's and
+// LA's dungeons) switched the map too, and the switch is undone as well —
+// but only while the map is still the one the marker is on; a map the user
+// chose of their own (by switching, or by an area page) is kept.
+ZMap.prototype.restoreMarkerReturnView = function() {
+  var view = this._markerReturnView, map = this.map;
+  this._markerReturnView = null;
+  if(!view || !view.arrived) return false;
+  var current = this.mapControl.getCurrentMap();
+  var sameMap = current.mapId == view.mapId && current.subMapId == view.subMapId;
+  if(!sameMap && (current.mapId != view.arrived.mapId || current.subMapId != view.arrived.subMapId)) return false;
+  var moved = map.latLngToContainerPoint(map.getCenter()).distanceTo(map.latLngToContainerPoint(view.arrived.center));
+  if(Math.abs(map.getZoom() - view.arrived.zoom) > 0.01 || moved > 2) return false;
+  if(!sameMap) this.mapControl.changeMapOnly(view.mapId, view.subMapId); // the menu follows the layer swap
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Leaflet snaps a zoom jump of more than four levels instead of gliding.
+  var threshold = map.options.zoomAnimationThreshold;
+  map.options.zoomAnimationThreshold = Infinity;
+  try { map.setView(view.center, view.zoom, { animate: !reducedMotion, duration: .25, easeLinearity: .2 }); }
+  finally { map.options.zoomAnimationThreshold = threshold; }
+  return true;
+};
 
 ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom) {
   var mapRect = this.map.getContainer().getBoundingClientRect();

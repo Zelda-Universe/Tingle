@@ -48,18 +48,25 @@
       $game = mapSettingsGame($db, $map_prefix, $_POST['game'] ?? '');
       if (!$game) return $fail('That game was not found.');
       $row = array('id' => 0, 'container_id' => (int) $game['id'], 'parent_id' => null, 'name' => '', 'img' => '',
-        'color' => '', 'glyph_color' => null, 'shape' => null, 'visible' => 1, 'custom_style' => 0);
+        'description' => '', 'seo_description' => '', 'color' => '', 'glyph_color' => null, 'shape' => null, 'visible' => 1, 'custom_style' => 0);
     } else {
       $row = $db->fetchAssociative(
-        "SELECT `id`, `container_id`, `parent_id`, `name`, `img`, `color`, `glyph_color`, `shape`, `visible`, `custom_style`
+        "SELECT `id`, `container_id`, `parent_id`, `name`, `description`, `seo_description`, `img`, `color`, `glyph_color`, `shape`, `visible`, `custom_style`
            FROM `{$map_prefix}marker_category` WHERE `id` = ?",
         [$id]
       );
       if (!$row) return $fail('That category was not found.');
     }
-    $before = array('name' => $row['name'], 'img' => $row['img'], 'color' => $row['color'],
+    $before = array('seo_description' => $row['seo_description'] ?? '', 'description' => $row['description'] ?? '', 'name' => $row['name'], 'img' => $row['img'], 'color' => $row['color'],
       'glyphColor' => $row['glyph_color'], 'shape' => $row['shape'], 'visible' => (bool) $row['visible']);
     $after = $before;
+    foreach (['description', 'seo_description'] as $field) {
+      $description = $text($field);
+      if ($description !== null) {
+        if (mb_strlen($description) > 5000) return $fail('Descriptions must be 5,000 characters or fewer.');
+        $after[$field] = strip_tags($description);
+      }
+    }
     $name = $text('name');
     if ($name !== null) {
       if ($name === '' || mb_strlen($name) > 45) return $fail('Names are 1 to 45 characters.');
@@ -84,7 +91,7 @@
     }
     if ($id === 0 && $after['name'] === '') return $fail('Give the category a name.');
     $columns = array('name' => 'name', 'img' => 'img', 'color' => 'color', 'glyphColor' => 'glyph_color',
-      'shape' => 'shape', 'visible' => 'visible');
+      'shape' => 'shape', 'visible' => 'visible', 'description' => 'description', 'seo_description' => 'seo_description');
     $table = 'marker_category';
   } else {
     return $fail('Nothing to save.');
@@ -142,6 +149,8 @@
         $after['shape'], $zoom ?? 0, $after['visible'] ? 1 : 0]
     );
     $id = (int) $db->lastInsertId();
+    $db->executeStatement("UPDATE `{$map_prefix}marker_category` SET `description` = ? WHERE `id` = ?", [$after['description'], $id]);
+    $db->executeStatement("UPDATE `{$map_prefix}marker_category` SET `seo_description` = ? WHERE `id` = ?", [$after['seo_description'], $id]);
     $placed = false;
     foreach ($layout as &$group) {
       if ($group['title'] === $section) { $group['ids'][] = $id; $placed = true; }

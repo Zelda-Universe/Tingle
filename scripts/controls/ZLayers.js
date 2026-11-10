@@ -1282,12 +1282,32 @@ L.Control.ZLayers = L.Control.Layers.extend({
     return gameMenu;
   },
 
+  // Which Switch Map button is the map on screen. A submapped game (OoT)
+  // has one button per map but a separate layer per submap, so the button's
+  // layer and the current layer can be different layers of the same map: match
+  // the map there, the layer otherwise.
+  _mapButtonIsCurrent: function(category) {
+    var current = this.currentMapLayer;
+    return !!category && !!current && (this.zMap.mapOptions.submapLayers
+      ? category.originalId == current.originalId
+      : category.id == current.id);
+  },
+
+  // changeMapOnly switches the map without going through the Switch Map menu
+  // (a selected search result, a category page item, a bookmark, ...). Only
+  // the menu's own toggle redraws its buttons, so mirror the switch into the
+  // menu, or the map we just left keeps showing as the selected one.
+  _syncMapsMenuSelection: function() {
+    var menu = this._mapsMenu;
+    if(!menu || !menu.categoryButtons) return;
+    var button = menu.categoryButtons.find((b) => this._mapButtonIsCurrent(b.category));
+    if(button) menu.updateCategorySelectionFn.call(menu, button);
+  },
+
   createMapsMenu: function() {
     var layers = this;
     var disableFn = function() {
-      this.disabled = (layers.zMap.mapOptions.submapLayers
-        ? layers.currentMapLayer.originalId === this.category.originalId
-        : layers.currentMapLayer.id === this.category.id)
+      this.disabled = layers._mapButtonIsCurrent(this.category);
 
       return true;
     };
@@ -1305,6 +1325,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
             layers._mapsMenu,
             this
           );
+          layers._headerPageParent = null;
+          layers._pageReturnsTo = null;
+          layers.zMap._unfocusCategories();
+          layers.zMap._closeCategoryPage();
+          layers.reset();
           if(layers.viewStyleBottomSlide) {
             layers.openDrawerDefaultPartial();
           }
@@ -1377,9 +1402,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var siblingPages = ['games', 'maps', 'accountPage', 'loginForm'];
     var swappingSiblingPages = siblingPages.includes(previousContentType) && siblingPages.includes(vType);
     if(siblingPages.includes(vType) && !this._navigatingBack && !swappingSiblingPages &&
-      (previousContentType === 'category' || /^m\d+$/.test(previousContentType || ''))) {
+      (previousContentType === 'category' || /^(m\d+$|category-\d+$|area-)/.test(previousContentType || ''))) {
       this._headerPageParent = (!this.viewStyleBottomSlide || this._open) ? {
-        type: previousContentType, top: this.drawerTop()
+        type: previousContentType, top: this.drawerTop(), scrollTop: this._contents.scrollTop,
+        category: /^category-/.test(previousContentType || '') ? this.zMap.selectedCategory : null,
+        area: /^area-/.test(previousContentType || '') ? this.zMap.selectedArea : null,
+        bounds: this.zMap.selectedAreaBounds,
+        returnsTo: this._pageReturnsTo
       } : null;
     }
     if(siblingPages.includes(vType)) {
@@ -1390,7 +1419,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._desktopAccountReturnMarker = headerParent && /^m\d+$/.test(headerParent.type)
         ? headerParent.type.substring(1) : null;
       this._switchMenuReturnMarker = this._desktopAccountReturnMarker;
-      this._switchMenuReturnsToCategories = !!headerParent && headerParent.type === 'category';
+      this._switchMenuReturnsToCategories = !!headerParent &&
+        (headerParent.type === 'category' || !!headerParent.category || !!headerParent.area);
       this._switchMenuParentTop = headerParent ? headerParent.top : null;
       this._switchMenuReturnAccount = false;
       this._switchMenuReturnLogin = false;
@@ -1404,8 +1434,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var desktopMenuFromCategories = (!this.viewStyleBottomSlide || this._switchMenuReturnsToCategories) && previousContentType === 'category' && ['games', 'maps'].includes(vType);
     var desktopMenuToCategories = (!this.viewStyleBottomSlide || this._switchMenuReturnsToCategories) && vType === 'category' && ['games', 'maps'].includes(previousContentType);
     var desktopMenuPOINavigation = (
-      (['games', 'maps'].includes(vType) && /^m\d+$/.test(previousContentType || '')) ||
-      (['games', 'maps'].includes(previousContentType) && /^m\d+$/.test(vType || ''))
+      (['games', 'maps'].includes(vType) && /^(m\d+$|category-\d+$|area-)/.test(previousContentType || '')) ||
+      (['games', 'maps'].includes(previousContentType) && /^(m\d+$|category-\d+$|area-)/.test(vType || ''))
     );
     var accountSwitchNavigation =
       (['accountPage', 'loginForm'].includes(previousContentType) && ['games', 'maps'].includes(vType)) ||
@@ -1476,9 +1506,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var backward = this._navigatingBack || pageDepth(vType) < pageDepth(previousContentType);
       if(desktopMenuPOINavigation) backward = ['games', 'maps'].includes(previousContentType);
       if(accountSwitchNavigation) backward = ['games', 'maps'].includes(previousContentType);
-      if(((/^m\d+$/.test(previousContentType || '') && ['accountPage', 'loginForm'].includes(vType)) ||
-         (/^m\d+$/.test(vType || '') && ['accountPage', 'loginForm'].includes(previousContentType)))) {
-        backward = /^m\d+$/.test(vType || '');
+      if(((/^(m\d+$|category-\d+$|area-)/.test(previousContentType || '') && ['accountPage', 'loginForm'].includes(vType)) ||
+         (/^(m\d+$|category-\d+$|area-)/.test(vType || '') && ['accountPage', 'loginForm'].includes(previousContentType)))) {
+        backward = /^(m\d+$|category-\d+$|area-)/.test(vType || '');
       }
       // Explicit Back actions take precedence over inferred page depths.
       if(this._navigatingForward) backward = false;
@@ -1693,6 +1723,10 @@ L.Control.ZLayers = L.Control.Layers.extend({
       L.DomEvent.on(categoryReturnButton,'click',function(e) {
         L.DomEvent.stop(e);
         this.zMap._closeNewMarker();
+        // The map back to the category page's view, if the user hasn't moved
+        // since the marker opened (zmap.js restores it only then). The page's
+        // own Back keeps the chain going to the view before the category.
+        if(this.zMap.restoreMarkerReturnView) this.zMap.restoreMarkerReturnView();
         this._navigatingBack=true;
         this.zMap._showCategoryPage(returnsTo.category);
         if(this.viewStyleBottomSlide) this.openDrawerDefaultPartial();
@@ -1740,6 +1774,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
           if(searchGameName) document.title=searchGameName+' Interactive Map - Zelda Maps';
         }
         this.zMap._closeNewMarker();
+        // A marker from the results: the map back to the view it was seen in,
+        // if the user hasn't moved since (as its category page back does).
+        if(/^m\d+$/.test(this._contentType || '') && this.zMap.restoreMarkerReturnView) {
+          this.zMap.restoreMarkerReturnView();
+        }
         this._navigatingBack=true;
         this.setContent(returnsTo.search.list.domNode,'search');
         this._contents.scrollTop=returnsTo.search.scrollTop;
@@ -2190,7 +2229,24 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   // Dismiss a top-level page (POI, dropped pin, account, game/map switcher): deselect it and, on
   // mobile, close the drawer; the category list is restored once it's closed.
+  _restoreHeaderListParent: function() {
+    var parent = this._headerPageParent;
+    if(!parent || (!parent.category && !parent.area)) return false;
+    this._navigatingBack = true;
+    if(parent.returnsTo) this.returnNextPageTo(parent.returnsTo);
+    if(parent.category) this.zMap._showCategoryPage(parent.category);
+    else this.zMap._showAreaPage(parent.area, parent.bounds);
+    this._contents.scrollTop = parent.scrollTop || 0;
+    if(this.viewStyleBottomSlide) {
+      this._partialDrawerMode = parent.top > this.options.openTo + 1;
+      this.openDrawerManual(parent.top);
+    }
+    this._headerPageParent = this._mobileAccountParent = null;
+    return true;
+  },
+
   _returnFromDesktopAccount: function() {
+    if(this._restoreHeaderListParent()) return;
     this._navigatingBack = true;
     var marker = this._desktopAccountReturnMarker && this.zMap.cachedMarkersById[this._desktopAccountReturnMarker];
     if(marker) this.zMap._createMarkerPopup(marker);
@@ -2198,6 +2254,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _returnFromMobileAccount: function() {
+    if(this._restoreHeaderListParent()) return;
     var parent = this._mobileAccountParent;
     if(!parent) return;
     this._navigatingBack = true;
@@ -2221,6 +2278,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _returnFromSwitchMenu: function() {
+    if(this._restoreHeaderListParent()) return;
     var currentDrawerTop = this.drawerTop();
     if(this.viewStyleBottomSlide && this._headerPageParent) {
       this._returnFromMobileAccount();
@@ -2239,6 +2297,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   closePage: function() {
+    if(['games', 'maps', 'accountPage', 'loginForm'].includes(this._contentType) && this._restoreHeaderListParent()) return;
     if(/^area-/.test(this._contentType || '')) {
       var areaURL=new URL(window.location.href);
       areaURL.searchParams.delete('area');
@@ -2252,6 +2311,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
       if(gameName) document.title=gameName+' Interactive Map - Zelda Maps';
     }
     if(/^m\d+$/.test(this._contentType || '')) {
+      if(this.zMap.selectedCategory || (this._pageReturnsTo && this._pageReturnsTo.category)) {
+        this.zMap._unfocusCategories();
+        this.zMap._closeCategoryPage();
+        this._pageReturnsTo = this._nextPageReturnsTo = null;
+      }
       this._dismissPOIOnClose = true;
       this._preserveContentOnClose = false;
       this._headerPageParent = this._mobileAccountParent = null;
@@ -2397,6 +2461,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._map.fire("baselayerchange", this.currentMapLayer);
 
       this.setCurrentMap(mapId, subMapId);
+      this._syncMapsMenuSelection();
     }
   },
   changeMapToMarker: function(marker) {

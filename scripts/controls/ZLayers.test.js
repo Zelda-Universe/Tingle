@@ -49,6 +49,27 @@ describe('header pages return to category and area lists', () => {
   }
 });
 
+test('a downward pull at the top hands content scrolling to the drawer', () => {
+  const handlers={};
+  const methods=drawerMethods({performance:{now:()=>0}});
+  const contents={scrollTop:50,addEventListener:(name,fn)=>{handlers[name]=fn;}};
+  const control={_contents:contents,viewStyleBottomSlide:true,
+    _drawerStart:jest.fn(),_drawerMove:jest.fn(),_drawerEnd:jest.fn()};
+  methods._setupContentDrawerDrag.call(control);
+  const event=(type,y)=>({type,target:{closest:()=>null},touches:[{clientX:100,clientY:y}],stopPropagation:jest.fn()});
+  handlers.touchstart(event('touchstart',100));
+  handlers.touchmove(event('touchmove',120));
+  expect(control._drawerStart).not.toHaveBeenCalled();
+  contents.scrollTop=0;
+  handlers.touchmove(event('touchmove',140));
+  handlers.touchmove(event('touchmove',160));
+  expect(control._drawerStart).toHaveBeenCalledTimes(1);
+  expect(control._drawerStart.mock.calls[0][0].touches[0].clientY).toBe(140);
+  expect(control._drawerMove).toHaveBeenCalledTimes(1);
+  handlers.touchend(event('touchend',160));
+  expect(control._drawerEnd).toHaveBeenCalledTimes(1);
+});
+
 test('switch controls retain Map then Game visually across repeated rotations', () => {
   const methods = drawerMethods();
   const children = [];

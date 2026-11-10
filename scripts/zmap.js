@@ -2946,7 +2946,7 @@ ZMap.prototype._limitZoomToMapBounds = function() {
       var ads = document.getElementById('ads');
       if(ads && ads.classList.contains('ads-mobile')) {
         var adRect = ads.getBoundingClientRect();
-        if(adRect.height) bottomEdge = Math.min(bottomEdge, adRect.top);
+        if(adRect.height) bottomEdge -= adRect.height + (typeof AD_GAP === 'number' ? AD_GAP : 8);
       }
       next.bottom = Math.max(0, container.bottom - bottomEdge);
     } else {
@@ -2963,6 +2963,32 @@ ZMap.prototype._limitZoomToMapBounds = function() {
     }
     return next;
   }
+
+  // Keep the collapsed-drawer minimum zoom, but move the artwork's centre
+  // with the visible space as the drawer opens. Never move a zoomed-in view.
+  this._recenterMobileMapAtMinimumZoom = function(drawerTop) {
+    var control = zMap.mapControl;
+    if(!control || !control.viewStyleBottomSlide || !map._loaded || map._animatingZoom) return;
+    if(Math.abs(map.getZoom() - map.getMinZoom()) > .02) {
+      insets = measureInsets();
+      return;
+    }
+    var rect = map.getContainer().getBoundingClientRect(), size = map.getSize();
+    var base = control._mobileDrawerBaseTop;
+    if(!Number.isFinite(base) || !Number.isFinite(drawerTop)) return;
+    // Beyond partial the drawer covers the map; keep its partial framing.
+    var top = Math.max(control.options.softOpenTo, Math.min(control._startPosition, drawerTop));
+    insets = measureInsets();
+    var drawerEdge = base + top;
+    if(top < control._startPosition - 1) insets.bottom = Math.max(0, rect.bottom - drawerEdge);
+    var visibleCentre = L.point((insets.left + size.x - insets.right) / 2,
+      (insets.top + size.y - insets.bottom) / 2);
+    if(visibleCentre.y <= insets.top) return;
+    var artworkCentre = map.project(bounds().getCenter(), map.getZoom());
+    var target = map.unproject(artworkCentre.add(L.point(size.x / 2, size.y / 2)).subtract(visibleCentre), map.getZoom());
+    if(map.latLngToContainerPoint(target).distanceTo(map.latLngToContainerPoint(map.getCenter())) < .5) return;
+    map.setView(target, map.getZoom(), {animate: false});
+  };
 
   // Leaflet keeps the view inside maxBounds by comparing it with the whole
   // map container; compare with the viewable area instead. A map smaller
@@ -3021,11 +3047,17 @@ ZMap.prototype._limitZoomToMapBounds = function() {
     if(free.x <= 0 || free.y <= 0 || !mapSize.x || !mapSize.y) return;
     var zoom = map.getScaleZoom(Math.min(free.x / mapSize.x, free.y / mapSize.y), current);
     if(Number.isFinite(zoom)) map.setMinZoom(Math.max(0, Math.min(zoom, Number(map.getMaxZoom()))));
-    if((moved || boundsChanged === true) && map._loaded) map.panInsideBounds(bounds(), { animate: false });
+    var mobileMinimum = zMap.mapControl && zMap.mapControl.viewStyleBottomSlide &&
+      Math.abs(map.getZoom() - map.getMinZoom()) <= .02;
+    if(!mobileMinimum && (moved || boundsChanged === true) && map._loaded) map.panInsideBounds(bounds(), { animate: false });
+    if(zMap.mapControl && zMap.mapControl.viewStyleBottomSlide) {
+      zMap._recenterMobileMapAtMinimumZoom(zMap.mapControl.drawerTop());
+    }
   };
   this._updateMinZoom = update;
   update();
   map.on('resize', update);
+  map.on('zoomend', update);
 };
 
 // Leaflet lets a pinch run freely past the zoom limits and then snaps back.

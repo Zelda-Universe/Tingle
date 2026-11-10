@@ -446,6 +446,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       // scrolled up under it (_setupCompactTitle).
       L.DomEvent.on(this._contents, 'scroll', this._updateCompactTitle, this);
       this._setupSwipeBack();
+      this._setupContentDrawerDrag();
 
       this._categoryMenuMarkerSettingArea = $(
         '<div class="category-menu-marker-setting-area"></div>'
@@ -536,6 +537,58 @@ L.Control.ZLayers = L.Control.Layers.extend({
     } else {
       this._expand();
     }
+  },
+
+  _setupContentDrawerDrag: function() {
+    var control = this, contents = this._contents, gesture = null, suppressClickUntil = 0;
+    contents.addEventListener('click', function(e) {
+      if(performance.now() < suppressClickUntil) {
+        e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      }
+    }, true);
+    contents.addEventListener('touchstart', function(e) {
+      if(!control.viewStyleBottomSlide || e.touches.length !== 1 ||
+        (e.target.closest && e.target.closest('input, textarea, select, [contenteditable="true"], .marker-actions-row, .marker-region-pill'))) {
+        gesture = null;
+        return;
+      }
+      var touch = e.touches[0];
+      gesture = {x:touch.clientX, y:touch.clientY, atTop:contents.scrollTop <= 0, dragging:false, target:e.target};
+    }, {passive:true});
+    contents.addEventListener('touchmove', function(e) {
+      if(!gesture || e.touches.length !== 1) return;
+      var touch = e.touches[0];
+      if(!gesture.dragging) {
+        if(contents.scrollTop > 0) {
+          gesture.x = touch.clientX; gesture.y = touch.clientY; gesture.atTop = false;
+          return;
+        }
+        // Rebase when scrolling reaches the top, so only the remaining pull
+        // moves the drawer rather than the distance already used to scroll.
+        if(!gesture.atTop) {
+          gesture.x = touch.clientX; gesture.y = touch.clientY; gesture.atTop = true;
+          return;
+        }
+        var dx = touch.clientX - gesture.x, dy = touch.clientY - gesture.y;
+        if(dy <= 8 || Math.abs(dx) >= dy) return;
+        control._drawerStart({type:'touchstart',target:gesture.target,
+          touches:[{clientX:gesture.x,clientY:gesture.y}]});
+        gesture.dragging = true;
+      }
+      contents.scrollTop = 0;
+      control._drawerMove(e);
+      e.stopPropagation();
+    }, {passive:false});
+    var finish = function(e) {
+      if(gesture && gesture.dragging) {
+        suppressClickUntil = performance.now() + 500;
+        control._drawerEnd(e);
+        e.stopPropagation();
+      }
+      gesture = null;
+    };
+    contents.addEventListener('touchend', finish);
+    contents.addEventListener('touchcancel', finish);
   },
 
   _drawerStart: function(e) {
@@ -804,6 +857,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   _updateMobileDrawerPresentation: function(top) {
     if(!this.viewStyleBottomSlide) return;
+    if(this.zMap && this.zMap._recenterMobileMapAtMinimumZoom) this.zMap._recenterMobileMapAtMinimumZoom(top);
 
     var progress = this._mobileDrawerProgress(top);
     var expansion = this._mobileDrawerExpansionProgress(top);

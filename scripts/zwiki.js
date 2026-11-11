@@ -220,17 +220,17 @@ ZMap.prototype._markerEditorToolsHTML = function(marker, opts) {
   var viewer=this.getUser();
   if(opts.regionMode ? !viewer || viewer.level < 10 : !this._isWikiEditor()) return '';
   if(!marker || !(marker.id > 0)) return '';
-  var canEdit = opts.regionMode || this._canEditMarker(marker);
+  var canEdit = opts.mapSettings ? this._canUseMapSettings() : opts.regionMode || this._canEditMarker(marker);
   var id = Number(marker.id);
   var button = function(action, icon, label, extra) {
     return '<button type="button" class="marker-editor-button' + (extra || '') + '" data-editor-action="' + action + '">' +
       '<i class="fas ' + icon + '" aria-hidden="true"></i><span>' + label + '</span></button>';
   };
   return '<section class="marker-editor-tools' + (opts.regionMode ? ' area-admin-actions' : '') + '" data-marker-id="' + id + '">' +
-    '<div class="marker-editor-meta">' +
+    (opts.hideIdentity ? '' : '<div class="marker-editor-meta">' +
       '<span>' + this._wikiEscape(opts.identityLabel || 'Marker') + ' #' + id + '</span>' +
       (marker.userName ? '<span>Added by ' + this._wikiUserLink(marker.userId, marker.userName) + '</span>' : '') +
-    '</div>' +
+    '</div>') +
     '<div class="marker-editor-buttons">' +
       (canEdit ? button('edit', 'fa-pencil-alt', 'Edit') : '') +
       button('history', 'fa-history', 'History') +
@@ -294,13 +294,13 @@ ZMap.prototype._refreshMarkerEditorTools = function(marker) {
 ZMap.prototype._renderWikiText = function(text) {
   var _this = this;
   var html = this._wikiEscape(text);
-  html = html.replace(/\[\[(rev|marker|user):([^\]|]{1,64})(?:\|([^\]]{1,120}))?\]\]/gi, function(all, kind, target, label) {
+  html = html.replace(/\[\[(rev|settingsrev|marker|user):([^\]|]{1,64})(?:\|([^\]]{1,120}))?\]\]/gi, function(all, kind, target, label) {
     kind = kind.toLowerCase();
     target = target.trim();
-    if((kind === 'rev' || kind === 'marker') && !/^\d+$/.test(target)) return all;
-    var text = label ? label.trim() : (kind === 'rev' ? 'revision ' + target : kind === 'marker' ? 'marker #' + target : target);
-    var icon = kind === 'rev' ? 'fa-history' : kind === 'marker' ? 'fa-map-marker-alt' : 'fa-user';
-    var attr = kind === 'rev' ? 'data-rev="' + target + '"' : kind === 'marker' ? 'data-marker="' + target + '"' : 'data-username="' + target + '"';
+    if((kind === 'rev' || kind === 'settingsrev' || kind === 'marker') && !/^\d+$/.test(target)) return all;
+    var text = label ? label.trim() : ((kind === 'rev' || kind === 'settingsrev') ? 'revision ' + target : kind === 'marker' ? 'marker #' + target : target);
+    var icon = (kind === 'rev' || kind === 'settingsrev') ? 'fa-history' : kind === 'marker' ? 'fa-map-marker-alt' : 'fa-user';
+    var attr = kind==='settingsrev' ? 'data-settings-rev="'+target+'"' : kind === 'rev' ? 'data-rev="' + target + '"' : kind === 'marker' ? 'data-marker="' + target + '"' : 'data-username="' + target + '"';
     return '<a href="#" class="wiki-link wiki-code-link" ' + attr + '><i class="fas ' + icon + '" aria-hidden="true"></i>' + text + '</a>';
   });
   html = html.replace(/(^|[\s(])(https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"])/g, function(all, lead, url) {
@@ -318,7 +318,9 @@ ZMap.prototype._wireWikiLinks = function(root, back) {
     e.preventDefault();
     e.stopPropagation();
     var link = this;
-    if(link.hasAttribute('data-rev')) {
+    if(link.hasAttribute('data-settings-rev')) {
+      _this._openSettingsRevisionLink(Number(link.getAttribute('data-settings-rev')),null,back);
+    } else if(link.hasAttribute('data-rev')) {
       _this._openMarkerRevision(Number(link.getAttribute('data-rev')), back);
     } else if(link.hasAttribute('data-marker')) {
       _this._openMarkerLink(Number(link.getAttribute('data-marker')), null, back);
@@ -661,6 +663,11 @@ ZMap.prototype._wikiDiffHTML = function(before, after) {
       (before.tabs || [])[i] !== (after.tabs || [])[i]
     ]);
   }
+  return this._wikiFieldDiffHTML(fields,'No changes to the marker\'s content.');
+};
+
+ZMap.prototype._wikiFieldDiffHTML = function(fields,emptyText) {
+  var _this=this;
   var rows = fields.filter(function(f) {
     return f.length > 3 ? f[3] : String(f[1] == null ? '' : f[1]) !== String(f[2] == null ? '' : f[2]);
   }).map(function(f) {
@@ -668,7 +675,7 @@ ZMap.prototype._wikiDiffHTML = function(before, after) {
     if(f.length > 3 && f[1] === f[2]) diff += ' <span class="admin-muted">(formatting changed)</span>';
     return '<div class="wiki-diff-row"><dt>' + _this._wikiEscape(f[0]) + '</dt><dd>' + (diff || '<span class="admin-muted">Empty</span>') + '</dd></div>';
   });
-  if(!rows.length) return '<p class="wiki-empty">No changes to the marker\'s content.</p>';
+  if(!rows.length) return '<p class="wiki-empty">'+this._wikiEscape(emptyText || 'No content changes.')+'</p>';
   return '<dl class="wiki-card wiki-diff">' + rows.join('') + '</dl>';
 };
 
@@ -981,10 +988,14 @@ ZMap.prototype._renderUserProfile = function(data, back) {
   if(!data.changes.length) changes.append('<li class="wiki-empty">No changes yet.</li>');
   data.changes.forEach(function(change) {
     var row = _this._wikiRevisionRow(change, { markerTitle: change.markerTitle || ('Marker #' + change.markerId), hideUser: true });
-    row.find('.wiki-revision').attr({ 'data-marker': change.markerId, 'data-game': change.game || '' });
+    row.find('.wiki-revision').attr({ 'data-marker': change.markerId, 'data-game': change.game || '', 'data-revision-type':change.revisionType || 'marker' });
     changes.append(row);
   });
-  changes.on('click', '.wiki-revision', function() {
+  changes.on('click', '.wiki-revision', function(e) {
+    if($(e.target).closest('a.wiki-link').length) return;
+    if(this.getAttribute('data-revision-type')==='settings') {
+      _this._openSettingsRevisionLink(Number(this.getAttribute('data-rev')),this.getAttribute('data-game'),reopen);return;
+    }
     // Revisions are for editors; everyone else goes to the marker.
     if(!editor) {
       var markerId = Number(this.getAttribute('data-marker')), game = this.getAttribute('data-game');

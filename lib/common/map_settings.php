@@ -13,7 +13,7 @@
     $role = $userId ? accountRole($db, $prefix, $userId) : false;
     if (!$role || $role[0] < WIKI_EDITOR_LEVEL || $role[1]) {
       http_response_code(403);
-      echo json_encode(array('success' => false, 'msg' => 'Map Settings are for Contributors and Admins.'));
+      echo json_encode(array('success' => false, 'msg' => 'Game Settings are for Contributors and Admins.'));
       return null;
     }
     return array('id' => $userId, 'level' => $role[0]);

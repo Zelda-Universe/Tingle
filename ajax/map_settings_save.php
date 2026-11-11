@@ -30,17 +30,36 @@
     return $row;
   };
 
-  if ($kind === 'map') {
-    $row = $db->fetchAssociative("SELECT `id`, `container_id`, `name` FROM `{$map_prefix}map` WHERE `id` = ?", [$id]);
+  if ($kind === 'game') {
+    $row=$db->fetchAssociative("SELECT id,id AS container_id,name,seo_description FROM `{$map_prefix}container` WHERE id=?",[$id]);
+    if(!$row) return $fail('That game was not found.');
+    $before=['seo_description'=>$row['seo_description'] ?? ''];
+    $after=$before;
+    $description=$text('seo_description');
+    if($description !== null) {
+      if(mb_strlen($description)>5000) return $fail('Descriptions must be 5,000 characters or fewer.');
+      $after['seo_description']=strip_tags($description);
+    }
+    $columns=['seo_description'=>'seo_description'];
+    $table='container';
+  } elseif ($kind === 'map') {
+    $row = $db->fetchAssociative("SELECT `id`, `container_id`, `name`, `description`, `seo_description` FROM `{$map_prefix}map` WHERE `id` = ?", [$id]);
     if (!$row) return $fail('That map was not found.');
-    $before = array('name' => $row['name']);
+    $before = array('name' => $row['name'], 'description' => $row['description'] ?? '', 'seo_description' => $row['seo_description'] ?? '');
     $after = $before;
     $name = $text('name');
     if ($name !== null) {
       if ($name === '' || mb_strlen($name) > 45) return $fail('Map names are 1 to 45 characters.');
       $after['name'] = $name;
     }
-    $columns = array('name' => 'name');
+    foreach (['description', 'seo_description'] as $field) {
+      $description = $text($field);
+      if ($description !== null) {
+        if (mb_strlen($description) > 5000) return $fail('Descriptions must be 5,000 characters or fewer.');
+        $after[$field] = strip_tags($description);
+      }
+    }
+    $columns = array('name' => 'name', 'description' => 'description', 'seo_description' => 'seo_description');
     $table = 'map';
   } elseif ($kind === 'category') {
     if ($id === 0) {
@@ -58,7 +77,7 @@
       if (!$row) return $fail('That category was not found.');
     }
     $before = array('seo_description' => $row['seo_description'] ?? '', 'description' => $row['description'] ?? '', 'name' => $row['name'], 'img' => $row['img'], 'color' => $row['color'],
-      'glyphColor' => $row['glyph_color'], 'shape' => $row['shape'], 'visible' => (bool) $row['visible']);
+      'glyphColor' => $row['glyph_color'], 'shape' => $row['shape'], 'visible' => (bool) $row['visible'], 'customStyle'=>(int)$row['custom_style']);
     $after = $before;
     foreach (['description', 'seo_description'] as $field) {
       $description = $text($field);
@@ -88,10 +107,11 @@
       $after['color'] = $color;
       $after['glyphColor'] = $glyph;
       $after['img'] = $img;
+      $after['customStyle']=1;
     }
     if ($id === 0 && $after['name'] === '') return $fail('Give the category a name.');
     $columns = array('name' => 'name', 'img' => 'img', 'color' => 'color', 'glyphColor' => 'glyph_color',
-      'shape' => 'shape', 'visible' => 'visible', 'description' => 'description', 'seo_description' => 'seo_description');
+      'shape' => 'shape', 'visible' => 'visible', 'description' => 'description', 'seo_description' => 'seo_description', 'customStyle'=>'custom_style');
     $table = 'marker_category';
   } else {
     return $fail('Nothing to save.');
@@ -169,7 +189,7 @@
     if ($kind === 'category' && $style) $sets[] = '`custom_style` = 1';
     $params[] = $id;
     $db->executeStatement("UPDATE `{$map_prefix}{$table}` SET " . implode(', ', $sets) . " WHERE `id` = ?", $params);
-    $data = array('name' => $after['name'], 'before' => array_intersect_key($before, array_flip($changed)),
+    $data = array('name' => $after['name'] ?? $row['name'], 'before' => array_intersect_key($before, array_flip($changed)),
       'after' => array_intersect_key($after, array_flip($changed)));
   }
   mapSettingsRecord($db, $map_prefix, $containerId, $editor['id'], $kind, $id, $summary, $data);

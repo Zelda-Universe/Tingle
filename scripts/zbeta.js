@@ -58,18 +58,12 @@ ZMap.prototype._renderEditingBeta = function() {
   if(!menu || !menu.domNode) return;
   var root = $(menu.domNode);
   root.children('.editing-beta').remove();
+  root.children('.category-editor-tools').remove();
   var _this = this;
   var game = this.mapOptions.shortName;
   var slot = $('<div class="editing-beta"></div>');
   if(this._editingRole() === 'editor') {
     // Contributors and Admins also manage the map (scripts/zmapsettings.js).
-    if(this._canUseMapSettings && this._canUseMapSettings()) slot.append(
-      '<button type="button" class="editing-beta-changes editing-beta-settings">' +
-        '<i class="fas fa-sliders-h" aria-hidden="true"></i>' +
-        '<span>Map Settings</span>' +
-        '<i class="fas fa-chevron-right editing-beta-chevron" aria-hidden="true"></i>' +
-      '</button>'
-    );
     slot.append(
       '<button type="button" class="editing-beta-changes">' +
         '<i class="fas fa-history" aria-hidden="true"></i>' +
@@ -87,7 +81,11 @@ ZMap.prototype._renderEditingBeta = function() {
         '</span>' +
         '<i class="fas fa-chevron-right editing-beta-chevron" aria-hidden="true"></i>' +
       '</button>' +
-      '<button type="button" class="editing-beta-recent">Recent Community Edits <i class="fas fa-chevron-right" aria-hidden="true"></i></button>'
+      '<button type="button" class="editing-beta-changes editing-beta-all-changes">' +
+        '<i class="fas fa-history" aria-hidden="true"></i>' +
+        '<span>Recent Community Edits</span>' +
+        '<i class="fas fa-chevron-right editing-beta-chevron" aria-hidden="true"></i>' +
+      '</button>'
     );
   }
   slot.on('click', '.editing-beta-notice', function() { _this._showEditingBetaAlert(); });
@@ -95,13 +93,31 @@ ZMap.prototype._renderEditingBeta = function() {
     e.stopImmediatePropagation();
     _this._openMapSettings(function() { _this.mapControl.resetContent(); });
   });
-  slot.on('click', '.editing-beta-changes:not(.editing-beta-settings)', function() {
+  slot.on('click', '.editing-beta-changes:not(.editing-beta-settings):not(.editing-beta-all-changes)', function() {
     _this._openRecentChanges(game, function() { _this.mapControl.resetContent(); });
   });
-  slot.on('click', '.editing-beta-recent', function() {
+  slot.on('click', '.editing-beta-all-changes', function() {
     _this._openRecentChanges(null, function() { _this.mapControl.resetContent(); });
   });
+  var recent=slot.find('.editing-beta-changes:not(.editing-beta-settings)').last();
+  var toolbar=$('<div class="category-view-toolbar"></div>');
+  recent.before(toolbar);toolbar.append(recent);
+  var views=$('<div class="category-view-toggle" role="group" aria-label="Category view">'+
+    '<button type="button" data-category-view="icons" aria-label="Icon view"><span class="category-view-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>'+
+    '<button type="button" data-category-view="list" aria-label="List view"><i class="fas fa-list" aria-hidden="true"></i></button></div>');
+  toolbar.append(views);
+  views.on('click','button',function() {menu.setCategoryView(this.getAttribute('data-category-view'));});
   root.prepend(slot);
+  if(this._canUseMapSettings && this._canUseMapSettings()) {
+    var tools=$(this._markerEditorToolsHTML({id:this.mapOptions.id || 1},{mapSettings:true,hideIdentity:true,allowDelete:false,talk:false})).addClass('category-editor-tools');
+    this._wireEditorTools(tools,function(action) {
+      var back=function() {_this.mapControl.resetContent();};
+      if(action==='edit') _this._openMapSettings(back);
+      else if(action==='history') _this._openMapSettingsHistory(back);
+    });
+    root.append(tools);
+  }
+  if(menu.setCategoryView) menu.setCategoryView(menu.categoryView || 'icons');
 };
 
 ZMap.prototype._showEditingBetaAlert = function() {
@@ -310,9 +326,9 @@ ZMap.prototype._openRecentChanges = function(game, back) {
         var row = _this._wikiRevisionRow(change, {
           markerTitle: change.markerTitle + (game ? '' : ' · ' + change.gameName)
         });
-        row.find('.wiki-revision').attr({ 'data-marker': change.markerId, 'data-game': change.game });
+        row.find('.wiki-revision').attr({ 'data-marker': change.markerId, 'data-game': change.game,'data-revision-type':change.revisionType || 'marker' });
         list.append(row);
-        oldest = change.id;
+        oldest = change.cursor || change.id;
       });
       more.prop('hidden', !data.more).prop('disabled', false);
     }).fail(function(xhr) {
@@ -323,6 +339,9 @@ ZMap.prototype._openRecentChanges = function(game, back) {
     if($(e.target).closest('a.wiki-link').length) return;
     var markerId = Number(this.getAttribute('data-marker'));
     var markerGame = this.getAttribute('data-game');
+    if(this.getAttribute('data-revision-type')==='settings') {
+      _this._openSettingsRevisionLink(Number(this.getAttribute('data-rev')),markerGame,reopen);return;
+    }
     if(editor) {
       if(markerGame === _this.mapOptions.shortName) _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);
       else window.location.href = _this._wikiMarkerURL(markerId, markerGame, Number(this.getAttribute('data-rev')));

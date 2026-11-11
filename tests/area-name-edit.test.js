@@ -11,7 +11,7 @@ test.each([null,{level:5},{level:10}])('area Edit is restricted to admins: %j',v
     if(html) created.push(html);
     return node;
   }
-  const context={ZMap:function(){},$:element,document:{title:''},isOcarina:()=>false};
+  const context={ZMap:function(){},$:element,document:{title:''},isOcarina:()=>false,seoGameName:game=>game.name};
   vm.runInNewContext(source,context);
   const map=Object.assign(Object.create(context.ZMap.prototype),{
     getUser:()=>viewer,mapOptions:{name:'Test'},_getAreaMarkers:()=>[],_categoryListOrder:()=>({}),updateRegionBorders:()=>{},

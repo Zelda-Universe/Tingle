@@ -186,10 +186,10 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
   var mapName=(activeLayer && (activeLayer.mapName || activeLayer.title)) || '';
   if(isOcarina(this.mapOptions.shortName)) {
     // Same as the server's title: one page per area or dungeon, any age or floor.
-    document.title=(area.title || area.name)+' Map - Ocarina of Time Remake - Zelda Maps';
+    document.title=(area.title || area.name)+' Map - '+seoGameName(this.mapOptions)+' - Zelda Maps';
   } else {
     document.title=(area.mapDestination ? area.name : (area.title || area.name)+' - '+mapName)+
-      (variant ? ' ('+variant+')' : '')+' - '+this.mapOptions.name+' Map - Zelda Maps';
+      (variant ? ' ('+variant+')' : '')+' - '+seoGameName(this.mapOptions)+' Map - Zelda Maps';
   }
   var pills=$('<div class="area-header-pills"></div>').insertAfter(page.find('h2'));
   if(variant) pills.append($('<p class="area-variant-pill marker-coordinate-pill"></p>').text(variant));
@@ -313,7 +313,7 @@ ZMap.prototype._editAreaName = function(area, bounds) {
     zmap._showAreaPage(area,bounds);
   };
   var page=this._showWikiPage('<div id="map_settings_item" class="wiki-page"><h3 class="text-center">Edit '+(kind==='map'?'Map':kind==='region'?'Region':'Area')+'</h3>'+
-    '<p class="wiki-subtitle"></p><form class="map-settings-form area-name-edit-form">'+
+    '<form class="map-settings-form area-name-edit-form">'+
     this._mapSettingsField('Name','fa-heading','<input type="text" class="form-control" id="area_edit_name" name="name" maxlength="45" required aria-describedby="area_name_validation">'+
       '<span class="password-validation-icon" aria-hidden="true"></span>')+
     '<p id="area_name_validation" class="area-name-validation" role="status" aria-live="polite"></p>'+
@@ -323,7 +323,6 @@ ZMap.prototype._editAreaName = function(area, bounds) {
     'areaNameEdit',back);
   var form=$(page).find('form');
   var original=(area.title || area.name || '').trim(), originalDescription=area.description==='Map' ? '' : (area.description || '').trim(), busy=false, touched=false;
-  $(page).find('.wiki-subtitle').text(original);
   $(page).find('.map-settings-label').first().attr('for','area_edit_name');
   var input=form.find('[name=name]'), button=form.find('[type=submit]');
   input.val(original);

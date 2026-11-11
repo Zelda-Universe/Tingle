@@ -1,0 +1,1 @@
+ALTER TABLE `map` ADD COLUMN IF NOT EXISTS `seo_description` TEXT NULL;

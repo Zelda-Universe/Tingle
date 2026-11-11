@@ -21,6 +21,7 @@
   $res = $db->fetchAllAssociative("
     SELECT id
       , name
+      , page_title AS pageTitle
       , short_name as shortName
       , icon       as icon
       , marker_url as markerURL

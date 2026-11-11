@@ -19,7 +19,7 @@ function isOcarina(shortName) {
 // The name search engines know a game by: the remake is searched for as
 // "Ocarina of Time Remake", though the site shows "Ocarina of Time (2026)".
 function seoGameName(game) {
-  return isOcarina(game && game.shortName) ? 'Ocarina of Time Remake' : (game && game.name);
+  return game && (game.pageTitle || game.name);
 }
 
 // A sorted copy of a list of games, or of their short names when getName is

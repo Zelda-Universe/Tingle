@@ -3377,7 +3377,6 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   var html =
     '<div id="marker_edit" class="wiki-page">' +
       '<h3 class="text-center">' + (editing ? 'Edit Marker' : 'New Marker') + '</h3>' +
-      (editing ? '<p class="wiki-subtitle">' + esc(vMarker.title) + '</p>' : '') +
       '<form id="newMarkerForm" class="leaflet-control-layers-list marker-edit-form" autocomplete="off">' +
         '<label for="markerTitle">Title</label>' +
         field('fa-heading', '<input type="text" class="form-control" id="markerTitle" name="markerTitle" required maxlength="255" placeholder="What is it?" />') +
@@ -4913,6 +4912,13 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   var page = this.drawerPageRoutes[contentType];
   var recent = /^recentChanges-(.+)$/.exec(contentType || '');
   var profile = /^userProfile-(\d+)$/.exec(contentType || '');
+  var settingsRevision=/^gameSettingsRevision-(\d+)$/.exec(contentType || '');
+  if(contentType==='mapSettingsHistory') page='game-settings-history';
+  url.searchParams.delete('history-game');
+  if(contentType==='mapSettingsHistory' && this._settingsHistoryGame) url.searchParams.set('history-game',this._settingsHistoryGame);
+  if(settingsRevision) page='game-settings-revision';
+  url.searchParams.delete('settings-rev');
+  if(settingsRevision) url.searchParams.set('settings-rev',settingsRevision[1]);
   if(contentType === 'allChanges') page = 'all-changes';
   if(recent) page = 'recent-edits';
   if(profile) page = 'profile';
@@ -5011,6 +5017,18 @@ ZMap.prototype.restoreDrawerPage = function(page) {
       this._openUserProfile({ name: profileName }, back);
     } else {
       this._openRecentChanges(page === 'recent-edits' ? (params.get('edits-game') || this.mapOptions.shortName) : null, back);
+    }
+    return;
+  }
+  if(['game-settings-history','game-settings-revision'].includes(page)) {
+    if(!this.getUser()) {this._createLoginForm();return;}
+    if(page==='game-settings-history' ? !this._canUseMapSettings() : !this._isWikiEditor()) return;
+    var self=this,returnToCategories=function() {self.mapControl.resetContent();};
+    if(page==='game-settings-history') this._openMapSettingsHistory(returnToCategories,new URL(window.location.href).searchParams.get('history-game') || this.mapOptions.shortName);
+    else {
+      var revisionId=Number(new URL(window.location.href).searchParams.get('settings-rev'));
+      if(!Number.isInteger(revisionId) || revisionId<1) return;
+      this._openGameSettingsRevision(revisionId,function() {self._openMapSettingsHistory(returnToCategories);});
     }
     return;
   }

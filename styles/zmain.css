@@ -834,7 +834,8 @@ main.leaflet-container,
 #account_information_form > label,
 #admin_user_form > label,
 #admin_ban_form > label:not(.admin-check),
-.poi-category-groups .poi-category-heading h3 {
+.poi-category-groups .poi-category-heading h3,
+.category-list-heading h3 {
 	display: block;
 	font-size: 12px;
 	line-height: 1.4;
@@ -5117,12 +5118,14 @@ div.circle:has(>.icon-EoW_Echo) {
 }
 
 #marker_edit .admin-user-status:empty,
-.area-name-edit-form .admin-user-status:empty {
+.area-name-edit-form .admin-user-status:empty,
+.map-settings-savebar .admin-user-status:empty {
 	display: none;
 }
 
 #marker_edit .marker-edit-form > .form-action-button,
-.menu-cat-content-inner form.area-name-edit-form > .form-action-button {
+.menu-cat-content-inner form.area-name-edit-form > .form-action-button,
+.menu-cat-content-inner form.map-settings-savebar > .form-action-button {
 	box-sizing: border-box;
 	width: 100%;
 	margin: 8px 0 0;
@@ -5131,14 +5134,16 @@ div.circle:has(>.icon-EoW_Echo) {
 }
 
 #marker_edit .marker-edit-form > .form-action-button:disabled,
-.area-name-edit-form > .form-action-button:disabled {
+.area-name-edit-form > .form-action-button:disabled,
+.map-settings-savebar > .form-action-button:disabled {
 	opacity: .45;
 	cursor: default;
 }
 
 /* Shown while an edit hasn't diverged from its marker, above the button. */
 #marker_edit .marker-edit-form .marker-edit-pending,
-.menu-cat-content-inner .wiki-page .area-name-edit-form .marker-edit-pending {
+.menu-cat-content-inner .wiki-page .area-name-edit-form .marker-edit-pending,
+.menu-cat-content-inner .wiki-page .map-settings-savebar .marker-edit-pending {
 	margin: 4px 0 0;
 	color: rgba(255,255,255,.6);
 	font-size: 13px;
@@ -6605,6 +6610,9 @@ div.circle:has(>.icon-EoW_Echo) {
 	font-size: 20px;
 	line-height: 32px;
 }
+.map-settings-badge.category-icon.poi-travel {
+	font-size: 18px;
+}
 .menu-cat-content-inner .wiki-page p.map-settings-hint {
 	margin: -4px 0 12px;
 	color: rgba(255,255,255,.6);
@@ -6716,12 +6724,19 @@ div.circle:has(>.icon-EoW_Echo) {
 .map-settings-section .map-settings-handle {
 	margin: 0;
 }
-.map-settings-handle:hover,
-.map-settings-handle:focus-visible {
+.map-settings-handle:hover {
 	background: rgba(255,255,255,.1);
 	color: white;
 	outline: none;
 }
+.map-settings-handle:focus, .map-settings-handle:focus-visible { outline:none; box-shadow:none; }
+.is-sorting .map-settings-handle:hover {
+	background: none;
+	color: rgba(255,255,255,.4);
+}
+/* Pointer movement is handled on document during a drag. Make all UI
+   surfaces non-hit-testable so nothing beneath the lifted row hovers. */
+body.settings-dragging * { pointer-events:none !important; }
 .map-settings-layout.is-sorting,
 .map-settings-layout.is-sorting * {
 	cursor: grabbing !important;
@@ -6732,8 +6747,6 @@ div.circle:has(>.icon-EoW_Echo) {
 .map-settings-group.is-dragging {
 	position: relative;
 	z-index: 2;
-	background: rgba(40,40,40,.95);
-	box-shadow: 0 8px 24px rgba(0,0,0,.45), 0 0 0 1.5px rgba(255,255,255,.5);
 }
 .map-settings-item.is-dragging .map-settings-handle,
 .map-settings-group.is-dragging > .map-settings-section .map-settings-handle {
@@ -6744,18 +6757,30 @@ div.circle:has(>.icon-EoW_Echo) {
 .map-settings-savebar {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	align-items: stretch;
 	margin: 4px 0 0;
-	padding: 12px 0;
 }
-.map-settings-savebar.has-changes {
+.map-settings-body.is-loading { display:flex; flex-direction:column; min-height:calc(100dvh - 240px); }
+.map-settings-body.is-loading > .map-settings-savebar { margin-top:auto; pointer-events:none; }
+.menu-cat-content-inner form.map-settings-form.map-settings-savebar {
 	position: sticky;
 	bottom: 0;
 	z-index: 3;
-	margin: 4px -16px 0;
-	padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
-	border-top: 1px solid rgba(255,255,255,.15);
-	background: rgba(20,20,20,.94);
+	margin: 4px 0 0;
+	padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+	border-top: 1px solid rgba(255,255,255,.12);
+	background: rgba(0,0,0,.5);
+	isolation: isolate;
+	transform: translateZ(0);
+}
+/* Keep the backing surface painted while the whole page slides. The blur
+   lives on its own layer rather than being recreated on the sticky form. */
+.map-settings-savebar::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
 	-webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
 }

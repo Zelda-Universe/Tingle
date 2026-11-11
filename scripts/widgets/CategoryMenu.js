@@ -182,6 +182,7 @@ CategoryMenu.prototype._initDOMElements = function() {
     }, this);
   }
   if(this._categoryTree) this.organizePOICategories();
+  if(this._categoryTree) this._buildListView();
   // The editing beta's notice goes at the top (scripts/zbeta.js).
   $(document).trigger('zm:categoryMenuBuilt', [this]);
 };
@@ -208,17 +209,9 @@ CategoryMenu.prototype.organizePOICategories = function() {
     toggle.on('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      var checked = !group.categories.every(function(c) { return !!c.checked; });
-      this.modeAutomatic = false;
-      zMap._categoryNavigationRequest = (zMap._categoryNavigationRequest || 0) + 1;
-      group.categories.forEach(function(category) {
-        category.checked = checked;
-        category._respectZoomThreshold = true;
-        var button = this.categoryButtons.find(function(b) { return String(b.category.id) === String(category.id); });
-        if(button) button._toggle(checked);
-      }, this);
-      this.updateCategoryGroupControls();
-      zMap.refreshMap(group.categories);
+      var categories=group.categories.filter(function(c) {return c.visible===undefined || !!Number(c.visible);});
+      var focused=!this.modeAutomatic && categories.every(function(c) {return !!c.checked;});
+      this._focusListCategories(categories,!focused);
     }.bind(this));
     list.append(heading);
     group.categories.forEach(function(category) {
@@ -241,11 +234,86 @@ CategoryMenu.prototype.organizePOICategories = function() {
 };
 
 CategoryMenu.prototype.updateCategoryGroupControls = function() {
+  var menu=this;
   (this.poiCategoryGroups || []).forEach(function(group) {
-    var allShown = group.categories.every(function(c) { return !!c.checked; });
-    var action = allShown ? 'Hide All' : 'Show All';
-    group.toggle.text(action).attr('aria-label', action + ' ' + group.title);
+    var categories=group.categories.filter(function(c) {return c.visible===undefined || !!Number(c.visible);});
+    var focused=!menu.modeAutomatic && categories.length>0 && categories.every(function(c) {return !!c.checked;});
+    group.toggle.text('Focus').attr({'aria-label':'Focus '+group.title,'aria-pressed':focused?'true':'false'});
   });
+  if(this.listViewNode) this._syncListView();
+};
+
+CategoryMenu.prototype._buildListView = function() {
+  var menu=this;
+  this.listViewNode=$('<div class="category-list-view" hidden></div>');
+  this.listChecks=[];
+  function checkbox(categories,title) {
+    var control=$('<label class="marker-list-completion-control"><input type="checkbox" class="marker-list-completion"><i class="fas fa-check" aria-hidden="true"></i></label>');
+    var input=control.find('input').attr('aria-label','Focus '+title);
+    menu.listChecks.push({input:input,categories:categories});
+    input.on('change',function() {menu._focusListCategories(categories,this.checked);});
+    return control;
+  }
+  var groups=this.poiCategoryGroups || [];
+  if(!groups.length) groups=[{title:'Categories',categories:this.categoryButtons.filter(function(b) {return !b.category.parent_id && b.category.marker_category_type_id!=3;}).map(function(b) {return b.category;})}];
+  groups.forEach(function(group) {
+    var categories=group.categories.filter(function(c) {return c.visible===undefined || !!Number(c.visible);});
+    if(!categories.length) return;
+    var section=$('<section class="category-list-section"></section>');
+    section.append($('<div class="category-list-heading"></div>').append(checkbox(categories,group.title),$('<h3></h3>').text(group.title)));
+    categories.forEach(function(category) {
+      var button=menu.categoryButtons.find(function(b) {return b.category.id==category.id;});
+      var title=button && button.displayTitle || category.name;
+      var row=$('<div class="category-list-row"></div>').append(checkbox([category],title));
+      var link=$('<button type="button" class="category-list-link"></button>');
+      if(zMap._mapSettingsBadge) link.append(zMap._mapSettingsBadge(category));
+      else if(button) link.append(button.domNode.find('.icon-container').clone());
+      link.append($('<span class="category-list-name"></span>').text(title),'<i class="fas fa-chevron-right" aria-hidden="true"></i>');
+      link.on('click',function() {if(button) button.domNode.trigger('click');});
+      section.append(row.append(link));
+    });
+    menu.listViewNode.append(section);
+  });
+  this.domNode.append(this.listViewNode);
+  var mode='icons';
+  try {mode=localStorage.getItem('zm-category-view') || mode;} catch(e) {}
+  this.setCategoryView(mode);
+};
+
+CategoryMenu.prototype.setCategoryView = function(mode) {
+  this.categoryView=mode==='list' ? 'list' : 'icons';
+  this.domNodeCategorySelectionList.prop('hidden',this.categoryView==='list');
+  if(this.listViewNode) this.listViewNode.prop('hidden',this.categoryView!=='list');
+  this.domNode.find('[data-category-view]').each(function() {
+    $(this).attr('aria-pressed',this.getAttribute('data-category-view')===mode?'true':'false');
+  });
+  this._syncListView();
+  try {localStorage.setItem('zm-category-view',this.categoryView);} catch(e) {}
+};
+
+CategoryMenu.prototype._syncListView = function() {
+  var automatic=this.modeAutomatic;
+  (this.listChecks || []).forEach(function(check) {
+    var count=automatic ? 0 : check.categories.filter(function(c) {return !!c.checked;}).length;
+    check.input.prop('checked',count===check.categories.length && count>0).prop('indeterminate',count>0 && count<check.categories.length);
+  });
+};
+
+CategoryMenu.prototype._focusListCategories = function(categories,checked) {
+  if(this.modeAutomatic) this.toggleAll(false);
+  this.modeAutomatic=false;
+  zMap._categoryNavigationRequest=(zMap._categoryNavigationRequest || 0)+1;
+  categories.forEach(function(category) {
+    category.checked=checked;
+    category._respectZoomThreshold=false;
+  });
+  if(!this.categoryButtons.some(function(b) {return !!b.category.checked;})) {
+    this.modeAutomatic=true;
+    this.toggleAll(true);
+  }
+  this.categoryButtons.forEach(function(button) {button._toggle(!!button.category.checked);});
+  this.updateCategoryGroupControls();
+  zMap.refreshMap(this._categoryTreeArr || this._categories);
 };
 
 CategoryMenu.prototype._buildActionGroup = function(parent) {

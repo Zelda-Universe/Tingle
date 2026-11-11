@@ -44,24 +44,12 @@
   $changes = [];
   $counts = ['edits' => 0, 'comments' => 0];
   if (wikiAvailable($db, $map_prefix)) {
-    $changes = $db->fetchAllAssociative("
-      SELECT `r`.`id`, `r`.`marker_id` AS `markerId`, `r`.`action`, `r`.`summary`,
-             " . wikiAgoSql('`r`.`created`') . " AS `ago`, `m`.`name` AS `markerTitle`,
-             " . wikiMarkerGamesSql($map_prefix, '`r`.`marker_id`') . " AS `game`
-        FROM `{$map_prefix}marker_revision` `r`
-        LEFT JOIN `{$map_prefix}marker` `m` ON `m`.`id` = `r`.`marker_id`
-       WHERE `r`.`user_id` = ? AND `r`.`action` <> 'import'" . ($viewerEditor ? "" : " AND `m`.`visible` = 1") . "
-       ORDER BY `r`.`id` DESC
-       LIMIT 30
-    ", [$user['id']]);
-    foreach ($changes as &$change) {
-      foreach (['id', 'markerId', 'ago'] as $key) $change[$key] = (int) $change[$key];
-      $change['markerTitle'] = wikiDecode($change['markerTitle']);
-    }
-    unset($change);
+    include_once(dirname(__DIR__).'/lib/common/community_changes.php');
+    $changes=communityChanges($db,$map_prefix,$viewerEditor,'',(int)$user['id'],'',30,$viewerLevel>=WIKI_ADMIN_LEVEL)['changes'];
     $counts['edits'] = (int) $db->fetchOne(
       "SELECT COUNT(*) FROM `{$map_prefix}marker_revision` WHERE `user_id` = ? AND `action` <> 'import'", [$user['id']]
     );
+    if($viewerLevel>=WIKI_ADMIN_LEVEL && $db->fetchOne("SHOW TABLES LIKE '{$map_prefix}map_revision'")) $counts['edits']+=(int)$db->fetchOne("SELECT COUNT(*) FROM `{$map_prefix}map_revision` WHERE user_id=? AND kind IN ('game','map','category','layout','map_order')",[$user['id']]);
     $counts['comments'] = (int) $db->fetchOne(
       "SELECT COUNT(*) FROM `{$map_prefix}talk_comment` WHERE `user_id` = ? AND `deleted` IS NULL", [$user['id']]
     );

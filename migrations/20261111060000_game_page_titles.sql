@@ -1,0 +1,1 @@
+ALTER TABLE `container` ADD COLUMN IF NOT EXISTS `page_title` VARCHAR(100) NULL;

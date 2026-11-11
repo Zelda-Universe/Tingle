@@ -17,11 +17,19 @@ ZMap.prototype.MAP_SETTINGS_SHAPES = [
   ['circle', 'Circle'], ['diamond', 'Diamond'], ['square', 'Square'], ['none', 'No Shape']
 ];
 
+ZMap.prototype._gameSettingsSavebarHTML = function() {
+  return '<form class="map-settings-form marker-edit-form map-settings-savebar">'+
+    '<label for="gameSettingsSummary">Edit Summary</label>'+
+    this._editorFieldHTML('fa-comment-alt','<input type="text" class="form-control" id="gameSettingsSummary" name="summary" maxlength="255" placeholder="What did you change? (optional)">')+
+    this._editorSaveHTML(true)+
+    '<button type="button" class="text-button map-settings-discard" hidden>Discard Changes</button></form>';
+};
+
 ZMap.prototype._openMapSettings = function(back) {
   var _this = this;
   back = back || function() { _this.mapControl.resetContent(); };
   var reopen = function() { _this._openMapSettings(back); };
-  reopen.label = 'Map Settings';
+  reopen.label = 'Game Settings';
   this._mapSettingsReopen = reopen;
   // Leaving with the list changed but not saved asks first.
   var leave = function() {
@@ -30,27 +38,26 @@ ZMap.prototype._openMapSettings = function(back) {
   };
   var page = this._showWikiPage(
     '<div id="map_settings" class="wiki-page">' +
-      '<h3 class="text-center">Map Settings</h3>' +
-      '<p class="wiki-subtitle">' + this._wikiEscape(this.mapOptions.name || this.mapOptions.shortName) + '</p>' +
-      '<div class="map-settings-body"><p class="wiki-empty">Loading…</p></div>' +
+      '<h3 class="text-center">Game Settings</h3>' +
+      '<div class="map-settings-body is-loading"><p class="wiki-empty">Loading…</p>'+this._gameSettingsSavebarHTML()+'</div>' +
     '</div>',
     'mapSettings',
     leave,
     reopen,
-    { settles: true }
+    { settles: true, waitForReady: true }
   );
   this._mapSettingsChanges = [];
   var scroll = this._mapSettingsScroll;
   this._mapSettingsScroll = null;
   this._wikiGet('map_settings', { game: this.mapOptions.shortName }).done(function(data) {
-    var body = $(page).find('.map-settings-body').empty();
+    var body = $(page).find('.map-settings-body').removeClass('is-loading').empty();
     if(!data.success) { body.append($('<p class="wiki-empty"></p>').text(data.msg)); return; }
     _this._mapSettingsData = data;
     _this._renderMapSettings(body, data, reopen);
     if(scroll) _this.mapControl._contents.scrollTop = scroll;
   }).fail(function(xhr) {
-    $(page).find('.map-settings-body').empty().append($('<p class="wiki-empty"></p>').text(_this._wikiError(xhr)));
-  });
+    $(page).find('.map-settings-body').removeClass('is-loading').empty().append($('<p class="wiki-empty"></p>').text(_this._wikiError(xhr)));
+  }).always(function() {_this._wikiPageSettled(page);});
 };
 
 // Map Settings' categories, shaped like the page's own (get_categories), so
@@ -121,13 +128,30 @@ ZMap.prototype._renderMapSettings = function(body, data, reopen) {
   var layout = getPOIMenuLayout(records);
   body.off().empty();
 
+  var gameForm=$('<form class="map-settings-form map-settings-game-seo"></form>').append(
+    this._mapSettingsField('Name','fa-heading','<input type="text" class="form-control" name="name" maxlength="45" required>'),
+    this._mapSettingsField('Name (Page Title)','fa-heading','<input type="text" class="form-control" name="page_title" maxlength="100">'),
+    this._mapSettingsField('SEO Description','fa-search','<textarea class="form-control" name="seo_description" maxlength="5000" rows="3"></textarea>')
+  );
+  gameForm.find('textarea').val(data.game.seo_description || '').attr('placeholder',data.game.defaultSeoDescription || '');
+  gameForm.find('[name=name]').val(data.game.name);
+  gameForm.find('[name=page_title]').val(data.game.page_title || '').attr('placeholder','Leave blank to keep the same as Name');
+  gameForm.on('submit',function(e) {e.preventDefault();});
+  body.append(gameForm);
+
   var maps = $('<section class="wiki-section"><h4>Maps</h4></section>');
+  var mapRoot=$('<div class="map-settings-map-order"><div class="map-settings-group" data-section="Maps"><div class="map-settings-children"></div></div></div>');
   data.maps.forEach(function(map) {
-    maps.append($('<button type="button" class="map-settings-row" data-settings-kind="map"></button>')
+    mapRoot.find('.map-settings-children').append($('<div class="map-settings-item"></div>').attr('data-id',map.id).append(
+      $('<button type="button" class="map-settings-handle"><i class="fas fa-bars" aria-hidden="true"></i></button>').attr('aria-label','Move '+map.name+' (arrow keys)'),
+      $('<button type="button" class="map-settings-row" data-settings-kind="map"></button>')
       .attr('data-settings-id', map.id)
       .append($('<span class="map-settings-name"></span>').text(map.name),
-        '<i class="fas fa-chevron-right map-settings-chevron" aria-hidden="true"></i>'));
+        '<i class="fas fa-chevron-right map-settings-chevron" aria-hidden="true"></i>')));
   });
+  maps.append(mapRoot);
+  var busy=false, originalOrder=data.maps.map(function(map) {return Number(map.id);});
+  function mapOrder() {return mapRoot.find('.map-settings-item').map(function() {return Number(this.getAttribute('data-id'));}).get();}
   body.append(maps);
 
   var list = $('<section class="wiki-section map-settings-list">' +
@@ -144,13 +168,6 @@ ZMap.prototype._renderMapSettings = function(body, data, reopen) {
         '<span class="marker-action-label">New Category</span></button>' +
     '</div>' +
     '<div class="map-settings-layout"></div>' +
-    // What's changed and not saved yet, and Save; it stays in view while
-    // there's something to save.
-    '<div class="map-settings-savebar">' +
-      '<p class="map-settings-pending" role="status" aria-live="polite">No changes to save.</p>' +
-      '<button type="button" class="infoWindowIcn form-action-button map-settings-save" disabled>Save Changes</button>' +
-      '<button type="button" class="text-button map-settings-discard" hidden>Discard Changes</button>' +
-    '</div>' +
   '</section>');
   var root = list.find('.map-settings-layout');
   layout.forEach(function(group) {
@@ -174,7 +191,8 @@ ZMap.prototype._renderMapSettings = function(body, data, reopen) {
   });
   root.children('.map-settings-group').each(function() { this.setAttribute('data-original', this.getAttribute('data-section')); });
   body.append(list);
-  var savebar = list.find('.map-settings-savebar');
+  var savebar=$(this._gameSettingsSavebarHTML());
+  body.append(savebar);
   var before = layout.map(function(g) { return { title: g.title, ids: g.categories.map(function(c) { return Number(c.id); }) }; });
   var names = {};
   records.forEach(function(r) { names[r.id] = getPOIMenuName(r, records); });
@@ -182,38 +200,66 @@ ZMap.prototype._renderMapSettings = function(body, data, reopen) {
   var update = function() {
     var changes = _this._mapSettingsLayoutChanges(before, root, names);
     _this._mapSettingsChanges = changes;
+    _this._mapSettingsSeoDirty=gameForm.find('textarea').val().trim()!==(data.game.seo_description || '').trim();
+    _this._mapSettingsNameDirty=gameForm.find('[name=name]').val().trim()!==data.game.name.trim();
+    _this._mapSettingsTitleDirty=gameForm.find('[name=page_title]').val().trim()!==(data.game.page_title || '').trim();
+    _this._mapSettingsMapsDirty=JSON.stringify(mapOrder())!==JSON.stringify(originalOrder);
+    if(_this._mapSettingsSeoDirty) changes=changes.concat(['game SEO description']);
+    if(_this._mapSettingsNameDirty) changes=changes.concat(['game name']);
+    if(_this._mapSettingsTitleDirty) changes=changes.concat(['page title']);
+    if(_this._mapSettingsMapsDirty) changes=changes.concat(['map order']);
     savebar.toggleClass('has-changes', !!changes.length);
     savebar.find('.map-settings-pending').text(changes.length
       ? 'Not saved: ' + changes.join(', ') + '.'
       : 'No changes to save.');
-    savebar.find('.map-settings-save').prop('disabled', !changes.length)
-      .text(changes.length > 1 ? 'Save ' + changes.length + ' Changes' : 'Save Changes');
-    savebar.find('.map-settings-discard').prop('hidden', !changes.length);
+    var nameError=_this._editorNameError(gameForm.find('[name=name]').val(),45,false);
+    var titleValue=gameForm.find('[name=page_title]').val().trim();
+    var titleError=titleValue && _this._editorNameError(titleValue,100,false);
+    gameForm.find('[name=name]').attr('aria-invalid',nameError?'true':'false');
+    gameForm.find('[name=page_title]').attr('aria-invalid',titleError?'true':'false');
+    _this._editorSaveState(savebar,!!changes.length,!nameError && !titleError,busy);
+    savebar.find('.map-settings-discard').prop('hidden', true);
     var pageNode = body.closest('#map_settings');
     if(changes.length) pageNode.attr('data-no-swipe-back', '');
     else pageNode.removeAttr('data-no-swipe-back');
   };
-  body.on('click', '.map-settings-save', function() {
-    var button = $(this).prop('disabled', true).text('Saving…');
-    _this._saveMapSettingsLayout(root, data, _this._mapSettingsChanges, function(ok) {
-      if(!ok) update();
-    });
+  gameForm.on('input',update);
+  this._mapSettingsSortable(mapRoot,update);
+  savebar.on('submit', function(e) {
+    e.preventDefault();
+    if(busy || savebar.find('[type=submit]').prop('disabled')) return;
+    busy=true;update();
+    var order=mapOrder();
+    var fields={game:data.game.shortName,
+      changes:JSON.stringify(_this._mapSettingsChanges),ids:JSON.stringify(order),
+      name:gameForm.find('[name=name]').val(),page_title:gameForm.find('[name=page_title]').val(),seo_description:gameForm.find('textarea').val(),summary:savebar.find('[name=summary]').val()
+    };
+    if(_this._mapSettingsChanges.length) fields.layout=JSON.stringify(_this._mapSettingsLayoutFromPage(root).filter(function(g) {return g.title && g.ids.length;}));
+    _this._wikiPost('map_settings_layout',fields).done(function(result) {
+      if(!result.success) {savebar.find('[role=status]').addClass('error').text(result.msg);return;}
+      _this._applyMapSettingsLayout(_this._mapSettingsLayoutFromPage(root));
+      if(_this.maps) _this.maps.sort(function(a,b) {return order.indexOf(Number(a.originalId))-order.indexOf(Number(b.originalId));});
+      _this.mapOptions.name=gameForm.find('[name=name]').val().trim();
+      _this.mapOptions.pageTitle=gameForm.find('[name=page_title]').val().trim();
+      _this._mapSettingsTitleDirty=false;
+      _this._mapSettingsChanges=[];_this._mapSettingsSeoDirty=false;_this._mapSettingsMapsDirty=false;_this._mapSettingsNameDirty=false;
+      toastr.success('Game settings saved');_this._refreshMapSettings();
+    }).fail(function(xhr) {savebar.find('[role=status]').addClass('error').text(_this._wikiError(xhr));})
+      .always(function() {busy=false;update();});
   });
   body.on('click', '.map-settings-discard', function() {
     _this._mapSettingsChanges = [];
     _this._renderMapSettings(body, data, reopen);
   });
 
-  var history = $('<section class="wiki-section"><h4>History</h4><ul class="wiki-revisions map-settings-history"></ul></section>');
-  this._renderMapSettingsHistory(history.find('ul'), data);
-  body.append(history);
-
   // A map's or category's page, or the form for a new category.
   body.on('click', '.map-settings-row', function() {
     if(!_this._confirmLeaveMapSettings()) return;
     var kind = this.getAttribute('data-settings-kind'), id = Number(this.getAttribute('data-settings-id'));
     _this._mapSettingsScroll = _this.mapControl._contents.scrollTop;
-    if(kind === 'map') {
+    if(kind === 'game') {
+      _this._openMapSettingsMap(Object.assign({},data.game,{seoOnly:true}),reopen);
+    } else if(kind === 'map') {
       var map = data.maps.find(function(m) { return m.id === id; });
       if(map) _this._openMapSettingsMap(map, reopen);
     } else {
@@ -244,9 +290,13 @@ ZMap.prototype._renderMapSettings = function(body, data, reopen) {
 // Leaving Map Settings (or opening one of its pages, which reloads it) with
 // changes to the list not saved: true once it's fine to go.
 ZMap.prototype._confirmLeaveMapSettings = function() {
-  var changes = this._mapSettingsChanges || [];
+  var changes = (this._mapSettingsChanges || []).slice();
+  if(this._mapSettingsSeoDirty) changes.push('game SEO description');
+  if(this._mapSettingsNameDirty) changes.push('game name');
+  if(this._mapSettingsTitleDirty) changes.push('page title');
+  if(this._mapSettingsMapsDirty) changes.push('map order');
   if(!changes.length || !$(this.mapControl._contents).find('#map_settings').length) return true;
-  if(window.confirm('Leave without saving your changes to the category list? (' + changes.join(', ') + ')')) {
+  if(window.confirm('Leave without saving your changes? (' + changes.join(', ') + ')')) {
     this._mapSettingsChanges = [];
     return true;
   }
@@ -290,7 +340,7 @@ ZMap.prototype._mapSettingsLayoutChanges = function(before, root, names) {
   return changes;
 };
 
-ZMap.prototype._renderMapSettingsHistory = function(list, data) {
+ZMap.prototype._renderMapSettingsHistory = function(list, data, historyBack) {
   var _this = this;
   list.empty();
   if(!data.history.length) {
@@ -298,14 +348,99 @@ ZMap.prototype._renderMapSettingsHistory = function(list, data) {
       '<p>Changes to this map\'s settings will show up here.</p></li>');
   }
   data.history.forEach(function(entry) {
-    list.append($('<li class="map-settings-change"></li>').append(
-      $('<div class="map-settings-change-top"></div>')
-        .append($('<span class="map-settings-change-title"></span>').text(_this._mapSettingsChangeText(entry)))
-        .append($('<span class="wiki-revision-time"></span>').text(_this._wikiAgo(entry.ago))),
-      entry.summary ? $('<div class="map-settings-change-summary"></div>').text(entry.summary) : '',
-      $('<div class="wiki-revision-by"></div>').html('by ' + _this._wikiUserLink(entry.userId, entry.username))
-    ));
+    var row=_this._wikiRevisionRow(Object.assign({},entry,{action:entry.data && entry.data.action || 'edit'}),{current:entry.isCurrent,markerTitle:['game','layout','map_order'].includes(entry.kind)?null:entry.data && entry.data.name || 'Settings'});
+    row.find('.wiki-revision').on('click keydown',function(e) {
+      if($(e.target).closest('a').length || e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return;
+      e.preventDefault();
+      _this._openGameSettingsRevision(entry.id,historyBack || function() {_this._openMapSettingsHistory();});
+    });
+    list.append(row);
   });
+};
+
+ZMap.prototype._openGameSettingsRevision = function(id,back) {
+  var zmap=this;
+  var reopen=function() {zmap._openGameSettingsRevision(id,back);};
+  reopen.label='Revision '+Number(id);
+  var page=this._showWikiPage('<div class="wiki-page"><h3 class="text-center">Revision '+Number(id)+'</h3><div class="area-header-pills wiki-subtitle-row"><p class="wiki-subtitle"></p></div><div class="wiki-revision-body"><p class="wiki-empty">Loading…</p></div></div>',
+    'gameSettingsRevision-'+id,back,reopen,{settles:true,waitForReady:true});
+  this._wikiGet('map_settings_revision',{id:id}).done(function(result) {
+    var body=$(page).find('.wiki-revision-body').empty();
+    if(!result.success) {body.append($('<p class="wiki-empty"></p>').text(result.msg));return;}
+    var revision=result.revision,data=revision.data || {};
+    $(page).find('.wiki-subtitle').text(['game','layout','map_order'].includes(revision.kind)?'Game Settings':data.name || 'Settings');
+    body.append('<section class="wiki-card wiki-revision-meta"><div class="wiki-revision-top">'+zmap._wikiActionBadge(revision.action)+
+      (result.isCurrent?'<span class="wiki-current">Current</span>':'')+'</div><p>'+zmap._wikiUserLink(revision.userId,revision.username)+' · '+zmap._wikiEscape(zmap._wikiAgo(revision.ago))+'</p>'+
+      (revision.summary?'<p class="wiki-revision-summary">'+zmap._renderWikiText(revision.summary)+'</p>':'')+'</section>');
+    if(result.canRevert) body.append('<div class="wiki-actions"><button type="button" class="wiki-action-button" data-action="revert"><i class="fas fa-undo" aria-hidden="true"></i>Restore This Version</button></div>'+
+      '<form class="wiki-revert-form" hidden><p>Restoring saves this version as a new edit, so it can be undone from History too.</p>'+zmap._editorFieldHTML('fa-comment-alt','<input class="form-control" name="summary" maxlength="255" placeholder="Why? (optional)" autocomplete="off">')+
+      '<div class="wiki-button-pair"><button type="button" class="infoWindowIcn form-action-button" data-action="cancel-revert">Cancel</button><button type="submit" class="infoWindowIcn form-action-button">Restore</button></div></form>');
+    var before=data.before || {},after=data.after || {};
+    var names={name:'Name',page_title:'Name (Page Title)',description:'Description',seo_description:'SEO Description',img:'Icon',glyphColor:'Icon Color',color:'Color',shape:'Shape',visible:'Visible',parentId:'Parent Category',customStyle:'Custom Style'};
+    var fields;
+    if(['layout','map_order'].includes(revision.kind)) fields=[['Order',JSON.stringify(before,null,2),JSON.stringify(after,null,2)]];
+    else fields=Array.from(new Set(Object.keys(before).concat(Object.keys(after)))).map(function(key) {return [names[key] || key,before[key],after[key]];});
+    body.append(zmap._wikiFieldDiffHTML(fields,'No content changes.'));
+    var actions=body.find('.wiki-actions');
+    if(!actions.length) {actions=$('<div class="wiki-actions"></div>');body.find('.wiki-revision-meta').after(actions);}
+    actions.append('<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy Revision</button><button type="button" class="wiki-action-button" data-action="copy-url"><i class="fas fa-link" aria-hidden="true"></i>Copy Link</button><button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>');
+    body.on('click','[data-action]',function() {
+      var action=this.getAttribute('data-action');
+      if(action==='copy-code') {zmap._wikiCopy('[[settingsrev:'+Number(id)+']]','Link code');return;}
+      if(action==='copy-url') {zmap._wikiCopy(window.location.href,'Link');return;}
+      if(action==='history') {
+        zmap._openMapSettingsHistory(reopen,result.game);
+        return;
+      }
+      var opening=action==='revert';
+      body.find('.wiki-actions').prop('hidden',opening);body.find('.wiki-revert-form').prop('hidden',!opening);
+      if(opening) body.find('input').trigger('focus');
+    });
+    body.find('form').on('submit',function(e) {
+      e.preventDefault();var form=$(this);form.find('button').prop('disabled',true);
+      zmap._wikiPost('map_settings_revert',{revisionId:id,summary:form.find('input').val()}).done(function(saved) {
+        if(!saved.success) {toastr.error(saved.msg);form.find('button').prop('disabled',false);return;}
+        if(saved.category) zmap._applyMapSettingsCategory(saved.category,false);
+        if(saved.kind==='layout') zmap._applyMapSettingsLayout(saved.values);
+        if(saved.kind==='game' && saved.values.name) zmap.mapOptions.name=saved.values.name;
+        if(saved.kind==='game') zmap.mapOptions.pageTitle=saved.values.page_title || '';
+        if(saved.kind==='map') (zmap.maps || []).forEach(function(map) {if(map.originalId==saved.targetId) {map.mapName=saved.values.name;map.mapDescription=saved.values.description;}});
+        if(saved.kind==='map_order') zmap.maps.sort(function(a,b) {return saved.values.indexOf(Number(a.originalId))-saved.values.indexOf(Number(b.originalId));});
+        toastr.success('Restored revision '+id);zmap.mapControl._navigatingBack=true;back();
+      }).fail(function(xhr) {toastr.error(zmap._wikiError(xhr));form.find('button').prop('disabled',false);});
+    });
+  }).fail(function(xhr) {$(page).find('.wiki-revision-body').empty().append($('<p class="wiki-empty"></p>').text(zmap._wikiError(xhr)));})
+    .always(function() {zmap._wikiPageSettled(page);});
+};
+
+ZMap.prototype._openSettingsRevisionLink = function(id,game,back) {
+  if(!this._isWikiEditor()) {
+    var url=new URL(window.location.origin+'/');
+    url.searchParams.set('game',game || this.mapOptions.shortName);
+    if(this._isWikiEditor()) {url.searchParams.set('page','game-settings-revision');url.searchParams.set('settings-rev',id);}
+    window.location.href=url.href;return;
+  }
+  var zmap=this;
+  this._openGameSettingsRevision(id,back || function() {zmap.mapControl.resetContent();});
+};
+
+ZMap.prototype._openMapSettingsHistory = function(back,game) {
+  var zmap=this;
+  back=back || function() {zmap.mapControl.resetContent();};
+  game=game || this.mapOptions.shortName;
+  this._settingsHistoryGame=game;
+  var reopen=function() {zmap._openMapSettingsHistory(back,game);};
+  reopen.label='History';
+  var page=this._showWikiPage('<div id="map_settings_history" class="wiki-page"><h3 class="text-center">History</h3><p class="wiki-subtitle"></p><ul class="wiki-revisions map-settings-history"><li class="wiki-empty">Loading…</li></ul></div>',
+    'mapSettingsHistory',back,reopen,{settles:true,waitForReady:true});
+  $(page).find('.wiki-subtitle').text(this.mapOptions.name || this.mapOptions.shortName);
+  this._wikiGet('map_settings',{game:game}).done(function(data) {
+    var list=$(page).find('.map-settings-history');
+    if(!data.success) {list.empty().append($('<li class="wiki-empty"></li>').text(data.msg));return;}
+    $(page).find('.wiki-subtitle').text(data.game.name);
+    zmap._renderMapSettingsHistory(list,data,reopen);
+  }).fail(function(xhr) {$(page).find('.map-settings-history').empty().append($('<li class="wiki-empty"></li>').text(zmap._wikiError(xhr)));})
+    .always(function() {zmap._wikiPageSettled(page);});
 };
 
 // "Korok Seeds: renamed from “Koroks”, look changed", "Category list: moved
@@ -313,6 +448,7 @@ ZMap.prototype._renderMapSettingsHistory = function(list, data) {
 ZMap.prototype._mapSettingsChangeText = function(entry) {
   var d = entry.data || {}, before = d.before || {}, after = d.after || {};
   if(entry.kind === 'layout') return 'Category list: ' + ((d.changes && d.changes.length ? d.changes.join(', ') : d.change) || 'reordered');
+  if(entry.kind === 'map_order') return 'Maps: reordered';
   if(d.created) return (d.name || 'A category') + ': added' + (d.section ? ' to ' + d.section : '');
   var parts = [];
   if('name' in after) parts.push('renamed from “' + before.name + '”');
@@ -383,7 +519,7 @@ ZMap.prototype._mapSettingsSortable = function(root, onDrop) {
   };
   // Puts the item where the pointer is: categories among the categories of
   // the section under it, sections among the sections.
-  var place = function(item, y) {
+  var placeImmediately = function(item, y) {
     if(item.classList.contains('map-settings-group')) {
       var groups = root.children('.map-settings-group').not(item).get();
       var before = groups.find(function(g) { var r = g.getBoundingClientRect(); return y < r.top + r.height / 2; });
@@ -405,6 +541,31 @@ ZMap.prototype._mapSettingsSortable = function(root, onDrop) {
     else if(list.lastElementChild !== item) list.appendChild(item);
   };
 
+  var capture=function(item) {
+    return root.find(item.classList.contains('map-settings-group')?'.map-settings-group':'.map-settings-item').get().map(function(node) {
+      return {node:node,parent:node.parentNode,next:node.nextElementSibling,rect:node.getBoundingClientRect()};
+    });
+  };
+  var animatePositions=function(before) {
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    before.forEach(function(state) {
+      var node=state.node;
+      if(node._settingsMove) node._settingsMove.cancel();
+    });
+    before.forEach(function(state) {
+      var node=state.node,rect=node.getBoundingClientRect();
+      if(node.classList.contains('is-dragging')) return;
+      var dx=state.rect.left-rect.left,dy=state.rect.top-rect.top;
+      if(Math.abs(dx)<.5 && Math.abs(dy)<.5 || !node.animate) return;
+      node._settingsMove=node.animate([{transform:'translate('+dx+'px,'+dy+'px)'},{transform:'translate(0,0)'}],{duration:180,easing:'cubic-bezier(.2,.8,.2,1)'});
+    });
+  };
+  var place=function(item,y) {
+    var before=capture(item);
+    placeImmediately(item,y);
+    if(before.some(function(state) {return state.node.parentNode!==state.parent || state.node.nextElementSibling!==state.next;})) animatePositions(before);
+  };
+
   root.on('pointerdown', '.map-settings-handle', function(e) {
     if(e.button !== 0) return;
     e.preventDefault();
@@ -419,6 +580,20 @@ ZMap.prototype._mapSettingsSortable = function(root, onDrop) {
     // drag is followed on the whole document.
     item.classList.add('is-dragging');
     root.addClass('is-sorting');
+    document.body.classList.add('settings-dragging');
+    if(item._settingsMove) item._settingsMove.cancel();
+    var lifted=item.getBoundingClientRect(),startX=e.clientX,startY=e.clientY;
+    var preview=item.cloneNode(true);
+    preview.classList.add('map-settings-drag-preview');
+    preview.setAttribute('aria-hidden','true');preview.inert=true;
+    Object.assign(preview.style,{position:'fixed',left:lifted.left+'px',top:lifted.top+'px',width:lifted.width+'px',height:lifted.height+'px',margin:'0',zIndex:'100000',pointerEvents:'none',boxSizing:'border-box'});
+    document.body.appendChild(preview);
+    preview.style.scale='1.025';
+    if(preview.animate && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+      preview.animate([{scale:1},{scale:1.025}],{duration:120,easing:'ease-out'});
+    }
+    item.style.visibility='hidden';
+    var previewX=0,previewY=0;
     // Near the top or bottom of the drawer, it scrolls.
     var tick = function() {
       var r = scroller.getBoundingClientRect(), edge = 56, speed = 0;
@@ -434,6 +609,8 @@ ZMap.prototype._mapSettingsSortable = function(root, onDrop) {
       if(ev.pointerType === 'mouse' && ev.buttons === 0) { end(ev); return; }
       ev.preventDefault();
       y = ev.clientY;
+      previewX=ev.clientX-startX;previewY=ev.clientY-startY;
+      preview.style.transform='translate('+previewX+'px,'+previewY+'px)';
       place(item, y);
       counts();
     };
@@ -446,6 +623,14 @@ ZMap.prototype._mapSettingsSortable = function(root, onDrop) {
       window.cancelAnimationFrame(frame);
       item.classList.remove('is-dragging');
       root.removeClass('is-sorting');
+      document.body.classList.remove('settings-dragging');
+      var target=item.getBoundingClientRect();
+      var reduced=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var finish=function() {item.style.visibility='';preview.remove();};
+      if(preview.animate && !reduced) {
+        var settle=preview.animate([{transform:'translate('+previewX+'px,'+previewY+'px)',scale:1.025},{transform:'translate('+(target.left-lifted.left)+'px,'+(target.top-lifted.top)+'px)',scale:1}],{duration:180,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'});
+        settle.onfinish=finish;settle.oncancel=finish;
+      } else finish();
       counts();
       var change = describe(item, fromSection, fromIndex);
       onDrop(change);
@@ -460,6 +645,7 @@ ZMap.prototype._mapSettingsSortable = function(root, onDrop) {
     if(e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
     e.preventDefault();
     var item = $(this).closest('.map-settings-item, .map-settings-group')[0];
+    var positions=capture(item);
     var fromSection = $(item).closest('.map-settings-group').attr('data-section');
     var fromIndex = $(item).index();
     var up = e.key === 'ArrowUp';
@@ -478,6 +664,7 @@ ZMap.prototype._mapSettingsSortable = function(root, onDrop) {
       return;
     }
     this.focus();
+    animatePositions(positions);
     counts();
     var change = describe(item, fromSection, fromIndex);
     onDrop(change);
@@ -534,7 +721,6 @@ ZMap.prototype._mapSettingsSectionNode = function(title, count) {
     $('<button type="button" class="map-settings-handle"><i class="fas fa-bars" aria-hidden="true"></i></button>')
       .attr('aria-label', 'Move section ' + title + ' (arrow keys)'),
     $('<span class="map-settings-section-title"></span>').text(title),
-    $('<span class="map-settings-extra"></span>').text(count),
     $('<button type="button" class="map-settings-section-rename"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>')
       .attr('aria-label', 'Rename section ' + title)
   ).appendTo(section);
@@ -591,16 +777,17 @@ ZMap.prototype._mapSettingsField = function(label, icon, control) {
 
 ZMap.prototype._openMapSettingsMap = function(map, back) {
   var _this = this;
+  var seoOnly=!!map.seoOnly;
   var page = this._showWikiPage(
     '<div id="map_settings_item" class="wiki-page">' +
-      '<h3 class="text-center">Edit Map</h3>' +
+      '<h3 class="text-center">'+(seoOnly ? 'Edit Game SEO' : 'Edit Map')+'</h3>' +
       '<p class="wiki-subtitle"></p>' +
       '<form class="map-settings-form">' +
-        this._mapSettingsField('Name', 'fa-heading', '<input type="text" class="form-control" name="name" maxlength="45" required />') +
+        (seoOnly ? '' : this._mapSettingsField('Name', 'fa-heading', '<input type="text" class="form-control" name="name" maxlength="45" required />')) +
+        this._mapSettingsField('SEO Description', 'fa-search', '<textarea class="form-control" name="seo_description" maxlength="5000" rows="3"></textarea>') +
         this._mapSettingsField('Summary', 'fa-comment',
           '<input type="text" class="form-control" name="summary" maxlength="255" placeholder="What changed and why (optional)" />') +
-        '<p class="admin-user-status" role="status" aria-live="polite"></p>' +
-        '<button type="submit" class="infoWindowIcn form-action-button">Save</button>' +
+        this._editorSaveHTML(true) +
       '</form>' +
     '</div>',
     'mapSettingsItem',
@@ -609,19 +796,32 @@ ZMap.prototype._openMapSettingsMap = function(map, back) {
   $(page).find('.wiki-subtitle').text(map.name);
   var form = $(page).find('form');
   form.find('[name=name]').val(map.name);
+  form.find('[name=seo_description]').val(map.seo_description || '').attr('placeholder',map.defaultSeoDescription || '');
+  var busy=false;
+  function validate() {
+    var dirty=(seoOnly ? ['seo_description'] : ['name','seo_description']).some(function(key) {return form.find('[name='+key+']').val().trim()!==(map[key] || '').trim();});
+    var valid=seoOnly || !_this._editorNameError(form.find('[name=name]').val(),45,false);
+    _this._editorSaveState(form,dirty,valid,busy);
+    return dirty && valid;
+  }
+  form.on('input change',validate);
+  validate();
   form.on('submit', function(e) {
     e.preventDefault();
+    if(busy || !validate()) return;
+    busy=true;validate();
     var status = form.find('.admin-user-status').removeClass('error').text('');
     form.find('[type=submit]').prop('disabled', true);
-    _this._wikiPost('map_settings_save', { kind: 'map', id: map.id, name: form.find('[name=name]').val(),
+    _this._wikiPost('map_settings_save', { kind: seoOnly ? 'game' : 'map', id: map.id, name: form.find('[name=name]').val(),
+      seo_description:form.find('[name=seo_description]').val(),
       summary: form.find('[name=summary]').val() }).done(function(result) {
-      form.find('[type=submit]').prop('disabled', false);
+      busy=false;validate();
       if(!result.success) { status.addClass('error').text(result.msg); return; }
-      toastr.success(result.changed.length ? 'Map renamed' : 'Nothing changed');
+      toastr.success(result.changed.length ? 'Map updated' : 'Nothing changed');
       _this.mapControl._navigatingBack = true;
       back();
     }).fail(function(xhr) {
-      form.find('[type=submit]').prop('disabled', false);
+      busy=false;validate();
       status.addClass('error').text(_this._wikiError(xhr));
     });
   });

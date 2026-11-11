@@ -50,7 +50,21 @@
   $metadata = $gameMetadata[$gameId];
   $pageHeading = $metadata['name'] . ' Interactive Map';
   $pageTitle = $pageHeading . ' - Zelda Maps';
-  $pageDescription = $metadata['description'];
+  include_once(__DIR__ . '/lib/common/game_metadata.php');
+  $pageDescription = defaultGameSeoDescription($gameId) ?: $metadata['description'];
+  if(isset($_GET['game'])) {
+    include_once(__DIR__ . '/config.php');
+    include_once(__DIR__ . '/lib/common/database.php');
+    if(open() === 0) {
+      $gameSettings=$db->fetchAssociative("SELECT name,seo_description,page_title FROM `{$map_prefix}container` WHERE LOWER(short_name)=? LIMIT 1",[$gameId === 'OoT' ? 'ootr' : strtolower($gameId)]);
+      $customGameDescription=$gameSettings['seo_description'] ?? '';
+      if($gameSettings) {
+        $metadata['name']=strip_tags($gameSettings['page_title'] ?: $gameSettings['name']);
+        $pageHeading=$metadata['name'].' Interactive Map';$pageTitle=$pageHeading.' - Zelda Maps';
+      }
+      if(is_string($customGameDescription) && trim($customGameDescription)!=='') $pageDescription=strip_tags($customGameDescription);
+    }
+  }
   $canonicalUrl = 'https://zeldamaps.com/?game=' . rawurlencode($gameId === 'OoT' ? 'OoTR' : $gameId);
   // Link previews come from the site serving the page (so staging previews
   // show staging's images); search engines' canonical URL stays production.

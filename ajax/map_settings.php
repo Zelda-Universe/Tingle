@@ -13,8 +13,11 @@
     echo json_encode(array('success' => false, 'msg' => 'That game was not found.'));
     return;
   }
+  include_once(dirname(__DIR__) . '/lib/common/game_metadata.php');
+  $gameSeoDescription=$db->fetchOne("SELECT seo_description FROM `{$map_prefix}container` WHERE id=?",[(int)$game['id']]);
+  $gamePageTitle=$db->fetchOne("SELECT page_title FROM `{$map_prefix}container` WHERE id=?",[(int)$game['id']]);
   $maps = $db->fetchAllAssociative(
-    "SELECT `id`, `name` FROM `{$map_prefix}map` WHERE `container_id` = ? AND `visible` = 1 ORDER BY `map_order`, `id`",
+    "SELECT `id`, `name`, `description`, `seo_description` FROM `{$map_prefix}map` WHERE `container_id` = ? AND `visible` = 1 ORDER BY `map_order`, `id`",
     [(int) $game['id']]
   );
   $categories = $db->fetchAllAssociative(
@@ -30,6 +33,17 @@
   }
   unset($category);
   include_once(dirname(__DIR__) . '/lib/common/seo.php');
+  $areaPages = seoAreaPages($db, $map_prefix);
+  foreach ($maps as &$map) {
+    foreach ($areaPages as $area) {
+      if (!empty($area['isMap']) && (int)$area['map'] === (int)$map['id']) {
+        $map['defaultSeoDescription'] = $area['defaultSeoDescription'] ?? $area['description'];
+        break;
+      }
+    }
+  }
+  unset($map);
+  include_once(dirname(__DIR__) . '/lib/common/seo.php');
   $landing = seoLandingCategories($db, $map_prefix, $game['short_name']);
   $seoNames = ['LA' => "Link's Awakening", 'BotW' => 'Breath of the Wild',
     'TotK' => 'Tears of the Kingdom', 'EoW' => 'Echoes of Wisdom'];
@@ -42,22 +56,26 @@
   unset($category);
   $history = $db->fetchAllAssociative("
     SELECT `r`.`id`, `r`.`kind`, `r`.`target_id` AS `targetId`, `r`.`summary`, `r`.`data`,
+           (r.id=(SELECT MAX(latest.id) FROM `{$map_prefix}map_revision` latest WHERE latest.container_id=r.container_id AND latest.kind=r.kind AND latest.target_id=r.target_id)) AS isCurrent,
            " . wikiAgoSql('`r`.`created`') . " AS `ago`, `r`.`user_id` AS `userId`, `u`.`username`
       FROM `{$map_prefix}map_revision` `r`
       LEFT JOIN `{$map_prefix}user` `u` ON `u`.`id` = `r`.`user_id`
-     WHERE `r`.`container_id` = ?
+     WHERE `r`.`container_id` = ? AND r.kind IN ('game','map','category','layout','map_order')
      ORDER BY `r`.`id` DESC
      LIMIT 100
   ", [(int) $game['id']]);
   foreach ($history as &$row) {
     foreach (['id', 'targetId', 'ago', 'userId'] as $key) $row[$key] = (int) $row[$key];
     $row['data'] = json_decode($row['data'], true);
+    $row['isCurrent']=(bool)$row['isCurrent'];
   }
   unset($row);
   echo json_encode(array(
     'success' => true,
-    'game' => array('id' => (int) $game['id'], 'name' => $game['name'], 'shortName' => $game['short_name']),
-    'maps' => array_map(function($m) { return array('id' => (int) $m['id'], 'name' => $m['name']); }, $maps),
+    'game' => array('id' => (int) $game['id'], 'name' => $game['name'], 'shortName' => $game['short_name'],
+      'page_title'=>$gamePageTitle ?: '', 'defaultPageTitle'=>defaultGamePageTitle($game['short_name'],$game['name']),
+      'seo_description'=>$gameSeoDescription ?: '', 'defaultSeoDescription'=>defaultGameSeoDescription($game['short_name'])),
+    'maps' => array_map(function($m) { $m['id']=(int)$m['id']; return $m; }, $maps),
     'categories' => $categories,
     'history' => $history
   ));

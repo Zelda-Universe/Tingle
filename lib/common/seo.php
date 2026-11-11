@@ -246,7 +246,16 @@
         'subMap'=>$row['subMapId'],'name'=>seoPlainText($row['name']),'mapName'=>seoPlainText($row['name']),
         'variant'=>seoPlainText($row['variant']),'isMap'=>true,'description'=>''];
     }
-    return seoFinishAreaPages($areas);
+    $areas=seoFinishAreaPages($areas);
+    if($db) {
+      $overrides=$db->fetchAllKeyValue("SELECT id, seo_description FROM `{$prefix}map` WHERE seo_description IS NOT NULL AND seo_description<>''");
+      foreach($areas as &$area) if(!empty($area['isMap'])) {
+        $area['defaultSeoDescription']=$area['description'];
+        if(isset($overrides[$area['map']])) $area['description']=seoPlainText($overrides[$area['map']]);
+      }
+      unset($area);
+    }
+    return $areas;
   }
 
   // Fills in what every area page has: its keys and submaps, a description

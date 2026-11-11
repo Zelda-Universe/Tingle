@@ -27,6 +27,8 @@ const PAGE_RULES=[
   [/'followedMarkersPage'/, true],
   [/'report-'/, true],
   [/'mapSettings',\s*$/m, true],
+  [/'mapSettingsHistory'/, true],
+  [/'gameSettingsRevision-'/, true],
   [/'recentChanges-'/, true],
   [/'profilePreview'/, false],
   [/'userProfile-'/, false],

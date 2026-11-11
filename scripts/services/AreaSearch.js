@@ -353,16 +353,52 @@ ZMap.prototype._editAreaName = function(area, bounds) {
         busy=false; validate();
         form.find('[role=status]').text(result.msg); return;
       }
-      var renamed=Object.assign({},area,{name:result.name,title:result.name});
+      zmap._applyAreaEdit(area,target,result.name,form.find('[name=description]').val().trim());
       var url=new URL(window.location.href);
       url.searchParams.delete('page');
-      url.searchParams.set('area',zmap.areaURLKey(renamed));
-      window.location.assign(url.href);
+      url.searchParams.set('area',zmap.areaURLKey(area));
+      window.history.replaceState(window.history.state,'',url.href);
+      back();
     }).fail(function(xhr) {
       busy=false; validate();
       form.find('[role=status]').text(zmap._wikiError(xhr));
     });
   });
+};
+
+// Mutate existing objects: navigation callbacks and border references keep
+// their identity, while structural map data stays untouched.
+ZMap.prototype._applyAreaEdit = function(area,target,name,description) {
+  var old=area.title || area.name, label=this._areaLabelMarker(area), zmap=this;
+  function update(object) {object.name=name;object.description=description;}
+  this.maps.forEach(function(layer) {
+    if(target.kind==='map' && layer.originalId==target.id) {
+      layer.mapName=name;layer.mapDescription=description;
+      if(layer._regions) layer._regions.forEach(function(region) {if(!region.id) {update(region);region.shortName=name;}});
+    }
+    function matches(region) {return target.kind==='region' ? region.id==target.id : target.kind==='marker' && region.labelMarkerId==target.id;}
+    (layer.submapRegions || []).forEach(function(entry) {
+      entry.regions.forEach(function(region) {if(matches(region)) {update(region);region.shortName=name;}});
+    });
+    (layer._regions || []).forEach(function(region) {if(matches(region)) {update(region);region.shortName=name;}});
+  });
+  if(area.region) {update(area.region);area.region.shortName=name;}
+  update(area);
+  if(area.title !== undefined) area.title=name;
+  if(label) {
+    update(label);label.title=name;
+    if(label.options) label.options.title=name;
+    // Tooltip strings are HTML in Leaflet; keep user-entered names plain text.
+    if(label.setTooltipContent) label.setTooltipContent(zmap._wikiEscape(name));
+  }
+  this.getMarkers().forEach(function(marker) {
+    if(marker.submapId!=area.submapId || !marker.gameData) return;
+    try {
+      var data=typeof marker.gameData==='string' ? JSON.parse(marker.gameData) : marker.gameData;
+      if(data.areaName===old) {data.areaName=name;marker.gameData=typeof marker.gameData==='string' ? JSON.stringify(data) : data;}
+    } catch(e) {}
+  });
+  this._markerAreaNames=null;this._labelsByRegion=null;
 };
 
 ZMap.prototype.updateAreaCompletionCounts = function() {

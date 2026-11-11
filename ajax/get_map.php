@@ -35,6 +35,7 @@
    $maps = $db->fetchAllAssociative("
       select m.id
            , m.name
+           , m.description
 
            , m.default_zoom                     as defaultZoom
            , coalesce(m.max_zoom, c.max_zoom)   as maxZoom
@@ -70,6 +71,10 @@
    }
    foreach ($regionRows as $region) {
       $regionsBySubmap[$region['submap_id']][] = array(
+         'id' => $region['id'],
+         'description' => $region['description'] ?? '',
+         'connectionKey' => $region['connection_key'] ?? $region['name'],
+         'labelMarkerId' => $region['label_marker_id'] ?? null,
          'name' => $region['name'],
          'shortName' => $region['short_name'],
          'kind' => $region['kind'] ?? 'tower',

@@ -74,6 +74,8 @@ const context = {
   toastr: { success: jest.fn(), error: jest.fn(), warning: jest.fn(), info: jest.fn() },
   tinymce: null                 // assigned in beforeEach
 };
+const editorHelpers=fs.readFileSync(__dirname + '/zwiki.js','utf8');
+vm.runInNewContext(editorHelpers.slice(editorHelpers.indexOf('ZMap.prototype._editorFieldHTML ='),editorHelpers.indexOf('ZMap.prototype._wikiPageSettled =')),context);
 vm.runInNewContext(
   source.slice(
     source.indexOf('ZMap.prototype._createMarkerForm ='),

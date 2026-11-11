@@ -76,7 +76,9 @@ ZMap.prototype.setupOotFloors = function() {
     if(!layer || !(layer.mapConnections || []).length) return;
     // Each area's box, from its border on this map version (map_region).
     var bounds={};
-    zmap._layerRegions(layer).forEach(function(region) { if(region.kind==='area') bounds[region.name]=region.bounds; });
+    zmap._layerRegions(layer).forEach(function(region) {
+      if(region.kind==='area') bounds[region.connectionKey || region.name]=region.bounds;
+    });
     var point=function(end) {
       var b=bounds[end[0]];
       if(!b) return null;

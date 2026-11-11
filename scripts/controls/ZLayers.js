@@ -1160,6 +1160,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._settleFitAnimation = null;
     }
     this._settleFit = null;
+    this._settleWaitingForReady = false;
     if(this._settleHeightPinned) {
       this._settleHeightPinned = false;
       this._container.style.height = '';
@@ -1472,6 +1473,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // keep the drawer's height until the content settles (below).
     var pageSettles = !!this._nextPageSettles;
     this._nextPageSettles = false;
+    var waitForReady = !!this._nextPageWaitForReady;
+    this._nextPageWaitForReady = false;
     var siblingPages = ['games', 'maps', 'accountPage', 'loginForm'];
     var swappingSiblingPages = siblingPages.includes(previousContentType) && siblingPages.includes(vType);
     if(siblingPages.includes(vType) && !this._navigatingBack && !swappingSiblingPages &&
@@ -1568,8 +1571,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
         if(depths[type] !== undefined) return depths[type];
         // Wiki pages (zwiki.js) open from each other in any order; they say
         // which way they're going with _navigatingForward or _navigatingBack.
-        if(/^(markerEdit|markerHistory|talk)-/.test(type)) return 3;
-        if(/^(markerRevision|userProfile)-/.test(type)) return 4;
+        if(/^(markerEdit|markerHistory|areaHistory|talk)-/.test(type) || type === 'areaNameEdit') return 3;
+        if(/^(markerRevision|areaRevision|userProfile)-/.test(type)) return 4;
         // Marker, area and category pages sit above the category list and
         // search results, so they slide in from the right and close back to
         // the left.
@@ -1631,6 +1634,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           (Number.parseFloat(drawerStyle.borderTopWidth) || 0) +
           (Number.parseFloat(drawerStyle.borderBottomWidth) || 0);
         if(pageSettles) {
+          this._settleWaitingForReady = waitForReady;
           // A page that loads its content after it opens (a list from the
           // server) would shrink to its Loading placeholder during the slide
           // and jump back when the content arrives. Instead fit the drawer
@@ -1638,6 +1642,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
           // changes (the list arrives, Show More appends rows), or after a
           // beat if it never does. The pin releases into the fit.
           var fitSettledHeight = function() {
+            if(this._settleWaitingForReady) return;
             if(this._settleFitTimer) {
               window.clearTimeout(this._settleFitTimer);
               this._settleFitTimer = null;

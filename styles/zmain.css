@@ -4400,6 +4400,14 @@ div.circle:has(>.icon-EoW_Echo) {
 	list-style: none;
 }
 
+.wiki-page .wiki-history-empty {
+	box-sizing: border-box;
+	width: 100%;
+	padding: 24px 16px;
+	text-align: center;
+	white-space: normal;
+}
+
 /* An empty list, like Bookmarks' (.bookmarks-empty). */
 .wiki-page .wiki-empty-state,
 #admin .wiki-empty-state {
@@ -5095,11 +5103,13 @@ div.circle:has(>.icon-EoW_Echo) {
 	font-size: 12px;
 }
 
-#marker_edit .admin-user-status:empty {
+#marker_edit .admin-user-status:empty,
+.area-name-edit-form .admin-user-status:empty {
 	display: none;
 }
 
-#marker_edit .marker-edit-form > .form-action-button {
+#marker_edit .marker-edit-form > .form-action-button,
+.menu-cat-content-inner form.area-name-edit-form > .form-action-button {
 	box-sizing: border-box;
 	width: 100%;
 	margin: 8px 0 0;
@@ -5107,13 +5117,15 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: white;
 }
 
-#marker_edit .marker-edit-form > .form-action-button:disabled {
+#marker_edit .marker-edit-form > .form-action-button:disabled,
+.area-name-edit-form > .form-action-button:disabled {
 	opacity: .45;
 	cursor: default;
 }
 
 /* Shown while an edit hasn't diverged from its marker, above the button. */
-#marker_edit .marker-edit-form .marker-edit-pending {
+#marker_edit .marker-edit-form .marker-edit-pending,
+.menu-cat-content-inner .wiki-page .area-name-edit-form .marker-edit-pending {
 	margin: 4px 0 0;
 	color: rgba(255,255,255,.6);
 	font-size: 13px;

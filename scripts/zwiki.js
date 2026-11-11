@@ -83,6 +83,7 @@ ZMap.prototype._showWikiPage = function(html, type, back, reopen, opts) {
   var control = this.mapControl;
   control._nextPageBack = back || null;
   control._nextPageSettles = !!(opts && opts.settles);
+  control._nextPageWaitForReady = !!(opts && opts.waitForReady);
   control._navigatingForward = !control._navigatingBack;
   control.setContent(html, type);
   if(control.viewStyleBottomSlide) {
@@ -98,6 +99,44 @@ ZMap.prototype._showWikiPage = function(html, type, back, reopen, opts) {
 ZMap.prototype._wikiError = function(xhr, fallback) {
   var data = xhr && xhr.responseJSON;
   return (data && data.msg) || fallback || 'Something went wrong. Try again.';
+};
+
+// Explicit completion also covers empty responses whose placeholder and
+// final content have the same height (so ResizeObserver doesn't fire).
+// Form primitives shared by marker, region/area, and Map Settings editors.
+ZMap.prototype._editorFieldHTML = function(icon, control, label) {
+  return (label ? '<label class="map-settings-label">' + this._wikiEscape(label) + '</label>' : '') +
+    '<div class="form-group"><div class="input-group">' +
+    '<span class="input-group-addon"><i class="fas ' + this._wikiEscape(icon) + '" aria-hidden="true"></i></span>' +
+    control + '</div></div>';
+};
+
+ZMap.prototype._editorSaveHTML = function(editing, label) {
+  return '<p class="admin-user-status" role="status" aria-live="polite"></p>' +
+    (editing ? '<p class="marker-edit-pending" role="status" aria-live="polite">No changes to save.</p>' : '') +
+    '<button type="submit" class="infoWindowIcn form-action-button"' + (editing ? ' disabled' : '') + '>' +
+    this._wikiEscape(label || 'Save Changes') + '</button>';
+};
+
+ZMap.prototype._editorNameError = function(value, maxLength, allowMarkup) {
+  value=String(value || '').trim();
+  return !value ? 'Enter a name.' : value.length > maxLength ? 'Use '+maxLength+' characters or fewer.' :
+    !allowMarkup && /[<>]/.test(value) ? 'Names cannot contain HTML.' : '';
+};
+
+ZMap.prototype._editorSaveState = function(form, dirty, valid, busy, label) {
+  form.find('button[type="submit"]').prop('disabled',!!busy || !valid || !dirty)
+    .text(busy ? 'Saving…' : label || 'Save Changes');
+  form.find('.marker-edit-pending').prop('hidden',!!dirty);
+};
+
+ZMap.prototype._wikiPageSettled = function(page) {
+  var control=this.mapControl;
+  window.requestAnimationFrame(function() {
+    if(!page || !control._contents.contains(page)) return;
+    control._settleWaitingForReady = false;
+    if(control._settleFit) control._settleFit();
+  });
 };
 
 ZMap.prototype._wikiGet = function(command, params) {
@@ -162,7 +201,9 @@ ZMap.prototype._wikiSetMarkerSubtitle = function(page, title, markerId, game, re
   row.find('.wiki-subtitle').text(title || '');
   row.find('.wiki-marker-pill').remove();
   if(!markerId || Number(reopen && reopen.fromMarker) === Number(markerId) || !this._wikiMarkerReachable(markerId, game)) return;
-  $('<button type="button" class="marker-coordinate-pill marker-region-pill wiki-marker-pill">Go to Marker' +
+  var marker=this.cachedMarkersById[markerId];
+  var isArea=marker && marker.categoryTypeId == 3;
+  $('<button type="button" class="marker-coordinate-pill marker-region-pill wiki-marker-pill">'+(isArea ? 'Go to Region' : 'Go to Marker') +
     '<i class="fas fa-chevron-right" aria-hidden="true"></i></button>')
     .on('click', function() { _this._openMarkerLink(Number(markerId), null, reopen, game); })
     .appendTo(row);
@@ -174,25 +215,28 @@ ZMap.prototype._wikiSetMarkerSubtitle = function(page, title, markerId, game, re
 
 // Under a POI's content: who added it, and Edit, History, Talk and Delete.
 // Editors only.
-ZMap.prototype._markerEditorToolsHTML = function(marker) {
-  if(!this._isWikiEditor() || !marker || !(marker.id > 0)) return '';
-  var canEdit = this._canEditMarker(marker);
+ZMap.prototype._markerEditorToolsHTML = function(marker, opts) {
+  opts=opts || {};
+  var viewer=this.getUser();
+  if(opts.regionMode ? !viewer || viewer.level < 10 : !this._isWikiEditor()) return '';
+  if(!marker || !(marker.id > 0)) return '';
+  var canEdit = opts.regionMode || this._canEditMarker(marker);
   var id = Number(marker.id);
   var button = function(action, icon, label, extra) {
     return '<button type="button" class="marker-editor-button' + (extra || '') + '" data-editor-action="' + action + '">' +
       '<i class="fas ' + icon + '" aria-hidden="true"></i><span>' + label + '</span></button>';
   };
-  return '<section class="marker-editor-tools" data-marker-id="' + id + '">' +
+  return '<section class="marker-editor-tools' + (opts.regionMode ? ' area-admin-actions' : '') + '" data-marker-id="' + id + '">' +
     '<div class="marker-editor-meta">' +
-      '<span>Marker #' + id + '</span>' +
+      '<span>' + this._wikiEscape(opts.identityLabel || 'Marker') + ' #' + id + '</span>' +
       (marker.userName ? '<span>Added by ' + this._wikiUserLink(marker.userId, marker.userName) + '</span>' : '') +
     '</div>' +
     '<div class="marker-editor-buttons">' +
       (canEdit ? button('edit', 'fa-pencil-alt', 'Edit') : '') +
       button('history', 'fa-history', 'History') +
-      button('talk', 'fa-comments', 'Talk') +
+      (opts.talk === false ? '' : button('talk', 'fa-comments', 'Talk')) +
       // Deleting isn't part of the editing beta (scripts/zbeta.js).
-      (canEdit && !this.getUser().betaEditor ? button('delete', 'fa-trash-alt', 'Delete', ' bad') : '') +
+      (canEdit && opts.allowDelete !== false && !this.getUser().betaEditor ? button('delete', 'fa-trash-alt', 'Delete', ' bad') : '') +
     '</div>' +
     '<div class="marker-editor-confirm" hidden>' +
       '<p>Delete this marker? It disappears from the map, and can be brought back from its History.</p>' +
@@ -202,6 +246,14 @@ ZMap.prototype._markerEditorToolsHTML = function(marker) {
       '</div>' +
     '</div>' +
   '</section>';
+};
+
+ZMap.prototype._wireEditorTools = function(tools, handler, back) {
+  this._wireWikiLinks(tools,back);
+  $(tools).on('click','[data-editor-action]',function(e) {
+    e.preventDefault();
+    handler.call(this,this.getAttribute('data-editor-action'),e);
+  });
 };
 
 // Adds (or updates) the footer on the open POI page, which may have opened
@@ -215,10 +267,7 @@ ZMap.prototype._refreshMarkerEditorTools = function(marker) {
   if(!html) return;
   $(page).append(html);
   var tools = page.querySelector('.marker-editor-tools');
-  this._wireWikiLinks(tools, this._wikiBackToMarker(marker.id));
-  $(tools).on('click', '[data-editor-action]', function(e) {
-    e.preventDefault();
-    var action = this.getAttribute('data-editor-action');
+  this._wireEditorTools(tools, function(action) {
     var back = _this._wikiBackToMarker(marker.id);
     if(action === 'edit') _this.editMarker(marker.id);
     else if(action === 'history') _this._openMarkerHistory(marker.id, back);
@@ -232,7 +281,7 @@ ZMap.prototype._refreshMarkerEditorTools = function(marker) {
       $(this).prop('disabled', true);
       _this.deleteMarker(marker.id);
     }
-  });
+  }, this._wikiBackToMarker(marker.id));
 };
 
 //************************************************************************//
@@ -296,7 +345,8 @@ ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game) {
       // Onward, from the page it was opened from.
       this.mapControl._navigatingForward = true;
     }
-    this.goTo({ marker: markerId });
+    if(marker.categoryTypeId == 3) this.navigateToArea(marker);
+    else this.goTo({ marker: markerId });
     return;
   }
   this._wikiGet('marker_history', { markerId: markerId }).done(function(data) {
@@ -322,6 +372,11 @@ ZMap.prototype._wikiMarkerURL = function(markerId, game, revisionId) {
 //  History                                                               //
 //************************************************************************//
 
+ZMap.prototype._wikiHistoryEmptyHTML = function() {
+  return '<li class="wiki-empty wiki-history-empty">No changes have been saved since history started being kept. ' +
+    'The first edit saves the current version here.</li>';
+};
+
 ZMap.prototype._openMarkerHistory = function(markerId, back) {
   var _this = this;
   back = back || this._wikiBackToMarker(markerId);
@@ -336,7 +391,7 @@ ZMap.prototype._openMarkerHistory = function(markerId, back) {
     'markerHistory-' + markerId,
     back,
     reopen,
-    { settles: true }
+    { settles: true, waitForReady: true }
   );
   this._wikiGet('marker_history', { markerId: markerId }).done(function(data) {
     var list = $(page).find('.wiki-revisions').empty();
@@ -346,8 +401,7 @@ ZMap.prototype._openMarkerHistory = function(markerId, back) {
     }
     _this._wikiSetMarkerSubtitle(page, data.marker.title, markerId, data.marker.game, reopen);
     if(!data.revisions.length) {
-      list.append('<li class="wiki-empty">No changes have been saved since history started being kept. ' +
-        'The first edit saves the current version here.</li>');
+      list.append(_this._wikiHistoryEmptyHTML());
       return;
     }
     data.revisions.forEach(function(revision, index) {
@@ -359,7 +413,7 @@ ZMap.prototype._openMarkerHistory = function(markerId, back) {
     });
   }).fail(function(xhr) {
     $(page).find('.wiki-revisions').empty().append($('<li class="wiki-empty"></li>').text(_this._wikiError(xhr)));
-  });
+  }).always(function() { _this._wikiPageSettled(page); });
 };
 
 // One row of History or a profile's recent changes.

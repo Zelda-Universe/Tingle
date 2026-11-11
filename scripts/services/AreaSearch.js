@@ -4,7 +4,7 @@ ZMap.prototype.getAreaSearchEntries = function() {
   this._attachAreaBorders();
   this.maps.forEach(function(layer) {
     var mapKey='map:'+layer.originalId;
-    var mapEntry={id:'map-'+layer.originalId,name:layer.mapName || layer.title,description:'Map',
+    var mapEntry={id:'map-'+layer.originalId,name:layer.mapName || layer.title,description:layer.mapDescription || '',
       areaDestination:true,mapDestination:true,mapId:layer.originalId,submapId:layer.defaultSubMapId,
       x:Number(this.mapOptions.centerX),y:Number(this.mapOptions.centerY),
       iconURL:layer.options.iconURL,variant:layer.submapName || '',markerCategoryTypeId:3};
@@ -18,7 +18,7 @@ ZMap.prototype.getAreaSearchEntries = function() {
       var key=layer.originalId+':'+region.name;
       if(seen[key] !== undefined) return;
       seen[key]=entries.length;
-      entries.push({id:'area-'+layer.originalId+'-'+encodeURIComponent(region.name),name:region.name,description:'',
+      entries.push({id:'area-'+layer.originalId+'-'+encodeURIComponent(region.name),name:region.name,description:region.description || '',
         mapId:layer.originalId,submapId:region.submapId,x:region.x,y:region.y,
         markerCategoryTypeId:3,areaDestination:true,bounds:region.bounds,region:region});
     });
@@ -194,7 +194,7 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
   var pills=$('<div class="area-header-pills"></div>').insertAfter(page.find('h2'));
   if(variant) pills.append($('<p class="area-variant-pill marker-coordinate-pill"></p>').text(variant));
   var description=area.description;
-  if(area.mapDestination && description==='Map') description='Explore '+area.name+' and browse its points of interest by category.';
+  if(area.mapDestination && description==='Map') description='';
   page.find('.area-description').text(description || '').toggle(!!description);
   var groups=Object.create(null);
   var areaMarkers=this._getAreaMarkers(area,bounds);
@@ -232,12 +232,137 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
     });
     content.append(group);
   });
+  var viewer = this.getUser && this.getUser();
+  if(viewer && viewer.level >= 10) {
+    var label=this._areaLabelMarker(area), target=this._areaHistoryTarget(area);
+    var edit=$(this._markerEditorToolsHTML(label || {id:target.id},{regionMode:true,allowDelete:false,talk:!!label,
+      identityLabel:label?'Marker':target.kind==='map'?'Map':'Region'}));
+    var back=function() {control._navigatingBack=true;zmap._showAreaPage(area,bounds);};
+    if(label) back.fromMarker=Number(label.id);
+    this._wireEditorTools(edit,function(action) {
+      if(action==='edit') zmap._editAreaName(area,bounds);
+      else if(action==='history') {
+        if(label) zmap._openMarkerHistory(label.id,back);
+        else zmap._openAreaHistory(area,bounds);
+      } else if(action==='talk' && label) zmap._openTalk('marker',label.id,label.title || label.name,back);
+    },back);
+    page.append(edit);
+  }
   // Direct children are the same structure used by POIs. This enables the
   // shared scrolling title and coordinate-pill compact header.
   control.setContent(page.contents(),'area-'+area.id+'-variant-'+area.submapId);
   var wrapper=control._contents.querySelector('.menu-cat-content-inner');
   if(wrapper) wrapper.classList.add('area-detail-page');
   this.updateRegionBorders();
+};
+
+ZMap.prototype._areaLabelMarker = function(area) {
+  if((area.categoryTypeId == 3 || area.markerCategoryTypeId == 3) && /^\d+$/.test(String(area.id))) return this.cachedMarkersById && this.cachedMarkersById[area.id] || area;
+  return area.region && area.region.label || null;
+};
+
+ZMap.prototype._areaHistoryTarget = function(area) {
+  var region=area.region;
+  var kind=area.mapDestination ? 'map' : region && region.id ? 'region' : 'marker';
+  var id=kind==='map' ? area.mapId : kind==='region' ? region.id : area.id;
+  // Synthetic dungeon regions represent the map itself.
+  if(!/^\d+$/.test(String(id))) { kind='map'; id=area.mapId; }
+  return {kind:kind,id:id};
+};
+
+ZMap.prototype._openAreaHistory = function(area, bounds) {
+  var zmap=this, target=this._areaHistoryTarget(area);
+  var back=function() {zmap.mapControl._navigatingBack=true;zmap._showAreaPage(area,bounds);};
+  var reopen=this._wikiReopen(function() {zmap._openAreaHistory(area,bounds);},back,'History');
+  var page=this._showWikiPage('<div id="marker_history" class="wiki-page"><h3 class="text-center">History</h3>'+
+    '<div class="area-header-pills wiki-subtitle-row"><p class="wiki-subtitle"></p></div>'+
+    '<ul class="wiki-revisions"><li class="wiki-empty">Loading…</li></ul></div>',
+    'areaHistory-'+target.kind+'-'+target.id,back,reopen,{settles:true,waitForReady:true});
+  $(page).find('.wiki-subtitle').text(area.title || area.name);
+  this._wikiGet('admin_area_history',target).done(function(data) {
+    var list=$(page).find('.wiki-revisions').empty();
+    if(!data.success) {list.append($('<li class="wiki-empty"></li>').text(data.msg));return;}
+    if(!data.revisions.length) list.append(zmap._wikiHistoryEmptyHTML());
+    data.revisions.forEach(function(revision,index) {
+      var row=zmap._wikiRevisionRow(revision,{current:index===0});
+      row.find('.wiki-revision').on('click',function(e) {
+        if($(e.target).closest('a.wiki-link').length) return;
+        var detail=zmap._showWikiPage('<div id="marker_revision" class="wiki-page"><h3 class="text-center">Revision '+Number(revision.id)+'</h3>'+
+          '<div class="area-header-pills wiki-subtitle-row"><p class="wiki-subtitle"></p></div><div class="wiki-revision-body"></div></div>',
+          'areaRevision-'+revision.id,reopen,null,{settles:true,waitForReady:true});
+        $(detail).find('.wiki-subtitle').text(area.title || area.name);
+        var meta='<section class="wiki-card wiki-revision-meta"><div class="wiki-revision-top">'+zmap._wikiActionBadge('edit')+
+          (index===0?'<span class="wiki-current">Current</span>':'')+'</div><p>'+zmap._wikiUserLink(revision.userId,revision.username)+
+          ' · '+zmap._wikiEscape(zmap._wikiAgo(revision.ago))+'</p>'+
+          (revision.summary?'<p class="wiki-revision-summary">'+zmap._renderWikiText(revision.summary)+'</p>':'')+'</section>';
+        $(detail).find('.wiki-revision-body').append(meta+zmap._wikiDiffHTML(
+          {title:revision.data.before && revision.data.before.name,description:revision.data.before && revision.data.before.description},
+          {title:revision.data.after && revision.data.after.name,description:revision.data.after && revision.data.after.description}));
+        zmap._wikiPageSettled(detail);
+      });
+      list.append(row);
+    });
+  }).fail(function(xhr) {$(page).find('.wiki-revisions').empty().append($('<li class="wiki-empty"></li>').text(zmap._wikiError(xhr)));})
+    .always(function() {zmap._wikiPageSettled(page);});
+};
+
+ZMap.prototype._editAreaName = function(area, bounds) {
+  var zmap=this, target=this._areaHistoryTarget(area), kind=target.kind, id=target.id;
+  var back=function() {
+    zmap.mapControl._navigatingBack=true;
+    zmap._showAreaPage(area,bounds);
+  };
+  var page=this._showWikiPage('<div id="map_settings_item" class="wiki-page"><h3 class="text-center">Edit '+(kind==='map'?'Map':kind==='region'?'Region':'Area')+'</h3>'+
+    '<p class="wiki-subtitle"></p><form class="map-settings-form area-name-edit-form">'+
+    this._mapSettingsField('Name','fa-heading','<input type="text" class="form-control" id="area_edit_name" name="name" maxlength="45" required aria-describedby="area_name_validation">'+
+      '<span class="password-validation-icon" aria-hidden="true"></span>')+
+    '<p id="area_name_validation" class="area-name-validation" role="status" aria-live="polite"></p>'+
+    this._mapSettingsField('Description','fa-align-left','<textarea class="form-control" name="description" maxlength="5000" rows="4"></textarea>')+
+    this._mapSettingsField('Summary','fa-comment','<input type="text" class="form-control" name="summary" maxlength="255" placeholder="What changed and why (optional)">')+
+    this._editorSaveHTML(true)+'</form></div>',
+    'areaNameEdit',back);
+  var form=$(page).find('form');
+  var original=(area.title || area.name || '').trim(), originalDescription=area.description==='Map' ? '' : (area.description || '').trim(), busy=false, touched=false;
+  $(page).find('.wiki-subtitle').text(original);
+  $(page).find('.map-settings-label').first().attr('for','area_edit_name');
+  var input=form.find('[name=name]'), button=form.find('[type=submit]');
+  input.val(original);
+  form.find('[name=description]').val(originalDescription);
+  var validate=function() {
+    var value=input.val().trim();
+    var error=zmap._editorNameError(value,45,false);
+    var showError=touched && !!error;
+    input.attr('aria-invalid',showError ? 'true' : 'false');
+    input.closest('.input-group').toggleClass('area-name-invalid',showError);
+    form.find('.password-validation-icon').html(showError ? '<i class="fas fa-times"></i>' : '');
+    form.find('.area-name-validation').text(showError ? error : '');
+    var dirty=value!==original || form.find('[name=description]').val().trim()!==originalDescription;
+    zmap._editorSaveState(form,dirty,!error,busy);
+    return !error && dirty;
+  };
+  input.on('input',function() {touched=true; form.find('.admin-user-status').text(''); validate();});
+  form.find('[name=description]').on('input',validate);
+  validate();
+  form.on('submit',function(e) {
+    e.preventDefault();
+    touched=true;
+    if(busy || !validate()) return;
+    busy=true; validate();
+    zmap._wikiPost('admin_area_name',{kind:kind,id:id,name:form.find('[name=name]').val(),description:form.find('[name=description]').val(),summary:form.find('[name=summary]').val()}).done(function(result) {
+      if(!result.success) {
+        busy=false; validate();
+        form.find('[role=status]').text(result.msg); return;
+      }
+      var renamed=Object.assign({},area,{name:result.name,title:result.name});
+      var url=new URL(window.location.href);
+      url.searchParams.delete('page');
+      url.searchParams.set('area',zmap.areaURLKey(renamed));
+      window.location.assign(url.href);
+    }).fail(function(xhr) {
+      busy=false; validate();
+      form.find('[role=status]').text(zmap._wikiError(xhr));
+    });
+  });
 };
 
 ZMap.prototype.updateAreaCompletionCounts = function() {
@@ -337,7 +462,7 @@ ZMap.prototype._layerRegions = function(layer) {
     if(layer._regions) return layer._regions;
     var box = L.latLngBounds(layer.mapBounds || this._tilePyramidBounds());
     var south = box.getSouth(), north = box.getNorth(), west = box.getWest(), east = box.getEast();
-    return layer._regions = [{name: layer.mapName, shortName: layer.mapName, kind: 'area',
+    return layer._regions = [{name: layer.mapName, shortName: layer.mapName, description:layer.mapDescription || '', kind: 'area',
       submapId: layer.defaultSubMapId, bounds: [[south,west],[north,east]],
       x: (west+east)/2, y: (south+north)/2, size: (north-south)*(east-west),
       rings: [[[[south,west],[south,east],[north,east],[north,west],[south,west]]]]}];
@@ -368,7 +493,7 @@ ZMap.prototype._layerRegions = function(layer) {
         });
       });
       if(!Number.isFinite(south)) return;
-      regions.push({name:region.name,shortName:region.shortName || region.name,kind:region.kind || 'tower',submapId:entry.submapId,rings:rings,size:size,
+      regions.push({id:region.id,labelMarkerId:region.labelMarkerId,name:region.name,connectionKey:region.connectionKey || region.name,shortName:region.shortName || region.name,description:region.description || '',kind:region.kind || 'tower',submapId:entry.submapId,rings:rings,size:size,
         bounds:[[south,west],[north,east]],x:(west+east)/2,y:(south+north)/2});
     });
   });
@@ -420,7 +545,7 @@ ZMap.prototype._attachAreaBorders = function() {
   (this.maps || []).forEach(function(layer) {
     this._layerRegions(layer).forEach(function(region) {
       if(region.kind !== 'area') return;
-      var label=labels[region.submapId+':'+region.name] || labels[region.submapId+':'+region.shortName];
+      var label=region.labelMarkerId ? markers.find(function(marker) {return marker.id==region.labelMarkerId && marker.submapId==region.submapId;}) : labels[region.submapId+':'+region.name] || labels[region.submapId+':'+region.shortName];
       region.label=label || null;
       if(label) {label.region=region; label.bounds=region.bounds;}
     });
@@ -454,7 +579,7 @@ ZMap.prototype.updateRegionBorders = function() {
   if(/^category-/.test(control.getContentType() || '') && this._categoryZoomRegion) open=this._categoryZoomRegion;
   var showAll=!!this.showRegionBorders;
   regions.forEach(function(region) {
-    var selected=!!open && open.name===region.name && open.submapId==region.submapId;
+    var selected=!!open && (open.id && region.id ? open.id==region.id : open.name===region.name && open.submapId==region.submapId);
     // "Show Region Borders" shows the tower regions; an area's border shows
     // while its page is open.
     if(!selected && !(showAll && region.kind === 'tower')) return;

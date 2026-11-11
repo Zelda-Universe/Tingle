@@ -7,11 +7,14 @@ const ZWIKI=file('zwiki.js');
 // shrinks to the Loading placeholder and jumps back when the content
 // arrives (scripts/controls/ZLayers.js pins the height until it settles).
 // The contract below forces that choice for every page.
-const FILES=['zwiki.js','zbeta.js','znotifications.js','zreports.js','zmapsettings.js'];
+const FILES=['zwiki.js','zbeta.js','znotifications.js','zreports.js','zmapsettings.js','services/AreaSearch.js'];
 // [test, expects the settles flag]
 const PAGE_RULES=[
   [/markerHistory-/, true],
   [/markerRevision-/, true],
+  [/areaHistory-/, true],
+  [/areaRevision-/, true],
+  [/'areaNameEdit'/, false],
   [/'talk-'/, true],
   [/'notificationsPage'/, true],
   [/'notificationSettingsPage'/, true],
@@ -76,4 +79,25 @@ test('_showWikiPage marks settling pages for the drawer',()=>{
   expect(page.mapControl._nextPageBack).toBe(back);
   page._showWikiPage('<div></div>','allChanges',back,'reopen',{settles:true});
   expect(page.mapControl._nextPageSettles).toBe(true);
+  page._showWikiPage('<div></div>','areaHistory-region-1',back,null,{settles:true,waitForReady:true});
+  expect(page.mapControl._nextPageWaitForReady).toBe(true);
+});
+
+test('history loading cannot release the pinned drawer until its response is ready',()=>{
+  const source=fs.readFileSync(require('path').join(__dirname,'../scripts/controls/ZLayers.js'),'utf8');
+  const start=source.indexOf('var fitSettledHeight = function()');
+  const end=source.indexOf('}.bind(this);',start)+'}.bind(this);'.length;
+  const style={height:'500px'};
+  const context={_settleWaitingForReady:true,_settleHeightPinned:true,
+    _container:{style,getBoundingClientRect:()=>({height:style.height?500:600}),animate:jest.fn()},
+    verticalExtras:0,timing:{easing:'ease'},window:{clearTimeout:jest.fn()}};
+  vm.runInNewContext(source.slice(start,end),context);
+  context.fitSettledHeight();
+  expect(style.height).toBe('500px');
+  expect(context._container.animate).not.toHaveBeenCalled();
+  context._settleWaitingForReady=false;
+  context.fitSettledHeight();
+  expect(style.height).toBe('');
+  expect(context._container.animate).toHaveBeenCalledTimes(1);
+  expect(context._container.animate.mock.calls[0][0].map(frame=>frame.height)).toEqual(['500px','600px']);
 });

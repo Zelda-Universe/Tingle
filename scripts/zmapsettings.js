@@ -586,10 +586,7 @@ ZMap.prototype._renameMapSettingsSection = function(group, root, changed, isNew)
 //************************************************************************//
 
 ZMap.prototype._mapSettingsField = function(label, icon, control) {
-  return '<label class="map-settings-label">' + label + '</label>' +
-    '<div class="form-group"><div class="input-group">' +
-      '<span class="input-group-addon"><i class="fas ' + icon + '" aria-hidden="true"></i></span>' + control +
-    '</div></div>';
+  return this._editorFieldHTML(icon, control, label);
 };
 
 ZMap.prototype._openMapSettingsMap = function(map, back) {

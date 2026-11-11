@@ -1,0 +1,2 @@
+ALTER TABLE `map_region` ADD COLUMN IF NOT EXISTS `description` TEXT NULL;
+ALTER TABLE `map` ADD COLUMN IF NOT EXISTS `description` TEXT NULL;

@@ -359,6 +359,7 @@ ZMap.prototype.addMap = function(vMap) {
        layer.defaultSubMapId = submap.id;
        layer.mapKind = vMap.kind;
        layer.mapName = vMap.name;
+       layer.mapDescription = vMap.description || '';
        layer.submapName = variantName;
        // Its named regions and areas with borders (map_region), as for every game.
        layer.submapRegions = this._submapRegionData([submap]);
@@ -408,6 +409,7 @@ ZMap.prototype.addMap = function(vMap) {
     tLayer.id               = 'mID' + vMap.id   ;
     tLayer.originalId       = vMap.id           ;
     tLayer.title            = vMap.name         ;
+    tLayer.mapDescription   = vMap.description || '';
     tLayer._overlayMap      = []                ;
     // Named regions with borders, as get_map serves them (AreaSearch.js).
     tLayer.submapRegions    = this._submapRegionData(vMap.subMap);
@@ -435,6 +437,7 @@ ZMap.prototype.addMap = function(vMap) {
     tLayer.id          = 'mID' + vMap.id;
     tLayer.originalId  = vMap.id;
     tLayer.title       = vMap.name;
+    tLayer.mapDescription = vMap.description || '';
     tLayer._overlayMap = [];
     tLayer.submapRegions = this._submapRegionData(vMap.subMap);
     tLayer.defaultSubMapId = vMap.subMap[0].id;
@@ -3347,11 +3350,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   var editing = vMarker != null;
   var isEditor = user.level >= 5;
   var esc = this._wikiEscape.bind(this);
-  var field = function(icon, control) {
-    return '<div class="form-group"><div class="input-group">' +
-      '<span class="input-group-addon"><i class="fas ' + icon + '" aria-hidden="true"></i></span>' +
-      control + '</div></div>';
-  };
+  var field = this._editorFieldHTML.bind(this);
   var categoryOptions = this.categoriesArr.map(function(entry) {
     return '<option value="' + esc(entry.id) + '">' + esc(entry.name) + '</option>';
   }).join('');
@@ -3412,9 +3411,7 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
         '<input type="hidden" name="userId" value="' + esc(user.id) + '" />' +
         (editing ? '<input type="hidden" name="markerId" value="' + esc(vMarker.id) + '" />' : '') +
         '<input type="hidden" name="submapId" value="' + esc(submapId) + '" />' +
-        '<p class="admin-user-status" role="status" aria-live="polite"></p>' +
-        (editing ? '<p class="marker-edit-pending" role="status" aria-live="polite">No changes to save.</p>' : '') +
-        '<button type="submit" class="infoWindowIcn form-action-button"' + (editing ? ' disabled' : '') + '>' + (editing ? 'Save Changes' : 'Add Marker') + '</button>' +
+        this._editorSaveHTML(editing, editing ? 'Save Changes' : 'Add Marker') +
       '</form>' +
     '</div>';
 
@@ -3612,11 +3609,9 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       });
     };
     var markerBaseline = markerSnapshot();
-    var markerPending = form.find('.marker-edit-pending');
     updateMarkerDirty = function() {
       var dirty = markerSnapshot() !== markerBaseline;
-      markerSubmit.prop('disabled', !dirty);
-      markerPending.prop('hidden', dirty);
+      _this._editorSaveState(form, dirty, !_this._editorNameError(form.find('#markerTitle').val(), 255, true), false);
     };
     form.on('input change', updateMarkerDirty);
     updateMarkerDirty();

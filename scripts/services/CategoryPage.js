@@ -146,6 +146,7 @@ ZMap.prototype._showCategoryPage = function(category) {
 };
 
 ZMap.prototype.sortCategoryRegionsForCurrentMap = function() {
+  if(this._preserveCategoryRegionOrder) return;
   var control = this.mapControl;
   if(!control || !/^category-/.test(control.getContentType() || '')) return;
   var root = control._contents.querySelector('.area-marker-groups');
@@ -186,7 +187,10 @@ ZMap.prototype.zoomToCategoryRegion = function(markers, regionName) {
   }
   try { bounds = bounds && L.latLngBounds(bounds); } catch(e) { bounds = null; }
   if(!bounds || !bounds.isValid()) return;
-  control.changeMapOnly(first.mapId, targetSubmap);
+  var preserveOrder = this._preserveCategoryRegionOrder;
+  this._preserveCategoryRegionOrder = true;
+  try { control.changeMapOnly(first.mapId, targetSubmap); }
+  finally { this._preserveCategoryRegionOrder = preserveOrder; }
   this._categoryZoomRegion = !isOcarina(this.mapOptions.shortName) ? region : null;
   if(this.updateRegionBorders) this.updateRegionBorders();
   var rect = map.getContainer().getBoundingClientRect();

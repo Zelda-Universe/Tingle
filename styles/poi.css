@@ -344,6 +344,9 @@
 .search-area-preview { display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:8px; background:#b99b4b; color:#fff; font-size:36px; }
 .area-marker-groups .marker-list { padding:0; margin:0; list-style:none; }
 .area-empty-state { padding:0 24px 24px; }
+.area-name-edit-form .input-group.area-name-invalid { box-shadow:inset 0 0 0 1px #ff8c85; }
+.area-name-validation { color:#ff8c85; font-size:12px; margin:8px 0 0; }
+.area-name-validation:empty { display:none; }
 .area-marker-list-entry .icon { position:relative; }
 .area-marker-check { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; color:white; font-size:28px; text-shadow:0 1px 3px #000,0 0 5px #000; }
 .area-marker-completed .icon > .category-icon, .area-marker-completed .icon > img { opacity:.45; }

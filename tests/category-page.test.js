@@ -89,7 +89,14 @@ test('region Zoom fits named area boundaries, not the marker cluster', () => {
     map:{options:{},getContainer:()=>({getBoundingClientRect:()=>({bottom:600})}),fitBounds:jest.fn(),getMaxZoom:()=>8},
     mapControl:{getCurrentMap:()=>({mapId:64024,subMapId:640061}),changeMapOnly:jest.fn(),getContainer:()=>({getBoundingClientRect:()=>({top:400})})}
   });
+  map.mapControl.changeMapOnly.mockImplementation(()=>{
+    expect(map._preserveCategoryRegionOrder).toBe(true);
+    // A map switch fires the normal sorting hook, but Zoom must leave the
+    // section the user scrolled to exactly where it was.
+    expect(()=>map.sortCategoryRegionsForCurrentMap()).not.toThrow();
+  });
   map.zoomToCategoryRegion([marker(1,11,{mapId:64024,submapId:640061})],'Fire Temple');
+  expect(map._preserveCategoryRegionOrder).toBeUndefined();
   expect(convert).toHaveBeenCalledWith(rawBounds);
   expect(map.map.fitBounds).toHaveBeenCalledWith(bounds,expect.any(Object));
   expect(map.getMarkerRegion).not.toHaveBeenCalled();

@@ -2,6 +2,12 @@ const fs=require('fs'),vm=require('vm');
 const file=(name)=>fs.readFileSync(require('path').join(__dirname,'../scripts/'+name),'utf8');
 const ZWIKI=file('zwiki.js');
 
+test('talk pages keep the drawer height pinned until comments finish loading',()=>{
+  const talk=ZWIKI.slice(ZWIKI.indexOf('ZMap.prototype._openTalk ='),ZWIKI.indexOf('ZMap.prototype._renderTalkThread ='));
+  expect(talk).toContain('{ settles: true, waitForReady: true }');
+  expect(talk).toContain('}).always(function() { _this._wikiPageSettled(page); });');
+});
+
 // Every wiki page opens through _showWikiPage. Pages whose content loads
 // from the server after the slide must say so (opts.settles), or the drawer
 // shrinks to the Loading placeholder and jumps back when the content

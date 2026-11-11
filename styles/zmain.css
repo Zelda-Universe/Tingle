@@ -4392,15 +4392,28 @@ div.circle:has(>.icon-EoW_Echo) {
 	margin-bottom: 0;
 }
 
+.centered-empty-state,
+.admin-log li.centered-empty-state {
+	box-sizing: border-box;
+	padding: 24px 16px;
+	text-align: center;
+	align-items: center;
+	list-style: none;
+}
+
 .wiki-page .wiki-empty {
 	margin: 0;
-	padding: 8px 0;
+	padding: 24px 16px;
+	box-sizing: border-box;
+	text-align: center;
+	white-space: normal;
 	color: rgba(255,255,255,.6);
 	font-size: 14px;
 	list-style: none;
 }
 
-.wiki-page .wiki-history-empty {
+.wiki-page .wiki-history-empty,
+.wiki-page .wiki-thread > .wiki-empty {
 	box-sizing: border-box;
 	width: 100%;
 	padding: 24px 16px;
@@ -6670,6 +6683,7 @@ div.circle:has(>.icon-EoW_Echo) {
 	border-radius: 12px;
 	color: rgba(255,255,255,.55);
 	font-size: 13px;
+	text-align: center;
 }
 .map-settings-item {
 	display: flex;

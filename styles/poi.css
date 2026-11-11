@@ -343,7 +343,7 @@
 .search-map-preview { width:64px; height:64px; object-fit:cover; border-radius:8px; }
 .search-area-preview { display:flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:8px; background:#b99b4b; color:#fff; font-size:36px; }
 .area-marker-groups .marker-list { padding:0; margin:0; list-style:none; }
-.area-empty-state { padding:0 24px 24px; }
+.area-empty-state { padding:0 24px 24px; text-align:center; }
 .area-name-edit-form .input-group.area-name-invalid { box-shadow:inset 0 0 0 1px #ff8c85; }
 .area-name-validation { color:#ff8c85; font-size:12px; margin:8px 0 0; }
 .area-name-validation:empty { display:none; }

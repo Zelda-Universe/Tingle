@@ -699,7 +699,9 @@ ZMap.prototype._wikiPreviewHTML = function(snapshot) {
 ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
   var _this = this;
   opts = opts || {};
-  var reopen = this._wikiReopen(function() { _this._openTalk(pageType, pageId, title, back); }, back, 'Talk');
+  var talkMarker = pageType === 'marker' && this.cachedMarkersById && this.cachedMarkersById[pageId];
+  var isRegion = opts.region || talkMarker && talkMarker.categoryTypeId == 3;
+  var reopen = this._wikiReopen(function() { _this._openTalk(pageType, pageId, title, back, opts); }, back, 'Talk');
   var page = this._showWikiPage(
     '<div id="wiki_talk" class="wiki-page">' +
       '<h3 class="text-center">Talk</h3>' +
@@ -709,7 +711,7 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
         '<div class="form-group"><div class="input-group">' +
           '<span class="input-group-addon"><i class="fas fa-comment" aria-hidden="true"></i></span>' +
           '<textarea class="form-control" name="body" rows="3" maxlength="5000" required ' +
-            'placeholder="' + (pageType === 'user' ? 'Leave a message' : 'Start a discussion about this marker') + '"></textarea>' +
+            'placeholder="' + (pageType === 'user' ? 'Leave a message' : 'Start a discussion about this ' + (isRegion ? 'region' : 'marker')) + '"></textarea>' +
         '</div></div>' +
         '<p class="wiki-hint">Link with <code>[[rev:123]]</code>, <code>[[marker:45]]</code> or <code>[[user:name]]</code>.</p>' +
         '<button type="submit" class="infoWindowIcn form-action-button">Post</button>' +
@@ -719,7 +721,7 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
     'talk-' + pageType + '-' + pageId,
     back,
     reopen,
-    { settles: true }
+    { settles: true, waitForReady: true }
   );
   if(pageType === 'marker') this._wikiSetMarkerSubtitle(page, title, pageId, null, reopen);
   else $(page).find('.wiki-subtitle').text(title || '');
@@ -766,7 +768,7 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
       }
     }).fail(function(xhr) {
       thread.empty().append($('<li class="wiki-empty"></li>').text(_this._wikiError(xhr)));
-    });
+    }).always(function() { _this._wikiPageSettled(page); });
   };
   var post = function(form, parentId) {
     var textarea = form.find('textarea');

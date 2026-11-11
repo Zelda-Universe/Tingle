@@ -244,7 +244,7 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
       else if(action==='history') {
         if(label) zmap._openMarkerHistory(label.id,back);
         else zmap._openAreaHistory(area,bounds);
-      } else if(action==='talk' && label) zmap._openTalk('marker',label.id,label.title || label.name,back);
+      } else if(action==='talk' && label) zmap._openTalk('marker',label.id,label.title || label.name,back,{region:true});
     },back);
     page.append(edit);
   }

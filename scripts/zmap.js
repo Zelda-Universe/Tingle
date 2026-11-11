@@ -5763,7 +5763,7 @@ ZMap.prototype._adminTopMarkers = function(data, range) {
   ));
   var top = data.top || [];
   if(!top.length) {
-    nodes.append($('<p class="admin-muted"></p>').text(completes ? 'No markers completed in this time frame.' : 'No markers bookmarked in this time frame.'));
+    nodes.append($('<p class="admin-muted centered-empty-state"></p>').text(completes ? 'No markers completed in this time frame.' : 'No markers bookmarked in this time frame.'));
   } else {
     var max = top[0].people || 1;
     var list = $('<ol class="admin-offline-list admin-top-list"></ol>');
@@ -5818,7 +5818,7 @@ ZMap.prototype._adminOfflineGames = function(data) {
   var nodes = $('<div class="admin-offline"></div>');
   nodes.append('<h4 class="admin-offline-heading">Most Saved Games</h4>');
   if(!games.length) {
-    nodes.append('<p class="admin-muted">No offline maps downloaded yet.</p>');
+    nodes.append('<p class="admin-muted centered-empty-state">No offline maps downloaded yet.</p>');
     return nodes;
   }
   var max = Math.max.apply(null, games.map(function(g) { return g.people; })) || 1;
@@ -5908,7 +5908,7 @@ ZMap.prototype._adminFeatureUsage = function(data) {
     );
     grid.append(tile);
   });
-  if(!grid.children().length) return $('<p class="admin-muted">Nothing to show yet.</p>');
+  if(!grid.children().length) return $('<p class="admin-muted centered-empty-state">Nothing to show yet.</p>');
   return grid;
 };
 
@@ -6119,7 +6119,7 @@ ZMap.prototype._createAdminUserPage = function(account) {
     if(!logAvailable) {
       list.append($('<li class="admin-muted"></li>').text('The change log needs the admin_accounts migration.'));
     } else if(!log.length) {
-      list.append($('<li class="admin-muted"></li>').text('No changes by admins yet.'));
+      list.append($('<li class="admin-muted centered-empty-state"></li>').text('No changes by admins yet.'));
     }
     log.forEach(function(entry) {
       var item = $('<li><span class="admin-log-what"></span><span class="admin-log-when admin-muted"></span></li>');
@@ -7347,7 +7347,7 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
 
   $.getJSON('ajax.php?command=get_offline_maps&mode=list', function(data) {
     if(!data.success || !data.games || !data.games.length) {
-      list.empty().append('<p class="offline-map-status error">No offline maps are currently available.</p>');
+      list.empty().append('<p class="offline-map-status error centered-empty-state">No offline maps are currently available.</p>');
       return;
     }
     if(!knownGames.length) list.empty();

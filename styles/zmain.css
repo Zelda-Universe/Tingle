@@ -4385,6 +4385,7 @@ div.circle:has(>.icon-EoW_Echo) {
 }
 
 .wiki-page a,
+.account-credit a,
 .marker-editor-tools a {
 	color: #8fd8ff;
 }

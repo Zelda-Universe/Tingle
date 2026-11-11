@@ -289,16 +289,19 @@ ZMap.prototype._applyEditingBeta = function(data) {
 //************************************************************************//
 
 // game: a game's short name, or null for every game.
-ZMap.prototype._openRecentChanges = function(game, back) {
+ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
   var _this = this;
   var title = game ? 'Recent Edits' : 'All Changes';
-  var reopen = this._wikiReopen(function() { _this._openRecentChanges(game, back); }, null, title);
+  activityFilter=activityFilter || 'all';
+  var reopen = this._wikiReopen(function() { _this._openRecentChanges(game, back,activityFilter); }, null, title);
+  // Serializable counterpart for comment links that switch games.
+  Object.defineProperty(reopen,'activitySource',{get:function() {return {type:'recent',game:game || '',filter:activityFilter};}});
   var page = this._showWikiPage(
     '<div id="recent_changes" class="wiki-page">' +
       '<h3 class="text-center">' + title + '</h3>' +
       '<p class="wiki-subtitle">' + (game ? 'Community edits to the ' + this._wikiEscape(game === this.mapOptions.shortName ? (this.mapOptions.name || game) : game) + ' map'
         : 'Community edits to every map') + '</p>' +
-      '<ul class="wiki-revisions"><li class="wiki-empty">Loading…</li></ul>' +
+      this._activityFilterHTML(activityFilter)+'<ul class="wiki-revisions"><li class="wiki-empty">Loading…</li></ul>' +
       '<button type="button" class="infoWindowIcn form-action-button recent-changes-more" hidden>Show More</button>' +
     '</div>',
     game ? 'recentChanges-' + game : 'allChanges',
@@ -310,9 +313,33 @@ ZMap.prototype._openRecentChanges = function(game, back) {
   var more = $(page).find('.recent-changes-more');
   var editor = this._editingRole() === 'editor';
   var oldest = 0;
+  var request=0;
+  var activityCache={};
+  var renderActivity=function(data) {
+    list.empty();
+    if(!data.success) { list.append($('<li class="wiki-empty"></li>').text(data.msg)); return; }
+    if(!data.changes.length) list.append('<li class="wiki-empty-state"><div class="wiki-empty-state-title">No Activity Yet</div><p>'+(activityFilter==='talk'?'Talk comments':activityFilter==='edits'?'Edits':'Community activity')+' will show up here.</p></li>');
+    data.changes.forEach(function(change) {
+      var row=_this._wikiActivityRow(change,{markerTitle:change.markerTitle+(game || !change.gameName?'':' · '+change.gameName)});
+      row.find('.wiki-revision').attr({'data-marker':change.markerId,'data-game':change.game,'data-revision-type':change.revisionType || 'marker'});
+      list.append(row);
+      oldest=change.cursor || change.id;
+    });
+    more.prop('hidden',!data.more).prop('disabled',false);
+  };
+  ['all','edits','talk'].forEach(function(filter) {
+    if(filter===activityFilter) return;
+    _this._wikiGet('recent_changes',{game:game || '',before:'',filter:filter}).done(function(data) {
+      if(data.success) activityCache[filter]=data;
+    });
+  });
   var load = function() {
+    var version=++request;
+    var loadingFilter=activityFilter,firstPage=!oldest;
     more.prop('disabled', true);
-    _this._wikiGet('recent_changes', { game: game || '', before: oldest || '' }).done(function(data) {
+    _this._wikiGet('recent_changes', { game: game || '', before: oldest || '',filter:activityFilter }).done(function(data) {
+      if(version!==request) return;
+      if(firstPage && data.success) activityCache[loadingFilter]=data;
       if(!oldest) list.empty();
       // Another game's edits (a link from elsewhere): name that game.
       if(game && game !== _this.mapOptions.shortName && data.changes && data.changes[0] && data.changes[0].gameName) {
@@ -320,11 +347,11 @@ ZMap.prototype._openRecentChanges = function(game, back) {
       }
       if(!data.success) { list.append($('<li class="wiki-empty"></li>').text(data.msg)); return; }
       // Empty, like Bookmarks: a title and a line, centred with room around.
-      if(!data.changes.length && !oldest) list.append('<li class="wiki-empty-state"><div class="wiki-empty-state-title">No Community Edits Yet</div>' +
-        '<p>' + (game ? 'Edits to this map' : 'Edits to every map') + ' will show up here.</p></li>');
+      if(!data.changes.length && !oldest) list.append('<li class="wiki-empty-state"><div class="wiki-empty-state-title">No Activity Yet</div>' +
+        '<p>' + (activityFilter==='talk'?'Talk comments':activityFilter==='edits'?'Edits':'Community activity') + ' will show up here.</p></li>');
       data.changes.forEach(function(change) {
-        var row = _this._wikiRevisionRow(change, {
-          markerTitle: change.markerTitle + (game ? '' : ' · ' + change.gameName)
+        var row = _this._wikiActivityRow(change, {
+          markerTitle: change.markerTitle + (game || !change.gameName ? '' : ' · ' + change.gameName)
         });
         row.find('.wiki-revision').attr({ 'data-marker': change.markerId, 'data-game': change.game,'data-revision-type':change.revisionType || 'marker' });
         list.append(row);
@@ -332,13 +359,24 @@ ZMap.prototype._openRecentChanges = function(game, back) {
       });
       more.prop('hidden', !data.more).prop('disabled', false);
     }).fail(function(xhr) {
+      if(version!==request) return;
       list.empty().append($('<li class="wiki-empty"></li>').text(_this._wikiError(xhr)));
     });
   };
-  list.on('click', '.wiki-revision', function(e) {
+  $(page).find('.activity-filters').on('click','button',function() {
+    var next=this.getAttribute('data-activity-filter');if(next===activityFilter) return;
+    activityFilter=next;oldest=0;
+    $(this).siblings().attr('aria-selected','false');$(this).attr('aria-selected','true');
+    if(activityCache[next]) {++request;renderActivity(activityCache[next]);}
+    else load();
+  });
+  list.on('click keydown', '.wiki-revision', function(e) {
     if($(e.target).closest('a.wiki-link').length) return;
+    if(e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return;
+    e.preventDefault();
     var markerId = Number(this.getAttribute('data-marker'));
     var markerGame = this.getAttribute('data-game');
+    if(this.getAttribute('data-revision-type')==='talk') {_this._openActivityComment(this,reopen);return;}
     if(this.getAttribute('data-revision-type')==='settings') {
       _this._openSettingsRevisionLink(Number(this.getAttribute('data-rev')),markerGame,reopen);return;
     }

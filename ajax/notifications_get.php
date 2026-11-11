@@ -14,9 +14,13 @@
     SELECT `n`.`id`, `n`.`type`, `n`.`actor_id` AS `actorId`, {$picture} AS `actorPicture`,
            `n`.`page_type` AS `pageType`, `n`.`page_id` AS `pageId`, `n`.`marker_id` AS `markerId`,
            `n`.`comment_id` AS `commentId`, `n`.`revision_id` AS `revisionId`, `n`.`data`,
+           IF(p.deleted IS NULL,p.body,NULL) AS parentBody, pu.username AS parentUsername,
            `n`.`read_at` IS NOT NULL AS `isRead`, " . wikiAgoSql('`n`.`created`') . " AS `ago`
       FROM `{$map_prefix}notification` `n`
       LEFT JOIN `{$map_prefix}user` `a` ON `a`.`id` = `n`.`actor_id`
+      LEFT JOIN `{$map_prefix}talk_comment` t ON t.id=n.comment_id AND t.page_type=n.page_type AND t.page_id=n.page_id
+      LEFT JOIN `{$map_prefix}talk_comment` p ON p.id=t.parent_id AND p.page_type=t.page_type AND p.page_id=t.page_id
+      LEFT JOIN `{$map_prefix}user` pu ON pu.id=p.user_id
      WHERE `n`.`user_id` = ? AND `n`.`in_app` = 1" . ($before ? " AND `n`.`id` < ?" : '') . "
      ORDER BY `n`.`id` DESC
      LIMIT 31
@@ -34,6 +38,7 @@
       'markerId' => $row['markerId'] === null ? null : (int) $row['markerId'],
       'commentId' => $row['commentId'] === null ? null : (int) $row['commentId'],
       'revisionId' => $row['revisionId'] === null ? null : (int) $row['revisionId'],
+      'parentBody' => $row['parentBody'], 'parentUsername' => $row['parentUsername'],
       'game' => $data['game'] ?? null, 'pageTitle' => $data['pageTitle'] ?? ($data['markerTitle'] ?? null)
     );
   }, $rows);

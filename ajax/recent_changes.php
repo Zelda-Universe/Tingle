@@ -6,5 +6,6 @@ $role=$userId?accountRole($db,$map_prefix,$userId):false;
 $level=$role?(int)$role[0]:0;
 $game=is_string($_GET['game'] ?? null)?$_GET['game']:'';
 $cursor=is_string($_GET['before'] ?? null)?$_GET['before']:'';
-$result=communityChanges($db,$map_prefix,$level>=WIKI_EDITOR_LEVEL,$game,null,$cursor,50,$level>=WIKI_ADMIN_LEVEL);
+$filter=is_string($_GET['filter'] ?? null)?$_GET['filter']:'all';
+$result=communityChanges($db,$map_prefix,$level>=WIKI_EDITOR_LEVEL,$game,null,$cursor,50,$level>=WIKI_ADMIN_LEVEL,$filter);
 echo json_encode(['success'=>true]+$result);

@@ -1563,7 +1563,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var depths = {
         category: 0, search: 1, games: 1, maps: 1, loginForm: 1, accountPage: 1,
         registerForm: 2, lostPasswordForm: 2, accountInformationPage: 2,
-        offlineMapsPage: 2, bookmarksPage: 2, deleteAccountForm: 2, changePasswordForm: 3,
+        offlineMapsPage: 2, bookmarksPage: 2, deleteAccountForm: 3, changePasswordForm: 3,
         adminPage: 2, adminUserPage: 3,
         notificationsPage: 2, notificationSettingsPage: 3, followedMarkersPage: 4
       };
@@ -1624,6 +1624,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       // The outgoing snapshot already retains its own measured height.
       var drawerResizing;
       var previousDrawerOverflow = this._container.style.overflow;
+      // Both sliding pages must stay inside the sidebar's rounded frame,
+      // including async pages whose height is pinned rather than animated.
+      this._container.style.overflow = 'hidden';
       var contentsObserver;
       if(!this.viewStyleBottomSlide && typeof this._container.animate === 'function') {
         var incomingDrawerHeight = this._container.getBoundingClientRect().height;
@@ -1714,8 +1717,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
         if(contentsObserver && !pageSettles) contentsObserver.disconnect();
         if(drawerResizing) {
           drawerResizing.cancel();
-          this._container.style.overflow = previousDrawerOverflow;
         }
+        this._container.style.overflow = previousDrawerOverflow;
         outgoingPage.remove();
         // Kept for swiping back to it; a page left by going back isn't.
         if(!backward) this._rememberBackPage(outgoingPage, outgoingScrollTop, previousContentType);
@@ -1970,7 +1973,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
             this.zMap._createLoginForm();
           } else if(vType === 'loginForm') {
             this._returnFromDesktopAccount();
-          } else if(vType === 'changePasswordForm' && this.zMap.getUser()) {
+          } else if(['changePasswordForm','deleteAccountForm'].includes(vType) && this.zMap.getUser()) {
             this.zMap._createAccountInformationForm();
           } else if(vType === 'adminUserPage' && this.zMap.getUser()) {
             this.zMap._createAdminPage({ restore: true });

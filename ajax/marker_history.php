@@ -14,9 +14,10 @@
     echo json_encode(array('success' => false, 'msg' => 'That marker was not found.'));
     return;
   }
+  $picture = wikiHasUserColumn($db, $map_prefix, 'profile_picture') ? '`u`.`profile_picture`' : 'NULL';
   $revisions = $db->fetchAllAssociative("
     SELECT `r`.`id`, `r`.`action`, `r`.`summary`, `r`.`reverts_revision_id` AS `revertsId`,
-           `r`.`user_id` AS `userId`, `u`.`username`, `r`.`created`,
+           `r`.`user_id` AS `userId`, `u`.`username`, {$picture} AS `profilePicture`, `r`.`created`,
            " . wikiAgoSql('`r`.`created`') . " AS `ago`, CHAR_LENGTH(`r`.`data`) AS `size`
       FROM `{$map_prefix}marker_revision` `r`
       LEFT JOIN `{$map_prefix}user` `u` ON `u`.`id` = `r`.`user_id`

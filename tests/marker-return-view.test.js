@@ -26,7 +26,8 @@ function loadOpenMarker() {
     mapControl:{getCurrentMap:()=>({mapId:19,subMapId:1901}),changeMapToMarker:jest.fn(),changeMapOnly:jest.fn()},
     map,
     _createMarkerPopup:jest.fn(),
-    _createPin:jest.fn(()=>({addTo:jest.fn()}))
+    _closeNewMarker:jest.fn(),
+    _createPin:jest.fn(()=>({addTo:jest.fn().mockReturnThis()}))
   };
   const context={
     ZMap:function(){},
@@ -34,6 +35,7 @@ function loadOpenMarker() {
     L:{latLng:(lat,lng)=>({lat,lng})},
     toastr:{error:jest.fn()},
     markers:[],
+    newMarker:null,
     _this:zmap,
     window:{}
   };

@@ -6385,8 +6385,8 @@ ZMap.prototype._createAccountForm = function(user) {
            '<h4 class="account-section-title">Account Preferences</h4>' +
            '<button id="account_information_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-user account-nav-icon" aria-hidden="true"></i>Account Information</button>' +
            '<button id="log_out_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-sign-out-alt account-nav-icon" aria-hidden="true"></i>Log Out</button>' +
-           '<button id="account_delete_btn" type="button" class="infoWindowIcn bad">Delete Account</button>' +
          '</section>' +
+         '<p class="account-credit">Made with <img class="account-credit-heart" src="images/icons/HeartPiece.svg" alt="love"> by <a href="https://zeldauniverse.net" target="_blank" rel="noopener">Zelda Universe</a></p>' +
       '</div>' +
     '</div>',
     'accountPage'
@@ -6491,11 +6491,6 @@ ZMap.prototype._createAccountForm = function(user) {
   });
 
 
-  $("#account_delete_btn").click(function(e) {
-     _this._createAccountDeleteForm();
-     e.preventDefault();
-  });
-
   $("#log_out_btn").click(function(e) {
     _this.logout();
     e.preventDefault();
@@ -6539,6 +6534,8 @@ ZMap.prototype._createAccountInformationForm = function() {
         '<p id="account_password_error" role="status" aria-live="polite"></p>' +
         '<button type="submit" class="infoWindowIcn form-action-button" disabled>Save Changes</button>' +
         '<p id="account_information_status" class="account-profile-status" role="status" aria-live="polite"></p>' +
+        '<label class="account-danger-label">Danger Zone</label>' +
+        '<button id="account_delete_btn" type="button" class="infoWindowIcn form-action-button bad">Delete Account</button>' +
       '</form>' +
     '</div>', 'accountInformationPage'
   );
@@ -6546,6 +6543,7 @@ ZMap.prototype._createAccountInformationForm = function() {
   $('#account_name').val(user.name || '');
   $('#account_email').val(user.email || '');
   this._lockWhileOffline('#account_information', { dim: '#account_information_form' });
+  $('#account_delete_btn').on('click',function() {map._createAccountDeleteForm();});
   var savingAccountInformation = false;
   var usernameAvailable = true;
   var usernameCheckTimer;
@@ -7425,7 +7423,9 @@ ZMap.prototype.goTo = function(vGoTo, notByInput) {
       !vGoTo.hidePin,
       vGoTo.panTo !== false,
       notByInput,
-      !!vGoTo.centerInVisibleArea
+      !!vGoTo.centerInVisibleArea,
+      vGoTo.showPopup !== false,
+      !!vGoTo.preserveView
     );
     // Open Marker already does a change map, so it takes precedence
 
@@ -7448,7 +7448,9 @@ ZMap.prototype._openMarker = function(
   vPin = ZConfig.getConfig('hidePin') == 'true',
   vPanTo = false,
   notByInput,
-  centerInVisibleArea = false
+  centerInVisibleArea = false,
+  showPopup = true,
+  preserveView = false
 ) {
   var marker = this.cachedMarkersById[vMarkerId];
   if (marker) {
@@ -7481,18 +7483,24 @@ ZMap.prototype._openMarker = function(
       6 = 4
      */
      var latlng = L.latLng(marker.getLatLng().lat, marker.getLatLng().lng);
-     _this._createMarkerPopup(marker, centerInVisibleArea);
+     if(showPopup) _this._createMarkerPopup(marker, centerInVisibleArea);
      // The arrival is read only after the map switch, right before the move:
      // a listener attached earlier would be consumed by the switch's own
      // settling (the baselayer change settles the map before we move it).
      this._recordMarkerReturnArrival();
-     if(centerInVisibleArea) {
+     if(preserveView) {
+       // Talk navigation changes the sidebar, not the map camera. Moving
+       // here races its animated sidebar bounds and causes a visible recoil.
+     } else if(centerInVisibleArea) {
        this._setViewAtMarkerInVisibleArea(marker, vZoom);
      } else {
        this.map.setView(latlng, vZoom);
      }
-     if (vPin) {
+     if (vPin && (!newMarker || newMarker.markerId != marker.id)) {
+         this._closeNewMarker();
          newMarker = this._createPin(marker._latlng, marker).addTo(this.map);
+         newMarker.markerId = marker.id;
+         newMarker.markerPos = marker.pos;
      }
 
      //$('#mkrDiv'+vMarkerId).unslider({arrows:false});

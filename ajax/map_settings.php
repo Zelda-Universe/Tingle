@@ -54,10 +54,11 @@
     ], $game['short_name'], $seoNames[$game['short_name']] ?? $game['name']);
   }
   unset($category);
+  $picture = wikiHasUserColumn($db, $map_prefix, 'profile_picture') ? '`u`.`profile_picture`' : 'NULL';
   $history = $db->fetchAllAssociative("
     SELECT `r`.`id`, `r`.`kind`, `r`.`target_id` AS `targetId`, `r`.`summary`, `r`.`data`,
            (r.id=(SELECT MAX(latest.id) FROM `{$map_prefix}map_revision` latest WHERE latest.container_id=r.container_id AND latest.kind=r.kind AND latest.target_id=r.target_id)) AS isCurrent,
-           " . wikiAgoSql('`r`.`created`') . " AS `ago`, `r`.`user_id` AS `userId`, `u`.`username`
+           " . wikiAgoSql('`r`.`created`') . " AS `ago`, `r`.`user_id` AS `userId`, `u`.`username`, {$picture} AS `profilePicture`
       FROM `{$map_prefix}map_revision` `r`
       LEFT JOIN `{$map_prefix}user` `u` ON `u`.`id` = `r`.`user_id`
      WHERE `r`.`container_id` = ? AND r.kind IN ('game','map','category','layout','map_order')

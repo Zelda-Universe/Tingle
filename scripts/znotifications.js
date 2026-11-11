@@ -135,6 +135,20 @@ ZMap.prototype._openWikiLink = function(link, back) {
     });
   } else if(link.talk && link.marker) {
     var marker = this.cachedMarkersById[link.marker];
+    if(marker && link.comment && this._openActivityComment) {
+      if(!back) {
+        try {
+          var source=JSON.parse(new URL(window.location.href).searchParams.get('talk-from') || 'null');
+          if(source && ['all','edits','talk'].includes(source.filter)) {
+            if(source.type==='recent' && typeof source.game==='string' && /^[A-Za-z0-9_-]{0,30}$/.test(source.game)) back=function() {_this._openRecentChanges(source.game || null,null,source.filter);};
+            else if(source.type==='profile' && Number.isInteger(source.id) && source.id>0) back=function() {_this._profileActivityFilter=source.filter;_this._openUserProfile({id:source.id});};
+            else if(source.type==='notifications') back=function() {_this._openNotificationsPage();};
+          }
+        } catch(e) {}
+      }
+      var target=$('<div></div>').attr({'data-page-type':'marker','data-page-id':link.marker,'data-comment':link.comment,'data-title':marker.title,'data-game':this.mapOptions.shortName});
+      this._openActivityComment(target[0],back);return;
+    }
     var open = function(title) {
       _this._openTalk('marker', link.marker, title, back || _this._wikiBackToMarker(link.marker), { highlight: link.comment });
     };
@@ -169,6 +183,7 @@ ZMap.prototype._openNotificationsPage = function(back) {
   var _this = this;
   back = back || function() { _this._createAccountForm(_this.getUser()); };
   var reopen = this._wikiReopen(function() { _this._openNotificationsPage(back); }, null, 'Notifications');
+  reopen.activitySource={type:'notifications',filter:'all'};
   var page = this._showWikiPage(
     '<div id="notifications_page" class="wiki-page">' +
       '<h3 class="text-center">Notifications</h3>' +
@@ -226,6 +241,11 @@ ZMap.prototype._openNotificationsPage = function(back) {
     var target = n.url ? _this._wikiLinkParams(n.url) : {};
     if(target.page === 'report' && target.report) { _this._openReport(target.report, reopen); return; }
     if(target.page === 'admin-reports') { _this._openAdminReports(); return; }
+    if(!n.revisionId && n.commentId && (n.markerId || n.pageType==='marker')) {
+      var commentTarget=$('<div></div>').attr({'data-page-type':'marker','data-page-id':n.markerId || n.pageId,'data-comment':n.commentId,'data-title':n.pageTitle || '', 'data-game':n.game || _this.mapOptions.shortName});
+      _this._openActivityComment(commentTarget[0],reopen);
+      return;
+    }
     _this._openWikiLink({
       rev: n.revisionId, talk: !n.revisionId, marker: n.markerId || (n.pageType === 'marker' ? n.pageId : 0),
       user: n.pageType === 'user' ? n.pageId : 0, comment: n.commentId
@@ -266,6 +286,12 @@ ZMap.prototype._notificationRow = function(n) {
   item.toggleClass('unread', !n.isRead).data('notification', n);
   item.find('.notification-title').text(n.title);
   item.find('.notification-body').text(n.body);
+  if(n.type==='comment_reply' && n.parentBody) {
+    var quote=$('<blockquote class="activity-reply-quote notification-reply-quote"><cite></cite><div></div></blockquote>');
+    quote.find('cite').text(n.parentUsername || 'Comment');
+    quote.find('div').html(this._renderWikiText(n.parentBody));
+    item.find('.notification-time').before(quote);
+  }
   item.find('.notification-time').text(this._wikiAgo(n.ago));
   return item;
 };

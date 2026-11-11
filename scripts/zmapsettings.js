@@ -348,7 +348,7 @@ ZMap.prototype._renderMapSettingsHistory = function(list, data, historyBack) {
       '<p>Changes to this map\'s settings will show up here.</p></li>');
   }
   data.history.forEach(function(entry) {
-    var row=_this._wikiRevisionRow(Object.assign({},entry,{action:entry.data && entry.data.action || 'edit'}),{current:entry.isCurrent,markerTitle:['game','layout','map_order'].includes(entry.kind)?null:entry.data && entry.data.name || 'Settings'});
+    var row=_this._wikiRevisionRow(Object.assign({},entry,{revisionType:'settings',action:entry.data && entry.data.action || 'edit'}),{current:entry.isCurrent,markerTitle:['game','layout','map_order'].includes(entry.kind)?null:entry.data && entry.data.name || 'Settings'});
     row.find('.wiki-revision').on('click keydown',function(e) {
       if($(e.target).closest('a').length || e.type==='keydown' && e.key!=='Enter' && e.key!==' ') return;
       e.preventDefault();
@@ -383,7 +383,7 @@ ZMap.prototype._openGameSettingsRevision = function(id,back) {
     body.append(zmap._wikiFieldDiffHTML(fields,'No content changes.'));
     var actions=body.find('.wiki-actions');
     if(!actions.length) {actions=$('<div class="wiki-actions"></div>');body.find('.wiki-revision-meta').after(actions);}
-    actions.append('<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy Revision</button><button type="button" class="wiki-action-button" data-action="copy-url"><i class="fas fa-link" aria-hidden="true"></i>Copy Link</button><button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>');
+    actions.append('<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy Revision</button><button type="button" class="wiki-action-button" data-action="copy-url"><i class="fas fa-link" aria-hidden="true"></i>Copy Link</button>'+zmap._yeahHTML('settings',id,false)+'<button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>');
     body.on('click','[data-action]',function() {
       var action=this.getAttribute('data-action');
       if(action==='copy-code') {zmap._wikiCopy('[[settingsrev:'+Number(id)+']]','Link code');return;}

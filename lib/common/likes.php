@@ -1,0 +1,15 @@
+<?php
+include_once(__DIR__.'/wiki.php');
+
+// A revision's namespace is part of its identity: settings IDs overlap marker IDs.
+function likeTargetExists($db,$prefix,$type,$id,$editor) {
+  if($id<1) return false;
+  if($type==='comment') return (bool)$db->fetchOne("SELECT 1 FROM `{$prefix}talk_comment` WHERE id=? AND deleted IS NULL",[$id]);
+  if($type==='revision') return (bool)$db->fetchOne("SELECT 1 FROM `{$prefix}marker_revision` r JOIN `{$prefix}marker` m ON m.id=r.marker_id JOIN `{$prefix}marker_category` mc ON mc.id=m.marker_category_id JOIN `{$prefix}container` c ON c.id=mc.container_id WHERE r.id=? AND c.visible=1",[$id]);
+  if($type==='settings' && (int)$editor['level']>=WIKI_ADMIN_LEVEL) return (bool)$db->fetchOne("SELECT 1 FROM `{$prefix}map_revision` WHERE id=? AND kind IN ('game','map','category','layout','map_order')",[$id]);
+  return false;
+}
+function likeState($db,$prefix,$type,$id,$userId) {
+  $row=$db->fetchAssociative("SELECT COUNT(*) AS total,COALESCE(MAX(user_id=?),0) AS liked FROM `{$prefix}like` WHERE target_type=? AND target_id=?",[$userId,$type,$id]);
+  return ['count'=>(int)$row['total'],'liked'=>(bool)$row['liked']];
+}

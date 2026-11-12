@@ -59,6 +59,19 @@ ZMap.prototype.restoreAreaFromURL = function() {
   return true;
 };
 
+// Lon Lon Ranch shares Hyrule Field's artwork. Keep its own detail/list
+// bounds, but frame the whole field when opening it. IDs survive renames.
+ZMap.prototype._areaCameraBounds = function(area, fallback) {
+  var fieldId={'64400020':64400001,'64410020':64410001}[String(area.id)];
+  if(!fieldId) return fallback;
+  var field=this.getMarkers().find(function(marker) {return marker.id==fieldId && marker.submapId==area.submapId;});
+  var bounds=field && (field.bounds || (field.region && field.region.bounds));
+  try {
+    var fit=bounds && L.latLngBounds(bounds);
+    return fit && fit.isValid() ? fit : fallback;
+  } catch(error) {return fallback;}
+};
+
 ZMap.prototype.navigateToArea = function(area) {
   this._attachAreaBorders();
   if(area.areaDestination) {
@@ -81,6 +94,7 @@ ZMap.prototype.navigateToArea = function(area) {
   var validBounds=null;
   try { if(bounds && L.latLngBounds(bounds).isValid()) validBounds=L.latLngBounds(bounds); } catch(e) {}
   this._showAreaPage(area,validBounds);
+  validBounds=this._areaCameraBounds(area,validBounds);
   if(control.viewStyleBottomSlide) control.openDrawerSmall(true);
   if(validBounds) {
     var rect=map.getContainer().getBoundingClientRect(), drawer=control.getContainer().getBoundingClientRect();

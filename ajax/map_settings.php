@@ -17,7 +17,7 @@
   $gameSeoDescription=$db->fetchOne("SELECT seo_description FROM `{$map_prefix}container` WHERE id=?",[(int)$game['id']]);
   $gamePageTitle=$db->fetchOne("SELECT page_title FROM `{$map_prefix}container` WHERE id=?",[(int)$game['id']]);
   $maps = $db->fetchAllAssociative(
-    "SELECT `id`, `name`, `description`, `seo_description` FROM `{$map_prefix}map` WHERE `container_id` = ? AND `visible` = 1 ORDER BY `map_order`, `id`",
+    "SELECT `id`, `name`, `description`, `seo_description`, `always_show_categories` FROM `{$map_prefix}map` WHERE `container_id` = ? AND `visible` = 1 ORDER BY `map_order`, `id`",
     [(int) $game['id']]
   );
   $categories = $db->fetchAllAssociative(

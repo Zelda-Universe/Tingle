@@ -42,6 +42,7 @@
            , coalesce(m.max_zoom, c.max_zoom)   as maxZoom
            , map_copyright                      as mapCopyright
            , m.kind                             as kind
+           , m.always_show_categories            as alwaysShowCategories
 
         from {$map_prefix}map m
            , {$map_prefix}container c

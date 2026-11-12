@@ -2,6 +2,18 @@ const fs=require('fs');
 const vm=require('vm');
 const source=fs.readFileSync(require('path').join(__dirname,'../scripts/services/AreaSearch.js'),'utf8');
 
+test('Lon Lon Ranch frames Hyrule Field on either age without changing its own bounds',()=>{
+  const context={ZMap:function(){},L:{latLngBounds:b=>({bounds:b,isValid:()=>true})}};
+  vm.runInNewContext(source,context);
+  for(const [ranchId,fieldId,submapId] of [[64400020,64400001,650000],[64410020,64410001,650001]]) {
+    const bounds=[[-20,1],[-1,20]],ranch={id:ranchId,submapId,bounds:[[-5,5],[-4,6]]};
+    const map=Object.assign(Object.create(context.ZMap.prototype),{getMarkers:()=>[{id:fieldId,submapId,bounds}]});
+    expect(map._areaCameraBounds(ranch,ranch.bounds).bounds).toBe(bounds);
+    expect(ranch.bounds).toEqual([[-5,5],[-4,6]]);
+    expect(map._areaCameraBounds({id:123},'original')).toBe('original');
+  }
+});
+
 test('selected area follows the active map variant',()=>{
   const context={ZMap:function(){},L:{latLngBounds:b=>b}};
   vm.runInNewContext(source,context);

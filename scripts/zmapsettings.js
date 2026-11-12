@@ -376,7 +376,7 @@ ZMap.prototype._openGameSettingsRevision = function(id,back) {
       '<form class="wiki-revert-form" hidden><p>Restoring saves this version as a new edit, so it can be undone from History too.</p>'+zmap._editorFieldHTML('fa-comment-alt','<input class="form-control" name="summary" maxlength="255" placeholder="Why? (optional)" autocomplete="off">')+
       '<div class="wiki-button-pair"><button type="button" class="infoWindowIcn form-action-button" data-action="cancel-revert">Cancel</button><button type="submit" class="infoWindowIcn form-action-button">Restore</button></div></form>');
     var before=data.before || {},after=data.after || {};
-    var names={name:'Name',page_title:'Name (Page Title)',description:'Description',seo_description:'SEO Description',img:'Icon',glyphColor:'Icon Color',color:'Color',shape:'Shape',visible:'Visible',visible_zoom:'Visible Starting At',parentId:'Parent Category',customStyle:'Custom Style'};
+    var names={name:'Name',page_title:'Name (Page Title)',description:'Description',seo_description:'SEO Description',always_show_categories:'Always Show Categories',img:'Icon',glyphColor:'Icon Color',color:'Color',shape:'Shape',visible:'Visible',visible_zoom:'Visible Starting At',parentId:'Parent Category',customStyle:'Custom Style'};
     var fields;
     if(['layout','map_order'].includes(revision.kind)) fields=[['Order',JSON.stringify(before,null,2),JSON.stringify(after,null,2)]];
     else fields=Array.from(new Set(Object.keys(before).concat(Object.keys(after)))).map(function(key) {return [names[key] || key,before[key],after[key]];});
@@ -404,7 +404,10 @@ ZMap.prototype._openGameSettingsRevision = function(id,back) {
         if(saved.kind==='layout') zmap._applyMapSettingsLayout(saved.values);
         if(saved.kind==='game' && saved.values.name) zmap.mapOptions.name=saved.values.name;
         if(saved.kind==='game') zmap.mapOptions.pageTitle=saved.values.page_title || '';
-        if(saved.kind==='map') (zmap.maps || []).forEach(function(map) {if(map.originalId==saved.targetId) {map.mapName=saved.values.name;map.mapDescription=saved.values.description;}});
+        if(saved.kind==='map') {
+          (zmap.maps || []).forEach(function(map) {if(map.originalId==saved.targetId) {map.mapName=saved.values.name;map.mapDescription=saved.values.description;map.alwaysShowCategories=saved.values.always_show_categories==1;}});
+          zmap.refreshMap();
+        }
         if(saved.kind==='map_order') zmap.maps.sort(function(a,b) {return saved.values.indexOf(Number(a.originalId))-saved.values.indexOf(Number(b.originalId));});
         toastr.success('Restored revision '+id);zmap.mapControl._navigatingBack=true;back();
       }).fail(function(xhr) {toastr.error(zmap._wikiError(xhr));form.find('button').prop('disabled',false);});
@@ -784,6 +787,7 @@ ZMap.prototype._openMapSettingsMap = function(map, back) {
       '<form class="map-settings-form">' +
         (seoOnly ? '' : this._mapSettingsField('Name', 'fa-heading', '<input type="text" class="form-control" name="name" maxlength="45" required />')) +
         this._mapSettingsField('SEO Description', 'fa-search', '<textarea class="form-control" name="seo_description" maxlength="5000" rows="3"></textarea>') +
+        (seoOnly ? '' : '<label class="admin-check"><input type="checkbox" name="always_show_categories"> <span>Always Show Categories<small>Ignore category zoom thresholds on this map. Hidden categories stay hidden.</small></span></label>') +
         this._mapSettingsField('Summary', 'fa-comment',
           '<input type="text" class="form-control" name="summary" maxlength="255" placeholder="What changed and why (optional)" />') +
         this._editorSaveHTML(true) +
@@ -796,9 +800,10 @@ ZMap.prototype._openMapSettingsMap = function(map, back) {
   var form = $(page).find('form');
   form.find('[name=name]').val(map.name);
   form.find('[name=seo_description]').val(map.seo_description || '').attr('placeholder',map.defaultSeoDescription || '');
+  form.find('[name=always_show_categories]').prop('checked',map.always_show_categories==1);
   var busy=false;
   function validate() {
-    var dirty=(seoOnly ? ['seo_description'] : ['name','seo_description']).some(function(key) {return form.find('[name='+key+']').val().trim()!==(map[key] || '').trim();});
+    var dirty=(seoOnly ? ['seo_description'] : ['name','seo_description']).some(function(key) {return form.find('[name='+key+']').val().trim()!==(map[key] || '').trim();}) || (!seoOnly && form.find('[name=always_show_categories]').prop('checked')!==(map.always_show_categories==1));
     var valid=seoOnly || !_this._editorNameError(form.find('[name=name]').val(),45,false);
     _this._editorSaveState(form,dirty,valid,busy);
     return dirty && valid;
@@ -813,9 +818,14 @@ ZMap.prototype._openMapSettingsMap = function(map, back) {
     form.find('[type=submit]').prop('disabled', true);
     _this._wikiPost('map_settings_save', { kind: seoOnly ? 'game' : 'map', id: map.id, name: form.find('[name=name]').val(),
       seo_description:form.find('[name=seo_description]').val(),
+      always_show_categories:form.find('[name=always_show_categories]').prop('checked') ? 1 : 0,
       summary: form.find('[name=summary]').val() }).done(function(result) {
       busy=false;validate();
       if(!result.success) { status.addClass('error').text(result.msg); return; }
+      if(!seoOnly) {
+        (_this.maps || []).forEach(function(layer) {if(layer.originalId==map.id) layer.alwaysShowCategories=result.values.always_show_categories==1;});
+        _this.refreshMap();
+      }
       toastr.success(result.changed.length ? 'Map updated' : 'Nothing changed');
       _this.mapControl._navigatingBack = true;
       back();

@@ -26,5 +26,5 @@ test('restores only apply whitelisted editable fields and create a reversible re
   expect(api).toContain('settingsHistoryColumns($kind)');
   expect(api).toContain("'action'=>'revert'");
   const php=`require ${JSON.stringify(path.resolve('lib/common/settings_history.php'))};echo json_encode(settingsHistoryColumns('map'));`;
-  expect(JSON.parse(execFileSync('php',['-r',php],{encoding:'utf8'}))).toEqual({name:'name',description:'description',seo_description:'seo_description'});
+  expect(JSON.parse(execFileSync('php',['-r',php],{encoding:'utf8'}))).toEqual({name:'name',description:'description',seo_description:'seo_description',always_show_categories:'always_show_categories'});
 });

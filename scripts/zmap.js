@@ -358,6 +358,7 @@ ZMap.prototype.addMap = function(vMap) {
        layer.originalId = vMap.id;
        layer.defaultSubMapId = submap.id;
        layer.mapKind = vMap.kind;
+       layer.alwaysShowCategories = vMap.alwaysShowCategories == 1;
        layer.mapName = vMap.name;
        layer.mapDescription = vMap.description || '';
        layer.submapName = variantName;
@@ -410,6 +411,7 @@ ZMap.prototype.addMap = function(vMap) {
     tLayer.originalId       = vMap.id           ;
     tLayer.title            = vMap.name         ;
     tLayer.mapDescription   = vMap.description || '';
+    tLayer.alwaysShowCategories = vMap.alwaysShowCategories == 1;
     tLayer._overlayMap      = []                ;
     // Named regions with borders, as get_map serves them (AreaSearch.js).
     tLayer.submapRegions    = this._submapRegionData(vMap.subMap);
@@ -438,6 +440,7 @@ ZMap.prototype.addMap = function(vMap) {
     tLayer.originalId  = vMap.id;
     tLayer.title       = vMap.name;
     tLayer.mapDescription = vMap.description || '';
+    tLayer.alwaysShowCategories = vMap.alwaysShowCategories == 1;
     tLayer._overlayMap = [];
     tLayer.submapRegions = this._submapRegionData(vMap.subMap);
     tLayer.defaultSubMapId = vMap.subMap[0].id;
@@ -1415,7 +1418,8 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
     && markerCategory.checked
     && (ignoreBounds || mapBounds.contains(marker.getLatLng()))  // Is in the Map Bounds (PERFORMANCE)
     && (
-      (!markerCategory._respectZoomThreshold && (
+      (this.mapControl.currentMapLayer && this.mapControl.currentMapLayer.alwaysShowCategories)
+      || (!markerCategory._respectZoomThreshold && (
         this.mapOptions.categorySelectionMethod != "focus"
         || !this.mapControl._categoryMenu.modeAutomatic
       ))

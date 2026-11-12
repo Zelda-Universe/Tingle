@@ -43,9 +43,9 @@
     $columns=['seo_description'=>'seo_description'];
     $table='container';
   } elseif ($kind === 'map') {
-    $row = $db->fetchAssociative("SELECT `id`, `container_id`, `name`, `description`, `seo_description` FROM `{$map_prefix}map` WHERE `id` = ?", [$id]);
+    $row = $db->fetchAssociative("SELECT `id`, `container_id`, `name`, `description`, `seo_description`, `always_show_categories` FROM `{$map_prefix}map` WHERE `id` = ?", [$id]);
     if (!$row) return $fail('That map was not found.');
-    $before = array('name' => $row['name'], 'description' => $row['description'] ?? '', 'seo_description' => $row['seo_description'] ?? '');
+    $before = array('name' => $row['name'], 'description' => $row['description'] ?? '', 'seo_description' => $row['seo_description'] ?? '', 'always_show_categories' => (int)$row['always_show_categories']);
     $after = $before;
     $name = $text('name');
     if ($name !== null) {
@@ -59,7 +59,11 @@
         $after[$field] = strip_tags($description);
       }
     }
-    $columns = array('name' => 'name', 'description' => 'description', 'seo_description' => 'seo_description');
+    if (isset($_POST['always_show_categories'])) {
+      if (!in_array((string)$_POST['always_show_categories'], ['0', '1'], true)) return $fail('Choose whether categories are always shown.');
+      $after['always_show_categories'] = (int)$_POST['always_show_categories'];
+    }
+    $columns = array('name' => 'name', 'description' => 'description', 'seo_description' => 'seo_description', 'always_show_categories' => 'always_show_categories');
     $table = 'map';
   } elseif ($kind === 'category') {
     if ($id === 0) {

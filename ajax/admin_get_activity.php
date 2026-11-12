@@ -17,6 +17,8 @@
   // index; the whole-table numbers are scans whatever we do, so they're
   // cached longest.
   $metrics = [
+    'yeahs' => ['table'=>'like','column'=>'created','where'=>'1 = 1'],
+    'comments' => ['table'=>'talk_comment','column'=>'created','where'=>'`deleted` IS NULL'],
     'completes' => ['table' => 'user_completed_marker', 'column' => 'complete_date', 'where' => '1 = 1'],
     'bookmarks' => ['table' => 'user_bookmark', 'column' => 'created', 'where' => '1 = 1'],
     'downloads' => ['table' => 'offline_map_event', 'column' => 'created', 'where' => "`event` = 'downloaded'"],

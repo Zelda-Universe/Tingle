@@ -5345,6 +5345,15 @@ ZMap.prototype._createAdminPage = function(opts) {
         '</div>' +
         '<div class="admin-summary admin-activity-summary"></div>' +
       '</section>' +
+      ['yeahs','comments'].map(function(metric) {
+        return '<section data-section="'+metric+'" class="admin-section admin-analytics-section admin-activity" data-activity="'+metric+'">'+
+          '<h4 class="admin-section-heading">'+(metric==='yeahs'?'Yeahs':'Comments')+' <span class="admin-muted admin-section-summary admin-community-total"></span></h4>'+
+          '<div class="admin-chart"><div class="admin-chart-options"><div class="admin-toggle admin-ranges" role="group" aria-label="Time frame">'+
+          [['7d','1W'],['14d','2W'],['30d','30D'],['6m','6M'],['1y','1Y'],['all','All']].map(function(range) {
+            return '<button type="button" data-range="'+range[0]+'">'+range[1]+'</button>';
+          }).join('')+'</div></div><p class="admin-chart-readout" aria-live="polite"></p><div class="admin-activity-chart"><p class="admin-muted">Loading…</p></div></div>'+
+          '<div class="admin-summary admin-activity-summary"></div></section>';
+      }).join('')+
       '<section data-section="offline" class="admin-section admin-analytics-section admin-activity" data-activity="offline">' +
         '<h4 class="admin-section-heading">Offline Maps <span class="admin-muted admin-section-summary admin-offline-total"></span></h4>' +
         '<div class="admin-chart">' +
@@ -5498,6 +5507,7 @@ ZMap.prototype._createAdminPage = function(opts) {
   // graph's options, boxes beneath, and for offline maps their games.
   state.activity = state.activity || { markers: { metric: 'completes', range: '30d' }, editing: { metric: 'edits', range: '30d' }, offline: { metric: 'downloads', range: '30d' } };
   state.activity.editing = state.activity.editing || { metric: 'edits', range: '30d' };
+  ['yeahs','comments'].forEach(function(metric) {state.activity[metric]=state.activity[metric] || {metric:metric,range:'30d'};});
   $('#admin .admin-activity').each(function() {
     var section = $(this);
     var key = section.attr('data-activity');
@@ -5517,6 +5527,9 @@ ZMap.prototype._createAdminPage = function(opts) {
         section.find('.admin-editing-total').text(data.summary.total
           ? data.summary.total.current.toLocaleString() + ' ' + (_this.ADMIN_CHART_NOUNS[data.metric] || ['edits'])[0]
           : '');
+      }
+      if(key==='yeahs' || key==='comments') {
+        section.find('.admin-community-total').text(data.summary.total ? data.summary.total.current.toLocaleString()+' '+_this.ADMIN_CHART_NOUNS[data.metric][0] : '');
       }
       if(key === 'offline') {
         var offline = data.offline || {};
@@ -5702,6 +5715,8 @@ ZMap.prototype._adminTime = function(ago, opts) {
 // dragging across it shows a bar's count in readout; otherwise it shows the
 // latest bar.
 ZMap.prototype.ADMIN_CHART_NOUNS = {
+  yeahs: ['yeahs','Yeahs'],
+  comments: ['comments','Comments'],
   registrations: ['new accounts', 'New accounts'],
   active: ['active users', 'Active users'],
   completes: ['completes', 'Completed markers'],

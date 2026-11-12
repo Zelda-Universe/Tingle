@@ -12,26 +12,25 @@ test('reply activity displays its quoted parent and opens the precise comment',(
   expect(row.text()).not.toContain('Comment 8');
   expect(row.find('.activity-comment-body').next().is('blockquote')).toBe(true);
   map._openActivityComment(row.find('.wiki-revision')[0],()=>{});
-  expect(map._openTalk).toHaveBeenCalledWith('marker',12,'A marker',expect.any(Function),{highlight:8});
+  expect(map._openTalk).toHaveBeenCalledWith('marker',12,'A marker',expect.any(Function),{highlight:8,game:null,region:false});
 });
 test('deleted marker names are not linked in talk or revision items',()=>{
   const change={id:8,markerId:12,pageId:12,pageType:'marker',markerTitle:'Deleted marker',markerDeleted:true,revisionType:'talk',body:'Comment'};
   expect(map._wikiActivityRow(change).find('a.wiki-revision-marker')).toHaveLength(0);
   expect(map._wikiRevisionRow({...change,revisionType:'marker'},{markerTitle:'Deleted marker'}).find('a.wiki-revision-marker')).toHaveLength(0);
 });
-test('activity comments select the marker without replacing the source page and return to the activity list',()=>{
+test('activity comments leave marker selection and the map untouched and return to the activity list',()=>{
   const marker={id:12,title:'Selected marker'};
   const markerBack=()=>{};
   const local=Object.assign(Object.create(context.ZMap.prototype),map,{cachedMarkersById:{12:marker},mapControl:{},goTo:jest.fn(),_closeNewMarker:jest.fn(),_openMarkerLink:jest.fn(),_wikiBackToMarker:()=>markerBack,_openTalk:jest.fn()});
   const row=local._wikiActivityRow({id:8,revisionType:'talk',pageType:'marker',pageId:12,body:'Comment',markerTitle:'Selected marker'});
   const sourceBack=jest.fn();
   local._openActivityComment(row.find('.wiki-revision')[0],sourceBack);
-  expect(local.goTo).toHaveBeenCalledWith({marker:12,showPopup:false,centerInVisibleArea:true,panTo:false,preserveView:true});
+  expect(local.goTo).not.toHaveBeenCalled();
   expect(local._openMarkerLink).not.toHaveBeenCalled();
-  expect(markerBack.fromMarker).toBe(12);
-  expect(local._openTalk).toHaveBeenCalledWith('marker',12,'Selected marker',expect.any(Function),{highlight:8,region:false});
+  expect(local._openTalk).toHaveBeenCalledWith('marker',12,'Selected marker',sourceBack,{highlight:8,game:null,region:false});
   local._openTalk.mock.calls[0][3]();
-  expect(local._closeNewMarker).toHaveBeenCalledTimes(1);
+  expect(local._closeNewMarker).not.toHaveBeenCalled();
   expect(sourceBack).toHaveBeenCalledTimes(1);
 });
 test('activity filters use the admin segmented styling',()=>{

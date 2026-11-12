@@ -380,12 +380,7 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
     if(this.getAttribute('data-revision-type')==='settings') {
       _this._openSettingsRevisionLink(Number(this.getAttribute('data-rev')),markerGame,reopen);return;
     }
-    if(editor) {
-      if(markerGame === _this.mapOptions.shortName) _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);
-      else window.location.href = _this._wikiMarkerURL(markerId, markerGame, Number(this.getAttribute('data-rev')));
-    } else {
-      _this._openMarkerLink(markerId, null, reopen, markerGame);
-    }
+    _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);
   });
   more.on('click', load);
   load();

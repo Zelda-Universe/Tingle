@@ -111,7 +111,7 @@ ZMap.prototype._openWikiURL = function(url) {
     this._openAdminReports();
     return;
   }
-  if(link.game && this.mapOptions && link.game !== this.mapOptions.shortName && (link.marker || link.rev)) {
+  if(!link.rev && !link.talk && link.game && this.mapOptions && link.game !== this.mapOptions.shortName && link.marker) {
     window.location.href = new URL(url, window.location.href).href;
     return;
   }

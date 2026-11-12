@@ -493,7 +493,7 @@ ZMap.prototype._wikiRevisionRow = function(revision, opts) {
     ? '<span class="wiki-revision-summary">' + this._renderWikiText(revision.summary) + '</span>'
     : '';
   var title = opts.markerTitle
-    ? (revision.markerId && !revision.markerDeleted && revision.revisionType!=='settings' ? '<a class="wiki-link wiki-revision-marker activity-marker-link" href="'+this._wikiEscape(this._wikiMarkerURL(revision.markerId,revision.game))+'" data-marker="'+Number(revision.markerId)+'" data-game="'+this._wikiEscape(revision.game || '')+'">'+this._wikiEscape(opts.markerTitle)+'</a>' : '<span class="wiki-revision-marker">' + this._wikiEscape(opts.markerTitle) + '</span>')
+    ? '<span class="wiki-revision-marker">' + this._wikiEscape(opts.markerTitle) + '</span>'
     : '';
   var by = opts.hideUser ? '' : this._activityAvatarHTML(revision) + 'by ' + this._wikiUserLink(revision.userId, revision.username) + ' · ';
   return $('<li></li>').append(
@@ -534,31 +534,9 @@ ZMap.prototype._wikiActivityRow = function(change,opts) {
 
 ZMap.prototype._openActivityComment = function(element,back) {
   var type=element.getAttribute('data-page-type'),id=Number(element.getAttribute('data-page-id')),comment=Number(element.getAttribute('data-comment')),game=element.getAttribute('data-game');
-  if(type==='marker' && game && game!==this.mapOptions.shortName) {
-    var url=new URL(this._wikiMarkerURL(id,game),window.location.href);
-    url.searchParams.set('talk','1');url.searchParams.set('comment',comment);
-    if(back && back.activitySource) url.searchParams.set('talk-from',JSON.stringify(back.activitySource));
-    window.location.href=this._markerURLWithReturn(url.href,back);return;
-  }
-  if(type==='marker' && this.cachedMarkersById && this.cachedMarkersById[id]) {
-    var marker=this.cachedMarkersById[id],zmap=this;
-    if(marker.categoryTypeId==3) {
-      var skip=this.mapControl._skipNextSlide;
-      this.mapControl._skipNextSlide=true;
-      try {this._openMarkerLink(id,null,back);} finally {this.mapControl._skipNextSlide=skip;}
-    } else this.goTo({marker:id,showPopup:false,centerInVisibleArea:true,panTo:false,preserveView:true});
-    var markerBack=marker.categoryTypeId==3 ? function() {zmap.navigateToArea(marker);} : this._wikiBackToMarker(id);
-    markerBack.fromMarker=id;
-    var returnToSource=back ? function() {zmap._closeNewMarker();back();} : markerBack;
-    if(back && this._markerReturnSource) {
-      returnToSource.navigationPath=this._markerReturnSource(back);
-      returnToSource.navigationPath.clearMarker=true;
-      returnToSource.label=back.label;
-    }
-    this._openTalk(type,id,marker.title || element.getAttribute('data-title') || '',returnToSource,{highlight:comment,region:marker.categoryTypeId==3});
-    return;
-  }
-  this._openTalk(type,id,element.getAttribute('data-title') || '',back,{highlight:comment});
+  var marker=type==='marker' && this.cachedMarkersById && this.cachedMarkersById[id];
+  this._openTalk(type,id,element.getAttribute('data-title') || (marker && marker.title) || '',back,
+    {highlight:comment,game:game || null,region:!!(marker && marker.categoryTypeId==3)});
 };
 
 //************************************************************************//
@@ -685,7 +663,8 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
 ZMap.prototype._setRevisionURL = function(markerId, revisionId) {
   try {
     var url = new URL(window.location.href);
-    url.searchParams.set('marker', markerId);
+    // A revision is readable without selecting its marker or leaving the
+    // current game. Only the explicit Go/View control navigates the map.
     url.searchParams.set('rev', revisionId);
     window.history.replaceState(window.history.state, '', url.href);
   } catch(e) {}
@@ -853,8 +832,16 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
     reopen,
     { settles: true, waitForReady: true }
   );
-  if(pageType === 'marker') this._wikiSetMarkerSubtitle(page, title, pageId, null, reopen,{view:true});
-  else $(page).find('.wiki-subtitle').text(title || '');
+  if(pageType === 'marker') this._wikiSetMarkerSubtitle(page, title, pageId, opts.game || null, reopen,{view:true});
+  else {
+    $(page).find('.wiki-subtitle').text(title || '');
+    var activitySource=back && back.activitySource;
+    if(pageType==='user' && activitySource && activitySource.type==='recent') {
+      $('<button type="button" class="marker-coordinate-pill marker-region-pill wiki-marker-pill wiki-profile-pill">View Profile<i class="fas fa-chevron-right" aria-hidden="true"></i></button>')
+        .on('click',function() {_this._openUserProfile({id:Number(pageId)},reopen);})
+        .appendTo($(page).find('.wiki-subtitle-row').first());
+    }
+  }
 
   var thread = $(page).find('.wiki-thread');
   // Following a marker's Talk page (znotifications.js).
@@ -1155,12 +1142,6 @@ ZMap.prototype._renderUserProfile = function(data, back) {
     if(this.getAttribute('data-revision-type')==='talk') {_this._openActivityComment(this,reopen);return;}
     if(this.getAttribute('data-revision-type')==='settings') {
       _this._openSettingsRevisionLink(Number(this.getAttribute('data-rev')),this.getAttribute('data-game'),reopen);return;
-    }
-    // Revisions are for editors; everyone else goes to the marker.
-    if(!editor) {
-      var markerId = Number(this.getAttribute('data-marker')), game = this.getAttribute('data-game');
-      _this._openMarkerLink(markerId, null, reopen, game);
-      return;
     }
     _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);
   });

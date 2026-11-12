@@ -12,7 +12,7 @@ test('talk shows View Marker when opened from an activity list',()=>{
   map._wikiSetMarkerSubtitle(page,'Marker',123,null,{fromMarker:null},{view:true});
   expect(page.find('button').text()).toBe('View Marker');
   page.find('button').trigger('click');
-  expect(map._openMarkerLink).toHaveBeenCalledWith(123,null,{fromMarker:null},null,true);
+  expect(map._openMarkerLink).toHaveBeenCalledWith(123,null,{fromMarker:null},null);
   expect(map.mapControl._skipNextSlide).toBe(false);
 });
 
@@ -40,11 +40,11 @@ test('label history links open the region page rather than a marker popup',()=>{
 test('ordinary marker history links keep marker navigation',()=>{
   const map=Object.assign(Object.create(context.ZMap.prototype),{
     cachedMarkersById:{123:{id:123,categoryTypeId:1,visible:true}},mapOptions:{shortName:'OoTR'},
-    mapControl:{},navigateToArea:jest.fn(),goTo:jest.fn()
+    mapControl:{},navigateToArea:jest.fn(),navigateToMarker:jest.fn()
   });
   const page=$('<div><div class="wiki-subtitle-row"><p class="wiki-subtitle"></p></div></div>');
   map._wikiSetMarkerSubtitle(page,'Marker',123,'OoTR',null);
   expect(page.find('button').text()).toBe('Go to Marker');
   page.find('button').trigger('click');
-  expect(map.goTo).toHaveBeenCalledWith({marker:123});
+  expect(map.navigateToMarker).toHaveBeenCalledWith(123);
 });

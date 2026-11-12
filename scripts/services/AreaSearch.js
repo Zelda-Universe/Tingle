@@ -72,6 +72,20 @@ ZMap.prototype._areaCameraBounds = function(area, fallback) {
   } catch(error) {return fallback;}
 };
 
+// Measure the controls rather than assuming a fixed search-bar height: Safari
+// safe areas and responsive layouts can change their position and size.
+ZMap.prototype._areaTopInset = function(rect) {
+  if(!this.mapControl.viewStyleBottomSlide) return 0;
+  var nodes=[this.mapControl.headerBar && this.mapControl.headerBar.domNode,
+    this.settingsControl && this.settingsControl.container];
+  return nodes.reduce(function(inset,node) {
+    if(!node || typeof node.getBoundingClientRect !== 'function') return inset;
+    var box=node.getBoundingClientRect();
+    if(!box.width || !box.height || box.right<=rect.left || box.left>=rect.right) return inset;
+    return Math.max(inset,Math.max(0,box.bottom-rect.top));
+  },0);
+};
+
 ZMap.prototype.navigateToArea = function(area) {
   this._attachAreaBorders();
   if(area.areaDestination) {
@@ -98,7 +112,7 @@ ZMap.prototype.navigateToArea = function(area) {
   if(control.viewStyleBottomSlide) control.openDrawerSmall(true);
   if(validBounds) {
     var rect=map.getContainer().getBoundingClientRect(), drawer=control.getContainer().getBoundingClientRect();
-    var left=0,bottom=0;
+    var left=0,bottom=0,top=this._areaTopInset(rect);
     if(control.viewStyleBottomSlide) {
       var targetTop=(Number.isFinite(control._mobileDrawerBaseTop) ? control._mobileDrawerBaseTop : 0)+control.options.softOpenTo;
       bottom=Math.max(0,Math.min(rect.height-64,rect.bottom-targetTop));
@@ -122,7 +136,7 @@ ZMap.prototype.navigateToArea = function(area) {
     // Leaflet otherwise snaps when fitting a small area from a distant zoom.
     var threshold=map.options.zoomAnimationThreshold;
     map.options.zoomAnimationThreshold=Infinity;
-    var fitOptions={paddingTopLeft:[left+24,24],paddingBottomRight:[24,bottom+24],animate:!reducedMotion,duration:.25,easeLinearity:.2};
+    var fitOptions={paddingTopLeft:[left+24,top+24],paddingBottomRight:[24,bottom+24],animate:!reducedMotion,duration:.25,easeLinearity:.2};
     var arrival=map._getBoundsCenterZoom ? map._getBoundsCenterZoom(validBounds,fitOptions) : null;
     try {
       map.fitBounds(validBounds,fitOptions);
@@ -234,8 +248,7 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
     groups[id].sort(function(a,b) {return (a.title || a.name || '').localeCompare(b.title || b.name || '');}).forEach(function(marker) {
       var entry=new MarkerListEntry(marker,{categories:zmap.categories,completionCheckbox:true,onClick:function() {
         control.returnNextPageTo({area:area,bounds:bounds});
-        zmap.goTo({marker:marker.id,panTo:false},true);
-        if(control.viewStyleBottomSlide) control.openDrawerDefaultPartial();
+        zmap.navigateToMarker(marker.id);
       }});
       entry.domNode.addClass('search-marker-list-entry area-marker-list-entry');
       if(typeof getMarkerLocationName === 'function') {

@@ -93,11 +93,17 @@ ZConfig.setDefault('tileNameFormat'           , (
 // https://github.com/CodeSeven/toastr/blob/master/README.md#other-options
 // https://codeseven.github.io/toastr/demo.html
 ZConfig.setDefault('toastr', JSON.stringify({
-  extendedTimeOut : 0,
+  extendedTimeOut : 1000,
   closeButton     : true,
   newestOnTop     : true,
   positionClass   : 'toast-top-full-width',
-  timeOut         : 0
+  timeOut         : 5000,
+  showMethod      : 'zmapToastIn',
+  hideMethod      : 'zmapToastOut',
+  closeMethod     : 'zmapToastOut',
+  showDuration    : 300,
+  hideDuration    : 250,
+  closeDuration   : 250
 }));
 ZConfig.setDefault('verbose'                  , 'false' );
 ZConfig.setDefault('x'                        , ''      ); // Also suffix with `-${gameId}`

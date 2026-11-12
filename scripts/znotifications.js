@@ -84,14 +84,15 @@ ZMap.prototype._wikiLinkParams = function(url) {
   var number = function(name) { return Number(params.get(name)) || 0; };
   return {
     marker: number('marker'), rev: number('rev'), talk: params.get('talk') === '1',
-    user: number('user'), comment: number('comment'), game: params.get('game'),
-    notification: number('notification'), page: params.get('page'), report: number('report'), settingsRev:number('settings-rev')
+    user: params.get('user'), comment: number('comment'), game: params.get('game'),
+    notification: number('notification'), page: params.get('page'), report: number('report'), settingsRev:number('settings-rev'),
+    navigationRestore:params.get('nav-restore')
   };
 };
 
 ZMap.prototype._hasWikiLink = function() {
   var link = this._wikiLinkParams();
-  return !!(link.rev || (link.talk && (link.marker || link.user)));
+  return !!(link.navigationRestore || link.rev || link.user || (link.talk && link.marker));
 };
 
 // Opens what a link points at, in place. Links into another game load it.
@@ -119,23 +120,30 @@ ZMap.prototype._openWikiURL = function(url) {
 
 ZMap.prototype._openWikiLink = function(link, back) {
   var _this = this;
+  var initial=this.mapControl._suppressPageSlide || this.mapControl._restoringInitialPage;
+  var render=function(callback) {return initial ? _this._withoutPageSlide(callback) : callback();};
+  if(link.navigationRestore && this._restoreMarkerLinkSource(link.navigationRestore)) return;
+  if(!back && this._markerLinkReturnBack) back=this._markerLinkReturnBack();
   if(link.notification) {
     this._wikiPost('notifications_read', { ids: [link.notification] }).done(function(data) {
       if(data.success) _this.setNotificationCount(data.unread);
     });
   }
-  this.mapControl._restoringInitialPage = false;
   if(link.rev) {
     this._openMarkerRevision(link.rev, back || function() {
       _this._openMarkerHistory(link.marker, _this._wikiBackToMarker(link.marker));
     });
   } else if(link.talk && link.user) {
-    this._wikiGet('user_profile', { id: link.user }).done(function(data) {
+    this._wikiGet('user_profile', { name: link.user }).done(function(data) {
       if(!data.success) return;
-      _this._openTalk('user', link.user, data.user.username, back || function() {
-        _this._openUserProfile({ id: link.user });
-      }, { highlight: link.comment });
+      render(function() {
+        _this._openTalk('user', data.user.id, data.user.username, back || function() {
+          _this._openUserProfile({ id: data.user.id });
+        }, { highlight: link.comment });
+      });
     });
+  } else if(link.user) {
+    this._openUserProfile({name:link.user},back);
   } else if(link.talk && link.marker) {
     var marker = this.cachedMarkersById[link.marker];
     if(marker && link.comment && this._openActivityComment) {
@@ -153,7 +161,7 @@ ZMap.prototype._openWikiLink = function(link, back) {
       this._openActivityComment(target[0],back);return;
     }
     var open = function(title) {
-      _this._openTalk('marker', link.marker, title, back || _this._wikiBackToMarker(link.marker), { highlight: link.comment });
+      render(function() {_this._openTalk('marker', link.marker, title, back || _this._wikiBackToMarker(link.marker), { highlight: link.comment });});
     };
     if(marker) open(marker.title);
     else this._wikiGet('marker_history', { markerId: link.marker }).done(function(data) {
@@ -172,10 +180,12 @@ ZMap.prototype._openRevisionLinkWhenReady = function(part) {
   var link = this._wikiLinkParams();
   try {
     var url = new URL(window.location.href);
-    ['talk', 'comment', 'user', 'notification'].forEach(function(name) { url.searchParams.delete(name); });
+    // Keep the destination address intact while its async page loads. In
+    // particular, opening the initial marker must not consume ?talk=1.
+    url.searchParams.delete('notification');
     window.history.replaceState(window.history.state, '', url.href);
   } catch(e) {}
-  this._openWikiLink(link);
+  this._withoutPageSlide(function() {this._openWikiLink(link);}.bind(this));
 };
 
 //************************************************************************//
@@ -184,8 +194,8 @@ ZMap.prototype._openRevisionLinkWhenReady = function(part) {
 
 ZMap.prototype._openNotificationsPage = function(back) {
   var _this = this;
-  back = back || function() { _this._createAccountForm(_this.getUser()); };
-  var reopen = this._wikiReopen(function() { _this._openNotificationsPage(back); }, null, 'Notifications');
+  back = back || this._wikiBackToAccount();
+  var reopen = this._wikiReopen(function() { _this._openNotificationsPage(back); }, back, 'Notifications');
   reopen.activitySource={type:'notifications',filter:'all'};
   var page = this._showWikiPage(
     '<div id="notifications_page" class="wiki-page">' +

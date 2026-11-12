@@ -692,7 +692,7 @@ main.leaflet-container,
 	color: white;
 	font-size: 14px;
 	line-height: 1.4;
-	opacity: 1 !important;
+	opacity: 1;
 	text-shadow: none;
 }
 /* toastr's own icons are !important; this outranks them. */
@@ -2927,6 +2927,26 @@ button[aria-disabled="true"] {
 }
 
 
+/* A faint inset edge separates dark glass from the map's dark grid without
+   changing control dimensions, shadows, or the drawer's measured geometry. */
+:root {
+	--map-glass-edge: rgba(255, 255, 255, .10);
+}
+
+.leaflet-control-layers,
+.mobile-header-bar,
+.mobile-search-results-panel,
+.settings-control-toggle,
+.settings-control .settings-control-panel,
+.leaflet-control-zoom,
+.mouse-coords,
+.oot-floor-pill,
+.oot-floor-control select,
+.offline-map-empty-message {
+	outline: 1px solid var(--map-glass-edge);
+	outline-offset: -1px;
+}
+
 /* Controls */
 
 .mobile-header-bar {
@@ -4971,6 +4991,7 @@ div.circle:has(>.icon-EoW_Echo) {
 
 /* Profiles. */
 .profile-banner {
+	position: relative;
 	height: 120px;
 	margin: 0 0 -36px;
 	background: linear-gradient(135deg, #1f6b46, #2a4f7a) center / cover no-repeat;
@@ -4987,15 +5008,25 @@ div.circle:has(>.icon-EoW_Echo) {
 }
 
 .profile-head .profile-bio { margin-top:12px; font-size:14px; line-height:1.5; text-align:left; overflow-wrap:anywhere; }
-.main-content > .compact-title-bar-profile { flex-direction:column; gap:3px; overflow:visible; isolation:isolate; opacity:1; transition:none; background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; border-bottom:0; pointer-events:none; }
-.profile-compact-banner { position:absolute; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
-.profile-compact-banner::after { content:''; position:absolute; inset:0; box-shadow:inset 0 -1px rgba(255,255,255,calc(var(--profile-progress,0) * .12)); pointer-events:none; }
-.profile-compact-banner::before { content:''; position:absolute; inset:-12px; background-image:linear-gradient(rgba(0,0,0,calc(var(--profile-progress,0) * .55)),rgba(0,0,0,calc(var(--profile-progress,0) * .55))),var(--profile-banner); background-size:cover; background-position:center; filter:blur(calc(var(--profile-progress,0) * 10px)); }
+.profile-head .profile-bio:empty { display:none; }
+.profile-banner-edit { position:absolute; top:12px; right:16px; z-index:80; display:flex; align-items:center; justify-content:center; width:44px; height:44px; padding:0; border:1px solid rgba(255,255,255,.3); border-radius:50%; background:transparent; color:rgba(255,255,255,.75); font-size:21px; cursor:pointer; }
+.profile-banner-edit:hover { color:#fff; background:transparent; }
+.profile-banner-edit i, .profile-banner-edit svg { width:18px; height:18px; font-size:18px; }
+.main-content > .profile-banner-edit { position:sticky; top:12px; right:auto; box-sizing:border-box; margin:12px 16px -56px auto; z-index:100; }
+.main-content > .compact-title-bar-profile { flex-direction:column; gap:3px; height:120px; margin-bottom:-120px; overflow:visible; isolation:isolate; opacity:1; transition:none; background:transparent; backdrop-filter:none; -webkit-backdrop-filter:none; border-bottom:0; pointer-events:none; overflow-anchor:none; }
+/* Keep sticky geometry fixed while the banner is cropped by translation.
+   Blur lives on its own composited layer, not the sticky element. */
+.profile-compact-banner { position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; transform:translate3d(0,calc(var(--profile-progress,0) * -52px),0); will-change:transform; }
+.profile-compact-banner::before,
+.profile-compact-banner::after { content:''; position:absolute; inset:-12px; background-image:var(--profile-banner); background-size:cover; background-position:center; transform:translate3d(0,calc(var(--profile-progress,0) * 26px),0); }
+.profile-compact-banner::before { filter:blur(calc(var(--profile-progress,0) * 10px)); will-change:transform,filter; }
+.profile-compact-banner::after { background-image:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)); opacity:var(--profile-progress,0); will-change:opacity; }
+.profile-compact-divider { position:absolute; z-index:1; left:0; right:0; bottom:0; height:1px; background:rgba(255,255,255,.12); opacity:var(--profile-progress,0); pointer-events:none; }
 .compact-title-bar-profile .compact-title-bar-text { font-size:16px; font-weight:700; }
 .compact-title-bar-profile > .compact-title-bar-text,
-.compact-title-bar-profile > .profile-compact-stats { opacity:clamp(0,calc((var(--profile-progress,0) - .35) / .65),1); transform:translateY(calc((1 - var(--profile-progress,0)) * 8px)); }
+.compact-title-bar-profile > .profile-compact-stats { position:relative; z-index:1; opacity:clamp(0,calc((var(--profile-progress,0) - .35) / .65),1); transform:translate3d(0,calc(8px - var(--profile-progress,0) * 34px),0); will-change:transform,opacity; }
 .profile-scroll-header .profile-avatar { visibility:hidden; }
-.profile-compact-avatar { position:absolute; top:calc(84px - var(--profile-scroll,0px)); left:50%; width:72px; height:72px; border:3px solid rgba(0,0,0,.6); border-radius:50%; object-fit:cover; background:#333; pointer-events:none; opacity:clamp(0,calc(1 - var(--profile-progress,0) * 1.5),1); transform:translateX(-50%) scale(calc(1 - var(--profile-progress,0) * .15)); transform-origin:center; }
+.profile-compact-avatar { position:absolute; top:84px; left:50%; z-index:2; width:72px; height:72px; border:3px solid rgba(0,0,0,.6); border-radius:50%; object-fit:cover; background:#333; pointer-events:none; opacity:clamp(0,calc(1 - var(--profile-progress,0) * 1.5),1); transform:translate3d(-50%,calc(0px - var(--profile-scroll,0px)),0) scale(calc(1 - var(--profile-progress,0) * .15)); transform-origin:center; will-change:transform,opacity; }
 .profile-scroll-header .profile-name { opacity:calc(1 - var(--profile-progress,0)); }
 .profile-compact-stats { display:flex; justify-content:center; gap:4px; font-size:11px; white-space:nowrap; }
 .profile-compact-stats > div { display:flex; gap:3px; align-items:center; line-height:16px; }
@@ -5049,7 +5080,7 @@ div.circle:has(>.icon-EoW_Echo) {
 	font-size: 12px;
 }
 
-.profile-actions [data-action="copy-code"],
+.profile-actions [data-action="copy-profile"],
 .profile-actions:not(:has([data-action="edit"])) [data-action="talk"] {
 	grid-column: 1 / -1;
 }
@@ -5902,9 +5933,9 @@ div.circle:has(>.icon-EoW_Echo) {
 .profile-activity-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:16px; }
 .menu-cat-content-inner .profile-activity-heading h4 { margin:0; line-height:1.2; }
 .profile-activity-heading .activity-filters { margin:0; flex:none; }
-.profile-activity-heading .activity-filters button { min-height:26px; padding:3px 6px; gap:4px; font-size:11px; }
+.profile-activity-heading .activity-filters button { min-height:34px; padding:6px 12px; gap:5px; font-size:13px; }
 .profile-activity-heading .activity-filters button svg,
-.profile-activity-heading .activity-filters button i { width:11px; height:11px; }
+.profile-activity-heading .activity-filters button i { width:13px; height:13px; }
 .activity-talk .activity-comment-body { margin:0; font-size:14px; line-height:1.5; color:rgba(255,255,255,.85); overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
 .activity-talk > .activity-reply-quote { align-self:stretch; box-sizing:border-box; min-width:0; max-width:calc(100% - 22px); margin:0 22px 0 0; padding:8px 12px; border:0; border-left:2px solid rgba(255,255,255,.35); border-radius:2px 8px 8px 2px; background:rgba(255,255,255,.06); color:rgba(255,255,255,.6); font-size:13px; }
 .activity-reply-quote cite { display:block; margin-bottom:4px; font-style:normal; font-weight:600; }
@@ -6155,6 +6186,10 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: white;
 	font-size: 14px;
 	line-height: 1.4;
+}
+
+.complete-reminder,
+#toast-container>div.toast.is-entering {
 	animation: complete-reminder-in .3s cubic-bezier(.35,.91,.33,.97);
 }
 
@@ -6167,7 +6202,9 @@ div.circle:has(>.icon-EoW_Echo) {
 	}
 }
 
-.complete-reminder.is-closing {
+.complete-reminder.is-closing,
+#toast-container>div.toast.is-closing {
+	animation: none;
 	opacity: 0;
 	transform: translateY(-8px);
 	transition: opacity .25s, transform .25s;
@@ -6254,8 +6291,8 @@ div.circle:has(>.icon-EoW_Echo) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.complete-reminder { animation: none; }
-	.complete-reminder.is-closing { transition: none; }
+	.complete-reminder, #toast-container>div.toast.is-entering { animation: none; }
+	.complete-reminder.is-closing, #toast-container>div.toast.is-closing { transition: none; }
 }
 
 /* Markers moved apart so each can be clicked (ZMap.spreadOverlappingMarkers)

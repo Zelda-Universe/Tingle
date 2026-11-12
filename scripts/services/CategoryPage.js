@@ -121,8 +121,7 @@ ZMap.prototype._showCategoryPage = function(category) {
     groups[id].sort(function(a, b) { return (a.title || a.name || '').localeCompare(b.title || b.name || ''); }).forEach(function(marker) {
       var entry = new MarkerListEntry(marker, { categories: zmap.categories, completionCheckbox: true, onClick: function() {
         control.returnNextPageTo({ category: category });
-        zMap.goTo({ marker: marker.id, panTo: false }, true);
-        if(control.viewStyleBottomSlide) control.openDrawerDefaultPartial();
+        zmap.navigateToMarker(marker.id);
       }});
       entry.domNode.addClass('search-marker-list-entry area-marker-list-entry');
       // The location under the name, as search results show it (the entry's

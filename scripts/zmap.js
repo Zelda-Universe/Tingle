@@ -896,7 +896,7 @@ function displayUserName(userName) {
   return /^<deleted-\d+>$/.test(userName || '') ? 'Deleted user' : userName;
 }
 
-ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
+ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
     var title = marker.title;
     if (marker.gameData != null && marker.gameData.actor != null && _this.lang[marker.gameData.actor + "_Name"] != null) {
        title = _this.lang[marker.gameData.actor + "_Name"]
@@ -1041,13 +1041,13 @@ ZMap.prototype._createMarkerPopup = function(marker, openDrawerImmediately) {
 
   this.mapControl.setContent(content, 'm'+marker.id);
   this._refreshMarkerEditorTools(marker);
-  var openImmediatelyMobile = (
-    !!openDrawerImmediately &&
+  var forcePartialMobile = (
+    !!forcePartial &&
     this.mapControl.viewStyleBottomSlide
   );
   this.mapControl.openDrawerSmall(
-    openImmediatelyMobile,
-    openImmediatelyMobile
+    forcePartialMobile,
+    !!(forcePartialMobile && (this.mapControl._restoringInitialPage || this.mapControl._suppressPageSlide))
   );
 }
 
@@ -1119,8 +1119,8 @@ ZMap.prototype._copyToClipboard = function(vMarkerId, button) {
 ZMap.prototype._copyText = function(text, button) {
   var confirm = function() {
     if(!button) return;
-    var icon = button.querySelector('.marker-action-icon');
-    var label = button.querySelector('.marker-action-label');
+    var icon = button.querySelector('.marker-action-icon, .copy-action-icon');
+    var label = button.querySelector('.marker-action-label, .copy-action-label');
     if(!icon || !label) return;
     if(!button._copyOriginal) button._copyOriginal = { icon: icon.innerHTML, label: label.textContent };
     icon.innerHTML = "<i class='fas fa-check' aria-hidden='true'></i>";
@@ -2576,7 +2576,7 @@ ZMap.prototype._showCompleteRegistrationPrompt = function(markerId) {
 };
 
 // The "visit" group's reminder: a banner like the old toast (which stayed
-// until closed: toastr's timeOut is 0 in ZConfig.js), with the count and a
+// until closed), with the count and a
 // Register button. It leaves the map usable, and stays until it's dismissed,
 // so lasting longer isn't a difference between the test's groups.
 ZMap.prototype._showCompleteReminder = function(markerId, count, variant) {
@@ -2900,7 +2900,7 @@ ZMap.prototype.openBookmark = function(bookmark) {
   this._closeNewMarker();
 
   if(marker) {
-    this.goTo({ marker: marker.id, panTo: false }, true);
+    this.navigateToMarker(marker.id);
     latlng = marker.getLatLng();
   } else {
     this.mapControl.changeMapOnly(bookmark.mapId, bookmark.submapId);
@@ -4911,11 +4911,13 @@ ZMap.prototype.drawerPageRoutes = {
 };
 
 ZMap.prototype.syncDrawerPageURL = function(contentType) {
-  if(!this._drawerRoutingReady) return;
+  if(!this._drawerRoutingReady || (this.mapControl && this.mapControl._restoringInitialPage)) return;
   var url = new URL(window.location.href);
   var page = this.drawerPageRoutes[contentType];
   var recent = /^recentChanges-(.+)$/.exec(contentType || '');
   var profile = /^userProfile-(\d+)$/.exec(contentType || '');
+  var userTalk = /^talk-user-(\d+)$/.exec(contentType || '');
+  var markerTalk = /^talk-marker-(\d+)$/.exec(contentType || '');
   var settingsRevision=/^gameSettingsRevision-(\d+)$/.exec(contentType || '');
   if(contentType==='mapSettingsHistory') page='game-settings-history';
   url.searchParams.delete('history-game');
@@ -4925,15 +4927,27 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   if(settingsRevision) url.searchParams.set('settings-rev',settingsRevision[1]);
   if(contentType === 'allChanges') page = 'all-changes';
   if(recent) page = 'recent-edits';
-  if(profile) page = 'profile';
+  if(profile || userTalk) page = null;
   url.searchParams.delete('edits-game');
   url.searchParams.delete('profile');
   if(recent) url.searchParams.set('edits-game', recent[1]);
   // By username, which reads better and lasts; IDs from older links still work.
-  if(profile) url.searchParams.set('profile', (this._profileNames && this._profileNames[profile[1]]) || profile[1]);
   if(contentType === 'allChanges' || recent || profile) {
     url.searchParams.delete('marker');
     ['talk', 'comment', 'user', 'notification'].forEach(function(key) { url.searchParams.delete(key); });
+  }
+  if(profile || userTalk) {
+    var userId=(profile || userTalk)[1];
+    url.searchParams.set('user',(this._profileNames && this._profileNames[userId]) || userId);
+    if(userTalk) url.searchParams.set('talk','1');
+    else url.searchParams.delete('talk');
+    url.searchParams.delete('marker');url.searchParams.delete('rev');
+  } else {
+    url.searchParams.delete('user');
+    if(markerTalk) {
+      url.searchParams.set('marker',markerTalk[1]);
+      url.searchParams.set('talk','1');
+    } else url.searchParams.delete('talk');
   }
   if(/^area-/.test(contentType || '') && this.selectedArea) {
     url.searchParams.set('area',this.areaURLKey(this.selectedArea));
@@ -4963,7 +4977,18 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   window.history.replaceState(state, '', url.href);
 };
 
-ZMap.prototype.restoreDrawerPage = function(page) {
+ZMap.prototype._withoutPageSlide = function(render) {
+  var control=this.mapControl,previous=control._suppressPageSlide;
+  control._suppressPageSlide=true;
+  try {return render();} finally {control._suppressPageSlide=previous;}
+};
+
+ZMap.prototype.restoreDrawerPage = function(page, animate) {
+  if(animate) return this._restoreDrawerPage(page);
+  return this._withoutPageSlide(function() {return this._restoreDrawerPage(page);}.bind(this));
+};
+
+ZMap.prototype._restoreDrawerPage = function(page) {
   this._drawerRoutingReady = true;
   if(this.restoreAreaFromURL && this.restoreAreaFromURL()) return;
   if(this.restoreCategoryFromURL && this.restoreCategoryFromURL()) return;
@@ -5016,7 +5041,7 @@ ZMap.prototype.restoreDrawerPage = function(page) {
     var back = function() { _this.mapControl.resetContent(); };
     if(page === 'profile') {
       // A username, or an account ID from an older link (user_profile.php).
-      var profileName = params.get('profile');
+      var profileName = params.get('user') || params.get('profile');
       if(!profileName || profileName.length > 100) return;
       this._openUserProfile({ name: profileName }, back);
     } else {
@@ -5807,11 +5832,12 @@ ZMap.prototype._adminTopMarkers = function(data, range) {
         if(e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
         e.preventDefault();
         if(_this.cachedMarkersById[marker.markerId]) {
-          _this.goTo({ marker: marker.markerId });
+          _this.navigateToMarker(marker.markerId);
         } else if(marker.game) {
           var url = new URL(window.location.href.split('?')[0]);
           url.searchParams.set('game', marker.game);
           url.searchParams.set('marker', marker.markerId);
+          url.searchParams.set('zoom',6);
           window.location.href = url.href;
         }
       });
@@ -6406,11 +6432,11 @@ ZMap.prototype._createAccountForm = function(user) {
     _this._createAdminPage();
   });
   $('#account_notifications_btn').click(function() {
-    _this._openNotificationsPage(function() { _this._createAccountForm(_this.getUser()); });
+    _this._openNotificationsPage(_this._wikiBackToAccount());
   });
   if (this.setNotificationCount) this.setNotificationCount(this.notificationCount);
   $('#account_profile_btn').click(function() {
-    var back = function() { _this._createAccountForm(_this.getUser()); };
+    var back = _this._wikiBackToAccount();
     if(_this.getUser() && _this.getUser().level >= 5) _this._openUserProfile({ id: user.id }, back);
     else _this._openProfilePreview(back);
   });
@@ -6418,7 +6444,7 @@ ZMap.prototype._createAccountForm = function(user) {
     _this._createAccountInformationForm();
   });
   $('#account_all_changes_btn').click(function() {
-    _this._openRecentChanges(null, function() { _this._createAccountForm(_this.getUser()); });
+    _this._openRecentChanges(null, _this._wikiBackToAccount());
   });
   $('#account_join_beta_btn').click(function() {
     _this._showEditingBetaAlert();
@@ -7412,6 +7438,15 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
  * @param vGoTo.subMap          - Submap ID (Unique)
  * @param vGoTo.marker          - Marker to be opened (Takes precedence over subMap and Layer)
  **/
+// Explicit marker links share camera and drawer behavior. Internal selection
+// and Back restoration still use goTo directly to preserve the previous view.
+ZMap.prototype.navigateToMarker = function(markerId) {
+  var marker=this.cachedMarkersById[markerId];
+  if(marker && marker.categoryTypeId==3) return this.navigateToArea(marker);
+  this.goTo({marker:markerId,zoom:Math.max(this.map.getZoom(),6),
+    centerInVisibleArea:true,panTo:false},true);
+};
+
 ZMap.prototype.goTo = function(vGoTo, notByInput) {
    if (vGoTo.hideOthers || ZConfig.getConfig('hideOthers') == 'true') {
       for (var i = 0; i < markers.length; i++) {
@@ -7496,7 +7531,8 @@ ZMap.prototype._openMarker = function(
        // Talk navigation changes the sidebar, not the map camera. Moving
        // here races its animated sidebar bounds and causes a visible recoil.
      } else if(centerInVisibleArea) {
-       this._setViewAtMarkerInVisibleArea(marker, vZoom);
+       this._setViewAtMarkerInVisibleArea(marker, vZoom,
+         showPopup && this.mapControl.viewStyleBottomSlide && this.mapControl._partialDrawerMode ? this.mapControl.options.softOpenTo : undefined);
      } else {
        this.map.setView(latlng, vZoom);
      }
@@ -7589,7 +7625,7 @@ ZMap.prototype.restoreMarkerReturnView = function() {
   return true;
 };
 
-ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom) {
+ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom, drawerTargetTop) {
   var mapRect = this.map.getContainer().getBoundingClientRect();
   var mapSize = this.map.getSize();
   var visibleLeft = 0;
@@ -7599,9 +7635,15 @@ ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom) {
 
   if(this.mapControl.viewStyleBottomSlide) {
     var mobileDrawerRect = this.mapControl._container.getBoundingClientRect();
+    var drawerTop=mobileDrawerRect.top;
+    if(Number.isFinite(drawerTargetTop)) {
+      var base=Number.isFinite(this.mapControl._mobileDrawerBaseTop) ? this.mapControl._mobileDrawerBaseTop :
+        mobileDrawerRect.top-(Number.parseFloat(this.mapControl._container.style.top)||0);
+      drawerTop=base+drawerTargetTop;
+    }
     visibleBottom = Math.max(
       0,
-      Math.min(mapRect.height, mobileDrawerRect.top - mapRect.top)
+      Math.min(mapRect.height, drawerTop - mapRect.top)
     );
   } else if(
     window.getComputedStyle(this.mapControl._container).display !== 'none'

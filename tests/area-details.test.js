@@ -2,6 +2,22 @@ const fs=require('fs');
 const vm=require('vm');
 const source=fs.readFileSync(require('path').join(__dirname,'../scripts/services/AreaSearch.js'),'utf8');
 
+test('area framing clears the actual mobile search bar and settings control',()=>{
+  const context={ZMap:function(){}};
+  vm.runInNewContext(source,context);
+  const node=box=>({getBoundingClientRect:()=>box});
+  const map=Object.assign(Object.create(context.ZMap.prototype),{
+    mapControl:{viewStyleBottomSlide:true,headerBar:{domNode:node({left:16,right:330,bottom:110,width:314,height:56})}},
+    settingsControl:{container:node({left:340,right:384,bottom:100,width:44,height:44})}
+  });
+  const rect={top:20,left:0,right:400};
+  expect(map._areaTopInset(rect)).toBe(90);
+  map.mapControl.headerBar.domNode=node({left:16,right:330,bottom:140,width:314,height:86});
+  expect(map._areaTopInset(rect)).toBe(120);
+  map.mapControl.viewStyleBottomSlide=false;
+  expect(map._areaTopInset(rect)).toBe(0);
+});
+
 test('Lon Lon Ranch frames Hyrule Field on either age without changing its own bounds',()=>{
   const context={ZMap:function(){},L:{latLngBounds:b=>({bounds:b,isValid:()=>true})}};
   vm.runInNewContext(source,context);

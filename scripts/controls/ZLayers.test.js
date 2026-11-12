@@ -12,6 +12,74 @@ function drawerMethods(globals = {}) {
   return context.L.Control.ZLayers.prototype;
 }
 
+describe('profile header scroll compositing',()=>{
+  test('scroll updates do not resize the sticky header or its layout margin',()=>{
+    const methods=drawerMethods();
+    const profile={style:{setProperty:jest.fn()}};
+    const bar={isConnected:true,firstChild:{textContent:'Link'},classList:{contains:()=>true,toggle:jest.fn()},style:{setProperty:jest.fn()}};
+    const drawer={_compactTitleBar:bar,_compactTitleSource:{textContent:'Link',closest:()=>profile},_contents:{scrollTop:80}};
+    methods._updateCompactTitle.call(drawer);
+    expect(bar.style.setProperty).toHaveBeenCalledWith('--profile-progress',.5);
+    expect(bar.style.setProperty).toHaveBeenCalledWith('--profile-scroll','80px');
+    expect(bar.style.height).toBeUndefined();
+    expect(bar.style.marginBottom).toBeUndefined();
+    expect(profile.style.setProperty).toHaveBeenCalledWith('--profile-scroll','80px');
+    drawer._contents.scrollTop=200;
+    methods._updateCompactTitle.call(drawer);
+    expect(bar.style.setProperty).toHaveBeenCalledWith('--profile-progress',1);
+    expect(bar.style.setProperty).toHaveBeenCalledWith('--profile-scroll','160px');
+    const writes=bar.style.setProperty.mock.calls.length;
+    drawer._contents.scrollTop=250;
+    methods._updateCompactTitle.call(drawer);
+    expect(bar.style.setProperty).toHaveBeenCalledTimes(writes);
+    drawer._contents.scrollTop=-15;
+    methods._updateCompactTitle.call(drawer);
+    expect(bar.style.setProperty).toHaveBeenCalledWith('--profile-progress',0);
+  });
+
+  test('multiple scroll events are coalesced into one animation frame',()=>{
+    const frame=jest.fn(()=>1);
+    const methods=drawerMethods({window:{requestAnimationFrame:frame}});
+    const drawer={_updateCompactTitle:jest.fn()};
+    methods._scheduleCompactTitle.call(drawer);
+    methods._scheduleCompactTitle.call(drawer);
+    expect(frame).toHaveBeenCalledTimes(1);
+    frame.mock.calls[0][0]();
+    expect(drawer._updateCompactTitle).toHaveBeenCalledTimes(1);
+    expect(drawer._compactTitleFrame).toBeNull();
+  });
+
+  test('the edit button stays pinned and interactive beyond the avatar collapse',()=>{
+    const methods=drawerMethods(),edit={disabled:false};
+    const profile={style:{setProperty:jest.fn()},querySelector:()=>edit};
+    const bar={isConnected:true,firstChild:{textContent:'Link'},classList:{contains:()=>true,toggle:jest.fn()},style:{setProperty:jest.fn()}};
+    const drawer={_compactTitleBar:bar,_compactTitleSource:{textContent:'Link',closest:()=>profile},_contents:{scrollTop:120}};
+    methods._updateCompactTitle.call(drawer);
+    expect(edit.disabled).toBe(false);
+    drawer._contents.scrollTop=400;methods._updateCompactTitle.call(drawer);
+    expect(profile.style.setProperty.mock.calls.some(call=>call[0]==='--profile-edit-scroll')).toBe(false);
+    drawer._contents.scrollTop=20;methods._updateCompactTitle.call(drawer);
+    expect(edit.disabled).toBe(false);
+    const css=fs.readFileSync(require('path').join(__dirname,'../../styles/zmain.css'),'utf8');
+    const rule=css.slice(css.indexOf('.main-content > .profile-banner-edit {'),css.indexOf('}',css.indexOf('.main-content > .profile-banner-edit {')));
+    expect(rule).toContain('position:sticky');
+    expect(rule).toContain('top:12px');
+    expect(rule).not.toContain('transform:');
+    expect(rule).not.toContain('opacity:');
+  });
+
+  test('dynamic banner blur is isolated from sticky geometry and avatar movement uses transforms',()=>{
+    const css=fs.readFileSync(require('path').join(__dirname,'../../styles/zmain.css'),'utf8');
+    const profile=css.slice(css.indexOf('.main-content > .compact-title-bar-profile'),css.indexOf('.profile-avatar {',css.indexOf('.profile-compact-avatar {')+1));
+    expect(profile).toContain('.profile-compact-banner::before { filter:blur(calc(var(--profile-progress,0) * 10px))');
+    expect(profile).toContain('will-change:transform,filter');
+    expect(profile).toContain('height:120px; margin-bottom:-120px');
+    expect(profile).toContain('top:84px');
+    expect(profile).not.toContain('top:calc(');
+    expect(profile).not.toContain('z-index:-1');
+  });
+});
+
 describe('header pages return to category and area lists', () => {
   test('account and login slide forward from detail lists and backward on return', () => {
     const source = fs.readFileSync(__dirname + '/ZLayers.js', 'utf8');

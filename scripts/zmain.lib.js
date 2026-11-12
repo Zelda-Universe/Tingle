@@ -339,8 +339,13 @@ function showOfflineUnavailable(xhr) {
 }
 
 function finalLoad() {
+  return zMap._withoutPageSlide(finalLoadContent);
+}
+
+function finalLoadContent() {
   var marker = ZConfig.getConfig('marker');
   if(marker) {
+    if(zMap._prepareMarkerLinkReturn) zMap._prepareMarkerLinkReturn();
     zMap.mapControl._restoringInitialPage = true;
     try {
       zMap.goTo({

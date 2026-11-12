@@ -1,6 +1,7 @@
 scripts/util/debug.lib.js
 scripts/util/ZConfig.lib.js
 scripts/util/ZConfig.js
+scripts/util/toastMotion.js
 scripts/util/zlogger.js
 scripts/util/general.js
 scripts/util/ZOfflineSync.js
@@ -45,6 +46,7 @@ scripts/services/AreaSearch.js
 scripts/services/CategoryPage.js
 scripts/controls/OotFloors.js
 scripts/zwiki.js
+scripts/services/MarkerNavigation.js
 scripts/zbeta.js
 scripts/zmapsettings.js
 scripts/zreports.js

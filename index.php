@@ -216,6 +216,21 @@
       }
     } catch(\Throwable $e) { error_log('Area metadata unavailable: '.$e->getMessage()); }
   }
+  $profileIdentifier=is_string($_GET['user'] ?? null) ? $_GET['user'] :
+    (($_GET['page'] ?? '')==='profile' && is_string($_GET['profile'] ?? null) ? $_GET['profile'] : null);
+  if($profileIdentifier!==null) {
+    include_once(__DIR__.'/config.php');
+    include_once(__DIR__.'/lib/common/database.php');
+    include_once(__DIR__.'/lib/common/profile_metadata.php');
+    try {
+      $profileIdentity=open()===0 ? profileMetadataIdentity($db,$map_prefix,$profileIdentifier) : false;
+      if($profileIdentity) {
+        $profileMeta=profilePageMetadata($profileIdentity['username'],($_GET['talk'] ?? '')==='1');
+        $pageHeading=$profileIdentity['username'];$pageTitle=$profileMeta['title'];
+        $pageDescription=$profileMeta['description'];$canonicalUrl=$profileMeta['url'];$pageUrl=$canonicalUrl;
+      }
+    } catch(\Throwable $error) {error_log('Profile metadata unavailable: '.$error->getMessage());}
+  }
   $pageUrl = preg_replace('#^https://zeldamaps\.com#', $siteOrigin, $pageUrl ?: $canonicalUrl);
 ?>
 <!DOCTYPE html>

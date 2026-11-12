@@ -71,8 +71,18 @@ ZMap.prototype._wikiActionBadge = function(action) {
 
 ZMap.prototype._wikiUserLink = function(userId, username) {
   if(!username) return '<span class="wiki-user">Unknown</span>';
-  return '<a href="#" class="wiki-user wiki-link" data-user-id="' + Number(userId) + '">' +
+  return '<a href="'+this._wikiEscape(this._wikiUserURL(username || userId))+'" class="wiki-user wiki-link" data-user-id="' + Number(userId) + '">' +
     this._wikiEscape(username) + '</a>';
+};
+
+ZMap.prototype._wikiUserURL = function(identifier,talk) {
+  return '?user='+encodeURIComponent(identifier)+(talk?'&talk=1':'');
+};
+
+ZMap.prototype._wikiBackToAccount = function() {
+  var zmap=this,back=function() {zmap._createAccountForm(zmap.getUser());};
+  back.label='Account';back.navigationSource={type:'page',page:'account'};
+  return back;
 };
 
 // Opens a wiki page in the drawer. back runs from its Back button (and
@@ -176,6 +186,8 @@ ZMap.prototype._wikiBackToMarker = function(markerId) {
     }
   };
   back.fromMarker = Number(markerId);
+  back.navigationSource={type:'marker',id:Number(markerId)};
+  back.navigationBack=returnsTo && returnsTo.page || null;
   return back;
 };
 
@@ -185,6 +197,7 @@ ZMap.prototype._wikiBackToMarker = function(markerId) {
 ZMap.prototype._wikiReopen = function(reopen, back, label) {
   reopen.label = label;
   reopen.fromMarker = back && back.fromMarker || null;
+  reopen.navigationBack = back || null;
   return reopen;
 };
 
@@ -211,7 +224,7 @@ ZMap.prototype._wikiSetMarkerSubtitle = function(page, title, markerId, game, re
     .on('click', function() {
       var control=_this.mapControl,skip=control._skipNextSlide;
       if(opts.view) control._skipNextSlide=true;
-      try {_this._openMarkerLink(Number(markerId), null, reopen, game,!!opts.view);} finally {control._skipNextSlide=skip;}
+      try {_this._openMarkerLink(Number(markerId), null, reopen, game);} finally {control._skipNextSlide=skip;}
     })
     .appendTo(row);
 };
@@ -387,10 +400,10 @@ ZMap.prototype._wireYeahs = function(root) {
 
 // A marker on this map opens in place, with a Back button to back (the page
 // it was opened from); one from another game opens there.
-ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game, zoomToMarker) {
+ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game) {
   var _this = this;
   if(game && this.mapOptions && game !== this.mapOptions.shortName) {
-    window.location.href = this._wikiMarkerURL(markerId, game, revisionId);
+    window.location.href = this._markerURLWithReturn(this._wikiMarkerURL(markerId, game, revisionId),back);
     return;
   }
   var marker = this.cachedMarkersById[markerId];
@@ -401,7 +414,7 @@ ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game, zoom
       this.mapControl._navigatingForward = true;
     }
     if(marker.categoryTypeId == 3) this.navigateToArea(marker);
-    else this.goTo(zoomToMarker ? {marker:markerId,zoom:Math.max(this.map.getZoom(),6),centerInVisibleArea:true,panTo:false} : { marker: markerId });
+    else this.navigateToMarker(markerId);
     return;
   }
   this._wikiGet('marker_history', { markerId: markerId }).done(function(data) {
@@ -411,7 +424,7 @@ ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game, zoom
       toastr.info('That marker isn\'t visible on this map.');
       return;
     }
-    window.location.href = _this._wikiMarkerURL(markerId, game, revisionId);
+    window.location.href = _this._markerURLWithReturn(_this._wikiMarkerURL(markerId, game, revisionId),back);
   }).fail(function(xhr) { toastr.error(_this._wikiError(xhr)); });
 };
 
@@ -419,6 +432,7 @@ ZMap.prototype._wikiMarkerURL = function(markerId, game, revisionId) {
   var url = new URL(window.location.href.split('?')[0]);
   url.searchParams.set('game', game || this.mapOptions.shortName);
   url.searchParams.set('marker', markerId);
+  if(!revisionId) url.searchParams.set('zoom',6);
   if(revisionId) url.searchParams.set('rev', revisionId);
   return url.href;
 };
@@ -437,6 +451,7 @@ ZMap.prototype._openMarkerHistory = function(markerId, back) {
   back = back || this._wikiBackToMarker(markerId);
   var reopen = this._wikiReopen(function() { _this._openMarkerHistory(markerId, back); }, back, 'History');
   reopen.historyOf = Number(markerId);
+  reopen.navigationSource={type:'history',id:Number(markerId)};
   var page = this._showWikiPage(
     '<div id="marker_history" class="wiki-page">' +
       '<h3 class="text-center">History</h3>' +
@@ -523,7 +538,7 @@ ZMap.prototype._openActivityComment = function(element,back) {
     var url=new URL(this._wikiMarkerURL(id,game),window.location.href);
     url.searchParams.set('talk','1');url.searchParams.set('comment',comment);
     if(back && back.activitySource) url.searchParams.set('talk-from',JSON.stringify(back.activitySource));
-    window.location.href=url.href;return;
+    window.location.href=this._markerURLWithReturn(url.href,back);return;
   }
   if(type==='marker' && this.cachedMarkersById && this.cachedMarkersById[id]) {
     var marker=this.cachedMarkersById[id],zmap=this;
@@ -535,6 +550,11 @@ ZMap.prototype._openActivityComment = function(element,back) {
     var markerBack=marker.categoryTypeId==3 ? function() {zmap.navigateToArea(marker);} : this._wikiBackToMarker(id);
     markerBack.fromMarker=id;
     var returnToSource=back ? function() {zmap._closeNewMarker();back();} : markerBack;
+    if(back && this._markerReturnSource) {
+      returnToSource.navigationPath=this._markerReturnSource(back);
+      returnToSource.navigationPath.clearMarker=true;
+      returnToSource.label=back.label;
+    }
     this._openTalk(type,id,marker.title || element.getAttribute('data-title') || '',returnToSource,{highlight:comment,region:marker.categoryTypeId==3});
     return;
   }
@@ -548,6 +568,7 @@ ZMap.prototype._openActivityComment = function(element,back) {
 ZMap.prototype._openMarkerRevision = function(revisionId, back) {
   var _this = this;
   var reopen = this._wikiReopen(function() { _this._openMarkerRevision(revisionId, back); }, back, 'Revision ' + Number(revisionId));
+  reopen.navigationSource={type:'revision',id:Number(revisionId)};
   var page = this._showWikiPage(
     '<div id="marker_revision" class="wiki-page">' +
       '<h3 class="text-center">Revision ' + Number(revisionId) + '</h3>' +
@@ -806,9 +827,11 @@ ZMap.prototype._wikiPreviewHTML = function(snapshot) {
 ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
   var _this = this;
   opts = opts || {};
+  if(pageType==='user') (this._profileNames=this._profileNames || {})[pageId]=title;
   var talkMarker = pageType === 'marker' && this.cachedMarkersById && this.cachedMarkersById[pageId];
   var isRegion = opts.region || talkMarker && talkMarker.categoryTypeId == 3;
   var reopen = this._wikiReopen(function() { _this._openTalk(pageType, pageId, title, back, opts); }, back, 'Talk');
+  reopen.navigationSource={type:'talk',pageType:pageType,id:Number(pageId),title:title,comment:opts.highlight || 0,region:!!opts.region};
   var page = this._showWikiPage(
     '<div id="wiki_talk" class="wiki-page">' +
       '<h3 class="text-center">Talk</h3>' +
@@ -1019,12 +1042,14 @@ ZMap.prototype._renderTalkThread = function(thread, comments) {
 // who is { id } or { username }.
 ZMap.prototype._openUserProfile = function(who, back) {
   var _this = this;
+  var initial=this.mapControl._suppressPageSlide || this.mapControl._restoringInitialPage;
   back = back || function() { _this.mapControl.resetContent(); };
   var params = who.name !== undefined ? { name: who.name } : who.username ? { username: who.username } : { id: who.id };
   params.filter=this._profileActivityFilter || 'all';
   this._wikiGet('user_profile', params).done(function(data) {
     if(!data.success) { toastr.error(data.msg); return; }
-    _this._renderUserProfile(data, back);
+    if(initial) _this._withoutPageSlide(function() {_this._renderUserProfile(data,back);});
+    else _this._renderUserProfile(data, back);
   }).fail(function(xhr) { toastr.error(_this._wikiError(xhr)); });
 };
 
@@ -1034,7 +1059,7 @@ ZMap.prototype._renderUserProfile = function(data, back) {
   // Profile links use the name (syncDrawerPageURL).
   (this._profileNames = this._profileNames || {})[profile.id] = profile.username;
   var editor = this._isWikiEditor();
-  var reopen = this._wikiReopen(function() { _this._openUserProfile({ id: profile.id }, back); }, null, profile.username);
+  var reopen = this._wikiReopen(function() { _this._openUserProfile({ id: profile.id }, back); }, back, profile.username);
   Object.defineProperty(reopen,'activitySource',{get:function() {return {type:'profile',id:profile.id,filter:_this._profileActivityFilter || 'all'};}});
   var avatar = profile.profilePicture || 'images/default-avatar.png';
   var stat = function(n, label) {
@@ -1044,7 +1069,8 @@ ZMap.prototype._renderUserProfile = function(data, back) {
   };
   var page = this._showWikiPage(
     '<div id="user_profile" class="wiki-page">' +
-      '<div class="profile-banner"' + (profile.banner ? ' style="background-image:url(\'' + _this._wikiEscape(profile.banner) + '\')"' : '') + '></div>' +
+      '<div class="profile-banner"' + (profile.banner ? ' style="background-image:url(\'' + _this._wikiEscape(profile.banner) + '\')"' : '') + '>' +
+        (data.canEdit ? '<button type="button" class="profile-banner-edit" data-action="edit" aria-label="Edit Profile" title="Edit Profile"><i class="fas fa-pencil-alt" aria-hidden="true"></i></button>' : '') + '</div>' +
       '<div class="profile-head">' +
         '<img class="profile-avatar" src="' + _this._wikiEscape(avatar) + '" alt="" ' +
           'onerror="this.onerror=null;this.src=\'images/default-avatar.png\'" />' +
@@ -1057,8 +1083,7 @@ ZMap.prototype._renderUserProfile = function(data, back) {
         stat(data.counts.comments, 'Comments') + '</div>' +
       '<div class="wiki-actions profile-actions">' +
         '<button type="button" class="wiki-action-button" data-action="talk"><i class="fas fa-comments" aria-hidden="true"></i>Talk</button>' +
-        (data.canEdit ? '<button type="button" class="wiki-action-button" data-action="edit"><i class="fas fa-pencil-alt" aria-hidden="true"></i>Edit Profile</button>' : '') +
-        '<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy <code>[[user:' + _this._wikiEscape(profile.username) + ']]</code></button>' +
+        '<button type="button" class="wiki-action-button" data-action="copy-profile"><span class="copy-action-icon"><i class="fas fa-link" aria-hidden="true"></i></span><span class="copy-action-label">Copy Link to Profile</span></button>' +
       '</div>' +
       (data.canEdit ?
         '<form class="profile-edit-form wiki-section" hidden>' +
@@ -1087,9 +1112,7 @@ ZMap.prototype._renderUserProfile = function(data, back) {
     reopen
   );
   var showBio = function(bio) {
-    $(page).find('.profile-bio').html(bio
-      ? _this._renderWikiText(bio)
-      : '<span class="admin-muted">' + (data.isSelf ? 'You haven\'t written a bio yet.' : 'No bio yet.') + '</span>');
+    $(page).find('.profile-bio').html(bio && String(bio).trim() ? _this._renderWikiText(bio) : '');
   };
   showBio(profile.bio);
   var changes = $(page).find('.profile-changes');
@@ -1147,16 +1170,19 @@ ZMap.prototype._renderUserProfile = function(data, back) {
   var setStatus = function(text, kind) {
     status.removeClass('error success').addClass(kind || '').text(text || '');
   };
+  var openProfileEditor=function() {
+    form.prop('hidden',false);
+    $(page).find('.profile-bio-section, .profile-actions').prop('hidden',true);
+    form.find('textarea').val(profile.bio || '').trigger('focus');
+  };
   $(page).on('click', '[data-action]', function(e) {
     var action = this.getAttribute('data-action');
     if(action === 'talk') {
       _this._openTalk('user', profile.id, profile.username, reopen);
-    } else if(action === 'copy-code') {
-      _this._wikiCopy('[[user:' + profile.username + ']]', 'Link code');
+    } else if(action === 'copy-profile') {
+      _this._copyText(new URL(_this._wikiUserURL(profile.username),window.location.href).href,this);
     } else if(action === 'edit') {
-      form.prop('hidden', false);
-      $(page).find('.profile-bio-section, .profile-actions').prop('hidden', true);
-      form.find('textarea').val(profile.bio || '').trigger('focus');
+      openProfileEditor();
     } else if(action === 'cancel-edit') {
       form.prop('hidden', true);
       $(page).find('.profile-bio-section, .profile-actions').prop('hidden', false);
@@ -1174,6 +1200,9 @@ ZMap.prototype._renderUserProfile = function(data, back) {
       }).fail(function(xhr) { setStatus(_this._wikiError(xhr), 'error'); });
     }
   });
+  // Like Back, this is a direct child of the scrollport. A button inside the
+  // banner cannot remain sticky past the banner's own bottom edge.
+  $(page).find('.profile-banner-edit').detach().on('click',openProfileEditor).prependTo(this.mapControl._contents);
   form.find('.profile-banner-input').on('change', function() {
     var file = this.files && this.files[0];
     if(!file) return;

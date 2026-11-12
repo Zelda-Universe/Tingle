@@ -10,7 +10,8 @@ test.each([['allChanges','all-changes'],['recentChanges-BotW','recent-edits'],['
   const {map,context}=setup('https://example.test/?game=OoTR&marker=7&area=field');
   map.syncDrawerPageURL(type);
   const url=new URL(context.window.location.href);
-  expect(url.searchParams.get('page')).toBe(page);
+  expect(url.searchParams.get('page')).toBe(page==='profile'?null:page);
+  if(page==='profile') expect(url.searchParams.get('user')).toBe('42');
   expect(url.searchParams.has('marker')).toBe(false);
   expect(url.searchParams.has('area')).toBe(false);
   map.restoreDrawerPage(page);
@@ -32,7 +33,42 @@ test('profile links use the username once the profile has loaded',()=>{
   const {map,context}=setup();
   map._profileNames={42:'Hylian Hero'};
   map.syncDrawerPageURL('userProfile-42');
-  expect(new URL(context.window.location.href).searchParams.get('profile')).toBe('Hylian Hero');
+  expect(new URL(context.window.location.href).searchParams.get('user')).toBe('Hylian Hero');
   map.restoreDrawerPage('profile');
   expect(map._openUserProfile.mock.calls[0][0]).toEqual({name:'Hylian Hero'});
+});
+
+test('user Talk URLs use names and keep numeric ID fallbacks',()=>{
+  const {map,context}=setup();
+  map._profileNames={42:'GoldenChaos'};
+  map.syncDrawerPageURL('talk-user-42');
+  let url=new URL(context.window.location.href);
+  expect(url.searchParams.get('user')).toBe('GoldenChaos');
+  expect(url.searchParams.get('talk')).toBe('1');
+  expect(url.searchParams.has('page')).toBe(false);
+  map._profileNames={};map.syncDrawerPageURL('talk-user-42');
+  expect(new URL(context.window.location.href).searchParams.get('user')).toBe('42');
+  map.syncDrawerPageURL('category');
+  url=new URL(context.window.location.href);
+  expect(url.searchParams.has('user')).toBe(false);
+  expect(url.searchParams.has('talk')).toBe(false);
+});
+
+test('marker and region Talk pages write reloadable addresses',()=>{
+  const {map,context}=setup();
+  map.syncDrawerPageURL('talk-marker-55');
+  let params=new URL(context.window.location.href).searchParams;
+  expect(params.get('marker')).toBe('55');
+  expect(params.get('talk')).toBe('1');
+  map.syncDrawerPageURL('m55');
+  params=new URL(context.window.location.href).searchParams;
+  expect(params.has('talk')).toBe(false);
+});
+
+test('initial marker rendering does not erase the Talk route before it restores',()=>{
+  const original='https://example.test/?game=OoTR&marker=55&talk=1&comment=9';
+  const {map,context}=setup(original);
+  map.mapControl._restoringInitialPage=true;
+  map.syncDrawerPageURL('m55');
+  expect(context.window.location.href).toBe(original);
 });

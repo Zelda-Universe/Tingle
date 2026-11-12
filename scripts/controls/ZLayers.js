@@ -444,7 +444,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._contents.id = 'menu-cat-content';
       // Fades the compact title bar in once the page's own title has
       // scrolled up under it (_setupCompactTitle).
-      L.DomEvent.on(this._contents, 'scroll', this._updateCompactTitle, this);
+      L.DomEvent.on(this._contents, 'scroll', this._scheduleCompactTitle, this);
       this._setupSwipeBack();
       this._setupContentDrawerDrag();
 
@@ -1522,7 +1522,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
         this._switchMenuReturnAccount || this._switchMenuReturnLogin);
     if(switchingMenu && this._pageTransitionCleanup) this._pageTransitionCleanup();
     // A swipe back (_setupSwipeBack) has already animated the change.
-    var shouldSlide = !this._skipNextSlide && !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || !switchingBetweenAreas) && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
+    var shouldSlide = !this._suppressPageSlide && !this._skipNextSlide && !swappingSiblingPages && !this._restoringInitialPage && (this._navigatingBack || !switchingBetweenAreas) && (this._navigatingBack || (!switchToAccountWithParent && (!switchingMenu || desktopMenuFromCategories || desktopMenuToCategories || desktopMenuPOINavigation || accountSwitchNavigation) && !switchingBetweenPOIs)) && previousContentType && previousContentType !== vType &&
       (!this.viewStyleBottomSlide || this._open) &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var outgoingPage;
@@ -2217,6 +2217,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       }
       var bannerLayer=document.createElement('div');
       bannerLayer.className='profile-compact-banner';
+      var bannerDivider=document.createElement('span');
+      bannerDivider.className='profile-compact-divider';
+      bannerLayer.appendChild(bannerDivider);
       bar.appendChild(bannerLayer);
       var avatar=profile.querySelector('.profile-avatar');
       if(avatar) {
@@ -2261,6 +2264,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._updateCompactTitle();
   },
 
+  _scheduleCompactTitle: function() {
+    if(this._compactTitleFrame) return;
+    this._compactTitleFrame=window.requestAnimationFrame(function() {
+      this._compactTitleFrame=null;
+      this._updateCompactTitle();
+    }.bind(this));
+  },
+
   _updateCompactTitle: function() {
     var bar = this._compactTitleBar, source = this._compactTitleSource;
     if(!bar || !source || !bar.isConnected) return;
@@ -2268,16 +2279,21 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var title = source.textContent.trim();
     if(bar.firstChild && bar.firstChild.textContent !== title) bar.firstChild.textContent = title;
     if(bar.classList.contains('compact-title-bar-profile')) {
-      // Keep layout contribution at zero (height + negative margin) so
-      // changing the banner never feeds back into the scroll position.
-      var progress=Math.max(0,Math.min(1,this._contents.scrollTop / 160));
-      var height=120-52*progress;
-      bar.style.height=height+'px';
-      bar.style.marginBottom=-height+'px';
-      bar.style.setProperty('--profile-progress',progress);
-      bar.style.setProperty('--profile-scroll',Math.max(0,this._contents.scrollTop)+'px');
+      // Never resize the sticky element during scrolling. Even equal and
+      // opposite height/margin writes can disturb WebKit's sticky layout
+      // and scroll anchoring. CSS crops a translated, fixed-size banner.
+      var rawScroll=Math.max(0,this._contents.scrollTop);
       var profile=source.closest('#user_profile');
-      if(profile) profile.style.setProperty('--profile-progress',progress);
+      var scroll=Math.min(160,rawScroll);
+      if(bar._profileScroll===scroll) return;
+      bar._profileScroll=scroll;
+      var progress=scroll / 160;
+      bar.style.setProperty('--profile-progress',progress);
+      bar.style.setProperty('--profile-scroll',scroll+'px');
+      if(profile) {
+        profile.style.setProperty('--profile-progress',progress);
+        profile.style.setProperty('--profile-scroll',scroll+'px');
+      }
       bar.classList.toggle('visible',progress>0);
       return;
     }

@@ -32,7 +32,7 @@ SearchArea.prototype._initState = function(opts) {
       if(marker.areaDestination || marker.markerCategoryTypeId == 3 || marker.categoryTypeId == 3) {
         zMap.navigateToArea(marker); return;
       }
-      zMap.goTo({ marker: marker.id }, true);
+      zMap.navigateToMarker(marker.id);
     }
   });
   this.searchMarkerHandler.addHandler(

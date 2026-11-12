@@ -204,11 +204,7 @@ HeaderBar.prototype.selectSearchMarker = function(marker) {
     return;
   }
 
-  zMap.goTo({ marker: marker.id }, true);
-  if(!this.mapControl.viewStyleBottomSlide) return;
-
-  this.mapControl.openDrawerSmall(true);
-  zMap._panMarkerIntoVisibleMapArea(marker, false);
+  zMap.navigateToMarker(marker.id);
 };
 
 // On desktop the results are a page in the sidebar, which the marker's (or

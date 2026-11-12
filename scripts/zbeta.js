@@ -293,7 +293,7 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
   var _this = this;
   var title = game ? 'Recent Edits' : 'All Changes';
   activityFilter=activityFilter || 'all';
-  var reopen = this._wikiReopen(function() { _this._openRecentChanges(game, back,activityFilter); }, null, title);
+  var reopen = this._wikiReopen(function() { _this._openRecentChanges(game, back,activityFilter); }, back, title);
   // Serializable counterpart for comment links that switch games.
   Object.defineProperty(reopen,'activitySource',{get:function() {return {type:'recent',game:game || '',filter:activityFilter};}});
   var page = this._showWikiPage(

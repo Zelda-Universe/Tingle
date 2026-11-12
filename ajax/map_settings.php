@@ -21,7 +21,7 @@
     [(int) $game['id']]
   );
   $categories = $db->fetchAllAssociative(
-    "SELECT `id`, `parent_id` AS `parentId`, `marker_category_type_id` AS `typeId`, `name`, `description`, `seo_description`, `img`, `color`, `glyph_color` AS `glyphColor`,
+    "SELECT `id`, `parent_id` AS `parentId`, `marker_category_type_id` AS `typeId`, `name`, `slug`, `description`, `seo_description`, `img`, `color`, `glyph_color` AS `glyphColor`,
             `shape`, `custom_style` AS `customStyle`, `visible`, `visible_zoom`, `menu_section` AS `menuSection`, `menu_order` AS `menuOrder`
        FROM `{$map_prefix}marker_category` WHERE `container_id` = ? ORDER BY `parent_id`, `id`",
     [(int) $game['id']]
@@ -48,7 +48,7 @@
   $seoNames = ['LA' => "Link's Awakening", 'BotW' => 'Breath of the Wild',
     'TotK' => 'Tears of the Kingdom', 'EoW' => 'Echoes of Wisdom'];
   foreach ($categories as &$category) {
-    $entry = $landing[seoSlug(seoPlainText($category['name']))] ?? null;
+    $entry = $landing[$category['slug'] ?: seoSlug(seoPlainText($category['name']))] ?? null;
     $category['defaultSeoDescription'] = seoCategoryDescription($entry ?? [
       'name' => $category['name'], 'count' => 0, 'maps' => []
     ], $game['short_name'], $seoNames[$game['short_name']] ?? $game['name']);

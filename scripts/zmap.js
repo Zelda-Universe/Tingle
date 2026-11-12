@@ -3473,6 +3473,17 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   // cheap, so all three are safe.
   var bindEditorDirty = function(editor) {
     editor._zmInit = false;
+    // Iframe focus does not bubble to the outer document. Capture the drawer
+    // geometry before iOS opens its keyboard, just as for ordinary fields.
+    editor.on('focus', function() {
+      var control=_this.mapControl;
+      if(control.viewStyleBottomSlide && !control._keyboardDrawerViewport) {
+        control._keyboardDrawerViewport={height:control._viewportHeight(),bottom:control._viewportBottom(),width:window.innerWidth};
+      }
+    });
+    editor.on('blur', function() {
+      window.setTimeout(function() {window.dispatchEvent(new Event('resize'));},350);
+    });
     editor.on('keyup change nodeChange', function() { if (updateMarkerDirty) updateMarkerDirty(); });
     // TinyMCE rewrites the loaded HTML once it finishes initializing (plain
     // text becomes <p>…), which a moment later would look like an edit. Re-take

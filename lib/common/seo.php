@@ -38,7 +38,7 @@
   // it's OoTR (OoT there is the old N64 map, which is hidden).
   function seoLandingCategories($db, $prefix, $gameShortName = null) {
     $rows = $db->fetchAllAssociative("
-      SELECT IF(LOWER(c.short_name) = 'ootr', 'OoT', c.short_name) AS game, mc.id, mc.name, mc.description, mc.seo_description, COUNT(m.id) AS markers,
+      SELECT IF(LOWER(c.short_name) = 'ootr', 'OoT', c.short_name) AS game, mc.id, mc.name, mc.slug, mc.description, mc.seo_description, COUNT(m.id) AS markers,
              GROUP_CONCAT(DISTINCT mp.name ORDER BY mp.id SEPARATOR '|') AS maps,
              -- Stored in the database's own time zone: converted to UTC, and
              -- as a date only, never later than today, since search engines
@@ -63,7 +63,7 @@
     $categories = [];
     foreach ($rows as $row) {
       $name = seoPlainText($row['name']);
-      $slug = seoSlug($name);
+      $slug = !empty($row['slug']) ? $row['slug'] : seoSlug($name);
       if ($slug === '') continue;
       // Names can repeat within a game; the first with markers wins.
       if (isset($categories[$row['game']][$slug])) continue;

@@ -12,6 +12,7 @@
 // dashes. Matches seoSlug(seoPlainText(...)) in lib/common/seo.php; a few
 // entity forms are undone first, as the server's html_entity_decode does.
 ZMap.prototype.categoryURLKey = function(category) {
+  if(category && category.slug) return category.slug;
   var name = String((category && (category.name || '')) || '');
   name = name
     .replace(/&#(\d+);/g, function(match, code) { return String.fromCharCode(Number(code)); })

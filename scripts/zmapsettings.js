@@ -787,7 +787,7 @@ ZMap.prototype._openMapSettingsMap = function(map, back) {
       '<form class="map-settings-form">' +
         (seoOnly ? '' : this._mapSettingsField('Name', 'fa-heading', '<input type="text" class="form-control" name="name" maxlength="45" required />')) +
         this._mapSettingsField('SEO Description', 'fa-search', '<textarea class="form-control" name="seo_description" maxlength="5000" rows="3"></textarea>') +
-        (seoOnly ? '' : '<label class="admin-check"><input type="checkbox" name="always_show_categories"> <span>Always Show Categories<small>Ignore category zoom thresholds on this map. Hidden categories stay hidden.</small></span></label>') +
+        (seoOnly ? '' : '<label class="map-settings-check"><input type="checkbox" name="always_show_categories"><span><strong>Always Show All Markers</strong><small>Show all markers regardless of their set zoom thresholds.</small></span></label>') +
         this._mapSettingsField('Summary', 'fa-comment',
           '<input type="text" class="form-control" name="summary" maxlength="255" placeholder="What changed and why (optional)" />') +
         this._editorSaveHTML(true) +
@@ -867,6 +867,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
       '<form class="map-settings-form">' +
         '<div class="map-settings-preview" aria-hidden="true"></div>' +
         this._mapSettingsField('Name', 'fa-heading', '<input type="text" class="form-control" name="name" maxlength="45" required />') +
+        this._mapSettingsField('Slug', 'fa-link', '<input type="text" class="form-control" name="slug" maxlength="120" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="Leave blank to determine the slug automatically" />') +
         this._mapSettingsField('Section', 'fa-folder',
           '<select class="form-control" name="section">' + layout.map(function(g) {
             return '<option>' + esc(g.title) + '</option>';
@@ -902,6 +903,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
   var menuName = record ? getPOIMenuName(record, records) : '';
   $(page).find('.wiki-subtitle').text(menuName);
   form.find('[name=name]').val(record ? record.name : '');
+  form.find('[name=slug]').val(record ? record.slug || '' : '').attr('placeholder',record ? this.categoryURLKey({name:record.name}) : 'Leave blank to determine the slug automatically');
   form.find('[name=description]').val(record ? record.description || '' : '');
   form.find('[name=seo_description]').val(record ? record.seo_description || '' : '');
   form.find('[name=seo_description]').attr('placeholder', record ? record.defaultSeoDescription : 'Generated from the category name, marker count, and maps after saving.');
@@ -1007,6 +1009,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
     if(!section) { status.addClass('error').text('Name the new section.'); return; }
     var fields = { kind: 'category', id: record ? record.id : 0, game: data.game.shortName,
       name: form.find('[name=name]').val(), visible: form.find('[name=visible]').prop('checked') ? '1' : '0',
+      slug: form.find('[name=slug]').val().trim(),
       description: form.find('[name=description]').val(),
       seo_description: form.find('[name=seo_description]').val(),
       visible_zoom: form.find('[name=visible_zoom]').val(),
@@ -1094,7 +1097,7 @@ ZMap.prototype._applyMapSettingsCategory = function(row, isNew) {
     this.addCategory(row);
     category = this.categories[row.id];
   } else {
-    ['name', 'description', 'seo_description', 'img', 'color', 'glyph_color', 'shape', 'custom_style', 'visible_zoom', 'menu_section', 'menu_order'].forEach(function(key) {
+    ['name', 'slug', 'description', 'seo_description', 'img', 'color', 'glyph_color', 'shape', 'custom_style', 'visible_zoom', 'menu_section', 'menu_order'].forEach(function(key) {
       category[key] = row[key];
     });
   }

@@ -4,7 +4,7 @@ function settingsHistoryKinds() {return ['game','map','category','layout','map_o
 function settingsHistoryColumns($kind) {
   if($kind==='game') return ['name'=>'name','page_title'=>'page_title','seo_description'=>'seo_description'];
   if($kind==='map') return ['name'=>'name','description'=>'description','seo_description'=>'seo_description','always_show_categories'=>'always_show_categories'];
-  if($kind==='category') return ['name'=>'name','description'=>'description','seo_description'=>'seo_description','img'=>'img','color'=>'color','glyphColor'=>'glyph_color','shape'=>'shape','visible'=>'visible','visible_zoom'=>'visible_zoom','parentId'=>'parent_id','customStyle'=>'custom_style'];
+  if($kind==='category') return ['name'=>'name','slug'=>'slug','description'=>'description','seo_description'=>'seo_description','img'=>'img','color'=>'color','glyphColor'=>'glyph_color','shape'=>'shape','visible'=>'visible','visible_zoom'=>'visible_zoom','parentId'=>'parent_id','customStyle'=>'custom_style'];
   return [];
 }
 function settingsHistoryState($db,$prefix,$revision) {

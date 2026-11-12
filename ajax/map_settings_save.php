@@ -71,16 +71,16 @@
       $game = mapSettingsGame($db, $map_prefix, $_POST['game'] ?? '');
       if (!$game) return $fail('That game was not found.');
       $row = array('id' => 0, 'container_id' => (int) $game['id'], 'parent_id' => null, 'name' => '', 'img' => '',
-        'description' => '', 'seo_description' => '', 'color' => '', 'glyph_color' => null, 'shape' => null, 'visible' => 1, 'visible_zoom'=>0, 'custom_style' => 0);
+        'slug'=>'', 'description' => '', 'seo_description' => '', 'color' => '', 'glyph_color' => null, 'shape' => null, 'visible' => 1, 'visible_zoom'=>0, 'custom_style' => 0);
     } else {
       $row = $db->fetchAssociative(
-        "SELECT `id`, `container_id`, `parent_id`, `name`, `description`, `seo_description`, `img`, `color`, `glyph_color`, `shape`, `visible`, `visible_zoom`, `custom_style`
+        "SELECT `id`, `container_id`, `parent_id`, `name`, `slug`, `description`, `seo_description`, `img`, `color`, `glyph_color`, `shape`, `visible`, `visible_zoom`, `custom_style`
            FROM `{$map_prefix}marker_category` WHERE `id` = ?",
         [$id]
       );
       if (!$row) return $fail('That category was not found.');
     }
-    $before = array('seo_description' => $row['seo_description'] ?? '', 'description' => $row['description'] ?? '', 'name' => $row['name'], 'img' => $row['img'], 'color' => $row['color'],
+    $before = array('slug'=>$row['slug'] ?? '', 'seo_description' => $row['seo_description'] ?? '', 'description' => $row['description'] ?? '', 'name' => $row['name'], 'img' => $row['img'], 'color' => $row['color'],
       'glyphColor' => $row['glyph_color'], 'shape' => $row['shape'], 'visible' => (bool) $row['visible'], 'visible_zoom'=>(int)$row['visible_zoom'], 'customStyle'=>(int)$row['custom_style']);
     $after = $before;
     foreach (['description', 'seo_description'] as $field) {
@@ -96,6 +96,17 @@
       $after['name'] = $name;
     }
     if (isset($_POST['visible'])) $after['visible'] = $_POST['visible'] === '1';
+    $slug=$text('slug');
+    if($slug!==null) {
+      if(strlen($slug)>120 || ($slug!=='' && !preg_match('/^[a-z0-9]+(?:-[a-z0-9]+)*$/D',$slug))) return $fail('Use lowercase letters, numbers, and single dashes for the slug.');
+      $after['slug']=$slug;
+    }
+    include_once(dirname(__DIR__).'/lib/common/seo.php');
+    $effectiveSlug=$after['slug'] ?: seoSlug(seoPlainText($after['name']));
+    $others=$db->fetchAllAssociative("SELECT name,slug FROM `{$map_prefix}marker_category` WHERE container_id=? AND id<>? AND parent_id IS NOT NULL",[$row['container_id'],$id]);
+    foreach($others as $other) {
+      if(($other['slug'] ?: seoSlug(seoPlainText($other['name'])))===$effectiveSlug && ($slug!==null || $after['name']!==$before['name'])) return $fail('Another category already uses that slug. Choose a different slug.');
+    }
     if(isset($_POST['visible_zoom'])) {
       $zoom=filter_var($_POST['visible_zoom'],FILTER_VALIDATE_INT);
       if($zoom===false || $zoom<0 || $zoom>8) return $fail('Choose a zoom level from 0 to 8.');
@@ -119,7 +130,7 @@
       $after['customStyle']=1;
     }
     if ($id === 0 && $after['name'] === '') return $fail('Give the category a name.');
-    $columns = array('name' => 'name', 'img' => 'img', 'color' => 'color', 'glyphColor' => 'glyph_color',
+    $columns = array('slug'=>'slug', 'name' => 'name', 'img' => 'img', 'color' => 'color', 'glyphColor' => 'glyph_color',
       'shape' => 'shape', 'visible' => 'visible', 'visible_zoom'=>'visible_zoom', 'description' => 'description', 'seo_description' => 'seo_description', 'customStyle'=>'custom_style');
     $table = 'marker_category';
   } else {
@@ -178,6 +189,7 @@
         $after['shape'], $zoom ?? 0, $after['visible'] ? 1 : 0]
     );
     $id = (int) $db->lastInsertId();
+    $db->executeStatement("UPDATE `{$map_prefix}marker_category` SET slug=? WHERE id=?",[$after['slug'],$id]);
     $db->executeStatement("UPDATE `{$map_prefix}marker_category` SET visible_zoom=? WHERE id=?",[$after['visible_zoom'],$id]);
     $db->executeStatement("UPDATE `{$map_prefix}marker_category` SET `description` = ? WHERE `id` = ?", [$after['description'], $id]);
     $db->executeStatement("UPDATE `{$map_prefix}marker_category` SET `seo_description` = ? WHERE `id` = ?", [$after['seo_description'], $id]);

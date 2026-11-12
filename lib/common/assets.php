@@ -43,5 +43,14 @@
       $hash .= $tool . '=' . (file_exists($path) ? filemtime($path) : 0) . ';';
     }
 
+    // Tile routing and worker changes can require fresh browser caches even
+    // when no bundled JS/CSS changed. Keep offline download packs intact:
+    // the worker rotates only its app/data/rolling-tile caches on activation.
+    foreach (array('service-worker.js', 'service-worker.php', 'ajax/get_map.php',
+                   'lib/common/tile_delivery.php') as $dependency) {
+      $path = $root . '/' . $dependency;
+      $hash .= $dependency . '=' . (file_exists($path) ? md5_file($path) : 'missing') . ';';
+    }
+
     return substr(md5($hash), 0, 10);
   }

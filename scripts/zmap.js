@@ -1853,6 +1853,12 @@ ZMap.prototype.buildMap = function(gameId) {
       return;
     }
 
+    // Safari pans the visual viewport to reveal an iframe's caret. That
+    // offset is not a change to the map's layout height. Subtracting it
+    // shrank the clipping container above the focused editor (black screen).
+    // Preserve its pre-keyboard dimensions, just like the drawer itself.
+    if(this.mapControl && this.mapControl._keyboardDrawerViewport) return;
+
     var viewportTop = window.visualViewport
       ? window.visualViewport.offsetTop
       : 0;
@@ -1861,7 +1867,7 @@ ZMap.prototype.buildMap = function(gameId) {
       window.screen.height - viewportTop
     );
     document.documentElement.style.setProperty('--mobile-map-height', height + 'px');
-  };
+  }.bind(this);
   // Resizes keep the map's top edge still, so it doesn't jump as a phone's
   // toolbars come and go. While the page is still settling (until the map is
   // first touched, or for a few seconds), they keep its centre instead: the
@@ -3473,12 +3479,86 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   // cheap, so all three are safe.
   var bindEditorDirty = function(editor) {
     editor._zmInit = false;
+    var dialogViewport=null;
+    var dialogDepth=0;
+    // Use the public dialog configuration, rather than clicking rendered tabs.
+    editor.on('init',function() {
+      var openEditorDialog=editor.windowManager.open;
+      editor.windowManager.open=function(config,params) {
+      var selected=editor.selection.getNode();
+      var editingMedia=selected && /^(IMG|VIDEO)$/.test(selected.nodeName);
+      var tabs=config.body && config.body.type==='tabpanel' && config.body.tabs;
+      if(!editingMedia && tabs && tabs.some(function(tab) {return tab.name==='upload';})) {
+        config=Object.assign({},config,{body:Object.assign({},config.body,{tabs:tabs.filter(function(tab) {return tab.name==='upload';}).concat(tabs.filter(function(tab) {return tab.name!=='upload';}))})});
+      }
+        return openEditorDialog.call(editor.windowManager,config,params);
+      };
+    });
+    var positionEditorDialogs=function() {
+      var viewport=window.visualViewport;
+      document.documentElement.style.setProperty('--editor-dialog-top',(viewport ? viewport.offsetTop : 0)+'px');
+      document.documentElement.style.setProperty('--editor-dialog-height',(viewport ? viewport.height : window.innerHeight)+'px');
+    };
+    var stopDialogTracking=function() {
+      if(window.visualViewport) {
+        window.visualViewport.removeEventListener('resize',positionEditorDialogs);
+        window.visualViewport.removeEventListener('scroll',positionEditorDialogs);
+      }
+      window.removeEventListener('resize',positionEditorDialogs);
+    };
+    // Alert/confirm dialogs do not emit OpenWindow in TinyMCE 5. Keep the
+    // visible-viewport geometry current for those dialogs too.
+    positionEditorDialogs();
+    if(window.visualViewport) {
+      window.visualViewport.addEventListener('resize',positionEditorDialogs);
+      window.visualViewport.addEventListener('scroll',positionEditorDialogs);
+    }
+    window.addEventListener('resize',positionEditorDialogs);
+    editor.on('OpenWindow',function() {
+      var control=_this.mapControl;
+      // Dialog fields and the iframe trade focus while Safari is still
+      // animating its keyboard. Never take a new baseline mid-animation.
+      if(control.viewStyleBottomSlide && dialogDepth===0) {
+        dialogViewport=Object.assign({},control._keyboardDrawerViewport || {
+          height:control._viewportHeight(),bottom:control._viewportBottom(),width:window.innerWidth
+        });
+      }
+      dialogDepth++;
+      positionEditorDialogs();
+      if(window.visualViewport) {
+        window.visualViewport.addEventListener('resize',positionEditorDialogs);
+        window.visualViewport.addEventListener('scroll',positionEditorDialogs);
+      }
+      window.addEventListener('resize',positionEditorDialogs);
+    });
+    editor.on('CloseWindow',function() {
+      dialogDepth=Math.max(0,dialogDepth-1);
+      if(dialogDepth) return;
+      if(dialogViewport && _this.mapControl.viewStyleBottomSlide) {
+        _this.mapControl._keyboardDrawerViewport=Object.assign({},dialogViewport);
+      }
+      dialogViewport=null;
+      if(_this.mapControl.viewStyleBottomSlide || window.matchMedia('(pointer: coarse)').matches) {
+        // TinyMCE 5 calls editor.focus() synchronously after CloseWindow.
+        // Return to a non-text control instead: no surprise keyboard on Cancel
+        // or Save. The next intentional tap in the editor still focuses it.
+        var focusEditor=editor.focus;
+        editor.focus=function() {};
+        Promise.resolve().then(function() {
+          editor.focus=focusEditor;
+          var toolbar=editor.getContainer().querySelector('.tox-toolbar button');
+          if(toolbar) toolbar.focus({preventScroll:true});
+        });
+      }
+      window.setTimeout(function() {window.dispatchEvent(new Event('resize'));},350);
+    });
+    editor.on('remove',stopDialogTracking);
     // Iframe focus does not bubble to the outer document. Capture the drawer
     // geometry before iOS opens its keyboard, just as for ordinary fields.
     editor.on('focus', function() {
       var control=_this.mapControl;
       if(control.viewStyleBottomSlide && !control._keyboardDrawerViewport) {
-        control._keyboardDrawerViewport={height:control._viewportHeight(),bottom:control._viewportBottom(),width:window.innerWidth};
+        control._keyboardDrawerViewport=dialogViewport ? Object.assign({},dialogViewport) : {height:control._viewportHeight(),bottom:control._viewportBottom(),width:window.innerWidth};
       }
     });
     editor.on('blur', function() {
@@ -3516,7 +3596,8 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
     convert_urls: false,
     image_dimensions: false,
     content_style:
-      'body { margin: 12px; background: #1e1e20; color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.45; }' +
+      '@font-face { font-family: BrandonText; src: url("styles/fonts/brandon/264CA8_2_0.woff") format("woff"); font-weight: 400; }' +
+      'html, body { background: transparent; } body { margin: 12px 14px; color: #fff; font-family: BrandonText, sans-serif; font-size: 16px; line-height: 1.4; }' +
       'a { color: #8fd8ff; }' +
       'img { max-width: 100%; height: auto; border-radius: 8px; }' +
       // Videos and tables as they'll show on the marker, with cell edges

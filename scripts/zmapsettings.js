@@ -867,7 +867,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
       '<form class="map-settings-form">' +
         '<div class="map-settings-preview" aria-hidden="true"></div>' +
         this._mapSettingsField('Name', 'fa-heading', '<input type="text" class="form-control" name="name" maxlength="45" required />') +
-        this._mapSettingsField('Slug', 'fa-link', '<input type="text" class="form-control" name="slug" maxlength="120" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="Leave blank to determine the slug automatically" />') +
+        this._mapSettingsField('Slug', 'fa-link', '<input type="text" class="form-control" name="slug" maxlength="120" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="Leave blank to generate automatically" />') +
         this._mapSettingsField('Section', 'fa-folder',
           '<select class="form-control" name="section">' + layout.map(function(g) {
             return '<option>' + esc(g.title) + '</option>';
@@ -903,7 +903,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
   var menuName = record ? getPOIMenuName(record, records) : '';
   $(page).find('.wiki-subtitle').text(menuName);
   form.find('[name=name]').val(record ? record.name : '');
-  form.find('[name=slug]').val(record ? record.slug || '' : '').attr('placeholder',record ? this.categoryURLKey({name:record.name}) : 'Leave blank to determine the slug automatically');
+  form.find('[name=slug]').val(record ? record.slug || '' : '').attr('placeholder',record ? this.categoryURLKey({name:record.name}) : 'Leave blank to generate automatically');
   form.find('[name=description]').val(record ? record.description || '' : '');
   form.find('[name=seo_description]').val(record ? record.seo_description || '' : '');
   form.find('[name=seo_description]').attr('placeholder', record ? record.defaultSeoDescription : 'Generated from the category name, marker count, and maps after saving.');

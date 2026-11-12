@@ -493,8 +493,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
             var active = document.activeElement;
             var editing = active && (active.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]), textarea, [contenteditable="true"]') || (active.tagName==='IFRAME' && active.closest('.tox-tinymce')));
             var height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-            if(Math.abs(window.innerWidth - baseline.width) < 80 && (editing || height < baseline.height - 80)) return;
+            var keyboardOpen = height < baseline.height - 80;
+            if(keyboardOpen) baseline.keyboardWasOpen = true;
+            // iOS can leave the editor focused after dismissing the keyboard.
+            // Once its viewport has recovered, focus must not keep us frozen.
+            if(Math.abs(window.innerWidth - baseline.width) < 80 && (keyboardOpen || (editing && !baseline.keyboardWasOpen))) return;
             this._keyboardDrawerViewport = null;
+            if(baseline.keyboardWasOpen) {
+              // Undo Safari's outer-page caret scroll, not the drawer's own
+              // content scroll. Measure detents only after that is restored.
+              window.scrollTo(0, 0);
+              window.requestAnimationFrame(function() {
+                window.dispatchEvent(new Event('resize'));
+              });
+            }
           }
           this._refreshMobileDrawerLayout();
         }.bind(this);

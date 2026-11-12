@@ -99,6 +99,10 @@ ZMap.prototype._uploadEditorVideo = function(editor) {
       api.close();
     }
   });
+  if(!current) {
+    dialog.showTab('upload');
+    window.setTimeout(wire,0);
+  }
   return dialog;
 };
 

@@ -82,6 +82,7 @@ body {
 	background-color: #000;
 	background-image: url(images/zelda-maps-bg-tile.png);
 	background-repeat: repeat;
+	background-position: center center;
 	overflow: hidden;
 	font-family: "BrandonText", sans-serif !important;
 }
@@ -97,6 +98,7 @@ main {
 	background-color: #000;
 	background-image: url(images/zelda-maps-bg-tile.png);
 	background-repeat: repeat;
+	background-position: center center;
 	overflow: hidden;
 	position: absolute;
 	font-family: "BrandonText", sans-serif !important;
@@ -5114,7 +5116,7 @@ div.circle:has(>.icon-EoW_Echo) {
 	margin-bottom: 8px;
 	border-radius: 10px;
 	overflow: hidden;
-	background: rgba(255,255,255,.1);
+	background: transparent;
 }
 
 .marker-edit-section-head {
@@ -5126,6 +5128,7 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: rgba(255,255,255,.7);
 	font-size: 12px;
 	font-weight: 600;
+	background: rgba(255,255,255,.1);
 }
 
 .marker-edit-section-remove {
@@ -5142,6 +5145,12 @@ div.circle:has(>.icon-EoW_Echo) {
 .marker-edit-section .tox.tox-tinymce {
 	border: 0;
 	border-radius: 0;
+	background: rgba(255,255,255,.2);
+	color: white;
+}
+
+.marker-edit-section .tox.tox-tinymce:focus-within {
+	background: rgba(255,255,255,.3);
 }
 
 .marker-edit-section .tox .tox-editor-header,
@@ -5149,11 +5158,24 @@ div.circle:has(>.icon-EoW_Echo) {
 .marker-edit-section .tox .tox-toolbar__primary,
 .marker-edit-section .tox .tox-toolbar__overflow,
 .marker-edit-section .tox .tox-edit-area__iframe {
-	background: #2a2a2d;
+	background: transparent;
+	box-shadow: none;
 }
 
 .marker-edit-section .tox .tox-edit-area__iframe {
-	background: #1e1e20;
+	background: transparent;
+}
+
+.marker-edit-section .tox .tox-editor-header {
+	border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+.marker-edit-section .tox .tox-tbtn {
+	color: rgba(255,255,255,.75);
+}
+
+.marker-edit-section .tox .tox-tbtn svg {
+	fill: currentColor;
 }
 
 .marker-edit-section .tox .tox-toolbar__group {
@@ -5162,6 +5184,12 @@ div.circle:has(>.icon-EoW_Echo) {
 
 .marker-edit-section .tox .tox-tbtn:hover {
 	background: rgba(255,255,255,.12);
+	color: white;
+}
+
+.marker-edit-section .tox .tox-tbtn--enabled {
+	background: rgba(255,255,255,.2);
+	color: white;
 }
 
 .marker-edit-section textarea.tabText {
@@ -5250,6 +5278,52 @@ div.circle:has(>.icon-EoW_Echo) {
 .tox.tox-silver-sink,
 .tox-tinymce-aux {
 	z-index: 100000 !important;
+}
+
+/* TinyMCE dropdowns live in the floating sink, outside the editor. Style
+   the menu shell once so table grids and nested menus share our dark glass. */
+body .tox .tox-menu {
+	background: rgba(0,0,0,.8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255,255,255,.1);
+	border-radius: 12px;
+	box-shadow: 0 16px 32px rgba(0,0,0,.6);
+	color: rgba(255,255,255,.8);
+	padding: 6px;
+}
+
+body .tox .tox-collection--list .tox-collection__group {
+	background: transparent;
+	border-color: rgba(255,255,255,.12);
+}
+
+body .tox .tox-collection__item,
+body .tox .tox-insert-table__label {
+	color: rgba(255,255,255,.8);
+	font-family: "BrandonText", sans-serif;
+}
+
+body .tox .tox-collection__item-icon svg,
+body .tox .tox-collection__item-caret svg {
+	fill: currentColor;
+}
+
+body .tox .tox-collection--list .tox-collection__item--active,
+body .tox .tox-collection--list .tox-collection__item--enabled {
+	background: rgba(255,255,255,.15);
+	border-radius: 6px;
+	color: white;
+}
+
+body .tox .tox-insert-table td {
+	background: rgba(255,255,255,.08);
+	border-color: rgba(255,255,255,.25);
+}
+
+body .tox .tox-insert-table td.tox-insert-table__cell--selected {
+	background: rgba(255,255,255,.3);
+	border-color: rgba(255,255,255,.6);
 }
 
 
@@ -7306,7 +7380,26 @@ body.settings-dragging * { pointer-events:none !important; }
 body .tox .tox-dialog-wrap__backdrop {
 	background: rgba(0,0,0,.45);
 }
-body .tox .tox-dialog {
+body .tox .tox-dialog-wrap {
+	position: fixed;
+	top: var(--editor-dialog-top, 0px);
+	bottom: auto;
+	left: 0;
+	right: 0;
+	height: var(--editor-dialog-height, 100dvh);
+	box-sizing: border-box;
+	padding: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+/* Match the skin's mobile selector: its :not() adds specificity and would
+   otherwise force every phone dialog to align-self:flex-start. */
+body .tox .tox-dialog,
+body:not(.tox-force-desktop) .tox .tox-dialog {
+	margin: 0 !important;
+	align-self: center !important;
+	max-height: calc(var(--editor-dialog-height, 100dvh) - 32px);
 	overflow: hidden;
 	border: 1px solid rgba(255,255,255,.2);
 	border-radius: 22px;
@@ -7361,10 +7454,10 @@ body .tox .tox-label,
 body .tox .tox-form__group label {
 	color: rgba(255,255,255,.7);
 	font-family: inherit;
-	font-size: 13px;
+	font-size: 12px;
 	font-weight: 700;
-	text-transform: uppercase;
-	letter-spacing: .04em;
+	text-transform: none;
+	letter-spacing: normal;
 }
 body .tox .tox-textfield,
 body .tox .tox-textarea,
@@ -7386,7 +7479,7 @@ body .tox .tox-listboxfield .tox-listbox--select:focus,
 body .tox .tox-selectfield select:focus {
 	border: 0;
 	background: rgba(255,255,255,.3);
-	box-shadow: 0 0 0 2px rgba(255,255,255,.5);
+	box-shadow: none;
 }
 body .tox .tox-form__controls-h-stack .tox-browse-url,
 body .tox .tox-form__controls-h-stack .tox-textfield {

@@ -45,6 +45,7 @@ function makeFakeTinymce() {
       // Like the real editor: init fires after the content has loaded and
       // been normalized, never synchronously inside tinymce.init().
       setTimeout(() => {
+        editor.windowManager = { open() {} };
         editor._content = normalize(editor._content);
         editor.fire('init');
       }, 0);

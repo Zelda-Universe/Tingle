@@ -20,6 +20,6 @@ test('category slug is saved, returned, and tracked independently',()=>{
 
 test('rich text keyboard focus participates in drawer viewport protection',()=>{
   expect(read('scripts/zmap.js')).toContain("editor.on('focus', function()");
-  expect(read('scripts/zmap.js')).toContain('control._keyboardDrawerViewport={height:control._viewportHeight()');
+  expect(read('scripts/zmap.js').includes('control._keyboardDrawerViewport=dialogViewport ? Object.assign({},dialogViewport)')).toBe(true);
   expect(read('scripts/controls/ZLayers.js')).toContain("active.tagName==='IFRAME' && active.closest('.tox-tinymce')");
 });

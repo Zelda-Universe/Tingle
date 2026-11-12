@@ -1,4 +1,5 @@
 <?php
+   include_once(dirname(__DIR__) . '/lib/common/tile_delivery.php');
    $path = __DIR__;
 
    $map = $_GET["game"] ?? '';
@@ -121,9 +122,10 @@
 
       $arr_child = array();
       foreach ($submaps as $row2) {
-         // Unreleased artwork exists locally before it reaches the CDN.
-         // PHP's development server must preview those tiles from this site.
-         if (PHP_SAPI === 'cli-server' && is_dir(dirname(__DIR__) . '/tiles/' . $row2['tileURL'])) {
+         $bundledTileBase = bundledMapTileBaseURL($row2['tileURL']);
+         if ($bundledTileBase !== null) {
+            $row2['tileBaseURL'] = $bundledTileBase;
+         } elseif (PHP_SAPI === 'cli-server' && is_dir(dirname(__DIR__) . '/tiles/' . $row2['tileURL'])) {
             $row2['tileBaseURL'] = '/tiles/';
          }
          $row2['submapLayer'] = $db->fetchAllAssociative("

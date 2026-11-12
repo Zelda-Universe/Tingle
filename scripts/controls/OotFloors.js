@@ -101,13 +101,13 @@ ZMap.prototype.setupOotFloors = function() {
         var dLat=b[0]-a[0],dLng=b[1]-a[1],step=Math.min(Math.abs(dLat),Math.abs(dLng));
         corner=[a[0]+Math.sign(dLat)*step,a[1]+Math.sign(dLng)*step];
       }
-      L.polyline([a,corner,b],{pane:'ootConnections',renderer:connectionRenderer,interactive:false,color:'#fff',weight:1.5,opacity:.45,
+      L.polyline([a,corner,b],{pane:'ootConnections',renderer:connectionRenderer,interactive:false,color:'#6a3117',weight:1.5,opacity:.5,
         lineJoin:'miter',lineCap:'butt',className:'oot-connection'}).addTo(connections);
       [a,b].forEach(function(end) {
         // A dot drawn as a thick stroke round a tiny circle, so its size is
         // a stroke width that can be held steady while zooming.
         L.circleMarker(end,{pane:'ootConnections',renderer:connectionRenderer,interactive:false,radius:.5,stroke:true,weight:5,
-          color:'#fff',opacity:.6,fill:false,className:'oot-connection-end'}).addTo(connections);
+          color:'#6a3117',opacity:.5,fill:false,className:'oot-connection-end'}).addTo(connections);
       });
     });
   }

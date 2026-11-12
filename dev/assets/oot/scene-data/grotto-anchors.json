@@ -1,0 +1,1058 @@
+{
+ "source": "https://github.com/MrCheeze/oot-switch2-tools/tree/master/Banc",
+ "note": "Exact HidingHole_HoleEntrance anchors; AI reference graphs provide contents where present. Graveyard interiors are graves, not grottos.",
+ "anchors": [
+  {
+   "scene": "DeathMountainCrater_Adult",
+   "id": "10792296882792585023",
+   "position": [
+    -17.38138198852539,
+    71.88801574707031,
+    52.57741165161133
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DeathMountainCrater_Adult",
+   "id": "1013996050831332476",
+   "position": [
+    -50.847137451171875,
+    74.19491577148438,
+    -0.19724826514720917
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DeathMountainCrater_Child",
+   "id": "10799327103995449978",
+   "position": [
+    -17.38138198852539,
+    71.88801574707031,
+    52.57741165161133
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DeathMountainCrater_Child",
+   "id": "3171237362325360447",
+   "position": [
+    -50.847137451171875,
+    74.19491577148438,
+    -0.19724826514720917
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DeathMountainTrail_Adult",
+   "id": "356888223515663125",
+   "position": [
+    -1.6493794918060303,
+    62.05399703979492,
+    -26.11832046508789
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_DeathMtTrail/Gimmick_Ocarina_Appearance_01_DeathMtTrail_5f53.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DeathMountainTrail_Adult",
+   "id": "7150589082423541809",
+   "position": [
+    -13.399988174438477,
+    67.09500122070312,
+    -6.799990653991699
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DeathMountainTrail_Child",
+   "id": "13732174793599241120",
+   "position": [
+    -1.6493794918060303,
+    62.05399703979492,
+    -26.11832046508789
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_DeathMtTrail/Gimmick_Ocarina_Appearance_01_DeathMtTrail_5f53.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DeathMountainTrail_Child",
+   "id": "13937360197648502181",
+   "position": [
+    -13.399988174438477,
+    67.09500122070312,
+    -6.799990653991699
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DesertColossus_Adult",
+   "id": "7841148478469558868",
+   "position": [
+    -115.50041961669922,
+    80.27532958984375,
+    -26.732942581176758
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "DesertColossus_Child",
+   "id": "4148621004158838590",
+   "position": [
+    -115.50041961669922,
+    80.27532958984375,
+    -26.732942581176758
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "GerudoFortress_Adult",
+   "id": "1007458060981609430",
+   "position": [
+    33.15357971191406,
+    92.52799987792969,
+    -67.79717254638672
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/GerudoFortress_Level_Room_02/GerudoFortress_Level_Room_02_5d06.logic.module.ain"
+   ],
+   "contents": [
+    {
+     "id": "14096918417427278106",
+     "name": "Enemy_Skulltula",
+     "position": [
+      24.258665084838867,
+      96.13187408447266,
+      -67.78792572021484
+     ]
+    }
+   ]
+  },
+  {
+   "scene": "GerudoValley_Adult",
+   "id": "4851810482868363546",
+   "position": [
+    11.452439308166504,
+    -15.10247802734375,
+    36.45343017578125
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "GerudoValley_Adult",
+   "id": "4743015330252499379",
+   "position": [
+    -45.27340316772461,
+    87.419921875,
+    -29.028610229492188
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_GerudoValley/Gimmick_Ocarina_Appearance_01_GerudoValley_eb46.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "GerudoValley_Child",
+   "id": "160421199299362672",
+   "position": [
+    11.452439308166504,
+    -15.10247802734375,
+    36.45343017578125
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "GerudoValley_Child",
+   "id": "10279144811786746411",
+   "position": [
+    -45.27340316772461,
+    87.419921875,
+    -29.028610229492188
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_GerudoValley/Gimmick_Ocarina_Appearance_01_GerudoValley_eb46.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "GoronCity_Adult",
+   "id": "16587937380070306717",
+   "position": [
+    -42.203033447265625,
+    98.57105255126953,
+    29.290002822875977
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "GoronCity_Child",
+   "id": "5683923697911511944",
+   "position": [
+    -42.203033447265625,
+    98.57105255126953,
+    29.290002822875977
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "Graveyard_Adult",
+   "id": "13901520038487073240",
+   "position": [
+    4,
+    88.93900299072266,
+    5.75
+   ],
+   "kind": "grave",
+   "logic": [
+    "Logic/Module/Graveyard_Common/Graveyard_Common_b972.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "Graveyard_Adult",
+   "id": "10159032155291869896",
+   "position": [
+    21.469999313354492,
+    91.18900299072266,
+    11.199999809265137
+   ],
+   "kind": "grave",
+   "logic": [
+    "Logic/Module/Graveyard_Common/Graveyard_Common_b972.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "Graveyard_Adult",
+   "id": "12118839107682328769",
+   "position": [
+    21.394001007080078,
+    90.68999481201172,
+    23.15399932861328
+   ],
+   "kind": "grave",
+   "logic": [
+    "Logic/Module/Graveyard_Common/Graveyard_Common_b972.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "Graveyard_Adult",
+   "id": "6836600866498450360",
+   "position": [
+    -4.015982151031494,
+    87.14600372314453,
+    -10.92300033569336
+   ],
+   "kind": "grave",
+   "logic": [
+    "Logic/Module/Graveyard_TombStone_Move02_Dampe_Prefab/Graveyard_TombStone_Move02_Dampe_Prefab_203c.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "Graveyard_Child",
+   "id": "17793074819353723002",
+   "position": [
+    4,
+    88.93900299072266,
+    5.75
+   ],
+   "kind": "grave",
+   "logic": [
+    "Logic/Module/Graveyard_Common/Graveyard_Common_b972.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "Graveyard_Child",
+   "id": "3956085989887970442",
+   "position": [
+    21.469999313354492,
+    91.18900299072266,
+    11.199999809265137
+   ],
+   "kind": "grave",
+   "logic": [
+    "Logic/Module/Graveyard_Common/Graveyard_Common_b972.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "Graveyard_Child",
+   "id": "1552768621813039500",
+   "position": [
+    21.394001007080078,
+    90.68999481201172,
+    23.15399932861328
+   ],
+   "kind": "grave",
+   "logic": [
+    "Logic/Module/Graveyard_Common/Graveyard_Common_b972.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleCastle",
+   "id": "8177967075314864737",
+   "position": [
+    35.85099411010742,
+    100.13810729980469,
+    -106.24500274658203
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_HrlCastle/Gimmick_Ocarina_Appearance_01_HrlCastle_5b78.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "12110133613665364374",
+   "position": [
+    39.866607666015625,
+    134.1700439453125,
+    26.580209732055664
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_02_Prefab/HidingHole_Level_Hole_02_Prefab_4afa.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "15768561658186400269",
+   "position": [
+    -97.97698974609375,
+    132.38401794433594,
+    17.10816192626953
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_03_Prefab/HidingHole_Level_Hole_03_Prefab_026b.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "1507829693667899463",
+   "position": [
+    -13.226840019226074,
+    137.72198486328125,
+    169.4929962158203
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_04_Prefab/HidingHole_Level_Hole_04_Prefab_75dd.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "17969267121367573732",
+   "position": [
+    163.27308654785156,
+    139.11524963378906,
+    27.384735107421875
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_05_Prefab/HidingHole_Level_Hole_05_Prefab_af38.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "11260816145378716105",
+   "position": [
+    -258.31695556640625,
+    123.73899841308594,
+    137.92300415039062
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_06_Prefab/HidingHole_Level_Hole_06_Prefab_ff0a.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "9897989662871963267",
+   "position": [
+    -156.06956481933594,
+    128.12152099609375,
+    338.42645263671875
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_07_Prefab/HidingHole_Level_Hole_07_Prefab_045d.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "14588186227505291184",
+   "position": [
+    39.92159652709961,
+    130.6124725341797,
+    342.2977600097656
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_08_Prefab/HidingHole_Level_Hole_08_Prefab_9d94.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "5620291330612389394",
+   "position": [
+    179.8189239501953,
+    142.72801208496094,
+    190.49761962890625
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_09_Prefab/HidingHole_Level_Hole_09_Prefab_3984.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "id": "14043397527432620679",
+   "position": [
+    -204.7278594970703,
+    101.80299377441406,
+    455.4794616699219
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_30_Prefab/HidingHole_Level_Hole_30_Prefab_281d.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "205461576006428732",
+   "position": [
+    39.866607666015625,
+    134.1700439453125,
+    26.580209732055664
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_02_Prefab/HidingHole_Level_Hole_02_Prefab_4afa.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "12823774751063589184",
+   "position": [
+    -97.97698974609375,
+    132.38401794433594,
+    17.10816192626953
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_03_Prefab/HidingHole_Level_Hole_03_Prefab_026b.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "9223027913834678777",
+   "position": [
+    -13.226840019226074,
+    137.72198486328125,
+    169.4929962158203
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_04_Prefab/HidingHole_Level_Hole_04_Prefab_75dd.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "8003337806360124448",
+   "position": [
+    163.27308654785156,
+    139.11524963378906,
+    27.384735107421875
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_05_Prefab/HidingHole_Level_Hole_05_Prefab_af38.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "14314829290652596347",
+   "position": [
+    -258.31695556640625,
+    123.73899841308594,
+    137.92300415039062
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_06_Prefab/HidingHole_Level_Hole_06_Prefab_ff0a.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "2822224417231899385",
+   "position": [
+    -156.06956481933594,
+    128.12152099609375,
+    338.42645263671875
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_07_Prefab/HidingHole_Level_Hole_07_Prefab_045d.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "12714095215691991476",
+   "position": [
+    39.92159652709961,
+    130.6124725341797,
+    342.2977600097656
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_08_Prefab/HidingHole_Level_Hole_08_Prefab_9d94.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "3741753352693424085",
+   "position": [
+    179.8189239501953,
+    142.72801208496094,
+    190.49761962890625
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_09_Prefab/HidingHole_Level_Hole_09_Prefab_3984.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "12667006924438289369",
+   "position": [
+    -204.7278594970703,
+    101.80299377441406,
+    455.4794616699219
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_30_Prefab/HidingHole_Level_Hole_30_Prefab_281d.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "HyruleField_Child",
+   "id": "7974006201974400958",
+   "position": [
+    -36.40761947631836,
+    136.55560302734375,
+    290.69793701171875
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "KakarikoVillage_Adult",
+   "id": "16297646916605167815",
+   "position": [
+    -19.98046875,
+    87.91822814941406,
+    65.99971771240234
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "KakarikoVillage_Adult",
+   "id": "10586853970526761618",
+   "position": [
+    -26.795080184936523,
+    82.89299774169922,
+    12.37279224395752
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "KakarikoVillage_Adult_Alternative",
+   "id": "15406717908239056709",
+   "position": [
+    -19.98046875,
+    87.91822814941406,
+    65.99971771240234
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "KakarikoVillage_Adult_Alternative",
+   "id": "11641649714862641008",
+   "position": [
+    -26.795080184936523,
+    82.89299774169922,
+    12.37279224395752
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "KakarikoVillage_Child",
+   "id": "10955669709983343745",
+   "position": [
+    -19.98046875,
+    87.91822814941406,
+    65.99971771240234
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "KakarikoVillage_Child",
+   "id": "14756749351373088348",
+   "position": [
+    -26.795080184936523,
+    82.89299774169922,
+    12.37279224395752
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "KokiriForest_Adult",
+   "id": "850711382251233265",
+   "position": [
+    -51.934165954589844,
+    107.45399475097656,
+    -62.82252883911133
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01/Gimmick_Ocarina_Appearance_01_7e8b.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "KokiriForest_Child",
+   "id": "2935177881543772878",
+   "position": [
+    -51.934165954589844,
+    107.45399475097656,
+    -62.82252883911133
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01/Gimmick_Ocarina_Appearance_01_7e8b.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "LostWood_Adult",
+   "id": "18144466763619955250",
+   "position": [
+    27.791507720947266,
+    86.27300262451172,
+    -28.265392303466797
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_18_Prefab/HidingHole_Level_Hole_18_Prefab_9626.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "LostWood_Adult",
+   "id": "4242047569176892190",
+   "position": [
+    3.8007607460021973,
+    86.34819030761719,
+    -47.5
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_19_Prefab/HidingHole_Level_Hole_19_Prefab_cbcd.logic.module.ain"
+   ],
+   "contents": [
+    {
+     "id": "10978827534277086146",
+     "name": "Enemy_Scrub_ForestStage_Elder",
+     "position": [
+      -10.01066780090332,
+      83.19381713867188,
+      -54.509437561035156
+     ]
+    }
+   ]
+  },
+  {
+   "scene": "LostWood_Adult",
+   "id": "2141617013942912789",
+   "position": [
+    20.500001907348633,
+    86.27104949951172,
+    -75.6500015258789
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_20_Prefab/HidingHole_Level_Hole_20_Prefab_07c3.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "LostWood_Child",
+   "id": "3612217136114697157",
+   "position": [
+    27.791507720947266,
+    86.27300262451172,
+    -28.265392303466797
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_18_Prefab/HidingHole_Level_Hole_18_Prefab_9626.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "LostWood_Child",
+   "id": "7567035764371553012",
+   "position": [
+    3.8007607460021973,
+    86.34819030761719,
+    -47.5
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_19_Prefab/HidingHole_Level_Hole_19_Prefab_cbcd.logic.module.ain"
+   ],
+   "contents": [
+    {
+     "id": "3329916314930511880",
+     "name": "Enemy_Scrub_ForestStage_Elder",
+     "position": [
+      -10.01066780090332,
+      83.19381713867188,
+      -54.509437561035156
+     ]
+    }
+   ]
+  },
+  {
+   "scene": "LostWood_Child",
+   "id": "10196777967846373583",
+   "position": [
+    20.500001907348633,
+    86.27104949951172,
+    -75.6500015258789
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/HidingHole_Level_Hole_20_Prefab/HidingHole_Level_Hole_20_Prefab_07c3.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "SacredForestMeadow_Adult",
+   "id": "8805402523498263080",
+   "position": [
+    -1.6318252086639404,
+    86.27300262451172,
+    51.16453552246094
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_SacredForest/Gimmick_Ocarina_Appearance_01_SacredForest_9560.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "SacredForestMeadow_Adult",
+   "id": "7135074649447476038",
+   "position": [
+    -4.151102542877197,
+    88.21476745605469,
+    1.9202908277511597
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "SacredForestMeadow_Adult",
+   "id": "8981646470992600242",
+   "position": [
+    1.3337024450302124,
+    100.22439575195312,
+    -85.46910858154297
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "SacredForestMeadow_Child",
+   "id": "14976789418337681116",
+   "position": [
+    -1.6318252086639404,
+    86.27300262451172,
+    51.16453552246094
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_SacredForest/Gimmick_Ocarina_Appearance_01_SacredForest_9560.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "SacredForestMeadow_Child",
+   "id": "1013058816642268154",
+   "position": [
+    -4.151102542877197,
+    88.21476745605469,
+    1.9202908277511597
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "SacredForestMeadow_Child",
+   "id": "15540833058353196286",
+   "position": [
+    1.3337024450302124,
+    100.22439575195312,
+    -85.46910858154297
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraDomain_Adult",
+   "id": "1882497000747909496",
+   "position": [
+    16.986581802368164,
+    63.128509521484375,
+    -18.260669708251953
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraDomain_Adult_Alternative",
+   "id": "12819609315038604664",
+   "position": [
+    16.986581802368164,
+    63.128509521484375,
+    -18.260669708251953
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraDomain_Child",
+   "id": "2500851415993976937",
+   "position": [
+    16.986581802368164,
+    63.128509521484375,
+    -18.260669708251953
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraRiver_Adult",
+   "id": "722619129983099297",
+   "position": [
+    -15.74454116821289,
+    78.08500671386719,
+    14.834365844726562
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraRiver_Adult",
+   "id": "13942547872238141714",
+   "position": [
+    -78.05296325683594,
+    85.55696868896484,
+    -16.79094123840332
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_ZoraRiver/Gimmick_Ocarina_Appearance_01_ZoraRiver_bc8b.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraRiver_Adult",
+   "id": "3560899062704675476",
+   "position": [
+    5.176095485687256,
+    81.36354064941406,
+    -16.274465560913086
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraRiver_Child",
+   "id": "2371502001336611423",
+   "position": [
+    -15.74454116821289,
+    78.08500671386719,
+    14.834365844726562
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraRiver_Child",
+   "id": "18239553011123515506",
+   "position": [
+    -78.05296325683594,
+    85.55696868896484,
+    -16.79094123840332
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_ZoraRiver/Gimmick_Ocarina_Appearance_01_ZoraRiver_bc8b.logic.module.ain"
+   ],
+   "contents": []
+  },
+  {
+   "scene": "ZoraRiver_Child",
+   "id": "1910885835868387410",
+   "position": [
+    5.176095485687256,
+    81.36354064941406,
+    -16.274465560913086
+   ],
+   "kind": "grotto",
+   "logic": [
+    "Logic/Module/Gimmick_Ocarina_Appearance_01_Common/Gimmick_Ocarina_Appearance_01_Common_2983.logic.module.ain"
+   ],
+   "contents": []
+  }
+ ]
+}

@@ -9,7 +9,7 @@ const DUNGEONS = {
   InsideTheDekuTree: ['64028', 'Young Link'], DodongoCavern: ['64023', 'Young Link'], InsideJabuJabuBelly: ['64027', 'Young Link'],
   BottomOfTheWell: ['64022', 'Young Link'], ForestTemple: ['64025', 'Adult Link'], FireTemple: ['64024', 'Adult Link'],
   IceCavern: ['64026', 'Adult Link'], WaterTemple: ['64031', 'Adult Link'], ShadowTemple: ['64029', 'Adult Link'],
-  SpiritTemple: ['64030', null]
+  SpiritTemple: ['64030', null], GerudoTrainingGround: ['64032', 'Adult Link'], InsideGanonCastle: ['64033', 'Adult Link']
 };
 // The game's area names and ours (area pages and pills use ours).
 const AREAS = {
@@ -73,7 +73,7 @@ function categorySQL([id, parent, title, img, color]) {
 // collectibles. Each insert is skipped if the ID exists.
 function markerSQL(p) {
   const w = p.where;
-  const gameData = JSON.stringify({areaName: w.area, region: w.region, gameId: p.gameId, gameRecord: p.gameRecord});
+  const gameData = JSON.stringify({...{areaName: w.area, region: w.region, gameId: p.gameId, gameRecord: p.gameRecord}, ...(p.metadata || {})});
   const lines = [`-- ${p.name.replace(/[\r\n]/g, ' ')}`,
     `INSERT INTO marker (id, submap_id, overlay_id, marker_status_id, marker_category_id, user_id, name, description, x, y, z, jump_marker_id, global, path, game_data, visible, last_updated) ` +
     `SELECT ${p.id}, ${w.submapId}, NULL, 2, ${p.category}, ${AUTHOR}, ${sql(encoded(p.name))}, '', ${num(w.x)}, ${num(w.y)}, NULL, 0, ${w.global}, '', ${sql(gameData)}, 1, NOW() FROM DUAL ` +

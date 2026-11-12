@@ -1,0 +1,19 @@
+{
+ "description": "Door-landmark calibration to GerudoTrainingGround_1F_State00_Main.webp (1634x1890). Pixel measurements are approximate, not authoritative game texture bounds. Validation doors are excluded from fitting. The shared 2F canvas is independently checked.",
+ "anchors": [
+  {"game": [-28.3857955933,-5.3899998665], "pixel": [374,1654]},
+  {"game": [-47.4159889221,-18.5975418091], "pixel": [154,1503]},
+  {"game": [24.7346591949,-82.4407653809], "pixel": [990,765]},
+  {"game": [43.2832145691,-72.25], "pixel": [1205,883]},
+  {"game": [-1.7999999523,-33], "pixel": [682,1330]},
+  {"game": [29.3019866943,-45.6165542603], "pixel": [1042,1190]},
+  {"game": [-47.3711090088,-65], "pixel": [155,963]},
+  {"game": [-47.3377609253,-111.2105255127], "pixel": [154,433]}
+ ],
+ "validation": [
+  {"floor": 0,"game": [24.7999992,-5.39699],"pixel": [988,1654]},
+  {"floor": 0,"game": [44.4,-18],"pixel": [1216,1508]},
+  {"floor": 1,"game": [-2.339319,-58.91577],"pixel": [676,1036]},
+  {"floor": 1,"game": [-25.869953,-82.41167],"pixel": [401,765]}
+ ]
+}

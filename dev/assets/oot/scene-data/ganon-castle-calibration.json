@@ -1,0 +1,19 @@
+{
+ "description": "Approximate landmark registration of the cropped castle artwork. 1F uses trial-door landmarks; upper floors align their central tower rooms in one game-coordinate frame. Stair illustrations are schematic, not a surveyed top-down projection.",
+ "gamePivot": [0,-24.64],
+ "pixelsPerGameUnit": [8,8],
+ "floorPivots": {
+  "1F": [935,970.88],
+  "2F": [148,90],
+  "3F": [216,135],
+  "4F": [87,208],
+  "5F": [260,88],
+  "6F": [254,222],
+  "7F": [235,246]
+ },
+ "notes": [
+  "1F origin for game (0,0) is image (935,1168). The four main trial doors align at approximately (806,1230), (1064,769), (806,769), (1064,1231).",
+  "2F through 6F pivots use the central room silhouette. 7F uses the stairwell axis inferred from its landing layout; its boss-door placement requires visual review in game.",
+  "All images remain at the same source scale. No per-floor resize-to-fit is allowed."
+ ]
+}

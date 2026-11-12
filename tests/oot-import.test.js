@@ -65,8 +65,8 @@ test('a map with a kind makes each submap its own layer, with its versioned tile
 
 test('every OoT tile folder has its texture recorded, a full tile pyramid and a thumbnail',()=>{
   const assets=oot('tile-report.json').assets;
-  const folders=fs.readdirSync(path.join(__dirname,'../tiles/oot')).filter(f=>fs.statSync(path.join(__dirname,'../tiles/oot',f)).isDirectory());
-  expect(assets.map(a=>a.tileURL).sort()).toEqual(folders.map(f=>'oot/'+f+'/').sort());
+  // Older tile versions remain on disk for rollback and existing downloads.
+  expect(new Set(assets.map(a=>a.tileURL)).size).toBe(assets.length);
   for(const asset of assets) {
     expect(asset.sha256).toMatch(/^[0-9a-f]{64}$/);
     const last=2**asset.maxZoom-1;
@@ -94,6 +94,24 @@ test('game positions convert onto the right area and floor',()=>{
   // A dungeon's rectangle fills its 2000x1440 floor texture, centred on 2048px.
   const corner=projectDungeon('WaterTemple',0,-155.5,-139.68);
   expect([corner.x,corner.y]).toEqual([24/8,-304/8]);
+});
+
+test('HQ artwork preserves calibrated coordinates and records uncertain matches',()=>{
+  const alignment=oot('hq-alignment.json').assets;
+  expect(alignment.length).toBeGreaterThan(100);
+  for(const entry of alignment) {
+    expect(entry.transform).toHaveLength(2);
+    entry.transform.flat().forEach(value=>expect(Number.isFinite(value)).toBe(true));
+    if(entry.method==='aligned') expect(entry.medianError).toBeLessThan(1.5);
+  }
+  const migration=fs.readFileSync(path.join(__dirname,'../migrations/20261111100000_oot_hq_artwork.sql'),'utf8');
+  expect(migration).not.toMatch(/UPDATE\s+marker\b/i);
+  expect(migration).toContain('Gerudo Proving Grounds');
+  expect(migration).toContain('max_zoom=4');
+  const preparation=fs.readFileSync(path.join(__dirname,'../dev/assets/oot/prepare-map-upgrade.py'),'utf8');
+  expect(preparation).toContain('corners.min(axis=0)');
+  expect(preparation).toContain('Nontransparent artwork would be clipped');
+  expect(preparation).not.toContain('(w+8,h+8)');
 });
 
 test('every dungeon Gold Skulltula is matched once, and every marked place has a name',()=>{

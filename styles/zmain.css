@@ -3714,6 +3714,12 @@ header.ex1 {
 	line-height: 0.7;
 }
 
+/* OoT's outline follows the dark brown sampled from its region artwork. */
+.OoTR-label, .OoT-label {
+    text-shadow: #6a3117 0 0 3px, #6a3117 0 0 3px, #6a3117 0 0 3px,
+                 #6a3117 0 0 3px, #6a3117 0 0 3px, #6a3117 0 0 3px;
+}
+
 /* Names open their area pages: white on hover or keyboard focus. */
 .TotK-label:hover, .BotW-label:hover, .OoTR-label:hover,
 .TotK-label:focus-visible, .BotW-label:focus-visible, .OoTR-label:focus-visible {

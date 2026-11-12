@@ -2,662 +2,782 @@
  "description": "The textures OoT's map tiles are built from (import-assets.cjs). A submap's tile_version is the first 16 characters of its texture's sha256.",
  "assets": [
   {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/BottomOfTheWell_B1_State00_Main.png",
-   "sha256": "011101a0c86a045b381f8c4cd2d728de74c7c6d39b94f374017eb2d97e710c9e",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/bottom-of-the-well-b1-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/BottomOfTheWell_B1_State01_Main.png",
-   "sha256": "595b091626a316ab02420a6bdb9d0a6e2a72f6ec90633e4c0430606d0dece19a",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/bottom-of-the-well-b1-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/BottomOfTheWell_B2_Main.png",
-   "sha256": "2cd1de01eaa92b2249f11a1e4db7f5ca22d218af06475e865adc051e60386bed",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/bottom-of-the-well-b2/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/DodongoCavern_1F_Main.png",
-   "sha256": "d210180e2c9cf324b7355382beccd8066dd0b70f3199cc47b0c16524f8d3e354",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/dodongo-cavern-1f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/DodongoCavern_2F_Main.png",
-   "sha256": "e40114d458cc1389187974f082aa30871bab7019523dbfd623f97bc6618788d9",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/dodongo-cavern-2f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/FireTemple_1F_State00_Main.png",
-   "sha256": "b5e3335323bf2c301ce4de6d60d71fa6daa891c18f4486dc5d6691030f212c89",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/fire-temple-1f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/FireTemple_1F_State01_Main.png",
-   "sha256": "03a3682d3651fd0636c7040022eb7ecc3ef94a3daf211cfa53aa007eab7b7af4",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/fire-temple-1f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/FireTemple_2F_State00_Main.png",
-   "sha256": "d47de65ca9792880038d071adace26d32a3df02c0b09c28388833a679e7aa965",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/fire-temple-2f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/FireTemple_2F_State01_Main.png",
-   "sha256": "4e4c815c538afa56f179137d5bb030b74ca04806b5e7b4df84a53dbbfb4d01f5",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/fire-temple-2f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/FireTemple_3F_Main.png",
-   "sha256": "c2f152aff065b1551b4e5b01d08cce26c2520ef12c08a1fcb69c32456bb1e3e0",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/fire-temple-3f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/FireTemple_4F_Main.png",
-   "sha256": "c1da90b2b8ca8e5e6b3e0d4641dddae79ef5d86937544528ef2f623fb39d7784",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/fire-temple-4f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/FireTemple_5F_State00_Main.png",
-   "sha256": "14f9a5125ae03df28cb06150a928526bf371538a64c5e5b8f43508caaf87b0a1",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/fire-temple-5f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/FireTemple_5F_State01_Main.png",
-   "sha256": "701d587394d9f3876c47209fd89727ef2c3ddedf49938e8ef7a71c62af613f88",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/fire-temple-5f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_1F_Main.png",
-   "sha256": "fb6f1dd81e0c3132c6c3f5003242d3e26c09ebaa1bb4886a5baca1b594d7e56f",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-1f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_2F_State00_Main.png",
-   "sha256": "afcee16f93dccdaf1cf18857de517d235669ce8868b0e7793402025afc3273d2",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-2f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_2F_State01_Main.png",
-   "sha256": "afcee16f93dccdaf1cf18857de517d235669ce8868b0e7793402025afc3273d2",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-2f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_2F_State02_Main.png",
-   "sha256": "afcee16f93dccdaf1cf18857de517d235669ce8868b0e7793402025afc3273d2",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-2f-state02/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_2F_State03_Main.png",
-   "sha256": "afcee16f93dccdaf1cf18857de517d235669ce8868b0e7793402025afc3273d2",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-2f-state03/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_3F_State00_Main.png",
-   "sha256": "c402632b0d3d2c89e3e79a7042b901bc09d599892746e30b4609ef786ab563a2",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-3f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_3F_State01_Main.png",
-   "sha256": "7ab9550dac6f5515e82d6fb74d443e0097362dcf3a0422b5402a6d0d923c76c2",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-3f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_3F_State02_Main.png",
-   "sha256": "b113f0134a5241c0bacaad8b1cf09df4cf368087548020a75d05ac7bd651c2d2",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-3f-state02/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_3F_State03_Main.png",
-   "sha256": "54b63b9ada45a4db12a41c190473d75a160f544260c1bab1254e2afba000c5e8",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-3f-state03/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_B1_Main.png",
-   "sha256": "a14d513d250e5dc6d745c6445f5405bf65fdd11e5762bf39c23f3e73372b85da",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-b1/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ForestTemple_B2_Main.png",
-   "sha256": "77769d0d95fc82f247e31841d331300c982a06a55c3ff134c520bd16f6dfa55d",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/forest-temple-b2/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/IceCavern_1F_Main.png",
-   "sha256": "3d9eabf7750f71a14f4af497cb469d0583bf2d15a35a603d6fffaf9e1e5dad63",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/ice-cavern-1f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideJabuJabuBelly_1F_Main.png",
-   "sha256": "6fd59b6296b2059423b172022bb0b7bde1a7628d3bb5eff97ce23d6911eb05a9",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-jabu-jabu-belly-1f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideJabuJabuBelly_2F_Main.png",
-   "sha256": "43a8d589fe3ce3ec43a3541330f9a269d50f24f4009386884ba2802edf29316e",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-jabu-jabu-belly-2f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideJabuJabuBelly_B1_Main.png",
-   "sha256": "f957f0fd2a2946a7e11eb18b671630851b45f41e83d7a0fb7ec1e307dc31fca7",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-jabu-jabu-belly-b1/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_1F_State00_Main.png",
-   "sha256": "709377e0eef8c61617a26aceba5c73d6e955be61c41cb44fb6b2c9f27acbcc7b",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-1f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_1F_State01_Main.png",
-   "sha256": "70f0a2cbb6ac149c472d54ae05df72d2910d7bde2a407fbdacdb25e41e6d95a7",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-1f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_2F_State00_Main.png",
-   "sha256": "03b02598a51880834d2c99e2059615c51c1c20b286b5896b0acbdc01090b3aaf",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-2f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_2F_State01_Main.png",
-   "sha256": "5e44c9a76dfb720b37bd4de1f1d75a35bda5e46a98d06561224cdaa9e791cdbd",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-2f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_3F_State00_Main.png",
-   "sha256": "852a0e6124d61100c42b224cc6c21b203f9e69e6d5ffef9456b6eae2e2f7038b",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-3f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_3F_State01_Main.png",
-   "sha256": "04bc57a6b3265add5fe999bbe6fb5332d74a0ad061a774574185983c583b37e3",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-3f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_B1_State00_Main.png",
-   "sha256": "ad8262608c4b758d416d3aac8bc7b98829b4e29513ecd544b9c71b362923b4e3",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-b1-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_B1_State01_Main.png",
-   "sha256": "0b2086af05d2ab57e699458b561e30461a49e62cf723b0b869e15e9dded526ff",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-b1-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/InsideTheDekuTree_B2_State00_Main.png",
-   "sha256": "0fab6cb6653db955901ecfebc3e075d2f824b925ccdc563d55e83c4918d22beb",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/inside-the-deku-tree-b2-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ShadowTemple_B1_Main.png",
-   "sha256": "43592c80585108e7edeb6d9a84398b1fa0c2db3470fed95df3af2fe0300195e1",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/shadow-temple-b1/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ShadowTemple_B2_Main.png",
-   "sha256": "72936bac2a0e18f7fcbb76296c57327b6ed236064554fd0aa8d75995101fcc05",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/shadow-temple-b2/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ShadowTemple_B3_Main.png",
-   "sha256": "f8e70c3fa671e2866ca341c996d99201853392d0ffbff70d69a9ef16c95ea89a",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/shadow-temple-b3/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ShadowTemple_B4_State00_Main.png",
-   "sha256": "5dac014973243f2b857717397ea57efe7265cbfea5061cddc624519ade20c9b1",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/shadow-temple-b4-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/ShadowTemple_B4_State01_Main.png",
-   "sha256": "8106606ce8904d4b372898df4e9e69bdd3fa64485a3cba76dfd99a2aeed6865f",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/shadow-temple-b4-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/SpiritTemple_1F_Main.png",
-   "sha256": "980b103ac59857504ba18e04756631ed4989fc5ecef7428edc3e93bfdf8be95d",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/spirit-temple-1f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/SpiritTemple_2F_Main.png",
-   "sha256": "a3d482709e04bf8ce4527e94acb94988c1ca07e1649aa14e9e7d85bd1019f2bb",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/spirit-temple-2f/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/SpiritTemple_3F_State00_Main.png",
-   "sha256": "843da02d105f7f522bd99890d02b1bf4c2ab217dbaadc00bef395911c042bd7e",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/spirit-temple-3f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/SpiritTemple_3F_State01_Main.png",
-   "sha256": "2916edb47770c05b0dc5e9e1f4d99768d48ce796faf8d0a6b8c229a3818df926",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/spirit-temple-3f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/SpiritTemple_3F_State02_Main.png",
-   "sha256": "cadc9747c0d45d0e68f30fda7404ae7ed4e55824a85e05b4cf13c6c6d6f7f82e",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/spirit-temple-3f-state02/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/SpiritTemple_4F_State00_Main.png",
-   "sha256": "1f651bfb0efb844eb71ff7bc02d3701376644b9ac138b889a266ceedeb2590db",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/spirit-temple-4f-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/SpiritTemple_4F_State01_Main.png",
-   "sha256": "0b00b8669ae5fe0a6257367d9e3678e5f5c66b01944cc2308fbbd3bfc2389057",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/spirit-temple-4f-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_1F_Lv1_State00_Main.png",
-   "sha256": "33ff36860a48f91df5b97ae540d490c28084e35004670b16bbe5740d63e4e75f",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-1f-lv1-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_1F_Lv1_State01_Main.png",
-   "sha256": "8a390c926f601b7c1f7570af1921d759ec49685de2b2be0266c4830da6c0f455",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-1f-lv1-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_1F_Lv2_State00_Main.png",
-   "sha256": "8571ee41d7417bae85f1f163949fc586e03cfbf76ddc24f26f7b18fbb45836e1",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-1f-lv2-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_1F_Lv2_State01_Main.png",
-   "sha256": "7d61484a1b62a3eadd478b65a0e24e4a7923ef864565b172dd8d03bbf4c11efe",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-1f-lv2-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_1F_Lv3_State00_Main.png",
-   "sha256": "8571ee41d7417bae85f1f163949fc586e03cfbf76ddc24f26f7b18fbb45836e1",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-1f-lv3-state00/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_1F_Lv3_State01_Main.png",
-   "sha256": "7d61484a1b62a3eadd478b65a0e24e4a7923ef864565b172dd8d03bbf4c11efe",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-1f-lv3-state01/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_2F_Lv1_Main.png",
-   "sha256": "b584fc94edce80716661866202be557a7f01835e052169f9e263361c6f6c5e30",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-2f-lv1/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_2F_Lv2_Main.png",
-   "sha256": "26dfff345fa0595262b7e8878e2d36bdb85ea56536a131eba70b3e2ddb7a76a5",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-2f-lv2/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_2F_Lv3_Main.png",
-   "sha256": "69070deb8ffe579f1c40b1be7dc877c0a19f83fd9153cddad885c55ebda49ce5",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-2f-lv3/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_3F_Lv1_Main.png",
-   "sha256": "d321e22a05c06bd08b64d97bc2787f9c0aea43342fddf77820ac7645e67841a0",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-3f-lv1/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_3F_Lv2_Main.png",
-   "sha256": "13ec999b86264953a896c82bf799b733bdcf33d09d0f6c868b04399f0b1e9017",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-3f-lv2/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_3F_Lv3_Main.png",
-   "sha256": "b3ba88f875e29c976d8d6743751928b77add232ccb28717fddd680f4f512be30",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-3f-lv3/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_B1_Lv1_Main.png",
-   "sha256": "9e13f21e5fe75cf4aad48841f897fc7395e6f928653122708a9a5eeb26188ed5",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-b1-lv1/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_B1_Lv2_Main.png",
-   "sha256": "9e13f21e5fe75cf4aad48841f897fc7395e6f928653122708a9a5eeb26188ed5",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-b1-lv2/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "OoTR-110-UI-CustomTex-Map-Dungeon/WaterTemple_B1_Lv3_Main.png",
-   "sha256": "9e13f21e5fe75cf4aad48841f897fc7395e6f928653122708a9a5eeb26188ed5",
-   "width": 2000,
-   "height": 1440,
-   "maxZoom": 3,
-   "tileURL": "oot/water-temple-b1-lv3/",
-   "offsetX": 24,
-   "offsetY": 304
-  },
-  {
-   "source": "Hyrule_Child.png (compose-world.cjs)",
-   "sha256": "6d8041b4f2d01b13404cb04b6d5a349f5d2e30e84c57c0d3ae08ecbf2fdc91be",
+   "source": "hyrule-child.png",
+   "sha256": "960ac3ad81b0e8879595dbd59c449327661218d364ca1c844b3545a6d86affa6",
    "width": 8192,
    "height": 8192,
    "maxZoom": 5,
-   "tileURL": "oot/hyrule-child/",
+   "tileURL": "oot/hq-v1/hyrule-child/",
    "offsetX": 0,
    "offsetY": 0
   },
   {
-   "source": "Hyrule_Adult.png (compose-world.cjs)",
-   "sha256": "da71a9871309a41f43c92a0580db23f697a1a423a8438e8588fb5901551ef89e",
+   "source": "hyrule-adult.png",
+   "sha256": "fb9282e35da5494bb97398eb94458716cabc87a0360f184c4ca5f3285044e7da",
    "width": 8192,
    "height": 8192,
    "maxZoom": 5,
-   "tileURL": "oot/hyrule-adult/",
+   "tileURL": "oot/hq-v1/hyrule-adult/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "BottomOfTheWell_B1_State00_Main",
+   "sha256": "2174d2a6e59a0f0c52953b584cdba16c405c168b668ceb41017bb7449b00fc8b",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/bottom-of-the-well-b1-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "BottomOfTheWell_B1_State01_Main",
+   "sha256": "f7d960b8f09d4b8d71768ccbfb3f7e26d02692bc303c558495100e8037a9f7c9",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/bottom-of-the-well-b1-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "BottomOfTheWell_B2_Main",
+   "sha256": "7ac7a1fa202ab321c8d90c71eca4b5e72fdaa6e30e6595e0ffd07dfab23db0fd",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/bottom-of-the-well-b2/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "DodongoCavern_1F_Main",
+   "sha256": "c8b87a75a558696595046ced870db06abc838a8b2a2cde414a41b27dcf72afdc",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/dodongo-cavern-1f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "DodongoCavern_2F_Main",
+   "sha256": "149999e8b731b1e6f38026f73f6d3669db7662ec6eff323fdcba96c822056664",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/dodongo-cavern-2f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "FireTemple_1F_State00_Main",
+   "sha256": "4885d22cfe6ecca1cbd44ff48d5d2e5f9ec86b9f7cf33c602add03bba3ccbed3",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/fire-temple-1f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "FireTemple_1F_State01_Main",
+   "sha256": "f35fda61f27f4ad021d3f96a438f0f7ae4a16275cc6a5e679408f16bbba1f156",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/fire-temple-1f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "FireTemple_2F_State00_Main",
+   "sha256": "d9c7ef71b82477e3ee1adcadfcc3961360e4592feec1f7522b89c104230678bc",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/fire-temple-2f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "FireTemple_2F_State01_Main",
+   "sha256": "2ae3ec8efc222de6070d305276eb5a5c3aea07d3f4bcb9b704d4df0f87607ebb",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/fire-temple-2f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "FireTemple_3F_Main",
+   "sha256": "660b12754da6192a7fc35ae296b2ae6e0583494eb4f614f80d1e767cc460c555",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/fire-temple-3f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "FireTemple_4F_Main",
+   "sha256": "3067145c7c9a76050af7f5d17f25e432ea6ca5353c83f79754e1bde558cb1b96",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/fire-temple-4f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "FireTemple_5F_State00_Main",
+   "sha256": "67f937c21d6c9ac8689048e96ecd0f4738d5fecffffb7c19061077ae810de9e2",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/fire-temple-5f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "FireTemple_5F_State01_Main",
+   "sha256": "bd58abdd955202f3775d735d8d6d56fc816d01f0faad82d592c40fdb3101d77c",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/fire-temple-5f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_1F_Main",
+   "sha256": "cbd28f805ef2244c309a350390f3fcfdbd582925db7d245373102e21cb35b9d0",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-1f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_2F_State00_Main",
+   "sha256": "3a206e59babba801651206a958953d662713ff8b9d52027033ed414fbf379bb3",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-2f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_2F_State01_Main",
+   "sha256": "3a206e59babba801651206a958953d662713ff8b9d52027033ed414fbf379bb3",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-2f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_2F_State02_Main",
+   "sha256": "3a206e59babba801651206a958953d662713ff8b9d52027033ed414fbf379bb3",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-2f-state02/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_2F_State03_Main",
+   "sha256": "3a206e59babba801651206a958953d662713ff8b9d52027033ed414fbf379bb3",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-2f-state03/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_3F_State00_Main",
+   "sha256": "64c7980fef7a19d1fda8251418c1db1f64625343cfd55647158546f1dc55c073",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-3f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_3F_State01_Main",
+   "sha256": "dccf53ab86fdd6e5bb6e5adce798b1f62f98a643a062d214e5b8baeb4d6933dd",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-3f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_3F_State02_Main",
+   "sha256": "0cc31953b638eb203a3368bc0a041bec8019541c3fe02b7cfd4b9e9b465d4ac8",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-3f-state02/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_3F_State03_Main",
+   "sha256": "947430987cdbe9d65f90a7b50c100b70be5d3581103a1d074ae56fc6eabb2bb3",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-3f-state03/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_B1_Main",
+   "sha256": "454d94b836104fa0fa79136f3ab211027856e5ebf9eb1c7d2618625aadccdc35",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-b1/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ForestTemple_B2_Main",
+   "sha256": "643a07710aa23c4d44d9398babcc2bf24df1f4aa4a5264c7c24a6b14286bc5b8",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/forest-temple-b2/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "IceCavern_1F_Main",
+   "sha256": "7b91f404a72a57bc7dd45fb8c3e0763ed241b70148dfb9be04d902147594f2ab",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/ice-cavern-1f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideJabuJabuBelly_1F_Main",
+   "sha256": "8bea205f72b8d109dc5034b07dc3031d28232e1ce8df9ddc8117b374d3a3c7ab",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-jabu-jabu-belly-1f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideJabuJabuBelly_2F_Main",
+   "sha256": "8ba3eadc71a6a5cc0caf592da893d3496cd23093e5e8fb2be3dd56836843f9bc",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-jabu-jabu-belly-2f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideJabuJabuBelly_B1_Main",
+   "sha256": "4cd456ff155f9d5fd6e439ed1fde61ad125e78969df3ab61091304d42537f74f",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-jabu-jabu-belly-b1/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_1F_State00_Main",
+   "sha256": "ffce5fe45ad6fd39f4c51ae20ec35aaded8a1b5674e07751cb833a488ff79cee",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-1f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_1F_State01_Main",
+   "sha256": "58b2fe7e745be8b9c5f60a0dd4ecb13716c225db7910553415561017b83719d6",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-1f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_2F_State00_Main",
+   "sha256": "13351f9cdd68b7fbc8950528a7a7d7310d8ea087d184f1232c9c6c88d1b82611",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-2f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_2F_State01_Main",
+   "sha256": "c7a43f9acd71d5af2782e7fa489f350eebb5aed4ade651755674007dd083047f",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-2f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_3F_State00_Main",
+   "sha256": "89bc5015415317f93727fe56817c3656820793dc22c17cd7d49596bf0aabf14f",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-3f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_3F_State01_Main",
+   "sha256": "e6feedc666244297d5ca711b8b5b1ec9275205053ea694be8cdd86468038f3a1",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-3f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_B1_State00_Main",
+   "sha256": "1386fa75f00aaed178615753d3a43b8b222a4af1cbe42c46cd9503ac15f5b15c",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-b1-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_B1_State01_Main",
+   "sha256": "272e183c348c10ea400650e66784dd7f25cf1550a456e46b4948bb9c06ab8c21",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-b1-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideTheDekuTree_B2_State00_Main",
+   "sha256": "b38c42121b659a27eca49702b9b57a66637b06c3a589940724e437fa983ea2fb",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-the-deku-tree-b2-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ShadowTemple_B1_Main",
+   "sha256": "55d0efea1f141538828c5f61e5767ccaafc2a78dcb6e9b454b0af31b7bf97c41",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/shadow-temple-b1/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ShadowTemple_B2_Main",
+   "sha256": "b8b4864fa15ee8129377fb376b6725cf4e993b5bccd13bb588e17888d74cb0b3",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/shadow-temple-b2/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ShadowTemple_B3_Main",
+   "sha256": "48351d40d33954440da22ceade605fe8b1b720f32dfb1b54c87a4b3756d47f6d",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/shadow-temple-b3/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ShadowTemple_B4_State00_Main",
+   "sha256": "a0fd3c8afff09d570162c044e2a8af03a006c5ad49cd18ca04008856dbb90141",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/shadow-temple-b4-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "ShadowTemple_B4_State01_Main",
+   "sha256": "7227302be0c43a40327cc38e6ba11a64ced6a3032f8be70cfa1f9f7fbc5bca30",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/shadow-temple-b4-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "SpiritTemple_1F_Main",
+   "sha256": "3efd7c478a0c35bb4992dbbe70b849198ef163883b91877c2bb2f88b919931bb",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/spirit-temple-1f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "SpiritTemple_2F_Main",
+   "sha256": "8f99e88087fea9de995d08d2e97c04965cddbd3c49fb5e44503ac29bd98cd26e",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/spirit-temple-2f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "SpiritTemple_3F_State00_Main",
+   "sha256": "2a313e5fc9d63997360efa1840e92583470e94b49158f78900acc8849de9e7a1",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/spirit-temple-3f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "SpiritTemple_3F_State01_Main",
+   "sha256": "9f1d748c43c4333cf1605dc91b1a53a49492314485ed0c39a7d78ef878f6631b",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/spirit-temple-3f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "SpiritTemple_3F_State02_Main",
+   "sha256": "a8f43351a6e9f8023e16bfa26c28121653d03fd85d0f1649fb83b1e7b1661bfa",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/spirit-temple-3f-state02/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "SpiritTemple_4F_State00_Main",
+   "sha256": "2900f462b14af95f5590245b27bc0a2cf6b764dfb223f83b3fccba52daaeeaec",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/spirit-temple-4f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "SpiritTemple_4F_State01_Main",
+   "sha256": "fcbf074d86a139b924b9de19ec486eaf348bbe8f1b18ec915e3a307a09d284ea",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/spirit-temple-4f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_1F_Lv1_State00_Main",
+   "sha256": "9e5cb801da91ac69484e140f1b339a9cccf38e8c820d9ba62bd64edfa5869d8b",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-1f-lv1-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_1F_Lv1_State01_Main",
+   "sha256": "3f6999a73370fc68eb9f6aa86270b5a66e72b2ff299d07d6206471648047bf53",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-1f-lv1-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_1F_Lv2_State00_Main",
+   "sha256": "8f302b576f6ad0af5466f131b6dbeef6881cd5f3ffae34e45f1ec95eaf4e9f07",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-1f-lv2-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_1F_Lv2_State01_Main",
+   "sha256": "9731232330646d1650a9e66b93d21da4dc4892be7ffe9e65322a6791b2aa71aa",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-1f-lv2-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_1F_Lv3_State00_Main",
+   "sha256": "8f302b576f6ad0af5466f131b6dbeef6881cd5f3ffae34e45f1ec95eaf4e9f07",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-1f-lv3-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_1F_Lv3_State01_Main",
+   "sha256": "9731232330646d1650a9e66b93d21da4dc4892be7ffe9e65322a6791b2aa71aa",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-1f-lv3-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_2F_Lv1_Main",
+   "sha256": "c98a7909eea29f4435123fbfbb1c6f476d9c0b412c856ce0988201955d848f4c",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-2f-lv1/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_2F_Lv2_Main",
+   "sha256": "282f5127ca81c69a7835798bc1a61fd0c27f5e1aa4d1bd1d12d4c8d1f08cd31e",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-2f-lv2/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_2F_Lv3_Main",
+   "sha256": "0f2d110ddf294527ef0d152d575cd30a0e15ba634846946a727648cd24e1d0bf",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-2f-lv3/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_3F_Lv1_Main",
+   "sha256": "291a4662fc1076c81af7c8c0f4719140e566c5f7023786564133cff161a788eb",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-3f-lv1/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_3F_Lv2_Main",
+   "sha256": "d7dc5e3bae53fd3bf1f5f1a532e0aa8ddd1464ad38790831f09869c9341a2824",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-3f-lv2/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_3F_Lv3_Main",
+   "sha256": "3655f03c4324ae40b1315dba3974e02e16e04d8cb169362e2ad07b4442feb280",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-3f-lv3/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_B1_Lv1_Main",
+   "sha256": "fec66ee51aa7c470b53ffd6581ea81fb09f69d2cc0bda5c7f6edbfb6553a6312",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-b1-lv1/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_B1_Lv2_Main",
+   "sha256": "fec66ee51aa7c470b53ffd6581ea81fb09f69d2cc0bda5c7f6edbfb6553a6312",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-b1-lv2/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "WaterTemple_B1_Lv3_Main",
+   "sha256": "fec66ee51aa7c470b53ffd6581ea81fb09f69d2cc0bda5c7f6edbfb6553a6312",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/water-temple-b1-lv3/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "GerudoTrainingGround_1F_State00_Main",
+   "sha256": "4cd58e8b9125263a6747c4e1e598336a7c941c864c48dd1b948e96c70b30ac4f",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/gerudo-training-ground-1f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "GerudoTrainingGround_1F_State01_Main",
+   "sha256": "fdfa449592424a58dbdcd320eed1a52e7ac5806a86ef2f2f87d347175911c39d",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/gerudo-training-ground-1f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "GerudoTrainingGround_2F_State00_Main",
+   "sha256": "53d847a581d655e3a861fc7ae7f3af8843342dde5794099644e9945e1efca4e1",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/gerudo-training-ground-2f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "GerudoTrainingGround_2F_State01_Main",
+   "sha256": "5502b03d289db90986f8eeeff563cd5442d6c9231ba63e15be247304b28a6809",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/gerudo-training-ground-2f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideGanonCastle_1F_State00_Main",
+   "sha256": "90403889635ba3396780bb21842ba8642f347e8e5fbf3556323fb996ad1985c7",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-ganon-castle-1f-state00/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideGanonCastle_1F_State01_Main",
+   "sha256": "80d234861aa3e0824b3eda81251b4cab236370159d3135d217125ad87f692926",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-ganon-castle-1f-state01/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideGanonCastle_2F_Main",
+   "sha256": "185b24268e43dc75474bd8bffede7e2b2d703bb2fe254ee077710431fd5701a0",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-ganon-castle-2f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideGanonCastle_3F_Main",
+   "sha256": "e0d5e2cabff55cd911c7c554f439e65c601f75c5ea6d2ed4adca05f35a63b39a",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-ganon-castle-3f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideGanonCastle_4F_Main",
+   "sha256": "804eaa905fdc26b9e1c9e7428fb7b9c7f5cac47dc69ed4f5d2aa14ac708e1607",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-ganon-castle-4f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideGanonCastle_5F_Main",
+   "sha256": "7c9973e343e0790eb69b58d5f9dfe402027a504ed0248120aa01a62587e10730",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-ganon-castle-5f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideGanonCastle_6F_Main",
+   "sha256": "2e8dccbf179fd93c51e414ddd00dd567b951eda86eea3d8402a4c9455ab73da2",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-ganon-castle-6f/",
+   "offsetX": 0,
+   "offsetY": 0
+  },
+  {
+   "source": "InsideGanonCastle_7F_Main",
+   "sha256": "9744a8f413dd1a3d37f654baa991bfddb71ba2a866a6c10af36839243a95b05c",
+   "width": 4096,
+   "height": 4096,
+   "maxZoom": 4,
+   "tileURL": "oot/hq-v1/inside-ganon-castle-7f/",
    "offsetX": 0,
    "offsetY": 0
   }

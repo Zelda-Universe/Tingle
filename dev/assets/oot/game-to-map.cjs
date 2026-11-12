@@ -76,6 +76,8 @@ const DUNGEON_OFFSET = [(DUNGEON_SIDE - FULL_WIDTH) / 2, (DUNGEON_SIDE - FULL_HE
 
 // {floor, x, y} on the dungeon's map, or null for a scene that isn't one.
 function projectDungeon(scene, floor, gameX, gameZ) {
+  if(scene==='GerudoTrainingGround') return require('./gerudo-proving-projection.cjs').projectGerudo(floor,gameX,gameZ);
+  if(scene==='InsideGanonCastle') return require('./ganon-castle-projection.cjs').projectCastle(floor,gameX,gameZ);
   const dungeon = dungeonBounds[scene];
   if(!dungeon) return null;
   const [[x0, x1], [z0, z1]] = dungeon.bounds;

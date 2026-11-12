@@ -39,15 +39,15 @@ async function main(source) {
     const meta = await sharp(buffer).metadata();
     const maxZoom = Math.ceil(Math.log2(Math.max(meta.width, meta.height) / 256));
     const side = 256 * 2 ** maxZoom;
-    const tileURL = 'oot/' + name + '/';
+    const tileURL = (process.env.OOT_TILE_PREFIX || 'oot/') + name + '/';
     const offsetX = Math.floor((side - meta.width) / 2), offsetY = Math.floor((side - meta.height) / 2);
     assets.push({source: sourceName, sha256, width: meta.width, height: meta.height, maxZoom, tileURL, offsetX, offsetY});
-    await thumbnail(buffer, name);
     const existing = previous.find(asset => asset.tileURL === tileURL && asset.sha256 === sha256);
-    if(existing && fs.existsSync(path.join(ROOT, 'tiles', tileURL, `${maxZoom}_${2 ** maxZoom - 1}_${2 ** maxZoom - 1}.webp`))) {
+    if(existing && fs.existsSync(path.join(ROOT, 'images', 'icons', process.env.OOT_TILE_PREFIX || 'oot/', name, 'icon.webp')) && fs.existsSync(path.join(ROOT, 'tiles', tileURL, `${maxZoom}_${2 ** maxZoom - 1}_${2 ** maxZoom - 1}.webp`))) {
       kept++;
       return;
     }
+    await thumbnail(buffer, name);
     // Hyrule paints its own background, fitted to the areas; around it the
     // tiles are transparent. Dungeon floors fill their square.
     const background = kind === 'world' ? {r: 0, g: 0, b: 0, alpha: 0} : '#241a0c';
@@ -58,10 +58,12 @@ async function main(source) {
     // Zoom 0 is a single tile; each higher level is a full tile pyramid.
     for(let z = 0; z <= maxZoom; z++) {
       const size = 256 * 2 ** z;
-      const image = await sharp(canvas).resize(size, size).png().toBuffer();
+      // Decode each level once; otherwise every tile decodes the entire
+      // high-resolution paper texture again.
+      const image = await sharp(canvas).resize(size, size).ensureAlpha().raw().toBuffer();
       for(let y = 0; y < 2 ** z; y++) {
         await Promise.all(Array.from({length: 2 ** z}, (_, x) =>
-          sharp(image).extract({left: x * 256, top: y * 256, width: 256, height: 256})
+          sharp(image, {raw: {width: size, height: size, channels: 4}}).extract({left: x * 256, top: y * 256, width: 256, height: 256})
             .webp({quality: 90}).toFile(path.join(dir, `${z}_${x}_${y}.webp`))));
       }
     }
@@ -76,11 +78,18 @@ async function main(source) {
     const fitted = await sharp(art).resize(232, 232, {fit: 'contain', background: {r: 0, g: 0, b: 0, alpha: 0}}).png().toBuffer();
     const image = await sharp({create: {width: 256, height: 256, channels: 4, background: '#241a0c'}})
       .composite([{input: fitted, left: 12, top: 12}]).webp({quality: 85}).toBuffer();
-    const dir = path.join(ROOT, 'images', 'icons', 'oot', name);
+    const dir = path.join(ROOT, 'images', 'icons', process.env.OOT_TILE_PREFIX || 'oot/', name);
     fs.mkdirSync(dir, {recursive: true});
     fs.writeFileSync(path.join(dir, 'icon.webp'), image);
   }
 
+  const prepared=path.join(source,'prepared.json');
+  if(fs.existsSync(prepared)) {
+    for(const entry of JSON.parse(fs.readFileSync(prepared,'utf8')).assets) {
+      await render(path.join(source,entry.file),entry.name,entry.kind,entry.source || entry.file);
+      console.log('Rendered '+entry.name);
+    }
+  } else {
   const floors = fs.readdirSync(dungeon).filter(f => f.endsWith('_Main.png')).sort((a, b) => a.localeCompare(b, 'en', {numeric: true}));
   for(const file of floors) {
     const name = slug(file.replace(/_Main\.png$/, ''));
@@ -93,6 +102,7 @@ async function main(source) {
       await render(path.join(temporary, `Hyrule_${age}.png`), 'hyrule-' + age.toLowerCase(), 'world', `Hyrule_${age}.png (compose-world.cjs)`);
     }
   } finally { fs.rmSync(temporary, {recursive: true, force: true}); }
+  }
 
   fs.writeFileSync(REPORT, JSON.stringify({
     description: "The textures OoT's map tiles are built from (import-assets.cjs). A submap's tile_version is the first 16 characters of its texture's sha256.",

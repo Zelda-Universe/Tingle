@@ -1,0 +1,4732 @@
+{
+ "source": "https://radar-oot.zeldamods.org",
+ "note": "Relevant primary actors only; museum/dictionary/boss-rush copies and auxiliary boss body parts excluded. Source MapParam preserves floor membership.",
+ "scenes": [
+  {
+   "scene": "BottomOfTheWell",
+   "encounters": [
+    {
+     "objid": 1171,
+     "map_type": "BottomOfTheWell",
+     "map_name": "BottomOfTheWell",
+     "hash_id": "0x95c6281cedf26cef",
+     "name": "Enemy_DeadHand",
+     "ui_name": "Dead Hand",
+     "map_static": 1,
+     "gen_group": 800,
+     "pos": [
+      -0.16,
+      92.31,
+      -105.06
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": -1,
+    "MinFloor": -2,
+    "Floor": [
+     {
+      "TransY": 82.64645385742188
+     },
+     {
+      "TransY": 96.0403823852539
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       0.08513069152832031,
+       105.99999237060547,
+       34.403411865234375
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.2707047462463379,
+       100,
+       -14.11285400390625
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -1.2058401107788086,
+       101.30721282958984,
+       -71.9089126586914
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -54.45119094848633,
+       100,
+       -18.4990291595459
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       8.335067749023438,
+       99.98135375976562,
+       -27.802724838256836
+      ],
+      "Floor": [
+       -2,
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -7.977880477905273,
+       100,
+       -27.421010971069336
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       27.270742416381836,
+       100.00362396240234,
+       -29.08811378479004
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       26.502429962158203,
+       99.99732208251953,
+       -15.72630500793457
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.10504531860351562,
+       92.30901336669922,
+       -102.51615142822266
+      ],
+      "Floor": [
+       -2,
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       1.7473783493041992,
+       90.84039306640625,
+       -20.10252571105957
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -26.303810119628906,
+       99.9955825805664,
+       -8.757333755493164
+      ],
+      "Floor": [
+       -2,
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.04857635498046875,
+       102.17013549804688,
+       -94.98500061035156
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       8.104955673217773,
+       97.60131072998047,
+       -81.62849426269531
+      ],
+      "Floor": [
+       -2,
+       -1
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "DeathMountainCrater_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 1355,
+      "map_type": "DeathMountainCrater",
+      "map_name": "DeathMountainCrater_Adult",
+      "hash_id": "0x43407497440050c8",
+      "name": "Land_HidingHole_Base_A_03",
+      "ui_name": "Land_HidingHole_Base_A_03",
+      "map_static": 0,
+      "gen_group": 1121,
+      "pos": [
+       -17.38,
+       81.03,
+       52.58
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 1380,
+      "map_type": "DeathMountainCrater",
+      "map_name": "DeathMountainCrater_Adult",
+      "hash_id": "0x17740f5badeb2d93",
+      "name": "Land_HidingHole_Base_I_03",
+      "ui_name": "Land_HidingHole_Base_I_03",
+      "map_static": 0,
+      "gen_group": 1146,
+      "pos": [
+       -50.85,
+       83.29,
+       -0.2
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "DeathMountainCrater_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 2910,
+      "map_type": "DeathMountainCrater",
+      "map_name": "DeathMountainCrater_Child",
+      "hash_id": "0x2b33767ed20a0c73",
+      "name": "Land_HidingHole_Base_A_03",
+      "ui_name": "Land_HidingHole_Base_A_03",
+      "map_static": 0,
+      "gen_group": 2604,
+      "pos": [
+       -17.38,
+       81.03,
+       52.58
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 2935,
+      "map_type": "DeathMountainCrater",
+      "map_name": "DeathMountainCrater_Child",
+      "hash_id": "0xe6bcafce9faed695",
+      "name": "Land_HidingHole_Base_I_03",
+      "ui_name": "Land_HidingHole_Base_I_03",
+      "map_static": 0,
+      "gen_group": 2629,
+      "pos": [
+       -50.85,
+       83.29,
+       -0.2
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "DeathMountainTrail_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 4465,
+      "map_type": "DeathMountainTrail",
+      "map_name": "DeathMountainTrail_Adult",
+      "hash_id": "0x92275daad43f1502",
+      "name": "Land_HidingHole_Base_I_03",
+      "ui_name": "Land_HidingHole_Base_I_03",
+      "map_static": 0,
+      "gen_group": 4095,
+      "pos": [
+       -1.65,
+       71.17,
+       -26.12
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 4485,
+      "map_type": "DeathMountainTrail",
+      "map_name": "DeathMountainTrail_Adult",
+      "hash_id": "0xbfbf96597c0e0c9f",
+      "name": "Land_HidingHole_Base_B_02",
+      "ui_name": "Land_HidingHole_Base_B_02",
+      "map_static": 0,
+      "gen_group": 4115,
+      "pos": [
+       -13.4,
+       79.2,
+       -6.8
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "DeathMountainTrail_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 6647,
+      "map_type": "DeathMountainTrail",
+      "map_name": "DeathMountainTrail_Child",
+      "hash_id": "0x10071557c53a7976",
+      "name": "Land_HidingHole_Base_I_03",
+      "ui_name": "Land_HidingHole_Base_I_03",
+      "map_static": 0,
+      "gen_group": 6174,
+      "pos": [
+       -1.65,
+       71.17,
+       -26.12
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 6667,
+      "map_type": "DeathMountainTrail",
+      "map_name": "DeathMountainTrail_Child",
+      "hash_id": "0x31ef22c963ed80fb",
+      "name": "Land_HidingHole_Base_B_02",
+      "ui_name": "Land_HidingHole_Base_B_02",
+      "map_static": 0,
+      "gen_group": 6194,
+      "pos": [
+       -13.4,
+       79.2,
+       -6.8
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "DesertColossus_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 9740,
+      "map_type": "DesertColossus",
+      "map_name": "DesertColossus_Adult",
+      "hash_id": "0x800bf782cb0a8b58",
+      "name": "Land_HidingHole_Base_F_02",
+      "ui_name": "Land_HidingHole_Base_F_02",
+      "map_static": 0,
+      "gen_group": 9155,
+      "pos": [
+       -115.5,
+       89,
+       -26.73
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "DesertColossus_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 11247,
+      "map_type": "DesertColossus",
+      "map_name": "DesertColossus_Child",
+      "hash_id": "0xbf686d12c9f9d42e",
+      "name": "Land_HidingHole_Base_F_02",
+      "ui_name": "Land_HidingHole_Base_F_02",
+      "map_static": 0,
+      "gen_group": 10563,
+      "pos": [
+       -115.5,
+       89,
+       -26.73
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "DodongoCavern",
+   "encounters": [
+    {
+     "objid": 13923,
+     "map_type": "DodongoCavern",
+     "map_name": "DodongoCavern",
+     "hash_id": "0x9cbd9c524b24df87",
+     "name": "Enemy_MiddleBoss_Lizalfos",
+     "ui_name": "Lizalfos",
+     "map_static": 1,
+     "gen_group": 12927,
+     "pos": [
+      102.55,
+      100.14,
+      -55.38
+     ]
+    },
+    {
+     "objid": 13940,
+     "map_type": "DodongoCavern",
+     "map_name": "DodongoCavern",
+     "hash_id": "0x01fa0074fddbc182",
+     "name": "Enemy_MiddleBoss_Lizalfos",
+     "ui_name": "Lizalfos",
+     "map_static": 1,
+     "gen_group": 12927,
+     "pos": [
+      84.88,
+      100.61,
+      -45.75
+     ]
+    },
+    {
+     "objid": 14170,
+     "map_type": "DodongoCavern",
+     "map_name": "DodongoCavern",
+     "hash_id": "0x155ce1b2ba5028cf",
+     "name": "Enemy_MiddleBoss_Lizalfos",
+     "ui_name": "Lizalfos",
+     "map_static": 1,
+     "gen_group": 12925,
+     "pos": [
+      116.08,
+      115.75,
+      -38.49
+     ]
+    },
+    {
+     "objid": 14185,
+     "map_type": "DodongoCavern",
+     "map_name": "DodongoCavern",
+     "hash_id": "0x23456e4b5b005315",
+     "name": "Enemy_MiddleBoss_Lizalfos",
+     "ui_name": "Lizalfos",
+     "map_static": 1,
+     "gen_group": 12925,
+     "pos": [
+      101.99,
+      116.25,
+      -31.01
+     ]
+    },
+    {
+     "objid": 14295,
+     "map_type": "DodongoCavern",
+     "map_name": "DodongoCavern",
+     "hash_id": "0xc3d76ab0a14ad852",
+     "name": "Enemy_DungeonBoss_Dodongo",
+     "ui_name": "King Dodongo",
+     "map_static": 1,
+     "gen_group": 12928,
+     "pos": [
+      33.2,
+      73.49,
+      -77.6
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 22,
+    "MinFloor": 0,
+    "Floor": [
+     {
+      "TransY": 90.36000061035156
+     },
+     {
+      "TransY": 108.01653289794922
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       0.000002447837687213905,
+       101.75,
+       28
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.000002054435299214674,
+       100,
+       -23.5
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       58,
+       98.5,
+       -9.000004768371582
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       64,
+       97.24999237060547,
+       9.999994277954102
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       92.5,
+       101.30237579345703,
+       -17.009918212890625
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       87.99999237060547,
+       109.42485046386719,
+       -52.00000762939453
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       62.49999237060547,
+       100.5,
+       -75.00000762939453
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       62.49999237060547,
+       101.52556610107422,
+       -90.50000762939453
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       41.999996185302734,
+       100.00015258789062,
+       -52.000003814697266
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       35.999996185302734,
+       101.5,
+       -23.000003814697266
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -49.000003814697266,
+       103.20000457763672,
+       -37.749996185302734
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -49,
+       104.02144622802734,
+       -4.999996185302734
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -49,
+       114.31520080566406,
+       -7.999995708465576
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       46.499996185302734,
+       112.25,
+       -16.500003814697266
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       73.75,
+       116.27499389648438,
+       -6.600006580352783
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       99,
+       115.25,
+       -9.000008583068848
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       110,
+       115.7750015258789,
+       -28.000009536743164
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       73.75,
+       113.77499389648438,
+       -23.000003814697266
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       21.000003814697266,
+       112,
+       -50.99999237060547
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -7.000006675720215,
+       95.5,
+       -80
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -41.25000762939453,
+       96.98968505859375,
+       -104.25
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       23.99999237060547,
+       92.4000015258789,
+       -78
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       23.9999942779541,
+       73,
+       -60.500003814697266
+      ],
+      "Floor": [
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "FireTemple",
+   "encounters": [
+    {
+     "objid": 24524,
+     "map_type": "FireTemple",
+     "map_name": "FireTemple",
+     "hash_id": "0xebc4852cbd574191",
+     "name": "Enemy_MiddleBoss_FlareDancer",
+     "ui_name": "Flare Dancer",
+     "map_static": 1,
+     "gen_group": 22517,
+     "pos": [
+      -7.03,
+      102,
+      -33.31
+     ]
+    },
+    {
+     "objid": 24556,
+     "map_type": "FireTemple",
+     "map_name": "FireTemple",
+     "hash_id": "0x1dff24cca5b5835f",
+     "name": "Enemy_DungeonBoss_Volvagia",
+     "ui_name": "Volvagia",
+     "map_static": 1,
+     "gen_group": 22516,
+     "pos": [
+      -80.63,
+      93.33,
+      16.31
+     ]
+    },
+    {
+     "objid": 25293,
+     "map_type": "FireTemple",
+     "map_name": "FireTemple",
+     "hash_id": "0xf4abfb38bdc1276c",
+     "name": "Enemy_MiddleBoss_FlareDancer",
+     "ui_name": "Flare Dancer",
+     "map_static": 1,
+     "gen_group": 22522,
+     "pos": [
+      -71.94,
+      149.98,
+      2.42
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 33,
+    "MinFloor": 0,
+    "Floor": [
+     {
+      "TransY": 99.9000015258789
+     },
+     {
+      "TransY": 126.95429992675781
+     },
+     {
+      "TransY": 145.01397705078125
+     },
+     {
+      "TransY": 166.91030883789062
+     },
+     {
+      "TransY": 185.39926147460938
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       0,
+       103.55494689941406,
+       12.25
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       41.42277908325195,
+       105,
+       -5.116002559661865
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -25.5,
+       105,
+       0
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -6.9711809158325195,
+       106.48513793945312,
+       -33.384613037109375
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       93.03880310058594,
+       141.0500030517578,
+       8.390891075134277
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       56.157562255859375,
+       151.42300415039062,
+       -2.511124610900879
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       42.07504653930664,
+       147.08474731445312,
+       0.33184146881103516
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       37.868324279785156,
+       179.8410186767578,
+       -13.122803688049316
+      ],
+      "Floor": [
+       3,
+       4
+      ]
+     },
+     {
+      "CenterTrans": [
+       41.75735092163086,
+       186.99847412109375,
+       0.18725979328155518
+      ],
+      "Floor": [
+       4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -28.064363479614258,
+       170.27276611328125,
+       -0.007758140563964844
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       -29.531999588012695,
+       160.19561767578125,
+       0.014999999664723873
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -44.5,
+       145.1999969482422,
+       0
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -68.08448028564453,
+       182.13818359375,
+       9.258230209350586
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       -43.72441101074219,
+       189.5,
+       -0.06863629817962646
+      ],
+      "Floor": [
+       4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -44.5,
+       180.73489379882812,
+       -19.600000381469727
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       4.174956798553467,
+       100.16407775878906,
+       -9.542149543762207
+      ]
+     },
+     {
+      "CenterTrans": [
+       24.033708572387695,
+       147.0279998779297,
+       0
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -7.052058696746826,
+       100.20700073242188,
+       -10.801383972167969
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       10.627015113830566,
+       100,
+       -31.029560089111328
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       57,
+       113.80000305175781,
+       -46.060001373291016
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       90,
+       112.11282348632812,
+       0
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       39,
+       105,
+       47.53000259399414
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       -71.95433044433594,
+       151.21563720703125,
+       2.3607845306396484
+      ]
+     },
+     {
+      "CenterTrans": [
+       -29.532119750976562,
+       153.2908935546875,
+       0.014753879979252815
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       -57.54264450073242,
+       180.19317626953125,
+       -19.636659622192383
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {},
+     {},
+     {},
+     {},
+     {},
+     {
+      "CenterTrans": [
+       -65.5,
+       105,
+       -6.01031672431418e-7
+      ],
+      "Floor": [
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "ForestTemple",
+   "encounters": [
+    {
+     "objid": 27746,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0x137683de37a18db6",
+     "name": "Enemy_Poe_Beth",
+     "ui_name": "Beth, Third Born",
+     "map_static": 1,
+     "gen_group": 25363,
+     "pos": [
+      19.8,
+      115.43,
+      -61.25
+     ]
+    },
+    {
+     "objid": 27853,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0x921691d2cb1ba63b",
+     "name": "Enemy_Stalfos_Weak",
+     "ui_name": "Stalfos",
+     "map_static": 1,
+     "gen_group": 25368,
+     "pos": [
+      2.14,
+      105.5,
+      -59.13
+     ]
+    },
+    {
+     "objid": 27854,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0x16bf797c856ddcc9",
+     "name": "Enemy_Stalfos_Weak",
+     "ui_name": "Stalfos",
+     "map_static": 1,
+     "gen_group": 25368,
+     "pos": [
+      -2.06,
+      105.5,
+      -59.13
+     ]
+    },
+    {
+     "objid": 27855,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0xeb8b927a5e5f64dc",
+     "name": "Enemy_Stalfos_Weak",
+     "ui_name": "Stalfos",
+     "map_static": 1,
+     "gen_group": 25367,
+     "pos": [
+      6.9,
+      114.5,
+      -59.13
+     ]
+    },
+    {
+     "objid": 27856,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0xd8eddfbe6a1d8c7b",
+     "name": "Enemy_Stalfos_Weak",
+     "ui_name": "Stalfos",
+     "map_static": 1,
+     "gen_group": 25367,
+     "pos": [
+      0,
+      114.52,
+      -61.54
+     ]
+    },
+    {
+     "objid": 27857,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0x551f0ba3582714ea",
+     "name": "Enemy_Stalfos_Weak",
+     "ui_name": "Stalfos",
+     "map_static": 1,
+     "gen_group": 25367,
+     "pos": [
+      0,
+      114.52,
+      -57.23
+     ]
+    },
+    {
+     "objid": 27964,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0x124c4eb93f9f58b0",
+     "name": "Enemy_Poe_Joelle",
+     "ui_name": "Jo, Second Born",
+     "map_static": 1,
+     "gen_group": 25366,
+     "pos": [
+      -19.58,
+      114.66,
+      -61.4
+     ]
+    },
+    {
+     "objid": 28006,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0x0990b181d8f4b622",
+     "name": "Enemy_Poe_Amy",
+     "ui_name": "Amy, Fourth Born",
+     "map_static": 1,
+     "gen_group": 25364,
+     "pos": [
+      58.98,
+      104.11,
+      0
+     ]
+    },
+    {
+     "objid": 28273,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0x07fe74ca40882a0b",
+     "name": "Enemy_DungeonBoss_PhantomGanon",
+     "ui_name": "Phantom Ganon",
+     "map_static": 1,
+     "gen_group": 25365,
+     "pos": [
+      -0.09,
+      80.91,
+      -62.58
+     ]
+    },
+    {
+     "objid": 28322,
+     "map_type": "ForestTemple",
+     "map_name": "ForestTemple",
+     "hash_id": "0xdaa00fb5d8406818",
+     "name": "Enemy_MiddleBoss_Poe_Meg",
+     "ui_name": "Meg, Firstborn",
+     "map_static": 1,
+     "gen_group": 25377,
+     "pos": [
+      0,
+      100.07,
+      -3.5
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 29,
+    "MinFloor": -2,
+    "Floor": [
+     {
+      "TransY": 55.4152717590332
+     },
+     {
+      "TransY": 69.16526794433594
+     },
+     {
+      "TransY": 94.51950073242188
+     },
+     {
+      "TransY": 112.198486328125
+     },
+     {
+      "TransY": 122.54449462890625
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       0.08500003814697266,
+       103.44126892089844,
+       59.70100021362305
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.06999993324279785,
+       102.59500122070312,
+       34.79999923706055
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       0,
+       104.50050354003906,
+       -3.5
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.06999993324279785,
+       106.42586517333984,
+       -39.41999816894531
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.09554195404052734,
+       105.5,
+       -55.90857696533203
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -34.81999969482422,
+       103.51000213623047,
+       0
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -60.92259979248047,
+       114.1299057006836,
+       5.668999195098877
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -60.92300033569336,
+       109.39814758300781,
+       5.669000148773193
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -60.92300033569336,
+       113.10199737548828,
+       5.668998718261719
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -60.92300033569336,
+       126.46636962890625,
+       5.669000148773193
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -56.400001525878906,
+       124.69999694824219,
+       -34.49215316772461
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -56.400001525878906,
+       126.35466766357422,
+       -59.48701477050781
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -30.269441604614258,
+       99,
+       -27.646198272705078
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       24.64900016784668,
+       99.9919662475586,
+       -24.549999237060547
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -7.629025936126709,
+       88.0250244140625,
+       -39.99814224243164
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -30.915908813476562,
+       125.52500915527344,
+       -59.484222412109375
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.13000011444091797,
+       118.57499694824219,
+       -59.400001525878906
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       28.869998931884766,
+       125.52543640136719,
+       -59.49018859863281
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       56.9772834777832,
+       124.668212890625,
+       -59.3631477355957
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       56.7272834777832,
+       124.98468017578125,
+       -32.12375259399414
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -56.43328857421875,
+       107.30553436279297,
+       -59.40106201171875
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -65.6743392944336,
+       107,
+       -26.766464233398438
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       56.54100036621094,
+       124.57417297363281,
+       3.3089981079101562
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       54.524234771728516,
+       103.99652862548828,
+       -36.29630661010742
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       56.75,
+       103.94441223144531,
+       0.20000076293945312
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       35.65027618408203,
+       105.53177642822266,
+       0.22915267944335938
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.06999993324279785,
+       61.77145767211914,
+       -14.657612800598145
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       -0.1810014247894287,
+       74.70714569091797,
+       -62.765010833740234
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {
+      "CenterTrans": [
+       0,
+       81,
+       -3.5
+      ],
+      "Floor": [
+       -1,
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "GerudoFortress_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 33583,
+      "map_type": "GerudoFortress",
+      "map_name": "GerudoFortress_Adult",
+      "hash_id": "0xafa21bc3c4a63237",
+      "name": "Land_HidingHole_Base_F_02",
+      "ui_name": "Land_HidingHole_Base_F_02",
+      "map_static": 1,
+      "gen_group": 30081,
+      "pos": [
+       33.15,
+       101.25,
+       -67.8
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "GerudoValley_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 35790,
+      "map_type": "GerudoValley",
+      "map_name": "GerudoValley_Adult",
+      "hash_id": "0xe31478ab8ababf90",
+      "name": "Land_HidingHole_Base_E_01",
+      "ui_name": "Land_HidingHole_Base_E_01",
+      "map_static": 0,
+      "gen_group": 31891,
+      "pos": [
+       11.45,
+       -6.48,
+       36.45
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 35801,
+      "map_type": "GerudoValley",
+      "map_name": "GerudoValley_Adult",
+      "hash_id": "0xc92292a945f4631a",
+      "name": "Land_HidingHole_Base_F_02",
+      "ui_name": "Land_HidingHole_Base_F_02",
+      "map_static": 0,
+      "gen_group": 31902,
+      "pos": [
+       -45.27,
+       96.14,
+       -29.03
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "GerudoValley_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 37346,
+      "map_type": "GerudoValley",
+      "map_name": "GerudoValley_Child",
+      "hash_id": "0x6c80f0f91f6ec63f",
+      "name": "Land_HidingHole_Base_E_01",
+      "ui_name": "Land_HidingHole_Base_E_01",
+      "map_static": 0,
+      "gen_group": 33380,
+      "pos": [
+       11.45,
+       -6.48,
+       36.45
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 37357,
+      "map_type": "GerudoValley",
+      "map_name": "GerudoValley_Child",
+      "hash_id": "0x968e6adf9ba4f17b",
+      "name": "Land_HidingHole_Base_F_02",
+      "ui_name": "Land_HidingHole_Base_F_02",
+      "map_static": 0,
+      "gen_group": 33391,
+      "pos": [
+       -45.27,
+       96.14,
+       -29.03
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "GoronCity_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 38535,
+      "map_type": "GoronCity",
+      "map_name": "GoronCity_Adult",
+      "hash_id": "0xfeb446b9a63e0162",
+      "name": "Land_HidingHole_Base_I_03",
+      "ui_name": "Land_HidingHole_Base_I_03",
+      "map_static": 0,
+      "gen_group": 34509,
+      "pos": [
+       -42.2,
+       107.69,
+       29.29
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "GoronCity_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 39793,
+      "map_type": "GoronCity",
+      "map_name": "GoronCity_Child",
+      "hash_id": "0x964dbc656f35157c",
+      "name": "Land_HidingHole_Base_I_03",
+      "ui_name": "Land_HidingHole_Base_I_03",
+      "map_static": 0,
+      "gen_group": 35698,
+      "pos": [
+       -42.2,
+       107.69,
+       29.29
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "HyruleCastle",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 46817,
+      "map_type": "HyruleCastle",
+      "map_name": "HyruleCastle",
+      "hash_id": "0x83916037f03d1fd9",
+      "name": "Land_HidingHole_Base_D_01",
+      "ui_name": "Land_HidingHole_Base_D_01",
+      "map_static": 0,
+      "gen_group": 42016,
+      "pos": [
+       35.85,
+       112.31,
+       -106.25
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "HyruleField_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 47625,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Adult",
+      "hash_id": "0x295a85a72583a77c",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 42727,
+      "pos": [
+       39.87,
+       143.28,
+       26.58
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 47667,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Adult",
+      "hash_id": "0x76f369662c2b4906",
+      "name": "Land_HidingHole_Base_H_01",
+      "ui_name": "Land_HidingHole_Base_H_01",
+      "map_static": 0,
+      "gen_group": 42769,
+      "pos": [
+       -97.96,
+       141.5,
+       17.1
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 47725,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Adult",
+      "hash_id": "0x26396e185864aad0",
+      "name": "Land_HidingHole_Base_C_01",
+      "ui_name": "Land_HidingHole_Base_C_01",
+      "map_static": 0,
+      "gen_group": 42827,
+      "pos": [
+       163.27,
+       150.74,
+       27.38
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 47754,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Adult",
+      "hash_id": "0x5a0fe5b756c51d77",
+      "name": "Land_HidingHole_Base_D_02",
+      "ui_name": "Land_HidingHole_Base_D_02",
+      "map_static": 0,
+      "gen_group": 42856,
+      "pos": [
+       -258.32,
+       135.87,
+       137.92
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 47782,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Adult",
+      "hash_id": "0xb00165eefd651d71",
+      "name": "Land_HidingHole_Base_J_01",
+      "ui_name": "Land_HidingHole_Base_J_01",
+      "map_static": 0,
+      "gen_group": 42884,
+      "pos": [
+       -156.07,
+       139.24,
+       338.43
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 47804,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Adult",
+      "hash_id": "0x50c63aece0d6be0a",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 42906,
+      "pos": [
+       39.92,
+       139.73,
+       342.3
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 47847,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Adult",
+      "hash_id": "0xae259806d2ed8a5f",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 42949,
+      "pos": [
+       179.81,
+       151.6,
+       190.5
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 47897,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Adult",
+      "hash_id": "0x669a1af2ff218c40",
+      "name": "Land_HidingHole_Base_I_01",
+      "ui_name": "Land_HidingHole_Base_I_01",
+      "map_static": 0,
+      "gen_group": 42999,
+      "pos": [
+       -204.73,
+       110.92,
+       455.48
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "HyruleField_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 53860,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0xd788b4d1b64268d3",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 48428,
+      "pos": [
+       39.87,
+       143.28,
+       26.58
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 53902,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0x1cd07170d1da874a",
+      "name": "Land_HidingHole_Base_H_01",
+      "ui_name": "Land_HidingHole_Base_H_01",
+      "map_static": 0,
+      "gen_group": 48470,
+      "pos": [
+       -97.96,
+       141.5,
+       17.1
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 53960,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0x802741062427fabd",
+      "name": "Land_HidingHole_Base_C_01",
+      "ui_name": "Land_HidingHole_Base_C_01",
+      "map_static": 0,
+      "gen_group": 48528,
+      "pos": [
+       163.27,
+       150.74,
+       27.38
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 53989,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0x07e1fea8528653dd",
+      "name": "Land_HidingHole_Base_D_02",
+      "ui_name": "Land_HidingHole_Base_D_02",
+      "map_static": 0,
+      "gen_group": 48557,
+      "pos": [
+       -258.32,
+       135.87,
+       137.92
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 54017,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0xaae74cf5f119c61f",
+      "name": "Land_HidingHole_Base_J_01",
+      "ui_name": "Land_HidingHole_Base_J_01",
+      "map_static": 0,
+      "gen_group": 48585,
+      "pos": [
+       -156.07,
+       139.24,
+       338.43
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 54039,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0xbea44ee6eb96f7c7",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 48607,
+      "pos": [
+       39.92,
+       139.73,
+       342.3
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 54082,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0x0407823fd5fdc9f1",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 48650,
+      "pos": [
+       179.81,
+       151.6,
+       190.5
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 54132,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0xf88b06e4e2264404",
+      "name": "Land_HidingHole_Base_I_01",
+      "ui_name": "Land_HidingHole_Base_I_01",
+      "map_static": 0,
+      "gen_group": 48700,
+      "pos": [
+       -204.73,
+       110.92,
+       455.48
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 57498,
+      "map_type": "HyruleField",
+      "map_name": "HyruleField_Child",
+      "hash_id": "0x0846c058b68a970d",
+      "name": "Land_HidingHole_Base_I_01",
+      "ui_name": "Land_HidingHole_Base_I_01",
+      "map_static": 0,
+      "gen_group": 52066,
+      "pos": [
+       -36.41,
+       145.66,
+       290.7
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "IceCavern",
+   "encounters": [
+    {
+     "objid": 63359,
+     "map_type": "IceCavern",
+     "map_name": "IceCavern",
+     "hash_id": "0xd6b7c249e2fea293",
+     "name": "Enemy_Wolfos_White",
+     "ui_name": "White Wolfos",
+     "map_static": 1,
+     "gen_group": 57179,
+     "pos": [
+      -46.22,
+      109.68,
+      40
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": -1,
+    "MinFloor": 0,
+    "Floor": [
+     {
+      "TransY": 65
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       17.342790603637695,
+       102.30471801757812,
+       79.76934051513672
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       0,
+       99.75,
+       35.910377502441406
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       2.147209644317627,
+       103.05471801757812,
+       12.300055503845215
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       7.291545867919922,
+       105.2331314086914,
+       -13.354443550109863
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       41.00480651855469,
+       104.30000305175781,
+       3.6491222381591797
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       18.431045532226562,
+       103.32041931152344,
+       -57.66689682006836
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       80.59877014160156,
+       103.02306365966797,
+       4.527828216552734
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -13.721349716186523,
+       100.65999603271484,
+       -17.498537063598633
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -32.06316375732422,
+       100,
+       -20.411375045776367
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -41.75084686279297,
+       105.80604553222656,
+       8.03839111328125
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -46.22493362426758,
+       109.615234375,
+       36.645626068115234
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -50.74235534667969,
+       113.1114501953125,
+       62.73600769042969
+      ],
+      "Floor": [
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "InsideGanonCastle",
+   "encounters": [
+    {
+     "objid": 63762,
+     "map_type": "InsideGanonCastle",
+     "map_name": "InsideGanonCastle",
+     "hash_id": "0xdb3e88762090e6bd",
+     "name": "Enemy_DungeonBoss_Ganondorf",
+     "ui_name": "Ganondorf",
+     "map_static": 1,
+     "gen_group": 57739,
+     "pos": [
+      0.08,
+      174.06,
+      -24.63
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 26,
+    "MinFloor": 0,
+    "Floor": [
+     {
+      "TransY": 103.75222778320312
+     },
+     {
+      "TransY": 129.92185974121094
+     },
+     {
+      "TransY": 136.23416137695312
+     },
+     {
+      "TransY": 143.2366943359375
+     },
+     {
+      "TransY": 149.6482696533203
+     },
+     {
+      "TransY": 156.1661376953125
+     },
+     {
+      "TransY": 170.9954376220703
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       -0.06568479537963867,
+       106,
+       39.89494705200195
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.22600173950195312,
+       109.39612579345703,
+       -20.523000717163086
+      ]
+     },
+     {
+      "CenterTrans": [
+       23.03504180908203,
+       103.2478256225586,
+       19.134960174560547
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       36.4867057800293,
+       102.75,
+       42.18025207519531
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       47.51960754394531,
+       102.90013122558594,
+       62.11072540283203
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       50.18444061279297,
+       104.63916778564453,
+       -20.99974822998047
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       78.36148071289062,
+       97.74540710449219,
+       -20.893335342407227
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       101.8128662109375,
+       99.74540710449219,
+       -20.994792938232422
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       38.58638000488281,
+       103.8997802734375,
+       -88.8652572631836
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       65.83685302734375,
+       105.40013122558594,
+       -135.9115753173828
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -30.46355438232422,
+       103.70807647705078,
+       -73.80524444580078
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -52.592403411865234,
+       103.97512817382812,
+       -103.92095947265625
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -45.5594596862793,
+       99.76313018798828,
+       -21.04051971435547
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -52.205543518066406,
+       99.94683074951172,
+       -21.056476593017578
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -67.51631164550781,
+       106.44933319091797,
+       -21.01544761657715
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -83.54680633544922,
+       102.70764923095703,
+       -20.99915313720703
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -22.278972625732422,
+       103.9381103515625,
+       18.58959197998047
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -30.064132690429688,
+       107.06793212890625,
+       37.41907501220703
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -38.08346939086914,
+       105.01213836669922,
+       51.36831283569336
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.010757923126220703,
+       129.90557861328125,
+       -19.682750701904297
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.3913578987121582,
+       136.24713134765625,
+       -24.427902221679688
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       18.55902862548828,
+       137.24691772460938,
+       -24.672786712646484
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.2047877311706543,
+       142.9600067138672,
+       -25.002548217773438
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.0514068603515625,
+       144.24691772460938,
+       -6.417619705200195
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.0937185287475586,
+       151.15602111816406,
+       -24.655622482299805
+      ],
+      "Floor": [
+       3,
+       4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -24.087501525878906,
+       150.64691162109375,
+       -24.625751495361328
+      ],
+      "Floor": [
+       4,
+       5
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.0838005542755127,
+       213.2490234375,
+       -24.620731353759766
+      ],
+      "Floor": [
+       6
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "InsideJabuJabuBelly",
+   "encounters": [
+    {
+     "objid": 66989,
+     "map_type": "InsideJabuJabuBelly",
+     "map_name": "InsideJabuJabuBelly",
+     "hash_id": "0xe86cb93bc02db550",
+     "name": "Enemy_MiddleBoss_BigOcto",
+     "ui_name": "Big Octo",
+     "map_static": 1,
+     "gen_group": 60283,
+     "pos": [
+      -38.46,
+      84.89,
+      -90.45
+     ]
+    },
+    {
+     "objid": 67300,
+     "map_type": "InsideJabuJabuBelly",
+     "map_name": "InsideJabuJabuBelly",
+     "hash_id": "0x4aa3bab028173f0f",
+     "name": "Enemy_DungeonBoss_Barinade",
+     "ui_name": "Barinade",
+     "map_static": 1,
+     "gen_group": 60286,
+     "pos": [
+      42.27,
+      100.65,
+      -112.1
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 15,
+    "MinFloor": -1,
+    "Floor": [
+     {
+      "TransY": 66.24224090576172
+     },
+     {
+      "TransY": 88.5240249633789
+     },
+     {
+      "TransY": 95.92452239990234
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       -0.16238343715667725,
+       92,
+       -8.627035140991211
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.5558982491493225,
+       91.53582763671875,
+       -42.488441467285156
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.05695915222167969,
+       91.09989166259766,
+       -80.63838958740234
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.8767557144165039,
+       82.21076965332031,
+       -79.86795806884766
+      ],
+      "Floor": [
+       -1,
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -22.881160736083984,
+       99.8112564086914,
+       -59.95538330078125
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       31.89301300048828,
+       107.52568054199219,
+       -53.703224182128906
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -32.38973617553711,
+       85.85066986083984,
+       -93.3509750366211
+      ],
+      "Floor": [
+       -1,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.5896773338317871,
+       92.35345458984375,
+       -141.61000061035156
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.6596696376800537,
+       93.43474578857422,
+       -192.55148315429688
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -29.7279052734375,
+       92.34881591796875,
+       -131.89024353027344
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       36.99090576171875,
+       95.75901794433594,
+       -138.9404754638672
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -28.8190860748291,
+       92.71793365478516,
+       -181.02761840820312
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       24.236900329589844,
+       92.42320251464844,
+       -176.72801208496094
+      ]
+     },
+     {
+      "CenterTrans": [
+       -28.801654815673828,
+       82.12942504882812,
+       -56.12343215942383
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       29.00002098083496,
+       76.67247009277344,
+       -59.64070129394531
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       42.339847564697266,
+       102.13265991210938,
+       -112.49517822265625
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       42.74794006347656,
+       101.04142761230469,
+       -77.99867248535156
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.5,
+       98.47320556640625,
+       -46.060001373291016
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.5649774670600891,
+       75.50003814697266,
+       -42.488441467285156
+      ],
+      "Floor": [
+       -1
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "InsideTheDekuTree",
+   "encounters": [
+    {
+     "objid": 69007,
+     "map_type": "InsideTheDekuTree",
+     "map_name": "InsideTheDekuTree",
+     "hash_id": "0xd45e52e43b253151",
+     "name": "Enemy_DungeonBoss_Gohma",
+     "ui_name": "Gohma",
+     "map_static": 1,
+     "gen_group": 62195,
+     "pos": [
+      18.49,
+      59.97,
+      67.79
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 10,
+    "MinFloor": -2,
+    "Floor": [
+     {
+      "TransY": 45
+     },
+     {
+      "TransY": 73
+     },
+     {
+      "TransY": 93.5
+     },
+     {
+      "TransY": 106.5
+     },
+     {
+      "TransY": 118
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       0,
+       103.36650085449219,
+       0
+      ],
+      "Floor": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -21.5,
+       109.30000305175781,
+       9.510933876037598
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -40.44280242919922,
+       112.0953369140625,
+       11.468669891357422
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -37.85116958618164,
+       120.28878784179688,
+       0
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -18.5,
+       78.36199951171875,
+       2.5
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -9.211366653442383,
+       78.36199951171875,
+       26.576934814453125
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -30.15399932861328,
+       78.66934967041016,
+       37.00400161743164
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -57.5,
+       82.26899719238281,
+       40
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -61.996986389160156,
+       82.30799865722656,
+       14.282899856567383
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -27.8355655670166,
+       52.8021125793457,
+       20.277849197387695
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {
+      "CenterTrans": [
+       19.31399917602539,
+       53.040245056152344,
+       67.63400268554688
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -78.08688354492188,
+       82.26932525634766,
+       -3.573984146118164
+      ],
+      "Floor": [
+       -1
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "KakarikoVillage_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 71726,
+      "map_type": "KakarikoVillage",
+      "map_name": "KakarikoVillage_Adult",
+      "hash_id": "0x97d430eeb377627d",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 64593,
+      "pos": [
+       -19.68,
+       97.05,
+       66.03
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 71772,
+      "map_type": "KakarikoVillage",
+      "map_name": "KakarikoVillage_Adult",
+      "hash_id": "0x5dc2c32f45abcca8",
+      "name": "Land_HidingHole_Base_B_01",
+      "ui_name": "Land_HidingHole_Base_B_01",
+      "map_static": 0,
+      "gen_group": 64639,
+      "pos": [
+       -26.8,
+       94.99,
+       12.37
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "KakarikoVillage_Adult_Alternative",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 69533,
+      "map_type": "KakarikoVillage",
+      "map_name": "KakarikoVillage_Adult_Alternative",
+      "hash_id": "0xa574733225315c9b",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 62546,
+      "pos": [
+       -19.68,
+       97.05,
+       66.03
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 69579,
+      "map_type": "KakarikoVillage",
+      "map_name": "KakarikoVillage_Adult_Alternative",
+      "hash_id": "0x6f6ba62a5e7259aa",
+      "name": "Land_HidingHole_Base_B_01",
+      "ui_name": "Land_HidingHole_Base_B_01",
+      "map_static": 0,
+      "gen_group": 62592,
+      "pos": [
+       -26.8,
+       94.99,
+       12.37
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "KakarikoVillage_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 73921,
+      "map_type": "KakarikoVillage",
+      "map_name": "KakarikoVillage_Child",
+      "hash_id": "0x40be43a0311c8acb",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 66621,
+      "pos": [
+       -19.68,
+       97.05,
+       66.03
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 73967,
+      "map_type": "KakarikoVillage",
+      "map_name": "KakarikoVillage_Child",
+      "hash_id": "0x94cc704bc39823d3",
+      "name": "Land_HidingHole_Base_B_01",
+      "ui_name": "Land_HidingHole_Base_B_01",
+      "map_static": 0,
+      "gen_group": 66667,
+      "pos": [
+       -26.8,
+       94.99,
+       12.37
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "KokiriForest_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 79445,
+      "map_type": "KokiriForest",
+      "map_name": "KokiriForest_Adult",
+      "hash_id": "0xe11f872c25bdb7d7",
+      "name": "Land_HidingHole_Base_I_01",
+      "ui_name": "Land_HidingHole_Base_I_01",
+      "map_static": 0,
+      "gen_group": 71984,
+      "pos": [
+       -51.93,
+       116.58,
+       -62.82
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "KokiriForest_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 83526,
+      "map_type": "KokiriForest",
+      "map_name": "KokiriForest_Child",
+      "hash_id": "0x43e1f8c976fde9e9",
+      "name": "Land_HidingHole_Base_I_01",
+      "ui_name": "Land_HidingHole_Base_I_01",
+      "map_static": 0,
+      "gen_group": 75931,
+      "pos": [
+       -51.93,
+       116.58,
+       -62.82
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "LostWood_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 86297,
+      "map_type": "LostWood",
+      "map_name": "LostWood_Adult",
+      "hash_id": "0x61399bc92175a8c9",
+      "name": "Land_HidingHole_Base_F_01",
+      "ui_name": "Land_HidingHole_Base_F_01",
+      "map_static": 0,
+      "gen_group": 78503,
+      "pos": [
+       27.79,
+       95,
+       -28.24
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 86323,
+      "map_type": "LostWood",
+      "map_name": "LostWood_Adult",
+      "hash_id": "0x3e5b2881506a5ac1",
+      "name": "Land_HidingHole_Base_L_01",
+      "ui_name": "Land_HidingHole_Base_L_01",
+      "map_static": 0,
+      "gen_group": 78529,
+      "pos": [
+       3.8,
+       94.34,
+       -47.5
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 86358,
+      "map_type": "LostWood",
+      "map_name": "LostWood_Adult",
+      "hash_id": "0xc6ae274dbeebab27",
+      "name": "Land_HidingHole_Base_F_01",
+      "ui_name": "Land_HidingHole_Base_F_01",
+      "map_static": 0,
+      "gen_group": 78564,
+      "pos": [
+       20.5,
+       95,
+       -75.65
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "LostWood_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 89080,
+      "map_type": "LostWood",
+      "map_name": "LostWood_Child",
+      "hash_id": "0xce2e4d9c601bbc7f",
+      "name": "Land_HidingHole_Base_F_01",
+      "ui_name": "Land_HidingHole_Base_F_01",
+      "map_static": 0,
+      "gen_group": 81122,
+      "pos": [
+       27.79,
+       95,
+       -28.24
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 89106,
+      "map_type": "LostWood",
+      "map_name": "LostWood_Child",
+      "hash_id": "0x6dcf5c2cf65b339a",
+      "name": "Land_HidingHole_Base_L_01",
+      "ui_name": "Land_HidingHole_Base_L_01",
+      "map_static": 0,
+      "gen_group": 81148,
+      "pos": [
+       3.8,
+       94.34,
+       -47.5
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 89141,
+      "map_type": "LostWood",
+      "map_name": "LostWood_Child",
+      "hash_id": "0x27dda412a4b8a37d",
+      "name": "Land_HidingHole_Base_F_01",
+      "ui_name": "Land_HidingHole_Base_F_01",
+      "map_static": 0,
+      "gen_group": 81183,
+      "pos": [
+       20.5,
+       95,
+       -75.65
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "SacredForestMeadow_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 93376,
+      "map_type": "SacredForestMeadow",
+      "map_name": "SacredForestMeadow_Adult",
+      "hash_id": "0xf72195d4a5726a34",
+      "name": "Land_HidingHole_Base_G_01",
+      "ui_name": "Land_HidingHole_Base_G_01",
+      "map_static": 0,
+      "gen_group": 84800,
+      "pos": [
+       -1.63,
+       95,
+       51.16
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 93398,
+      "map_type": "SacredForestMeadow",
+      "map_name": "SacredForestMeadow_Adult",
+      "hash_id": "0x0c239251979b5ea2",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 84822,
+      "pos": [
+       1.33,
+       109.39,
+       -85.47
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "SacredForestMeadow_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 95744,
+      "map_type": "SacredForestMeadow",
+      "map_name": "SacredForestMeadow_Child",
+      "hash_id": "0xaa28badb972ed900",
+      "name": "Land_HidingHole_Base_G_01",
+      "ui_name": "Land_HidingHole_Base_G_01",
+      "map_static": 0,
+      "gen_group": 87072,
+      "pos": [
+       -1.63,
+       95,
+       51.16
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 95766,
+      "map_type": "SacredForestMeadow",
+      "map_name": "SacredForestMeadow_Child",
+      "hash_id": "0xdd188902812f099e",
+      "name": "Land_HidingHole_Base_A_01",
+      "ui_name": "Land_HidingHole_Base_A_01",
+      "map_static": 0,
+      "gen_group": 87094,
+      "pos": [
+       1.33,
+       109.39,
+       -85.47
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "ShadowTemple",
+   "encounters": [
+    {
+     "objid": 97510,
+     "map_type": "ShadowTemple",
+     "map_name": "ShadowTemple",
+     "hash_id": "0x5bcbcf1cc0d56a13",
+     "name": "Enemy_DeadHand",
+     "ui_name": "Dead Hand",
+     "map_static": 1,
+     "gen_group": 88556,
+     "pos": [
+      -75.02,
+      90.43,
+      -10.17
+     ]
+    },
+    {
+     "objid": 98053,
+     "map_type": "ShadowTemple",
+     "map_name": "ShadowTemple",
+     "hash_id": "0xb5f923c2b1a2c646",
+     "name": "Enemy_DungeonBoss_BongoBongo",
+     "ui_name": "Bongo Bongo",
+     "map_static": 1,
+     "gen_group": 88551,
+     "pos": [
+      -138.33,
+      -11.46,
+      48.1
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 24,
+    "MinFloor": -4,
+    "Floor": [
+     {
+      "TransY": -47.14825439453125
+     },
+     {
+      "TransY": 49.34231948852539
+     },
+     {
+      "TransY": 72.8526382446289
+     },
+     {
+      "TransY": 89.85417175292969
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       13.871286392211914,
+       90.4290542602539,
+       45.50880813598633
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       42.884159088134766,
+       89.98821258544922,
+       1.0433194637298584
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -3.525235176086426,
+       90.40025329589844,
+       -4.673563003540039
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       2.7370572090148926,
+       90.42500305175781,
+       -23.434728622436523
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -72.65033721923828,
+       90.94583129882812,
+       -10.197958946228027
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       77.38921356201172,
+       87.18690490722656,
+       1.4566454887390137
+      ],
+      "Floor": [
+       -2,
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       83.50311279296875,
+       87.18690490722656,
+       -23.585052490234375
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {
+      "CenterTrans": [
+       84.239013671875,
+       87.18690490722656,
+       19.359508514404297
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {
+      "CenterTrans": [
+       106.46958923339844,
+       75.42500305175781,
+       17.4294490814209
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {
+      "CenterTrans": [
+       80,
+       65.51627349853516,
+       71.41663360595703
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       145.3549346923828,
+       61.43832015991211,
+       96.8179702758789
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       19.23129653930664,
+       56.400001525878906,
+       92.10415649414062
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       56.94451904296875,
+       52.5,
+       33.93438720703125
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       30.96133041381836,
+       59.297847747802734,
+       32.90599822998047
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       83.73719024658203,
+       52,
+       6.325137138366699
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       124.50978088378906,
+       52,
+       6.690988540649414
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       109.65845489501953,
+       52,
+       -18.79794692993164
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       7.836338043212891,
+       42,
+       -58.36463928222656
+      ],
+      "Floor": [
+       -4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -181.6092529296875,
+       41.288108825683594,
+       -43.55806350708008
+      ],
+      "Floor": [
+       -4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -181.79287719726562,
+       41.28810501098633,
+       -66.99058532714844
+      ]
+     },
+     {
+      "CenterTrans": [
+       -217.95162963867188,
+       41.27873229980469,
+       -43.58504867553711
+      ],
+      "Floor": [
+       -4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -181.67724609375,
+       41.795650482177734,
+       -17.485267639160156
+      ],
+      "Floor": [
+       -4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -138.55459594726562,
+       42.27711868286133,
+       5.226480007171631
+      ],
+      "Floor": [
+       -4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -138.44082641601562,
+       41.997894287109375,
+       27.21552276611328
+      ],
+      "Floor": [
+       -4
+      ]
+     },
+     {
+      "CenterTrans": [
+       -138.56752014160156,
+       -11.059608459472656,
+       29.301713943481445
+      ],
+      "Floor": [
+       -4
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       -43.519065856933594,
+       90.42500305175781,
+       -9.827959060668945
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       99.54325866699219,
+       65.51554107666016,
+       -43.58723068237305
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       106.46958923339844,
+       73.37300109863281,
+       17.4294490814209
+      ],
+      "Floor": [
+       -2
+      ]
+     },
+     {
+      "CenterTrans": [
+       109.65845489501953,
+       43.577449798583984,
+       -18.79794692993164
+      ],
+      "Floor": [
+       -3
+      ]
+     },
+     {
+      "CenterTrans": [
+       13.871286392211914,
+       90.4290542602539,
+       15.24053955078125
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       175.65740966796875,
+       61.43832015991211,
+       96.8179702758789
+      ],
+      "Floor": [
+       -3
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "SpiritTemple",
+   "encounters": [
+    {
+     "objid": 99975,
+     "map_type": "SpiritTemple",
+     "map_name": "SpiritTemple",
+     "hash_id": "0x6e0f7c7c3a1593c4",
+     "name": "Enemy_IronKnuckle_Silver",
+     "ui_name": "Iron Knuckle",
+     "map_static": 1,
+     "gen_group": 90403,
+     "pos": [
+      -55.8,
+      132.1,
+      28.9
+     ]
+    },
+    {
+     "objid": 100223,
+     "map_type": "SpiritTemple",
+     "map_name": "SpiritTemple",
+     "hash_id": "0xb3407d11a768ae6c",
+     "name": "Enemy_IronKnuckle_Silver",
+     "ui_name": "Iron Knuckle",
+     "map_static": 1,
+     "gen_group": 90402,
+     "pos": [
+      55.8,
+      132.1,
+      28.45
+     ]
+    },
+    {
+     "objid": 100395,
+     "map_type": "SpiritTemple",
+     "map_name": "SpiritTemple",
+     "hash_id": "0xc0da347b6bad5545",
+     "name": "Enemy_MiddleBoss_IronKnuckle_Nabooru",
+     "ui_name": "Iron Knuckle",
+     "map_static": 1,
+     "gen_group": 90405,
+     "pos": [
+      0,
+      135.02,
+      -95.5
+     ]
+    },
+    {
+     "objid": 100433,
+     "map_type": "SpiritTemple",
+     "map_name": "SpiritTemple",
+     "hash_id": "0xfb4f8981d2886b8c",
+     "name": "Enemy_DungeonBoss_Twinrova",
+     "ui_name": "Twinrova",
+     "map_static": 1,
+     "gen_group": 90408,
+     "pos": [
+      12.66,
+      144.65,
+      -145.25
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 33,
+    "MinFloor": 0,
+    "Floor": [
+     {
+      "TransY": 94.47041320800781
+     },
+     {
+      "TransY": 113.763671875
+     },
+     {
+      "TransY": 128
+     },
+     {
+      "TransY": 150.26918029785156
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       0,
+       100,
+       -10
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -33.56716537475586,
+       104.8305435180664,
+       -30.38441276550293
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -52.08034896850586,
+       104.74767303466797,
+       -52.85394287109375
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -33.38068771362305,
+       104.6827621459961,
+       -78.7350082397461
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -15.322999954223633,
+       104.73924255371094,
+       -52.30582809448242
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -33.599998474121094,
+       104.75,
+       -49.5
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       -32.2037467956543,
+       119.47317504882812,
+       -47.5
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       0,
+       120.74404907226562,
+       -59.1505241394043
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -19.4429988861084,
+       129.69000244140625,
+       -30.180620193481445
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -44.1539421081543,
+       130.7942352294922,
+       -21.832426071166992
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -55.76719284057617,
+       132.80259704589844,
+       2.544884443283081
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -55.88987350463867,
+       132.07708740234375,
+       21.79108238220215
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -55.65584182739258,
+       133.7005615234375,
+       39.21263122558594
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       33.57008743286133,
+       104.74938201904297,
+       -30.737491607666016
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       18.093006134033203,
+       104.9996109008789,
+       -48.415279388427734
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       48.84455108642578,
+       100.24339294433594,
+       -54.79930877685547
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       48.88932800292969,
+       100.24386596679688,
+       -77.79999542236328
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       33.5,
+       105,
+       -49
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       35.400001525878906,
+       119.1500015258789,
+       -47.540000915527344
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.48016390204429626,
+       112.84976196289062,
+       -39.9707145690918
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       20.237565994262695,
+       129.35171508789062,
+       -30.30584716796875
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       38.63376235961914,
+       129.95672607421875,
+       -22.96238136291504
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       55.76118850708008,
+       130.0003204345703,
+       -23.23699951171875
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       55.85432052612305,
+       132.09999084472656,
+       0.2927035093307495
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       55.60900115966797,
+       132.2120361328125,
+       21.786935806274414
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       55.718475341796875,
+       133.48260498046875,
+       43.75154495239258
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       55.79999923706055,
+       131.52792358398438,
+       -47.204498291015625
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       17.072969436645508,
+       139,
+       -22.71882438659668
+      ],
+      "Floor": [
+       2,
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       19.837932586669922,
+       154.03952026367188,
+       -47.96786117553711
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       19.799999237060547,
+       152.90643310546875,
+       -65.05300903320312
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       -0.08151538670063019,
+       153.1151580810547,
+       -49.97946548461914
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       -20.956401824951172,
+       157.04058837890625,
+       -26.86418342590332
+      ],
+      "Floor": [
+       3
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.13958391547203064,
+       137.4532470703125,
+       -88.9422378540039
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       0.15681686997413635,
+       153.3974151611328,
+       -157.84390258789062
+      ],
+      "Floor": [
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "WaterTemple",
+   "encounters": [
+    {
+     "objid": 103661,
+     "map_type": "WaterTemple",
+     "map_name": "WaterTemple",
+     "hash_id": "0x4974202072beaec6",
+     "name": "Enemy_MiddleBoss_DarkLink",
+     "ui_name": "Dark Link",
+     "map_static": 1,
+     "gen_group": 93483,
+     "pos": [
+      -78.5,
+      126.3,
+      -63.5
+     ]
+    },
+    {
+     "objid": 103819,
+     "map_type": "WaterTemple",
+     "map_name": "WaterTemple",
+     "hash_id": "0xffcd72146bf02283",
+     "name": "Enemy_DungeonBoss_Morpha",
+     "ui_name": "Morpha",
+     "map_static": 1,
+     "gen_group": 93487,
+     "pos": [
+      -4.5,
+      129.26,
+      -91.8
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": {
+    "BossRoomId": 23,
+    "MinFloor": -1,
+    "Floor": [
+     {
+      "TransY": 85
+     },
+     {
+      "TransY": 96.97418975830078
+     },
+     {
+      "TransY": 108.69999694824219
+     },
+     {
+      "TransY": 115.60980987548828
+     }
+    ],
+    "Room": [
+     {
+      "CenterTrans": [
+       -4.5,
+       44.700286865234375,
+       -1.9600000381469727
+      ],
+      "Floor": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -4.5,
+       111.48159790039062,
+       -1.9600000381469727
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       0,
+       89.03385162353516,
+       -1.9600000381469727
+      ],
+      "Floor": [
+       -1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -36.5,
+       101,
+       19.92530632019043
+      ],
+      "Floor": [
+       -1,
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       36.20000076293945,
+       115.13370513916016,
+       -23.910001754760742
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -47.97201156616211,
+       113.72491455078125,
+       -4.3937578201293945
+      ],
+      "Floor": [
+       -1,
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -81.92940521240234,
+       122.24278259277344,
+       -19.390457153320312
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -78,
+       129.3188934326172,
+       -108.77999877929688
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -36,
+       100,
+       -19.600000381469727
+      ],
+      "Floor": [
+       0,
+       1
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       -26,
+       125.87361145019531,
+       3.430000066757202
+      ],
+      "Floor": [
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -4.2423505783081055,
+       129.30673217773438,
+       -54.257198333740234
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -4.5,
+       100,
+       -73.5
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       -4.5,
+       98.5,
+       -114.17000579833984
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       14.886018753051758,
+       103,
+       -98
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       25.89695930480957,
+       106.92967987060547,
+       -4.21036434173584
+      ],
+      "Floor": [
+       0,
+       1,
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       40.10555648803711,
+       100,
+       -4.409999847412109
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {},
+     {
+      "CenterTrans": [
+       -6.5,
+       113.06175994873047,
+       -43.61000061035156
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -59,
+       110.25,
+       -70
+      ],
+      "Floor": [
+       1
+      ]
+     },
+     {
+      "CenterTrans": [
+       -78,
+       127.00064086914062,
+       -64.19000244140625
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       -4.523893356323242,
+       131.93319702148438,
+       -88.2641372680664
+      ],
+      "Floor": [
+       2
+      ]
+     },
+     {
+      "CenterTrans": [
+       20,
+       102.5,
+       -66.63999938964844
+      ],
+      "Floor": [
+       0
+      ]
+     },
+     {
+      "CenterTrans": [
+       43,
+       110.63729858398438,
+       -4.5
+      ],
+      "Floor": [
+       1
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "scene": "ZoraDomain_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 106429,
+      "map_type": "ZoraDomain",
+      "map_name": "ZoraDomain_Adult",
+      "hash_id": "0x06b0a1122e0bba94",
+      "name": "Land_HidingHole_Base_D_01",
+      "ui_name": "Land_HidingHole_Base_D_01",
+      "map_static": 0,
+      "gen_group": 96322,
+      "pos": [
+       16.99,
+       75.33,
+       -18.26
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "ZoraDomain_Adult_Alternative",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 104078,
+      "map_type": "ZoraDomain",
+      "map_name": "ZoraDomain_Adult_Alternative",
+      "hash_id": "0xf4bbc15e95412a64",
+      "name": "Land_HidingHole_Base_D_01",
+      "ui_name": "Land_HidingHole_Base_D_01",
+      "map_static": 0,
+      "gen_group": 94035,
+      "pos": [
+       16.99,
+       75.33,
+       -18.26
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "ZoraDomain_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 109529,
+      "map_type": "ZoraDomain",
+      "map_name": "ZoraDomain_Child",
+      "hash_id": "0xfa196c0609104665",
+      "name": "Land_HidingHole_Base_D_01",
+      "ui_name": "Land_HidingHole_Base_D_01",
+      "map_static": 0,
+      "gen_group": 99348,
+      "pos": [
+       16.99,
+       75.33,
+       -18.26
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "ZoraRiver_Adult",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 117150,
+      "map_type": "ZoraRiver",
+      "map_name": "ZoraRiver_Adult",
+      "hash_id": "0x2d32b156471928d0",
+      "name": "Land_HidingHole_Base_B_03",
+      "ui_name": "Land_HidingHole_Base_B_03",
+      "map_static": 0,
+      "gen_group": 106821,
+      "pos": [
+       -15.74,
+       90.2,
+       14.83
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 117185,
+      "map_type": "ZoraRiver",
+      "map_name": "ZoraRiver_Adult",
+      "hash_id": "0xca030aa3863e3f74",
+      "name": "Land_HidingHole_Base_F_03",
+      "ui_name": "Land_HidingHole_Base_F_03",
+      "map_static": 0,
+      "gen_group": 106856,
+      "pos": [
+       -78.05,
+       94.15,
+       -16.79
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "ZoraRiver_Child",
+   "encounters": [],
+   "grottos": [
+    {
+     "base": {
+      "objid": 119932,
+      "map_type": "ZoraRiver",
+      "map_name": "ZoraRiver_Child",
+      "hash_id": "0xc5183e1506710f14",
+      "name": "Land_HidingHole_Base_B_03",
+      "ui_name": "Land_HidingHole_Base_B_03",
+      "map_static": 0,
+      "gen_group": 109527,
+      "pos": [
+       -15.74,
+       90.2,
+       14.83
+      ]
+     },
+     "contents": []
+    },
+    {
+     "base": {
+      "objid": 119967,
+      "map_type": "ZoraRiver",
+      "map_name": "ZoraRiver_Child",
+      "hash_id": "0x9c557dfbf6901c59",
+      "name": "Land_HidingHole_Base_F_03",
+      "ui_name": "Land_HidingHole_Base_F_03",
+      "map_static": 0,
+      "gen_group": 109562,
+      "pos": [
+       -78.05,
+       94.15,
+       -16.79
+      ]
+     },
+     "contents": []
+    }
+   ],
+   "mapParam": {
+    "Floor": [],
+    "Room": []
+   }
+  },
+  {
+   "scene": "GerudoFortress_Adult",
+   "encounters": [
+    {
+     "objid": 33038,
+     "map_type": "GerudoFortress",
+     "map_name": "GerudoFortress_Adult",
+     "hash_id": "0xbe8cc954382545d3",
+     "name": "Enemy_MiddleBoss_GerudoThief_04",
+     "ui_name": "Gerudo Thief with Small Key",
+     "map_static": 1,
+     "gen_group": 29883,
+     "pos": [
+      22.54,
+      110,
+      -79.14
+     ]
+    },
+    {
+     "objid": 33097,
+     "map_type": "GerudoFortress",
+     "map_name": "GerudoFortress_Adult",
+     "hash_id": "0x2e80b41e9ebe9343",
+     "name": "Enemy_MiddleBoss_GerudoThief",
+     "ui_name": "Gerudo Thief with Small Key",
+     "map_static": 1,
+     "gen_group": 29887,
+     "pos": [
+      23.27,
+      102.5,
+      -66.84
+     ]
+    },
+    {
+     "objid": 33138,
+     "map_type": "GerudoFortress",
+     "map_name": "GerudoFortress_Adult",
+     "hash_id": "0xffd23a4fb97172e3",
+     "name": "Enemy_MiddleBoss_GerudoThief_03",
+     "ui_name": "Gerudo Thief",
+     "map_static": 1,
+     "gen_group": 29885,
+     "pos": [
+      34.01,
+      119,
+      -29
+     ]
+    },
+    {
+     "objid": 33184,
+     "map_type": "GerudoFortress",
+     "map_name": "GerudoFortress_Adult",
+     "hash_id": "0x2cdf6faa5bb18cd9",
+     "name": "Enemy_MiddleBoss_GerudoThief_02",
+     "ui_name": "Gerudo Thief with Small Key",
+     "map_static": 1,
+     "gen_group": 29884,
+     "pos": [
+      63.63,
+      120.5,
+      -112.59
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": null
+  },
+  {
+   "scene": "FinalBattleField",
+   "encounters": [
+    {
+     "objid": 30230,
+     "map_type": "GanonCastle",
+     "map_name": "FinalBattleField",
+     "hash_id": "0x59178b560e31f78e",
+     "name": "Enemy_DungeonBoss_Ganon",
+     "ui_name": "Ganon",
+     "map_static": 1,
+     "gen_group": 27174,
+     "pos": [
+      -1.37,
+      99.98,
+      -1.03
+     ]
+    }
+   ],
+   "grottos": [],
+   "mapParam": null
+  }
+ ]
+}

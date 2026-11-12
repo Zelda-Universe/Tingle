@@ -14,7 +14,7 @@ ZMap.prototype._canUseMapSettings = function() {
 };
 
 ZMap.prototype.MAP_SETTINGS_SHAPES = [
-  ['circle', 'Circle'], ['diamond', 'Diamond'], ['square', 'Square'], ['none', 'No Shape']
+  ['circle', 'Circle'], ['diamond', 'Diamond'], ['square', 'Square'], ['arch', 'Arch'], ['none', 'No Shape']
 ];
 
 ZMap.prototype._gameSettingsSavebarHTML = function() {
@@ -107,7 +107,7 @@ ZMap.prototype._mapSettingsHex = function(color, fallback) {
 ZMap.prototype._mapSettingsLook = function(record) {
   var style = getPOIStyle(record);
   var shape = getPOIShape(record) ||
-    ({ travel: 'diamond', location: 'square', cave: 'square', treasure: 'none' })[style] || 'circle';
+    ({ travel: 'diamond', location: 'square', cave: 'arch', treasure: 'none' })[style] || 'circle';
   var probe = this._mapSettingsBadge(record).css({ position: 'absolute', left: '-9999px', top: 0 }).appendTo(document.body);
   var css = getComputedStyle(probe[0]);
   var fill = style ? css.getPropertyValue('--poi-fill') : css.backgroundColor;

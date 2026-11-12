@@ -8,7 +8,7 @@ function isCustomPOIStyle(category) {
 // The shapes Map Settings offers, and the built-in badge style each draws
 // with (styles/poi.css): no shape is a bare glyph with an outline, like
 // treasure's.
-var POI_SHAPE_STYLES = { circle: 'interest', diamond: 'travel', square: 'location', none: 'treasure' };
+var POI_SHAPE_STYLES = { circle: 'interest', diamond: 'travel', square: 'location', arch: 'cave', none: 'treasure' };
 
 function getPOIShape(category) {
   return isCustomPOIStyle(category) && POI_SHAPE_STYLES[category.shape] ? category.shape : null;
@@ -71,7 +71,8 @@ function getPOIStyle(category) {
       '64002': 'heart', '64001': 'relic', '64003': 'korok', '64004': 'heart', '64005': 'silver', '64006': 'memory', '64007': 'fairy-thought', '64008': 'song', '64021': 'treasure',
       '64022': 'treasure', '64023': 'treasure', '64024': 'treasure', '64025': 'treasure', '64026': 'treasure', '64027': 'treasure', '64028': 'treasure',
       '64061': 'treasure', '64062': 'treasure', '64063': 'treasure', '64064': 'treasure', '64065': 'treasure', '64066': 'treasure',
-      '64031': 'location', '64032': 'location', '64033': 'location', '64041': 'interest', '64042': 'enemy',
+      '64031': 'location', '64032': 'location', '64033': 'location', '64034': 'cave', '64035': 'location', '64041': 'interest', '64042': 'enemy',
+      '64071': 'enemy', '64072': 'enemy',
       '64043': 'interest', '64044': 'interest', '64045': 'interest', '64046': 'interest',
       '64051': 'travel', '64052': 'travel', '64053': 'travel'
     }[String(category.id)] || '';

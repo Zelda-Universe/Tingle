@@ -1,0 +1,1131 @@
+{
+ "markers": [
+  {
+   "kind": "chest",
+   "gameId": "10696620323243142689",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -19.25,
+    98.02999877929688,
+    -46.25
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Purple Rupee",
+   "text": "<p>Contains: Purple Rupee.</p>",
+   "id": 64706001,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 99.9229913809209,
+    "y": -147.72359570312884,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "10743352138513225188",
+   "gameRecord": "Object.Obj_TBox_A_06",
+   "position": [
+    -9,
+    98.02999877929688,
+    -60
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Red Rupee",
+   "text": "<p>Contains: Red Rupee.</p><p>This is a substitute reward when the original item is already owned.</p>",
+   "id": 64706002,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 109.81928168839065,
+    "y": -134.50766128802974,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "11182647876438515984",
+   "gameRecord": "Object.Obj_TBox_GlassTruth_A_01",
+   "position": [
+    -7.644073486328125,
+    99.48465728759766,
+    -11.444685935974121
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Invisible Treasure Chest",
+   "text": "<p>Invisible chest (Lens of Truth).</p><p>Use the Lens of Truth to see this chest.</p>",
+   "id": 64706003,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 111.12841753374597,
+    "y": -181.1770319189174,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "11563468890171962383",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -2.3399999141693115,
+    96.26948547363281,
+    -77.32904815673828
+   ],
+   "floor": 0,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p>",
+   "id": 64706004,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 116.2494567417715,
+    "y": -117.85169300326265,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "11683433230229591151",
+   "gameRecord": "Object.Obj_TBox_A_06",
+   "position": [
+    10.25,
+    98.02999877929688,
+    -50.5
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Red Rupee",
+   "text": "<p>Contains: Red Rupee.</p><p>This is a substitute reward when the original item is already owned.</p>",
+   "id": 64706005,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 128.40499763168748,
+    "y": -143.63867052028002,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "11754783663699171680",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    -53.658546447753906,
+    103.5202407836914,
+    -131.79502868652344
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Business Scrub Seed",
+   "text": "<p>Contains: Business Scrub Seed.</p>",
+   "id": 64706006,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 66.70182409262536,
+    "y": -65.50123289157496,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "13501407288943710656",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    -50.25470733642578,
+    98.13371276855469,
+    -15.586512565612793
+   ],
+   "floor": 0,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p>",
+   "id": 64706007,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 69.9882026297593,
+    "y": -177.19607853011627,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "1883068192328530224",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    22.820547103881836,
+    98.02999877929688,
+    -45.62372589111328
+   ],
+   "floor": 0,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p>",
+   "id": 64706008,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 140.54175699400332,
+    "y": -148.32554461577766,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "1941083939696166170",
+   "gameRecord": "Object.Obj_TBox_A_02",
+   "position": [
+    -1.8639999628067017,
+    98.02972412109375,
+    -48
+   ],
+   "floor": 0,
+   "category": 64022,
+   "name": "Chest - Ice Arrow",
+   "text": "<p>Contains: Ice Arrow.</p>",
+   "id": 64706009,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 116.70903076177402,
+    "y": -146.04156768666166,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "196331300747102419",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    5.5,
+    98.02999877929688,
+    -45.5
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Five Bombchus",
+   "text": "<p>Contains: Five Bombchus.</p>",
+   "id": 64706010,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 123.81891187944538,
+    "y": -148.4444648530433,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "2436665354602612279",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    4.060357093811035,
+    99.46806335449219,
+    -11.430798530578613
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Blue Rupee",
+   "text": "<p>Contains: Blue Rupee.</p>",
+   "id": 64706011,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 122.42894854883706,
+    "y": -181.19037992174668,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "3717705376223508790",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    78.51373291015625,
+    94.02999877929688,
+    -43.900001525878906
+   ],
+   "floor": 0,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p>",
+   "id": 64706012,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 194.31306771466137,
+    "y": -149.98231757291555,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "3750231902048775592",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -39.45528030395508,
+    103.51799774169922,
+    -130.76693725585938
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Five Bombs",
+   "text": "<p>Contains: Five Bombs.</p>",
+   "id": 64706013,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 80.41496019733651,
+    "y": -66.48939208578453,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "4320448574091221496",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -1.75,
+    105.0270004272461,
+    -37.880157470703125
+   ],
+   "floor": 1,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p>",
+   "id": 64706014,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640122",
+    "global": 0,
+    "x": 116.81909678391801,
+    "y": -155.7683440618121,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "4372363658229299619",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    43.290000915527344,
+    98.4449234008789,
+    -82.44000244140625
+   ],
+   "floor": 0,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p>",
+   "id": 64706015,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 160.3048455164801,
+    "y": -112.9392539760087,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "4519534997122863169",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    -55.12794876098633,
+    104.01863098144531,
+    -90.28524017333984
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Blue Rupee",
+   "text": "<p>Contains: Blue Rupee.</p>",
+   "id": 64706016,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 65.2831283004092,
+    "y": -105.39873416974723,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "4709724720801091788",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    44.438899993896484,
+    98.65312957763672,
+    -5.399999618530273
+   ],
+   "floor": 0,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p>",
+   "id": 64706017,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 161.4140980836533,
+    "y": -186.98693576845812,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "4961588221597286817",
+   "gameRecord": "Object.Obj_TBox_A_06_NoBake",
+   "position": [
+    43.499996185302734,
+    98.00885772705078,
+    -90.85616302490234
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Treasure Chest",
+   "text": "<p>Small chest (substitute if item owned).</p><p>This is a substitute reward when the original item is already owned.</p>",
+   "id": 64706018,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 160.50759421432326,
+    "y": -104.8499866088504,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "5329807728555596183",
+   "gameRecord": "Object.Obj_TBox_GlassTruth_A_01",
+   "position": [
+    -42.09869384765625,
+    104.21499633789062,
+    -137.67062377929688
+   ],
+   "floor": 0,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p><p>Use the Lens of Truth to see this chest.</p>",
+   "id": 64706019,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 77.86276626258879,
+    "y": -59.853852571882456,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "6897789835137994741",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    -42.241947174072266,
+    104.21499633789062,
+    -123.61537170410156
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Red Rupee",
+   "text": "<p>Contains: Red Rupee.</p>",
+   "id": 64706020,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 77.72445635959137,
+    "y": -73.36318272558914,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "8186301369655588602",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -13.25,
+    98.02999877929688,
+    -60.5
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Red Rupee",
+   "text": "<p>Contains: Red Rupee.</p>",
+   "id": 64706021,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 105.71594180480562,
+    "y": -134.0270818547534,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "9911316961118170383",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -1.4756050109863281,
+    105.00387573242188,
+    -48.049556732177734
+   ],
+   "floor": 1,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p>",
+   "id": 64706022,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640122",
+    "global": 0,
+    "x": 117.08402287857112,
+    "y": -145.99393579413166,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "npc",
+   "gameId": "3366084834709438407",
+   "gameRecord": "Object.Npc_Pierre_CallOcarina",
+   "position": [
+    1.5,
+    105.97,
+    -63.14
+   ],
+   "floor": 1,
+   "category": 64041,
+   "name": "Pierre",
+   "text": "<p>Play the Scarecrow Song to summon Pierre at this spot on the upper walkway.</p>",
+   "id": 64706023,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640122",
+    "global": 0,
+    "x": 119.95694493018891,
+    "y": -131.48962244705436,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "10177426869162686980",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    42.71,
+    94.3,
+    -34.25
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 06.</p>",
+   "id": 64706024,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 159.74485942490384,
+    "y": -159.2575021017608,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "1041487935715411607",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -48.8,
+    104.35,
+    -43.16
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set B.</p>",
+   "id": 64706025,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 71.39271054328863,
+    "y": -150.69357660077657,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "10908634349331605464",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -56.19,
+    98.22,
+    -29
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set A.</p>",
+   "id": 64706026,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 64.25772660453728,
+    "y": -164.30358615116225,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "12959055969591917520",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    46.57,
+    94.77,
+    -40.99
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 06.</p>",
+   "id": 64706027,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 163.47165753093634,
+    "y": -152.77929134119583,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "13198507528048466310",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -55.19,
+    104.4,
+    -57.69
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set A.</p>",
+   "id": 64706028,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 65.2232183418514,
+    "y": -136.72793826976638,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "14408488134523816378",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -48.8,
+    104.35,
+    -43.16
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set A.</p>",
+   "id": 64706029,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 71.39271054328863,
+    "y": -150.69357660077657,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "14916358415073176190",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    69.06,
+    75.97,
+    -43.92
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 09.</p>",
+   "id": 64706030,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 185.18556670313092,
+    "y": -149.96309586219652,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "15315598926471599531",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    54.29,
+    100.2,
+    -60.79
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 06.</p>",
+   "id": 64706031,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 170.92525374300135,
+    "y": -133.74834578345312,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "15349616442720873517",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -39.5,
+    98,
+    -29.83
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set A.</p>",
+   "id": 64706032,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 80.37178370030995,
+    "y": -163.50582429192355,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "15974290870850886067",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    73.73,
+    79.78,
+    -42.48
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 09.</p>",
+   "id": 64706033,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 189.69441311638786,
+    "y": -151.34716463003238,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "16184272864443992469",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -47.24,
+    105.9,
+    -30.02
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set B.</p>",
+   "id": 64706034,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 72.89887765349866,
+    "y": -163.32320410727854,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "16756852808516503393",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    46.41,
+    96.87,
+    -58.76
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 06.</p>",
+   "id": 64706035,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 163.31717885296604,
+    "y": -135.699498282555,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "17242164039040252401",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    62.5,
+    80.76,
+    -44
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 09.</p>",
+   "id": 64706036,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 178.85194090635025,
+    "y": -149.88620315287233,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "2136711048273783826",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -56.2,
+    98.21,
+    -29.01
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set B.</p>",
+   "id": 64706037,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 64.24807168716413,
+    "y": -164.29397456249674,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "2227933132469324312",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    67.25,
+    83.49,
+    -50.39
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 09.</p>",
+   "id": 64706038,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 183.43802665859232,
+    "y": -143.74439799560082,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "5383014084010738718",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -39.5,
+    98,
+    -29.82
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set B.</p>",
+   "id": 64706039,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 80.37178370030995,
+    "y": -163.51543588058908,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "6541266514972286814",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    33.49,
+    95.54,
+    -56.4
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 06.</p>",
+   "id": 64706040,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 150.84302560686763,
+    "y": -137.9678332076193,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "8645220969166832948",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -55.19,
+    104.4,
+    -57.69
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set B.</p>",
+   "id": 64706041,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 65.2232183418514,
+    "y": -136.72793826976638,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "980294080683028356",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    63,
+    78.64,
+    -37.76
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 09.</p>",
+   "id": 64706042,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 179.33468677500736,
+    "y": -155.88383448016094,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "9877205116342061532",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -47.24,
+    105.91,
+    -30.03
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 02 set A.</p>",
+   "id": 64706043,
+   "where": {
+    "mapId": "64032",
+    "submapId": "640120",
+    "global": 0,
+    "x": 72.89887765349866,
+    "y": -163.313592518613,
+    "area": "Gerudo Proving Grounds",
+    "region": null,
+    "age": "Adult Link"
+   }
+  }
+ ],
+ "validation": [
+  {
+   "floor": 0,
+   "game": [
+    24.7999992,
+    -5.39699
+   ],
+   "pixel": [
+    988,
+    1654
+   ],
+   "errorPixels": 2.6809254253295904
+  },
+  {
+   "floor": 0,
+   "game": [
+    44.4,
+    -18
+   ],
+   "pixel": [
+    1216,
+    1508
+   ],
+   "errorPixels": 1.59375350825948
+  },
+  {
+   "floor": 1,
+   "game": [
+    -2.339319,
+    -58.91577
+   ],
+   "pixel": [
+    676,
+    1036
+   ],
+   "errorPixels": 0.40265953936830573
+  },
+  {
+   "floor": 1,
+   "game": [
+    -25.869953,
+    -82.41167
+   ],
+   "pixel": [
+    401,
+    765
+   ],
+   "errorPixels": 2.4115483350789173
+  }
+ ],
+ "sourceObjects": 917,
+ "excluded": "Engine actors, switches, scenery, respawning drops, ordinary enemies and the breakable trap chest are retained in the source snapshot, not imported into unrelated collectible categories."
+}

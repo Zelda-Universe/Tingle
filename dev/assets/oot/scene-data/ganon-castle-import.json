@@ -1,0 +1,835 @@
+{
+ "markers": [
+  {
+   "kind": "boss-door",
+   "gameId": "4569037702968299446",
+   "gameRecord": "MapParam.Door",
+   "position": [
+    0.0827735885977745,
+    171.04336547851562,
+    -7.011402130126953
+   ],
+   "floor": 6,
+   "category": 64042,
+   "name": "Ganondorf - Boss Door",
+   "text": "<p>The locked door at the top of the tower. Requires the Boss Key.</p>",
+   "id": 64707001,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640137",
+    "global": 0,
+    "x": 128.0551823923985,
+    "y": -139.75239857991536,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "1029712040059298120",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -36.03,
+    99.75,
+    -16.49
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Blue Rupee",
+   "text": "<p>Contains: Blue Rupee.</p>",
+   "id": 64707002,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 103.98,
+    "y": -133.43333333333334,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "14046623154429024571",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -40.56,
+    99.75,
+    -27.34
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Blue Rupee",
+   "text": "<p>Contains: Blue Rupee.</p>",
+   "id": 64707003,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 100.96,
+    "y": -126.2,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "14404733996390762670",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    56.39,
+    99.5,
+    -15.18
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Five Bombchus",
+   "text": "<p>Contains: Five Bombchus.</p>",
+   "id": 64707004,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 165.59333333333333,
+    "y": -134.30666666666667,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "14962432460641118089",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    -40.45,
+    99.86,
+    -21
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Red Rupee",
+   "text": "<p>Contains: Red Rupee.</p>",
+   "id": 64707005,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 101.03333333333333,
+    "y": -130.42666666666668,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "15320975652699461295",
+   "gameRecord": "Object.Obj_TBox_GlassTruth_A_01",
+   "position": [
+    -52.19,
+    100,
+    -16.51
+   ],
+   "floor": 0,
+   "category": 64027,
+   "name": "Chest - Small Key",
+   "text": "<p>Contains: Small Key.</p><p>Use the Lens of Truth to see this chest.</p>",
+   "id": 64707006,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 93.20666666666668,
+    "y": -133.42,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "16913531450403950487",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    25.26,
+    103,
+    23.69
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Five Arrows",
+   "text": "<p>Contains: Five Arrows.</p>",
+   "id": 64707007,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 144.84,
+    "y": -160.22,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "17092385671602176550",
+   "gameRecord": "Object.Obj_TBox_A_03_NoBake",
+   "position": [
+    0.0731363296508789,
+    149.6500244140625,
+    -24.685300827026367
+   ],
+   "floor": 4,
+   "category": 64028,
+   "name": "Chest - Boss Key",
+   "text": "<p>Contains: Boss Key.</p>",
+   "id": 64707008,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640135",
+    "global": 0,
+    "x": 128.0487575531006,
+    "y": -127.96979944864908,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "17657623307936361670",
+   "gameRecord": "Object.Obj_TBox_A_02_NoBake",
+   "position": [
+    48.28610610961914,
+    104.00733947753906,
+    -105.30329132080078
+   ],
+   "floor": 0,
+   "category": 64024,
+   "name": "Chest - Golden Gauntlets",
+   "text": "<p>Contains: Golden Gauntlets.</p>",
+   "id": 64704026,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 160.19073740641275,
+    "y": -74.22447245279949,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "18277713685010400796",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    12.584466934204102,
+    103.8997802734375,
+    -65.89408874511719
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Five Arrows",
+   "text": "<p>Contains: Five Arrows.</p>",
+   "id": 64707009,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 136.38964462280273,
+    "y": -100.49727416992188,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "4733634471038136588",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    -52.19,
+    100,
+    -25.49
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Green Rupee",
+   "text": "<p>Contains: Green Rupee.</p>",
+   "id": 64707010,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 93.20666666666668,
+    "y": -127.43333333333334,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "7461796063704896255",
+   "gameRecord": "Object.Obj_TBox_A_01",
+   "position": [
+    -45.06,
+    99.75,
+    -16.61
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Blue Rupee",
+   "text": "<p>Contains: Blue Rupee.</p>",
+   "id": 64707011,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 97.96,
+    "y": -133.35333333333332,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "chest",
+   "gameId": "7899179288432849355",
+   "gameRecord": "Object.Obj_TBox_A_01_NoBake",
+   "position": [
+    -38.027687072753906,
+    104.00112915039062,
+    13.321775436401367
+   ],
+   "floor": 0,
+   "category": 64021,
+   "name": "Chest - Business Scrub Seed",
+   "text": "<p>Contains: Business Scrub Seed.</p>",
+   "id": 64707012,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 102.64820861816406,
+    "y": -153.30785029093425,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "10052148868361476941",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    42,
+    100.95,
+    52.66
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 03.</p>",
+   "id": 64707013,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 156,
+    "y": -179.53333333333333,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "11173621843222054502",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -68.55,
+    99.75,
+    -19.22
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 14.</p>",
+   "id": 64707014,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 82.30000000000001,
+    "y": -131.61333333333334,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "1147072597743544245",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -21.3,
+    104.54,
+    28.57
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 16.</p>",
+   "id": 64707015,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 113.8,
+    "y": -163.47333333333333,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "11815666052437125601",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    39.06,
+    103.14,
+    57.58
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 03.</p>",
+   "id": 64707016,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 154.04,
+    "y": -182.81333333333333,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "12211581836782090940",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -62.8,
+    99.75,
+    -29.12
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 14.</p>",
+   "id": 64707017,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 86.13333333333333,
+    "y": -125.01333333333334,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "12932474451250284286",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -69.24,
+    103.37,
+    -21.01
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 14.</p>",
+   "id": 64707018,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 81.84,
+    "y": -130.42,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "13035701009514315398",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    31.95,
+    101.45,
+    46.57
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 03.</p>",
+   "id": 64707019,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 149.3,
+    "y": -175.47333333333333,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "14789842768175616537",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -22.34,
+    106.91,
+    18.66
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 16.</p>",
+   "id": 64707020,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 113.10666666666667,
+    "y": -156.86666666666667,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "1686951565661788206",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -23.61,
+    102.95,
+    -93.4
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 10.</p>",
+   "id": 64707021,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 112.26,
+    "y": -82.16,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "17115775210154037982",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -23.06,
+    103.99,
+    20.09
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 16.</p>",
+   "id": 64707022,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 112.62666666666667,
+    "y": -157.82,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "17436329256518407226",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -23.88,
+    104.5,
+    10.46
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 16.</p>",
+   "id": 64707023,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 112.08,
+    "y": -151.4,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "3781585389835018966",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -13.31,
+    102.39,
+    -65.79
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 10.</p>",
+   "id": 64707024,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 119.12666666666667,
+    "y": -100.56666666666666,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "3877375224278289387",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -17.64,
+    106.12,
+    -83.48
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 10.</p>",
+   "id": 64707025,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 116.24,
+    "y": -88.77333333333334,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "4589048204522226052",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -29.56,
+    104.57,
+    20.3
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 16.</p>",
+   "id": 64707026,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 108.29333333333334,
+    "y": -157.96,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "7321859387112602995",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -39.81,
+    102.9,
+    -60.34
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 10.</p>",
+   "id": 64707027,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 101.46,
+    "y": -104.2,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "7597206279643935976",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    36.03,
+    103.49,
+    32.42
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 03.</p>",
+   "id": 64707028,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 152.02,
+    "y": -166.04,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "7766186285350213443",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -68.58,
+    99.75,
+    -22.83
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 14.</p>",
+   "id": 64707029,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 82.28,
+    "y": -129.20666666666668,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "8097387562381544300",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    41.94,
+    105.49,
+    40.82
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 03.</p>",
+   "id": 64707030,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 155.96,
+    "y": -171.64000000000001,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "8437066945828664269",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -67.51,
+    99.75,
+    -11.61
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 14.</p>",
+   "id": 64707031,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 82.99333333333334,
+    "y": -136.68666666666667,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  },
+  {
+   "kind": "silver",
+   "gameId": "8585876699831930812",
+   "gameRecord": "Object.Obj_RupeeToken_Silver",
+   "position": [
+    -47.55,
+    105.7,
+    -70.95
+   ],
+   "floor": 0,
+   "category": 64005,
+   "name": "Silver Rupee",
+   "text": "<p>Part of the Silver Rupee puzzle in room 10.</p>",
+   "id": 64707032,
+   "where": {
+    "mapId": "64033",
+    "submapId": "640130",
+    "global": 0,
+    "x": 96.3,
+    "y": -97.12666666666667,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   }
+  }
+ ],
+ "sourceObjects": 1333,
+ "calibration": "Approximate door/room landmark registration. The 7F stairwell and boss-door alignment need in-game visual confirmation.",
+ "excluded": "Four attacking trap chests, enemies, switches and respawning drops remain staged in the source snapshot, not mislabeled as collectible markers.",
+ "updated": [
+  64704026
+ ]
+}

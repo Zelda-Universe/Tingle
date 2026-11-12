@@ -1,0 +1,1962 @@
+{
+ "DodongoCavern:0xc3d76ab0a14ad852": {
+  "visible": false,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   1087.91,
+   422.29
+  ]
+ },
+ "FinalBattleField:0x59178b560e31f78e": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "FireTemple:0x1dff24cca5b5835f": {
+  "visible": false,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   -503.24,
+   937.43
+  ]
+ },
+ "ForestTemple:0x07fe74ca40882a0b": {
+  "visible": false,
+  "texture": "ForestTemple_B2_Main",
+  "pixel": [
+   259.23,
+   -259.56
+  ]
+ },
+ "InsideGanonCastle:0xdb3e88762090e6bd": {
+  "visible": false,
+  "texture": "InsideGanonCastle_7F_Main",
+  "pixel": [
+   235.64,
+   246.08
+  ]
+ },
+ "InsideJabuJabuBelly:0x4aa3bab028173f0f": {
+  "visible": false,
+  "texture": "InsideJabuJabuBelly_2F_Main",
+  "pixel": [
+   777.81,
+   -77.37
+  ]
+ },
+ "InsideTheDekuTree:0xd45e52e43b253151": {
+  "visible": false,
+  "texture": "InsideTheDekuTree_B2_State00_Main",
+  "pixel": [
+   1448.35,
+   1725.06
+  ]
+ },
+ "ShadowTemple:0xb5f923c2b1a2c646": {
+  "visible": false,
+  "texture": "ShadowTemple_B4_State00_Main",
+  "pixel": [
+   662.11,
+   1214.9
+  ]
+ },
+ "SpiritTemple:0xfb4f8981d2886b8c": {
+  "visible": false,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1146.16,
+   -1018.59
+  ]
+ },
+ "WaterTemple:0xffcd72146bf02283": {
+  "visible": false,
+  "texture": "WaterTemple_3F_Lv1_Main",
+  "pixel": [
+   1124.57,
+   448.32
+  ]
+ },
+ "BottomOfTheWell:0x95c6281cedf26cef": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B2_Main",
+  "pixel": [
+   372.73,
+   98.98
+  ]
+ },
+ "DodongoCavern:Enemy_MiddleBoss_Lizalfos:12927": {
+  "visible": true,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   1797.08,
+   739.09
+  ]
+ },
+ "DodongoCavern:Enemy_MiddleBoss_Lizalfos:12925": {
+  "visible": true,
+  "texture": "DodongoCavern_2F_Main",
+  "pixel": [
+   2002.55,
+   450.47
+  ]
+ },
+ "FireTemple:0xebc4852cbd574191": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   500.43,
+   260.78
+  ]
+ },
+ "FireTemple:0xf4abfb38bdc1276c": {
+  "visible": true,
+  "texture": "FireTemple_3F_Main",
+  "pixel": [
+   165.26,
+   680.03
+  ]
+ },
+ "ForestTemple:Enemy_Stalfos_Weak:25368": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   987.39,
+   118.64
+  ]
+ },
+ "ForestTemple:0x124c4eb93f9f58b0": {
+  "visible": true,
+  "texture": "ForestTemple_2F_State00_Main",
+  "pixel": [
+   747.09,
+   114.84
+  ]
+ },
+ "ForestTemple:0x137683de37a18db6": {
+  "visible": true,
+  "texture": "ForestTemple_2F_State00_Main",
+  "pixel": [
+   1229.32,
+   116.68
+  ]
+ },
+ "ForestTemple:0xdaa00fb5d8406818": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   986.85,
+   799.82
+  ]
+ },
+ "ForestTemple:Enemy_Stalfos_Weak:25367": {
+  "visible": true,
+  "texture": "ForestTemple_2F_State00_Main",
+  "pixel": [
+   1015.02,
+   140.56
+  ]
+ },
+ "ForestTemple:0x0990b181d8f4b622": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   1709.05,
+   842.73
+  ]
+ },
+ "GerudoFortress_Adult:0xbe8cc954382545d3": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "GerudoFortress_Adult:0xffd23a4fb97172e3": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "GerudoFortress_Adult:0x2cdf6faa5bb18cd9": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "GerudoFortress_Adult:0x2e80b41e9ebe9343": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "IceCavern:0xd6b7c249e2fea293": {
+  "visible": true,
+  "texture": "IceCavern_1F_Main",
+  "pixel": [
+   159.89,
+   1324.96
+  ]
+ },
+ "InsideJabuJabuBelly:0xe86cb93bc02db550": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_B1_Main",
+  "pixel": [
+   41.45,
+   124.27
+  ]
+ },
+ "ShadowTemple:0x5bcbcf1cc0d56a13": {
+  "visible": true,
+  "texture": "ShadowTemple_B1_Main",
+  "pixel": [
+   66.85,
+   154.83
+  ]
+ },
+ "SpiritTemple:0xb3407d11a768ae6c": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1786.82,
+   1561.06
+  ]
+ },
+ "SpiritTemple:0xc0da347b6bad5545": {
+  "visible": false,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   958.14,
+   -279.75
+  ]
+ },
+ "SpiritTemple:0x6e0f7c7c3a1593c4": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   129.43,
+   1567.73
+  ]
+ },
+ "WaterTemple:0x4974202072beaec6": {
+  "visible": true,
+  "texture": "WaterTemple_3F_Lv1_Main",
+  "pixel": [
+   280.48,
+   771.14
+  ]
+ },
+ "DeathMountainCrater:-17.38:52.58": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "DeathMountainCrater:-50.85:-0.20": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "DeathMountainTrail:-1.65:-26.12": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "DeathMountainTrail:-13.40:-6.80": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "DesertColossus:-115.50:-26.73": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "GerudoFortress:33.15:-67.80": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "GerudoValley:-45.27:-29.03": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "GerudoValley:11.45:36.45": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "GoronCity:-42.20:29.29": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "Graveyard:-4.02:-10.92": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "Graveyard:21.39:23.15": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "Graveyard:21.47:11.20": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "Graveyard:4.00:5.75": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleCastle:35.85:-106.25": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:-13.23:169.49": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:-156.07:338.43": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:-204.73:455.48": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:-258.32:137.92": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:-36.41:290.70": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:-97.98:17.11": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:163.27:27.38": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:179.82:190.50": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:39.87:26.58": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "HyruleField:39.92:342.30": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "KakarikoVillage:-19.98:66.00": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "KakarikoVillage:-26.80:12.37": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "KokiriForest:-51.93:-62.82": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "LostWood:20.50:-75.65": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "LostWood:27.79:-28.27": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "LostWood:3.80:-47.50": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "SacredForestMeadow:-1.63:51.16": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "SacredForestMeadow:-4.15:1.92": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "SacredForestMeadow:1.33:-85.47": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "ZoraDomain:16.99:-18.26": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "ZoraRiver:-15.74:14.83": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "ZoraRiver:-78.05:-16.79": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "ZoraRiver:5.18:-16.27": {
+  "visible": true,
+  "reason": "calibrated overworld projection"
+ },
+ "door:2271429267365535837": {
+  "visible": false,
+  "texture": "InsideTheDekuTree_B2_State00_Main",
+  "pixel": [
+   308.18,
+   1216.39
+  ]
+ },
+ "door:7888713446031546640": {
+  "visible": true,
+  "texture": "InsideTheDekuTree_B1_State00_Main",
+  "pixel": [
+   1698.82,
+   731.12
+  ]
+ },
+ "door:15855065730333870421": {
+  "visible": true,
+  "texture": "InsideTheDekuTree_B1_State00_Main",
+  "pixel": [
+   1567.64,
+   1056.25
+  ]
+ },
+ "door:5024342326168565885": {
+  "visible": true,
+  "texture": "InsideTheDekuTree_B1_State00_Main",
+  "pixel": [
+   979.43,
+   1331.9
+  ]
+ },
+ "door:2821367699546364013": {
+  "visible": true,
+  "texture": "InsideTheDekuTree_B1_State00_Main",
+  "pixel": [
+   445.85,
+   1125.9
+  ]
+ },
+ "door:11355963437042053245": {
+  "visible": true,
+  "texture": "InsideTheDekuTree_2F_State00_Main",
+  "pixel": [
+   1187.62,
+   505.55
+  ]
+ },
+ "door:13719232524625078578": {
+  "visible": true,
+  "texture": "InsideTheDekuTree_2F_State00_Main",
+  "pixel": [
+   713.68,
+   542.4
+  ]
+ },
+ "door:8489032987066835655": {
+  "visible": true,
+  "texture": "InsideTheDekuTree_3F_State00_Main",
+  "pixel": [
+   1257.85,
+   354.13
+  ]
+ },
+ "door:16871561526373450485": {
+  "visible": false,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   819.64,
+   418.36
+  ]
+ },
+ "door:15713307316211495812": {
+  "visible": true,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   1196.91,
+   965.42
+  ]
+ },
+ "door:1650176827059653697": {
+  "visible": true,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   1683.21,
+   1255.47
+  ]
+ },
+ "door:9415944883117694992": {
+  "visible": true,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   1560.54,
+   615.78
+  ]
+ },
+ "door:5859121431558704523": {
+  "visible": true,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   1782.85,
+   956.62
+  ]
+ },
+ "door:9691562485383977530": {
+  "visible": true,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   410.08,
+   1062.15
+  ]
+ },
+ "door:11823680752890362968": {
+  "visible": true,
+  "texture": "DodongoCavern_1F_Main",
+  "pixel": [
+   698.86,
+   824.83
+  ]
+ },
+ "door:9853854296544990579": {
+  "visible": true,
+  "texture": "DodongoCavern_2F_Main",
+  "pixel": [
+   264.89,
+   763.92
+  ]
+ },
+ "door:17234807852443998469": {
+  "visible": true,
+  "texture": "DodongoCavern_2F_Main",
+  "pixel": [
+   150.66,
+   582.32
+  ]
+ },
+ "door:955735929808822097": {
+  "visible": true,
+  "texture": "DodongoCavern_2F_Main",
+  "pixel": [
+   2013.87,
+   678.95
+  ]
+ },
+ "door:2644993904249439673": {
+  "visible": true,
+  "texture": "DodongoCavern_2F_Main",
+  "pixel": [
+   1849.25,
+   582.38
+  ]
+ },
+ "door:13345473893564819121": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_B1_Main",
+  "pixel": [
+   547.16,
+   590.87
+  ]
+ },
+ "door:5277146341916144443": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_B1_Main",
+  "pixel": [
+   490.18,
+   213.4
+  ]
+ },
+ "door:9204213266280968046": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_B1_Main",
+  "pixel": [
+   276.92,
+   310.16
+  ]
+ },
+ "door:16863624454255684668": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_B1_Main",
+  "pixel": [
+   170.3,
+   149.43
+  ]
+ },
+ "door:11986983702264520518": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_1F_Main",
+  "pixel": [
+   392.47,
+   1608.66
+  ]
+ },
+ "door:17392444863818742623": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_1F_Main",
+  "pixel": [
+   547.59,
+   579.53
+  ]
+ },
+ "door:2914525566988626385": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_1F_Main",
+  "pixel": [
+   399.07,
+   877.69
+  ]
+ },
+ "door:8121361236468077052": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_1F_Main",
+  "pixel": [
+   401.63,
+   1323.85
+  ]
+ },
+ "door:10375523553017763178": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_1F_Main",
+  "pixel": [
+   402.36,
+   254.22
+  ]
+ },
+ "door:14254137958282187007": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_1F_Main",
+  "pixel": [
+   533.21,
+   334.35
+  ]
+ },
+ "door:2806698636955323939": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_1F_Main",
+  "pixel": [
+   207.46,
+   344.12
+  ]
+ },
+ "door:1116689977210692538": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_1F_Main",
+  "pixel": [
+   224.87,
+   665.27
+  ]
+ },
+ "door:16960089353963703273": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_2F_Main",
+  "pixel": [
+   760.92,
+   351.89
+  ]
+ },
+ "door:8015922362823848795": {
+  "visible": false,
+  "texture": "InsideJabuJabuBelly_2F_Main",
+  "pixel": [
+   774.61,
+   99.61
+  ]
+ },
+ "door:2649592943141226368": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_2F_Main",
+  "pixel": [
+   167.79,
+   254.09
+  ]
+ },
+ "door:12649678973456788995": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_2F_Main",
+  "pixel": [
+   525.65,
+   480.13
+  ]
+ },
+ "door:1808007442946448095": {
+  "visible": true,
+  "texture": "InsideJabuJabuBelly_2F_Main",
+  "pixel": [
+   266.99,
+   449.04
+  ]
+ },
+ "door:6524865327852541260": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B2_Main",
+  "pixel": [
+   157.91,
+   1329.24
+  ]
+ },
+ "door:16223843310602570648": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B1_State00_Main",
+  "pixel": [
+   496.41,
+   1117.16
+  ]
+ },
+ "door:634728790963647514": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B1_State00_Main",
+  "pixel": [
+   1075.02,
+   832.47
+  ]
+ },
+ "door:12762574849769253142": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B1_State00_Main",
+  "pixel": [
+   292.11,
+   1066.23
+  ]
+ },
+ "door:7911116756657126665": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B1_State00_Main",
+  "pixel": [
+   1108.63,
+   1028.29
+  ]
+ },
+ "door:18026681071134944615": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B1_State00_Main",
+  "pixel": [
+   805.53,
+   176.98
+  ]
+ },
+ "door:6057995297652999062": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B1_State00_Main",
+  "pixel": [
+   805.18,
+   1759.16
+  ]
+ },
+ "door:15964434394101837654": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B1_State00_Main",
+  "pixel": [
+   676.53,
+   1015.61
+  ]
+ },
+ "door:3180753716225647997": {
+  "visible": true,
+  "texture": "BottomOfTheWell_B1_State00_Main",
+  "pixel": [
+   947.27,
+   1015.98
+  ]
+ },
+ "door:7829564118026809582": {
+  "visible": true,
+  "texture": "ForestTemple_B2_Main",
+  "pixel": [
+   260.93,
+   266.36
+  ]
+ },
+ "door:11429592239509371885": {
+  "visible": true,
+  "texture": "ForestTemple_B2_Main",
+  "pixel": [
+   260.04,
+   6.32
+  ]
+ },
+ "door:1930571476711309009": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   1184.85,
+   644.34
+  ]
+ },
+ "door:11510520395584208527": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   1244.53,
+   597.22
+  ]
+ },
+ "door:8679004332826565441": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   741.88,
+   584.75
+  ]
+ },
+ "door:8052069347055395787": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   441.83,
+   833.76
+  ]
+ },
+ "door:258845306755098969": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   995.7,
+   1154.85
+  ]
+ },
+ "door:1276499942178318549": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   1672.57,
+   701.91
+  ]
+ },
+ "door:8424352774131260820": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   1531.74,
+   842.78
+  ]
+ },
+ "door:16735262355305115878": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   986.51,
+   267.26
+  ]
+ },
+ "door:15430330612381583844": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   995.75,
+   451.58
+  ]
+ },
+ "door:15348182411067911245": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   1504.41,
+   352.92
+  ]
+ },
+ "door:153691659847206655": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   1311.4,
+   833.82
+  ]
+ },
+ "door:15952196775777937352": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   330.56,
+   382.84
+  ]
+ },
+ "door:12998759442067131061": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   270.55,
+   518.14
+  ]
+ },
+ "door:9521508169413026823": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   395.57,
+   689.57
+  ]
+ },
+ "door:1163369963105284964": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   995.13,
+   1387.45
+  ]
+ },
+ "door:3225055400115517869": {
+  "visible": true,
+  "texture": "ForestTemple_1F_Main",
+  "pixel": [
+   668.58,
+   833.78
+  ]
+ },
+ "door:8429336115493724386": {
+  "visible": true,
+  "texture": "ForestTemple_2F_State00_Main",
+  "pixel": [
+   809.3,
+   138.11
+  ]
+ },
+ "door:2293725469462648563": {
+  "visible": true,
+  "texture": "ForestTemple_2F_State00_Main",
+  "pixel": [
+   1164.42,
+   146.99
+  ]
+ },
+ "door:12217944479483438597": {
+  "visible": true,
+  "texture": "ForestTemple_3F_State00_Main",
+  "pixel": [
+   424.76,
+   112.97
+  ]
+ },
+ "door:13335036537438067814": {
+  "visible": true,
+  "texture": "ForestTemple_3F_State00_Main",
+  "pixel": [
+   1550.13,
+   104.15
+  ]
+ },
+ "door:5481916789431949409": {
+  "visible": true,
+  "texture": "ForestTemple_3F_State00_Main",
+  "pixel": [
+   303.81,
+   692.98
+  ]
+ },
+ "door:17124821462463640959": {
+  "visible": true,
+  "texture": "ForestTemple_3F_State00_Main",
+  "pixel": [
+   1687.56,
+   691.94
+  ]
+ },
+ "door:5923354705395834169": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   514.58,
+   766.16
+  ]
+ },
+ "door:14582210418537008165": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   643.45,
+   261.24
+  ]
+ },
+ "door:10217891004231336629": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   500.71,
+   421.12
+  ]
+ },
+ "door:11164201979525523373": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   691.75,
+   430.65
+  ]
+ },
+ "door:16291032122046483151": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   453.04,
+   728.51
+  ]
+ },
+ "door:7119374396150542688": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   1237.43,
+   182.93
+  ]
+ },
+ "door:4189300454150217955": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   678.11,
+   766.17
+  ]
+ },
+ "door:7971893604208202501": {
+  "visible": false,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   64.46,
+   715.02
+  ]
+ },
+ "door:17649976694470179290": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   1527.55,
+   728.83
+  ]
+ },
+ "door:530640766699404174": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   739.26,
+   728.58
+  ]
+ },
+ "door:17586687124735290487": {
+  "visible": true,
+  "texture": "FireTemple_1F_State00_Main",
+  "pixel": [
+   2120.2,
+   728.84
+  ]
+ },
+ "door:6820115006200726383": {
+  "visible": true,
+  "texture": "FireTemple_3F_Main",
+  "pixel": [
+   553.04,
+   529.28
+  ]
+ },
+ "door:11098823977820063202": {
+  "visible": true,
+  "texture": "FireTemple_3F_Main",
+  "pixel": [
+   1728.5,
+   766.36
+  ]
+ },
+ "door:14097512838582689444": {
+  "visible": true,
+  "texture": "FireTemple_3F_Main",
+  "pixel": [
+   1605.69,
+   649.02
+  ]
+ },
+ "door:8924322743887267313": {
+  "visible": true,
+  "texture": "FireTemple_3F_Main",
+  "pixel": [
+   1728.62,
+   529.05
+  ]
+ },
+ "door:17520323088057735070": {
+  "visible": true,
+  "texture": "FireTemple_3F_Main",
+  "pixel": [
+   552.62,
+   765.09
+  ]
+ },
+ "door:8886594954069367001": {
+  "visible": true,
+  "texture": "FireTemple_3F_Main",
+  "pixel": [
+   273.04,
+   558.7
+  ]
+ },
+ "door:18033163985131850496": {
+  "visible": true,
+  "texture": "FireTemple_3F_Main",
+  "pixel": [
+   1217.04,
+   634.08
+  ]
+ },
+ "door:15614893033094715322": {
+  "visible": true,
+  "texture": "FireTemple_4F_Main",
+  "pixel": [
+   637.73,
+   435.02
+  ]
+ },
+ "door:15327706443196816273": {
+  "visible": true,
+  "texture": "FireTemple_4F_Main",
+  "pixel": [
+   1632.78,
+   303.19
+  ]
+ },
+ "door:5104737299048117414": {
+  "visible": true,
+  "texture": "FireTemple_4F_Main",
+  "pixel": [
+   235.51,
+   122.17
+  ]
+ },
+ "door:1500756595206464644": {
+  "visible": true,
+  "texture": "FireTemple_5F_State00_Main",
+  "pixel": [
+   1570.61,
+   126.37
+  ]
+ },
+ "door:6080385011425235023": {
+  "visible": true,
+  "texture": "IceCavern_1F_Main",
+  "pixel": [
+   159.11,
+   1176.79
+  ]
+ },
+ "door:4624951682117061604": {
+  "visible": true,
+  "texture": "WaterTemple_1F_Lv1_State00_Main",
+  "pixel": [
+   1199.41,
+   1412.2
+  ]
+ },
+ "door:14982193920499738205": {
+  "visible": true,
+  "texture": "WaterTemple_1F_Lv1_State00_Main",
+  "pixel": [
+   744.66,
+   382.36
+  ]
+ },
+ "door:8049919635010339422": {
+  "visible": true,
+  "texture": "WaterTemple_1F_Lv1_State00_Main",
+  "pixel": [
+   1081.18,
+   584.54
+  ]
+ },
+ "door:1215096413095025639": {
+  "visible": true,
+  "texture": "WaterTemple_1F_Lv1_State00_Main",
+  "pixel": [
+   967.1,
+   584.53
+  ]
+ },
+ "door:8936252369722474095": {
+  "visible": true,
+  "texture": "WaterTemple_1F_Lv1_State00_Main",
+  "pixel": [
+   744.62,
+   843.02
+  ]
+ },
+ "door:15319553007255647544": {
+  "visible": true,
+  "texture": "WaterTemple_1F_Lv1_State00_Main",
+  "pixel": [
+   673.35,
+   1412.16
+  ]
+ },
+ "door:12086746943658238668": {
+  "visible": true,
+  "texture": "WaterTemple_2F_Lv1_Main",
+  "pixel": [
+   802.87,
+   1129.3
+  ]
+ },
+ "door:1311186950182408800": {
+  "visible": true,
+  "texture": "WaterTemple_2F_Lv1_Main",
+  "pixel": [
+   1133.66,
+   1394.11
+  ]
+ },
+ "door:2202807660383340401": {
+  "visible": true,
+  "texture": "WaterTemple_2F_Lv1_Main",
+  "pixel": [
+   890.39,
+   1394.08
+  ]
+ },
+ "door:5734886677530684296": {
+  "visible": true,
+  "texture": "WaterTemple_3F_Lv1_Main",
+  "pixel": [
+   378.02,
+   1444.13
+  ]
+ },
+ "door:14062407736726262408": {
+  "visible": true,
+  "texture": "WaterTemple_3F_Lv1_Main",
+  "pixel": [
+   1124.58,
+   1052.99
+  ]
+ },
+ "door:849026435548697533": {
+  "visible": true,
+  "texture": "WaterTemple_3F_Lv1_Main",
+  "pixel": [
+   287.32,
+   500.91
+  ]
+ },
+ "door:7273086900439047433": {
+  "visible": true,
+  "texture": "WaterTemple_3F_Lv1_Main",
+  "pixel": [
+   287.33,
+   1082.2
+  ]
+ },
+ "door:14915175233807466033": {
+  "visible": true,
+  "texture": "WaterTemple_3F_Lv1_Main",
+  "pixel": [
+   938.37,
+   1444.12
+  ]
+ },
+ "door:16702516366265541739": {
+  "visible": false,
+  "texture": "WaterTemple_3F_Lv1_Main",
+  "pixel": [
+   1124.57,
+   683.53
+  ]
+ },
+ "door:14367882883458531421": {
+  "visible": true,
+  "texture": "ShadowTemple_B4_State00_Main",
+  "pixel": [
+   234.88,
+   574.2
+  ]
+ },
+ "door:11550996206427633227": {
+  "visible": true,
+  "texture": "ShadowTemple_B4_State00_Main",
+  "pixel": [
+   360.87,
+   702.82
+  ]
+ },
+ "door:12401815814089351641": {
+  "visible": true,
+  "texture": "ShadowTemple_B4_State00_Main",
+  "pixel": [
+   513.53,
+   573.99
+  ]
+ },
+ "door:2192367679636495971": {
+  "visible": true,
+  "texture": "ShadowTemple_B4_State00_Main",
+  "pixel": [
+   665.61,
+   827.19
+  ]
+ },
+ "door:7859741725793759796": {
+  "visible": true,
+  "texture": "ShadowTemple_B4_State00_Main",
+  "pixel": [
+   361.29,
+   453.69
+  ]
+ },
+ "door:12557339757091997106": {
+  "visible": false,
+  "texture": "ShadowTemple_B4_State00_Main",
+  "pixel": [
+   660.85,
+   1013.66
+  ]
+ },
+ "door:10878584227442891354": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   788.67,
+   283
+  ]
+ },
+ "door:12253095579699422228": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   848.94,
+   383.72
+  ]
+ },
+ "door:13055652297728890453": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   334.54,
+   568.81
+  ]
+ },
+ "door:13372394883066583681": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   343.92,
+   893.74
+  ]
+ },
+ "door:2090272514033054464": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   1209.05,
+   1008.11
+  ]
+ },
+ "door:8739297614831154496": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   902.79,
+   1004.68
+  ]
+ },
+ "door:15639855627873906140": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   783.62,
+   152.05
+  ]
+ },
+ "door:3785621893886752067": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   428.17,
+   654.82
+  ]
+ },
+ "door:17286348970163505298": {
+  "visible": true,
+  "texture": "ShadowTemple_B3_Main",
+  "pixel": [
+   428.17,
+   523.5
+  ]
+ },
+ "door:2718552645230134454": {
+  "visible": true,
+  "texture": "ShadowTemple_B2_Main",
+  "pixel": [
+   155.2,
+   257.98
+  ]
+ },
+ "door:4373805949764113382": {
+  "visible": true,
+  "texture": "ShadowTemple_B2_Main",
+  "pixel": [
+   160.35,
+   425.12
+  ]
+ },
+ "door:14964409186081456860": {
+  "visible": true,
+  "texture": "ShadowTemple_B2_Main",
+  "pixel": [
+   243.55,
+   346.35
+  ]
+ },
+ "door:7274532379203988907": {
+  "visible": true,
+  "texture": "ShadowTemple_B1_Main",
+  "pixel": [
+   604.83,
+   106.78
+  ]
+ },
+ "door:13417249939818760102": {
+  "visible": true,
+  "texture": "ShadowTemple_B1_Main",
+  "pixel": [
+   682.38,
+   433.59
+  ]
+ },
+ "door:3909597395234576311": {
+  "visible": true,
+  "texture": "ShadowTemple_B1_Main",
+  "pixel": [
+   726.05,
+   188.43
+  ]
+ },
+ "door:13153152878692335724": {
+  "visible": true,
+  "texture": "ShadowTemple_B1_Main",
+  "pixel": [
+   158.87,
+   155.19
+  ]
+ },
+ "door:9188411472005273867": {
+  "visible": true,
+  "texture": "ShadowTemple_B1_Main",
+  "pixel": [
+   1017.71,
+   235.27
+  ]
+ },
+ "door:6634626997577507117": {
+  "visible": true,
+  "texture": "SpiritTemple_1F_Main",
+  "pixel": [
+   1605.88,
+   330.91
+  ]
+ },
+ "door:14338828094098848225": {
+  "visible": true,
+  "texture": "SpiritTemple_1F_Main",
+  "pixel": [
+   516.88,
+   796.4
+  ]
+ },
+ "door:17486941861714269827": {
+  "visible": true,
+  "texture": "SpiritTemple_1F_Main",
+  "pixel": [
+   1522.46,
+   789.84
+  ]
+ },
+ "door:5251747957190453034": {
+  "visible": true,
+  "texture": "SpiritTemple_1F_Main",
+  "pixel": [
+   1235.77,
+   790.21
+  ]
+ },
+ "door:14005557071922138741": {
+  "visible": true,
+  "texture": "SpiritTemple_1F_Main",
+  "pixel": [
+   249.36,
+   798.94
+  ]
+ },
+ "door:9669391222688573879": {
+  "visible": true,
+  "texture": "SpiritTemple_1F_Main",
+  "pixel": [
+   531.28,
+   337.93
+  ]
+ },
+ "door:8208400900970984454": {
+  "visible": true,
+  "texture": "SpiritTemple_1F_Main",
+  "pixel": [
+   1379.11,
+   783.17
+  ]
+ },
+ "door:5866554311248263901": {
+  "visible": true,
+  "texture": "SpiritTemple_1F_Main",
+  "pixel": [
+   381.3,
+   549.31
+  ]
+ },
+ "door:5989256017145841134": {
+  "visible": true,
+  "texture": "SpiritTemple_2F_Main",
+  "pixel": [
+   636.11,
+   336.36
+  ]
+ },
+ "door:17569862636469890641": {
+  "visible": true,
+  "texture": "SpiritTemple_2F_Main",
+  "pixel": [
+   321.7,
+   355.05
+  ]
+ },
+ "door:8083289725046989008": {
+  "visible": true,
+  "texture": "SpiritTemple_2F_Main",
+  "pixel": [
+   950.97,
+   354.6
+  ]
+ },
+ "door:14560799131067915419": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   690.81,
+   553.13
+  ]
+ },
+ "door:13929644218146884025": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1786.82,
+   1016.42
+  ]
+ },
+ "door:10037122146538168883": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1393.84,
+   718.26
+  ]
+ },
+ "door:14682441564867530945": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   129.43,
+   1019.72
+  ]
+ },
+ "door:18032896183755864351": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1786.83,
+   522.19
+  ]
+ },
+ "door:6772834179407762480": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   525.96,
+   718.25
+  ]
+ },
+ "door:4414271946326050192": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1675.66,
+   878.64
+  ]
+ },
+ "door:1669894117374151790": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1786.81,
+   1264.17
+  ]
+ },
+ "door:1055894830919592114": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   129.44,
+   1646.4
+  ]
+ },
+ "door:948408363354292889": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1786.82,
+   1646.42
+  ]
+ },
+ "door:1239725692126790626": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1225.45,
+   553.92
+  ]
+ },
+ "door:14562151304140999752": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   1393.48,
+   878.64
+  ]
+ },
+ "door:1598277279179137240": {
+  "visible": true,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   129.43,
+   1262.91
+  ]
+ },
+ "door:16853997340662105473": {
+  "visible": false,
+  "texture": "SpiritTemple_3F_State00_Main",
+  "pixel": [
+   958.13,
+   -0.55
+  ]
+ },
+ "door:11229157323951127269": {
+  "visible": true,
+  "texture": "SpiritTemple_4F_State00_Main",
+  "pixel": [
+   744.18,
+   681.75
+  ]
+ },
+ "door:4753616843291039997": {
+  "visible": true,
+  "texture": "SpiritTemple_4F_State00_Main",
+  "pixel": [
+   744.19,
+   479.92
+  ]
+ },
+ "door:6264353839168097479": {
+  "visible": true,
+  "texture": "SpiritTemple_4F_State00_Main",
+  "pixel": [
+   560.7,
+   600.01
+  ]
+ },
+ "door:322920475917812712": {
+  "visible": true,
+  "texture": "SpiritTemple_4F_State00_Main",
+  "pixel": [
+   339.11,
+   600
+  ]
+ },
+ "door:14579251759478588816": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   1371.03,
+   1208.45
+  ]
+ },
+ "door:17271596773795074407": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   374.23,
+   1652.96
+  ]
+ },
+ "door:4403590790470660495": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   153.75,
+   1500.62
+  ]
+ },
+ "door:2835828381713371595": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   989.68,
+   764.26
+  ]
+ },
+ "door:13905333383293071313": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   1204.58,
+   881.8
+  ]
+ },
+ "door:2788856171788874734": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   682.25,
+   1334.51
+  ]
+ },
+ "door:1845019500144608623": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   990.43,
+   1652.88
+  ]
+ },
+ "door:9340986794564645500": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   1217.52,
+   1507.52
+  ]
+ },
+ "door:5885932930990178582": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   1042.59,
+   1188.99
+  ]
+ },
+ "door:10001376845054106600": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   154.27,
+   965.42
+  ]
+ },
+ "door:2287906140519484787": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   154.65,
+   432.43
+  ]
+ },
+ "door:16099041652987252990": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   487.61,
+   1050.77
+  ]
+ },
+ "door:13961115460808423078": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   765.67,
+   1050.77
+  ]
+ },
+ "door:11279749999185960905": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   515.41,
+   1299.91
+  ]
+ },
+ "door:1782957447756991766": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   682.25,
+   1078.45
+  ]
+ },
+ "door:13610050855796186379": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   626.64,
+   1243.97
+  ]
+ },
+ "door:4054769999674403462": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   598.83,
+   1161.5
+  ]
+ },
+ "door:9161635131903213609": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   876.89,
+   1272.22
+  ]
+ },
+ "door:11215020957634035781": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   737.86,
+   1243.73
+  ]
+ },
+ "door:4861722785202029276": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_1F_State00_Main",
+  "pixel": [
+   737.86,
+   1133.82
+  ]
+ },
+ "door:18314542979296415492": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_2F_State00_Main",
+  "pixel": [
+   676,
+   1035.6
+  ]
+ },
+ "door:6126832166241244381": {
+  "visible": true,
+  "texture": "GerudoTrainingGround_2F_State00_Main",
+  "pixel": [
+   403.38,
+   764.6
+  ]
+ },
+ "door:609021425778003787": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   806.21,
+   1230.44
+  ]
+ },
+ "door:8495610940054253979": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   1063.89,
+   769.27
+  ]
+ },
+ "door:399054663657392680": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   805.91,
+   769.1
+  ]
+ },
+ "door:2419854912261814384": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   1063.96,
+   1230.73
+  ]
+ },
+ "door:16623306469348177484": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   670.46,
+   1336.64
+  ]
+ },
+ "door:17670522532229319616": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   589.43,
+   1344.96
+  ]
+ },
+ "door:8540530808124215779": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   539.05,
+   378.79
+  ]
+ },
+ "door:9280501248130802789": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   657.88,
+   1531.64
+  ]
+ },
+ "door:15970872372384393881": {
+  "visible": true,
+  "texture": "InsideGanonCastle_1F_State00_Main",
+  "pixel": [
+   1433.6,
+   129.42
+  ]
+ },
+ "door:1130372459033636510": {
+  "visible": true,
+  "texture": "InsideGanonCastle_3F_Main",
+  "pixel": [
+   94.56,
+   135.18
+  ]
+ },
+ "door:6523326349693664831": {
+  "visible": true,
+  "texture": "InsideGanonCastle_3F_Main",
+  "pixel": [
+   337.41,
+   135.01
+  ]
+ },
+ "door:5685176260213476771": {
+  "visible": false,
+  "texture": "InsideGanonCastle_3F_Main",
+  "pixel": [
+   215.97,
+   13.54
+  ]
+ },
+ "door:629251087997242994": {
+  "visible": true,
+  "texture": "InsideGanonCastle_4F_Main",
+  "pixel": [
+   87.01,
+   329.4
+  ]
+ },
+ "door:6572769807258773449": {
+  "visible": true,
+  "texture": "InsideGanonCastle_4F_Main",
+  "pixel": [
+   208.54,
+   207.99
+  ]
+ },
+ "door:558650475590182709": {
+  "visible": true,
+  "texture": "InsideGanonCastle_5F_Main",
+  "pixel": [
+   135.63,
+   88.09
+  ]
+ },
+ "door:4569037702968299446": {
+  "visible": true,
+  "texture": "InsideGanonCastle_7F_Main",
+  "pixel": [
+   235.66,
+   387.03
+  ]
+ }
+}

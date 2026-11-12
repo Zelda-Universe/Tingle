@@ -1,6 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 
+test('category shapes offer four filled shapes before no shape and accept arch saves', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../scripts/zmapsettings.js'), 'utf8');
+  const choices = source.match(/MAP_SETTINGS_SHAPES = \[([\s\S]*?)\];/)[1];
+  expect([...choices.matchAll(/\['([^']+)'/g)].map(m => m[1])).toEqual(['circle', 'diamond', 'square', 'arch', 'none']);
+  const backend = fs.readFileSync(path.join(__dirname, '../ajax/map_settings_save.php'), 'utf8');
+  expect(backend).toContain("array('circle', 'diamond', 'square', 'arch', 'none')");
+  expect(source).toContain("cave: 'arch'");
+});
+
 test('category settings keep descriptions separate and fields in reading order', () => {
   const source = fs.readFileSync(path.join(__dirname, '../scripts/zmapsettings.js'), 'utf8');
   const form = source.slice(source.indexOf("'<h3 class=\"text-center\">' + (isNew ? 'New Category'"), source.indexOf('var form = $(page).find', source.indexOf("'<h3 class=\"text-center\">' + (isNew ? 'New Category'")));

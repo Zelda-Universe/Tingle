@@ -22,7 +22,7 @@
     if (!isset($_POST[$key]) || !is_string($_POST[$key])) return null;
     return trim($_POST[$key]);
   };
-  $shapes = array('circle', 'diamond', 'square', 'none');
+  $shapes = array('circle', 'diamond', 'square', 'arch', 'none');
   // A category as the page loads it (ajax/get_categories.php).
   $categoryRow = function($id) use ($db, $map_prefix) {
     $row = $db->fetchAssociative("SELECT * FROM `{$map_prefix}marker_category` WHERE `id` = ?", [$id]);

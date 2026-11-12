@@ -172,6 +172,10 @@ describe('Map Settings layouts and looks', () => {
     expect(context.getPOIStyle(none)).toBe('treasure');
     expect(context.getPOIStyleVars(none)).toBe('--poi-outline: #123456; color: #ffcc00; ');
     expect(context.getPOIFill(none)).toBeNull();
+    const arch = Object.assign({}, custom, { shape: 'arch' });
+    expect(context.getPOIShape(arch)).toBe('arch');
+    expect(context.getPOIStyle(arch)).toBe('cave');
+    expect(context.getPOIStyleVars(arch)).toBe('--poi-fill: #123456; color: #ffcc00; ');
     // Built-in styles are untouched.
     expect(context.getPOIStyleVars({ id: '1916', container_id: '19', color: '#000000' })).toBe('');
   });

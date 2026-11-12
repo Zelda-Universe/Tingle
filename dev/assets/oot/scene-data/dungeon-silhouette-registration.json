@@ -1,0 +1,5 @@
+{
+  "description": "Source-pixel origin of the largest floor crop inside the All crop, measured from the union of Back silhouettes against the filled All outline. A 40px outline inset gives the best overlap; both registrations peak at exactly (54,54).",
+  "GerudoTrainingGround": {"floor": "1F", "offset": [54, 54], "overlap": 0.7269364},
+  "InsideGanonCastle": {"floor": "1F", "offset": [54, 54], "overlap": 0.9032898}
+}

@@ -1,0 +1,2927 @@
+{
+ "counts": {
+  "bosses": 10,
+  "minibosses": 22,
+  "grottos": 33,
+  "graves": 4
+ },
+ "markers": [
+  {
+   "key": "DodongoCavern:0xc3d76ab0a14ad852",
+   "kind": "boss",
+   "name": "King Dodongo",
+   "category": 64071,
+   "gameId": "14111865264241563730",
+   "gameRecord": "Object.Enemy_DungeonBoss_Dodongo",
+   "scene": "DodongoCavern",
+   "floor": 0,
+   "position": [
+    33.2,
+    73.49,
+    -77.6
+   ],
+   "sourceIds": [
+    "14111865264241563730"
+   ],
+   "where": {
+    "mapId": "64023",
+    "submapId": "640055",
+    "global": 0,
+    "x": 107.801,
+    "y": -81.32,
+    "area": "Dodongo's Cavern",
+    "region": null,
+    "age": "Young Link"
+   },
+   "text": "<p>King Dodongo encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708001,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "14111865264241563730"
+    ],
+    "sourceScene": "DodongoCavern",
+    "sourcePosition": [
+     33.2,
+     73.49,
+     -77.6
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "FinalBattleField:0x59178b560e31f78e",
+   "kind": "boss",
+   "name": "Ganon",
+   "category": 64071,
+   "gameId": "6419752995561535374",
+   "gameRecord": "Object.Enemy_DungeonBoss_Ganon",
+   "scene": "FinalBattleField",
+   "floor": null,
+   "position": [
+    -1.37,
+    99.98,
+    -1.03
+   ],
+   "sourceIds": [
+    "6419752995561535374"
+   ],
+   "where": {
+    "mapId": "65000",
+    "submapId": "650001",
+    "x": 118.829,
+    "y": -94.378,
+    "global": 0,
+    "area": "Ganon's Castle",
+    "region": "GanonCastle",
+    "age": "Adult Link"
+   },
+   "text": "<p>Ganon encounter.</p><p>The final battle takes place after escaping the castle. Shown at the castle entrance because the final arena has no map artwork.</p>",
+   "id": 64708002,
+   "reference": "castle entrance",
+   "metadata": {
+    "sourceIds": [
+     "6419752995561535374"
+    ],
+    "sourceScene": "FinalBattleField",
+    "sourcePosition": [
+     -1.37,
+     99.98,
+     -1.03
+    ],
+    "locationReference": "castle entrance"
+   }
+  },
+  {
+   "key": "FireTemple:0x1dff24cca5b5835f",
+   "kind": "boss",
+   "name": "Volvagia",
+   "category": 64071,
+   "gameId": "2161486807533192031",
+   "gameRecord": "Object.Enemy_DungeonBoss_Volvagia",
+   "scene": "FireTemple",
+   "floor": 0,
+   "position": [
+    -80.63,
+    93.33,
+    16.31
+   ],
+   "sourceIds": [
+    "2161486807533192031"
+   ],
+   "where": {
+    "mapId": "64024",
+    "submapId": "640057",
+    "global": 0,
+    "x": 64.366,
+    "y": -131.409,
+    "area": "Fire Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Volvagia encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708003,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "2161486807533192031"
+    ],
+    "sourceScene": "FireTemple",
+    "sourcePosition": [
+     -80.63,
+     93.33,
+     16.31
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "ForestTemple:0x07fe74ca40882a0b",
+   "kind": "boss",
+   "name": "Phantom Ganon",
+   "category": 64071,
+   "gameId": "576026214364883467",
+   "gameRecord": "Object.Enemy_DungeonBoss_PhantomGanon",
+   "scene": "ForestTemple",
+   "floor": -2,
+   "position": [
+    -0.09,
+    80.91,
+    -62.58
+   ],
+   "sourceIds": [
+    "576026214364883467"
+   ],
+   "where": {
+    "mapId": "64025",
+    "submapId": "640075",
+    "global": 0,
+    "x": 131.02,
+    "y": -80.183,
+    "area": "Forest Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Phantom Ganon encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708004,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "576026214364883467"
+    ],
+    "sourceScene": "ForestTemple",
+    "sourcePosition": [
+     -0.09,
+     80.91,
+     -62.58
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "InsideGanonCastle:0xdb3e88762090e6bd",
+   "kind": "boss",
+   "name": "Ganondorf",
+   "category": 64071,
+   "gameId": "15798214583796164285",
+   "gameRecord": "Object.Enemy_DungeonBoss_Ganondorf",
+   "scene": "InsideGanonCastle",
+   "floor": 6,
+   "position": [
+    0.08,
+    174.06,
+    -24.63
+   ],
+   "sourceIds": [
+    "15798214583796164285"
+   ],
+   "where": {
+    "mapId": "64033",
+    "submapId": "640137",
+    "global": 0,
+    "x": 128.055,
+    "y": -139.752,
+    "area": "Inside Ganon's Castle",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Ganondorf encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708005,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "15798214583796164285"
+    ],
+    "sourceScene": "InsideGanonCastle",
+    "sourcePosition": [
+     0.08,
+     174.06,
+     -24.63
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "InsideJabuJabuBelly:0x4aa3bab028173f0f",
+   "kind": "boss",
+   "name": "Barinade",
+   "category": 64071,
+   "gameId": "5378347645760126735",
+   "gameRecord": "Object.Enemy_DungeonBoss_Barinade",
+   "scene": "InsideJabuJabuBelly",
+   "floor": 1,
+   "position": [
+    42.27,
+    100.65,
+    -112.1
+   ],
+   "sourceIds": [
+    "5378347645760126735"
+   ],
+   "where": {
+    "mapId": "64027",
+    "submapId": "640078",
+    "global": 0,
+    "x": 160.719,
+    "y": -127.435,
+    "area": "Inside Jabu-Jabu's Belly",
+    "region": null,
+    "age": "Young Link"
+   },
+   "text": "<p>Barinade encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708006,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "5378347645760126735"
+    ],
+    "sourceScene": "InsideJabuJabuBelly",
+    "sourcePosition": [
+     42.27,
+     100.65,
+     -112.1
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "InsideTheDekuTree:0xd45e52e43b253151",
+   "kind": "boss",
+   "name": "Gohma",
+   "category": 64071,
+   "gameId": "15302759724049838417",
+   "gameRecord": "Object.Enemy_DungeonBoss_Gohma",
+   "scene": "InsideTheDekuTree",
+   "floor": -2,
+   "position": [
+    18.49,
+    59.97,
+    67.79
+   ],
+   "sourceIds": [
+    "15302759724049838417"
+   ],
+   "where": {
+    "mapId": "64028",
+    "submapId": "640088",
+    "global": 0,
+    "x": 141.99,
+    "y": -185.178,
+    "area": "Inside the Deku Tree",
+    "region": null,
+    "age": "Young Link"
+   },
+   "text": "<p>Gohma encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708007,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "15302759724049838417"
+    ],
+    "sourceScene": "InsideTheDekuTree",
+    "sourcePosition": [
+     18.49,
+     59.97,
+     67.79
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "ShadowTemple:0xb5f923c2b1a2c646",
+   "kind": "boss",
+   "name": "Bongo Bongo",
+   "category": 64071,
+   "gameId": "13112551109176772166",
+   "gameRecord": "Object.Enemy_DungeonBoss_BongoBongo",
+   "scene": "ShadowTemple",
+   "floor": -4,
+   "position": [
+    -138.33,
+    -11.46,
+    48.1
+   ],
+   "sourceIds": [
+    "13112551109176772166"
+   ],
+   "where": {
+    "mapId": "64029",
+    "submapId": "640092",
+    "global": 0,
+    "x": 60.731,
+    "y": -134.964,
+    "area": "Shadow Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Bongo Bongo encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708008,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "13112551109176772166"
+    ],
+    "sourceScene": "ShadowTemple",
+    "sourcePosition": [
+     -138.33,
+     -11.46,
+     48.1
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "SpiritTemple:0xfb4f8981d2886b8c",
+   "kind": "boss",
+   "name": "Twinrova",
+   "category": 64071,
+   "gameId": "18108843817355996044",
+   "gameRecord": "Object.Enemy_DungeonBoss_Twinrova",
+   "scene": "SpiritTemple",
+   "floor": 2,
+   "position": [
+    12.66,
+    144.65,
+    -145.25
+   ],
+   "sourceIds": [
+    "18108843817355996044"
+   ],
+   "where": {
+    "mapId": "64030",
+    "submapId": "640096",
+    "global": 0,
+    "x": 128,
+    "y": -62.777,
+    "area": "Spirit Temple",
+    "region": null,
+    "age": null
+   },
+   "text": "<p>Twinrova encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708009,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "18108843817355996044"
+    ],
+    "sourceScene": "SpiritTemple",
+    "sourcePosition": [
+     12.66,
+     144.65,
+     -145.25
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "WaterTemple:0xffcd72146bf02283",
+   "kind": "boss",
+   "name": "Morpha",
+   "category": 64071,
+   "gameId": "18432514281933120131",
+   "gameRecord": "Object.Enemy_DungeonBoss_Morpha",
+   "scene": "WaterTemple",
+   "floor": 2,
+   "position": [
+    -4.5,
+    129.26,
+    -91.8
+   ],
+   "sourceIds": [
+    "18432514281933120131"
+   ],
+   "where": {
+    "mapId": "64031",
+    "submapId": "640110",
+    "global": 0,
+    "x": 146.536,
+    "y": -103.114,
+    "area": "Water Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Morpha encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708010,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "18432514281933120131"
+    ],
+    "sourceScene": "WaterTemple",
+    "sourcePosition": [
+     -4.5,
+     129.26,
+     -91.8
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "BottomOfTheWell:0x95c6281cedf26cef",
+   "kind": "miniboss",
+   "name": "Dead Hand",
+   "category": 64072,
+   "gameId": "10792357661756255471",
+   "gameRecord": "Object.Enemy_DeadHand",
+   "scene": "BottomOfTheWell",
+   "floor": -2,
+   "position": [
+    -0.16,
+    92.31,
+    -105.06
+   ],
+   "sourceIds": [
+    "10792357661756255471"
+   ],
+   "where": {
+    "mapId": "64022",
+    "submapId": "640054",
+    "global": 0,
+    "x": 140.43697478991598,
+    "y": -51.25630252100841,
+    "area": "Bottom of the Well",
+    "region": null,
+    "age": "Young Link"
+   },
+   "text": "<p>Dead Hand encounter.</p>",
+   "id": 64708011,
+   "metadata": {
+    "sourceIds": [
+     "10792357661756255471"
+    ],
+    "sourceScene": "BottomOfTheWell",
+    "sourcePosition": [
+     -0.16,
+     92.31,
+     -105.06
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "DodongoCavern:Enemy_MiddleBoss_Lizalfos:12927",
+   "kind": "miniboss",
+   "name": "Lizalfos Pair",
+   "category": 64072,
+   "gameId": "11294355317777031047",
+   "gameRecord": "Object.Enemy_MiddleBoss_Lizalfos",
+   "scene": "DodongoCavern",
+   "floor": 0,
+   "position": [
+    93.715,
+    100.375,
+    -50.565
+   ],
+   "sourceIds": [
+    "11294355317777031047",
+    "142426840690835842"
+   ],
+   "where": {
+    "mapId": "64023",
+    "submapId": "640055",
+    "global": 0,
+    "x": 189.2451171875,
+    "y": -107.9169921875,
+    "area": "Dodongo's Cavern",
+    "region": null,
+    "age": "Young Link"
+   },
+   "text": "<p>Lizalfos Pair encounter.</p>",
+   "id": 64708012,
+   "metadata": {
+    "sourceIds": [
+     "11294355317777031047",
+     "142426840690835842"
+    ],
+    "sourceScene": "DodongoCavern",
+    "sourcePosition": [
+     93.715,
+     100.375,
+     -50.565
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "DodongoCavern:Enemy_MiddleBoss_Lizalfos:12925",
+   "kind": "miniboss",
+   "name": "Lizalfos Pair",
+   "category": 64072,
+   "gameId": "1539353330400110799",
+   "gameRecord": "Object.Enemy_MiddleBoss_Lizalfos",
+   "scene": "DodongoCavern",
+   "floor": 1,
+   "position": [
+    109.035,
+    116,
+    -34.75
+   ],
+   "sourceIds": [
+    "1539353330400110799",
+    "2541558834648863509"
+   ],
+   "where": {
+    "mapId": "64023",
+    "submapId": "640056",
+    "global": 0,
+    "x": 204.2060546875,
+    "y": -123.361328125,
+    "area": "Dodongo's Cavern",
+    "region": null,
+    "age": "Young Link"
+   },
+   "text": "<p>Lizalfos Pair encounter.</p>",
+   "id": 64708013,
+   "metadata": {
+    "sourceIds": [
+     "1539353330400110799",
+     "2541558834648863509"
+    ],
+    "sourceScene": "DodongoCavern",
+    "sourcePosition": [
+     109.035,
+     116,
+     -34.75
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "FireTemple:0xebc4852cbd574191",
+   "kind": "miniboss",
+   "name": "Flare Dancer",
+   "category": 64072,
+   "gameId": "16988850121550021009",
+   "gameRecord": "Object.Enemy_MiddleBoss_FlareDancer",
+   "scene": "FireTemple",
+   "floor": 0,
+   "position": [
+    -7.03,
+    102,
+    -33.31
+   ],
+   "sourceIds": [
+    "16988850121550021009"
+   ],
+   "where": {
+    "mapId": "64024",
+    "submapId": "640057",
+    "global": 0,
+    "x": 100.69318181818181,
+    "y": -93.55681818181817,
+    "area": "Fire Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Flare Dancer encounter.</p>",
+   "id": 64708014,
+   "metadata": {
+    "sourceIds": [
+     "16988850121550021009"
+    ],
+    "sourceScene": "FireTemple",
+    "sourcePosition": [
+     -7.03,
+     102,
+     -33.31
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "FireTemple:0xf4abfb38bdc1276c",
+   "kind": "miniboss",
+   "name": "Flare Dancer",
+   "category": 64072,
+   "gameId": "17630461387392231276",
+   "gameRecord": "Object.Enemy_MiddleBoss_FlareDancer",
+   "scene": "FireTemple",
+   "floor": 2,
+   "position": [
+    -71.94,
+    149.98,
+    2.42
+   ],
+   "sourceIds": [
+    "17630461387392231276"
+   ],
+   "where": {
+    "mapId": "64024",
+    "submapId": "640061",
+    "global": 0,
+    "x": 26.931818181818187,
+    "y": -134.15909090909093,
+    "area": "Fire Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Flare Dancer encounter.</p>",
+   "id": 64708015,
+   "metadata": {
+    "sourceIds": [
+     "17630461387392231276"
+    ],
+    "sourceScene": "FireTemple",
+    "sourcePosition": [
+     -71.94,
+     149.98,
+     2.42
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ForestTemple:Enemy_Stalfos_Weak:25368",
+   "kind": "miniboss",
+   "name": "Stalfos Encounter",
+   "category": 64072,
+   "gameId": "10526761513561859643",
+   "gameRecord": "Object.Enemy_Stalfos_Weak",
+   "scene": "ForestTemple",
+   "floor": 0,
+   "position": [
+    0.040000000000000036,
+    105.5,
+    -59.13
+   ],
+   "sourceIds": [
+    "10526761513561859643",
+    "1639162365107625161"
+   ],
+   "where": {
+    "mapId": "64025",
+    "submapId": "640065",
+    "global": 0,
+    "x": 131.10204081632654,
+    "y": -61.54081632653061,
+    "area": "Forest Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Stalfos Encounter encounter.</p>",
+   "id": 64708016,
+   "metadata": {
+    "sourceIds": [
+     "10526761513561859643",
+     "1639162365107625161"
+    ],
+    "sourceScene": "ForestTemple",
+    "sourcePosition": [
+     0.040000000000000036,
+     105.5,
+     -59.13
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ForestTemple:0x124c4eb93f9f58b0",
+   "kind": "miniboss",
+   "name": "Jo, Second Born",
+   "category": 64072,
+   "gameId": "1318515348456036528",
+   "gameRecord": "Object.Enemy_Poe_Joelle",
+   "scene": "ForestTemple",
+   "floor": 1,
+   "position": [
+    -19.58,
+    114.66,
+    -61.4
+   ],
+   "sourceIds": [
+    "1318515348456036528"
+   ],
+   "where": {
+    "mapId": "64025",
+    "submapId": "640066",
+    "global": 0,
+    "x": 111.08163265306122,
+    "y": -59.22448979591837,
+    "area": "Forest Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Jo, Second Born encounter.</p>",
+   "id": 64708017,
+   "metadata": {
+    "sourceIds": [
+     "1318515348456036528"
+    ],
+    "sourceScene": "ForestTemple",
+    "sourcePosition": [
+     -19.58,
+     114.66,
+     -61.4
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ForestTemple:0x137683de37a18db6",
+   "kind": "miniboss",
+   "name": "Beth, Third Born",
+   "category": 64072,
+   "gameId": "1402453324411801014",
+   "gameRecord": "Object.Enemy_Poe_Beth",
+   "scene": "ForestTemple",
+   "floor": 1,
+   "position": [
+    19.8,
+    115.43,
+    -61.25
+   ],
+   "sourceIds": [
+    "1402453324411801014"
+   ],
+   "where": {
+    "mapId": "64025",
+    "submapId": "640066",
+    "global": 0,
+    "x": 151.26530612244898,
+    "y": -59.37755102040816,
+    "area": "Forest Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Beth, Third Born encounter.</p>",
+   "id": 64708018,
+   "metadata": {
+    "sourceIds": [
+     "1402453324411801014"
+    ],
+    "sourceScene": "ForestTemple",
+    "sourcePosition": [
+     19.8,
+     115.43,
+     -61.25
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ForestTemple:0xdaa00fb5d8406818",
+   "kind": "miniboss",
+   "name": "Meg, Firstborn",
+   "category": 64072,
+   "gameId": "15753608770233591832",
+   "gameRecord": "Object.Enemy_MiddleBoss_Poe_Meg",
+   "scene": "ForestTemple",
+   "floor": 0,
+   "position": [
+    0,
+    100.07,
+    -3.5
+   ],
+   "sourceIds": [
+    "15753608770233591832"
+   ],
+   "where": {
+    "mapId": "64025",
+    "submapId": "640065",
+    "global": 0,
+    "x": 131.06122448979593,
+    "y": -118.3061224489796,
+    "area": "Forest Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Meg, Firstborn encounter.</p>",
+   "id": 64708019,
+   "metadata": {
+    "sourceIds": [
+     "15753608770233591832"
+    ],
+    "sourceScene": "ForestTemple",
+    "sourcePosition": [
+     0,
+     100.07,
+     -3.5
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ForestTemple:Enemy_Stalfos_Weak:25367",
+   "kind": "miniboss",
+   "name": "Stalfos Encounter",
+   "category": 64072,
+   "gameId": "16972820674942821596",
+   "gameRecord": "Object.Enemy_Stalfos_Weak",
+   "scene": "ForestTemple",
+   "floor": 1,
+   "position": [
+    2.3000000000000003,
+    114.51333333333332,
+    -59.300000000000004
+   ],
+   "sourceIds": [
+    "16972820674942821596",
+    "15631395890589961339",
+    "6133634013688435946"
+   ],
+   "where": {
+    "mapId": "64025",
+    "submapId": "640066",
+    "global": 0,
+    "x": 133.40816326530614,
+    "y": -61.36734693877551,
+    "area": "Forest Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Stalfos Encounter encounter.</p>",
+   "id": 64708020,
+   "metadata": {
+    "sourceIds": [
+     "16972820674942821596",
+     "15631395890589961339",
+     "6133634013688435946"
+    ],
+    "sourceScene": "ForestTemple",
+    "sourcePosition": [
+     2.3000000000000003,
+     114.51333333333332,
+     -59.300000000000004
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ForestTemple:0x0990b181d8f4b622",
+   "kind": "miniboss",
+   "name": "Amy, Fourth Born",
+   "category": 64072,
+   "gameId": "689245914236499490",
+   "gameRecord": "Object.Enemy_Poe_Amy",
+   "scene": "ForestTemple",
+   "floor": 0,
+   "position": [
+    58.98,
+    104.11,
+    0
+   ],
+   "sourceIds": [
+    "689245914236499490"
+   ],
+   "where": {
+    "mapId": "64025",
+    "submapId": "640065",
+    "global": 0,
+    "x": 191.24489795918367,
+    "y": -121.87755102040816,
+    "area": "Forest Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Amy, Fourth Born encounter.</p>",
+   "id": 64708021,
+   "metadata": {
+    "sourceIds": [
+     "689245914236499490"
+    ],
+    "sourceScene": "ForestTemple",
+    "sourcePosition": [
+     58.98,
+     104.11,
+     0
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "GerudoFortress_Adult:0xbe8cc954382545d3",
+   "kind": "miniboss",
+   "name": "Gerudo Guard",
+   "category": 64072,
+   "gameId": "13730570727502202323",
+   "gameRecord": "Object.Enemy_MiddleBoss_GerudoThief_04",
+   "scene": "GerudoFortress_Adult",
+   "floor": null,
+   "position": [
+    22.54,
+    110,
+    -79.14
+   ],
+   "sourceIds": [
+    "13730570727502202323"
+   ],
+   "where": {
+    "mapId": "65000",
+    "submapId": "650001",
+    "global": 0,
+    "x": 74.75167641470775,
+    "y": -123.21985698760636,
+    "area": "Gerudo's Fortress",
+    "region": "GerudoFortress",
+    "age": "Adult Link"
+   },
+   "text": "<p>Gerudo Guard encounter.</p>",
+   "id": 64708022,
+   "metadata": {
+    "sourceIds": [
+     "13730570727502202323"
+    ],
+    "sourceScene": "GerudoFortress_Adult",
+    "sourcePosition": [
+     22.54,
+     110,
+     -79.14
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "GerudoFortress_Adult:0xffd23a4fb97172e3",
+   "kind": "miniboss",
+   "name": "Gerudo Guard",
+   "category": 64072,
+   "gameId": "18433860338868908771",
+   "gameRecord": "Object.Enemy_MiddleBoss_GerudoThief_03",
+   "scene": "GerudoFortress_Adult",
+   "floor": null,
+   "position": [
+    34.01,
+    119,
+    -29
+   ],
+   "sourceIds": [
+    "18433860338868908771"
+   ],
+   "where": {
+    "mapId": "65000",
+    "submapId": "650001",
+    "global": 0,
+    "x": 75.63832284021905,
+    "y": -127.09646688864225,
+    "area": "Gerudo's Fortress",
+    "region": "GerudoFortress",
+    "age": "Adult Link"
+   },
+   "text": "<p>Gerudo Guard encounter.</p>",
+   "id": 64708023,
+   "metadata": {
+    "sourceIds": [
+     "18433860338868908771"
+    ],
+    "sourceScene": "GerudoFortress_Adult",
+    "sourcePosition": [
+     34.01,
+     119,
+     -29
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "GerudoFortress_Adult:0x2cdf6faa5bb18cd9",
+   "kind": "miniboss",
+   "name": "Gerudo Guard",
+   "category": 64072,
+   "gameId": "3233425834948791513",
+   "gameRecord": "Object.Enemy_MiddleBoss_GerudoThief_02",
+   "scene": "GerudoFortress_Adult",
+   "floor": null,
+   "position": [
+    63.63,
+    120.5,
+    -112.59
+   ],
+   "sourceIds": [
+    "3233425834948791513"
+   ],
+   "where": {
+    "mapId": "65000",
+    "submapId": "650001",
+    "global": 0,
+    "x": 77.9279886748873,
+    "y": -120.6336463535886,
+    "area": "Gerudo's Fortress",
+    "region": "GerudoFortress",
+    "age": "Adult Link"
+   },
+   "text": "<p>Gerudo Guard encounter.</p>",
+   "id": 64708024,
+   "metadata": {
+    "sourceIds": [
+     "3233425834948791513"
+    ],
+    "sourceScene": "GerudoFortress_Adult",
+    "sourcePosition": [
+     63.63,
+     120.5,
+     -112.59
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "GerudoFortress_Adult:0x2e80b41e9ebe9343",
+   "kind": "miniboss",
+   "name": "Gerudo Guard",
+   "category": 64072,
+   "gameId": "3350876166368957251",
+   "gameRecord": "Object.Enemy_MiddleBoss_GerudoThief",
+   "scene": "GerudoFortress_Adult",
+   "floor": null,
+   "position": [
+    23.27,
+    102.5,
+    -66.84
+   ],
+   "sourceIds": [
+    "3350876166368957251"
+   ],
+   "where": {
+    "mapId": "65000",
+    "submapId": "650001",
+    "global": 0,
+    "x": 74.80810639645345,
+    "y": -124.17084027007029,
+    "area": "Gerudo's Fortress",
+    "region": "GerudoFortress",
+    "age": "Adult Link"
+   },
+   "text": "<p>Gerudo Guard encounter.</p>",
+   "id": 64708025,
+   "metadata": {
+    "sourceIds": [
+     "3350876166368957251"
+    ],
+    "sourceScene": "GerudoFortress_Adult",
+    "sourcePosition": [
+     23.27,
+     102.5,
+     -66.84
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "IceCavern:0xd6b7c249e2fea293",
+   "kind": "miniboss",
+   "name": "White Wolfos",
+   "category": 64072,
+   "gameId": "15472048667451368083",
+   "gameRecord": "Object.Enemy_Wolfos_White",
+   "scene": "IceCavern",
+   "floor": 0,
+   "position": [
+    -46.22,
+    109.68,
+    40
+   ],
+   "sourceIds": [
+    "15472048667451368083"
+   ],
+   "where": {
+    "mapId": "64026",
+    "submapId": "640076",
+    "global": 0,
+    "x": 78.1567944250871,
+    "y": -152.390243902439,
+    "area": "Ice Cavern",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>White Wolfos encounter.</p>",
+   "id": 64708026,
+   "metadata": {
+    "sourceIds": [
+     "15472048667451368083"
+    ],
+    "sourceScene": "IceCavern",
+    "sourcePosition": [
+     -46.22,
+     109.68,
+     40
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "InsideJabuJabuBelly:0xe86cb93bc02db550",
+   "kind": "miniboss",
+   "name": "Big Octo",
+   "category": 64072,
+   "gameId": "16747964780562462032",
+   "gameRecord": "Object.Enemy_MiddleBoss_BigOcto",
+   "scene": "InsideJabuJabuBelly",
+   "floor": -1,
+   "position": [
+    -38.46,
+    84.89,
+    -90.45
+   ],
+   "sourceIds": [
+    "16747964780562462032"
+   ],
+   "where": {
+    "mapId": "64027",
+    "submapId": "640079",
+    "global": 0,
+    "x": 99.44817073170731,
+    "y": -129.1814024390244,
+    "area": "Inside Jabu-Jabu's Belly",
+    "region": null,
+    "age": "Young Link"
+   },
+   "text": "<p>Big Octo encounter.</p>",
+   "id": 64708027,
+   "metadata": {
+    "sourceIds": [
+     "16747964780562462032"
+    ],
+    "sourceScene": "InsideJabuJabuBelly",
+    "sourcePosition": [
+     -38.46,
+     84.89,
+     -90.45
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ShadowTemple:0x5bcbcf1cc0d56a13",
+   "kind": "miniboss",
+   "name": "Dead Hand",
+   "category": 64072,
+   "gameId": "6614608200124951059",
+   "gameRecord": "Object.Enemy_DeadHand",
+   "scene": "ShadowTemple",
+   "floor": -1,
+   "position": [
+    -75.02,
+    90.43,
+    -10.17
+   ],
+   "sourceIds": [
+    "6614608200124951059"
+   ],
+   "where": {
+    "mapId": "64029",
+    "submapId": "640089",
+    "global": 0,
+    "x": 97.38799076212472,
+    "y": -118.08660508083142,
+    "area": "Shadow Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Dead Hand encounter.</p>",
+   "id": 64708028,
+   "metadata": {
+    "sourceIds": [
+     "6614608200124951059"
+    ],
+    "sourceScene": "ShadowTemple",
+    "sourcePosition": [
+     -75.02,
+     90.43,
+     -10.17
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "SpiritTemple:0xb3407d11a768ae6c",
+   "kind": "miniboss",
+   "name": "Iron Knuckle",
+   "category": 64072,
+   "gameId": "12916461246075154028",
+   "gameRecord": "Object.Enemy_IronKnuckle_Silver",
+   "scene": "SpiritTemple",
+   "floor": 2,
+   "position": [
+    55.8,
+    132.1,
+    28.45
+   ],
+   "sourceIds": [
+    "12916461246075154028"
+   ],
+   "where": {
+    "mapId": "64030",
+    "submapId": "640096",
+    "global": 0,
+    "x": 197.05940594059408,
+    "y": -192.91336633663366,
+    "area": "Spirit Temple",
+    "region": null,
+    "age": null
+   },
+   "text": "<p>Iron Knuckle encounter.</p>",
+   "id": 64708029,
+   "metadata": {
+    "sourceIds": [
+     "12916461246075154028"
+    ],
+    "sourceScene": "SpiritTemple",
+    "sourcePosition": [
+     55.8,
+     132.1,
+     28.45
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "SpiritTemple:0xc0da347b6bad5545",
+   "kind": "miniboss",
+   "name": "Iron Knuckle - Nabooru",
+   "category": 64072,
+   "gameId": "13896477304897230149",
+   "gameRecord": "Object.Enemy_MiddleBoss_IronKnuckle_Nabooru",
+   "scene": "SpiritTemple",
+   "floor": 2,
+   "position": [
+    0,
+    135.02,
+    -95.5
+   ],
+   "sourceIds": [
+    "13896477304897230149"
+   ],
+   "where": {
+    "mapId": "64030",
+    "submapId": "640096",
+    "global": 0,
+    "x": 128,
+    "y": -62.777,
+    "area": "Spirit Temple",
+    "region": null,
+    "age": null
+   },
+   "text": "<p>Iron Knuckle - Nabooru encounter.</p><p>Shown at the boss-room entrance because the encounter position is not drawn on this floor’s artwork.</p>",
+   "id": 64708030,
+   "reference": "boss-room entrance",
+   "metadata": {
+    "sourceIds": [
+     "13896477304897230149"
+    ],
+    "sourceScene": "SpiritTemple",
+    "sourcePosition": [
+     0,
+     135.02,
+     -95.5
+    ],
+    "locationReference": "boss-room entrance"
+   }
+  },
+  {
+   "key": "SpiritTemple:0x6e0f7c7c3a1593c4",
+   "kind": "miniboss",
+   "name": "Iron Knuckle",
+   "category": 64072,
+   "gameId": "7930694341815014340",
+   "gameRecord": "Object.Enemy_IronKnuckle_Silver",
+   "scene": "SpiritTemple",
+   "floor": 2,
+   "position": [
+    -55.8,
+    132.1,
+    28.9
+   ],
+   "sourceIds": [
+    "7930694341815014340"
+   ],
+   "where": {
+    "mapId": "64030",
+    "submapId": "640096",
+    "global": 0,
+    "x": 58.94059405940594,
+    "y": -193.47029702970298,
+    "area": "Spirit Temple",
+    "region": null,
+    "age": null
+   },
+   "text": "<p>Iron Knuckle encounter.</p>",
+   "id": 64708031,
+   "metadata": {
+    "sourceIds": [
+     "7930694341815014340"
+    ],
+    "sourceScene": "SpiritTemple",
+    "sourcePosition": [
+     -55.8,
+     132.1,
+     28.9
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "WaterTemple:0x4974202072beaec6",
+   "kind": "miniboss",
+   "name": "Dark Link",
+   "category": 64072,
+   "gameId": "5292890785803316934",
+   "gameRecord": "Object.Enemy_MiddleBoss_DarkLink",
+   "scene": "WaterTemple",
+   "floor": 2,
+   "position": [
+    -78.5,
+    126.3,
+    -63.5
+   ],
+   "sourceIds": [
+    "5292890785803316934"
+   ],
+   "where": {
+    "mapId": "64031",
+    "submapId": "640110",
+    "global": 0,
+    "x": 76.19391634980988,
+    "y": -110.41444866920152,
+    "area": "Water Temple",
+    "region": null,
+    "age": "Adult Link"
+   },
+   "text": "<p>Dark Link encounter.</p>",
+   "id": 64708032,
+   "metadata": {
+    "sourceIds": [
+     "5292890785803316934"
+    ],
+    "sourceScene": "WaterTemple",
+    "sourcePosition": [
+     -78.5,
+     126.3,
+     -63.5
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "DeathMountainCrater:-17.38:52.58",
+   "kind": "grotto",
+   "id": 64709001,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 156.12275398717756,
+    "y": -84.41751494610747,
+    "area": "Death Mountain Crater",
+    "region": "DeathMountainCrater",
+    "age": null
+   },
+   "gameId": "10799327103995449978",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "10792296882792585023",
+    "10799327103995449978"
+   ],
+   "position": [
+    -17.38138198852539,
+    71.88801574707031,
+    52.57741165161133
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "10792296882792585023",
+     "10799327103995449978"
+    ],
+    "sourceScene": "DeathMountainCrater",
+    "sourcePosition": [
+     -17.38138198852539,
+     71.88801574707031,
+     52.57741165161133
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "DeathMountainCrater:-50.85:-0.20",
+   "kind": "grotto",
+   "id": 64709002,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 151.4621334116831,
+    "y": -77.06506238600198,
+    "area": "Death Mountain Crater",
+    "region": "DeathMountainCrater",
+    "age": null
+   },
+   "gameId": "3171237362325360447",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "1013996050831332476",
+    "3171237362325360447"
+   ],
+   "position": [
+    -50.847137451171875,
+    74.19491577148438,
+    -0.19724826514720917
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "1013996050831332476",
+     "3171237362325360447"
+    ],
+    "sourceScene": "DeathMountainCrater",
+    "sourcePosition": [
+     -50.847137451171875,
+     74.19491577148438,
+     -0.19724826514720917
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "DeathMountainTrail:-1.65:-26.12",
+   "kind": "grotto",
+   "id": 64709003,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 157.23777801650837,
+    "y": -99.93396506922006,
+    "area": "Death Mountain Trail",
+    "region": "DeathMountainTrail",
+    "age": null
+   },
+   "gameId": "13732174793599241120",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "356888223515663125",
+    "13732174793599241120"
+   ],
+   "position": [
+    -1.6493794918060303,
+    62.05399703979492,
+    -26.11832046508789
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "356888223515663125",
+     "13732174793599241120"
+    ],
+    "sourceScene": "DeathMountainTrail",
+    "sourcePosition": [
+     -1.6493794918060303,
+     62.05399703979492,
+     -26.11832046508789
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "DeathMountainTrail:-13.40:-6.80",
+   "kind": "grotto",
+   "id": 64709004,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 156.43815578049714,
+    "y": -101.24774479695186,
+    "area": "Death Mountain Trail",
+    "region": "DeathMountainTrail",
+    "age": null
+   },
+   "gameId": "13937360197648502181",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "7150589082423541809",
+    "13937360197648502181"
+   ],
+   "position": [
+    -13.399988174438477,
+    67.09500122070312,
+    -6.799990653991699
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "7150589082423541809",
+     "13937360197648502181"
+    ],
+    "sourceScene": "DeathMountainTrail",
+    "sourcePosition": [
+     -13.399988174438477,
+     67.09500122070312,
+     -6.799990653991699
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "DesertColossus:-115.50:-26.73",
+   "kind": "grotto",
+   "id": 64709005,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 37.807154804198426,
+    "y": -117.84057001942966,
+    "area": "Desert Colossus",
+    "region": "DesertColossus",
+    "age": null
+   },
+   "gameId": "4148621004158838590",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "7841148478469558868",
+    "4148621004158838590"
+   ],
+   "position": [
+    -115.50041961669922,
+    80.27532958984375,
+    -26.732942581176758
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "7841148478469558868",
+     "4148621004158838590"
+    ],
+    "sourceScene": "DesertColossus",
+    "sourcePosition": [
+     -115.50041961669922,
+     80.27532958984375,
+     -26.732942581176758
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "GerudoFortress:33.15:-67.80",
+   "kind": "grotto",
+   "id": 64709006,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650001",
+    "global": 0,
+    "x": 75.57212040018707,
+    "y": -124.09683579120467,
+    "area": "Gerudo's Fortress",
+    "region": "GerudoFortress",
+    "age": "Adult Link"
+   },
+   "gameId": "1007458060981609430",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "1007458060981609430"
+   ],
+   "position": [
+    33.15357971191406,
+    92.52799987792969,
+    -67.79717254638672
+   ],
+   "text": "<p>Underground grotto entrance.</p><p>Inside: Enemies.</p>",
+   "metadata": {
+    "sourceIds": [
+     "1007458060981609430"
+    ],
+    "sourceScene": "GerudoFortress",
+    "sourcePosition": [
+     33.15357971191406,
+     92.52799987792969,
+     -67.79717254638672
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "GerudoValley:-45.27:-29.03",
+   "kind": "grotto",
+   "id": 64709007,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 92.73431178598089,
+    "y": -137.02204551653477,
+    "area": "Gerudo Valley",
+    "region": "GerudoValley",
+    "age": null
+   },
+   "gameId": "10279144811786746411",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "4743015330252499379",
+    "10279144811786746411"
+   ],
+   "position": [
+    -45.27340316772461,
+    87.419921875,
+    -29.028610229492188
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "4743015330252499379",
+     "10279144811786746411"
+    ],
+    "sourceScene": "GerudoValley",
+    "sourcePosition": [
+     -45.27340316772461,
+     87.419921875,
+     -29.028610229492188
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "GerudoValley:11.45:36.45",
+   "kind": "grotto",
+   "id": 64709008,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 98.97192110231714,
+    "y": -144.22481123178855,
+    "area": "Gerudo Valley",
+    "region": "GerudoValley",
+    "age": null
+   },
+   "gameId": "160421199299362672",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "4851810482868363546",
+    "160421199299362672"
+   ],
+   "position": [
+    11.452439308166504,
+    -15.10247802734375,
+    36.45343017578125
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "4851810482868363546",
+     "160421199299362672"
+    ],
+    "sourceScene": "GerudoValley",
+    "sourcePosition": [
+     11.452439308166504,
+     -15.10247802734375,
+     36.45343017578125
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "GoronCity:-42.20:29.29",
+   "kind": "grotto",
+   "id": 64709009,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 130.80221050504565,
+    "y": -84.31191998099752,
+    "area": "Goron City",
+    "region": "GoronCity",
+    "age": null
+   },
+   "gameId": "5683923697911511944",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "16587937380070306717",
+    "5683923697911511944"
+   ],
+   "position": [
+    -42.203033447265625,
+    98.57105255126953,
+    29.290002822875977
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "16587937380070306717",
+     "5683923697911511944"
+    ],
+    "sourceScene": "GoronCity",
+    "sourcePosition": [
+     -42.203033447265625,
+     98.57105255126953,
+     29.290002822875977
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "Graveyard:-4.02:-10.92",
+   "kind": "grave",
+   "id": 64709010,
+   "name": "Dampé's Grave",
+   "category": 64035,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650001",
+    "global": 0,
+    "x": 166.80001968095704,
+    "y": -120.62041888845653,
+    "area": "Graveyard",
+    "region": "Graveyard",
+    "age": "Adult Link"
+   },
+   "gameId": "6836600866498450360",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "6836600866498450360"
+   ],
+   "position": [
+    -4.015982151031494,
+    87.14600372314453,
+    -10.92300033569336
+   ],
+   "text": "<p>Entrance to a grave interior.</p>",
+   "metadata": {
+    "sourceIds": [
+     "6836600866498450360"
+    ],
+    "sourceScene": "Graveyard",
+    "sourcePosition": [
+     -4.015982151031494,
+     87.14600372314453,
+     -10.92300033569336
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "Graveyard:21.39:23.15",
+   "kind": "grave",
+   "id": 64709011,
+   "name": "Grave",
+   "category": 64035,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 168.87155568124143,
+    "y": -123.40208496159775,
+    "area": "Graveyard",
+    "region": "Graveyard",
+    "age": null
+   },
+   "gameId": "1552768621813039500",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "12118839107682328769",
+    "1552768621813039500"
+   ],
+   "position": [
+    21.394001007080078,
+    90.68999481201172,
+    23.15399932861328
+   ],
+   "text": "<p>Entrance to a grave interior.</p>",
+   "metadata": {
+    "sourceIds": [
+     "12118839107682328769",
+     "1552768621813039500"
+    ],
+    "sourceScene": "Graveyard",
+    "sourcePosition": [
+     21.394001007080078,
+     90.68999481201172,
+     23.15399932861328
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "Graveyard:21.47:11.20",
+   "kind": "grave",
+   "id": 64709012,
+   "name": "Grave",
+   "category": 64035,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 168.8777514046478,
+    "y": -122.42629380542544,
+    "area": "Graveyard",
+    "region": "Graveyard",
+    "age": null
+   },
+   "gameId": "3956085989887970442",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "10159032155291869896",
+    "3956085989887970442"
+   ],
+   "position": [
+    21.469999313354492,
+    91.18900299072266,
+    11.199999809265137
+   ],
+   "text": "<p>Entrance to a grave interior.</p>",
+   "metadata": {
+    "sourceIds": [
+     "10159032155291869896",
+     "3956085989887970442"
+    ],
+    "sourceScene": "Graveyard",
+    "sourcePosition": [
+     21.469999313354492,
+     91.18900299072266,
+     11.199999809265137
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "Graveyard:4.00:5.75",
+   "kind": "grave",
+   "id": 64709013,
+   "name": "Grave",
+   "category": 64035,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 167.45351856366676,
+    "y": -121.98141662382491,
+    "area": "Graveyard",
+    "region": "Graveyard",
+    "age": null
+   },
+   "gameId": "17793074819353723002",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "13901520038487073240",
+    "17793074819353723002"
+   ],
+   "position": [
+    4,
+    88.93900299072266,
+    5.75
+   ],
+   "text": "<p>Entrance to a grave interior.</p>",
+   "metadata": {
+    "sourceIds": [
+     "13901520038487073240",
+     "17793074819353723002"
+    ],
+    "sourceScene": "Graveyard",
+    "sourcePosition": [
+     4,
+     88.93900299072266,
+     5.75
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleCastle:35.85:-106.25",
+   "kind": "grotto",
+   "id": 64709014,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 0,
+    "x": 126.85360301689668,
+    "y": -96.94543088109462,
+    "area": "Hyrule Castle",
+    "region": "HyruleCastle",
+    "age": "Young Link"
+   },
+   "gameId": "8177967075314864737",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "8177967075314864737"
+   ],
+   "position": [
+    35.85099411010742,
+    100.13810729980469,
+    -106.24500274658203
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "8177967075314864737"
+    ],
+    "sourceScene": "HyruleCastle",
+    "sourcePosition": [
+     35.85099411010742,
+     100.13810729980469,
+     -106.24500274658203
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:-13.23:169.49",
+   "kind": "grotto",
+   "id": 64709015,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 133.94057803079838,
+    "y": -144.11125168923098,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "9223027913834678777",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "1507829693667899463",
+    "9223027913834678777"
+   ],
+   "position": [
+    -13.226840019226074,
+    137.72198486328125,
+    169.4929962158203
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "1507829693667899463",
+     "9223027913834678777"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     -13.226840019226074,
+     137.72198486328125,
+     169.4929962158203
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:-156.07:338.43",
+   "kind": "grotto",
+   "id": 64709016,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 123.68893768414823,
+    "y": -156.24134094774342,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "2822224417231899385",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "9897989662871963267",
+    "2822224417231899385"
+   ],
+   "position": [
+    -156.06956481933594,
+    128.12152099609375,
+    338.42645263671875
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "9897989662871963267",
+     "2822224417231899385"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     -156.06956481933594,
+     128.12152099609375,
+     338.42645263671875
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:-204.73:455.48",
+   "kind": "grotto",
+   "id": 64709017,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 120.19679387622591,
+    "y": -164.64620921736918,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "12667006924438289369",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "14043397527432620679",
+    "12667006924438289369"
+   ],
+   "position": [
+    -204.7278594970703,
+    101.80299377441406,
+    455.4794616699219
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "14043397527432620679",
+     "12667006924438289369"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     -204.7278594970703,
+     101.80299377441406,
+     455.4794616699219
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:-258.32:137.92",
+   "kind": "grotto",
+   "id": 64709018,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 116.35077273532639,
+    "y": -141.84440159477674,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "14314829290652596347",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "11260816145378716105",
+    "14314829290652596347"
+   ],
+   "position": [
+    -258.31695556640625,
+    123.73899841308594,
+    137.92300415039062
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "11260816145378716105",
+     "14314829290652596347"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     -258.31695556640625,
+     123.73899841308594,
+     137.92300415039062
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:-36.41:290.70",
+   "kind": "grotto",
+   "id": 64709019,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 0,
+    "x": 132.27692302644536,
+    "y": -152.8142450546416,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": "Young Link"
+   },
+   "gameId": "7974006201974400958",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "7974006201974400958"
+   ],
+   "position": [
+    -36.40761947631836,
+    136.55560302734375,
+    290.69793701171875
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "7974006201974400958"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     -36.40761947631836,
+     136.55560302734375,
+     290.69793701171875
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:-97.98:17.11",
+   "kind": "grotto",
+   "id": 64709020,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 127.8581677747604,
+    "y": -133.16941884724807,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "12823774751063589184",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "15768561658186400269",
+    "12823774751063589184"
+   ],
+   "position": [
+    -97.97698974609375,
+    132.38401794433594,
+    17.10816192626953
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "15768561658186400269",
+     "12823774751063589184"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     -97.97698974609375,
+     132.38401794433594,
+     17.10816192626953
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:163.27:27.38",
+   "kind": "grotto",
+   "id": 64709021,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 146.6077528617734,
+    "y": -133.90731738197306,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "8003337806360124448",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "17969267121367573732",
+    "8003337806360124448"
+   ],
+   "position": [
+    163.27308654785156,
+    139.11524963378906,
+    27.384735107421875
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "17969267121367573732",
+     "8003337806360124448"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     163.27308654785156,
+     139.11524963378906,
+     27.384735107421875
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:179.82:190.50",
+   "kind": "grotto",
+   "id": 64709022,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 147.7952265291957,
+    "y": -145.61946659372785,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "3741753352693424085",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "5620291330612389394",
+    "3741753352693424085"
+   ],
+   "position": [
+    179.8189239501953,
+    142.72801208496094,
+    190.49761962890625
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "5620291330612389394",
+     "3741753352693424085"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     179.8189239501953,
+     142.72801208496094,
+     190.49761962890625
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:39.87:26.58",
+   "kind": "grotto",
+   "id": 64709023,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 137.75102711873376,
+    "y": -133.8495492830974,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "205461576006428732",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "12110133613665364374",
+    "205461576006428732"
+   ],
+   "position": [
+    39.866607666015625,
+    134.1700439453125,
+    26.580209732055664
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "12110133613665364374",
+     "205461576006428732"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     39.866607666015625,
+     134.1700439453125,
+     26.580209732055664
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "HyruleField:39.92:342.30",
+   "kind": "grotto",
+   "id": 64709024,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 137.75497359922616,
+    "y": -156.51931610421684,
+    "area": "Hyrule Field",
+    "region": "HyruleField",
+    "age": null
+   },
+   "gameId": "12714095215691991476",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "14588186227505291184",
+    "12714095215691991476"
+   ],
+   "position": [
+    39.92159652709961,
+    130.6124725341797,
+    342.2977600097656
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "14588186227505291184",
+     "12714095215691991476"
+    ],
+    "sourceScene": "HyruleField",
+    "sourcePosition": [
+     39.92159652709961,
+     130.6124725341797,
+     342.2977600097656
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "KakarikoVillage:-19.98:66.00",
+   "kind": "grotto",
+   "id": 64709025,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 157.63064360131114,
+    "y": -121.64626353522787,
+    "area": "Kakariko Village",
+    "region": "KakarikoVillage",
+    "age": null
+   },
+   "gameId": "10955669709983343745",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "16297646916605167815",
+    "10955669709983343745",
+    "15406717908239056709"
+   ],
+   "position": [
+    -19.98046875,
+    87.91822814941406,
+    65.99971771240234
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "16297646916605167815",
+     "10955669709983343745",
+     "15406717908239056709"
+    ],
+    "sourceScene": "KakarikoVillage",
+    "sourcePosition": [
+     -19.98046875,
+     87.91822814941406,
+     65.99971771240234
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "KakarikoVillage:-26.80:12.37",
+   "kind": "grotto",
+   "id": 64709026,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 156.89956257369894,
+    "y": -115.89180331746354,
+    "area": "Kakariko Village",
+    "region": "KakarikoVillage",
+    "age": null
+   },
+   "gameId": "14756749351373088348",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "10586853970526761618",
+    "14756749351373088348",
+    "11641649714862641008"
+   ],
+   "position": [
+    -26.795080184936523,
+    82.89299774169922,
+    12.37279224395752
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "10586853970526761618",
+     "14756749351373088348",
+     "11641649714862641008"
+    ],
+    "sourceScene": "KakarikoVillage",
+    "sourcePosition": [
+     -26.795080184936523,
+     82.89299774169922,
+     12.37279224395752
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "KokiriForest:-51.93:-62.82",
+   "kind": "grotto",
+   "id": 64709027,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 156.3768820691834,
+    "y": -175.50159956098526,
+    "area": "Kokiri Forest",
+    "region": "KokiriForest",
+    "age": null
+   },
+   "gameId": "2935177881543772878",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "850711382251233265",
+    "2935177881543772878"
+   ],
+   "position": [
+    -51.934165954589844,
+    107.45399475097656,
+    -62.82252883911133
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "850711382251233265",
+     "2935177881543772878"
+    ],
+    "sourceScene": "KokiriForest",
+    "sourcePosition": [
+     -51.934165954589844,
+     107.45399475097656,
+     -62.82252883911133
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "LostWood:20.50:-75.65",
+   "kind": "grotto",
+   "id": 64709028,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 184.05199539259854,
+    "y": -164.94837930300147,
+    "area": "Lost Woods",
+    "region": "LostWood",
+    "age": null
+   },
+   "gameId": "10196777967846373583",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "2141617013942912789",
+    "10196777967846373583"
+   ],
+   "position": [
+    20.500001907348633,
+    86.27104949951172,
+    -75.6500015258789
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "2141617013942912789",
+     "10196777967846373583"
+    ],
+    "sourceScene": "LostWood",
+    "sourcePosition": [
+     20.500001907348633,
+     86.27104949951172,
+     -75.6500015258789
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "LostWood:27.79:-28.27",
+   "kind": "grotto",
+   "id": 64709029,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 184.4889266415763,
+    "y": -167.79074298611667,
+    "area": "Lost Woods",
+    "region": "LostWood",
+    "age": null
+   },
+   "gameId": "3612217136114697157",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "18144466763619955250",
+    "3612217136114697157"
+   ],
+   "position": [
+    27.791507720947266,
+    86.27300262451172,
+    -28.265392303466797
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "18144466763619955250",
+     "3612217136114697157"
+    ],
+    "sourceScene": "LostWood",
+    "sourcePosition": [
+     27.791507720947266,
+     86.27300262451172,
+     -28.265392303466797
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "LostWood:3.80:-47.50",
+   "kind": "grotto",
+   "id": 64709030,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 183.0513213913517,
+    "y": -166.63695589632601,
+    "area": "Lost Woods",
+    "region": "LostWood",
+    "age": null
+   },
+   "gameId": "7567035764371553012",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "4242047569176892190",
+    "7567035764371553012"
+   ],
+   "position": [
+    3.8007607460021973,
+    86.34819030761719,
+    -47.5
+   ],
+   "text": "<p>Underground grotto entrance.</p><p>Inside: Enemies.</p>",
+   "metadata": {
+    "sourceIds": [
+     "4242047569176892190",
+     "7567035764371553012"
+    ],
+    "sourceScene": "LostWood",
+    "sourcePosition": [
+     3.8007607460021973,
+     86.34819030761719,
+     -47.5
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "SacredForestMeadow:-1.63:51.16",
+   "kind": "grotto",
+   "id": 64709031,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 195.73124757294016,
+    "y": -166.86177500107868,
+    "area": "Sacred Forest Meadow",
+    "region": "SacredForestMeadow",
+    "age": null
+   },
+   "gameId": "14976789418337681116",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "8805402523498263080",
+    "14976789418337681116"
+   ],
+   "position": [
+    -1.6318252086639404,
+    86.27300262451172,
+    51.16453552246094
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "8805402523498263080",
+     "14976789418337681116"
+    ],
+    "sourceScene": "SacredForestMeadow",
+    "sourcePosition": [
+     -1.6318252086639404,
+     86.27300262451172,
+     51.16453552246094
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "SacredForestMeadow:-4.15:1.92",
+   "kind": "grotto",
+   "id": 64709032,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 195.53184128137556,
+    "y": -162.96670339592126,
+    "area": "Sacred Forest Meadow",
+    "region": "SacredForestMeadow",
+    "age": null
+   },
+   "gameId": "1013058816642268154",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "7135074649447476038",
+    "1013058816642268154"
+   ],
+   "position": [
+    -4.151102542877197,
+    88.21476745605469,
+    1.9202908277511597
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "7135074649447476038",
+     "1013058816642268154"
+    ],
+    "sourceScene": "SacredForestMeadow",
+    "sourcePosition": [
+     -4.151102542877197,
+     88.21476745605469,
+     1.9202908277511597
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "SacredForestMeadow:1.33:-85.47",
+   "kind": "grotto",
+   "id": 64709033,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 195.9659755498582,
+    "y": -156.05446481167365,
+    "area": "Sacred Forest Meadow",
+    "region": "SacredForestMeadow",
+    "age": null
+   },
+   "gameId": "15540833058353196286",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "8981646470992600242",
+    "15540833058353196286"
+   ],
+   "position": [
+    1.3337024450302124,
+    100.22439575195312,
+    -85.46910858154297
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "8981646470992600242",
+     "15540833058353196286"
+    ],
+    "sourceScene": "SacredForestMeadow",
+    "sourcePosition": [
+     1.3337024450302124,
+     100.22439575195312,
+     -85.46910858154297
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ZoraDomain:16.99:-18.26",
+   "kind": "grotto",
+   "id": 64709034,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 192.92928310051263,
+    "y": -139.5363862303152,
+    "area": "Zora's Domain",
+    "region": "ZoraDomain",
+    "age": null
+   },
+   "gameId": "2500851415993976937",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "1882497000747909496",
+    "2500851415993976937",
+    "12819609315038604664"
+   ],
+   "position": [
+    16.986581802368164,
+    63.128509521484375,
+    -18.260669708251953
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "1882497000747909496",
+     "2500851415993976937",
+     "12819609315038604664"
+    ],
+    "sourceScene": "ZoraDomain",
+    "sourcePosition": [
+     16.986581802368164,
+     63.128509521484375,
+     -18.260669708251953
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ZoraRiver:-15.74:14.83",
+   "kind": "grotto",
+   "id": 64709035,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 166.29358814642663,
+    "y": -140.99046465240016,
+    "area": "Zora's River",
+    "region": "ZoraRiver",
+    "age": null
+   },
+   "gameId": "2371502001336611423",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "722619129983099297",
+    "2371502001336611423"
+   ],
+   "position": [
+    -15.74454116821289,
+    78.08500671386719,
+    14.834365844726562
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "722619129983099297",
+     "2371502001336611423"
+    ],
+    "sourceScene": "ZoraRiver",
+    "sourcePosition": [
+     -15.74454116821289,
+     78.08500671386719,
+     14.834365844726562
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ZoraRiver:-78.05:-16.79",
+   "kind": "grotto",
+   "id": 64709036,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 160.1506015841809,
+    "y": -137.86840765298737,
+    "area": "Zora's River",
+    "region": "ZoraRiver",
+    "age": null
+   },
+   "gameId": "18239553011123515506",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "13942547872238141714",
+    "18239553011123515506"
+   ],
+   "position": [
+    -78.05296325683594,
+    85.55696868896484,
+    -16.79094123840332
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "13942547872238141714",
+     "18239553011123515506"
+    ],
+    "sourceScene": "ZoraRiver",
+    "sourcePosition": [
+     -78.05296325683594,
+     85.55696868896484,
+     -16.79094123840332
+    ],
+    "locationReference": null
+   }
+  },
+  {
+   "key": "ZoraRiver:5.18:-16.27",
+   "kind": "grotto",
+   "id": 64709037,
+   "name": "Grotto",
+   "category": 64034,
+   "where": {
+    "mapId": "65000",
+    "submapId": "650000",
+    "global": 1,
+    "x": 168.3561534551058,
+    "y": -137.9193942410289,
+    "area": "Zora's River",
+    "region": "ZoraRiver",
+    "age": null
+   },
+   "gameId": "1910885835868387410",
+   "gameRecord": "Actor.DestinationAnchor",
+   "sourceIds": [
+    "3560899062704675476",
+    "1910885835868387410"
+   ],
+   "position": [
+    5.176095485687256,
+    81.36354064941406,
+    -16.274465560913086
+   ],
+   "text": "<p>Underground grotto entrance.</p>",
+   "metadata": {
+    "sourceIds": [
+     "3560899062704675476",
+     "1910885835868387410"
+    ],
+    "sourceScene": "ZoraRiver",
+    "sourcePosition": [
+     5.176095485687256,
+     81.36354064941406,
+     -16.274465560913086
+    ],
+    "locationReference": null
+   }
+  }
+ ]
+}

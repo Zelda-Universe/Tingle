@@ -13,9 +13,9 @@ function communityChanges($db,$prefix,$editor,$game='',$userId=null,$cursor='',$
     c.short_name AS game,c.name AS gameName,r.created AS sortTime,'settings' AS revisionType".$emptyTalk."
     FROM `{$prefix}map_revision` r JOIN `{$prefix}container` c ON c.id=r.container_id LEFT JOIN `{$prefix}user` u ON u.id=r.user_id
     WHERE c.visible=1 AND r.kind IN ('game','map','category','layout','map_order')";
-  // Talk pages currently require an editor account. Preserve that access
-  // boundary in activity feeds, and never expose deleted comment text.
-  if($editor) $query.=" UNION ALL SELECT t.id,IF(t.page_type='marker',t.page_id,NULL) AS markerId,IF(t.parent_id IS NULL,'comment','reply') AS action,NULL AS summary,t.user_id AS userId,u.username,{$picture} AS profilePicture,".wikiAgoSql('t.created')." AS ago,
+  // Talk is publicly readable, including its activity. Deleted comment text
+  // and comments on non-public games are never included.
+  $query.=" UNION ALL SELECT t.id,IF(t.page_type='marker',t.page_id,NULL) AS markerId,IF(t.parent_id IS NULL,'comment','reply') AS action,NULL AS summary,t.user_id AS userId,u.username,{$picture} AS profilePicture,".wikiAgoSql('t.created')." AS ago,
     IF(t.page_type='marker',m.name,CONCAT(tu.username,'’s Talk')) AS markerTitle,COALESCE(c.short_name,'') AS game,COALESCE(c.name,'') AS gameName,t.created AS sortTime,'talk' AS revisionType,
     t.page_type AS pageType,t.page_id AS pageId,t.parent_id AS parentId,t.body,IF(p.deleted IS NULL,p.body,NULL) AS parentBody,pu.username AS parentUsername
     FROM `{$prefix}talk_comment` t LEFT JOIN `{$prefix}user` u ON u.id=t.user_id

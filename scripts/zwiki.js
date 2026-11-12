@@ -203,7 +203,7 @@ ZMap.prototype._wikiSetMarkerSubtitle = function(page, title, markerId, game, re
   var row = $(page).find('.wiki-subtitle-row').first();
   row.find('.wiki-subtitle').text(title || '');
   row.find('.wiki-marker-pill').remove();
-  if(!markerId || !opts.view && Number(reopen && reopen.fromMarker) === Number(markerId) || !this._wikiMarkerReachable(markerId, game)) return;
+  if(!markerId || Number(reopen && reopen.fromMarker) === Number(markerId) || !this._wikiMarkerReachable(markerId, game)) return;
   var marker=this.cachedMarkersById[markerId];
   var isArea=marker && marker.categoryTypeId == 3;
   $('<button type="button" class="marker-coordinate-pill marker-region-pill wiki-marker-pill">'+(opts.view ? (isArea?'View Region':'View Marker') : (isArea ? 'Go to Region' : 'Go to Marker')) +
@@ -225,21 +225,21 @@ ZMap.prototype._wikiSetMarkerSubtitle = function(page, title, markerId, game, re
 ZMap.prototype._markerEditorToolsHTML = function(marker, opts) {
   opts=opts || {};
   var viewer=this.getUser();
-  if(opts.regionMode ? !viewer || viewer.level < 10 : !this._isWikiEditor()) return '';
+  if(opts.mapSettings && !this._canUseMapSettings()) return '';
   if(!marker || !(marker.id > 0)) return '';
-  var canEdit = opts.mapSettings ? this._canUseMapSettings() : opts.regionMode || this._canEditMarker(marker);
+  var canEdit = opts.mapSettings ? this._canUseMapSettings() : opts.regionMode ? !!viewer && viewer.level>=10 : this._canEditMarker(marker);
   var id = Number(marker.id);
   var button = function(action, icon, label, extra) {
     return '<button type="button" class="marker-editor-button' + (extra || '') + '" data-editor-action="' + action + '">' +
       '<i class="fas ' + icon + '" aria-hidden="true"></i><span>' + label + '</span></button>';
   };
   return '<section class="marker-editor-tools' + (opts.regionMode ? ' area-admin-actions' : '') + '" data-marker-id="' + id + '">' +
-    (opts.hideIdentity ? '' : '<div class="marker-editor-meta">' +
+    (opts.hideIdentity || !viewer || Number(viewer.level)<this.WIKI_ADMIN_LEVEL ? '' : '<div class="marker-editor-meta">' +
       '<span>' + this._wikiEscape(opts.identityLabel || 'Marker') + ' #' + id + '</span>' +
       (marker.userName ? '<span>Added by ' + this._wikiUserLink(marker.userId, marker.userName) + '</span>' : '') +
     '</div>') +
     '<div class="marker-editor-buttons">' +
-      (canEdit ? button('edit', 'fa-pencil-alt', 'Edit') : '') +
+      (canEdit || !this._isWikiEditor() ? button('edit', 'fa-pencil-alt', 'Edit') : '') +
       button('history', 'fa-history', 'History') +
       (opts.talk === false ? '' : button('talk', 'fa-comments', 'Talk')) +
       // Deleting isn't part of the editing beta (scripts/zbeta.js).
@@ -256,9 +256,11 @@ ZMap.prototype._markerEditorToolsHTML = function(marker, opts) {
 };
 
 ZMap.prototype._wireEditorTools = function(tools, handler, back) {
+  var zmap=this;
   this._wireWikiLinks(tools,back);
   $(tools).on('click','[data-editor-action]',function(e) {
     e.preventDefault();
+    if(this.getAttribute('data-editor-action')==='edit' && !zmap._isWikiEditor()) {zmap._showEditingBetaAlert();return;}
     handler.call(this,this.getAttribute('data-editor-action'),e);
   });
 };
@@ -341,9 +343,6 @@ ZMap.prototype._wireWikiLinks = function(root, back) {
 };
 
 ZMap.prototype._yeahHTML = function(type,id,summary) {
-  // Keep the unreleased reaction UI available only to administrators.
-  var viewer=this.getUser && this.getUser();
-  if(!viewer || Number(viewer.level)<this.WIKI_ADMIN_LEVEL) return '';
   var key=type+':'+Number(id);
   if(summary) return '<span class="yeah-target yeah-summary" data-yeah-key="'+key+'" aria-label="Yeahs"><span class="yeah-icon yeah-person" aria-hidden="true"></span><span class="yeah-count">0</span></span>';
   return '<button type="button" class="wiki-action-button yeah-target yeah-button" data-yeah-key="'+key+'" aria-pressed="false" disabled><span class="yeah-icon yeah-plus" aria-hidden="true"></span><span class="yeah-label">Yeah!</span><span class="yeah-count">0</span></button>';
@@ -376,6 +375,7 @@ ZMap.prototype._wireYeahs = function(root) {
   root._yeahObserver.observe(root,{childList:true,subtree:true});
   $(root).on('click','.yeah-button',function(e) {
     e.preventDefault();e.stopPropagation();
+    if(!zmap._isWikiEditor()) {zmap._showEditingBetaAlert();return;}
     var button=$(this),key=this.getAttribute('data-yeah-key'),parts=key.split(':');
     button.prop('disabled',true);
     zmap._wikiPost('likes_set',{type:parts[0],id:parts[1],liked:button.attr('aria-pressed')==='true'?'0':'1'}).done(function(data) {
@@ -903,11 +903,13 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
   };
   $(page).find('.wiki-new-comment').on('submit', function(e) {
     e.preventDefault();
+    if(!_this._isWikiEditor()) {_this._showEditingBetaAlert();return;}
     post($(this));
   });
   thread.on('click', '[data-comment-action]', function(e) {
     e.preventDefault();
     var action = this.getAttribute('data-comment-action');
+    if(action==='reply' && !_this._isWikiEditor()) {_this._showEditingBetaAlert();return;}
     var comment = $(this).closest('.wiki-comment');
     var id = Number(comment.attr('data-comment-id'));
     if(action === 'reply') {
@@ -1049,17 +1051,15 @@ ZMap.prototype._renderUserProfile = function(data, back) {
         '<h3 class="profile-name">' + _this._wikiEscape(profile.username) + '</h3>' +
         '<p class="profile-role">' + _this._wikiRoleLabel(profile.level, profile.beta) +
           ' · Joined ' + _this._wikiEscape(_this._adminTime(profile.joinedAgo, { dateOnly: true }) || '') + '</p>' +
+        '<div class="profile-bio"></div>' +
       '</div>' +
       '<div class="profile-stats">' + stat(data.counts.markers, 'Markers') + stat(data.counts.edits, 'Edits') +
         stat(data.counts.comments, 'Comments') + '</div>' +
-      // Anyone can see a profile; Talk and link codes are for editors.
-      (editor ? '<div class="wiki-actions profile-actions">' +
+      '<div class="wiki-actions profile-actions">' +
         '<button type="button" class="wiki-action-button" data-action="talk"><i class="fas fa-comments" aria-hidden="true"></i>Talk</button>' +
         (data.canEdit ? '<button type="button" class="wiki-action-button" data-action="edit"><i class="fas fa-pencil-alt" aria-hidden="true"></i>Edit Profile</button>' : '') +
         '<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy <code>[[user:' + _this._wikiEscape(profile.username) + ']]</code></button>' +
-      '</div>' : '') +
-      '<section class="wiki-section profile-bio-section"><h4>About</h4>' +
-        '<div class="wiki-card profile-bio"></div></section>' +
+      '</div>' +
       (data.canEdit ?
         '<form class="profile-edit-form wiki-section" hidden>' +
           '<h4>Edit Profile</h4>' +
@@ -1080,7 +1080,7 @@ ZMap.prototype._renderUserProfile = function(data, back) {
             '<button type="submit" class="infoWindowIcn form-action-button">Save</button>' +
           '</div>' +
         '</form>' : '') +
-      '<section class="wiki-section profile-activity"><h4>Recent Changes</h4>'+this._activityFilterHTML(this._profileActivityFilter || 'all')+'<ul class="wiki-revisions profile-changes"></ul></section>' +
+      '<section class="wiki-section profile-activity"><div class="profile-activity-heading"><h4>Recent Activity</h4>'+this._activityFilterHTML(this._profileActivityFilter || 'all')+'</div><ul class="wiki-revisions profile-changes"></ul></section>' +
     '</div>',
     'userProfile-' + profile.id,
     back,

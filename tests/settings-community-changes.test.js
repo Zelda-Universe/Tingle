@@ -12,6 +12,8 @@ test('settings and marker edits share a chronological feed and collision-safe cu
   const result=JSON.parse(execFileSync('php',['-r',php],{encoding:'utf8'}));
   expect(result.first.changes[0].revisionType).toBe('settings');
   expect(result.sql).toContain('UNION ALL');
+  expect(result.sql).toContain("'talk' AS revisionType");
+  expect(result.sql).toContain('t.deleted IS NULL');
   expect(result.sql).toContain('AND m.visible=1');
   expect(result.sql).toContain('(sortTime,revisionType,id)<(?,?,?)');
   expect(result.params).toEqual(['OoTR',2,'2026-11-11 01:00:00','settings',8]);

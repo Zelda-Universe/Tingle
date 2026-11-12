@@ -233,7 +233,7 @@ ZMap.prototype._showAreaPage = function(area,bounds) {
     content.append(group);
   });
   var viewer = this.getUser && this.getUser();
-  if(viewer && viewer.level >= 10) {
+  if(this._areaLabelMarker(area) || viewer && viewer.level >= 10) {
     var label=this._areaLabelMarker(area), target=this._areaHistoryTarget(area);
     var edit=$(this._markerEditorToolsHTML(label || {id:target.id},{regionMode:true,allowDelete:false,talk:!!label,
       identityLabel:label?'Marker':target.kind==='map'?'Map':'Region'}));

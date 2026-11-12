@@ -1,7 +1,6 @@
 <?php
   include_once(dirname(__DIR__) . '/lib/common/wiki.php');
-  $editor = wikiRequireEditor($db, $map_prefix);
-  if ($editor === null) return;
+  $editor = wikiReadViewer($db, $map_prefix);
 
   // A marker's revisions, newest first, for its History page.
   if (!wikiAvailable($db, $map_prefix)) {
@@ -9,6 +8,7 @@
     return;
   }
   $markerId = (int) ($_GET['markerId'] ?? 0);
+  if(!wikiReadableMarker($db,$map_prefix,$markerId)) {http_response_code(404);echo json_encode(['success'=>false,'msg'=>'That marker was not found.']);return;}
   $marker = $db->fetchAssociative("SELECT `id`, `user_id`, `name` FROM `{$map_prefix}marker` WHERE `id` = ?", [$markerId]);
   if (!$marker) {
     echo json_encode(array('success' => false, 'msg' => 'That marker was not found.'));

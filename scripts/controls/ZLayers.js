@@ -2181,7 +2181,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._compactTitleBar = null;
     this._compactTitleSource = null;
     if(!contents.querySelector(':scope > a.back-button')) return;
-    var source = contents.querySelector(
+    var profile=contents.querySelector('#user_profile');
+    var source = profile ? profile.querySelector('.profile-name') : contents.querySelector(
       '.menu-cat-content-inner > .popupTitle, ' +
       ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(function(tag) {
         return '.menu-cat-content-inner > div > ' + tag + ':first-child';
@@ -2194,12 +2195,36 @@ L.Control.ZLayers = L.Control.Layers.extend({
       source.parentElement.classList.contains('menu-cat-content-inner');
     var bar = document.createElement('div');
     bar.className = 'compact-title-bar ' + (popup ? 'compact-title-bar-popup' : 'compact-title-bar-plain');
+    if(profile) {
+      bar.classList.add('compact-title-bar-profile');
+      profile.classList.add('profile-scroll-header');
+      var banner=profile.querySelector('.profile-banner');
+      if(banner) bar.style.setProperty('--profile-banner',window.getComputedStyle(banner).backgroundImage);
+    }
     // The page's own title is what assistive technology reads.
     bar.setAttribute('aria-hidden', 'true');
-    if(popup) {
+    if(popup || profile) {
       var text = document.createElement('span');
       text.className = 'compact-title-bar-text';
       bar.appendChild(text);
+    }
+    if(profile) {
+      var stats=profile.querySelector('.profile-stats');
+      if(stats) {
+        var compactStats=stats.cloneNode(true);
+        compactStats.className='profile-compact-stats';
+        bar.appendChild(compactStats);
+      }
+      var bannerLayer=document.createElement('div');
+      bannerLayer.className='profile-compact-banner';
+      bar.appendChild(bannerLayer);
+      var avatar=profile.querySelector('.profile-avatar');
+      if(avatar) {
+        var avatarLayer=avatar.cloneNode(true);
+        avatarLayer.className='profile-compact-avatar';
+        avatarLayer.alt='';
+        bar.appendChild(avatarLayer);
+      }
     }
     // POIs and areas: their pills (coordinates, area, completion) as a second
     // line, each its own small pill. One that opens a page (a marker's area)
@@ -2242,6 +2267,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // Pages change their titles (e.g. a dropped pin renamed), so copy each time.
     var title = source.textContent.trim();
     if(bar.firstChild && bar.firstChild.textContent !== title) bar.firstChild.textContent = title;
+    if(bar.classList.contains('compact-title-bar-profile')) {
+      // Keep layout contribution at zero (height + negative margin) so
+      // changing the banner never feeds back into the scroll position.
+      var progress=Math.max(0,Math.min(1,this._contents.scrollTop / 160));
+      var height=120-52*progress;
+      bar.style.height=height+'px';
+      bar.style.marginBottom=-height+'px';
+      bar.style.setProperty('--profile-progress',progress);
+      bar.style.setProperty('--profile-scroll',Math.max(0,this._contents.scrollTop)+'px');
+      var profile=source.closest('#user_profile');
+      if(profile) profile.style.setProperty('--profile-progress',progress);
+      bar.classList.toggle('visible',progress>0);
+      return;
+    }
     // Pills change too (an area's completion count), so copy them as well.
     var sources = this._compactTitlePills;
     if(sources && bar.lastChild !== bar.firstChild) {

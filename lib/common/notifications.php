@@ -15,6 +15,7 @@
     return array(
       'user_talk'        => array('label' => 'Messages on your talk page', 'group' => 'Talk', 'inApp' => true, 'email' => true),
       'comment_reply'    => array('label' => 'Replies to your comments', 'group' => 'Talk', 'inApp' => true, 'email' => true),
+      'like'             => array('label' => 'Yeahs on your comments and edits', 'group' => 'Yeahs', 'inApp' => true, 'email' => false),
       'mention'          => array('label' => 'Mentions of you', 'hint' => 'When someone links to you with [[user:name]].', 'group' => 'Talk', 'inApp' => true, 'email' => false),
       'marker_comment'   => array('label' => 'Comments on your markers', 'group' => 'Your markers', 'inApp' => true, 'email' => false),
       'marker_edit'      => array('label' => 'Changes to your markers', 'hint' => 'Edits, restores and deletions by others.', 'group' => 'Your markers', 'inApp' => true, 'email' => false),
@@ -99,7 +100,7 @@
 
   // Sends notifications for one event. $candidates is [userId => [types]],
   // each person's kinds in no particular order.
-  function notificationDeliver($db, $prefix, $actorId, $candidates, $fields, $data) {
+  function notificationDeliver($db, $prefix, $actorId, $candidates, $fields, $data, $silent = false) {
     if (!notificationsAvailable($db, $prefix)) return;
     unset($candidates[(int) $actorId]);
     $recipients = notificationRecipients($db, $prefix, array_keys($candidates));
@@ -124,8 +125,8 @@
         $settings[$chosen]['inApp'] ? 1 : 0
       ]);
       $id = (int) $db->lastInsertId();
-      if ($settings[$chosen]['email']) $emails[] = $id;
-      if ($settings[$chosen]['inApp']) $pushUsers[$userId] = true;
+      if (!$silent && $settings[$chosen]['email']) $emails[] = $id;
+      if (!$silent && $settings[$chosen]['inApp']) $pushUsers[$userId] = true;
     }
     if (!$emails && !$pushUsers) return;
     // After the response: SMTP and push services can be slow.
@@ -229,6 +230,41 @@
     );
   }
 
+  function notifyLike($db,$prefix,$actor,$type,$id,$silent=false) {
+    if(!notificationsAvailable($db,$prefix)) return;
+    $fields=[];$data=['actor'=>$actor['username']];
+    if($type==='comment') {
+      $target=$db->fetchAssociative("SELECT user_id,page_type,page_id,body FROM `{$prefix}talk_comment` WHERE id=? AND deleted IS NULL",[$id]);
+      if(!$target) return;
+      $fields=['pageType'=>$target['page_type'],'pageId'=>(int)$target['page_id'],'commentId'=>$id];
+      $data['excerpt']=notificationExcerpt($target['body']);
+      if($target['page_type']==='marker') {
+        $marker=notificationMarkerInfo($db,$prefix,$target['page_id']);
+        if(!$marker) return;
+        $fields['markerId']=(int)$target['page_id'];
+        $data['pageTitle']=$data['markerTitle']=$marker['title'];$data['game']=$marker['game'];
+      } else $data['pageTitle']=$db->fetchOne("SELECT username FROM `{$prefix}user` WHERE id=?",[$target['page_id']]).'’s Talk';
+    } elseif($type==='revision') {
+      $target=$db->fetchAssociative("SELECT user_id,marker_id,summary FROM `{$prefix}marker_revision` WHERE id=?",[$id]);
+      if(!$target) return;
+      $marker=notificationMarkerInfo($db,$prefix,$target['marker_id']);
+      if(!$marker) return;
+      $fields=['markerId'=>(int)$target['marker_id'],'revisionId'=>$id];
+      $data+=['markerTitle'=>$marker['title'],'game'=>$marker['game'],'excerpt'=>notificationExcerpt($target['summary'])];
+    } elseif($type==='settings') {
+      $target=$db->fetchAssociative("SELECT r.user_id,r.summary,c.short_name FROM `{$prefix}map_revision` r JOIN `{$prefix}container` c ON c.id=r.container_id WHERE r.id=?",[$id]);
+      if(!$target) return;
+      $data+=['markerTitle'=>'Game Settings','excerpt'=>notificationExcerpt($target['summary']),'link'=>['game'=>$target['short_name'],'page'=>'game-settings-revision','settings-rev'=>$id]];
+    } else return;
+    $owner=(int)$target['user_id'];
+    if($owner===(int)$actor['id']) return;
+    $kind='like';
+    $data['likeTarget']=$type.':'.$id;
+    // Undo/re-Yeah must not repeatedly notify the same author.
+    if($db->fetchOne("SELECT id FROM `{$prefix}notification` WHERE user_id=? AND actor_id=? AND type=? AND JSON_UNQUOTE(JSON_EXTRACT(data,'$.likeTarget'))=? LIMIT 1",[$owner,$actor['id'],$kind,$data['likeTarget']])) return;
+    notificationDeliver($db,$prefix,$actor['id'],[$owner=>[$kind]],$fields,$data,$silent);
+  }
+
   // What a notification says, and where it leads, for the app, email and push.
   function notificationRender($row, $baseURL = '') {
     $data = is_array($row['data']) ? $row['data'] : (json_decode((string) $row['data'], true) ?: array());
@@ -237,8 +273,11 @@
     $page = $data['pageTitle'] ?? $marker;
     $verb = array('edit' => 'edited', 'revert' => 'restored an earlier version of', 'delete' => 'deleted')[$data['action'] ?? 'edit'] ?? 'changed';
     switch ($row['type']) {
+      case 'like':            $title = ($data['likeTarget'] ?? '') && strpos($data['likeTarget'],'comment:')===0 ? "{$actor} gave your comment on {$page} a Yeah!" : "{$actor} gave your edit to {$marker} a Yeah!"; break;
       case 'user_talk':        $title = "{$actor} left a message on your talk page"; break;
       case 'comment_reply':    $title = "{$actor} replied to your comment on {$page}"; break;
+      case 'comment_like':     $title = "{$actor} gave your comment on {$page} a Yeah!"; break;
+      case 'edit_like':        $title = "{$actor} gave your edit to {$marker} a Yeah!"; break;
       case 'mention':          $title = "{$actor} mentioned you on {$page}"; break;
       case 'marker_comment':   $title = "{$actor} commented on your marker {$marker}"; break;
       case 'followed_comment': $title = "{$actor} commented on {$marker}"; break;

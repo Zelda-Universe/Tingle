@@ -8,6 +8,19 @@
   const WIKI_EDITOR_LEVEL = 5;
   const WIKI_ADMIN_LEVEL = 10;
 
+  // Public read endpoints still use the real account role for privileged actions.
+  function wikiReadViewer($db,$prefix) {
+    start_session('zmap');
+    $id=(int)($_SESSION['user_id'] ?? 0);
+    session_write_close();
+    $viewer=$id ? $db->fetchAssociative("SELECT id,username,".accountLevelSql($db,$prefix)." AS level,".accountBetaSql($db,$prefix)." AS beta FROM `{$prefix}user` WHERE id=? AND ".accountUsableSql($db,$prefix),[$id]) : false;
+    return $viewer ?: ['id'=>0,'level'=>0,'beta'=>false,'username'=>''];
+  }
+
+  function wikiReadableMarker($db,$prefix,$id) {
+    return (bool)$db->fetchOne("SELECT 1 FROM `{$prefix}marker` m JOIN `{$prefix}marker_category` mc ON mc.id=m.marker_category_id JOIN `{$prefix}container` c ON c.id=mc.container_id WHERE m.id=? AND c.visible=1",[(int)$id]);
+  }
+
   // The signed-in editor as [id, level, username], or null after answering
   // 403. Checks the database, not the session's level from sign-in.
   function wikiRequireEditor($db, $prefix) {

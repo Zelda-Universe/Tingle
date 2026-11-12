@@ -1,7 +1,6 @@
 <?php
   include_once(dirname(__DIR__) . '/lib/common/wiki.php');
-  $editor = wikiRequireEditor($db, $map_prefix);
-  if ($editor === null) return;
+  $editor = wikiReadViewer($db, $map_prefix);
 
   // One revision, with the one before it to compare against, for its page
   // and for [[rev:123]] links.
@@ -25,6 +24,7 @@
     return $revision;
   };
   $revision = $tidy($db->fetchAssociative($select . " WHERE `r`.`id` = ?", [(int) ($_GET['id'] ?? 0)]));
+  if($revision && !wikiReadableMarker($db,$map_prefix,$revision['markerId'])) {http_response_code(404);echo json_encode(['success'=>false,'msg'=>'That revision was not found.']);return;}
   if (!$revision) {
     echo json_encode(array('success' => false, 'msg' => 'That revision was not found.'));
     return;

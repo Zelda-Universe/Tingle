@@ -6,14 +6,21 @@ const source=fs.readFileSync(require('path').join(__dirname,'../scripts/zwiki.js
 const context={ZMap:function(){},$};
 vm.runInNewContext(source,context);
 
-test('talk can show View Marker even when Back already returns to the selected marker',()=>{
+test('talk shows View Marker when opened from an activity list',()=>{
   const map=Object.assign(Object.create(context.ZMap.prototype),{mapControl:{_skipNextSlide:false},cachedMarkersById:{123:{id:123,visible:true}},_wikiMarkerReachable:()=>true,_openMarkerLink:jest.fn(function() {expect(map.mapControl._skipNextSlide).toBe(true);})});
   const page=$('<div><div class="wiki-subtitle-row"><p class="wiki-subtitle"></p></div></div>');
-  map._wikiSetMarkerSubtitle(page,'Marker',123,null,{fromMarker:123},{view:true});
+  map._wikiSetMarkerSubtitle(page,'Marker',123,null,{fromMarker:null},{view:true});
   expect(page.find('button').text()).toBe('View Marker');
   page.find('button').trigger('click');
-  expect(map._openMarkerLink).toHaveBeenCalledWith(123,null,{fromMarker:123},null);
+  expect(map._openMarkerLink).toHaveBeenCalledWith(123,null,{fromMarker:null},null);
   expect(map.mapControl._skipNextSlide).toBe(false);
+});
+
+test('talk hides View Marker when opened directly from that marker',()=>{
+  const map=Object.assign(Object.create(context.ZMap.prototype),{_wikiMarkerReachable:()=>true});
+  const page=$('<div><div class="wiki-subtitle-row"><p class="wiki-subtitle"></p></div></div>');
+  map._wikiSetMarkerSubtitle(page,'Marker',123,null,{fromMarker:123},{view:true});
+  expect(page.find('.wiki-marker-pill')).toHaveLength(0);
 });
 
 test('label history links open the region page rather than a marker popup',()=>{

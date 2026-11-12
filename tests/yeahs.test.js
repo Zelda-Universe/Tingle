@@ -4,11 +4,11 @@ const context={ZMap:function(){},$};
 vm.runInNewContext(fs.readFileSync('scripts/zwiki.js','utf8'),context);
 const map=Object.assign(Object.create(context.ZMap.prototype),{getUser:()=>({level:10}),_wikiEscape:s=>$('<span>').text(s).html()});
 
-test('unreleased Yeah controls and counts are hidden from non-admins',()=>{
-  for(const user of [null,{level:1},{level:5,betaEditor:true}]) {
+test('Yeah controls and counts are available to signed-in non-admins',()=>{
+  for(const user of [{level:1},{level:5,betaEditor:true}]) {
     const viewer=Object.assign(Object.create(map),{getUser:()=>user});
-    expect(viewer._yeahHTML('comment',21,false)).toBe('');
-    expect(viewer._yeahHTML('revision',21,true)).toBe('');
+    expect(viewer._yeahHTML('comment',21,false)).toContain('yeah-button');
+    expect(viewer._yeahHTML('revision',21,true)).toContain('yeah-summary');
   }
 });
 

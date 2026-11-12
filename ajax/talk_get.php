@@ -1,7 +1,6 @@
 <?php
   include_once(dirname(__DIR__) . '/lib/common/wiki.php');
-  $editor = wikiRequireEditor($db, $map_prefix);
-  if ($editor === null) return;
+  $editor = wikiReadViewer($db, $map_prefix);
 
   // A Talk page's comments, oldest first, flat with parent ids; the page
   // threads them. Deleted comments keep their place so replies stay put.
@@ -11,6 +10,7 @@
   }
   $type = (string) ($_GET['pageType'] ?? '');
   $pageId = (int) ($_GET['pageId'] ?? 0);
+  if($type==='marker' && !wikiReadableMarker($db,$map_prefix,$pageId)) {http_response_code(404);echo json_encode(['success'=>false,'msg'=>'That marker was not found.']);return;}
   if (!wikiTalkPageExists($db, $map_prefix, $type, $pageId)) {
     echo json_encode(array('success' => false, 'msg' => 'That page was not found.'));
     return;
@@ -31,7 +31,7 @@
       $comment[$key] = $comment[$key] === null ? null : (int) $comment[$key];
     }
     $comment['deleted'] = (bool) $comment['deleted'];
-    $comment['canDelete'] = !$comment['deleted'] &&
+    $comment['canDelete'] = $editor['level'] >= WIKI_EDITOR_LEVEL && !$comment['deleted'] &&
       ($comment['userId'] === $editor['id'] || $editor['level'] >= WIKI_ADMIN_LEVEL);
     if ($comment['deleted']) $comment['body'] = null;
   }
@@ -41,6 +41,6 @@
   echo json_encode(array(
     'success' => true, 'comments' => $comments,
     'following' => $type === 'marker' && notificationIsFollowing($db, $map_prefix, $editor['id'], 'marker', $pageId),
-    'canFollow' => $type === 'marker' && notificationsAvailable($db, $map_prefix)
+    'canFollow' => $editor['level'] >= WIKI_EDITOR_LEVEL && $type === 'marker' && notificationsAvailable($db, $map_prefix)
   ));
 ?>

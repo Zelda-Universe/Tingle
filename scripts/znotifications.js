@@ -8,6 +8,9 @@ ZMap.prototype.NOTIFICATION_POLL_MS = 60 * 1000;
 ZMap.prototype.NOTIFICATION_ICONS = {
   user_talk: 'fa-comment-dots',
   comment_reply: 'fa-reply',
+  like: 'fa-smile',
+  comment_like: 'fa-smile',
+  edit_like: 'fa-smile',
   mention: 'fa-at',
   marker_comment: 'fa-comments',
   marker_edit: 'fa-pencil-alt',
@@ -82,7 +85,7 @@ ZMap.prototype._wikiLinkParams = function(url) {
   return {
     marker: number('marker'), rev: number('rev'), talk: params.get('talk') === '1',
     user: number('user'), comment: number('comment'), game: params.get('game'),
-    notification: number('notification'), page: params.get('page'), report: number('report')
+    notification: number('notification'), page: params.get('page'), report: number('report'), settingsRev:number('settings-rev')
   };
 };
 
@@ -94,6 +97,7 @@ ZMap.prototype._hasWikiLink = function() {
 // Opens what a link points at, in place. Links into another game load it.
 ZMap.prototype._openWikiURL = function(url) {
   var link = this._wikiLinkParams(url);
+  if(link.page==='game-settings-revision' && link.settingsRev) {this._openSettingsRevisionLink(link.settingsRev,link.game);return;}
   if(link.page === 'notifications') {
     this._openNotificationsPage();
     return;
@@ -115,7 +119,6 @@ ZMap.prototype._openWikiURL = function(url) {
 
 ZMap.prototype._openWikiLink = function(link, back) {
   var _this = this;
-  if(!this._isWikiEditor()) return;
   if(link.notification) {
     this._wikiPost('notifications_read', { ids: [link.notification] }).done(function(data) {
       if(data.success) _this.setNotificationCount(data.unread);
@@ -241,6 +244,7 @@ ZMap.prototype._openNotificationsPage = function(back) {
     var target = n.url ? _this._wikiLinkParams(n.url) : {};
     if(target.page === 'report' && target.report) { _this._openReport(target.report, reopen); return; }
     if(target.page === 'admin-reports') { _this._openAdminReports(); return; }
+    if(target.page==='game-settings-revision' && target.settingsRev) {_this._openSettingsRevisionLink(target.settingsRev,target.game,reopen);return;}
     if(!n.revisionId && n.commentId && (n.markerId || n.pageType==='marker')) {
       var commentTarget=$('<div></div>').attr({'data-page-type':'marker','data-page-id':n.markerId || n.pageId,'data-comment':n.commentId,'data-title':n.pageTitle || '', 'data-game':n.game || _this.mapOptions.shortName});
       _this._openActivityComment(commentTarget[0],reopen);

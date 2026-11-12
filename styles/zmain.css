@@ -4367,6 +4367,7 @@ div.circle:has(>.icon-EoW_Echo) {
 	margin: 0;
 }
 .leaflet-control-layers .wiki-subtitle-row > .wiki-marker-pill {
+	transition: none;
 	flex: none;
 	margin: 0 !important;
 	padding: 6px 12px !important;
@@ -6837,26 +6838,14 @@ body.settings-dragging * { pointer-events:none !important; }
 .map-settings-body.is-loading { display:flex; flex-direction:column; min-height:calc(100dvh - 240px); }
 .map-settings-body.is-loading > .map-settings-savebar { margin-top:auto; pointer-events:none; }
 .menu-cat-content-inner form.map-settings-form.map-settings-savebar {
-	position: sticky;
-	bottom: 0;
-	z-index: 3;
+	position: static;
 	margin: 4px 0 0;
 	padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
-	border-top: 1px solid rgba(255,255,255,.12);
-	background: rgba(0,0,0,.5);
-	isolation: isolate;
-	transform: translateZ(0);
+	border-top: 0;
+	background: transparent;
 }
-/* Keep the backing surface painted while the whole page slides. The blur
-   lives on its own layer rather than being recreated on the sticky form. */
 .map-settings-savebar::before {
-	content: '';
-	position: absolute;
-	inset: 0;
-	z-index: -1;
-	pointer-events: none;
-	-webkit-backdrop-filter: blur(10px);
-	backdrop-filter: blur(10px);
+	content: none;
 }
 .menu-cat-content-inner .wiki-page p.map-settings-pending {
 	align-self: stretch;
@@ -7102,12 +7091,18 @@ body.settings-dragging * { pointer-events:none !important; }
 	outline: none;
 }
 .map-settings-icon .category-icon {
-	width: auto;
-	height: auto;
+	position: relative;
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	border: 0;
 	margin: 0;
 	background: none !important;
 	font-size: 24px;
 	line-height: 1;
+}
+.map-settings-icon .category-icon::after {
+	display: none !important;
 }
 .map-settings-icon.is-selected {
 	background: rgba(255,255,255,.28);

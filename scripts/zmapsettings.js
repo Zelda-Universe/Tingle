@@ -68,7 +68,7 @@ ZMap.prototype._mapSettingsRecords = function(data) {
       id: c.id, parent_id: c.parentId, container_id: data.game.id, marker_category_type_id: c.typeId,
       name: c.name, description: c.description, seo_description: c.seo_description,
       defaultSeoDescription: c.defaultSeoDescription, img: c.img, color: c.color, glyph_color: c.glyphColor, shape: c.shape,
-      custom_style: c.customStyle ? 1 : 0, visible: c.visible, menu_section: c.menuSection, menu_order: c.menuOrder
+      custom_style: c.customStyle ? 1 : 0, visible: c.visible, visible_zoom: c.visible_zoom, menu_section: c.menuSection, menu_order: c.menuOrder
     };
     record.glyph = getPOIGlyph(record);
     return record;
@@ -376,7 +376,7 @@ ZMap.prototype._openGameSettingsRevision = function(id,back) {
       '<form class="wiki-revert-form" hidden><p>Restoring saves this version as a new edit, so it can be undone from History too.</p>'+zmap._editorFieldHTML('fa-comment-alt','<input class="form-control" name="summary" maxlength="255" placeholder="Why? (optional)" autocomplete="off">')+
       '<div class="wiki-button-pair"><button type="button" class="infoWindowIcn form-action-button" data-action="cancel-revert">Cancel</button><button type="submit" class="infoWindowIcn form-action-button">Restore</button></div></form>');
     var before=data.before || {},after=data.after || {};
-    var names={name:'Name',page_title:'Name (Page Title)',description:'Description',seo_description:'SEO Description',img:'Icon',glyphColor:'Icon Color',color:'Color',shape:'Shape',visible:'Visible',parentId:'Parent Category',customStyle:'Custom Style'};
+    var names={name:'Name',page_title:'Name (Page Title)',description:'Description',seo_description:'SEO Description',img:'Icon',glyphColor:'Icon Color',color:'Color',shape:'Shape',visible:'Visible',visible_zoom:'Visible Starting At',parentId:'Parent Category',customStyle:'Custom Style'};
     var fields;
     if(['layout','map_order'].includes(revision.kind)) fields=[['Order',JSON.stringify(before,null,2),JSON.stringify(after,null,2)]];
     else fields=Array.from(new Set(Object.keys(before).concat(Object.keys(after)))).map(function(key) {return [names[key] || key,before[key],after[key]];});
@@ -473,16 +473,15 @@ ZMap.prototype._mapSettingsIcons = function() {
   [].forEach.call(document.styleSheets, function(sheet) {
     try { walk(sheet.cssRules); } catch(e) {}
   });
-  // Only those that draw a glyph here (some are images that only show on
-  // their own game's badges).
-  var probe = $('<span class="category-icon" style="position:absolute;left:-9999px;top:0"></span>').appendTo(document.body)[0];
-  var drawn = Object.keys(names).sort().filter(function(name) {
-    probe.className = 'category-icon icon-' + name;
-    var content = getComputedStyle(probe, '::before').content;
-    return !!content && content !== 'none' && content !== 'normal' && content !== '""' && content !== "''";
-  });
-  probe.remove();
-  return (this._mapSettingsIconNames = drawn);
+  // SVG masks and image glyphs intentionally have empty ::before content.
+  // Keep every named icon defined by the stylesheets, not only font glyphs.
+  Object.keys(this.categories || {}).forEach(function(id) {
+    var category=this.categories[id];
+    [category.img,getPOIGlyph(category)].forEach(function(name) {
+      if(typeof name==='string' && /^[A-Za-z]+_[A-Za-z0-9_-]+$/.test(name)) names[name]=true;
+    });
+  },this);
+  return (this._mapSettingsIconNames = Object.keys(names).sort());
 };
 
 //************************************************************************//
@@ -877,6 +876,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
           '<input type="search" class="form-control" name="iconSearch" placeholder="Search icons" />' +
         '</div></div>' +
         '<div class="map-settings-icons" role="listbox" aria-label="Icons"></div>' +
+        this._mapSettingsField('Visible Starting At','fa-search-plus','<select class="form-control" name="visible_zoom">'+Array.from({length:9},function(_,zoom) {return '<option value="'+zoom+'">Zoom '+zoom+(zoom===0?' (Always visible)':'')+'</option>';}).join('')+'</select>')+
         '<label class="map-settings-check"><input type="checkbox" name="visible" />' +
           '<span><strong>Show this category</strong><small>Hidden categories and their markers aren\'t on the map.</small></span></label>' +
         (isNew ? '' : this._mapSettingsField('Summary', 'fa-comment',
@@ -897,6 +897,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
   form.find('[name=seo_description]').attr('placeholder', record ? record.defaultSeoDescription : 'Generated from the category name, marker count, and maps after saving.');
   if(sectionOf) form.find('[name=section]').val(sectionOf.title);
   form.find('[name=visible]').prop('checked', isNew || !!record.visible);
+  form.find('[name=visible_zoom]').val(record ? Number(record.visible_zoom) || 0 : 0);
   var styleTouched = isNew;
   var draft = function(over) {
     return Object.assign({}, record || { id: 0, container_id: data.game.id }, {
@@ -974,7 +975,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
     names.forEach(function(name) {
       grid.append($('<button type="button" role="option" class="map-settings-icon"></button>')
         .attr({ 'data-icon': name, title: name.replace(/_/g, ' '), 'aria-label': name.replace(/_/g, ' ') })
-        .append($('<span class="category-icon"></span>').addClass('icon-' + name)));
+        .append($('<span class="category-icon poi-badge poi-eow"></span>').addClass('icon-' + name)));
     });
     if(!names.length) grid.append('<p class="map-settings-icons-empty">No icons match.</p>');
     preview();
@@ -998,6 +999,7 @@ ZMap.prototype._openMapSettingsCategory = function(record, records, layout, data
       name: form.find('[name=name]').val(), visible: form.find('[name=visible]').prop('checked') ? '1' : '0',
       description: form.find('[name=description]').val(),
       seo_description: form.find('[name=seo_description]').val(),
+      visible_zoom: form.find('[name=visible_zoom]').val(),
       summary: form.find('[name=summary]').val() || '' };
     if(styleTouched) Object.assign(fields, { style: '1', shape: state.shape, color: state.color, glyphColor: state.glyphColor, img: state.img });
     if(isNew) {
@@ -1082,11 +1084,12 @@ ZMap.prototype._applyMapSettingsCategory = function(row, isNew) {
     this.addCategory(row);
     category = this.categories[row.id];
   } else {
-    ['name', 'description', 'seo_description', 'img', 'color', 'glyph_color', 'shape', 'custom_style', 'menu_section', 'menu_order'].forEach(function(key) {
+    ['name', 'description', 'seo_description', 'img', 'color', 'glyph_color', 'shape', 'custom_style', 'visible_zoom', 'menu_section', 'menu_order'].forEach(function(key) {
       category[key] = row[key];
     });
   }
   category.visible = !!row.visible;
+  this.refreshMap([category]);
   this.getMarkers().forEach(function(marker) {
     if(String(marker.categoryId) !== String(row.id) || marker.categoryTypeId == 3) return;
     marker._iconKey = null;

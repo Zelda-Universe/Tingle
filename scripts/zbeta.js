@@ -299,7 +299,7 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
   var page = this._showWikiPage(
     '<div id="recent_changes" class="wiki-page">' +
       '<h3 class="text-center">' + title + '</h3>' +
-      '<p class="wiki-subtitle">' + (game ? 'Community edits to the ' + this._wikiEscape(game === this.mapOptions.shortName ? (this.mapOptions.name || game) : game) + ' map'
+      '<p class="wiki-subtitle">' + (game ? 'Community edits to ' + this._wikiEscape(game === this.mapOptions.shortName ? (this.mapOptions.name || game) : game)
         : 'Community edits to every map') + '</p>' +
       this._activityFilterHTML(activityFilter)+'<ul class="wiki-revisions"><li class="wiki-empty">Loading…</li></ul>' +
       '<button type="button" class="infoWindowIcn form-action-button recent-changes-more" hidden>Show More</button>' +
@@ -343,7 +343,7 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
       if(!oldest) list.empty();
       // Another game's edits (a link from elsewhere): name that game.
       if(game && game !== _this.mapOptions.shortName && data.changes && data.changes[0] && data.changes[0].gameName) {
-        $(page).find('.wiki-subtitle').text('Community edits to the ' + data.changes[0].gameName + ' map');
+        $(page).find('.wiki-subtitle').text('Community edits to ' + data.changes[0].gameName);
       }
       if(!data.success) { list.append($('<li class="wiki-empty"></li>').text(data.msg)); return; }
       // Empty, like Bookmarks: a title and a line, centred with room around.

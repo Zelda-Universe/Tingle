@@ -211,7 +211,7 @@ ZMap.prototype._wikiSetMarkerSubtitle = function(page, title, markerId, game, re
     .on('click', function() {
       var control=_this.mapControl,skip=control._skipNextSlide;
       if(opts.view) control._skipNextSlide=true;
-      try {_this._openMarkerLink(Number(markerId), null, reopen, game);} finally {control._skipNextSlide=skip;}
+      try {_this._openMarkerLink(Number(markerId), null, reopen, game,!!opts.view);} finally {control._skipNextSlide=skip;}
     })
     .appendTo(row);
 };
@@ -387,7 +387,7 @@ ZMap.prototype._wireYeahs = function(root) {
 
 // A marker on this map opens in place, with a Back button to back (the page
 // it was opened from); one from another game opens there.
-ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game) {
+ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game, zoomToMarker) {
   var _this = this;
   if(game && this.mapOptions && game !== this.mapOptions.shortName) {
     window.location.href = this._wikiMarkerURL(markerId, game, revisionId);
@@ -401,7 +401,7 @@ ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game) {
       this.mapControl._navigatingForward = true;
     }
     if(marker.categoryTypeId == 3) this.navigateToArea(marker);
-    else this.goTo({ marker: markerId });
+    else this.goTo(zoomToMarker ? {marker:markerId,zoom:Math.max(this.map.getZoom(),6),centerInVisibleArea:true,panTo:false} : { marker: markerId });
     return;
   }
   this._wikiGet('marker_history', { markerId: markerId }).done(function(data) {

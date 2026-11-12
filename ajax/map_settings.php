@@ -22,7 +22,7 @@
   );
   $categories = $db->fetchAllAssociative(
     "SELECT `id`, `parent_id` AS `parentId`, `marker_category_type_id` AS `typeId`, `name`, `description`, `seo_description`, `img`, `color`, `glyph_color` AS `glyphColor`,
-            `shape`, `custom_style` AS `customStyle`, `visible`, `menu_section` AS `menuSection`, `menu_order` AS `menuOrder`
+            `shape`, `custom_style` AS `customStyle`, `visible`, `visible_zoom`, `menu_section` AS `menuSection`, `menu_order` AS `menuOrder`
        FROM `{$map_prefix}marker_category` WHERE `container_id` = ? ORDER BY `parent_id`, `id`",
     [(int) $game['id']]
   );

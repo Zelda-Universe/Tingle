@@ -12,7 +12,7 @@ test('talk shows View Marker when opened from an activity list',()=>{
   map._wikiSetMarkerSubtitle(page,'Marker',123,null,{fromMarker:null},{view:true});
   expect(page.find('button').text()).toBe('View Marker');
   page.find('button').trigger('click');
-  expect(map._openMarkerLink).toHaveBeenCalledWith(123,null,{fromMarker:null},null);
+  expect(map._openMarkerLink).toHaveBeenCalledWith(123,null,{fromMarker:null},null,true);
   expect(map.mapControl._skipNextSlide).toBe(false);
 });
 

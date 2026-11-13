@@ -3724,7 +3724,7 @@ header.ex1 {
 }
 
 
-.TotK-label, .BotW-label, .EoW-label, .LA-label, .OoTR-label {
+.TotK-label, .BotW-label, .EoW-label, .LA-label, .ALttP-label, .OoTR-label {
 	color: #f8efae;
     text-shadow: #977f41 0px 0px 3px,   #977f41 0px 0px 3px,   #977f41 0px 0px 3px,
                  #977f41 0px 0px 3px,   #977f41 0px 0px 3px,   #977f41 0px 0px 3px;
@@ -3743,9 +3743,9 @@ header.ex1 {
 }
 
 /* Names open their area pages: white on hover or keyboard focus. */
-.TotK-label:hover, .BotW-label:hover, .EoW-label:hover, .LA-label:hover, .OoTR-label:hover,
+.TotK-label:hover, .BotW-label:hover, .EoW-label:hover, .LA-label:hover, .ALttP-label:hover, .OoTR-label:hover,
 .TotK-label:focus-visible, .BotW-label:focus-visible, .EoW-label:focus-visible,
-.LA-label:focus-visible, .OoTR-label:focus-visible {
+.LA-label:focus-visible, .ALttP-label:focus-visible, .OoTR-label:focus-visible {
 	color: white;
 	outline: none;
 }

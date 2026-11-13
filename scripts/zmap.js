@@ -365,7 +365,9 @@ ZMap.prototype.addMap = function(vMap) {
        // Its named regions and areas with borders (map_region), as for every game.
        layer.submapRegions = this._submapRegionData([submap]);
        layer.mapConnections = submap.connections || [];
-       layer.mapBounds = vMap.kind === 'dungeon' ? this._tilePyramidBounds() : submap.bounds || null;
+       // A floor's own limits where its artwork doesn't fill the square
+       // (ALttP's), else a dungeon's whole square, as OoT's.
+       layer.mapBounds = submap.bounds || (vMap.kind === 'dungeon' ? this._tilePyramidBounds() : null);
        layer.title = submap === vMap.subMap[0] ? vMap.name : title;
        layer._overlayMap = [];
        this.maps.push(layer);
@@ -1726,7 +1728,13 @@ ZMap.prototype.layoutLabelMarkers = function() {
     });
     element.style.marginLeft = Math.round(best.offset[0]) + 'px';
     element.style.marginTop = Math.round(best.offset[1]) + 'px';
-    placed.push(best.box);
+    // Still on top of another name wherever it goes (a crowded map zoomed
+    // out, like ALttP's Caves & Houses): leave it out until there's room.
+    var overlaps = placed.some(function(other) {
+      return best.box.left < other.right && best.box.right > other.left && best.box.top < other.bottom && best.box.bottom > other.top;
+    });
+    element.style.visibility = overlaps ? 'hidden' : '';
+    if(!overlaps) placed.push(best.box);
   });
 };
 
@@ -2057,25 +2065,29 @@ ZMap.prototype.addMapControl = function(gameId) {
       _this.mapOptions.centerX
     ), _this.map.getZoom());
     _this.applyOotMapBounds();
-    if(!sameOotMap && _this._fitsWhenOpened(e)) {
-      _this.map.setView(L.latLngBounds(e.mapBounds).getCenter(), _this.map.getMinZoom(), {animate: false});
-    }
+    if(!sameOotMap && _this._fitsWhenOpened(e)) _this._fitToMapBounds(e);
   });
   // Open the map the address names (?map=2101 is TotK's Surface), on every
   // game, keeping the address's view: switching maps otherwise recentres.
   var requestedMap = ZConfig.getConfig('map'), requestedSubMap = ZConfig.getConfig('subMap');
   var openedMap = this.mapControl.getCurrentMap();
+  // Whether the address gave a view of its own, read before anything below
+  // writes the current view into it.
+  var addressHasView = new URL(window.location.href).searchParams.has('zoom');
   // OoT's Child and Adult are one map's two submaps.
   if(requestedMap && (requestedMap != openedMap.mapId || (requestedSubMap && requestedSubMap != openedMap.subMapId))) {
     var requestedView = { center: this.map.getCenter(), zoom: this.map.getZoom() };
     this.mapControl.changeMapOnly(requestedMap, requestedSubMap);
-    this.map.setView(requestedView.center, requestedView.zoom, { animate: false });
+    // A map that fits itself when opened does so, unless the address says where to look.
+    if(addressHasView || !this._fitsWhenOpened(this.mapControl.currentMapLayer)) {
+      this.map.setView(requestedView.center, requestedView.zoom, { animate: false });
+    }
   }
   if(this.mapOptions.submapLayers && this.setupOotFloors) this.setupOotFloors();
   this.applyOotMapBounds();
   var initialLayer = this.mapControl.currentMapLayer;
-  if(this._fitsWhenOpened(initialLayer) && !new URL(window.location.href).searchParams.has('zoom')) {
-    this.map.setView(L.latLngBounds(initialLayer.mapBounds).getCenter(), this.map.getMinZoom(), {animate: false});
+  if(this._fitsWhenOpened(initialLayer) && !addressHasView) {
+    this._fitToMapBounds(initialLayer);
   }
 
   $(document).on('keydown', function(e) {
@@ -7850,6 +7862,31 @@ ZMap.prototype.pad = function(num, size) {
 // limits except an overworld (OoT's Hyrule keeps the view it's given).
 ZMap.prototype._fitsWhenOpened = function(layer) {
   return !!(layer && layer.mapBounds && layer.mapKind !== 'world');
+};
+
+// Show the whole of a layer's limits. The furthest zoom out for them is only
+// worked out once a running zoom animation ends (_updateMinZoom), so fit
+// then: fitting first used the last map's limit. While the page is still
+// starting up, a view set from the address can land after the fit: check
+// shortly after and fit again if so.
+ZMap.prototype._fitToMapBounds = function(layer) {
+  var zmap = this, map = this.map;
+  var fit = function() {
+    if(zmap.mapControl.currentMapLayer !== layer) return;
+    if(zmap._updateMinZoom) zmap._updateMinZoom(true);
+    map.setView(L.latLngBounds(layer.mapBounds).getCenter(), map.getMinZoom(), {animate: false});
+  };
+  var settle = function() {
+    fit();
+    // (Unless someone has moved the map in the meantime.)
+    var moved = false, mark = function() { moved = true; };
+    map.once('dragstart', mark); map.once('zoomstart', mark);
+    setTimeout(function() {
+      map.off('dragstart', mark); map.off('zoomstart', mark);
+      if(Math.abs(map.getZoom() - map.getMinZoom()) > .01) fit();
+    }, 400);
+  };
+  if(map._animatingZoom) map.once('zoomend', settle); else settle();
 };
 
 // OoT's Hyrule map is a wide rectangle, not the square the dungeon floors use:

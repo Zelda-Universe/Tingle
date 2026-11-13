@@ -18,6 +18,8 @@
     readfile("$path/ajax/static/container_name_{$game}.json");
     return;
   }
+  include_once(dirname(__DIR__) . '/lib/common/admin.php');
+  if (adminOnlyGameDenied($db, $map_prefix, $game)) { echo json_encode(array()); return; }
 
   $row = $db->fetchAssociative("
     SELECT `name`

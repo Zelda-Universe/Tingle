@@ -23,6 +23,32 @@
     return $userId;
   }
 
+  // Whether the signed-in account is an admin, without answering for the
+  // caller (adminRequire answers 403).
+  function adminSignedIn($db, $prefix) {
+    start_session('zmap');
+    $userId = (int) ($_SESSION['user_id'] ?? 0);
+    session_write_close();
+    if (!$userId) return false;
+    include_once(__DIR__ . '/account_status.php');
+    $level = $db->fetchOne(
+      "SELECT `level` FROM `{$prefix}user` WHERE `id` = ? AND " . accountUsableSql($db, $prefix),
+      [$userId]
+    );
+    return $level !== false && (int) $level >= ADMIN_LEVEL;
+  }
+
+  // A game in progress (container.visible = 2, ALttP's while it's built) is
+  // only for admins: its data endpoints answer everyone else with nothing,
+  // as for a game that doesn't exist. $game is a container id or short name.
+  function adminOnlyGameDenied($db, $prefix, $game) {
+    $adminOnly = $db->fetchOne(
+      "SELECT 1 FROM `{$prefix}container` WHERE (`id` = ? OR `short_name` = ?) AND `visible` = 2",
+      [$game, $game]
+    );
+    return $adminOnly && !adminSignedIn($db, $prefix);
+  }
+
   // Admins are equals: none of them can change, disable or ban another
   // admin's account from here. Those changes are made at the database, by
   // the people who run the site. Answers for the caller when it refuses.

@@ -9,6 +9,8 @@
     ));
     return;
   }
+  include_once(dirname(__DIR__) . '/lib/common/admin.php');
+  if (adminOnlyGameDenied($db, $map_prefix, $game)) { echo json_encode(array()); return; }
 
   if (file_exists("$path/static/categories_{$game}.json")) {
     readfile("$path/static/categories_{$game}.json");

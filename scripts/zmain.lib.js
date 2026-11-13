@@ -204,6 +204,12 @@ function getGames() {
       $.each(vResults, function(i,map){
         zMap.addGame(map);
       });
+      // Games in progress, after the others: only admins get any.
+      $.getJSON("ajax.php?command=get_admin_games", function(games) {
+        if(!games || !games.length) return;
+        $.each(games, function(i, game) { zMap.addGame(game); });
+        if(zMap.mapControl && zMap.mapControl.refreshGameMenu) zMap.mapControl.refreshGameMenu();
+      });
       // Other games' data isn't fetched here. The service worker saves the
       // data of each game as it's viewed, and Offline Maps downloads save a
       // whole game; fetching every game on every visit cost over 10 MB.

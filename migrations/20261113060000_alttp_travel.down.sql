@@ -1,0 +1,3 @@
+-- Removes what 20261113060000_alttp_travel added.
+DELETE FROM marker_tab WHERE marker_id BETWEEN 3004001 AND 3004015;
+DELETE FROM marker WHERE id BETWEEN 3004001 AND 3004015;

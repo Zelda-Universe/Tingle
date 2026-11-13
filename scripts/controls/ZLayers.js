@@ -1320,6 +1320,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
     });
   },
 
+  // Games that arrive after the menu was built (admins' games in progress,
+  // get_admin_games): build it again, in place if it's on screen.
+  refreshGameMenu: function() {
+    var old = this._gameMenu, showing = old && old.domNode && $(old.domNode).closest('body').length;
+    this._gameMenu = this.createGameMenu();
+    if(showing) this.setContent(this._gameMenu.domNode, "games");
+  },
+
   createGameMenu: function() {
     var gameMenu = new CategoryMenu({
       categories: sortGames(games.filter(Boolean)),
@@ -2608,7 +2616,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this.currentMapLayer.bringToBack();
       this._map.fire("baselayerchange", this.currentMapLayer);
 
-      this.setCurrentMap(mapId, subMapId);
+      // With no floor named (?map=64023), the one opened: its markers are
+      // the ones to show.
+      this.setCurrentMap(mapId, subMapId || newMap.defaultSubMapId);
       this._syncMapsMenuSelection();
     }
   },

@@ -296,7 +296,8 @@ describe('Switch Map menu follows programmatic map switches', () => {
     const h = harness(false);
     methods.changeMapOnly.call(h.drawer, 12, undefined);
     expect(h.drawer._map.addLayer).toHaveBeenCalledWith(h.deku);
-    expect(h.drawer.setCurrentMap).toHaveBeenCalledWith(12, undefined);
+    // No floor named: the opened map's own, so its markers show.
+    expect(h.drawer.setCurrentMap).toHaveBeenCalledWith(12, h.deku.defaultSubMapId);
     expect(h.updateSelection).toHaveBeenCalledTimes(1);
     expect(h.updateSelection).toHaveBeenCalledWith(h.drawer._mapsMenu.categoryButtons[1]);
   });

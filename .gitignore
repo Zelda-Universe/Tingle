@@ -30,6 +30,7 @@ Thumbs.db
 node_modules
 /tiles/*
 !/tiles/oot/
+!/tiles/alttp/
 /vendor
 /uploads/profile-pictures/*
 !/uploads/profile-pictures/index.html

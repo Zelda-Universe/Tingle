@@ -18,6 +18,7 @@ const CORE_ASSETS = [
   './images/zmaps_white.png',
   './images/pin-sword.svg',
   './images/icons/games/ocarina-of-time.svg',
+  './images/icons/games/a-link-to-the-past.svg',
   './images/zmaps_white_small.png',
   './images/default-avatar.png',
   './images/zelda-maps-bg-tile.png'

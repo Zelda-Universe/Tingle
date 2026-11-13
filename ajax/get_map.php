@@ -7,6 +7,8 @@
      echo json_encode(array());
      return;
    }
+  include_once(dirname(__DIR__) . '/lib/common/admin.php');
+  if (adminOnlyGameDenied($db, $map_prefix, $map)) { echo json_encode(array()); return; }
 
    if (file_exists("$path/static/map_{$map}.json")) {
      readfile("$path/static/map_{$map}.json");

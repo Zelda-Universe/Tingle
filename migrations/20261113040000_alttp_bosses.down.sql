@@ -1,0 +1,3 @@
+-- Removes what 20261113040000_alttp_bosses added.
+DELETE FROM marker_tab WHERE marker_id BETWEEN 3002001 AND 3002033;
+DELETE FROM marker WHERE id BETWEEN 3002001 AND 3002033;

@@ -131,12 +131,13 @@ ZMap.prototype.setupOotFloors = function() {
     panel.hidden = !current || !/^(world|dungeon)$/.test(current.mapKind);
     if(panel.hidden) return;
     var variants = zmap.maps.filter(function(l) {return l.originalId === current.originalId;});
-    function age(layer) { return (layer.submapName.match(/\b(Child|Adult)\b/) || [])[1] || null; }
+    // A world's versions: OoT's ages, ALttP's Light and Dark World.
+    function age(layer) { return (layer.submapName.match(/\b(Child|Adult|Light World|Dark World)\b/) || [])[1] || null; }
     var ages = Array.from(new Set(variants.map(age).filter(Boolean)));
     var allAgeVariants = variants.slice();
     if(ages.length > 1) {
       var agePill=document.createElement('div'); agePill.className='oot-floor-pill oot-age-pill';
-      agePill.setAttribute('aria-label','Age');
+      agePill.setAttribute('aria-label',/World/.test(ages[0]) ? 'World' : 'Age');
       ages.forEach(function(name) {
         var button=document.createElement('button'); button.type='button'; button.textContent=name;
         button.setAttribute('aria-pressed',String(age(current) === name));
@@ -155,6 +156,8 @@ ZMap.prototype.setupOotFloors = function() {
       function level(v) {return v[0] === 'B' ? -parseInt(v.slice(1)) : parseInt(v);}
       return level(b)-level(a);
     });
+    // One floor (ALttP's Caves & Houses): nothing to switch between.
+    if(names.length < 2) { position(); return; }
     var pill = document.createElement('div'); pill.className='oot-floor-pill oot-dungeon-floors';
     names.forEach(function(name) {
       var button=document.createElement('button'); button.type='button'; button.textContent=name;

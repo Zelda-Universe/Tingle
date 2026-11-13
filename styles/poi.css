@@ -44,8 +44,10 @@
   mask:url('images/icons/oot/WarpPad.svg') center / contain no-repeat;
 }
 .poi-travel > .icon-LA_Portal::before { width:.9em; height:.9em; }
-/* Game icon: the SVG is a mask so it takes the text colour, like the font glyphs other games use. */
-.icon-Ocarina-of-Time::before {
+/* Game icons: the SVG is a mask so it takes the text colour, like the font
+   glyphs other games use. Zelda Universe's full set is in images/icons/games. */
+.icon-Ocarina-of-Time::before,
+.icon-A-Link-to-the-Past::before {
   content: '';
   display: inline-block;
   width: 1em;
@@ -55,6 +57,10 @@
   -webkit-mask: url('images/icons/games/ocarina-of-time.svg') center / contain no-repeat;
   mask: url('images/icons/games/ocarina-of-time.svg') center / contain no-repeat;
   vertical-align: middle;
+}
+.icon-A-Link-to-the-Past::before {
+  -webkit-mask-image: url('images/icons/games/a-link-to-the-past.svg');
+  mask-image: url('images/icons/games/a-link-to-the-past.svg');
 }
 .poi-badge {
   position: relative;

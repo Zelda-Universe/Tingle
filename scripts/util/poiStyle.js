@@ -77,6 +77,18 @@ function getPOIStyle(category) {
       '64051': 'travel', '64052': 'travel', '64053': 'travel'
     }[String(category.id)] || '';
   }
+  if(category && String(category.container_id || category.containerId) === '3') {
+    return {
+      // Dungeon Entrances, Warp Tiles, Flute Spots.
+      '3051': 'travel', '3052': 'travel', '3053': 'travel',
+      // Pieces of Heart, Heart Containers, Bottles, Pendants & Crystals.
+      '3001': 'heart', '3002': 'heart', '3003': 'memory', '3004': 'song',
+      '3061': 'treasure', '3062': 'treasure', '3063': 'treasure', '3064': 'treasure', '3065': 'treasure',
+      '3021': 'treasure', '3022': 'treasure', '3023': 'treasure', '3024': 'treasure', '3025': 'treasure',
+      '3031': 'location', '3032': 'location', '3033': 'location', '3034': 'cave', '3035': 'location',
+      '3041': 'interest', '3071': 'enemy'
+    }[String(category.id)] || '';
+  }
   if(category && String(category.container_id || category.containerId) === '4') {
     return {
       '1951': 'interest', '1952': 'interest', '1953': 'interest', '1954': 'interest',
@@ -176,11 +188,15 @@ function getPOICategoryGroups(categories) {
   var records = Object.values(categories || {});
   var saved = getPOISavedLayout(records);
   if(saved) return saved;
-  if(records.some(function(c) { return String(c.container_id) === '64'; })) {
+  var sectioned = records.some(function(c) { return String(c.container_id) === '64'; }) ? '64' :
+    (records.some(function(c) { return String(c.container_id) === '3'; }) ? '3' : null);
+  if(sectioned) {
     // Label categories (type 3: place names) are set in Settings, not listed.
     // Sections in BotW's and TotK's order: Travel, Collectibles, Locations,
-    // Points of Interest, then Treasure; any others after.
-    var sectionOrder = ['64050', '64000', '64030', '64040', '64060', '64020'];
+    // Points of Interest, then Treasure; any others after. ALttP's are laid
+    // out as OoT's.
+    var sectionOrder = sectioned === '64' ? ['64050', '64000', '64030', '64040', '64060', '64020'] :
+      ['3050', '3000', '3030', '3040', '3060', '3020', '3070'];
     var rank = function(c) { var i = sectionOrder.indexOf(String(c.id)); return i === -1 ? sectionOrder.length : i; };
     return records.filter(function(c) { return !c.parent_id && String(c.marker_category_type_id) !== '3'; })
       .sort(function(a, b) { return rank(a) - rank(b); }).map(function(root) {
@@ -189,6 +205,7 @@ function getPOICategoryGroups(categories) {
         var order=['64002','64004','64001','64003','64005','64006','64007','64008'];
         if(String(root.id)==='64020') order=['64022','64023','64024','64025','64026','64027','64028','64021'];
         if(String(root.id)==='64060') order=['64061','64062','64063','64064','64065','64066'];
+        if(String(root.id)==='3020') order=['3022','3023','3024','3025','3021'];
         return order.indexOf(String(a.id))-order.indexOf(String(b.id));
       }) };
     });

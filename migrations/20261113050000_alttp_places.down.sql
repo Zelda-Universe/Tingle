@@ -1,0 +1,3 @@
+-- Removes what 20261113050000_alttp_places added.
+DELETE FROM marker_tab WHERE marker_id BETWEEN 3003001 AND 3003045;
+DELETE FROM marker WHERE id BETWEEN 3003001 AND 3003045;

@@ -8,6 +8,8 @@
      echo json_encode(array());
      return;
    }
+  include_once(dirname(__DIR__) . '/lib/common/admin.php');
+  if (adminOnlyGameDenied($db, $map_prefix, $game)) { echo json_encode(array()); return; }
 
    $db->executeStatement("SET SESSION group_concat_max_len = 4294967295");
 

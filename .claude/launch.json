@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "local-dev",
+      "runtimeExecutable": "php",
+      "runtimeArgs": ["-d", "upload_max_filesize=64M", "-d", "post_max_size=72M", "-S", "127.0.0.1:8080"],
+      "port": 8080
+    }
+  ]
+}

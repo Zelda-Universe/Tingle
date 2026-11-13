@@ -24,17 +24,19 @@ test('only heart pieces use the quarter-filled variant, not whole heart containe
 
 describe('TotK POI visual prototype', () => {
   test('Link’s Awakening includes all leaf categories exactly once', () => {
-    const ids = ['1951', '1952', '1953', '1954', '1956', '1957', '1958', '1960', '1961', '1962', '1964', '1965', '1966', '1969', '1968'];
+    const ids = ['1951', '1952', '1953', '1954', '1956', '1957', '1958', '1960', '1961', '1962', '1964', '1965', '1966', '1969', '1968',
+      '1970', '1971', '1972', '1973', '1974', '1975', '1976', '1977', '1978', '1979', '1980'];
     const categories = ids.map(id => ({ id, container_id: '4', parent_id: '1950' }));
     const groups = context.getPOICategoryGroups(categories);
     expect(groups.flatMap(g => g.categories).map(c => c.id).sort()).toEqual(ids.sort());
     expect(groups.filter(g => g.categories.length).map(g => g.title)).toEqual([
-      'Collectibles', 'Locations', 'Points of Interest', 'Enemies & Bosses', 'Treasure'
+      'Travel Points', 'Collectibles', 'Locations', 'Points of Interest', 'Enemies & Bosses', 'Treasure'
     ]);
   });
   test.each([
     ['1956', 'heart'], ['1957', 'korok'], ['1958', 'memory'], ['1964', 'location'],
-    ['1965', 'location'], ['1966', 'location'], ['1968', 'enemy'], ['1962', 'treasure']
+    ['1965', 'location'], ['1966', 'location'], ['1968', 'enemy'], ['1962', 'treasure'],
+    ['1970', 'travel'], ['1972', 'interest'], ['1974', 'memory']
   ])('LA %s uses the shared %s treatment', (id, expected) => {
     expect(style({ id, container_id: '4' })).toBe(expected);
   });

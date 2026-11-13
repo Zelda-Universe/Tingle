@@ -83,7 +83,11 @@ function getPOIStyle(category) {
       '1956': 'heart', '1957': 'korok', '1958': 'memory',
       '1960': 'treasure', '1961': 'treasure', '1962': 'treasure',
       '1964': 'location', '1965': 'location', '1966': 'location',
-      '1969': 'location', '1968': 'enemy'
+      '1969': 'location', '1968': 'enemy',
+      // Warp Points, Telephone Booths, Owl Statues, Li'l Devil, Golden Leaves.
+      '1970': 'travel', '1971': 'interest', '1972': 'interest', '1973': 'interest', '1974': 'memory',
+      // Dungeon Items, Stone Beaks, Instruments, Heart Containers, Treasure Chests, Mini-Bosses.
+      '1975': 'treasure', '1976': 'treasure', '1977': 'song', '1978': 'heart', '1979': 'treasure', '1980': 'enemy'
     }[String(category.id)] || '';
   }
   if(category && String(category.container_id || category.containerId) === '22') {
@@ -195,11 +199,12 @@ function getPOICategoryGroups(categories) {
         (records.some(function(c) { return String(c.container_id) === '4'; }) ? '4' : null)));
   if(!game) return null;
   var groups = game === '4' ? [
-    ['Collectibles', ['1956', '1957', '1958']],
+    ['Travel Points', ['1970']],
+    ['Collectibles', ['1956', '1978', '1957', '1958', '1974', '1977']],
     ['Locations', ['1964', '1965', '1966', '1969']],
-    ['Points of Interest', ['1951', '1952', '1953', '1954']],
-    ['Enemies & Bosses', ['1968']],
-    ['Treasure', ['1960', '1961', '1962']],
+    ['Points of Interest', ['1972', '1971', '1973', '1951', '1952', '1953', '1954']],
+    ['Enemies & Bosses', ['1968', '1980']],
+    ['Treasure', ['1975', '1960', '1961', '1962', '1976', '1979']],
     ['Misc', []]
   ] : game === '22' ? [
     ['Travel Gates', ['2232']],

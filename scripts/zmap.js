@@ -416,6 +416,10 @@ ZMap.prototype.addMap = function(vMap) {
     // Named regions with borders, as get_map serves them (AreaSearch.js).
     tLayer.submapRegions    = this._submapRegionData(vMap.subMap);
     tLayer.defaultSubMapId  = vMap.subMap[0].id ;
+    // Its own pan limits, where the artwork doesn't fill the square (LA's
+    // dungeons): the map fits to them when opened, as OoT's dungeons do.
+    tLayer.mapKind          = vMap.kind || null;
+    tLayer.mapBounds        = vMap.subMap[0].bounds || null;
 
     this.maps.push(tLayer);
   } else {
@@ -2052,12 +2056,9 @@ ZMap.prototype.addMapControl = function(gameId) {
       _this.mapOptions.centerY,
       _this.mapOptions.centerX
     ), _this.map.getZoom());
-    if(isOcarina(_this.mapOptions.shortName)) {
-      _this.applyOotMapBounds();
-      if(!sameOotMap && e.mapKind === 'dungeon') {
-        var dungeonBounds = L.latLngBounds(e.mapBounds);
-        _this.map.setView(dungeonBounds.getCenter(), _this.map.getMinZoom(), {animate: false});
-      }
+    _this.applyOotMapBounds();
+    if(!sameOotMap && _this._fitsWhenOpened(e)) {
+      _this.map.setView(L.latLngBounds(e.mapBounds).getCenter(), _this.map.getMinZoom(), {animate: false});
     }
   });
   // Open the map the address names (?map=2101 is TotK's Surface), on every
@@ -2071,12 +2072,10 @@ ZMap.prototype.addMapControl = function(gameId) {
     this.map.setView(requestedView.center, requestedView.zoom, { animate: false });
   }
   if(this.mapOptions.submapLayers && this.setupOotFloors) this.setupOotFloors();
-  if(isOcarina(this.mapOptions.shortName)) {
-    this.applyOotMapBounds();
-    var initialLayer = this.mapControl.currentMapLayer;
-    if(initialLayer.mapKind === 'dungeon' && !new URL(window.location.href).searchParams.has('zoom')) {
-      this.map.setView(L.latLngBounds(initialLayer.mapBounds).getCenter(), this.map.getMinZoom(), {animate: false});
-    }
+  this.applyOotMapBounds();
+  var initialLayer = this.mapControl.currentMapLayer;
+  if(this._fitsWhenOpened(initialLayer) && !new URL(window.location.href).searchParams.has('zoom')) {
+    this.map.setView(L.latLngBounds(initialLayer.mapBounds).getCenter(), this.map.getMinZoom(), {animate: false});
   }
 
   $(document).on('keydown', function(e) {
@@ -7846,6 +7845,12 @@ ZMap.prototype.pad = function(num, size) {
     return newNum;
 
 }
+
+// Dungeons open showing the whole map: on every game, any map with its own
+// limits except an overworld (OoT's Hyrule keeps the view it's given).
+ZMap.prototype._fitsWhenOpened = function(layer) {
+  return !!(layer && layer.mapBounds && layer.mapKind !== 'world');
+};
 
 // OoT's Hyrule map is a wide rectangle, not the square the dungeon floors use:
 // keep the view, and the furthest zoom out, to the current map's own limits.

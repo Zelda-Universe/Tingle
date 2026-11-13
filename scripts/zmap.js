@@ -655,6 +655,8 @@ ZMap.prototype.addMarker = function(vMarker) {
 
    marker.on('click', function() {
     if(marker.categoryTypeId == 3) { _this.navigateToArea(marker); return; }
+    // While a path is being edited, a click adds the marker as its next step.
+    if(_this._pathEditing && _this._pathEditing.addMarker(marker)) return;
     // On desktop the marker loads into the hidden sidebar, so Minimal UI stays.
     if (_this.mapControl.options.collapsed && _this.mapControl.viewStyleBottomSlide) {
       _this.mapControl.toggle();
@@ -969,7 +971,9 @@ ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
           "<span class='marker-action-icon'><i class='icon-embed2'></i></span>" +
           "<span class='marker-action-label'>Embed Code</span>" +
         "</button>" +
-      "</div>";
+      "</div>" +
+      // The paths this marker is a step of, and starting one from it.
+      (this._markerPathsHTML ? this._markerPathsHTML(marker) : '');
     content = content + "<div class='popupContent'>";
 
     if (marker.gameData != null) {
@@ -1280,6 +1284,8 @@ ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
   if(this.mapControl && this.mapControl._categoryMenu) {
     this.mapControl._categoryMenu.categoryButtons.forEach(function(button) { button.updateCategoryLabel(); });
   }
+  // Paths follow their categories and the map shown (scripts/services/Paths.js).
+  if(this.drawPaths) this.drawPaths();
 };
 
 ZMap.prototype._updateMarkersVisiblilityByCategory = function(affectedCategory) {
@@ -1420,6 +1426,9 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
 
   if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
     return marker.visible
+    // A later step of a single path (a Korok pair's second rock): the path's
+    // first marker stands for the whole path (scripts/services/Paths.js).
+    && !marker.pathFollower
     && this.mapOptions.showPoiLabels !== false
     && markerCategory.checked
     && (ignoreBounds || mapBounds.contains(marker.getLatLng()))  // Is in the Map Bounds (PERFORMANCE)
@@ -3961,6 +3970,7 @@ ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
    vMarker.setIcon(_this._createMarkerIcon(vMarker.categoryId, vComplete));
    if(this.updateAreaCompletionCounts) this.updateAreaCompletionCounts();
    if(this.updateCategoryCompletionCounts) this.updateCategoryCompletionCounts();
+   if(this.updatePathCompletionCounts) this.updatePathCompletionCounts();
 }
 
 ZMap.prototype._doSetMarkerDoneAndCookie = function(vMarker, onSettled) {
@@ -6519,6 +6529,8 @@ ZMap.prototype._createAccountForm = function(user) {
            (user.level >= 5 ? '<button id="account_notifications_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bell account-nav-icon" aria-hidden="true"></i>Notifications<span class="account-nav-count" hidden></span></button>' : '') +
            '<hr class="account-divider">' +
            '<button id="account_all_changes_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-history account-nav-icon" aria-hidden="true"></i>All Changes</button>' +
+           // Paths (scripts/services/PathEditor.js): admins only while they're built.
+           (user.level >= 10 ? '<button id="account_community_paths_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-map-signs account-nav-icon" aria-hidden="true"></i>Community Paths</button>' : '') +
            '<a id="account_discord_link" class="infoWindowIcn account-nav-button account-discord-link" href="' + this.DISCORD_URL + '" target="_blank" rel="noopener"><i class="fab fa-discord account-nav-icon" aria-hidden="true"></i>Zelda Maps Community Discord</a>' +
            (user.betaEditor ? '<button id="account_leave_beta_btn" type="button" class="account-text-link">Leave Editing Beta</button>'
              : user.level < 5 ? '<button id="account_join_beta_btn" type="button" class="account-text-link">Join the Editing Beta</button>' : '') +
@@ -6563,6 +6575,9 @@ ZMap.prototype._createAccountForm = function(user) {
   });
   $('#account_all_changes_btn').click(function() {
     _this._openRecentChanges(null, _this._wikiBackToAccount());
+  });
+  $('#account_community_paths_btn').click(function() {
+    _this.openCommunityPaths(_this._wikiBackToAccount());
   });
   $('#account_join_beta_btn').click(function() {
     _this._showEditingBetaAlert();
@@ -7883,7 +7898,8 @@ ZMap.prototype._fitToMapBounds = function(layer) {
     map.once('dragstart', mark); map.once('zoomstart', mark);
     setTimeout(function() {
       map.off('dragstart', mark); map.off('zoomstart', mark);
-      if(Math.abs(map.getZoom() - map.getMinZoom()) > .01) fit();
+      // Nor if the page chose a view of its own meanwhile (a path's link).
+      if(!zmap._viewChosen && Math.abs(map.getZoom() - map.getMinZoom()) > .01) fit();
     }, 400);
   };
   if(map._animatingZoom) map.once('zoomend', settle); else settle();

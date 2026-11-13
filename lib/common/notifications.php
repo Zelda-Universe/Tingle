@@ -19,6 +19,8 @@
       'mention'          => array('label' => 'Mentions of you', 'hint' => 'When someone links to you with [[user:name]].', 'group' => 'Talk', 'inApp' => true, 'email' => false),
       'marker_comment'   => array('label' => 'Comments on your markers', 'group' => 'Your markers', 'inApp' => true, 'email' => false),
       'marker_edit'      => array('label' => 'Changes to your markers', 'hint' => 'Edits, restores and deletions by others.', 'group' => 'Your markers', 'inApp' => true, 'email' => false),
+      // Paths (lib/common/paths.php): for admins only while they're built.
+      'path_edit'        => array('label' => 'Changes to your paths', 'hint' => 'Edits, restores and deletions by others.', 'group' => 'Your paths', 'inApp' => true, 'email' => false, 'admin' => true),
       'followed_comment' => array('label' => 'Comments on markers you follow', 'group' => 'Markers you follow', 'inApp' => true, 'email' => false),
       'followed_edit'    => array('label' => 'Changes to markers you follow', 'group' => 'Markers you follow', 'inApp' => true, 'email' => false),
       // Reports of problem edits (ajax/report_edit.php), for admins only.
@@ -255,6 +257,10 @@
       $target=$db->fetchAssociative("SELECT r.user_id,r.summary,c.short_name FROM `{$prefix}map_revision` r JOIN `{$prefix}container` c ON c.id=r.container_id WHERE r.id=?",[$id]);
       if(!$target) return;
       $data+=['markerTitle'=>'Game Settings','excerpt'=>notificationExcerpt($target['summary']),'link'=>['game'=>$target['short_name'],'page'=>'game-settings-revision','settings-rev'=>$id]];
+    } elseif($type==='path') {
+      $target=$db->fetchAssociative("SELECT p.user_id,p.name,p.slug,c.short_name FROM `{$prefix}path` p JOIN `{$prefix}container` c ON c.id=p.container_id WHERE p.id=?",[$id]);
+      if(!$target) return;
+      $data+=['pathTitle'=>$target['name'],'link'=>['game'=>$target['short_name'],'path'=>$target['slug']]];
     } else return;
     $owner=(int)$target['user_id'];
     if($owner===(int)$actor['id']) return;
@@ -271,9 +277,11 @@
     $actor = $data['actor'] ?? 'Someone';
     $marker = $data['markerTitle'] ?? 'a marker';
     $page = $data['pageTitle'] ?? $marker;
+    $pathTitle = $data['pathTitle'] ?? 'a path';
     $verb = array('edit' => 'edited', 'revert' => 'restored an earlier version of', 'delete' => 'deleted')[$data['action'] ?? 'edit'] ?? 'changed';
     switch ($row['type']) {
-      case 'like':            $title = ($data['likeTarget'] ?? '') && strpos($data['likeTarget'],'comment:')===0 ? "{$actor} gave your comment on {$page} a Yeah!" : "{$actor} gave your edit to {$marker} a Yeah!"; break;
+      case 'like':            $title = strpos($data['likeTarget'] ?? '','path:')===0 ? "{$actor} gave your path {$pathTitle} a Yeah!" : (($data['likeTarget'] ?? '') && strpos($data['likeTarget'],'comment:')===0 ? "{$actor} gave your comment on {$page} a Yeah!" : "{$actor} gave your edit to {$marker} a Yeah!"); break;
+      case 'path_edit':        $title = "{$actor} {$verb} your path {$pathTitle}"; break;
       case 'user_talk':        $title = "{$actor} left a message on your talk page"; break;
       case 'comment_reply':    $title = "{$actor} replied to your comment on {$page}"; break;
       case 'comment_like':     $title = "{$actor} gave your comment on {$page} a Yeah!"; break;

@@ -16,6 +16,7 @@ ZMap.prototype.NOTIFICATION_ICONS = {
   marker_edit: 'fa-pencil-alt',
   followed_comment: 'fa-comments',
   followed_edit: 'fa-pencil-alt',
+  path_edit: 'fa-map-signs',
   edit_report: 'fa-flag',
   warning: 'fa-exclamation-triangle'
 };
@@ -86,7 +87,7 @@ ZMap.prototype._wikiLinkParams = function(url) {
     marker: number('marker'), rev: number('rev'), talk: params.get('talk') === '1',
     user: params.get('user'), comment: number('comment'), game: params.get('game'),
     notification: number('notification'), page: params.get('page'), report: number('report'), settingsRev:number('settings-rev'),
-    navigationRestore:params.get('nav-restore')
+    navigationRestore:params.get('nav-restore'), path: params.get('path')
   };
 };
 
@@ -99,6 +100,10 @@ ZMap.prototype._hasWikiLink = function() {
 ZMap.prototype._openWikiURL = function(url) {
   var link = this._wikiLinkParams(url);
   if(link.page==='game-settings-revision' && link.settingsRev) {this._openSettingsRevisionLink(link.settingsRev,link.game);return;}
+  if(link.path && link.game && this.openPathFromLink) {
+    this.openPathFromLink(link.game, link.path);
+    return;
+  }
   if(link.page === 'notifications') {
     this._openNotificationsPage();
     return;
@@ -254,6 +259,8 @@ ZMap.prototype._openNotificationsPage = function(back) {
     var target = n.url ? _this._wikiLinkParams(n.url) : {};
     if(target.page === 'report' && target.report) { _this._openReport(target.report, reopen); return; }
     if(target.page === 'admin-reports') { _this._openAdminReports(); return; }
+    if(target.path && target.game) { _this.openPathFromLink(target.game, target.path); return; }
+    if(target.page === 'notifications') return;
     if(target.page==='game-settings-revision' && target.settingsRev) {_this._openSettingsRevisionLink(target.settingsRev,target.game,reopen);return;}
     if(!n.revisionId && n.commentId && (n.markerId || n.pageType==='marker')) {
       var commentTarget=$('<div></div>').attr({'data-page-type':'marker','data-page-id':n.markerId || n.pageId,'data-comment':n.commentId,'data-title':n.pageTitle || '', 'data-game':n.game || _this.mapOptions.shortName});

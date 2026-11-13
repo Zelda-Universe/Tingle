@@ -7615,3 +7615,226 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	outline-offset: 2px;
 	border-radius: 4px;
 }
+
+/* Paths (scripts/services/Paths.js): a numbered path's step numbers, in the
+   path's colour with a white ring, and its named pins' names. */
+.zm-path-step span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	box-sizing: border-box;
+	border-radius: 50%;
+	border: 2px solid #fff;
+	background: var(--path-color, #2f5d50);
+	color: #fff;
+	font: 700 12px/1 'Open Sans', sans-serif;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+}
+.leaflet-tooltip.zm-path-pin {
+	background: rgba(20, 20, 20, .85);
+	color: #fff;
+	border: 0;
+	box-shadow: none;
+	font-weight: 600;
+}
+.leaflet-tooltip.zm-path-pin::before { display: none; }
+
+/* A marker's paths, under its actions (scripts/services/PathEditor.js). */
+.marker-paths { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 4px; }
+.marker-paths:empty { display: none; }
+.marker-path-link {
+	display: flex; align-items: center; gap: 10px; width: 100%;
+	padding: 9px 12px; border: 0; border-radius: 10px;
+	background: rgba(255, 255, 255, .07); color: inherit; text-align: left; font-weight: 600; font-size: 14px;
+}
+.marker-path-link:hover, .marker-path-link:focus-visible { background: rgba(255, 255, 255, .13); outline: none; }
+.marker-path-link span { flex: 1; }
+.marker-path-link small { opacity: .7; font-weight: 400; font-size: 12px; }
+.marker-path-new { background: transparent; border: 1px dashed rgba(255, 255, 255, .25); }
+
+/* A path's page and the path editor. */
+.path-meta, .path-description { text-align: center; opacity: .8; }
+.path-page-actions, .path-editor-actions { display: flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+.path-steps { list-style: none; padding: 0; margin: 10px 0; display: flex; flex-direction: column; gap: 4px; }
+.path-step {
+	display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px;
+	background: rgba(255, 255, 255, .06); transition: transform .12s ease;
+}
+.path-step-hidden { opacity: .6; }
+.path-step-number {
+	flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff;
+	background: var(--path-color, #2f5d50); color: #fff; font-size: 11px; font-weight: 700;
+	display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+}
+.path-step-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: none; border: 0; color: inherit; text-align: left; padding: 0; }
+.path-page .path-step-name:hover { text-decoration: underline; }
+.path-step-pin-name.form-control { flex: 1; min-width: 0; height: 30px; padding: 4px 8px; }
+.path-step-handle { cursor: grab; touch-action: none; padding: 4px 2px; opacity: .6; }
+.path-step-dragging { position: relative; z-index: 2; background: rgba(255, 255, 255, .16); box-shadow: 0 4px 14px rgba(0, 0, 0, .4); transition: none; }
+.path-step-dragging .path-step-handle { cursor: grabbing; }
+.path-step-remove, .path-step-toggle { flex: none; background: none; border: 0; color: inherit; opacity: .7; padding: 4px 6px; }
+.path-step-remove:hover, .path-step-toggle:hover { opacity: 1; }
+.path-kind { border: 0; padding: 0; margin: 6px 0 10px; }
+.path-kind label, .path-toggles label { display: flex; gap: 8px; align-items: baseline; font-weight: 400; margin: 4px 0; }
+.path-toggles { margin-bottom: 10px; }
+.path-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.path-row input[type=color].form-control { padding: 2px 4px; height: 34px; }
+.path-steps-title { margin: 14px 0 2px; }
+.path-hint { opacity: .7; font-size: 13px; margin: 0 0 6px; }
+.path-drop-pin.active { background: #4395f7; }
+.path-editor-actions button { background: none; border: 0; color: inherit; opacity: .75; text-decoration: underline; }
+.path-editor-actions .path-delete { color: #ff6b63; }
+.path-pin-mode, .path-pin-mode .leaflet-interactive { cursor: crosshair !important; }
+.path-steps { font-size: 14px; }
+.path-page-actions .form-action-button { flex: 1; margin: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.path-kind label, .path-toggles label, .path-hint { font-size: 14px; }
+.path-kind label b { white-space: nowrap; }
+.profile-path-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.profile-path .path-step-number { width: 26px; height: 26px; font-size: 11px; }
+.path-owner { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; font: inherit; }
+.marker-path-link .path-step-number { flex: none; }
+.path-add-buttons { display: flex; flex-direction: column; gap: 8px; }
+.path-add-buttons .form-action-button { margin: 0; }
+/* Adding steps on a phone: the editor's put away, this bar stays. */
+.path-add-bar {
+	position: fixed; z-index: 1200; left: 12px; right: 12px; top: calc(env(safe-area-inset-top, 0px) + 72px);
+	display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px;
+	background: rgba(20, 20, 24, .92); color: #fff; box-shadow: 0 6px 20px rgba(0, 0, 0, .45);
+}
+.path-bar-text { flex: 1; font-size: 14px; line-height: 1.25; }
+.path-bar-text small { opacity: .7; }
+.path-add-bar button { border: 0; border-radius: 10px; padding: 8px 12px; font-weight: 600; color: #fff; background: rgba(255, 255, 255, .14); }
+.path-add-bar .path-bar-done { background: #4395f7; }
+
+/* Paths: drafts, who sees them, notes, history and Community Paths. */
+.path-status { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 6px; }
+.path-badge {
+	display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px;
+	background: rgba(255, 255, 255, .1); font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+.path-badge-draft { background: rgba(255, 173, 72, .22); }
+.path-badge-scheduled { background: rgba(67, 149, 247, .25); }
+.marker-path-link .path-badge { font-size: 11px; padding: 1px 6px; margin-left: 2px; vertical-align: 1px; }
+.path-description { text-align: left; opacity: .9; margin: 8px 0; font-size: 14px; line-height: 1.4; }
+.path-step-body { flex: 1; min-width: 0; }
+.path-step-body .path-step-name { display: block; width: 100%; }
+.path-step-note { margin: 2px 0 0; font-size: 13px; opacity: .75; white-space: normal; }
+.path-steps-editable .path-step { flex-wrap: wrap; }
+.path-step-note-input.form-control { flex-basis: 100%; margin-left: 50px; width: calc(100% - 50px); font-size: 13px; }
+.path-step-note-toggle { flex: none; background: none; border: 0; color: inherit; opacity: .45; padding: 4px 6px; }
+.path-step-note-toggle.active, .path-step-note-toggle:hover { opacity: 1; }
+.path-revisions { list-style: none; padding: 0; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.path-revision { padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, .06); }
+.path-revision small { opacity: .7; }
+.path-revision p { margin: 4px 0 0; opacity: .85; }
+.path-revision-actions { display: flex; gap: 12px; margin-top: 4px; }
+.path-revision-actions button { background: none; border: 0; padding: 0; color: inherit; opacity: .8; text-decoration: underline; font-size: 13px; }
+.path-yeahs { display: inline-flex; align-items: center; gap: 3px; }
+.path-yeahs .yeah-icon { width: 14px; height: 14px; }
+.community-paths .activity-filters { margin: 0 0 10px; }
+.community-path-description { display: block; font-weight: 400; opacity: .75; font-size: 12px; margin-top: 2px; }
+.community-paths-more { width: 100%; margin-top: 10px; }
+/* The selected path's outline (scripts/services/Paths.js), lifted off the map. */
+.zm-path-outline { filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .45)); }
+
+/* A path's page: its steps down a line in the path's color, each with its
+   marker's contents (long ones cut short until expanded). */
+.path-page, .path-history-page, .path-editor, .community-paths { padding: 4px 16px 28px; box-sizing: border-box; }
+.path-timeline { gap: 0; margin: 18px 0 0; }
+.path-timeline .path-step { position: relative; align-items: flex-start; gap: 12px; padding: 0 0 20px; background: none; border-radius: 0; }
+.path-timeline .path-step:not(:last-child)::before {
+	content: ''; position: absolute; left: 13px; top: 28px; bottom: 2px; width: 2px; margin-left: -1px;
+	border-radius: 1px; background: var(--path-color, #ffad48); opacity: .7;
+}
+.path-timeline .path-step-number { width: 26px; height: 26px; font-size: 12px; }
+.path-timeline .path-step-name { white-space: normal; font-size: 15px; font-weight: 700; line-height: 26px; }
+.path-timeline .path-step-note { font-size: 14px; opacity: .85; font-style: italic; margin: 2px 0 6px; }
+.leaflet-control-layers .popupContent.path-step-content { position: relative; max-height: 380px; overflow: hidden; margin-top: 4px; padding-bottom: 0; }
+.path-step-content.truncated {
+	-webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
+	mask-image: linear-gradient(to bottom, #000 65%, transparent);
+}
+.leaflet-control-layers .popupContent.path-step-content.expanded { max-height: none; }
+.path-step-content > :first-child { margin-top: 0; }
+.path-step-content > :last-child { margin-bottom: 0; }
+.leaflet-control-layers .popupContent.path-step-content h4 { font-size: 15px; margin: 14px 0 4px; }
+.path-step-more {
+	display: block; background: none; border: 0; padding: 6px 0 0; color: inherit; opacity: .8;
+	font-size: 13px; font-weight: 600; text-decoration: underline;
+}
+.path-step-more[hidden] { display: none; }
+.path-step-more:hover { opacity: 1; }
+.category-paths .marker-paths { margin: 6px 0 4px; }
+.category-paths .path-step-number { width: 26px; height: 26px; }
+
+/* Path lines say they can be clicked: a faint outline and their name while
+   hovered (scripts/services/Paths.js). */
+.zm-path-outline-hover { transition: opacity .12s ease; }
+.leaflet-tooltip.zm-path-tooltip {
+	background: rgba(20, 20, 24, .92); color: #fff; border: 0; border-radius: 8px;
+	padding: 4px 9px; font-weight: 600; box-shadow: 0 3px 10px rgba(0, 0, 0, .4);
+}
+.leaflet-tooltip.zm-path-tooltip::before { display: none; }
+/* Each step's check, and the page's count. */
+.path-step-head { display: flex; align-items: flex-start; gap: 10px; }
+.path-step-head .path-step-name { flex: 1; min-width: 0; }
+/* A completed step: dimmed, its number a check on a darkened circle. */
+.path-step-tick { display: none; font-size: 11px; }
+.path-timeline .area-marker-completed .path-step-number {
+	background: color-mix(in srgb, var(--path-color, #ffad48) 35%, #121212);
+	border-color: rgba(255, 255, 255, .55);
+}
+.path-timeline .area-marker-completed .path-step-n { display: none; }
+.path-timeline .area-marker-completed .path-step-tick { display: block; }
+.path-timeline .area-marker-completed .path-step-head,
+.path-timeline .area-marker-completed .path-step-note,
+.path-timeline .area-marker-completed .path-step-content,
+.path-timeline .area-marker-completed .path-step-more { opacity: .45; }
+/* Each step's Complete: its marker's own, as on the marker's page. */
+.path-step-complete {
+	display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 12px; padding: 10px 14px;
+	border: 0; border-radius: 10px; background: rgba(255, 255, 255, .1); color: inherit;
+	font-size: 14px; font-weight: 600; line-height: 1;
+}
+.path-step-complete:hover, .path-step-complete:focus-visible { background: rgba(255, 255, 255, .18); outline: none; }
+.path-step-complete.done { background: rgba(80, 200, 120, .22); }
+.path-step-complete:disabled { opacity: .6; }
+.path-step-complete-icon { font-size: 16px; display: inline-flex; }
+.path-finished { white-space: nowrap; }
+/* The path page titled as marker and category pages are. */
+.path-detail-page > .popupTitle { padding: 0 16px; }
+.path-detail-page > .path-header-pills { padding: 0 16px; }
+.path-header-pills { justify-content: center; margin: 2px 0 8px; }
+.path-completion-pill.path-completion-done { background: rgba(80, 200, 120, .28); }
+
+/* Path cards (scripts/services/PathEditor.js _pathCardHTML): a path in a
+   list, with a thumbnail of its whole line on the map. */
+.path-card {
+	display: flex; flex-direction: column; width: 100%; padding: 0; border: 0; border-radius: 12px; overflow: hidden;
+	background: rgba(255, 255, 255, .07); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
+	color: inherit; text-align: left; font: inherit; cursor: pointer;
+}
+.path-card:hover, .path-card:focus-visible { background: rgba(255, 255, 255, .12); outline: none; }
+.path-card:focus-visible { box-shadow: inset 0 0 0 2px #4395f7; }
+.path-card-thumb { position: relative; display: block; width: 100%; aspect-ratio: 2 / 1; overflow: hidden; background: #1b1b1f; }
+.leaflet-control-layers .path-card-thumb img { position: absolute; max-width: none; border-radius: 0; }
+.path-card-thumb svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.path-card-thumb-empty { display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--path-color, #ffad48); }
+.path-card-body { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px 12px; }
+.path-card-title { font-size: 15px; font-weight: 700; line-height: 1.3; }
+.path-card-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+.path-card-description {
+	font-size: 13px; line-height: 1.4; opacity: .8;
+	display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.path-card-meta { font-size: 12px; opacity: .7; }
+.path-card-stats { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; font-size: 12px; margin-top: 2px; }
+.path-card-progress { padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .1); font-weight: 600; }
+.path-card-progress.done { background: rgba(80, 200, 120, .28); }
+.path-card-date { opacity: .6; }
+.marker-paths .path-card, .category-paths .path-card { margin: 0; }
+.profile-path-list { gap: 10px; }
+/* In line with the actions above them (marker pages) and the headings (category pages). */
+.marker-paths { padding: 0 16px; }

@@ -47,6 +47,8 @@ scripts/services/CategoryPage.js
 scripts/controls/OotFloors.js
 scripts/zwiki.js
 scripts/services/MarkerNavigation.js
+scripts/services/Paths.js
+scripts/services/PathEditor.js
 scripts/zbeta.js
 scripts/zmapsettings.js
 scripts/zreports.js

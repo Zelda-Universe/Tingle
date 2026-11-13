@@ -64,6 +64,13 @@ ZMap.prototype._getCategoryMarkers = function(category) {
 ZMap.prototype._showCategoryPage = function(category) {
   var zmap = this, control = this.mapControl;
   this.selectedCategory = category;
+  // A category that is one path (Paths.js) opens as that path's page; one
+  // with several, or with markers of its own too, lists them first.
+  var categoryPaths = this._categoryPaths ? this._categoryPaths(category) : {paths: []};
+  if(categoryPaths.single && this.openPathPage) {
+    this.openPathPage(categoryPaths.single, {back: this._categoryPageBackAction(control)});
+    return;
+  }
   this.selectedArea = null; // Its address is cleared, too.
   var name = category.displayTitle || category.name;
   var page = $('<div class="area-detail-page category-detail-page">' +
@@ -97,6 +104,19 @@ ZMap.prototype._showCategoryPage = function(category) {
   var content = page.find('.area-marker-groups');
   if(category.description) {
     $('<div class="area-description"></div>').text(category.description).insertAfter(pills);
+  }
+  if(categoryPaths.paths.length) {
+    var pathSection = $('<section class="poi-category-groups category-paths">' +
+      '<div class="poi-category-heading"><h3 class="area-category-title">Paths</h3></div><div class="marker-paths"></div></section>');
+    categoryPaths.paths.forEach(function(path) {
+      // A path card (PathEditor.js), with the path's thumbnail.
+      var button = $(zmap._pathCardHTML(path));
+      button.on('click', function() {
+        zmap.openPathPage(path, {back: function() { control._navigatingBack = true; zmap._showCategoryPage(category); }});
+      });
+      pathSection.find('.marker-paths').append(button);
+    });
+    content.append(pathSection);
   }
   var currentMap = control.getCurrentMap ? control.getCurrentMap().mapId : null;
   var onCurrentMap = function(name) {

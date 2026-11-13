@@ -245,6 +245,9 @@ function getUserInfo() {
       zMap.checkOfflineMapUpdates();
     }
     if(offline) return;
+    // Paths, once we know who's asking (scripts/services/Paths.js: admins
+    // only while they're built). The markers are in by now.
+    if(zMap.loadPaths) zMap.loadPaths();
     if(ZConfig.getConfig("changelog") == 'true')
       checkChangelog(vResults.user);
    };

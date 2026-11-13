@@ -59,8 +59,35 @@
     "SELECT COUNT(*) FROM `{$map_prefix}marker` WHERE `user_id` = ? AND `visible` = 1", [$user['id']]
   );
 
+  // Their own paths (scope user), in the games the viewer can see: games in
+  // progress (visible = 2) only for admins. Others see the public, published
+  // ones; the owner sees them all, drafts and unlisted ones marked.
+  include_once(dirname(__DIR__) . '/lib/common/paths.php');
+  $paths = null;
+  if (pathsAllowed($viewerLevel) && $db->fetchOne("SHOW TABLES LIKE '{$map_prefix}path'")) {
+    $paths = $db->fetchAllAssociative("
+      SELECT p.id, p.name, p.slug, p.kind, p.loops, p.color, p.visibility, UNIX_TIMESTAMP(p.published_at) AS publishedAt,
+             " . pathPublishedSql() . " AS published, c.short_name AS game, c.name AS gameName,
+             (SELECT COUNT(*) FROM `{$map_prefix}like` l WHERE l.target_type = 'path' AND l.target_id = p.id) AS yeahs,
+             (SELECT COUNT(*) FROM `{$map_prefix}path_step` s WHERE s.path_id = p.id) AS steps
+        FROM `{$map_prefix}path` p JOIN `{$map_prefix}container` c ON c.id = p.container_id
+       WHERE p.user_id = ? AND p.scope = 'user' AND p.visible = 1 AND c.enabled = 1
+         AND (" . pathListedSql() . " OR p.user_id = ?)
+         AND (c.visible = 1 OR (c.visible = 2 AND ? >= " . (int) WIKI_ADMIN_LEVEL . "))
+       ORDER BY p.updated DESC, p.id DESC
+    ", [$user['id'], $viewerId, $viewerLevel]);
+    foreach ($paths as &$path) { $path['steps'] = (int) $path['steps']; $path['loops'] = (bool) $path['loops']; $path['published'] = (bool) $path['published'];
+      $path['publishedAt'] = $path['publishedAt'] === null ? null : (int) $path['publishedAt']; $path['yeahs'] = (int) $path['yeahs']; }
+    unset($path);
+    // Path cards' thumbnails (lib/common/paths.php).
+    $thumbs = pathThumbs($db, $map_prefix, array_column($paths, 'id'));
+    foreach ($paths as &$path) $path['thumb'] = $thumbs[(int) $path['id']];
+    unset($path);
+  }
+
   echo json_encode(array(
     'success' => true,
+    'paths' => $paths,
     'user' => $user,
     'counts' => $counts,
     'changes' => $changes,

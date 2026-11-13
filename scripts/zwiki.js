@@ -1092,6 +1092,7 @@ ZMap.prototype._renderUserProfile = function(data, back) {
             '<button type="submit" class="infoWindowIcn form-action-button">Save</button>' +
           '</div>' +
         '</form>' : '') +
+      (_this._profilePathsHTML ? _this._profilePathsHTML(data) : '') +
       '<section class="wiki-section profile-activity"><div class="profile-activity-heading"><h4>Recent Activity</h4>'+this._activityFilterHTML(this._profileActivityFilter || 'all')+'</div><ul class="wiki-revisions profile-changes"></ul></section>' +
     '</div>',
     'userProfile-' + profile.id,
@@ -1102,6 +1103,9 @@ ZMap.prototype._renderUserProfile = function(data, back) {
     $(page).find('.profile-bio').html(bio && String(bio).trim() ? _this._renderWikiText(bio) : '');
   };
   showBio(profile.bio);
+  $(page).find('.profile-path').on('click', function() {
+    _this.openPathFromLink(this.getAttribute('data-game'), this.getAttribute('data-slug'));
+  });
   var changes = $(page).find('.profile-changes');
   var renderActivity=function(rows) {
   changes.empty();

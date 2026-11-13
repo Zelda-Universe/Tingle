@@ -2011,6 +2011,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     content.className = 'menu-cat-content-inner';
 
     this._contentType = vType;
+    // (Paths.js: a path is highlighted while its pages are open.)
+    if(this.zMap && this.zMap._pathPageChanged) this.zMap._pathPageChanged(vType);
     // $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
   },
 

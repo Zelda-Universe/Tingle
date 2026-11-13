@@ -1,0 +1,277 @@
+<?php
+  // Paths (ajax/save_path.php, ajax/delete_path.php): who may change one.
+  // Anyone signed in makes and changes their own paths; official paths (on
+  // the map for everyone) are for editors, as markers are.
+  include_once(__DIR__ . '/account_status.php');
+
+  const PATH_EDITOR_LEVEL = 5;
+  // While paths are being built they're only for admins: no one else gets
+  // any (get_paths, profiles) or can save one. Set to false to launch them.
+  const PATHS_ADMIN_ONLY = true;
+  const PATHS_ADMIN_LEVEL = 10;
+
+  // Whether this account may see and make paths at all.
+  function pathsAllowed($level) {
+    return !PATHS_ADMIN_ONLY || (int) $level >= PATHS_ADMIN_LEVEL;
+  }
+
+  // [userId, level] for the signed-in account, or null.
+  function pathAccount($db, $prefix) {
+    start_session('zmap');
+    $userId = (int) ($_SESSION['user_id'] ?? 0);
+    session_write_close();
+    if (!$userId) return null;
+    $role = accountRole($db, $prefix, $userId);
+    return $role ? [$userId, $role[0]] : null;
+  }
+
+  // Changing its name, steps and look: its owner, admins, and, if its owner
+  // lets them (edit_access 'editors'), anyone who can edit markers.
+  function pathCanEdit($path, $userId, $level) {
+    if (pathCanManage($path, $userId, $level)) return true;
+    return ($path['edit_access'] ?? 'owner') === 'editors' && $level >= PATH_EDITOR_LEVEL;
+  }
+
+  // Changing who sees it and who can edit it, and deleting it: its owner and admins.
+  function pathCanManage($path, $userId, $level) {
+    return (int) $path['user_id'] === (int) $userId || $level >= PATHS_ADMIN_LEVEL;
+  }
+
+  // Who sees a path, past its owner (and admins, for official drafts): it's
+  // published (published_at set and come; a later time publishes it then),
+  // and official, unlisted (anyone with its link) or public (on its owner's
+  // profile and Community Paths too). Private ones are only ever its owner's.
+  function pathPublishedSql($a = 'p') {
+    return "($a.published_at IS NOT NULL AND $a.published_at <= NOW())";
+  }
+  function pathOpenSql($a = 'p') {
+    return "(" . pathPublishedSql($a) . " AND ($a.scope = 'official' OR $a.visibility IN ('unlisted', 'public')))";
+  }
+  function pathListedSql($a = 'p') {
+    return "(" . pathPublishedSql($a) . " AND $a.scope = 'user' AND $a.visibility = 'public')";
+  }
+
+  // A path this account may see (its own, an admin's view of an official
+  // draft, or anyone's open one), or false.
+  function pathVisibleTo($db, $prefix, $id, $userId, $level) {
+    return $db->fetchAssociative("SELECT p.* FROM `{$prefix}path` p WHERE p.id = ? AND p.visible = 1
+      AND (p.user_id = ? OR " . pathOpenSql() . " OR (p.scope = 'official' AND ? >= " . PATHS_ADMIN_LEVEL . "))", [(int) $id, (int) $userId, (int) $level]);
+  }
+
+  // A path from what its editor sends (and from a revision, to restore it):
+  // [fields, steps] for pathWrite, or an error message.
+  function pathRead($db, $prefix, $containerId, $in) {
+    $name = trim((string) ($in['name'] ?? ''));
+    if ($name === '' || mb_strlen($name) > 120 || preg_match('/[<>]/', $name)) return 'Give the path a name of up to 120 characters, without < or >.';
+    $description = trim((string) ($in['description'] ?? ''));
+    if (mb_strlen($description) > 2000) return 'Keep the description under 2,000 characters.';
+    $color = preg_match('/^#[0-9a-fA-F]{6}$/', (string) ($in['color'] ?? '')) ? strtolower($in['color']) : null;
+    $categoryId = (int) ($in['categoryId'] ?? 0) ?: null;
+    if ($categoryId && !$db->fetchOne("SELECT 1 FROM `{$prefix}marker_category` WHERE id = ? AND container_id = ?", [$categoryId, $containerId])) {
+      return 'That category is not in this game.';
+    }
+    $fields = array(
+      'name' => $name, 'description' => $description === '' ? null : $description,
+      'kind' => ($in['kind'] ?? '') === 'single' ? 'single' : 'guide',
+      'loops' => !empty($in['loops']) ? 1 : 0, 'numbered' => !empty($in['numbered']) ? 1 : 0,
+      'category_id' => $categoryId, 'color' => $color
+    );
+
+    // Steps: the game's own markers, or points on its maps, each with a note.
+    $steps = is_array($in['steps'] ?? null) ? array_values($in['steps']) : array();
+    if (count($steps) < 2) return 'A path needs at least two steps.';
+    if (count($steps) > 300) return 'A path can have up to 300 steps.';
+    $markerIds = array(); $submapIds = array();
+    foreach ($steps as $step) {
+      if (!empty($step['markerId'])) $markerIds[] = (int) $step['markerId'];
+      else $submapIds[] = (int) ($step['submapId'] ?? 0);
+    }
+    $known = function($sql, $ids) use ($db, $containerId) {
+      $ids = array_values(array_unique($ids));
+      if (!$ids) return array();
+      return array_flip(array_map('intval', $db->fetchFirstColumn(sprintf($sql, implode(',', array_fill(0, count($ids), '?'))), array_merge($ids, [$containerId]))));
+    };
+    $okMarkers = $known("SELECT m.id FROM `{$prefix}marker` m JOIN `{$prefix}submap` s ON s.id = m.submap_id JOIN `{$prefix}map` p ON p.id = s.map_id WHERE m.id IN (%s) AND m.visible = 1 AND p.container_id = ?", $markerIds);
+    $okSubmaps = $known("SELECT s.id FROM `{$prefix}submap` s JOIN `{$prefix}map` p ON p.id = s.map_id WHERE s.id IN (%s) AND p.container_id = ?", $submapIds);
+    $rows = array();
+    foreach ($steps as $i => $step) {
+      $note = trim((string) ($step['note'] ?? ''));
+      if (mb_strlen($note) > 500) return 'Step ' . ($i + 1) . '’s note is over 500 characters.';
+      $note = $note === '' ? null : $note;
+      if (!empty($step['markerId'])) {
+        if (!isset($okMarkers[(int) $step['markerId']])) return 'Step ' . ($i + 1) . ' is not a marker in this game (it may have been deleted).';
+        $rows[] = [(int) $step['markerId'], null, null, null, null, $note, 1];
+      } else {
+        $x = $step['x'] ?? null; $y = $step['y'] ?? null; $pin = trim((string) ($step['name'] ?? ''));
+        if (!isset($okSubmaps[(int) ($step['submapId'] ?? 0)]) || !is_numeric($x) || !is_numeric($y)) return 'Step ' . ($i + 1) . ' is not on this game’s maps.';
+        if (mb_strlen($pin) > 120 || preg_match('/[<>]/', $pin)) return 'Step ' . ($i + 1) . '’s name is too long or has < or >.';
+        $shown = isset($step['shown']) && (empty($step['shown']) || $step['shown'] === '0') ? 0 : 1;
+        $rows[] = [null, (int) $step['submapId'], (float) $x, (float) $y, $pin === '' ? null : $pin, $note, $shown];
+      }
+    }
+    return [$fields, $rows];
+  }
+
+  // Writes a path's fields (any of them) and, given them, its steps.
+  function pathWrite($db, $prefix, $id, $fields, $rows = null) {
+    if ($fields) {
+      $sets = implode(', ', array_map(function($k) { return "`$k` = ?"; }, array_keys($fields)));
+      $db->executeStatement("UPDATE `{$prefix}path` SET $sets, updated = NOW() WHERE id = ?", array_merge(array_values($fields), [$id]));
+    }
+    if ($rows === null) return;
+    $db->executeStatement("DELETE FROM `{$prefix}path_step` WHERE path_id = ?", [$id]);
+    foreach ($rows as $i => $row) {
+      $db->executeStatement("INSERT INTO `{$prefix}path_step` (path_id, step_order, marker_id, submap_id, x, y, name, note, shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        array_merge([$id, $i + 1], $row));
+    }
+  }
+
+  // A path as it stands, for its history: what an editor sends, so a
+  // revision can be read back in by pathRead to restore it.
+  function pathSnapshot($db, $prefix, $id) {
+    $p = $db->fetchAssociative("SELECT p.*, " . pathPublishedSql() . " AS live FROM `{$prefix}path` p WHERE p.id = ?", [$id]);
+    $steps = $db->fetchAllAssociative("SELECT marker_id, submap_id, x, y, name, note, shown FROM `{$prefix}path_step` WHERE path_id = ? ORDER BY step_order", [$id]);
+    return array(
+      'name' => $p['name'], 'description' => (string) $p['description'], 'kind' => $p['kind'],
+      'loops' => (bool) $p['loops'], 'numbered' => (bool) $p['numbered'], 'categoryId' => $p['category_id'] ? (int) $p['category_id'] : null,
+      'color' => $p['color'], 'scope' => $p['scope'], 'visibility' => $p['visibility'], 'editAccess' => $p['edit_access'],
+      'publishedAt' => $p['published_at'], 'published' => (bool) $p['live'],
+      'steps' => array_map(function($s) {
+        $step = $s['marker_id'] ? array('markerId' => (int) $s['marker_id']) :
+          array('submapId' => (int) $s['submap_id'], 'x' => (float) $s['x'], 'y' => (float) $s['y'], 'name' => (string) $s['name'], 'shown' => (bool) $s['shown']);
+        if ($s['note'] !== null && $s['note'] !== '') $step['note'] = $s['note'];
+        return $step;
+      }, $steps)
+    );
+  }
+
+  // What changed between two snapshots, for a revision with no summary.
+  function pathChangeSummary($before, $after) {
+    if (!$before) return 'Created the path';
+    $parts = array();
+    if ($before['name'] !== $after['name']) $parts[] = 'renamed it';
+    if ($before['description'] !== $after['description']) $parts[] = 'the description';
+    if (json_encode($before['steps']) !== json_encode($after['steps'])) {
+      $b = count($before['steps']); $a = count($after['steps']);
+      $parts[] = $a > $b ? 'added ' . ($a - $b) . ' step' . ($a - $b === 1 ? '' : 's') : ($a < $b ? 'removed ' . ($b - $a) . ' step' . ($b - $a === 1 ? '' : 's') : 'the steps');
+    }
+    foreach (['kind' => 'checks', 'loops' => 'looping', 'numbered' => 'numbering', 'color' => 'color', 'categoryId' => 'category'] as $key => $label) {
+      if (($before[$key] ?? null) !== ($after[$key] ?? null)) { $parts[] = 'the look'; break; }
+    }
+    if (($before['visibility'] ?? '') !== ($after['visibility'] ?? '') || $before['scope'] !== $after['scope']) $parts[] = 'who sees it';
+    if (($before['editAccess'] ?? '') !== ($after['editAccess'] ?? '')) $parts[] = 'who can edit it';
+    if (($before['publishedAt'] ?? null) !== ($after['publishedAt'] ?? null) && !(($before['published'] ?? false) && $after['published'])) {
+      $parts[] = $after['publishedAt'] === null ? 'made it a draft' : ($after['published'] ? 'published it' : 'scheduled it');
+    }
+    if (!$parts) return 'No changes';
+    $text = implode(', ', $parts);
+    return mb_strtoupper(mb_substr($text, 0, 1)) . mb_substr($text, 1);
+  }
+
+  // Keeps the path as it now stands in its history (0 when a save changed
+  // nothing and says nothing).
+  function pathRecordRevision($db, $prefix, $id, $userId, $action, $summary, $before) {
+    $after = pathSnapshot($db, $prefix, $id);
+    $summary = trim((string) $summary);
+    if ($before && $summary === '' && $action === 'edit' && json_encode($before) === json_encode($after)) return 0;
+    if ($summary === '') $summary = pathChangeSummary($before, $after);
+    $db->executeStatement("INSERT INTO `{$prefix}path_revision` (path_id, user_id, action, summary, snapshot) VALUES (?, ?, ?, ?, ?)",
+      [$id, $userId, $action, mb_substr($summary, 0, 255), json_encode($after)]);
+    return (int) $db->lastInsertId();
+  }
+
+  // Tells a path's owner someone else changed, restored or deleted it.
+  function pathNotifyOwner($db, $prefix, $path, $actorId, $action, $summary = '') {
+    if ((int) $path['user_id'] === (int) $actorId) return;
+    include_once(__DIR__ . '/notifications.php');
+    $game = $db->fetchOne("SELECT short_name FROM `{$prefix}container` WHERE id = ?", [$path['container_id']]);
+    $actor = $db->fetchOne("SELECT username FROM `{$prefix}user` WHERE id = ?", [$actorId]);
+    $data = array('actor' => $actor, 'pathTitle' => $path['name'], 'action' => $action, 'excerpt' => notificationExcerpt($summary));
+    $data['link'] = $action === 'delete' ? array('page' => 'notifications') : array('game' => $game, 'path' => $path['slug']);
+    notificationDeliver($db, $prefix, $actorId, [(int) $path['user_id'] => ['path_edit']], array(), $data);
+  }
+
+  // Each path's checks: its steps' markers, or, for a path that's one check
+  // (kind 'single'), its first marker's. As a table (path_id, marker_id).
+  function pathChecksSql($prefix) {
+    return "SELECT s.path_id, s.marker_id FROM `{$prefix}path_step` s JOIN `{$prefix}path` cp ON cp.id = s.path_id
+      WHERE s.marker_id IS NOT NULL AND (cp.kind <> 'single' OR s.step_order =
+        (SELECT MIN(s2.step_order) FROM `{$prefix}path_step` s2 WHERE s2.path_id = s.path_id AND s2.marker_id IS NOT NULL))
+      GROUP BY s.path_id, s.marker_id";
+  }
+
+  // How many people have started each path (completed at least one of its
+  // checks) and finished it (all of them): [id => [started, finished]].
+  function pathCompletionStats($db, $prefix, $ids) {
+    $ids = array_values(array_filter(array_map('intval', $ids)));
+    $stats = array_fill_keys($ids, [0, 0]);
+    if (!$ids) return $stats;
+    $in = implode(',', $ids);
+    $checks = pathChecksSql($prefix);
+    $rows = $db->fetchAllAssociative("
+      SELECT t.path_id, COUNT(*) AS started, SUM(t.done = k.total) AS finished
+        FROM (SELECT ch.path_id, c.user_id, COUNT(*) AS done
+                FROM ($checks) ch JOIN `{$prefix}user_completed_marker` c ON c.marker_id = ch.marker_id
+               WHERE ch.path_id IN ($in) GROUP BY ch.path_id, c.user_id) t
+        JOIN (SELECT path_id, COUNT(*) AS total FROM ($checks) x WHERE x.path_id IN ($in) GROUP BY path_id) k ON k.path_id = t.path_id
+       GROUP BY t.path_id");
+    foreach ($rows as $row) $stats[(int) $row['path_id']] = [(int) $row['started'], (int) $row['finished']];
+    return $stats;
+  }
+
+  // What a path card's thumbnail needs (PathEditor.js _pathThumbHTML): the
+  // path's line on the map its first step is on ([lat, lng] points, hidden
+  // waypoints too), and that map's artwork: its tiles and its projection,
+  // as get_container and get_map give them. [id => thumb or null].
+  function pathThumbs($db, $prefix, $ids) {
+    include_once(__DIR__ . '/tile_delivery.php');
+    $ids = array_values(array_filter(array_map('intval', $ids)));
+    $thumbs = array_fill_keys($ids, null);
+    if (!$ids) return $thumbs;
+    $steps = $db->fetchAllAssociative("
+      SELECT s.path_id, COALESCE(m.submap_id, s.submap_id) AS submap, COALESCE(m.x, s.x) AS x, COALESCE(m.y, s.y) AS y
+        FROM `{$prefix}path_step` s LEFT JOIN `{$prefix}marker` m ON m.id = s.marker_id
+       WHERE s.path_id IN (" . implode(',', $ids) . ") ORDER BY s.path_id, s.step_order");
+    $lines = array();
+    foreach ($steps as $step) {
+      $id = (int) $step['path_id'];
+      if ($step['submap'] === null || $step['x'] === null) continue;
+      if (!isset($lines[$id])) $lines[$id] = array('submap' => (int) $step['submap'], 'points' => array());
+      if ((int) $step['submap'] === $lines[$id]['submap']) $lines[$id]['points'][] = [round((float) $step['y'], 3), round((float) $step['x'], 3)];
+    }
+    if (!$lines) return $thumbs;
+    $submapIds = array_values(array_unique(array_column($lines, 'submap')));
+    $maps = array();
+    foreach ($db->fetchAllAssociative("
+      SELECT sm.id, sm.tile_url AS tileURL, sm.tile_ext AS tileExt, sm.tile_version AS tileVersion,
+             COALESCE(mp.max_zoom, c.max_zoom) AS maxZoom, c.tile_size AS tileSize,
+             c.scaleP, c.scaleN, c.offsetX, c.offsetY, c.background_color AS bgColor
+        FROM `{$prefix}submap` sm JOIN `{$prefix}map` mp ON mp.id = sm.map_id JOIN `{$prefix}container` c ON c.id = mp.container_id
+       WHERE sm.id IN (" . implode(',', $submapIds) . ")") as $row) {
+      $base = bundledMapTileBaseURL($row['tileURL']);
+      if ($base === null && PHP_SAPI === 'cli-server' && is_dir(dirname(__DIR__, 2) . '/tiles/' . $row['tileURL'])) $base = '/tiles/';
+      $maps[(int) $row['id']] = array(
+        'tileBaseURL' => $base, 'tileURL' => $row['tileURL'], 'tileExt' => $row['tileExt'], 'tileVersion' => $row['tileVersion'],
+        'maxZoom' => (int) $row['maxZoom'], 'tileSize' => (int) $row['tileSize'] ?: 256,
+        'scaleP' => (float) $row['scaleP'], 'scaleN' => (float) $row['scaleN'],
+        'offsetX' => (float) $row['offsetX'], 'offsetY' => (float) $row['offsetY'], 'bgColor' => $row['bgColor']
+      );
+    }
+    foreach ($lines as $id => $line) {
+      if (isset($maps[$line['submap']])) $thumbs[$id] = $maps[$line['submap']] + array('points' => $line['points']);
+    }
+    return $thumbs;
+  }
+
+  // A URL name from a path's name, unique in its game.
+  function pathSlug($db, $prefix, $containerId, $name, $exceptId = 0) {
+    $base = trim(preg_replace('/[^a-z0-9]+/', '-', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name) ?: $name)), '-');
+    if ($base === '') $base = 'path';
+    $base = substr($base, 0, 120);
+    $slug = $base;
+    for ($n = 2; $db->fetchOne("SELECT 1 FROM `{$prefix}path` WHERE container_id = ? AND slug = ? AND id <> ?", [$containerId, $slug, $exceptId]); $n++) {
+      $slug = $base . '-' . $n;
+    }
+    return $slug;
+  }
+?>

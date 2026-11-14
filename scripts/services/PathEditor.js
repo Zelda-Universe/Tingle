@@ -178,7 +178,9 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   // completion as pills: both stay in the compact title bar when the page
   // scrolls (ZLayers.js).
   var page = this._showWikiPage("<h2 class='popupTitle'>" + this._pathEsc(path.name) + "</h2>" +
-    "<div class='area-header-pills path-header-pills'><p class='marker-coordinate-pill path-kind-pill'><i class='fas fa-map-signs' aria-hidden='true'></i> Path</p>" +
+    // (In an embed, the game first: zmap.js.)
+    "<div class='area-header-pills path-header-pills'>" + this._embedGamePillHTML() +
+      "<p class='marker-coordinate-pill path-kind-pill'><i class='fas fa-map-signs' aria-hidden='true'></i> Path</p>" +
       (this._pathCheckCounts(path).total ? "<p class='area-completion-pill marker-coordinate-pill path-completion-pill'></p>" : '') + "</div>" +
     "<div class='marker-actions-row path-actions-row' style='grid-template-columns: repeat(" + actions.length + ", minmax(0, 1fr))'>" + actions.join('') + "</div>" +
     // Its guide, full width under the controls, and the end of what a phone's
@@ -306,7 +308,8 @@ ZMap.prototype.updatePathCompletionCounts = function() {
 // That this account has started a user's path, once (ajax/start_path.php).
 // Official paths count from completions instead.
 ZMap.prototype._recordPathStart = function(path) {
-  if(!path || path.scope !== 'user' || path._started || !this.getUser()) return;
+  // (Not from an embed: never anyone's, even previewed signed in.)
+  if(!path || path.scope !== 'user' || path._started || !this.getUser() || (this.isFramed && this.isFramed())) return;
   path._started = true;
   this._wikiPost('start_path', {id: path.id}).fail(function() { path._started = false; });
 };
@@ -386,6 +389,16 @@ ZMap.prototype._framePathLeg = function(path, from, to, instant) {
   return true;
 };
 
+// A step's marker opened from its title: a level and a half short of the
+// closest zoom, enough to see what's around it, and further out in a small
+// map (as an embed's marker is: zmap.js _fitEmbedMarker).
+ZMap.prototype._pathStepZoom = function() {
+  var map = this.map, zoom = map.getMaxZoom() - 1.5;
+  var visible = this._visibleMapRoom ? this._visibleMapRoom() : null;
+  if(visible && visible.room && visible.room < this.EMBED_ROOM) zoom += Math.log2(visible.room / this.EMBED_ROOM);
+  return Math.max(map.getMinZoom(), zoom);
+};
+
 // A step to the top of the page (under the compact title bar).
 ZMap.prototype._scrollToPathStep = function(li) {
   var contents = this.mapControl._contents;
@@ -410,6 +423,9 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
   var zmap = this, n = 0;
   var checks = opts && opts.checks ? this._pathCheckMarkers(path).map(function(m) { return String(m.id); }) : [];
   var pinChecks = opts && opts.checks ? this._pathCheckPins(path) : [];
+  // In an embed, no Completes (nobody's progress): Next, on to the next step.
+  var framed = this.isFramed && this.isFramed();
+  var shownCount = steps.filter(function(s) { return s.markerId || s.shown != 0; }).length;
   return "<ol class='path-steps path-timeline' style='--path-color:" + zmap._pathEsc(path.color || '#ffad48') + "'>" + steps.map(function(step, i) {
     if(!step.markerId && step.shown == 0) return '';
     n++;
@@ -442,7 +458,8 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
         "<button type='button' class='path-step-more' hidden><span>Show more</span><i class='fas fa-chevron-down' aria-hidden='true'></i></button>" : '') +
       // The marker's own Complete, as on its page: checking it here checks
       // the marker everywhere.
-      (check ? "<button type='button' class='path-step-complete'><span class='path-step-complete-icon'></span><span class='path-step-complete-label'></span></button>" : '') +
+      (check && !framed ? "<button type='button' class='path-step-complete'><span class='path-step-complete-icon'></span><span class='path-step-complete-label'></span></button>" : '') +
+      (framed && opts && opts.checks && n < shownCount ? "<button type='button' class='path-step-next'><span>Next</span><i class='fas fa-arrow-down' aria-hidden='true'></i></button>" : '') +
       "</div></li>";
   }).join('') + "</ol>";
 };
@@ -470,8 +487,19 @@ ZMap.prototype._wirePathSteps = function(page, steps, reopen, label, path) {
       }});
       control._navigatingForward = true;
     }
-    // As a list opens a marker (zmap.js navigateToMarker), but flown to.
-    zmap.goTo({marker: marker.id, zoom: Math.max(zmap.map.getZoom(), 6), centerInVisibleArea: true, panTo: false, animate: true}, true);
+    // As a marker's link opens it, centred, but flown to and not right in:
+    // the same zoom for every step, so following a path title by title moves
+    // steadily from marker to marker (_pathStepZoom).
+    zmap.goTo({marker: marker.id, zoom: zmap._pathStepZoom(), centerInVisibleArea: true, panTo: false, animate: true}, true);
+  });
+  // Next (an embed's): on to the next step, in the list and on the map,
+  // framed from this one as the guide's Complete does.
+  $(page).find('.path-step-next').on('click', function() {
+    var li = $(this).closest('li'), next = li.nextAll('li').first();
+    if(!next.length) return;
+    zmap._scrollToPathStep(next[0]);
+    zmap._setCurrentPathStep(page, next[0]);
+    zmap._goToPathStep(steps[Number(next.attr('data-index'))], false, path ? {path: path, from: steps[Number(li.attr('data-index'))]} : null);
   });
   // Completing a step moves on to the next one not yet done.
   $(page).find('.path-step-complete').on('click', function() {
@@ -593,7 +621,7 @@ ZMap.prototype.openPathPin = function(path, stepOrKey, back, opts) {
   var page = this._showWikiPage("<h2 class='popupTitle'>" + esc(this._pathStepLabel(step)) + "</h2>" +
     // What it is, and the path it's on (which opens it), as a marker's
     // place and region pills.
-    "<div class='area-header-pills path-pin-pills'><p class='marker-coordinate-pill'><i class='fas fa-map-pin' aria-hidden='true'></i> " +
+    "<div class='area-header-pills path-pin-pills'>" + this._embedGamePillHTML() + "<p class='marker-coordinate-pill'><i class='fas fa-map-pin' aria-hidden='true'></i> " +
       (path.numbered && number ? 'Step ' + number : 'Pin') + "</p>" +
       "<button type='button' class='marker-coordinate-pill marker-region-pill path-pin-path'>" + esc(path.name) + "<i class='fas fa-chevron-right' aria-hidden='true'></i></button></div>" +
     "<div class='marker-actions-row path-actions-row' style='grid-template-columns: repeat(" + actions.length + ", minmax(0, 1fr))'>" + actions.join('') + "</div>" +

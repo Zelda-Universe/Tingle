@@ -87,6 +87,8 @@ ZMap.prototype._areaTopInset = function(rect) {
 };
 
 ZMap.prototype.navigateToArea = function(area) {
+  // (Not in an embed: it shows only what was embedded, zmap.js isFramed.)
+  if(this.isFramed && this.isFramed()) return;
   this._attachAreaBorders();
   if(area.areaDestination) {
     var active=this.mapControl.getCurrentMap();
@@ -752,6 +754,7 @@ ZMap.prototype.markerLabelLink = function(marker,level) {
 // Opens the page from one of a marker's pills ('place' or the area). Its page
 // has a Back button to the marker.
 ZMap.prototype.openMarkerArea = function(markerId,which) {
+  if(this.isFramed && this.isFramed()) return;
   var marker=this.cachedMarkersById[markerId];
   var link=marker && (which==='place' || which==='area-name' ? this.markerLabelLink(marker,which==='place' ? 'place' : 'area') : this.markerAreaLink(marker));
   if(!link || !link.area) return;

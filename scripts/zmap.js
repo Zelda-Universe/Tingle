@@ -954,8 +954,10 @@ ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
         : "<p class='" + classes + "'>" + label + "</p>";
     };
     var pills = "<p class='marker-coordinate-pill'>" + coordinateText + "</p>";
-    if(placeLink || areaNameLink || areaLink) {
-      pills = "<div class='area-header-pills marker-header-pills'>" + pills +
+    // In an embed, the game first: the page around it may not say.
+    var gamePill = this._embedGamePillHTML();
+    if(placeLink || areaNameLink || areaLink || gamePill) {
+      pills = "<div class='area-header-pills marker-header-pills'>" + gamePill + pills +
         pillFor(placeLink, 'place') + pillFor(areaNameLink, 'area-name') + pillFor(areaLink, 'area') + "</div>";
     }
     var content = "<h2 class='popupTitle'>" + title + "</h2>" +
@@ -2318,6 +2320,18 @@ ZMap.prototype._createDroppedPinLink = function(latlng) {
 // (index.php sets the class first thing).
 ZMap.prototype.isFramed = function() {
   return document.documentElement.classList.contains('zm-framed');
+};
+
+// The game, its icon and name, as the first header pill in an embed (marker,
+// path and pin pages): whoever's reading the page around it may not know
+// which game it is. The name its pages are titled with (Name (Page Title),
+// game settings), else its name.
+ZMap.prototype._embedGamePillHTML = function() {
+  var options = this.mapOptions || {};
+  var name = String(options.pageTitle || '').trim() || options.name;
+  if(!this.isFramed() || !name) return '';
+  var icon = options.icon ? "<span class='zm-embed-game-icon icon-" + $('<span>').text(options.icon).html() + "' aria-hidden='true'></span>" : '';
+  return "<p class='marker-coordinate-pill zm-embed-game-pill'>" + icon + $('<span>').text(name).html() + "</p>";
 };
 
 ZMap.prototype._openDroppedPin = function(latlng) {
@@ -7961,13 +7975,23 @@ ZMap.prototype.EMBED_ROOM = 640;
 ZMap.prototype._fitEmbedMarker = function(markerId) {
   var marker = this.cachedMarkersById && this.cachedMarkersById[markerId];
   if(!marker || !this.map) return;
-  var map = this.map, control = this.mapControl, zmap = this;
+  var map = this.map, zmap = this;
   // (Not mid-way through a zoom the page's start-up began: it'd carry on past it.)
   if(map._animatingZoom) { map.once('zoomend', function() { setTimeout(function() { zmap._fitEmbedMarker(markerId); }, 0); }); return; }
+  var visible = this._visibleMapRoom();
+  if(!visible.room || visible.room >= this.EMBED_ROOM) return;
+  var zoom = Math.max(map.getMinZoom(), map.getZoom() + Math.log2(visible.room / this.EMBED_ROOM));
+  this._setViewAtMarkerInVisibleArea(marker, zoom, visible.target, false);
+};
+
+// How much map there is to see past the drawer (above it, on a phone, at
+// its partial height, where it rests): {room: the smaller side in pixels,
+// target: that drawer height, for _setViewAtMarkerInVisibleArea}.
+ZMap.prototype._visibleMapRoom = function() {
+  var map = this.map, control = this.mapControl;
   var rect = map.getContainer().getBoundingClientRect(), drawer = control._container.getBoundingClientRect();
   var width = rect.width, height = rect.height, target;
   if(control.viewStyleBottomSlide) {
-    // (Above the drawer at its partial height, where it rests.)
     target = control.options.softOpenTo;
     var base = Number.isFinite(control._mobileDrawerBaseTop) ? control._mobileDrawerBaseTop :
       drawer.top - (Number.parseFloat(control._container.style.top) || 0);
@@ -7975,10 +7999,7 @@ ZMap.prototype._fitEmbedMarker = function(markerId) {
   } else if(window.getComputedStyle(control._container).display !== 'none') {
     width = Math.max(0, rect.right - drawer.right);
   }
-  var room = Math.min(width, height);
-  if(!room || room >= this.EMBED_ROOM) return;
-  var zoom = Math.max(map.getMinZoom(), map.getZoom() + Math.log2(room / this.EMBED_ROOM));
-  this._setViewAtMarkerInVisibleArea(marker, zoom, target, false);
+  return {room: Math.min(width, height), target: target};
 };
 
 ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom, drawerTargetTop, animate) {

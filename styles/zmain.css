@@ -7989,6 +7989,17 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
    text, as from Show more.) */
 .path-step-complete { margin-top: 4px; }
 .path-step-more:not([hidden]) + .path-step-complete { margin-top: 16px; }
+/* An embedded path's Next (PathEditor.js _pathStepsHTML), as Complete is,
+   and spaced as it is. */
+.path-step-next {
+	display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 4px; padding: 10px 14px;
+	border: 0; border-radius: 10px; background: rgba(255, 255, 255, .1); color: inherit;
+	font-size: 14px; font-weight: 600; line-height: 1;
+}
+.path-step-next:hover, .path-step-next:focus-visible { background: rgba(255, 255, 255, .18); outline: none; }
+.path-step-next .fas { font-size: 12px; }
+.path-step-more:not([hidden]) + .path-step-next { margin-top: 16px; }
+.path-step-head + .path-step-next, .path-step-note + .path-step-next { margin-top: 10px; }
 /* (Straight under a title or a note, 16px too.) */
 .path-step-head + .path-step-complete { margin-top: 10px; }
 .path-step-note + .path-step-complete { margin-top: 10px; }
@@ -8074,9 +8085,9 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .zm-framed .create-community-marker-row,
 .zm-framed .leaflet-contextmenu-separator,
 /* No controls at all: a marker's or path's (Complete, Bookmark, Copy Link,
-   Embed Code), a path's Start, its steps' Completes, its completion. */
+   Embed Code), its steps' Completes (Next instead: PathEditor.js), its
+   completion. */
 .zm-framed .marker-actions-row,
-.zm-framed .path-start-row,
 .zm-framed .path-step-complete,
 .zm-framed .path-completion-pill { display: none !important; }
 /* Only shown in an embed: the header's Open on Zelda Maps (ZLayers.js),
@@ -8108,11 +8119,18 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .zm-framed .marker-region-pill svg, .zm-framed .marker-region-pill i { display: none; }
 /* Links to other markers and people in its text read as text. */
 .zm-framed .popupContent a.wiki-code-link { pointer-events: none; color: inherit; text-decoration: none; }
+/* The map's region and place names read as names, not links to their pages. */
+.zm-framed .leaflet-tooltip[class*="-label"] { pointer-events: none; cursor: default; }
 .zm-framed .logo-framed-link { cursor: pointer; }
 /* (Back buttons stay: a marker opened from an embedded path goes back to
    it. The X, which leaves what was embedded, doesn't.) A path's author
    reads as text. */
 .zm-framed .path-byline a { pointer-events: none; color: inherit; }
+/* The game's pill (zmap.js _embedGamePillHTML): its icon before its name,
+   as tall as the pill's 10px text, a little apart from it. */
+.leaflet-control-layers .zm-embed-game-pill .zm-embed-game-icon {
+	display: inline-block; margin-right: 4px; font-size: 11px; line-height: 1; vertical-align: -1px;
+}
 
 /* Admin's Embeds, under its graph: the sites showing embeds most, a line
    each, or what the codes copied were for. */

@@ -47,14 +47,17 @@ ZMap.prototype._addMakePathButton = function(marker) {
   var tools = this.mapControl && this.mapControl._contents.querySelector('.menu-cat-content-inner > .marker-editor-tools');
   if(!tools || !marker || tools.querySelector('.path-new-button')) return;
   if(!this.getUser() || !this._pathsEnabled) return;
+  // In line with the others: after Edit, before History.
+  var row = tools.querySelector('.marker-editor-buttons');
+  if(!row) return;
   var button = document.createElement('button');
   button.type = 'button';
   button.className = 'marker-editor-button path-new-button';
-  button.innerHTML = "<span class='path-new-icon' aria-hidden='true'><i class='fas fa-map-signs'></i><i class='fas fa-plus'></i></span><span>Make a path from here</span>";
+  button.innerHTML = "<span class='path-new-icon' aria-hidden='true'><i class='fas fa-plus'></i><i class='fas fa-map-signs'></i></span><span>Make Path</span>";
   var zmap = this;
   button.addEventListener('click', function() { zmap.openPathEditor(null, marker.id); });
-  var after = tools.querySelector('.marker-editor-confirm');
-  tools.insertBefore(button, after);
+  var edit = row.querySelector('[data-editor-action="edit"]');
+  row.insertBefore(button, edit ? edit.nextSibling : row.firstChild);
 };
 
 // Fill in any marker page's paths once they've loaded (a marker page opened
@@ -65,6 +68,16 @@ ZMap.prototype._refreshMarkerPaths = function() {
     var marker = zmap._pathMarker(Number(slot.dataset.marker));
     if(marker) { slot.outerHTML = zmap._markerPathsHTML(marker); zmap._addMakePathButton(marker); }
   });
+};
+
+// How long ago, briefly: "now", "5m", "3h", "2d", "3w", "4mo", "1y" ago.
+ZMap.prototype._pathAgo = function(seconds) {
+  var ago = Math.max(0, Date.now() / 1000 - Number(seconds));
+  var steps = [[60, 'now'], [3600, 60, 'm'], [86400, 3600, 'h'], [604800, 86400, 'd'], [2629800, 604800, 'w'], [31557600, 2629800, 'mo'], [Infinity, 31557600, 'y']];
+  for(var i = 0; i < steps.length; i++) {
+    if(ago < steps[i][0]) return steps[i].length === 2 ? 'just now' : Math.floor(ago / steps[i][1]) + steps[i][2] + ' ago';
+  }
+  return '';
 };
 
 // When a path was or will be published, in the viewer's own words.
@@ -103,8 +116,10 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   var status = this._pathStatusHTML(path);
   // Others' Yeahs, once it's out where others can see it.
   var yeahs = path.scope === 'user' && path.published && path.visibility !== 'private';
-  // Who's started it, and how many of them finished it.
-  var stat = path.started ? "<br>" + Math.round(path.finished / path.started * 100) + "% of people who started finished this path" : '';
+  // Under Start's own label: how many have started it, and how many of
+  // them finish it.
+  var stat = path.started ? path.started.toLocaleString() + (path.started === 1 ? ' person' : ' people') + ' started · ' +
+    Math.round(path.finished / path.started * 100) + '% finish' : 'Be the first person to start this path';
   // The controls, as a marker page's (zmap.js): icon over label, in a row.
   var action = function(className, icon, label) {
     return "<button type='button' class='marker-action-button infoWindowIcn " + className + "'>" +
@@ -114,43 +129,54 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   // yet done. (Decided on arriving: it stays as it was until the path is
   // left, PathEditor.js _pathStartLabel, Paths.js _updatePathFocus.)
   if(!this._pathStartLabel || this._pathStartLabel.slug !== path.slug) {
-    var checks = this._pathCheckMarkers(path);
-    var doneCount = checks.filter(function(m) { return m.complete === true || m.complete == 1; }).length;
-    this._pathStartLabel = {slug: path.slug, label: doneCount && doneCount < checks.length ? 'Continue' : 'Start'};
+    var counts = this._pathCheckCounts(path);
+    this._pathStartLabel = {slug: path.slug, label: counts.done && counts.done < counts.total ? 'Continue' : 'Start'};
   }
   // Bookmarked as a marker is (zmap.js toggleBookmark, _findBookmark).
   this._bookmarkTarget = {pathId: path.id};
+  // (Edit and History are at the foot of the page, as a marker's are.)
   var actions = [
-    this._bookmarkButtonHTML ? this._bookmarkButtonHTML() : '',
     // A Yeah, as the comments' (zwiki.js _wireYeahs fills and wires it).
     yeahs ? "<button type='button' class='marker-action-button infoWindowIcn yeah-target yeah-button path-yeah' data-yeah-key='path:" + Number(path.id) + "' aria-pressed='false' disabled>" +
       "<span class='marker-action-icon'><span class='yeah-icon yeah-plus' aria-hidden='true'></span></span>" +
       "<span class='marker-action-label'><span class='yeah-label'>Yeah!</span> <span class='yeah-count'>0</span></span></button>" : '',
-    action('path-copy', 'fas fa-link', 'Copy Link'),
-    action('path-history', 'fas fa-history', 'History'),
-    path.canEdit ? action('path-edit', 'fas fa-pencil-alt', 'Edit') : ''
+    this._bookmarkButtonHTML ? this._bookmarkButtonHTML() : '',
+    action('path-copy', 'fas fa-link', 'Copy Link')
   ].filter(Boolean);
+  // Who made a user's path (their picture, a link to them), how many finish
+  // it, and how long ago it came out: one small line under Start.
+  var byline = [];
+  if(path.scope !== 'official') {
+    byline.push("<span class='path-byline-author'>by " + (path.userName ? this._activityAvatarHTML({profilePicture: path.userPicture}) + this._wikiUserLink(path.userId, path.userName) : 'a user') + "</span>");
+  }
+  if(path.scope !== 'official' && path.published && path.publishedAt) byline.push(this._pathAgo(path.publishedAt));
+  // Edit and History, as a marker's foot (zwiki.js _markerEditorToolsHTML):
+  // for admins, its number and who made it.
+  var viewer = this.getUser();
+  var footer = "<section class='marker-editor-tools path-editor-tools'>" +
+    (viewer && Number(viewer.level) >= this.WIKI_ADMIN_LEVEL ? "<div class='marker-editor-meta'><span>Path #" + Number(path.id) + "</span>" +
+      (path.userName ? "<span>Added by " + this._wikiUserLink(path.userId, path.userName) + "</span>" : '') + "</div>" : '') +
+    "<div class='marker-editor-buttons'>" +
+      (path.canEdit ? "<button type='button' class='marker-editor-button path-edit'><i class='fas fa-pencil-alt' aria-hidden='true'></i><span>Edit</span></button>" : '') +
+      "<button type='button' class='marker-editor-button path-history'><i class='fas fa-history' aria-hidden='true'></i><span>History</span></button>" +
+    "</div></section>";
   // Titled as a marker or category page is, with what it is and its
   // completion as pills: both stay in the compact title bar when the page
   // scrolls (ZLayers.js).
   var page = this._showWikiPage("<h2 class='popupTitle'>" + this._pathEsc(path.name) + "</h2>" +
     "<div class='area-header-pills path-header-pills'><p class='marker-coordinate-pill path-kind-pill'><i class='fas fa-map-signs' aria-hidden='true'></i> Path</p>" +
-      (this._pathCheckMarkers(path).length ? "<p class='area-completion-pill marker-coordinate-pill path-completion-pill'></p>" : '') + "</div>" +
+      (this._pathCheckCounts(path).total ? "<p class='area-completion-pill marker-coordinate-pill path-completion-pill'></p>" : '') + "</div>" +
     "<div class='marker-actions-row path-actions-row' style='grid-template-columns: repeat(" + actions.length + ", minmax(0, 1fr))'>" + actions.join('') + "</div>" +
     // Its guide, full width under the controls, and the end of what a phone's
     // partly open drawer shows (ZLayers.js _mobileDrawerPeekHeight).
     (shown.length ? "<div class='path-start-row drawer-peek-end'><button type='button' class='path-start'>" +
-      "<i class='fas fa-play' aria-hidden='true'></i><span>" + this._pathStartLabel.label + "</span></button></div>" : '') +
+      "<i class='fas fa-play' aria-hidden='true'></i><span class='path-start-text'><span>" + this._pathStartLabel.label + "</span>" +
+      (stat ? "<small>" + this._pathEsc(stat) + "</small>" : '') + "</span></button></div>" : '') +
+    (byline.length ? "<p class='path-byline'>" + byline.join("<span class='path-byline-dot' aria-hidden='true'>•</span>") + "</p>" : '') +
     "<div class='wiki-page path-page' data-path-slug='" + this._pathEsc(path.slug) + "'>" +
     (status ? "<p class='path-status'>" + status + "</p>" : '') +
-    // Who made a user's path and when, and how many finish it: nothing else
-    // (its step count shows in its list; who can edit it, by its Edit).
-    ((path.scope !== 'official' || stat) ? "<p class='path-meta'>" + (path.scope === 'official' ? '' : 'By ' + (path.userName ?
-      "<button type='button' class='path-owner'>" + this._pathEsc(path.userName) + "</button>" : 'a user') +
-      (path.published && path.publishedAt ? ' · ' + this._pathEsc(this._pathTime(path.publishedAt)) : '')) +
-      (path.scope === 'official' ? stat.replace(/^<br>/, '') : stat) + "</p>" : '') +
     (path.description ? "<div class='path-description'>" + this._renderWikiText(path.description) + "</div>" : '') +
-    this._pathStepsHTML(path, path.steps, {checks: true}) + "</div>", 'path', back, null, {partialDrawer: true});
+    this._pathStepsHTML(path, path.steps, {checks: true}) + "</div>" + footer, 'path', back, null, {partialDrawer: true, instant: !!opts.instant});
   page.classList.add('area-detail-page', 'path-detail-page');
   // Step numbers stick just under the compact title bar, however tall it is
   // here (ZLayers.js _setupCompactTitle).
@@ -163,15 +189,16 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   this.updatePathCompletionCounts();
   // Its markers alone on the map, then the map fitted to it (Paths.js).
   this._updatePathFocus();
-  if(!opts.keepView) this.focusPath(path.slug);
+  if(!opts.keepView) this.focusPath(path.slug, {instant: !!opts.instant});
   $(page).find('.path-copy').on('click', function() { zmap._wikiCopy(zmap._pathUrl(path), 'Path link'); });
-  $(page).find('.path-owner').on('click', function() {
-    zmap._openUserProfile({name: path.userName}, function() { zmap.openPathPage(path.slug, {keepView: true}); });
-  });
+  // (The author's link: zwiki.js _wireWikiLinks opens their profile.)
   $(page).find('.path-edit').on('click', function() { zmap.openPathEditor(path); });
   $(page).find('.path-history').on('click', function() { zmap.openPathHistory(path); });
-  $(page).find('.path-start').on('click', function() { zmap._startPathGuide(path, page); });
-  this._wirePathSteps(page, path.steps, function(scrollTop) { zmap.openPathPage(path.slug, {keepView: true, scrollTop: scrollTop}); }, path.name);
+  // Pressing Start, or completing a step here, is starting a user's path
+  // (its started and finish figures: ajax/start_path.php).
+  $(page).find('.path-start').on('click', function() { zmap._recordPathStart(path); zmap._startPathGuide(path, page); });
+  $(page).on('click', '.path-step-complete:not(.done)', function() { zmap._recordPathStart(path); });
+  this._wirePathSteps(page, path.steps, function(scrollTop) { zmap.openPathPage(path.slug, {keepView: true, scrollTop: scrollTop}); }, path.name, path);
   if(opts.scrollTop) {
     var contents = this.mapControl._contents;
     contents.scrollTop = opts.scrollTop;
@@ -191,6 +218,42 @@ ZMap.prototype._pathCheckMarkers = function(path) {
   return path.kind === 'single' ? markers.slice(0, 1) : markers;
 };
 
+// Its pins that are checks too (each shown pin, on a path whose every step
+// is a check), done or not for this account (ajax/toggle_path_pin.php).
+ZMap.prototype._pathCheckPins = function(path) {
+  if(path.kind === 'single') return [];
+  return path.steps.filter(function(step) { return !step.markerId && step.shown != 0 && step.pinKey; });
+};
+
+// How many checks it has, markers' and pins', and how many are done.
+ZMap.prototype._pathCheckCounts = function(path) {
+  var markers = this._pathCheckMarkers(path), pins = this._pathCheckPins(path);
+  return {total: markers.length + pins.length,
+    done: markers.filter(function(m) { return m.complete === true || m.complete == 1; }).length + pins.filter(function(s) { return !!s.done; }).length};
+};
+
+// A step's Complete button, as it stands.
+ZMap.prototype._setPathCompleteButton = function(button, complete) {
+  if(!button) return;
+  button.classList.toggle('done', complete);
+  button.setAttribute('aria-pressed', String(complete));
+  button.querySelector('.path-step-complete-icon').innerHTML = "<i class='icon-" + (complete ? 'checkmark' : 'checkbox-unchecked') + "' aria-hidden='true'></i>";
+  button.querySelector('.path-step-complete-label').textContent = complete ? 'Completed' : 'Complete';
+};
+
+// Completes a pin, or un-completes it (as _setMarkerDone does a marker).
+ZMap.prototype._setPathPinDone = function(path, step, done, callback) {
+  var zmap = this;
+  if(!this.getUser()) { toastr.info('Sign in to complete pins.'); if(callback) callback(false); return; }
+  this._wikiPost('toggle_path_pin', {pathId: path.id, pinKey: step.pinKey, done: done ? 1 : 0}).done(function(r) {
+    if(!r || !r.success) { toastr.error((r && r.msg) || 'Could not save that.'); if(callback) callback(false); return; }
+    step.done = !!r.done;
+    // (Completing one is starting a user's path, the server's record too.)
+    if(step.done && path.scope === 'user') path._started = true;
+    if(callback) callback(true);
+  }).fail(function(x) { toastr.error(zmap._wikiError(x)); if(callback) callback(false); });
+};
+
 // The header's count, kept up to date as checks change (zmap.js).
 ZMap.prototype.updatePathCompletionCounts = function() {
   var control = this.mapControl;
@@ -200,25 +263,33 @@ ZMap.prototype.updatePathCompletionCounts = function() {
   var path = slug && (this.paths || []).find(function(p) { return p.slug === slug; });
   var pill = control._contents.querySelector('.path-completion-pill');
   if(!path || !pill) return;
-  var markers = this._pathCheckMarkers(path);
-  var done = markers.filter(function(m) { return m.complete === true || m.complete == 1; }).length;
-  pill.textContent = path.kind === 'single' ? (done ? 'Complete' : 'Not complete') : done + '/' + markers.length + ' Complete';
-  pill.classList.toggle('path-completion-done', !!markers.length && done === markers.length);
-  // Each step's Complete button, as its marker stands.
+  var counts = this._pathCheckCounts(path);
+  pill.textContent = path.kind === 'single' ? (counts.done ? 'Complete' : 'Not complete') : counts.done + '/' + counts.total + ' Complete';
+  pill.classList.toggle('path-completion-done', !!counts.total && counts.done === counts.total);
+  // Each step's Complete button, as its marker or pin stands.
   var zmap = this;
-  $(page).find('li[data-list-marker-id]').each(function() {
-    var marker = zmap._pathMarker(Number(this.getAttribute('data-list-marker-id')));
-    var complete = !!marker && (marker.complete === true || marker.complete == 1);
+  $(page).find('li.path-step-checkable').each(function() {
+    var complete;
+    if(this.hasAttribute('data-pin-key')) {
+      var key = this.getAttribute('data-pin-key');
+      complete = path.steps.some(function(s) { return s.pinKey === key && s.done; });
+    } else {
+      var marker = zmap._pathMarker(Number(this.getAttribute('data-list-marker-id')));
+      complete = !!marker && (marker.complete === true || marker.complete == 1);
+    }
     this.classList.toggle('area-marker-completed', complete);
-    var button = this.querySelector('.path-step-complete');
-    if(!button) return;
-    button.classList.toggle('done', complete);
-    button.setAttribute('aria-pressed', String(complete));
-    button.querySelector('.path-step-complete-icon').innerHTML = "<i class='icon-" + (complete ? 'checkmark' : 'checkbox-unchecked') + "' aria-hidden='true'></i>";
-    button.querySelector('.path-step-complete-label').textContent = complete ? 'Completed' : 'Complete';
+    zmap._setPathCompleteButton(this.querySelector('.path-step-complete'), complete);
   });
   // The compact title bar copies the pill (ZLayers.js).
   if(control._updateCompactTitle) control._updateCompactTitle();
+};
+
+// That this account has started a user's path, once (ajax/start_path.php).
+// Official paths count from completions instead.
+ZMap.prototype._recordPathStart = function(path) {
+  if(!path || path.scope !== 'user' || path._started || !this.getUser()) return;
+  path._started = true;
+  this._wikiPost('start_path', {id: path.id}).fail(function() { path._started = false; });
 };
 
 // The guide: the map to the first step not yet done (or the first, when
@@ -227,7 +298,7 @@ ZMap.prototype.updatePathCompletionCounts = function() {
 ZMap.prototype._startPathGuide = function(path, page) {
   var control = this.mapControl;
   var rows = $(page).find('.path-timeline > li');
-  var target = rows.filter('[data-list-marker-id]:not(.area-marker-completed)').first();
+  var target = rows.filter('.path-step-checkable:not(.area-marker-completed)').first();
   if(!target.length) target = rows.first();
   if(!target.length) return;
   if(control.viewStyleBottomSlide) control.openDrawerDefaultPartial();
@@ -246,7 +317,7 @@ ZMap.prototype._setCurrentPathStep = function(page, li) {
 
 // The map to a step: zoomed in on its marker or pin, centred in the map
 // that's left to see (under the drawer's partial height when it's there).
-ZMap.prototype._goToPathStep = function(step) {
+ZMap.prototype._goToPathStep = function(step, instant) {
   if(!step) return;
   var control = this.mapControl;
   var marker = step.markerId && this._pathMarker(step.markerId);
@@ -265,7 +336,7 @@ ZMap.prototype._goToPathStep = function(step) {
   this._viewChosen = true;
   this._prepareMapEdgesForDrawer();
   this._setViewAtMarkerInVisibleArea({getLatLng: function() { return latlng; }}, zoom,
-    control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined, true);
+    control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined, !instant);
 };
 
 // A step to the top of the page (under the compact title bar).
@@ -291,6 +362,7 @@ ZMap.prototype._pathMarkerContent = function(marker) {
 ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
   var zmap = this, n = 0;
   var checks = opts && opts.checks ? this._pathCheckMarkers(path).map(function(m) { return String(m.id); }) : [];
+  var pinChecks = opts && opts.checks ? this._pathCheckPins(path) : [];
   return "<ol class='path-steps path-timeline' style='--path-color:" + zmap._pathEsc(path.color || '#ffad48') + "'>" + steps.map(function(step, i) {
     if(!step.markerId && step.shown == 0) return '';
     n++;
@@ -298,17 +370,25 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
     // A marker since removed from the map, kept by a user's path: as it was,
     // marked as gone, with nothing to open or complete.
     var removed = !marker && step.deleted;
-    var content = marker ? zmap._pathMarkerContent(marker) : removed ? zmap._pathMarkerContent({tabText: [step.content || '']}) : '';
+    // A pin: a place of its own on the path, with its own page (openPathPin)
+    // and what's written about it.
+    var pin = !step.markerId;
+    var content = marker ? zmap._pathMarkerContent(marker) : removed ? zmap._pathMarkerContent({tabText: [step.content || '']}) :
+      pin && step.content ? zmap._pathPinContentHTML(step.content) : '';
     // Its marker's own check (a single path's is its first marker's): the
     // same one as on the marker's page and in lists (zmap.js keeps them in step).
-    var check = marker && checks.indexOf(String(marker.id)) !== -1;
-    var done = check && (marker.complete === true || marker.complete == 1);
-    return "<li class='path-step" + (done ? ' area-marker-completed' : '') + (removed ? ' path-step-deleted' : '') + "' data-index='" + i + "'" + (check ? " data-list-marker-id='" + Number(marker.id) + "'" : '') + ">" +
+    // A pin's is the path's own.
+    var pinCheck = pin && pinChecks.indexOf(step) !== -1;
+    var check = (marker && checks.indexOf(String(marker.id)) !== -1) || pinCheck;
+    var done = check && (pinCheck ? !!step.done : (marker.complete === true || marker.complete == 1));
+    var opens = marker || (pin && step.pinKey && opts && opts.checks);
+    return "<li class='path-step" + (done ? ' area-marker-completed' : '') + (check ? ' path-step-checkable' : '') + (removed ? ' path-step-deleted' : '') + "' data-index='" + i + "'" +
+      (check && !pinCheck ? " data-list-marker-id='" + Number(marker.id) + "'" : '') + (pinCheck ? " data-pin-key='" + zmap._pathEsc(step.pinKey) + "'" : '') + ">" +
       "<span class='path-step-number'><span class='path-step-n'>" + n + "</span><i class='fas fa-check path-step-tick' aria-hidden='true'></i></span>" +
       // A marker's name opens it: a chevron says so.
       // (Inline, after the last word: a long name wraps with it.)
       "<div class='path-step-body'><div class='path-step-head'><button type='button' class='path-step-name'><span class='path-step-label'>" + zmap._pathEsc(zmap._pathStepLabel(step)) +
-        (marker ? "<i class='fas fa-chevron-right path-step-chevron' aria-hidden='true'></i>" : '') + "</span></button></div>" +
+        (opens ? "<i class='fas fa-chevron-right path-step-chevron' aria-hidden='true'></i>" : '') + "</span></button></div>" +
       (removed ? "<p class='path-step-removed'><i class='fas fa-ban' aria-hidden='true'></i> Removed from the map</p>" : '') +
       (step.note ? "<p class='path-step-note'>" + zmap._renderWikiText(step.note) + "</p>" : '') +
       (content ? "<div class='popupContent path-step-content'>" + content + "</div>" +
@@ -322,11 +402,17 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
 
 // A step's name opens its marker, whose Back comes back here (reopen); a
 // pin's centres the map on it. Long contents get Show more.
-ZMap.prototype._wirePathSteps = function(page, steps, reopen, label) {
+ZMap.prototype._wirePathSteps = function(page, steps, reopen, label, path) {
   var zmap = this, control = this.mapControl;
   $(page).find('.path-step-name').on('click', function() {
     var step = steps[Number($(this).closest('li').data('index'))];
     var marker = step.markerId && zmap._pathMarker(step.markerId);
+    // A pin opens its own page, whose Back comes back here.
+    if(!step.markerId && step.pinKey && path && reopen) {
+      var top = control._contents.scrollTop;
+      zmap.openPathPin(path, step, function() { reopen(top); });
+      return;
+    }
     if(!marker) { zmap.map.setView(L.latLng(Number(step.y), Number(step.x)), Math.max(zmap.map.getZoom(), 3)); return; }
     if(reopen) {
       var scrollTop = control._contents.scrollTop;
@@ -343,21 +429,31 @@ ZMap.prototype._wirePathSteps = function(page, steps, reopen, label) {
   // Completing a step moves on to the next one not yet done.
   $(page).find('.path-step-complete').on('click', function() {
     var button = this, li = $(button).closest('li');
-    var marker = zmap._pathMarker(Number(li.attr('data-list-marker-id')));
-    if(!marker) return;
-    var requested = !(marker.complete === true || marker.complete == 1);
-    button.disabled = true;
-    zmap._setMarkerDone(marker.id, requested, function() {
+    var moveOn = function(requested, nowDone) {
       button.disabled = false;
       zmap.updatePathCompletionCounts();
-      if(!requested || !(marker.complete === true || marker.complete == 1)) return;
-      var next = li.nextAll('li[data-list-marker-id]:not(.area-marker-completed)').first();
+      if(!requested || !nowDone) return;
+      var next = li.nextAll('li.path-step-checkable:not(.area-marker-completed)').first();
       if(!next.length) return;
       // On to the next step: in the list and on the map.
       zmap._scrollToPathStep(next[0]);
       zmap._setCurrentPathStep(page, next[0]);
       zmap._goToPathStep(steps[Number(next.attr('data-index'))]);
-    });
+    };
+    var requested;
+    if(li.is('[data-pin-key]')) {
+      var step = steps[Number(li.attr('data-index'))];
+      if(!step || !path) return;
+      requested = !step.done;
+      button.disabled = true;
+      zmap._setPathPinDone(path, step, requested, function() { moveOn(requested, !!step.done); });
+      return;
+    }
+    var marker = zmap._pathMarker(Number(li.attr('data-list-marker-id')));
+    if(!marker) return;
+    requested = !(marker.complete === true || marker.complete == 1);
+    button.disabled = true;
+    zmap._setMarkerDone(marker.id, requested, function() { moveOn(requested, marker.complete === true || marker.complete == 1); });
   });
   var measure = function() {
     $(page).find('.path-step-content').each(function() {
@@ -368,77 +464,305 @@ ZMap.prototype._wirePathSteps = function(page, steps, reopen, label) {
     });
   };
   $(page).find('.path-step-content img').on('load', measure);
+  // Show more grows the text to its full height, animated; Show less shrinks
+  // it back and, if the page is scrolled past it, brings the cut-off text's
+  // end back into view.
   $(page).find('.path-step-more').on('click', function() {
-    var content = $(this).prev('.path-step-content')[0], open = !content.classList.contains('expanded');
+    var button = this, content = $(button).prev('.path-step-content')[0], open = !content.classList.contains('expanded');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // (Its cut-off height: styles/zmain.css --path-step-collapsed.)
+    var collapsed = parseFloat(getComputedStyle(content).getPropertyValue('--path-step-collapsed')) || 380;
+    // (Rebuilt whole: Font Awesome swaps its <i> for an SVG.)
+    button.innerHTML = "<span>" + (open ? 'Show less' : 'Show more') + "</span><i class='fas fa-chevron-" + (open ? 'up' : 'down') + "' aria-hidden='true'></i>";
+    var contents = control._contents;
+    var from = content.clientHeight, to = open ? content.scrollHeight : collapsed;
+    // Collapsing with the page scrolled past it: the view comes back up with
+    // it, to the cut-off text's end and its Show more, near the bottom.
+    var scrollFrom = contents.scrollTop, scrollTo = null;
+    if(!open) {
+      var top = content.getBoundingClientRect().top - contents.getBoundingClientRect().top + contents.scrollTop;
+      var target = Math.max(0, top + collapsed + button.offsetHeight + 32 - contents.clientHeight);
+      if(scrollFrom > target) scrollTo = target;
+    }
     content.classList.toggle('expanded', open);
     content.classList.toggle('truncated', !open);
-    this.querySelector('span').textContent = open ? 'Show less' : 'Show more';
-    this.querySelector('i').className = 'fas fa-chevron-' + (open ? 'up' : 'down');
+    // Stepped frame by frame, height and scroll together (the browser's own
+    // scroll anchoring off meanwhile, or it would fight the scroll).
+    if(content._moreFrame) window.cancelAnimationFrame(content._moreFrame);
+    var finish = function() {
+      content._moreFrame = null;
+      content.style.maxHeight = open ? 'none' : '';
+      if(scrollTo !== null) contents.scrollTop = scrollTo;
+      contents.style.overflowAnchor = '';
+    };
+    if(reduce) { finish(); return; }
+    contents.style.overflowAnchor = 'none';
+    content.style.maxHeight = from + 'px';
+    var began = null;
+    var step = function(now) {
+      if(began === null) began = now;
+      var t = Math.min(1, (now - began) / 350), eased = 1 - Math.pow(1 - t, 3);
+      content.style.maxHeight = (from + (to - from) * eased) + 'px';
+      if(scrollTo !== null) contents.scrollTop = scrollFrom + (scrollTo - scrollFrom) * eased;
+      if(t < 1) content._moreFrame = window.requestAnimationFrame(step); else finish();
+    };
+    content._moreFrame = window.requestAnimationFrame(step);
   });
   measure();
   setTimeout(measure, 0);
 };
 
-// ---- A path's history: every save, newest first, each one to look at and,
-// for those who can edit the path, restore.
-ZMap.prototype.openPathHistory = function(path) {
+// ---- A pin on a path, as a marker's page (zmap.js): a place of its own.
+// Its name and what's written about it (changed by whoever may edit the
+// path: openPathPinEditor), its note on the path, Complete (one of the
+// path's checks) and Copy Link. back: where Back goes (the path's page).
+// opts.instant: arriving by its link, nothing animated.
+ZMap.prototype.openPathPin = function(path, stepOrKey, back, opts) {
   var zmap = this;
-  this._wikiGet('path_history', {id: path.id}).done(function(r) {
-    if(!r || !r.success) { toastr.error((r && r.msg) || 'Could not load the history.'); return; }
-    var verbs = {create: 'Created', edit: 'Edited', revert: 'Restored'};
-    var rows = r.revisions.map(function(rev, i) {
-      return "<li class='path-revision' data-index='" + i + "'>" +
-        "<div><b>" + zmap._pathEsc(rev.userName || 'Someone') + "</b> · " + zmap._pathEsc(verbs[rev.action] || 'Changed') +
-          " <small>" + zmap._pathEsc(zmap._pathTime(rev.created)) + (i === 0 ? ' · Current' : '') + "</small></div>" +
-        (rev.summary ? "<p>" + zmap._pathEsc(rev.summary) + "</p>" : '') +
-        "<div class='path-revision-actions'><button type='button' class='path-revision-view'>View</button>" +
-          (r.canRevert && i > 0 ? "<button type='button' class='path-revision-restore'>Restore</button>" : '') + "</div></li>";
-    }).join('');
-    var back = function() { zmap.openPathPage(path.slug, {keepView: true}); };
-    var page = zmap._showWikiPage("<div class='wiki-page path-history-page'><h3 class='text-center'>History</h3>" +
-      "<p class='path-meta'>" + zmap._pathEsc(path.name) + "</p>" +
-      (rows ? "<ol class='path-revisions'>" + rows + "</ol>" : "<p class='wiki-empty'>No saves yet.</p>") + "</div>", 'pathHistory', back);
-    var revisionAt = function(el) { return r.revisions[Number($(el).closest('li').data('index'))]; };
-    $(page).find('.path-revision-view').on('click', function() { zmap._openPathRevision(path, revisionAt(this), r.canRevert && revisionAt(this) !== r.revisions[0]); });
-    $(page).find('.path-revision-restore').on('click', function() { zmap._restorePathRevision(path, revisionAt(this)); });
-  }).fail(function(x) { toastr.error(zmap._wikiError(x)); });
+  opts = opts || {};
+  var step = typeof stepOrKey === 'object' ? stepOrKey : path.steps.find(function(s) { return s.pinKey === stepOrKey; });
+  if(!step || step.markerId || !step.pinKey) return;
+  back = back || function() { zmap.openPathPage(path.slug, {keepView: true}); };
+  this._endPathEditing();
+  this._focusedPath = path;
+  var url = new URL(this._pathUrl(path));
+  url.searchParams.set('pin', step.pinKey);
+  history.replaceState(history.state, '', url.toString());
+  var esc = this._pathEsc.bind(this);
+  var check = this._pathCheckPins(path).indexOf(step) !== -1;
+  var number = path.steps.filter(function(s) { return s.markerId || s.shown != 0; }).indexOf(step) + 1;
+  var action = function(className, icon, label) {
+    return "<button type='button' class='marker-action-button infoWindowIcn " + className + "'>" +
+      "<span class='marker-action-icon'><i class='" + icon + "' aria-hidden='true'></i></span><span class='marker-action-label'>" + label + "</span></button>";
+  };
+  var actions = [
+    check ? action('path-pin-complete ' + (step.done ? 'checked' : 'unchecked'), step.done ? 'icon-checkmark' : 'icon-checkbox-unchecked', step.done ? 'Completed' : 'Complete') : '',
+    action('path-pin-copy', 'fas fa-link', 'Copy Link')
+  ].filter(Boolean);
+  var footer = path.canEdit ? "<section class='marker-editor-tools path-editor-tools'><div class='marker-editor-buttons'>" +
+    "<button type='button' class='marker-editor-button path-pin-edit'><i class='fas fa-pencil-alt' aria-hidden='true'></i><span>Edit</span></button>" +
+    "</div></section>" : '';
+  var page = this._showWikiPage("<h2 class='popupTitle'>" + esc(this._pathStepLabel(step)) + "</h2>" +
+    // What it is, and the path it's on (which opens it), as a marker's
+    // place and region pills.
+    "<div class='area-header-pills path-pin-pills'><p class='marker-coordinate-pill'><i class='fas fa-map-pin' aria-hidden='true'></i> " +
+      (path.numbered && number ? 'Step ' + number : 'Pin') + "</p>" +
+      "<button type='button' class='marker-coordinate-pill marker-region-pill path-pin-path'>" + esc(path.name) + "<i class='fas fa-chevron-right' aria-hidden='true'></i></button></div>" +
+    "<div class='marker-actions-row path-actions-row' style='grid-template-columns: repeat(" + actions.length + ", minmax(0, 1fr))'>" + actions.join('') + "</div>" +
+    // (Its note on the path, then what's written about it, as a marker's contents.)
+    "<div class='popupContent path-pin-content'>" +
+      (step.note ? "<p class='path-pin-note'>" + this._renderWikiText(step.note) + "</p>" : '') +
+      (step.content ? this._pathPinContentHTML(step.content) :
+        "<p class='path-pin-empty'>Nothing’s written about this pin yet." + (path.canEdit ? ' Add something with Edit.' : '') + "</p>") +
+    "</div>" + footer, 'pathPin', back, null, {partialDrawer: true, instant: !!opts.instant});
+  page.classList.add('path-pin-detail-page');
+  this._updatePathFocus();
+  // (Arriving by its link, once the path's own fit has been made.)
+  if(!opts.keepView) {
+    // (Not mid-way through a zoom the page's start-up began: that would
+    // carry on past it.)
+    var go = function() {
+      if(zmap.map._animatingZoom) zmap.map.once('zoomend', function() { setTimeout(go, 0); });
+      else zmap._goToPathStep(step, true);
+    };
+    if(opts.instant) setTimeout(go, 0);
+    else this._goToPathStep(step);
+  }
+  $(page).find('.path-pin-path').on('click', function() { zmap.openPathPage(path.slug); });
+  $(page).find('.path-pin-copy').on('click', function() { zmap._wikiCopy(url.toString(), 'Pin link'); });
+  $(page).find('.path-pin-edit').on('click', function() { zmap.openPathPinEditor(path, step, back); });
+  $(page).find('.path-pin-complete').on('click', function() {
+    var button = this, requested = !step.done;
+    button.disabled = true;
+    zmap._setPathPinDone(path, step, requested, function() {
+      button.disabled = false;
+      button.classList.toggle('checked', !!step.done);
+      button.classList.toggle('unchecked', !step.done);
+      // (Rebuilt whole: Font Awesome swaps its <i> for an SVG.)
+      button.innerHTML = "<span class='marker-action-icon'><i class='icon-" + (step.done ? 'checkmark' : 'checkbox-unchecked') + "' aria-hidden='true'></i></span>" +
+        "<span class='marker-action-label'>" + (step.done ? 'Completed' : 'Complete') + "</span>";
+    });
+  });
 };
 
-// One save, drawn on the map in place of the path as it is now.
-ZMap.prototype._openPathRevision = function(path, rev, canRestore) {
+// What's written about a pin, as paragraphs (a blank line between them).
+ZMap.prototype._pathPinContentHTML = function(text) {
   var zmap = this;
-  this._wikiGet('path_history', {id: path.id, revision: rev.id}).done(function(r) {
-    if(!r || !r.success) { toastr.error((r && r.msg) || 'Could not load that version.'); return; }
-    var snap = r.snapshot;
+  return String(text || '').split(/\n\s*\n/).map(function(part) { return part.trim(); }).filter(Boolean)
+    .map(function(part) { return '<p>' + zmap._renderWikiText(part) + '</p>'; }).join('');
+};
+
+// Changing a pin: its name and what's written about it. Saved to the path
+// (its history keeps it: ajax/save_path_pin.php), then back to the pin.
+ZMap.prototype.openPathPinEditor = function(path, step, back) {
+  var zmap = this;
+  var reopen = function() { zmap.openPathPin(path, step, back, {keepView: true}); };
+  var field = function(label, icon, control) { return zmap._mapSettingsField(label, icon, control); };
+  var page = this._showWikiPage("<div class='wiki-page path-editor path-pin-editor'>" +
+    "<h3 class='text-center'>Edit Pin</h3><form class='map-settings-form path-pin-form'>" +
+    field('Name', 'fa-heading', "<input type='text' class='form-control' name='name' maxlength='120' placeholder='Pin'>") +
+    field('Description', 'fa-align-left', "<textarea class='form-control' name='content' maxlength='5000' rows='8' placeholder='What’s here, and what to do. Links like [[marker:123]] and web addresses work.'></textarea>") +
+    this._editorSaveHTML(true, 'Save Pin') +
+    "<div class='path-editor-actions'><button type='button' class='path-cancel'>Cancel</button></div>" +
+    "</form></div>", 'pathPinEditor', reopen);
+  var form = $(page).find('form'), busy = false;
+  form.find('[name=name]').val(step.name || '');
+  form.find('[name=content]').val(step.content || '');
+  var read = function() { return {name: form.find('[name=name]').val().trim(), content: form.find('[name=content]').val().trim()}; };
+  var update = function() {
+    var now = read();
+    var error = now.name && zmap._editorNameError(now.name, 120);
+    form.find('.admin-user-status').text(error || '');
+    zmap._editorSaveState(form, now.name !== (step.name || '') || now.content !== (step.content || ''), !error, busy, 'Save Pin');
+  };
+  form.on('input', update);
+  form.find('.path-cancel').on('click', reopen);
+  form.on('submit', function(e) {
+    e.preventDefault();
+    var now = read();
+    busy = true; update();
+    zmap._wikiPost('save_path_pin', {pathId: path.id, pinKey: step.pinKey, name: now.name, content: now.content}).done(function(r) {
+      busy = false;
+      if(!r || !r.success) { form.find('.admin-user-status').text((r && r.msg) || 'Could not save the pin.'); update(); return; }
+      step.name = r.name;
+      step.content = r.content;
+      toastr.success('Pin saved');
+      zmap.drawPaths();
+      reopen();
+    }).fail(function(x) { busy = false; form.find('.admin-user-status').text(zmap._wikiError(x)); update(); });
+  });
+  update();
+  setTimeout(function() { form.find('[name=content]').trigger('focus'); }, 50);
+};
+
+// ---- A path's history, as a marker's (zwiki.js _openMarkerHistory): every
+// save, newest first, in the same rows, each opening its revision.
+ZMap.prototype.openPathHistory = function(path, back) {
+  var zmap = this;
+  back = back || function() { zmap.openPathPage(path.slug, {keepView: true}); };
+  // (The path in focus meanwhile, as on its page: Paths.js.)
+  this._endPathEditing();
+  this._focusedPath = path;
+  var page = this._showWikiPage(
+    "<div id='path_history' class='wiki-page'><h3 class='text-center'>History</h3>" +
+      "<div class='area-header-pills wiki-subtitle-row'><p class='wiki-subtitle'></p></div>" +
+      "<ul class='wiki-revisions'><li class='wiki-empty'>Loading…</li></ul></div>",
+    'pathHistory', back, null, {settles: true, waitForReady: true});
+  this._pathSubtitle(page, path, false);
+  this._wikiGet('path_history', {id: path.id}).done(function(r) {
+    var list = $(page).find('.wiki-revisions').empty();
+    if(!r || !r.success) { list.append($("<li class='wiki-empty'></li>").text((r && r.msg) || 'Could not load the history.')); return; }
+    if(!r.revisions.length) { list.append(zmap._wikiHistoryEmptyHTML()); return; }
+    r.revisions.forEach(function(rev, i) {
+      list.append(zmap._wikiRevisionRow($.extend({revisionType: 'path'}, rev), {current: i === 0}));
+    });
+    list.on('click keydown', '.wiki-revision', function(e) {
+      if($(e.target).closest('a.wiki-link').length) return;
+      if(e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      zmap._openPathRevision(path, Number(this.getAttribute('data-rev')), function() { zmap.openPathHistory(path, back); }, {fromHistory: true});
+    });
+  }).fail(function(x) {
+    $(page).find('.wiki-revisions').empty().append($("<li class='wiki-empty'></li>").text(zmap._wikiError(x)));
+  }).always(function() { if(zmap._wikiPageSettled) zmap._wikiPageSettled(page); });
+};
+
+// The path's name under a history or revision page's title, and, given
+// link, a way to it, as a marker's (zwiki.js _wikiSetMarkerSubtitle).
+ZMap.prototype._pathSubtitle = function(page, path, link) {
+  var zmap = this, row = $(page).find('.wiki-subtitle-row').first();
+  row.find('.wiki-subtitle').text(path.name || '');
+  if(link) $("<button type='button' class='marker-coordinate-pill marker-region-pill wiki-marker-pill'>Go to Path<i class='fas fa-chevron-right' aria-hidden='true'></i></button>")
+    .on('click', function() { zmap.openPathPage(path.slug); }).appendTo(row);
+};
+
+// One save, as a marker's revision page (zwiki.js _openMarkerRevision): who,
+// what and when; Restore, Copy Link and All Revisions; and the path as it
+// was, drawn on the map in place of the path as it is now.
+ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
+  var zmap = this;
+  back = back || function() { zmap.openPathHistory(path); };
+  this._focusedPath = path;
+  var page = this._showWikiPage(
+    "<div id='path_revision' class='wiki-page'><h3 class='text-center'>Revision " + Number(revisionId) + "</h3>" +
+      "<div class='area-header-pills wiki-subtitle-row'><p class='wiki-subtitle'></p></div>" +
+      "<div class='wiki-revision-body'><p class='wiki-empty'>Loading…</p></div></div>",
+    'pathRevision', function() { zmap._endPathEditing(); back(); }, null, {settles: true});
+  // (Go to Path only from elsewhere, a feed: from its history, Back is the way.)
+  this._pathSubtitle(page, path, !(opts && opts.fromHistory));
+  this._wikiGet('path_history', {id: path.id, revision: revisionId}).done(function(r) {
+    var body = $(page).find('.wiki-revision-body').empty();
+    if(!r || !r.success) { body.append($("<p class='wiki-empty'></p>").text((r && r.msg) || 'Could not load that version.')); return; }
+    var rev = r.revision, snap = r.snapshot;
     var steps = snap.steps.map(function(s) { return s.markerId ? {markerId: s.markerId, note: s.note} :
-      {submapId: s.submapId, x: s.x, y: s.y, name: s.name, shown: s.shown ? 1 : 0, note: s.note}; });
-    var page = zmap._showWikiPage("<div class='wiki-page path-page'>" +
-      "<h3 class='text-center'>" + zmap._pathEsc(snap.name) + "</h3>" +
-      "<p class='path-status'><span class='path-badge'><i class='fas fa-history' aria-hidden='true'></i> " +
-        zmap._pathEsc(rev.userName || 'Someone') + " · " + zmap._pathEsc(zmap._pathTime(rev.created)) + "</span></p>" +
-      (snap.description ? "<div class='path-description'>" + zmap._renderWikiText(snap.description) + "</div>" : '') +
-      (canRestore ? "<div class='path-page-actions'><button type='button' class='infoWindowIcn form-action-button path-restore'><i class='fas fa-undo'></i> Restore this version</button></div>" : '') +
-      zmap._pathStepsHTML(snap, steps) + "</div>", 'pathRevision', function() { zmap._endPathEditing(); zmap.openPathHistory(path); });
-    zmap._wirePathSteps(page, steps, function(scrollTop) { zmap._openPathRevision(path, rev, canRestore); }, snap.name);
-    $(page).find('.path-restore').on('click', function() { zmap._restorePathRevision(path, rev); });
+      {submapId: s.submapId, x: s.x, y: s.y, name: s.name, shown: s.shown ? 1 : 0, note: s.note, content: s.content || ''}; });
+    body.append(
+      "<section class='wiki-card wiki-revision-meta'>" +
+        "<div class='wiki-revision-top'>" + zmap._wikiActionBadge(rev.action) + (r.isCurrent ? "<span class='wiki-current'>Current</span>" : '') + "</div>" +
+        "<p>" + zmap._wikiUserLink(rev.userId, rev.username) + " · " + zmap._pathEsc(zmap._wikiAgo(rev.ago)) + "</p>" +
+        (rev.summary ? "<p class='wiki-revision-summary'>" + zmap._renderWikiText(rev.summary) + "</p>" : '') +
+      "</section>" +
+      "<div class='wiki-actions'>" +
+        (r.canRevert && !r.isCurrent ? "<button type='button' class='wiki-action-button' data-action='revert'><i class='fas fa-undo' aria-hidden='true'></i>Restore This Version</button>" : '') +
+        "<button type='button' class='wiki-action-button' data-action='copy-url'><i class='fas fa-link' aria-hidden='true'></i>Copy Link</button>" +
+        "<button type='button' class='wiki-action-button' data-action='history'><i class='fas fa-history' aria-hidden='true'></i>All Revisions</button>" +
+      "</div>" +
+      "<div class='path-revision-steps'><h4 class='area-category-title'>" + zmap._pathEsc(snap.name) + "</h4>" +
+        (snap.description ? "<div class='path-description'>" + zmap._renderWikiText(snap.description) + "</div>" : '') +
+        zmap._pathStepsHTML(snap, steps) + "</div>");
+    body.find('[data-action=revert]').on('click', function() { zmap._restorePathRevision(path, rev); });
+    body.find('[data-action=copy-url]').on('click', function() { zmap._wikiCopy(zmap._pathUrl(path), 'Path link'); });
+    body.find('[data-action=history]').on('click', function() { zmap._endPathEditing(); zmap.openPathHistory(path); });
+    zmap._wirePathSteps(page, steps, null, snap.name);
     zmap._previewPath({scope: path.scope, kind: snap.kind, loops: snap.loops, numbered: snap.numbered, smooth: !!snap.smooth, categoryId: snap.categoryId,
       color: snap.color || '#ffad48', name: snap.name, steps: steps.map(function(s) { return $.extend({}, s, {shown: s.markerId ? 1 : s.shown}); })}, path);
-  }).fail(function(x) { toastr.error(zmap._wikiError(x)); });
+  }).fail(function(x) {
+    $(page).find('.wiki-revision-body').empty().append($("<p class='wiki-empty'></p>").text(zmap._wikiError(x)));
+  }).always(function() { if(zmap._wikiPageSettled) zmap._wikiPageSettled(page); });
+};
+
+// A path's save opened from a feed (All Changes, a profile's activity):
+// here, loaded first if this game hasn't it; else its game opened at it.
+ZMap.prototype._openPathRevisionLink = function(slug, revisionId, game, back) {
+  var zmap = this;
+  if(game && this.mapOptions && game !== this.mapOptions.shortName) {
+    window.location.href = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug);
+    return;
+  }
+  var open = function() {
+    var path = (zmap.paths || []).find(function(p) { return p.slug === slug; });
+    if(path) zmap._openPathRevision(path, revisionId, back);
+    else toastr.info('That path is no longer available.');
+  };
+  if((this.paths || []).some(function(p) { return p.slug === slug; })) open();
+  else this._reloadPaths(open, slug);
 };
 
 ZMap.prototype._restorePathRevision = function(path, rev) {
   var zmap = this;
-  if(!confirm('Restore "' + path.name + '" to how it was on ' + this._pathTime(rev.created) + '? Who sees it and who can edit it stay as they are.')) return;
-  this._wikiPost('revert_path', {id: path.id, revision: rev.id}).done(function(r) {
-    if(!r || !r.success) { toastr.error((r && r.msg) || 'Could not restore the path.'); return; }
-    toastr.success('Path restored');
-    zmap._endPathEditing();
-    zmap._reloadPaths(function() { zmap.openPathPage(r.slug); }, r.slug);
-  }).fail(function(x) { toastr.error(zmap._wikiError(x)); });
+  this._showAlert({
+    id: 'path-restore',
+    title: 'Restore this version?',
+    description: ['“' + this._pathEsc(path.name) + '” will go back to how it was ' + this._pathEsc(this._wikiAgo(rev.ago)) + '.',
+      'Who sees it and who can edit it stay as they are, and the restore can be undone from History.'],
+    actions: [
+      {label: 'Restore', className: 'infoWindowIcn', onSelect: function() {
+        zmap._wikiPost('revert_path', {id: path.id, revision: rev.id}).done(function(r) {
+          if(!r || !r.success) { toastr.error((r && r.msg) || 'Could not restore the path.'); return; }
+          toastr.success('Path restored');
+          zmap._endPathEditing();
+          zmap._reloadPaths(function() { zmap.openPathPage(r.slug); }, r.slug);
+        }).fail(function(x) { toastr.error(zmap._wikiError(x)); });
+      }},
+      {label: 'Cancel', cancel: true}
+    ]
+  });
 };
 
 // ---- The editor. A new path (path null) starts from a marker when given.
-ZMap.prototype.openPathEditor = function(path, startMarkerId) {
+// start (a new path): its first step, a marker's ID or a pin's place
+// {submapId, x, y} (a dropped pin's Make New Path From Here, zmap.js).
+ZMap.prototype.openPathEditor = function(path, start) {
   var zmap = this, user = this.getUser();
   if(!user) { toastr.info('Sign in to make a path.'); return; }
   var isEditor = user.level >= this.WIKI_EDITOR_LEVEL;
@@ -452,11 +776,13 @@ ZMap.prototype.openPathEditor = function(path, startMarkerId) {
     // (A marker since removed from the map keeps what the editor shows of it.)
     steps: path.steps.map(function(s) { return s.markerId ? $.extend({markerId: Number(s.markerId), note: s.note || ''},
         s.deleted ? {deleted: true, markerName: s.markerName, submapId: s.submapId, x: Number(s.x), y: Number(s.y)} : {}) :
-      {submapId: s.submapId, x: Number(s.x), y: Number(s.y), name: s.name || '', shown: s.shown != 0, note: s.note || ''}; }),
+      {submapId: s.submapId, x: Number(s.x), y: Number(s.y), name: s.name || '', shown: s.shown != 0, note: s.note || '', pinKey: s.pinKey || '', content: s.content || ''}; }),
     summary: ''
   } : {id: null, name: '', description: '', scope: 'user', visibility: 'private', editAccess: 'owner', publish: 'draft', publishAt: null,
        kind: 'guide', loops: false, numbered: true, smooth: false, alwaysShow: true, categoryId: '', color: '#ffad48',
-       steps: startMarkerId ? [{markerId: Number(startMarkerId), note: ''}] : [], summary: ''};
+       steps: !start ? [] : typeof start === 'object' ?
+         [{submapId: Number(start.submapId), x: Math.round(start.x * 1000) / 1000, y: Math.round(start.y * 1000) / 1000, name: '', shown: true, note: ''}] :
+         [{markerId: Number(start), note: ''}], summary: ''};
   var original = JSON.stringify(draft);
   var categories = Object.keys(this.categories).map(function(id) { return zmap.categories[id]; })
     .filter(function(c) { return c.parent_id && c.marker_category_type_id == 1; })
@@ -810,12 +1136,13 @@ ZMap.prototype._pathYeahCount = function(count) {
 // most Yeah'd first. (Under Account, for admins while paths are built.)
 ZMap.prototype.openCommunityPaths = function(back, sort) {
   var zmap = this;
-  sort = ['yeahs', 'completes'].indexOf(sort) !== -1 ? sort : 'latest';
+  sort = ['yeahs', 'started', 'completes'].indexOf(sort) !== -1 ? sort : 'latest';
   var page = this._showWikiPage("<div class='wiki-page community-paths'><h3 class='text-center'>Community Paths</h3>" +
-    "<div class='admin-tabs activity-filters' role='group' aria-label='Sort paths'>" +
-      [['latest', 'fa-clock', 'Latest'], ['yeahs', 'fa-smile', 'Most Yeah’d'], ['completes', 'fa-check', 'Most Completed']].map(function(o) {
-        return "<button type='button' data-path-sort='" + o[0] + "' aria-selected='" + (o[0] === sort) + "'><i class='fas " + o[1] + "' aria-hidden='true'></i>" + o[2] + "</button>";
-      }).join('') + "</div>" +
+    // Sorted from a menu: four ways is more than a segmented control holds.
+    "<label class='community-paths-sort'><span class='map-settings-label'>Sort by</span><select class='community-paths-select'>" +
+      [['latest', 'Latest'], ['yeahs', 'Most Yeah’d'], ['started', 'Most Started'], ['completes', 'Most Completed']].map(function(o) {
+        return "<option value='" + o[0] + "'" + (o[0] === sort ? ' selected' : '') + ">" + o[1] + "</option>";
+      }).join('') + "</select></label>" +
     "<ul class='profile-path-list community-path-list'></ul><p class='wiki-empty community-paths-status'>Loading…</p>" +
     "<button type='button' class='infoWindowIcn form-action-button community-paths-more' hidden>Show more</button></div>", 'communityPaths', back);
   var list = $(page).find('.community-path-list'), status = $(page).find('.community-paths-status'), more = $(page).find('.community-paths-more');
@@ -837,11 +1164,9 @@ ZMap.prototype.openCommunityPaths = function(back, sort) {
       more.prop('hidden', !r.more);
     }).fail(function(x) { if(mine === request) status.text(zmap._wikiError(x)).prop('hidden', false); });
   };
-  $(page).off('.communityPaths').on('click.communityPaths', '[data-path-sort]', function() {
-    var value = this.getAttribute('data-path-sort');
-    if(value === sort) return;
-    sort = value;
-    $(page).find('[data-path-sort]').each(function() { this.setAttribute('aria-selected', String(this.getAttribute('data-path-sort') === sort)); });
+  $(page).off('.communityPaths').on('change.communityPaths', '.community-paths-sort select', function() {
+    if(this.value === sort) return;
+    sort = this.value;
     list.empty(); offset = 0; load();
   });
   $(page).on('click.communityPaths', '.community-path', function() {
@@ -875,8 +1200,11 @@ ZMap.prototype._pathCardHTML = function(p, opts) {
       (p.kind === 'single' ? (done ? 'Complete' : 'Not complete') : done + '/' + checks.length + ' Complete') + "</span>");
   }
   if(p.scope !== 'official' || p.yeahs) stats.push(this._pathYeahCount(p.yeahs || 0));
-  if(p.finished) stats.push("<span class='path-finished' title='People who finished it'><i class='fas fa-check' aria-hidden='true'></i> " +
-    Number(p.finished) + "<span class='sr-only'> people finished it</span></span>");
+  if(p.started) stats.push("<span class='path-finished' title='People who started it'><i class='fas fa-play' aria-hidden='true'></i> " +
+    Number(p.started) + "<span class='sr-only'> people started it</span></span>");
+  // How many of those who started it finish it.
+  if(p.started) stats.push("<span class='path-finished' title='Of those who started it, how many finish'><i class='fas fa-check' aria-hidden='true'></i> " +
+    Math.round(Number(p.finished || 0) / Number(p.started) * 100) + "%<span class='sr-only'> of people finish it</span></span>");
   if(opts.date && p.publishedAt) stats.push("<span class='path-card-date'>" + esc(this._pathTime(p.publishedAt)) + "</span>");
   return "<button type='button' class='path-card" + (opts.className ? ' ' + opts.className : '') + "' " + (opts.attrs || '') +
     " style='--path-color:" + esc(p.color || '#ffad48') + "'>" +
@@ -906,9 +1234,8 @@ ZMap.prototype._pathThumbHTML = function(thumb, color, loops, dashed, smooth, sq
   var size = thumb.tileSize || 256, maxZoom = Math.max(0, thumb.maxZoom || 0);
   // Room around the line; a short one isn't blown up past the artwork's detail.
   var scale = Math.min(W / Math.max((maxX - minX) * 1.3, 1e-6), H / Math.max((maxY - minY) * 1.3, 1e-6), Math.pow(2, maxZoom));
-  // Kept on the artwork where the frame fits inside it; centred on it where it doesn't.
-  var fit = function(origin, view) { return view >= size ? (size - view) / 2 : Math.max(0, Math.min(size - view, origin)); };
-  var ox = fit((minX + maxX) / 2 - W / 2 / scale, W / scale), oy = fit((minY + maxY) / 2 - H / 2 / scale, H / scale);
+  // Centred on the path (past the artwork's edge, its background colour).
+  var ox = (minX + maxX) / 2 - W / 2 / scale, oy = (minY + maxY) / 2 - H / 2 / scale;
   // Tiles at the level that's sharp on high-density screens.
   var z = Math.max(0, Math.min(maxZoom, Math.ceil(Math.log2(scale * 2))));
   var n = Math.pow(2, z), span = size / n;

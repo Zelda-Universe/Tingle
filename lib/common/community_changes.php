@@ -1,6 +1,8 @@
 <?php
 include_once(__DIR__.'/wiki.php');
-function communityChanges($db,$prefix,$editor,$game='',$userId=null,$cursor='',$limit=50,$includeSettings=false,$filter='all') {
+// $includePaths: paths' saves too (lib/common/paths.php), for those allowed
+// paths: official paths' and published users' paths that aren't private.
+function communityChanges($db,$prefix,$editor,$game='',$userId=null,$cursor='',$limit=50,$includeSettings=false,$filter='all',$includePaths=false) {
   $settings=$includeSettings && (bool)$db->fetchOne("SHOW TABLES LIKE '{$prefix}map_revision'");
   $picture=wikiHasUserColumn($db,$prefix,'profile_picture') ? 'u.profile_picture' : 'NULL';
   $emptyTalk=",NULL AS pageType,NULL AS pageId,NULL AS parentId,NULL AS body,NULL AS parentBody,NULL AS parentUsername";
@@ -13,6 +15,16 @@ function communityChanges($db,$prefix,$editor,$game='',$userId=null,$cursor='',$
     c.short_name AS game,c.name AS gameName,r.created AS sortTime,'settings' AS revisionType".$emptyTalk."
     FROM `{$prefix}map_revision` r JOIN `{$prefix}container` c ON c.id=r.container_id LEFT JOIN `{$prefix}user` u ON u.id=r.user_id
     WHERE c.visible=1 AND r.kind IN ('game','map','category','layout','map_order')";
+  if($includePaths && $db->fetchOne("SHOW TABLES LIKE '{$prefix}path_revision'")) {
+    include_once(__DIR__.'/paths.php');
+    // (The path's slug rides in body, its id in pageId: the row opens it.)
+    $query.=" UNION ALL SELECT r.id,NULL AS markerId,r.action,r.summary,r.user_id AS userId,u.username,{$picture} AS profilePicture,".wikiAgoSql('r.created')." AS ago,
+      p.name AS markerTitle,c.short_name AS game,c.name AS gameName,r.created AS sortTime,'path' AS revisionType,
+      'path' AS pageType,p.id AS pageId,NULL AS parentId,p.slug AS body,NULL AS parentBody,NULL AS parentUsername
+      FROM `{$prefix}path_revision` r JOIN `{$prefix}path` p ON p.id=r.path_id JOIN `{$prefix}container` c ON c.id=p.container_id
+      LEFT JOIN `{$prefix}user` u ON u.id=r.user_id
+      WHERE p.visible=1 AND c.enabled=1 AND ".pathOpenSql('p');
+  }
   // Talk is publicly readable, including its activity. Deleted comment text
   // and comments on non-public games are never included.
   $query.=" UNION ALL SELECT t.id,IF(t.page_type='marker',t.page_id,NULL) AS markerId,IF(t.parent_id IS NULL,'comment','reply') AS action,NULL AS summary,t.user_id AS userId,u.username,{$picture} AS profilePicture,".wikiAgoSql('t.created')." AS ago,
@@ -32,7 +44,7 @@ function communityChanges($db,$prefix,$editor,$game='',$userId=null,$cursor='',$
   elseif($filter==='edits') $where[]="revisionType<>'talk'";
   if($cursor!=='') {
     $decoded=json_decode(base64_decode($cursor,true) ?: '',true);
-    if(is_array($decoded) && count($decoded)===3 && is_string($decoded[0]) && preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?$/',$decoded[0]) && in_array($decoded[1],['marker','settings','talk'],true) && is_int($decoded[2])) {
+    if(is_array($decoded) && count($decoded)===3 && is_string($decoded[0]) && preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(\.\d+)?$/',$decoded[0]) && in_array($decoded[1],['marker','settings','talk','path'],true) && is_int($decoded[2])) {
       $where[]='(sortTime,revisionType,id)<(?,?,?)';array_push($params,...$decoded);
     } elseif(ctype_digit((string)$cursor)) {$where[]='id<?';$params[]=(int)$cursor;}
   }

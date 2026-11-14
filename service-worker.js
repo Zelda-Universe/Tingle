@@ -275,6 +275,8 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(request.url);
 
+  // An embed (embed.php) straight from the server: never the app's shell.
+  if (request.mode === 'navigate' && url.pathname.endsWith('/embed.php')) return;
   if (request.mode === 'navigate') {
     event.respondWith(navigateWithCurrentShell(request));
     return;

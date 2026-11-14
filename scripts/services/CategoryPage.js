@@ -245,7 +245,7 @@ ZMap.prototype._fitBoundsToVisibleMap = function(bounds, opts) {
   map.options.zoomAnimationThreshold = Infinity;
   try {
     map.fitBounds(bounds, {paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
-      maxZoom: map.getMaxZoom(), animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      maxZoom: map.getMaxZoom(), animate: opts.animate !== false && !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
       duration: .25, easeLinearity: .2});
   } finally { map.options.zoomAnimationThreshold = threshold; }
 };

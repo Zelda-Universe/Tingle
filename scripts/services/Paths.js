@@ -26,13 +26,23 @@ ZMap.prototype.loadPaths = function() {
     var control = zmap.mapControl;
     if(zmap.selectedCategory && control && /^category-/.test(control.getContentType() || '') &&
       zmap._categoryPaths(zmap.selectedCategory).paths.length) zmap._showCategoryPage(zmap.selectedCategory);
-    // A path's link: once the page has settled, as its own start-up view
-    // would otherwise land on top.
+    // A path's link (or a reload of its page): in place at once, already in
+    // focus and fitted, the drawer not sliding (as a marker's link opens).
     var slug = new URL(window.location.href).searchParams.get('path');
-    if(slug) setTimeout(function() {
-      if(zmap.openPathPage && zmap.paths.some(function(p) { return p.slug === slug; })) zmap.openPathPage(slug);
-      else { zmap.focusPath(slug); zmap.drawPaths(); }
-    }, 600);
+    if(slug) {
+      if(zmap.openPathPage && zmap.paths.some(function(p) { return p.slug === slug; })) {
+        var control = zmap.mapControl;
+        control._restoringInitialPage = true;
+        // (A pin's link: its page, over its path's.)
+        var pin = new URL(window.location.href).searchParams.get('pin');
+        try { zmap._withoutPageSlide(function() {
+          zmap.openPathPage(slug, {instant: true});
+          var path = zmap.paths.find(function(p) { return p.slug === slug; });
+          if(pin && path.steps.some(function(s) { return s.pinKey === pin; })) zmap.openPathPin(path, pin, null, {instant: true});
+        }); }
+        finally { control._restoringInitialPage = false; }
+      } else { zmap.focusPath(slug, {instant: true}); zmap.drawPaths(); }
+    }
   });
 };
 
@@ -86,15 +96,30 @@ ZMap.prototype._pathShown = function(path) {
   }
   var categoryId = path.categoryId || (path.lead && path.lead.categoryId);
   var category = categoryId && this.categories[categoryId];
-  return !!category && category.checked !== false && !(path.kind === 'single' && path.lead && !this.map.hasLayer(path.lead));
+  // A single path shows with the marker standing for it (hidden once
+  // completed, say), wherever that is: not just while it's on screen
+  // (markers off screen are taken off the map).
+  return !!category && category.checked !== false && this._pathCategoryAtZoom(category) &&
+    !(path.kind === 'single' && path.lead && !this._shouldShowMarker(path.lead, true));
+};
+
+// Whether a category's markers show at this zoom (its zoom threshold), as
+// zmap.js _shouldShowMarker has it: a path that's a category shows when its
+// markers do, so it never draws lines between markers that aren't there.
+ZMap.prototype._pathCategoryAtZoom = function(category) {
+  var layer = this.mapControl && this.mapControl.currentMapLayer;
+  var menu = this.mapControl && this.mapControl._categoryMenu;
+  if(layer && layer.alwaysShowCategories) return true;
+  if(!category._respectZoomThreshold && (this.mapOptions.categorySelectionMethod != 'focus' || !(menu && menu.modeAutomatic))) return true;
+  return Number(category.visible_zoom) <= this._getDisplayZoom();
 };
 
 // A path's own pages (PathEditor.js): while one is open, its path is the
 // selected one, drawn on top with a white outline.
-ZMap.prototype.PATH_PAGES = ['path', 'pathEditor', 'pathHistory', 'pathRevision'];
+ZMap.prototype.PATH_PAGES = ['path', 'pathEditor', 'pathHistory', 'pathRevision', 'pathPin', 'pathPinEditor'];
 // Pages that put the path in focus: its own markers alone on the map, as a
 // focused category's are. (Not the editor: steps are added from any marker.)
-ZMap.prototype.PATH_FOCUS_PAGES = ['path', 'pathHistory', 'pathRevision'];
+ZMap.prototype.PATH_FOCUS_PAGES = ['path', 'pathHistory', 'pathRevision', 'pathPin', 'pathPinEditor'];
 
 ZMap.prototype._pathPageChanged = function(type) {
   this._updatePathFocus(type);
@@ -135,8 +160,9 @@ ZMap.prototype._updatePathFocus = function(type) {
     // Leaving the path: coming back, its guide offers to Continue (PathEditor.js).
     this._pathStartLabel = null;
     var url = new URL(window.location.href);
-    if(url.searchParams.has('path')) {
+    if(url.searchParams.has('path') || url.searchParams.has('pin')) {
       url.searchParams.delete('path');
+      url.searchParams.delete('pin');
       history.replaceState(history.state, '', url.toString());
     }
   }
@@ -146,14 +172,29 @@ ZMap.prototype._updatePathFocus = function(type) {
   else if(this.paths) this.drawPaths();
 };
 
-ZMap.prototype.drawPaths = function() {
+// ifChanged: only if what's drawn would differ (refreshMap runs after every
+// move of the map: redrawing then made the step numbers blink, and panning
+// slow). The arrows follow the map by themselves (_pathArrows).
+ZMap.prototype.drawPaths = function(ifChanged) {
   if(!this.map || !this.paths) return;
   var zmap = this, map = this.map;
-  if(!this._pathLayer) this._pathLayer = L.layerGroup().addTo(map);
-  this._pathLayer.clearLayers();
   var current = this.mapControl && this.mapControl.getCurrentMap();
   var submap = current && String(current.subMapId);
   var selectedPath = this._pathPageOpen ? this._focusedPath : null;
+  var options = this.mapOptions;
+  var key = JSON.stringify([submap, selectedPath && (selectedPath.slug || selectedPath.id), !!this._pathEditing,
+    this._getDisplayZoom && this._getDisplayZoom() > Number(options.switchIconsAtZoom),
+    this.paths.map(function(p) {
+      return zmap._pathShown(p) ? [p.slug || p.id, p.color, p.numbered, p.smooth, p.loops,
+        (p.points || []).map(function(q) { return [q.submapId, q.latLng.lat, q.latLng.lng, q.shown ? 1 : 0, q.step && q.step.name]; })] : 0;
+    })]);
+  if(ifChanged === true && key === this._pathDrawnKey && this._pathLayer) return;
+  this._pathDrawnKey = key;
+  if(!this._pathLayer) this._pathLayer = L.layerGroup().addTo(map);
+  this._pathLayer.clearLayers();
+  // (Their own drawing layer: _pathRenderer.)
+  var renderer = this._pathRenderer();
+  var widthVar = this._pathWidthVar.bind(this);
   // The selected path last, over the others.
   this.paths.filter(function(p) { return p !== selectedPath; }).concat(selectedPath ? [selectedPath] : []).forEach(function(path) {
     if(!zmap._pathShown(path)) return;
@@ -161,74 +202,68 @@ ZMap.prototype.drawPaths = function() {
     if(here.length < 2) return;
     var color = path.color || '#ffad48';
     var line = here.map(function(p) { return p.latLng; });
+    // Where the stream stops (each step shown on the map: a marker or pin,
+    // not a hidden waypoint), and how far short of it, so an arrow's point
+    // ends at the marker's edge: [index in line, gap in pixels].
+    var stopGap = function(p) { return !p.shown ? null : p.marker ? 13 : 9; };
+    var stops = [];
     if(path.smooth && line.length > 2) {
       // A curve through every step (map units are flat, so it's drawn in them).
-      line = zmap._smoothPoints(line.map(function(ll) { return [ll.lng, ll.lat]; }), path.loops)
+      var every = 16;
+      line = zmap._smoothPoints(line.map(function(ll) { return [ll.lng, ll.lat]; }), path.loops, every)
         .map(function(p) { return L.latLng(p[1], p[0]); });
-    } else if(path.loops) line.push(line[0]);
+      here.forEach(function(p, i) { stops.push([i * every, stopGap(p)]); });
+      if(path.loops) stops.push([here.length * every, stopGap(here[0])]);
+    } else {
+      here.forEach(function(p, i) { stops.push([i, stopGap(p)]); });
+      if(path.loops) { line.push(line[0]); stops.push([here.length, stopGap(here[0])]); }
+    }
+    stops = stops.filter(function(s, i) { return s[1] !== null || i === 0 || i === stops.length - 1; })
+      .map(function(s) { return [s[0], s[1] || 0]; });
     var selected = path === selectedPath;
-    // One shape with one thin white border: every white part of the path
-    // (under its line, arrows and pins) is drawn first, then every coloured
-    // part over it, so where they overlap they merge into one silhouette.
-    var width = selected ? 5 : 3.5, border = 1.5;
-    var arrow = function(size, options) {
-      return L.polylineDecorator(line, {patterns: [{offset: 24, repeat: 90, symbol: L.Symbol.arrowHead({pixelSize: size, pathOptions: options})}]});
-    };
-    var arrowSize = selected ? 13 : 11;
-    var pins = here.filter(function(p) { return p.shown && !p.marker; });
-    // The white: under the line, its arrows and its pins. (The selected
-    // path's is lifted off the map with a shadow: styles/zmain.css.)
-    var casing = L.polyline(line, {color: '#fff', weight: width + border * 2, opacity: 1, interactive: false,
-      lineCap: 'round', lineJoin: 'round', className: 'zm-path-casing' + (selected ? ' zm-path-outline' : '')}).addTo(zmap._pathLayer);
-    var casingArrows = arrow(arrowSize, {fill: true, fillColor: '#fff', fillOpacity: 1, color: '#fff', weight: border * 2, lineJoin: 'round', opacity: 1})
-      .addTo(zmap._pathLayer);
-    pins.forEach(function(p) {
-      L.circleMarker(p.latLng, {radius: 6 + border, stroke: false, fillColor: '#fff', fillOpacity: 1, interactive: false}).addTo(zmap._pathLayer);
-    });
-    // The colour.
-    var visible = L.polyline(line, {color: color, weight: width, opacity: 1, interactive: false, lineCap: 'round', lineJoin: 'round',
-      dashArray: path.scope === 'user' ? '8 6' : null, className: 'zm-path-line'}).addTo(zmap._pathLayer);
-    var colorArrows = arrow(arrowSize, {fill: true, fillColor: color, fillOpacity: 1, stroke: false}).addTo(zmap._pathLayer);
-    pins.forEach(function(p) {
-      // A pin; or, grey, a marker since removed from the map.
-      var dot = L.circleMarker(p.latLng, {radius: 6, stroke: false, fillColor: p.deleted ? '#6b6b6b' : color, fillOpacity: 1}).addTo(zmap._pathLayer);
+    // Drawn as a stream of arrows (the official guides' style): each a stem
+    // along the line and a head, edged in white and shadowed, each sitting
+    // on top of the next, filling the line from step to step (_pathArrows).
+    // The edge is thin, and thicker while the path is hovered or in focus.
+    var border = selected ? 2.5 : 1.25, hoverBorder = 2.5;
+    var arrows = zmap._pathArrows(renderer, line, stops, color, border).addTo(zmap._pathLayer);
+    // Its pins: dots (grey, a marker since removed from the map) that open
+    // the pin, as a marker opens its page.
+    here.filter(function(p) { return p.shown && !p.marker; }).forEach(function(p) {
+      var dot = L.marker(p.latLng, {keyboard: false, zIndexOffset: 900, icon: L.divIcon({
+        className: 'zm-path-pin-dot' + (p.deleted ? ' deleted' : ''), iconSize: [16, 16], iconAnchor: [8, 8],
+        html: "<span style='--path-color:" + color + "'></span>"})}).addTo(zmap._pathLayer);
       var tip = p.deleted ? (p.step.markerName || 'Marker') + ' (removed from the map)' : p.step.name;
       if(tip) dot.bindTooltip(zmap._pathEsc ? zmap._pathEsc(tip) : tip, {direction: 'right', offset: [8, 0], className: 'zm-path-pin'});
+      if(!p.deleted && p.step.pinKey && !path._preview && !zmap._pathEditing && zmap.openPathPin) {
+        dot.on('click', function() { zmap.openPathPin(path, p.step); });
+      }
     });
     // The line itself opens the path's page (not while one's being edited:
-    // clicks then add steps and drop pins). Hovered, the line thickens, so
-    // it's clear it can be clicked.
-    if(!path._preview && !zmap._pathEditing) {
-      var hit = L.polyline(line, {color: '#000', opacity: 0, weight: 18, bubblingMouseEvents: false, className: 'zm-path-hit'})
+    // clicks then add steps and drop pins). Hovered, its edge, and every
+    // arrow's, thickens, so it's clear it can be clicked.
+    if(!path._preview && !zmap._pathEditing && !(zmap.isFramed && zmap.isFramed())) {
+      var hit = widthVar(L.polyline(line, {renderer: renderer, color: '#000', opacity: 0, weight: 18, bubblingMouseEvents: false, className: 'zm-path-hit'})
         .on('click', function(e) { L.DomEvent.stop(e); zmap.openPathPage(path.slug); })
-        .addTo(zmap._pathLayer);
+        .addTo(zmap._pathLayer));
       if(!selected) {
-        // (Its arrows grow with it.)
-        var setArrows = function(size) {
-          casingArrows.setPatterns([{offset: 24, repeat: 90, symbol: L.Symbol.arrowHead({pixelSize: size,
-            pathOptions: {fill: true, fillColor: '#fff', fillOpacity: 1, color: '#fff', weight: border * 2, lineJoin: 'round', opacity: 1}})}]);
-          colorArrows.setPatterns([{offset: 24, repeat: 90, symbol: L.Symbol.arrowHead({pixelSize: size,
-            pathOptions: {fill: true, fillColor: color, fillOpacity: 1, stroke: false}})}]);
-        };
-        hit.on('mouseover', function() {
-          visible.setStyle({weight: 5});
-          casing.setStyle({weight: 5 + border * 2});
-          setArrows(14);
-        }).on('mouseout', function() {
-          visible.setStyle({weight: width});
-          casing.setStyle({weight: width + border * 2});
-          setArrows(arrowSize);
-        });
+        var hover = function(on) { arrows.setBorder(on ? hoverBorder : border); };
+        hit.on('mouseover', function() { hover(true); }).on('mouseout', function() { hover(false); });
       }
       // Its name by the pointer, as a hint at what clicking opens.
-      if(!L.Browser.mobile) hit.bindTooltip(zmap._pathEsc ? zmap._pathEsc(path.name) : path.name, {sticky: true, direction: 'top', offset: [0, -10], className: 'zm-path-tooltip'});
+      // Hovered, its card (as lists show it: PathEditor.js _pathCardHTML)
+      // follows the pointer, a preview of what clicking opens.
+      // (Not the path whose page is open: it's already in view.)
+      if(!L.Browser.mobile && !selected) hit.bindTooltip(function() {
+        return zmap._pathCardHTML ? zmap._pathCardHTML(path, {className: 'path-card-preview', author: true}) : zmap._pathEsc(path.name);
+      }, {sticky: true, direction: 'top', offset: [0, -14], opacity: 1, className: 'zm-path-tooltip zm-path-card-tooltip', pane: zmap._pathPreviewPane()});
     }
     // Numbers on a numbered path's steps: white, the number in the path's
     // colour (styles/zmain.css .zm-path-step).
     // Beside a marker, just clear of its right edge: half its icon (medium or
     // small, as the zoom has it: zmap.js _createMarkerIcon) and its 1.5px
     // white ring (styles/poi.css), then a pixel's gap. On a pin, over it.
-    if(path.numbered) {
+    if(path.numbered && selected) {
       var options = zmap.mapOptions;
       var iconSize = zmap._getDisplayZoom() > Number(options.switchIconsAtZoom) ? Number(options.iconWidth) : Number(options.iconSmallWidth);
       var clear = Math.ceil((iconSize || 23) / 2 + 1.5) + 1;
@@ -244,11 +279,31 @@ ZMap.prototype.drawPaths = function() {
   });
 };
 
+// The hover card's own layer, over every marker, label and popup.
+ZMap.prototype._pathPreviewPane = function() {
+  var name = 'zmPathPreview';
+  if(!this.map.getPane(name)) {
+    var pane = this.map.createPane(name);
+    pane.style.zIndex = 750;
+    pane.style.pointerEvents = 'none';
+  }
+  return name;
+};
+
 // Show one path (?path=<slug>): drawn even if its category is off, and the
 // map fitted to it.
-ZMap.prototype.focusPath = function(slug) {
+ZMap.prototype.focusPath = function(slug, opts) {
   var path = (this.paths || []).find(function(p) { return p.slug === slug; });
   if(!path || !path.points.length) return;
+  // (A view set mid-way through a zoom the page's start-up began is lost:
+  // once it ends.)
+  var zmap = this;
+  if(opts && opts.instant && this.map._animatingZoom) {
+    this._focusedPath = path;
+    this._viewChosen = true;
+    this.map.once('zoomend', function() { setTimeout(function() { zmap.focusPath(slug, opts); }, 0); });
+    return;
+  }
   this._focusedPath = path;
   var first = path.points[0];
   var current = this.mapControl.getCurrentMap();
@@ -264,7 +319,7 @@ ZMap.prototype.focusPath = function(slug) {
   // the map above it; with the drawer pulled up, it still gets the top half.)
   var control = this.mapControl;
   this._prepareMapEdgesForDrawer();
-  if(this._fitBoundsToVisibleMap) this._fitBoundsToVisibleMap(bounds, {maxDrawerShare: .5,
+  if(this._fitBoundsToVisibleMap) this._fitBoundsToVisibleMap(bounds, {maxDrawerShare: .5, animate: !(opts && opts.instant),
     drawerTargetTop: control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined});
   else this.map.fitBounds(bounds.pad(.15), {animate: false});
 };
@@ -334,3 +389,325 @@ ZMap.prototype._smoothPoints = function(pts, loops, steps) {
   return out;
 };
 
+// Paths' own drawing layer, as OoT's connectors have (OotFloors.js): during
+// a zoom Leaflet scales the drawing with a CSS transform and only redraws it
+// when the zoom ends, so the lines would swell and shrink mid-gesture. Their
+// widths are divided by that scale as it changes (styles/zmain.css, each
+// line's --zm-w), so only their positions move; the filled shapes (arrows,
+// pins) are hidden until the zoom ends. A pinch, which zooms without an
+// animation, redraws every quarter level.
+ZMap.prototype._pathRenderer = function(casing) {
+  if(!this._pathSvgs) this._setupPathRenderers();
+  return casing ? this._pathSvgs.casing : this._pathSvgs.color;
+};
+
+// Two layers: every path's white edge beneath, every path's colour above, so
+// a path's arrows can be redrawn (grown on hover) without its white ones
+// coming up over its line.
+ZMap.prototype._setupPathRenderers = function() {
+  var zmap = this, map = this.map, panes = [];
+  var make = function(name, z) {
+    var pane = map.getPane(name) || map.createPane(name);
+    pane.style.zIndex = z;
+    panes.push(pane);
+    var renderer = L.svg({pane: name, padding: 1.5});
+    var drawnZoom = null, updateDrawing = renderer._update, projectAll = renderer._onZoomEnd;
+    renderer._update = function() {
+      updateDrawing.call(this);
+      if(!this._map || this._map._animatingZoom || this._zoom === drawnZoom) return;
+      drawnZoom = this._zoom;
+      for(var id in this._layers) this._layers[id]._reset();
+    };
+    renderer._onZoomEnd = function() {
+      projectAll.call(this);
+      drawnZoom = this._map.getZoom();
+    };
+    return renderer;
+  };
+  var casing = make('zmPathsCasing', '389'), color = make('zmPaths', '390');
+  this._pathSvgs = {casing: casing, color: color};
+  var setScale = function(scale) { panes.forEach(function(pane) { pane.style.setProperty('--zm-path-zoom-scale', scale > 0 ? scale : 1); }); };
+  var frame = null;
+  var track = function() {
+    var svg = panes[1].querySelector('svg');
+    setScale(svg ? new DOMMatrixReadOnly(getComputedStyle(svg).transform).a : 1);
+    frame = window.requestAnimationFrame(track);
+  };
+  map.on('zoomanim', function() {
+    if(frame === null) track();
+  });
+  map.on('zoom', function() {
+    if(frame !== null || !color._map) return;
+    var zoom = map.getZoom();
+    [casing, color].forEach(function(renderer) {
+      if(Math.abs(zoom - renderer._zoom) >= 0.25) {
+        renderer._update();
+        renderer._updateTransform(map.getCenter(), zoom);
+      }
+    });
+    setScale(map.getZoomScale(zoom, color._zoom));
+  });
+  // Done. (The arrows are spaced afresh for the new zoom as the drawing
+  // places its layers again: _pathArrows.)
+  map.on('zoomend', function() {
+    if(frame !== null) window.cancelAnimationFrame(frame);
+    frame = null;
+    setScale(1);
+  });
+};
+
+// A line's width for the zoom compensation (_pathRenderer), kept in step
+// with its weight.
+ZMap.prototype._pathWidthVar = function(layer) {
+  var apply = function(l) {
+    if(!l._path) return;
+    if(l.options.weight != null) l._path.style.setProperty('--zm-w', l.options.weight + 'px');
+  };
+  if(layer.eachLayer) layer.eachLayer(apply); else apply(layer);
+  return layer;
+};
+
+// A path's stream of arrows, as a layer of the paths' drawing
+// (_setupPathRenderers), which places it as it does a line: when the map
+// moves, zooms or is pinched. Between each step and the next shown one, the
+// line is filled with arrows of near SPACING pixels, as many as fit, the
+// last one's point stopping at the step's edge. Each arrow is its stem,
+// drawn along the line itself (so it bends with it), and its head: a white
+// edge round both, then the colour, and a shadow. Each is drawn over the
+// next one along, its head over that one's stem. Through a zoom the drawing
+// is scaled, so the stems' widths and the heads are scaled back (styles
+// zmain.css: --zm-path-zoom-scale): only their places move.
+ZMap.prototype.PATH_ARROW_SPACING = 56;
+ZMap.prototype.PATH_ARROW = {stem: 5, head: 12, halfWidth: 8};
+
+ZMap.prototype._pathArrowLayerClass = function() {
+  if(ZMap._PathArrows) return ZMap._PathArrows;
+  var NS = 'http://www.w3.org/2000/svg';
+  var el = function(name, attrs, parent) {
+    var node = document.createElementNS(NS, name);
+    for(var k in attrs) node.setAttribute(k, attrs[k]);
+    if(parent) parent.appendChild(node);
+    return node;
+  };
+  var d = function(points) {
+    return points.map(function(p, i) { return (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1); }).join('');
+  };
+  ZMap._PathArrows = L.Polyline.extend({
+    options: {stroke: false, fill: false, interactive: false, noClip: true, smoothFactor: 0},
+    initialize: function(latlngs, options) {
+      L.Polyline.prototype.initialize.call(this, latlngs, options);
+    },
+    // A group of its own in place of a line's single path.
+    onAdd: function() {
+      this._renderer._initPath(this);
+      this._path = el('g', {'class': 'zm-path-arrows'});
+      this._path.style.setProperty('--zm-arrow-b', this.options.border + 'px');
+      this._reset();
+      this._renderer._addPath(this);
+    },
+    setBorder: function(b) {
+      this.options.border = b;
+      if(this._path) this._path.style.setProperty('--zm-arrow-b', b + 'px');
+      return this;
+    },
+    // Laid out again only for a new zoom, or once the map has moved past
+    // what was laid out (the drawing's bounds, and as much again around
+    // them): not on every move.
+    _update: function() {
+      if(!this._map) return;
+      var zoom = this._map.getZoom(), view = this._renderer._bounds;
+      if(this._laid && this._laid.zoom === zoom && this._laid.version === this._version && view &&
+        this._laid.bounds.contains(view)) return;
+      this._updatePath();
+    },
+    _project: function() {
+      L.Polyline.prototype._project.call(this);
+      // (A new projection: a new zoom, or the map placed afresh.)
+      this._version = (this._version || 0) + 1;
+    },
+    _updatePath: function() {
+      var g = this._path, o = this.options, map = this._map;
+      while(g.firstChild) g.removeChild(g.firstChild);
+      var pts = this._rings && this._rings[0];
+      if(!pts || pts.length < 2) return;
+      // Thinner further out: from 55% at the map's furthest zoom to full
+      // size halfway in.
+      var zoom = map.getZoom(), min = map.getMinZoom(), max = map.getMaxZoom();
+      var t = max > min ? (zoom - min) / (max - min) : 1;
+      var f = .55 + .45 * Math.min(1, Math.max(0, t * 2));
+      var a = {stem: o.arrow.stem * f, head: o.arrow.head * f, halfWidth: o.arrow.halfWidth * f};
+      g.style.setProperty('--zm-arrow-scale', f);
+      // What's laid out: what the drawing covers, and as much again around it.
+      var view = this._renderer._bounds;
+      var region = null;
+      if(view) {
+        var size = view.getSize();
+        region = L.bounds(view.min.subtract(size.divideBy(2)), view.max.add(size.divideBy(2)));
+        this._laid = {zoom: zoom, version: this._version, bounds: region};
+      }
+      var segments = this._segments(pts, o.stops, a, f);
+      var arrows = [];
+      segments.forEach(function(seg) {
+        var cum = seg.cum, line = seg.points, total = cum[cum.length - 1];
+        var at = function(dist) {
+          dist = Math.max(0, Math.min(total, dist));
+          var lo = 1, hi = cum.length - 1;
+          while(lo < hi) { var mid = (lo + hi) >> 1; if(cum[mid] < dist) lo = mid + 1; else hi = mid; }
+          var span = cum[lo] - cum[lo - 1] || 1, u = (dist - cum[lo - 1]) / span;
+          return line[lo - 1].add(line[lo].subtract(line[lo - 1]).multiplyBy(u));
+        };
+        var between = function(x0, x1) {
+          var out = [at(x0)];
+          for(var j = 1; j < cum.length - 1; j++) if(cum[j] > x0 && cum[j] < x1) out.push(line[j]);
+          out.push(at(x1));
+          return out;
+        };
+        var length = total - seg.endGap;
+        if(length < a.head * 1.2) return;
+        // Each stretch's own arrow length: longer along a long stretch, as
+        // a stroke drawn by hand would be, so they aren't all alike.
+        var target = Math.min(170, Math.max(64, 40 + Math.sqrt(length) * 4.2)) * f;
+        var count = Math.max(1, Math.round(length / target)), each = length / count;
+        for(var n = 0; n < count; n++) {
+          var tip = each * (n + 1);
+          // (Its tail under the head before it; its stem a little into its
+          // own head, so no edge shows between.)
+          var tail = n === 0 ? 0 : each * n - a.head * .6;
+          var stem = between(tail, tip - a.head + 3 * f);
+          var tipPoint = at(tip), back = at(tip - Math.min(4, each / 2));
+          if(region && !region.intersects(L.bounds(stem.concat([tipPoint])))) continue;
+          arrows.push({stem: stem, tip: tipPoint, angle: Math.atan2(tipPoint.y - back.y, tipPoint.x - back.x) * 180 / Math.PI});
+        }
+      });
+      // The last first: each arrow over the next one along. Its shadow is a
+      // dark copy a pixel down (an SVG filter on each was slow to pan).
+      var head = 'M0 0L' + (-a.head).toFixed(2) + ' ' + (-a.halfWidth).toFixed(2) + 'L' + (-a.head).toFixed(2) + ' ' + a.halfWidth.toFixed(2) + 'Z';
+      var edge = '--zm-w: calc(' + a.stem.toFixed(2) + 'px + 2 * var(--zm-arrow-b) * var(--zm-arrow-scale))';
+      var headEdge = 'stroke-width: calc(2 * var(--zm-arrow-b) * var(--zm-arrow-scale))';
+      var frag = document.createDocumentFragment();
+      for(var k = arrows.length - 1; k >= 0; k--) {
+        var arrow = arrows[k], group = el('g', {'class': 'zm-path-arrow'}, frag), path = d(arrow.stem);
+        var place = 'translate(' + arrow.tip.x.toFixed(1) + ' ' + arrow.tip.y.toFixed(1) + ') rotate(' + arrow.angle.toFixed(1) + ')';
+        var shadow = el('g', {'class': 'zm-path-arrow-shadow'}, group);
+        el('path', {d: path, fill: 'none', stroke: '#000', 'stroke-linecap': 'butt', 'stroke-linejoin': 'round', style: edge}, shadow);
+        el('path', {d: head, fill: '#000', stroke: '#000', 'stroke-linejoin': 'round', style: headEdge},
+          el('g', {'class': 'zm-path-arrow-scale'}, el('g', {transform: place}, shadow)));
+        el('path', {d: path, fill: 'none', stroke: '#fff', 'stroke-linecap': 'butt', 'stroke-linejoin': 'round',
+          'class': 'zm-path-arrow-edge', style: edge}, group);
+        el('path', {d: head, fill: o.color, stroke: '#fff', 'stroke-linejoin': 'round', 'paint-order': 'stroke',
+          'class': 'zm-path-arrow-head', style: headEdge}, el('g', {'class': 'zm-path-arrow-scale'}, el('g', {transform: place}, group)));
+        el('path', {d: path, fill: 'none', stroke: o.color, 'stroke-linecap': 'butt', 'stroke-linejoin': 'round',
+          'class': 'zm-path-arrow-stem', style: '--zm-w: ' + a.stem.toFixed(2) + 'px'}, group);
+      }
+      g.appendChild(frag);
+    },
+    // The line from each stop to the next, in pixels, finely spaced, with
+    // the stretches that run close to another stretch of the same path set
+    // apart: each moved to its own right (as traffic keeps to its side),
+    // easing back to the steps at its ends. Out and back along one way, the
+    // two then run side by side; two going the same way, the later one moves
+    // across. Returns [{points, cum, endGap}].
+    _segments: function(pts, stops, a, f) {
+      var spacing = 6;
+      var segs = [];
+      for(var si = 0; si + 1 < stops.length; si++) {
+        var raw = pts.slice(stops[si][0], stops[si + 1][0] + 1);
+        if(raw.length < 2) continue;
+        // Evenly spaced points, every few pixels (corners kept).
+        var points = [raw[0]];
+        for(var i = 1; i < raw.length; i++) {
+          var from = raw[i - 1], to = raw[i], len = from.distanceTo(to), parts = Math.max(1, Math.round(len / spacing));
+          for(var k = 1; k <= parts; k++) points.push(from.add(to.subtract(from).multiplyBy(k / parts)));
+        }
+        segs.push({index: si, points: points, endGap: stops[si + 1][1]});
+      }
+      var measure = function(seg) {
+        var cum = [0];
+        for(var i = 1; i < seg.points.length; i++) cum.push(cum[i - 1] + seg.points[i - 1].distanceTo(seg.points[i]));
+        seg.cum = cum;
+      };
+      segs.forEach(measure);
+      // Which points are close to another stretch's: a grid of cells.
+      var near = 15, ends = 22, cell = near, grid = {};
+      var keyOf = function(p) { return Math.floor(p.x / cell) + ',' + Math.floor(p.y / cell); };
+      var direction = function(seg, i) {
+        var p = seg.points, a0 = p[Math.max(0, i - 2)], a1 = p[Math.min(p.length - 1, i + 2)];
+        var dx = a1.x - a0.x, dy = a1.y - a0.y, l = Math.hypot(dx, dy) || 1;
+        return [dx / l, dy / l];
+      };
+      segs.forEach(function(seg, s) {
+        var total = seg.cum[seg.cum.length - 1];
+        seg.points.forEach(function(p, i) {
+          if(seg.cum[i] < ends || total - seg.cum[i] < ends) return;
+          var key = keyOf(p);
+          (grid[key] || (grid[key] = [])).push([s, i]);
+        });
+      });
+      var moved = false;
+      segs.forEach(function(seg, s) {
+        var total = seg.cum[seg.cum.length - 1];
+        seg.shift = seg.points.map(function(p, i) {
+          if(seg.cum[i] < ends || total - seg.cum[i] < ends) return 0;
+          var cx = Math.floor(p.x / cell), cy = Math.floor(p.y / cell), best = 0;
+          for(var x = cx - 1; x <= cx + 1; x++) for(var y = cy - 1; y <= cy + 1; y++) {
+            (grid[x + ',' + y] || []).forEach(function(hit) {
+              if(hit[0] === s || best === 2) return;
+              var other = segs[hit[0]], q = other.points[hit[1]];
+              if(p.distanceTo(q) > near) return;
+              var mine = direction(seg, i), theirs = direction(other, hit[1]);
+              var dot = mine[0] * theirs[0] + mine[1] * theirs[1];
+              // (Only running alongside, not crossing: within about 25°.)
+              if(Math.abs(dot) < .9) return;
+              var same = dot > 0;
+              // Opposite ways: both to their right. The same way: the later
+              // one across, the earlier where it is.
+              var want = !same ? 1 : hit[0] < s ? 2 : 0;
+              if(want > best) best = want;
+            });
+          }
+          if(best) moved = true;
+          return best;
+        });
+      });
+      if(!moved) return segs;
+      var offset = (a.stem / 2 + 2.5 * Math.max(f, .7) + 1.5);
+      segs.forEach(function(seg) {
+        var n = seg.points.length, raw = seg.shift, total = seg.cum[n - 1];
+        if(!raw.some(Boolean)) return;
+        // Held a little past where it's close, then eased in and out.
+        var held = raw.map(function(v, i) {
+          var m = 0;
+          for(var j = Math.max(0, i - 5); j <= Math.min(n - 1, i + 5); j++) m = Math.max(m, raw[j]);
+          return m;
+        });
+        var eased = held.map(function(v, i) {
+          var sum = 0, count = 0;
+          for(var j = Math.max(0, i - 14); j <= Math.min(n - 1, i + 14); j++) { sum += held[j]; count++; }
+          // (Smoothstep: no corner where it starts or stops.)
+          var u = sum / count / 2, v = Math.min(1, Math.max(0, u));
+          return (v * v * (3 - 2 * v)) * 2;
+        });
+        seg.points = seg.points.map(function(p, i) {
+          var taper = Math.min(1, seg.cum[i] / (ends * 2), (total - seg.cum[i]) / (ends * 2));
+          taper = taper * taper * (3 - 2 * taper);
+          var amount = eased[i] * taper * offset;
+          if(!amount) return p;
+          var dir = direction(seg, i);
+          // (Its right, on a screen whose y runs down.)
+          return L.point(p.x - dir[1] * amount, p.y + dir[0] * amount);
+        });
+        measure(seg);
+      });
+      return segs;
+    }
+  });
+  return ZMap._PathArrows;
+};
+
+// line: the path's points (latlngs); stops: [[index in line, gap]] where the
+// stream stops and starts again. Returns the layer (setBorder(b) for hover).
+ZMap.prototype._pathArrows = function(renderer, line, stops, color, border) {
+  var Arrows = this._pathArrowLayerClass();
+  return new Arrows(line, {renderer: renderer, stops: stops, color: color, border: border,
+    spacing: this.PATH_ARROW_SPACING, arrow: this.PATH_ARROW});
+};

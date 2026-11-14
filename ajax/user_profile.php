@@ -46,7 +46,8 @@
   if (wikiAvailable($db, $map_prefix)) {
     include_once(dirname(__DIR__).'/lib/common/community_changes.php');
     $filter=is_string($_GET['filter'] ?? null)?$_GET['filter']:'all';
-    $changes=communityChanges($db,$map_prefix,$viewerEditor,'',(int)$user['id'],'',30,$viewerLevel>=WIKI_ADMIN_LEVEL,$filter)['changes'];
+    include_once(dirname(__DIR__) . '/lib/common/paths.php');
+    $changes=communityChanges($db,$map_prefix,$viewerEditor,'',(int)$user['id'],'',30,$viewerLevel>=WIKI_ADMIN_LEVEL,$filter,pathsAllowed($viewerLevel))['changes'];
     $counts['edits'] = (int) $db->fetchOne(
       "SELECT COUNT(*) FROM `{$map_prefix}marker_revision` WHERE `user_id` = ? AND `action` <> 'import'", [$user['id']]
     );

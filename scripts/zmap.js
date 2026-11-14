@@ -1111,16 +1111,21 @@ ZMap.prototype._getClipboardParams = function(href) {
    }
    return clipboardParams;
 }
+// The address of the map's own page, or (embed) of embed.php, the one page
+// other sites may frame, whichever this page is.
+ZMap.prototype._pageAddress = function(embed) {
+   return new URL(embed ? 'embed.php' : './', window.location.href.split('?')[0]).href;
+}
 ZMap.prototype._copyToClipboardEmbed = function(vMarkerId, button) {
    var href = window.location.href.split("?");
    var clipboardParams = this._getClipboardParams(href);
 
-   this._copyText("<iframe src=\"" + href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>", button);
+   this._copyText("<iframe src=\"" + this._pageAddress(true) + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>", button);
 }
 ZMap.prototype._copyToClipboard = function(vMarkerId, button) {
    var href = window.location.href.split("?");
    var clipboardParams = this._getClipboardParams(href);
-   this._copyText(href[0] + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom(), button);
+   this._copyText(this._pageAddress(false) + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom(), button);
 }
 
 // Copies straight to the clipboard. The action button then shows a checkmark
@@ -1285,7 +1290,7 @@ ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
     this.mapControl._categoryMenu.categoryButtons.forEach(function(button) { button.updateCategoryLabel(); });
   }
   // Paths follow their categories and the map shown (scripts/services/Paths.js).
-  if(this.drawPaths) this.drawPaths();
+  if(this.drawPaths) this.drawPaths(true);
 };
 
 ZMap.prototype._updateMarkersVisiblilityByCategory = function(affectedCategory) {
@@ -2107,6 +2112,8 @@ ZMap.prototype.addMapControl = function(gameId) {
 
   $(document).on('keydown', function(e) {
     if(e.key == "Escape") {
+      // (An embed keeps what it shows.)
+      if(_this.isFramed()) return;
       if(_this.mapControl._contentType != _this.mapControl.options.defaultContentType) {
         _this.mapControl.resetContent();
         _this._closeNewMarker()
@@ -2265,6 +2272,8 @@ ZMap.prototype._setupDroppedPinGesture = function() {
       var point = L.point(press.x - rect.left, press.y - rect.top);
       var latlng = this.map.containerPointToLatLng(point);
       clearPress();
+      // (Not in an embed: it shows only what was embedded.)
+      if(this.isFramed()) return;
       this._openDroppedPin(latlng);
     }.bind(this), holdDelay);
   }, this);
@@ -2282,13 +2291,19 @@ ZMap.prototype._setupDroppedPinGesture = function() {
 ZMap.prototype._createDroppedPinLink = function(latlng) {
   var href = window.location.href.split("?");
   var clipboardParams = this._getClipboardParams(href);
-  return href[0] + "?" + clipboardParams +
+  return this._pageAddress(false) + "?" + clipboardParams +
     "map=" + this.mapControl.getCurrentMap().mapId +
     "&subMap=" + this.mapControl.getCurrentMap().subMapId +
     "&zoom=" + this.map.getZoom() +
     "&x=" + latlng.lng.toFixed(4) +
     "&y=" + latlng.lat.toFixed(4) +
     "&droppedPin=true";
+};
+
+// Shown inside another site's page (an embed): just what was embedded
+// (index.php sets the class first thing).
+ZMap.prototype.isFramed = function() {
+  return document.documentElement.classList.contains('zm-framed');
 };
 
 ZMap.prototype._openDroppedPin = function(latlng) {
@@ -2330,6 +2345,17 @@ ZMap.prototype._openDroppedPin = function(latlng) {
         "<span class='marker-action-label'>Create Community Marker</span>" +
       "</button>" +
     "</div>" +
+    // A path starting here (scripts/services/PathEditor.js), for those who
+    // can make paths.
+    (this._pathsEnabled && this.getUser() && this.openPathEditor ?
+      "<div class='marker-actions-row make-path-from-pin-row'>" +
+        "<button type='button' id='make_path_from_pin' class='marker-action-button infoWindowIcn'>" +
+          "<span class='marker-action-icon create-community-marker-icon'>" +
+            "<i class='fas fa-plus' aria-hidden='true'></i><i class='fas fa-map-signs' aria-hidden='true'></i>" +
+          "</span>" +
+          "<span class='marker-action-label'>Make New Path From Here</span>" +
+        "</button>" +
+      "</div>" : '') +
     "<div class='popupContent'></div>";
 
   this.mapControl.setContent(content, 'droppedPin-' + L.Util.stamp(newMarker));
@@ -2344,6 +2370,12 @@ ZMap.prototype._openDroppedPin = function(latlng) {
     zmap._copyText("<iframe src=\"" + embedLink + "\" frameborder=\"0\" allowfullscreen></iframe>", this);
     return false;
   });
+  $('#make_path_from_pin').on('click', function() {
+    // The pin becomes the path's first step (the editor draws it).
+    zmap._closeNewMarker();
+    zmap.openPathEditor(null, {submapId: zmap.mapControl.getCurrentMap().subMapId, x: latlng.lng, y: latlng.lat});
+    return false;
+  });
   $('#create_community_marker').on('click', function() {
     if(zmap._editingRole && zmap._editingRole() === 'editor') zmap._createMarkerForm(null, latlng);
     else if(zmap._showEditingBetaAlert) zmap._showEditingBetaAlert();
@@ -2352,7 +2384,7 @@ ZMap.prototype._openDroppedPin = function(latlng) {
 };
 
 ZMap.prototype._createDroppedPinEmbedLink = function(latlng) {
-  return this._createDroppedPinLink(latlng) + "&showMapControl=true";
+  return this._createDroppedPinLink(latlng).replace(this._pageAddress(false), this._pageAddress(true)) + "&showMapControl=true";
 };
 
 //************* BOOKMARKS *************//
@@ -2585,7 +2617,7 @@ ZMap.prototype._isCompleteReminder = function(count) {
 };
 
 ZMap.prototype._showCompleteRegistrationPrompt = function(markerId) {
-  if(this.getUser()) return;
+  if(this.getUser() || this.isFramed()) return;
   var state = this._completePromptState();
   if(state.off) return;
   var count = (completedMarkers || []).length;
@@ -4215,8 +4247,12 @@ ZMap.prototype._buildContextMenu = function() {
 
    // Create context options
    var contextMenu;
+   // In an embed, only moving the map: no account, nothing to add.
+   var framed = this.isFramed();
 
-   if (user == null) {
+   if (framed) {
+      contextMenu = [];
+   } else if (user == null) {
       contextMenu = [{
          text: 'Login',
          hideOnSelect: true,
@@ -4246,7 +4282,7 @@ ZMap.prototype._buildContextMenu = function() {
     callback: function() { _this.map.zoomOut(); }
   });
 
-  if (user != null) {
+  if (user != null && !framed) {
     contextMenu.push('-', {
          text: 'Change Password',
          callback: function() {

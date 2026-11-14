@@ -256,6 +256,8 @@ function getUserInfo() {
    var keepSavedUser = function() {
     applyUserInfo(ZOfflineSync.savedUserInfo() || {}, true);
    };
+   // An embed (embed.php) is never signed in: it doesn't ask.
+   if(window.zmapEmbed) { applyUserInfo({}, true); return; }
    $.getJSON("ajax.php?command=get_user_info").done(function(vResults) {
     if(!vResults || (!vResults.user && !vResults.loggedOut)) {
       keepSavedUser();
@@ -267,6 +269,8 @@ function getUserInfo() {
 };
 
 function checkChangelog(user) {
+   // (Not over someone else's page, in an embed.)
+   if(zMap.isFramed && zMap.isFramed()) return;
    new ChangelogHandler({
     user    : user,
     version : zMap.version

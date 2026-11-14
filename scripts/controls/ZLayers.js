@@ -1037,11 +1037,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var type = this._contentType || 'category';
     var maxHeight = this._mobileDrawerMaxPartialHeight();
     var height;
-    if(type === 'category') {
+    // The category list and a path's page (PathEditor.js) take the tallest
+    // partial height.
+    if(type === 'category' || type === 'path') {
       height = maxHeight;
-    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type) || /^category-\d+$/.test(type) || type === 'path') {
-      // (A path's page, PathEditor.js, peeks as a marker's: title, pills and
-      // its controls, Start among them.)
+    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type) || /^category-\d+$/.test(type)) {
       height = this._mobileDrawerPeekHeight() || this._mobileDrawerContentHeight();
     } else if(type === 'games' || type === 'maps') {
       height = this._mobileDrawerContentHeight();

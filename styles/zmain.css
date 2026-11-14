@@ -4421,7 +4421,8 @@ div.circle:has(>.icon-EoW_Echo) {
 
 .wiki-page a,
 .account-credit a,
-.marker-editor-tools a {
+.marker-editor-tools a,
+.path-byline a {
 	color: #8fd8ff;
 }
 
@@ -6534,6 +6535,12 @@ body .tox .tox-insert-table td.tox-insert-table__cell--selected {
 	padding-top: 16px;
 	border-top: 1px solid rgba(255,255,255,.15);
 }
+.leaflet-control-layers .make-path-from-pin-row {
+	grid-template-columns: minmax(0, 1fr);
+	margin-top: 0;
+}
+.zm-framed .make-path-from-pin-row { display: none !important; }
+.leaflet-control-layers .create-community-marker-row:has(+ .make-path-from-pin-row) { margin-bottom: 8px; }
 .create-community-marker-icon {
 	display: inline-flex;
 	align-items: center;
@@ -7748,14 +7755,20 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-page, .path-history-page, .path-editor, .community-paths { padding: 4px 16px 28px; box-sizing: border-box; }
 .path-timeline { gap: 0; margin: 18px 0 0; }
 .path-timeline .path-step { position: relative; align-items: flex-start; gap: 12px; padding: 0 0 20px; background: none; border-radius: 0; }
-.path-timeline .path-step:not(:last-child)::before {
-	content: ''; position: absolute; left: 13px; top: 28px; bottom: 2px; width: 2px; margin-left: -1px;
-	border-radius: 1px; background: var(--path-color, #ffad48); opacity: .7;
+/* The line joining the numbers runs unbroken down the whole list (behind
+   them: a number can scroll down over it, sticky), from the first number's
+   middle to the last's. */
+.path-timeline .path-step::before {
+	content: ''; position: absolute; left: 13px; top: 0; bottom: 0; width: 2px; margin-left: -1px;
+	background: color-mix(in srgb, var(--path-color, #ffad48) 70%, #1b1b1f);
 }
+.path-timeline .path-step:first-child::before { top: 15px; }
+.path-timeline .path-step:last-child::before { bottom: auto; height: 15px; }
+.path-timeline .path-step:only-child::before { display: none; }
 .path-timeline .path-step-number { width: 26px; height: 26px; font-size: 12px; }
 .path-timeline .path-step-name { white-space: normal; font-size: 15px; font-weight: 700; line-height: 26px; }
 .path-timeline .path-step-note { font-size: 14px; opacity: .85; font-style: italic; margin: 2px 0 6px; }
-.leaflet-control-layers .popupContent.path-step-content { position: relative; max-height: 380px; overflow: hidden; margin-top: 4px; padding-bottom: 0; }
+.leaflet-control-layers .popupContent.path-step-content { --path-step-collapsed: 380px; position: relative; max-height: var(--path-step-collapsed); overflow: hidden; margin-top: 4px; padding-bottom: 0; }
 .path-step-content.truncated {
 	-webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
 	mask-image: linear-gradient(to bottom, #000 65%, transparent);
@@ -7781,6 +7794,13 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	padding: 4px 9px; font-weight: 600; box-shadow: 0 3px 10px rgba(0, 0, 0, .4);
 }
 .leaflet-tooltip.zm-path-tooltip::before { display: none; }
+/* The hover preview: the path's full card, on the drawer's dark ground. */
+.leaflet-tooltip.zm-path-card-tooltip {
+	width: 300px; padding: 0; white-space: normal; font-weight: normal; border-radius: 16px; overflow: hidden;
+	background: rgba(0, 0, 0, .8); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+	box-shadow: 0 16px 32px rgba(0, 0, 0, .6);
+}
+.zm-path-card-tooltip .path-card-preview { pointer-events: none; background: none; box-shadow: none; border-radius: 0; }
 /* Each step's check, and the page's count. */
 .path-step-head { display: flex; align-items: flex-start; gap: 10px; }
 .path-step-head .path-step-name { flex: 1; min-width: 0; }
@@ -7823,7 +7843,8 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-card:hover, .path-card:focus-visible { background: rgba(255, 255, 255, .12); outline: none; }
 .path-card:focus-visible { box-shadow: inset 0 0 0 2px #4395f7; }
 .path-card-thumb { position: relative; display: block; width: 100%; aspect-ratio: 2 / 1; overflow: hidden; background: #1b1b1f; }
-.leaflet-control-layers .path-card-thumb img { position: absolute; max-width: none; border-radius: 0; }
+/* (Anywhere a card goes: the drawer, or a path's hover card on the map.) */
+.path-card-thumb img, .leaflet-control-layers .path-card-thumb img { position: absolute; max-width: none; max-height: none; border-radius: 0; }
 .path-card-thumb svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 .path-card-thumb-empty { display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--path-color, #ffad48); }
 .path-card-body { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px 12px; }
@@ -7847,14 +7868,14 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
    open their markers. */
 .leaflet-control-layers .path-actions-row { margin: 12px 16px 16px; }
 .path-actions-row .yeah-icon { width: 22px; height: 22px; }
-.path-actions-row .path-yeah[aria-pressed="true"] { background: rgba(80, 200, 120, .3); }
+.path-actions-row .path-yeah[aria-pressed="true"] { background: rgba(80, 160, 255, .3); color: #a8d2ff; }
 .path-actions-row .path-yeah .yeah-count { opacity: .75; }
 .path-kind-pill { display: inline-flex; align-items: center; gap: 5px; }
 /* A step's name: large, a little dim until hovered, its chevron inline
    after the last word. */
 .path-timeline .path-step-name {
 	display: block; font-size: 19px; font-weight: 700; line-height: 1.3; min-height: 26px; padding: 1px 0 2px;
-	opacity: .85; transition: opacity .12s ease;
+	opacity: .85;
 }
 .path-page .path-step-name:hover, .path-page .path-step-name:focus-visible { opacity: 1; text-decoration: none; outline: none; }
 .path-step-label { display: inline; }
@@ -7867,17 +7888,11 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-timeline .path-step-current .path-step-number { box-shadow: 0 0 0 4px rgba(255, 255, 255, .25); }
 .path-timeline .path-step-current .path-step-label { text-decoration: underline; text-decoration-color: var(--path-color, #ffad48); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 
-/* "Make a path from here": full width under a marker's edit controls. */
-.marker-editor-tools .path-new-button {
-	flex-direction: row; gap: 10px; width: 100%; min-height: 44px; margin-top: 8px; font-size: 13px;
-}
-.marker-editor-buttons[hidden] ~ .path-new-button { display: none; }
-.path-new-icon { position: relative; display: inline-flex; width: 20px; height: 18px; }
+/* Make Path, in line with a marker's Edit, History and Talk: a small plus
+   left of the signpost, centred on it. */
+.path-new-icon { display: inline-flex; align-items: center; gap: 2px; height: 16px; }
 .marker-editor-button .path-new-icon .fa-map-signs { width: 16px; height: 16px; font-size: 16px; }
-.marker-editor-button .path-new-icon .fa-plus {
-	position: absolute; right: -4px; bottom: -3px; width: 9px; height: 9px; font-size: 9px;
-	padding: 1px; border-radius: 50%; background: #2b2b2f; box-sizing: content-box;
-}
+.marker-editor-button .path-new-icon .fa-plus { width: 9px; height: 9px; font-size: 9px; }
 
 /* A path as a compact row (PathEditor.js _pathListItemHTML), the size of a
    search result: the top of a marker's page. */
@@ -7951,9 +7966,10 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
    their section set off from the marker's contents by a line above and below. */
 .marker-paths .path-compact-list { align-items: stretch; }
 .marker-paths .path-compact-card { width: 100%; }
+/* Part of this path: a box of its own, as header content. */
 .marker-paths .marker-paths-section {
-	margin: 4px 0 12px; padding: 12px 0 14px;
-	border-top: 1px solid rgba(255, 255, 255, .12); border-bottom: 1px solid rgba(255, 255, 255, .12);
+	margin: 4px 0 12px; padding: 12px;
+	border: 1px solid rgba(255, 255, 255, .14); border-radius: 14px;
 }
 
 /* The step list's spacing: room between steps for a number to stop 16px under
@@ -7966,7 +7982,13 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-timeline .path-step-head { margin-bottom: 6px; }
 .path-timeline .path-step-note { margin: 0 0 6px; }
 .leaflet-control-layers .popupContent.path-step-content { margin-top: 0; }
-.path-step-complete { margin-top: 16px; }
+/* (Under contents, whose last paragraph keeps 12px under it: 16px to the
+   text, as from Show more.) */
+.path-step-complete { margin-top: 4px; }
+.path-step-more:not([hidden]) + .path-step-complete { margin-top: 16px; }
+/* (Straight under a title or a note, 16px too.) */
+.path-step-head + .path-step-complete { margin-top: 10px; }
+.path-step-note + .path-step-complete { margin-top: 10px; }
 /* Show more: a centred pill with a chevron. */
 .path-step-more {
 	display: flex; align-items: center; gap: 6px; margin: 12px auto 0; padding: 6px 14px;
@@ -7976,5 +7998,83 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-step-more:hover, .path-step-more:focus-visible { background: rgba(255, 255, 255, .18); outline: none; }
 .path-step-more .fas { font-size: 11px; }
 /* The title's chevron, centred on its line, still. */
-.path-step-chevron { vertical-align: middle; position: relative; top: -4px; transition: none; }
+.path-step-chevron { vertical-align: middle; position: relative; top: -2px; transition: none; }
 .path-page .path-step-name:hover .path-step-chevron { transform: none; }
+
+/* Show more on the left; the text it opens grows and shrinks smoothly. */
+.path-step-more { margin: 12px 0 0; }
+/* Under Start: who made it (their picture, linked), how many finish it, how
+   long ago it came out, small. */
+.path-byline { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 2px 6px; margin: 12px 16px 0; font-size: 12px; color: rgba(255, 255, 255, .65); }
+.path-byline .activity-avatar { width: 18px; height: 18px; margin: 0; }
+/* "by", their picture and name, close together. */
+.path-byline-author { display: inline-flex; align-items: center; gap: 4px; }
+.path-byline-author .activity-avatar { margin-left: 1px; }
+.path-byline-dot { opacity: .6; font-size: 14px; line-height: 1; }
+.path-editor-tools { margin-top: 0; }
+/* Paths' lines keep their width through a zoom (scripts/services/Paths.js
+   _pathRenderer): only their places move. */
+.leaflet-zmPaths-pane path, .leaflet-zmPathsCasing-pane path { stroke-width: calc(var(--zm-w, 3px) / var(--zm-path-zoom-scale, 1)); }
+/* Start's label, and under it how many started and finish the path. */
+.path-start { padding: 8px 16px; }
+/* Its play glyph centred in a fixed area at the left, the label left-aligned
+   after it. */
+.path-start { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 0; padding-left: 0; padding-right: 16px; text-align: left; }
+.path-start > svg, .path-start > i { justify-self: center; }
+.path-start-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.2; }
+.path-start-text small { font-size: 12px; font-weight: 500; opacity: .7; }
+/* Community Paths' sort menu. */
+/* Community Paths' sort menu: labelled as a form's fields are, the menu
+   itself styled as the drawer's buttons (form-action-button). */
+.leaflet-control-layers .community-paths label.community-paths-sort { display: block; margin: 0 0 16px; font-weight: normal; }
+.leaflet-control-layers .community-paths-sort .map-settings-label { display: block; margin: 0 0 6px; color: #fff; font-size: 14px; font-weight: bold; }
+.community-paths-select {
+	display: block; width: 100%; min-height: 44px; padding: 8px 40px 8px 14px;
+	border: 0; border-radius: 10px; background-color: rgba(255, 255, 255, .2); color: #fff;
+	font: inherit; font-size: 17px; cursor: pointer;
+	-webkit-appearance: none; appearance: none;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+	background-repeat: no-repeat; background-position: right 16px center;
+}
+.community-paths-select:hover, .community-paths-select:focus-visible { background-color: rgba(255, 255, 255, .3); outline: none; }
+.community-paths-select option { color: #000; background: #fff; }
+
+/* A path's stream of arrows (Paths.js _pathArrows): each casts a shadow on
+   the next, and its head keeps its size through a zoom, as its stem keeps
+   its width. */
+.zm-path-arrow-shadow { opacity: .22; transform: translate(0, 1.25px); }
+.zm-path-arrow-scale { transform: scale(calc(1 / var(--zm-path-zoom-scale, 1))); }
+/* A path's pin on the map: a dot in the path's colour, edged in white. */
+.zm-path-pin-dot span {
+	display: block; width: 16px; height: 16px; box-sizing: border-box; border-radius: 50%;
+	background: var(--path-color, #ffad48); border: 2.5px solid #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .45); cursor: pointer;
+}
+.zm-path-pin-dot.deleted span { background: #6b6b6b; cursor: default; }
+
+/* A pin's page (PathEditor.js openPathPin): its note on the path, then
+   what's written about it, as a marker's contents. */
+.path-pin-content .path-pin-note { font-style: italic; opacity: .85; }
+.path-pin-content .path-pin-empty { opacity: .6; }
+
+/**** EMBEDS: the map inside another site's page (index.php sets .zm-framed).
+   Just what was embedded: no account, search, switching map or game,
+   settings, bookmarks, editing, or links off to other pages. The logo opens
+   it on Zelda Maps itself (widgets/Logo.js). ***/
+.zm-framed .header-bar,
+.zm-framed .row-header,
+.zm-framed .menu-header-button,
+.zm-framed .settings-control,
+.zm-framed .leaflet-control-layers .back-button,
+.zm-framed #bookmark_button,
+.zm-framed .marker-paths,
+.zm-framed .marker-editor-tools,
+.zm-framed .create-community-marker-row,
+.zm-framed .leaflet-contextmenu-separator { display: none !important; }
+/* The marker's controls less Bookmark: three across. */
+.zm-framed .leaflet-control-layers .marker-actions-row-four { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* Its place pills say where it is, without opening the area. */
+.zm-framed .marker-region-pill { pointer-events: none; }
+.zm-framed .marker-region-pill svg, .zm-framed .marker-region-pill i { display: none; }
+/* Links to other markers and people in its text read as text. */
+.zm-framed .popupContent a.wiki-code-link { pointer-events: none; color: inherit; text-decoration: none; }
+.zm-framed .logo-framed-link { cursor: pointer; }

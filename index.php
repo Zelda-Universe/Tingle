@@ -1,4 +1,13 @@
 <?php
+  // Embedded on another site by an older embed code (this page, not
+  // embed.php): sent on to embed.php, the one page other sites may frame.
+  // (Browsers say when a page is being loaded into a frame, and from where.)
+  if (empty($zmEmbed) && ($_SERVER['HTTP_SEC_FETCH_DEST'] ?? '') === 'iframe' && ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '') === 'cross-site') {
+    $query = $_SERVER['QUERY_STRING'] ?? '';
+    header('Location: embed.php' . ($query !== '' ? '?' . $query : ''), true, 302);
+    exit;
+  }
+  $zmEmbed = !empty($zmEmbed);
   // Version for the bundled assets (lib/common/assets.php). Used for the
   // res.php tags below and injected into the service worker, so both always
   // name the exact bytes res.php will serve.
@@ -234,8 +243,31 @@
   $pageUrl = preg_replace('#^https://zeldamaps\.com#', $siteOrigin, $pageUrl ?: $canonicalUrl);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"<?= $zmEmbed ? ' class="zm-framed zm-embed"' : '' ?>>
   <head>
+    <!-- Shown inside another site's page (an embed: zmap.js
+         _copyToClipboardEmbed), the map is just what was embedded: no
+         account, search or ways elsewhere (styles/zmain.css .zm-framed). Set
+         before anything draws, so none of it flashes up first. -->
+    <script>
+      (function() {
+        var framed;
+        try { framed = window.self !== window.top; } catch (e) { framed = true; }
+        // (embed.php: always, framed or not, and never signed in.)
+        window.zmapEmbed = <?= $zmEmbed ? 'true' : 'false' ?>;
+        if (!framed && !window.zmapEmbed) return;
+        document.documentElement.classList.add('zm-framed');
+        // A link in what's shown (a marker's sources) opens in a new tab,
+        // not in place of the embed.
+        document.addEventListener('click', function(e) {
+          var link = e.target.closest && e.target.closest('a[href]');
+          var href = link && link.getAttribute('href');
+          if (!href || href.charAt(0) === '#' || /^javascript:/i.test(href)) return;
+          link.target = '_blank';
+          link.rel = 'noopener';
+        }, true);
+      })();
+    </script>
     <!-- Metadata -->
 
       <!-- Generic / Web Standard -->

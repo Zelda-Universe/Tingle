@@ -9,6 +9,8 @@
   // any (get_paths, profiles) or can save one. Set to false to launch them.
   const PATHS_ADMIN_ONLY = true;
   const PATHS_ADMIN_LEVEL = 10;
+  // How much can be written about a pin (its page, ajax/save_path_pin.php).
+  const PATH_PIN_CONTENT_MAX = 5000;
 
   // Whether this account may see and make paths at all.
   function pathsAllowed($level) {
@@ -100,20 +102,28 @@
     $okMarkers = $known("SELECT m.id FROM `{$prefix}marker` m JOIN `{$prefix}submap` s ON s.id = m.submap_id JOIN `{$prefix}map` p ON p.id = s.map_id WHERE m.id IN (%s) AND (m.visible = 1" .
       ($keep ? " OR m.id IN (" . implode(',', $keep) . ")" : '') . ") AND p.container_id = ?", $markerIds);
     $okSubmaps = $known("SELECT s.id FROM `{$prefix}submap` s JOIN `{$prefix}map` p ON p.id = s.map_id WHERE s.id IN (%s) AND p.container_id = ?", $submapIds);
-    $rows = array();
+    $rows = array(); $pinKeys = array();
     foreach ($steps as $i => $step) {
       $note = trim((string) ($step['note'] ?? ''));
       if (mb_strlen($note) > 500) return 'Step ' . ($i + 1) . '’s note is over 500 characters.';
       $note = $note === '' ? null : $note;
       if (!empty($step['markerId'])) {
         if (!isset($okMarkers[(int) $step['markerId']])) return 'Step ' . ($i + 1) . ' is not a marker in this game (it may have been deleted).';
-        $rows[] = [(int) $step['markerId'], null, null, null, null, $note, 1];
+        $rows[] = [(int) $step['markerId'], null, null, null, null, $note, 1, null, null];
       } else {
         $x = $step['x'] ?? null; $y = $step['y'] ?? null; $pin = trim((string) ($step['name'] ?? ''));
         if (!isset($okSubmaps[(int) ($step['submapId'] ?? 0)]) || !is_numeric($x) || !is_numeric($y)) return 'Step ' . ($i + 1) . ' is not on this game’s maps.';
         if (mb_strlen($pin) > 120 || preg_match('/[<>]/', $pin)) return 'Step ' . ($i + 1) . '’s name is too long or has < or >.';
         $shown = isset($step['shown']) && (empty($step['shown']) || $step['shown'] === '0') ? 0 : 1;
-        $rows[] = [null, (int) $step['submapId'], (float) $x, (float) $y, $pin === '' ? null : $pin, $note, $shown];
+        // A pin keeps its key (its completions, ajax/toggle_path_pin.php)
+        // and what's written about it (ajax/save_path_pin.php); a new one
+        // gets a key.
+        $key = (string) ($step['pinKey'] ?? '');
+        if (!preg_match('/^[a-z0-9]{6,16}$/', $key) || isset($pinKeys[$key])) $key = bin2hex(random_bytes(5));
+        $pinKeys[$key] = true;
+        $content = trim((string) ($step['content'] ?? ''));
+        if (mb_strlen($content) > PATH_PIN_CONTENT_MAX) return 'Step ' . ($i + 1) . '’s description is over ' . number_format(PATH_PIN_CONTENT_MAX) . ' characters.';
+        $rows[] = [null, (int) $step['submapId'], (float) $x, (float) $y, $pin === '' ? null : $pin, $note, $shown, $key, $content === '' ? null : $content];
       }
     }
     return [$fields, $rows];
@@ -128,7 +138,7 @@
     if ($rows === null) return;
     $db->executeStatement("DELETE FROM `{$prefix}path_step` WHERE path_id = ?", [$id]);
     foreach ($rows as $i => $row) {
-      $db->executeStatement("INSERT INTO `{$prefix}path_step` (path_id, step_order, marker_id, submap_id, x, y, name, note, shown) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      $db->executeStatement("INSERT INTO `{$prefix}path_step` (path_id, step_order, marker_id, submap_id, x, y, name, note, shown, pin_key, content) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         array_merge([$id, $i + 1], $row));
     }
   }
@@ -137,7 +147,7 @@
   // revision can be read back in by pathRead to restore it.
   function pathSnapshot($db, $prefix, $id) {
     $p = $db->fetchAssociative("SELECT p.*, " . pathPublishedSql() . " AS live FROM `{$prefix}path` p WHERE p.id = ?", [$id]);
-    $steps = $db->fetchAllAssociative("SELECT marker_id, submap_id, x, y, name, note, shown FROM `{$prefix}path_step` WHERE path_id = ? ORDER BY step_order", [$id]);
+    $steps = $db->fetchAllAssociative("SELECT marker_id, submap_id, x, y, name, note, shown, pin_key, content FROM `{$prefix}path_step` WHERE path_id = ? ORDER BY step_order", [$id]);
     return array(
       'name' => $p['name'], 'description' => (string) $p['description'], 'kind' => $p['kind'],
       'loops' => (bool) $p['loops'], 'numbered' => (bool) $p['numbered'], 'smooth' => (bool) ($p['smooth'] ?? false), 'alwaysShow' => (bool) ($p['always_show'] ?? true), 'categoryId' => $p['category_id'] ? (int) $p['category_id'] : null,
@@ -145,8 +155,9 @@
       'publishedAt' => $p['published_at'], 'published' => (bool) $p['live'],
       'steps' => array_map(function($s) {
         $step = $s['marker_id'] ? array('markerId' => (int) $s['marker_id']) :
-          array('submapId' => (int) $s['submap_id'], 'x' => (float) $s['x'], 'y' => (float) $s['y'], 'name' => (string) $s['name'], 'shown' => (bool) $s['shown']);
+          array('submapId' => (int) $s['submap_id'], 'x' => (float) $s['x'], 'y' => (float) $s['y'], 'name' => (string) $s['name'], 'shown' => (bool) $s['shown'], 'pinKey' => (string) $s['pin_key']);
         if ($s['note'] !== null && $s['note'] !== '') $step['note'] = $s['note'];
+        if (!$s['marker_id'] && $s['content'] !== null && $s['content'] !== '') $step['content'] = $s['content'];
         return $step;
       }, $steps)
     );
@@ -210,23 +221,85 @@
       GROUP BY s.path_id, s.marker_id";
   }
 
+  // Each path's pins that are checks (shown pins, on a path that isn't one
+  // check), as a table (path_id, pin_key).
+  function pathPinChecksSql($prefix) {
+    return "SELECT s.path_id, s.pin_key FROM `{$prefix}path_step` s JOIN `{$prefix}path` pp ON pp.id = s.path_id
+      WHERE s.marker_id IS NULL AND s.shown = 1 AND s.pin_key IS NOT NULL AND pp.kind <> 'single'
+      GROUP BY s.path_id, s.pin_key";
+  }
+
+  // Whether pins can be checks yet (the path_pins migration).
+  function pathHasPins($db, $prefix) {
+    static $has = array();
+    if (!isset($has[$prefix])) $has[$prefix] = (bool) $db->fetchOne("SHOW TABLES LIKE '{$prefix}path_pin_complete'");
+    return $has[$prefix];
+  }
+
+  // How many checks each path has, its markers' and its pins': a table
+  // (path_id, total). $in: "IN (…)" of path ids, or '' for every path.
+  function pathTotalsSql($db, $prefix, $in = '') {
+    $where = $in === '' ? '' : " WHERE x.path_id $in";
+    $checks = "SELECT path_id FROM (" . pathChecksSql($prefix) . ") mc" .
+      (pathHasPins($db, $prefix) ? " UNION ALL SELECT path_id FROM (" . pathPinChecksSql($prefix) . ") pc" : '');
+    return "SELECT x.path_id, COUNT(*) AS total FROM ($checks) x$where GROUP BY x.path_id";
+  }
+
+  // How many of each path's checks each person has done: a table (path_id,
+  // user_id, done).
+  function pathDoneSql($db, $prefix, $in = '') {
+    $where = $in === '' ? '' : " WHERE d.path_id $in";
+    $done = "SELECT ch.path_id, c.user_id FROM (" . pathChecksSql($prefix) . ") ch JOIN `{$prefix}user_completed_marker` c ON c.marker_id = ch.marker_id" .
+      (pathHasPins($db, $prefix) ? " UNION ALL SELECT pc.path_id, pc.user_id FROM `{$prefix}path_pin_complete` pc
+        JOIN (" . pathPinChecksSql($prefix) . ") pk ON pk.path_id = pc.path_id AND pk.pin_key = pc.pin_key" : '');
+    return "SELECT d.path_id, d.user_id, COUNT(*) AS done FROM ($done) d$where GROUP BY d.path_id, d.user_id";
+  }
+
   // How many people have started each path (completed at least one of its
   // checks) and finished it (all of them): [id => [started, finished]].
   function pathCompletionStats($db, $prefix, $ids) {
     $ids = array_values(array_filter(array_map('intval', $ids)));
     $stats = array_fill_keys($ids, [0, 0]);
     if (!$ids) return $stats;
-    $in = implode(',', $ids);
-    $checks = pathChecksSql($prefix);
+    $in = 'IN (' . implode(',', $ids) . ')';
     $rows = $db->fetchAllAssociative("
       SELECT t.path_id, COUNT(*) AS started, SUM(t.done = k.total) AS finished
-        FROM (SELECT ch.path_id, c.user_id, COUNT(*) AS done
-                FROM ($checks) ch JOIN `{$prefix}user_completed_marker` c ON c.marker_id = ch.marker_id
-               WHERE ch.path_id IN ($in) GROUP BY ch.path_id, c.user_id) t
-        JOIN (SELECT path_id, COUNT(*) AS total FROM ($checks) x WHERE x.path_id IN ($in) GROUP BY path_id) k ON k.path_id = t.path_id
+        FROM (" . pathDoneSql($db, $prefix, $in) . ") t
+        JOIN (" . pathTotalsSql($db, $prefix, $in) . ") k ON k.path_id = t.path_id
        GROUP BY t.path_id");
     foreach ($rows as $row) $stats[(int) $row['path_id']] = [(int) $row['started'], (int) $row['finished']];
+    // A user's path counts only those who started it there (path_start):
+    // finishing is all its checks done, by someone who started it.
+    $userIds = array_map('intval', $db->fetchFirstColumn("SELECT id FROM `{$prefix}path` WHERE scope = 'user' AND id $in"));
+    if ($userIds) {
+      foreach ($userIds as $id) $stats[$id] = [0, 0];
+      if ($db->fetchOne("SHOW TABLES LIKE '{$prefix}path_start'")) {
+        foreach (pathTrackedStats($db, $prefix, $userIds) as $id => $tracked) $stats[$id] = $tracked;
+      }
+    }
     return $stats;
+  }
+
+  // Started and finished from path_start (users' paths), as SQL: a table
+  // (path_id, started, finished).
+  function pathTrackedSql($db, $prefix, $in = '') {
+    return "SELECT st.path_id, COUNT(*) AS started, SUM(k.total IS NOT NULL AND COALESCE(d.done, 0) = k.total) AS finished
+        FROM `{$prefix}path_start` st
+        LEFT JOIN (" . pathTotalsSql($db, $prefix, $in) . ") k ON k.path_id = st.path_id
+        LEFT JOIN (" . pathDoneSql($db, $prefix, $in) . ") d ON d.path_id = st.path_id AND d.user_id = st.user_id" .
+      ($in === '' ? '' : " WHERE st.path_id $in") . "
+       GROUP BY st.path_id";
+  }
+
+  // [id => [started, finished]] from path_start, for users' paths.
+  function pathTrackedStats($db, $prefix, $ids) {
+    $ids = array_values(array_filter(array_map('intval', $ids)));
+    if (!$ids) return array();
+    $result = array();
+    foreach ($db->fetchAllAssociative(pathTrackedSql($db, $prefix, 'IN (' . implode(',', $ids) . ')')) as $row) {
+      $result[(int) $row['path_id']] = [(int) $row['started'], (int) $row['finished']];
+    }
+    return $result;
   }
 
   // What a path card's thumbnail needs (PathEditor.js _pathThumbHTML): the

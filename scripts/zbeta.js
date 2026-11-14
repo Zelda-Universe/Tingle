@@ -380,6 +380,10 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
     if(this.getAttribute('data-revision-type')==='settings') {
       _this._openSettingsRevisionLink(Number(this.getAttribute('data-rev')),markerGame,reopen);return;
     }
+    // A path's save (scripts/services/PathEditor.js).
+    if(this.getAttribute('data-revision-type')==='path' && _this._openPathRevisionLink) {
+      _this._openPathRevisionLink(this.getAttribute('data-path-slug'),Number(this.getAttribute('data-rev')),markerGame,reopen);return;
+    }
     _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);
   });
   more.on('click', load);

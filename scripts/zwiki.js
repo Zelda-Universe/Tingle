@@ -102,7 +102,8 @@ ZMap.prototype._showWikiPage = function(html, type, back, reopen, opts) {
     // Most open the drawer most of the way; some (a path) only part way,
     // leaving the map they're about in view.
     if(!control._navigatingBack) {
-      if(opts && opts.partialDrawer) control.openDrawerDefaultPartial();
+      // (At once, opened from a link or a reload: opts.instant.)
+      if(opts && opts.partialDrawer) { if(opts.instant) control.openDrawerSmall(true, true); else control.openDrawerDefaultPartial(); }
       else control.openDrawerLarge();
     }
   } else if(control._expand) {
@@ -505,14 +506,19 @@ ZMap.prototype._wikiRevisionRow = function(revision, opts) {
     ? '<span class="wiki-revision-marker">' + this._wikiEscape(opts.markerTitle) + '</span>'
     : '';
   var by = opts.hideUser ? '' : this._activityAvatarHTML(revision) + 'by ' + this._wikiUserLink(revision.userId, revision.username) + ' · ';
+  // A path's save (scripts/services/PathEditor.js): its path's name with a
+  // signpost, the path it opens, and no Yeah (those are for markers' edits).
+  var isPath = revision.revisionType === 'path';
+  if(isPath && opts.markerTitle) title = '<span class="wiki-revision-marker"><i class="fas fa-map-signs" aria-hidden="true"></i> ' + this._wikiEscape(opts.markerTitle) + '</span>';
+  var pathAttrs = isPath ? ' data-path-id="' + Number(revision.pageId) + '" data-path-slug="' + this._wikiEscape(revision.body || '') + '" data-game="' + this._wikiEscape(revision.game || '') + '"' : '';
   return $('<li></li>').append(
-    '<div class="wiki-revision" role="button" tabindex="0" data-rev="' + Number(revision.id) + '">' +
+    '<div class="wiki-revision" role="button" tabindex="0" data-rev="' + Number(revision.id) + '"' + pathAttrs + '>' +
       '<span class="wiki-revision-top">' + this._wikiActionBadge(revision.action) +
         (opts.current ? '<span class="wiki-current">Current</span>' : '') +
         '<span class="wiki-revision-time">' + this._wikiEscape(this._wikiAgo(revision.ago)) + '</span>' +
       '</span>' +
       title + summary +
-      '<span class="wiki-revision-by">' + by + 'Revision ' + Number(revision.id) +this._yeahHTML(revision.revisionType==='settings'?'settings':'revision',revision.id,true)+'</span>'+
+      '<span class="wiki-revision-by">' + by + 'Revision ' + Number(revision.id) + (isPath ? '' : this._yeahHTML(revision.revisionType==='settings'?'settings':'revision',revision.id,true)) + '</span>'+
       '<i class="fas fa-chevron-right wiki-chevron" aria-hidden="true"></i>' +
     '</div>'
   );
@@ -1155,6 +1161,9 @@ ZMap.prototype._renderUserProfile = function(data, back) {
     if(this.getAttribute('data-revision-type')==='talk') {_this._openActivityComment(this,reopen);return;}
     if(this.getAttribute('data-revision-type')==='settings') {
       _this._openSettingsRevisionLink(Number(this.getAttribute('data-rev')),this.getAttribute('data-game'),reopen);return;
+    }
+    if(this.getAttribute('data-revision-type')==='path' && _this._openPathRevisionLink) {
+      _this._openPathRevisionLink(this.getAttribute('data-path-slug'),Number(this.getAttribute('data-rev')),this.getAttribute('data-game'),reopen);return;
     }
     _this._openMarkerRevision(Number(this.getAttribute('data-rev')), reopen);
   });

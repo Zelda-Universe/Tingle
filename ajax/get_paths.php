@@ -7,6 +7,7 @@
   // them (one check for the whole path).
   include_once(dirname(__DIR__) . '/lib/common/admin.php');
   include_once(dirname(__DIR__) . '/lib/common/paths.php');
+  include_once(dirname(__DIR__) . '/lib/common/wiki.php');
   $game = $_GET['game'] ?? '';
   if ($game === '' || !preg_match('/^[A-Za-z0-9_-]+$/', $game)) { echo json_encode(array()); return; }
   if (adminOnlyGameDenied($db, $map_prefix, $game)) { echo json_encode(array()); return; }
@@ -21,6 +22,7 @@
            UNIX_TIMESTAMP(p.published_at) AS publishedAt, " . pathPublishedSql() . " AS published,
            (SELECT COUNT(*) FROM `{$map_prefix}like` l WHERE l.target_type = 'path' AND l.target_id = p.id) AS yeahs, p.name, p.slug, p.description, p.kind,
            p.loops, p.numbered, p.smooth, p.always_show AS alwaysShow, p.category_id AS categoryId, p.color, u.username AS userName,
+           " . (wikiHasUserColumn($db, $map_prefix, 'profile_picture') ? 'u.profile_picture' : 'NULL') . " AS userPicture,
            (SELECT 1 FROM {$map_prefix}user_completed_path c WHERE c.path_id = p.id AND c.user_id = ?) AS complete
       FROM {$map_prefix}path p
       JOIN {$map_prefix}container g ON g.id = p.container_id
@@ -38,7 +40,7 @@
   // name, place and contents, so the path still reads as it was built.
   $steps = $db->fetchAllAssociative("
     SELECT s.path_id AS pathId, s.step_order AS stepOrder, s.marker_id AS markerId, s.submap_id AS submapId,
-           s.x, s.y, s.name, s.note, s.shown,
+           s.x, s.y, s.name, s.note, s.shown, " . (pathHasPins($db, $map_prefix) ? "s.pin_key AS pinKey, s.content AS pinContent" : "NULL AS pinKey, NULL AS pinContent") . ",
            m.visible AS markerVisible, m.name AS markerName, m.submap_id AS markerSubmapId, m.x AS markerX, m.y AS markerY
       FROM {$map_prefix}path_step s LEFT JOIN {$map_prefix}marker m ON m.id = s.marker_id
      WHERE s.path_id IN (" . implode(',', $ids) . ")
@@ -53,7 +55,20 @@
       $deletedContent[$tab['marker_id']] = ($deletedContent[$tab['marker_id']] ?? '') . html_entity_decode((string) $tab['tab_text'], ENT_QUOTES, 'UTF-8');
     }
   }
+  // The viewer's own completed pins (lib/common/paths.php).
+  $pinsDone = array();
+  if ($userId && pathHasPins($db, $map_prefix)) {
+    foreach ($db->fetchAllAssociative("SELECT path_id, pin_key FROM {$map_prefix}path_pin_complete WHERE user_id = ? AND path_id IN (" . implode(',', $ids) . ")", [$userId]) as $row) {
+      $pinsDone[$row['path_id'] . ':' . $row['pin_key']] = true;
+    }
+  }
   foreach ($steps as &$step) {
+    // A pin: its key, what's written about it, and whether it's done.
+    if (!$step['markerId']) {
+      $step['content'] = (string) $step['pinContent'];
+      $step['done'] = isset($pinsDone[$step['pathId'] . ':' . $step['pinKey']]);
+    } else unset($step['pinKey']);
+    unset($step['pinContent']);
     if ($step['markerId'] && (string) $step['markerVisible'] === '0') {
       $step['deleted'] = true;
       $step['markerName'] = html_entity_decode((string) $step['markerName'], ENT_QUOTES, 'UTF-8');

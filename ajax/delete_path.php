@@ -16,6 +16,7 @@
   $db->executeStatement("DELETE FROM `{$map_prefix}path_revision` WHERE path_id = ?", [$id]);
   $db->executeStatement("DELETE FROM `{$map_prefix}like` WHERE target_type = 'path' AND target_id = ?", [$id]);
   $db->executeStatement("DELETE FROM `{$map_prefix}user_completed_path` WHERE path_id = ?", [$id]);
+  if (pathHasPins($db, $map_prefix)) $db->executeStatement("DELETE FROM `{$map_prefix}path_pin_complete` WHERE path_id = ?", [$id]);
   $db->executeStatement("DELETE FROM `{$map_prefix}path_step` WHERE path_id = ?", [$id]);
   $db->executeStatement("DELETE FROM `{$map_prefix}path` WHERE id = ?", [$id]);
   $db->commit();

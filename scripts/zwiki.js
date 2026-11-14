@@ -99,7 +99,12 @@ ZMap.prototype._showWikiPage = function(html, type, back, reopen, opts) {
   control._navigatingForward = !control._navigatingBack;
   control.setContent(html, type);
   if(control.viewStyleBottomSlide) {
-    if(!control._navigatingBack) control.openDrawerLarge();
+    // Most open the drawer most of the way; some (a path) only part way,
+    // leaving the map they're about in view.
+    if(!control._navigatingBack) {
+      if(opts && opts.partialDrawer) control.openDrawerDefaultPartial();
+      else control.openDrawerLarge();
+    }
   } else if(control._expand) {
     control._expand();
   }
@@ -241,6 +246,7 @@ ZMap.prototype._markerEditorToolsHTML = function(marker, opts) {
   if(opts.mapSettings && !this._canUseMapSettings()) return '';
   if(!marker || !(marker.id > 0)) return '';
   var canEdit = opts.mapSettings ? this._canUseMapSettings() : opts.regionMode ? !!viewer && viewer.level>=10 : this._canEditMarker(marker);
+  var canDelete = canEdit && opts.allowDelete !== false && !this.getUser().betaEditor;
   var id = Number(marker.id);
   var button = function(action, icon, label, extra) {
     return '<button type="button" class="marker-editor-button' + (extra || '') + '" data-editor-action="' + action + '">' +
@@ -256,15 +262,15 @@ ZMap.prototype._markerEditorToolsHTML = function(marker, opts) {
       button('history', 'fa-history', 'History') +
       (opts.talk === false ? '' : button('talk', 'fa-comments', 'Talk')) +
       // Deleting isn't part of the editing beta (scripts/zbeta.js).
-      (canEdit && opts.allowDelete !== false && !this.getUser().betaEditor ? button('delete', 'fa-trash-alt', 'Delete', ' bad') : '') +
+      (canDelete ? button('delete', 'fa-trash-alt', 'Delete', ' bad') : '') +
     '</div>' +
-    '<div class="marker-editor-confirm" hidden>' +
+    (canDelete ? '<div class="marker-editor-confirm" hidden>' +
       '<p>Delete this marker? It disappears from the map, and can be brought back from its History.</p>' +
       '<div class="wiki-button-pair">' +
         '<button type="button" class="infoWindowIcn form-action-button" data-editor-action="cancel-delete">Cancel</button>' +
         '<button type="button" class="infoWindowIcn form-action-button bad" data-editor-action="confirm-delete">Delete Marker</button>' +
       '</div>' +
-    '</div>' +
+    '</div>' : '') +
   '</section>';
 };
 
@@ -285,9 +291,12 @@ ZMap.prototype._refreshMarkerEditorTools = function(marker) {
   var page = this.mapControl._contents.querySelector('.menu-cat-content-inner');
   if(!page || !marker) return;
   $(page).children('.marker-editor-tools').remove();
-  var html = this._markerEditorToolsHTML(marker);
+  // (Deleting a marker is on its edit page, under Save: zmap.js editMarker.)
+  var html = this._markerEditorToolsHTML(marker, {allowDelete: false});
   if(!html) return;
   $(page).append(html);
+  // Paths (scripts/services/PathEditor.js): a way to start one, under the rest.
+  if(this._addMakePathButton) this._addMakePathButton(marker);
   var tools = page.querySelector('.marker-editor-tools');
   this._wireEditorTools(tools, function(action) {
     var back = _this._wikiBackToMarker(marker.id);

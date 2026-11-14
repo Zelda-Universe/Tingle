@@ -1,0 +1,1 @@
+ALTER TABLE path DROP COLUMN IF EXISTS smooth;

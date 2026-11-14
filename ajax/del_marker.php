@@ -58,6 +58,10 @@
      is_string($_POST['summary'] ?? null) ? $_POST['summary'] : null);
    include_once(dirname(__DIR__) . '/lib/common/notifications.php');
    notifyMarkerChange($db, $map_prefix, $sessionUserId, $markerId, $revisionId, 'delete');
+   // Gone from the official paths it was a step of; users' own paths keep it
+   // (lib/common/paths.php).
+   include_once(dirname(__DIR__) . '/lib/common/paths.php');
+   $leftPaths = pathRemoveDeletedMarker($db, $map_prefix, $markerId, $sessionUserId);
 
-   echo json_encode(array("success"=>true, "msg"=>"Marker deleted!"));
+   echo json_encode(array("success"=>true, "msg"=>"Marker deleted!", "paths"=>$leftPaths));
 ?>

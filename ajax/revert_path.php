@@ -17,7 +17,16 @@
     if (!$path || !pathCanEdit($path, $userId, $level)) { $db->rollBack(); $fail('You can\'t change this path.'); return; }
     $snapshot = json_decode((string) $db->fetchOne("SELECT snapshot FROM `{$map_prefix}path_revision` WHERE id = ? AND path_id = ?", [$revisionId, $id]), true);
     if (!is_array($snapshot)) { $db->rollBack(); $fail('That version is not available.'); return; }
-    $read = pathRead($db, $map_prefix, (int) $path['container_id'], $snapshot);
+    // A marker since removed from the map: a user's path keeps it (it was
+    // theirs); an official one leaves it out, as deleting it did.
+    $snapshotMarkers = array_values(array_filter(array_map(function($s) { return (int) ($s['markerId'] ?? 0); }, $snapshot['steps'] ?? array())));
+    $keep = array();
+    if ($snapshotMarkers) {
+      $hidden = array_map('intval', $db->fetchFirstColumn("SELECT id FROM `{$map_prefix}marker` WHERE visible = 0 AND id IN (" . implode(',', $snapshotMarkers) . ")"));
+      if ($path['scope'] === 'user') $keep = $hidden;
+      else $snapshot['steps'] = array_values(array_filter($snapshot['steps'], function($s) use ($hidden) { return !in_array((int) ($s['markerId'] ?? 0), $hidden, true); }));
+    }
+    $read = pathRead($db, $map_prefix, (int) $path['container_id'], $snapshot, $keep);
     if (is_string($read)) { $db->rollBack(); $fail('That version can\'t be restored: ' . $read); return; }
     $before = pathSnapshot($db, $map_prefix, $id);
     pathWrite($db, $map_prefix, $id, $read[0], $read[1]);

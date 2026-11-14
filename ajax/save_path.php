@@ -22,7 +22,10 @@
   $containerId = (int) $db->fetchOne("SELECT id FROM `{$map_prefix}container` WHERE (id = ? OR short_name = ?) AND enabled = 1", [$game, $game]);
   if (!$containerId) { $fail('Unknown game.'); return; }
 
-  $read = pathRead($db, $map_prefix, $containerId, $in);
+  // A marker since removed from the map stays a step if the path had it.
+  $id = (int) ($in['id'] ?? 0);
+  $keep = $id ? $db->fetchFirstColumn("SELECT marker_id FROM `{$map_prefix}path_step` WHERE path_id = ? AND marker_id IS NOT NULL", [$id]) : array();
+  $read = pathRead($db, $map_prefix, $containerId, $in, $keep);
   if (is_string($read)) { $fail($read); return; }
   [$fields, $rows] = $read;
   $summary = trim((string) ($in['summary'] ?? ''));
@@ -46,7 +49,6 @@
   // Times as the database keeps them (its clock decides what's published).
   $publishTime = $publish === 'draft' ? null : $db->fetchOne($publishAt ? "SELECT FROM_UNIXTIME(?)" : "SELECT NOW()", $publishAt ? [$publishAt] : []);
 
-  $id = (int) ($in['id'] ?? 0);
   $db->beginTransaction();
   try {
     if ($id) {

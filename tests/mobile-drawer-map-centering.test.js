@@ -15,7 +15,7 @@ function setup(zoom=2) {
   const start=source.indexOf('  this._recenterMobileMapAtMinimumZoom = function');
   const end=source.indexOf('\n  // Leaflet keeps',start);
   vm.runInNewContext(source.slice(start,end).replace('this._recenterMobileMapAtMinimumZoom','zMap.recenter'),context);
-  return {map,zMap,centre:()=>centre};
+  return {map,zMap,context,centre:()=>centre};
 }
 
 test('minimum-zoom artwork follows partial drawer and returns when collapsed',()=>{
@@ -33,5 +33,18 @@ test('minimum-zoom artwork follows partial drawer and returns when collapsed',()
 test('zoomed-in views are not moved by the drawer',()=>{
   const h=setup(3);
   h.zMap.recenter(400);
+  expect(h.map.setView).not.toHaveBeenCalled();
+});
+
+test('zoomed in, the map edges stop at the partial drawer, not the collapsed one',()=>{
+  const h=setup(3);
+  h.zMap.recenter(400);
+  // Above the partial drawer (800 - 400), so a path's last step can be shown.
+  expect(h.context.insets.bottom).toBe(400);
+  h.zMap.recenter(10);
+  // A drawer pulled further up keeps the partial edge.
+  expect(h.context.insets.bottom).toBe(400);
+  h.zMap.recenter(700);
+  expect(h.context.insets.bottom).toBe(100);
   expect(h.map.setView).not.toHaveBeenCalled();
 });

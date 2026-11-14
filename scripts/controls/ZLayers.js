@@ -974,16 +974,24 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var actionCount = Math.min(3, actions.length);
     var lastAction = actions[actionCount - 1];
     var containerTop = this._container.getBoundingClientRect().top;
-    var popupContent = content.querySelector('.popupContent');
+    // The page's own contents (a marker's), not those nested in it (a
+    // path's steps each carry their marker's).
+    var popupContent = content.querySelector(':scope > .popupContent');
     // Measure the resting layout, not the 8px entrance offset the contents
     // carry while fading in on a first open.
     var contentsShift = new DOMMatrixReadOnly(
       window.getComputedStyle(this._contents).transform
     ).m42;
+    // Where they sit unscrolled: a page scrolled down (a path's guide on its
+    // current step) keeps the same partial height.
+    var scrolled = this._contents.scrollTop || 0;
     var contentBottom = Math.max(
-      lastAction.getBoundingClientRect().bottom - contentsShift,
-      popupContent ? popupContent.getBoundingClientRect().bottom - contentsShift : containerTop
+      lastAction.getBoundingClientRect().bottom - contentsShift + scrolled,
+      popupContent ? popupContent.getBoundingClientRect().bottom - contentsShift + scrolled : containerTop
     );
+    // A page may mark what else belongs above the fold (a path's Start).
+    var peekEnd = content.querySelector('.drawer-peek-end');
+    if(peekEnd) contentBottom = Math.max(contentBottom, peekEnd.getBoundingClientRect().bottom - contentsShift + scrolled);
     if(contentBottom <= containerTop) return null;
 
     return Math.max(
@@ -1031,7 +1039,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var height;
     if(type === 'category') {
       height = maxHeight;
-    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type) || /^category-\d+$/.test(type)) {
+    } else if(/^m\d+$/.test(type) || /^droppedPin-/.test(type) || /^area-/.test(type) || /^category-\d+$/.test(type) || type === 'path') {
+      // (A path's page, PathEditor.js, peeks as a marker's: title, pills and
+      // its controls, Start among them.)
       height = this._mobileDrawerPeekHeight() || this._mobileDrawerContentHeight();
     } else if(type === 'games' || type === 'maps') {
       height = this._mobileDrawerContentHeight();

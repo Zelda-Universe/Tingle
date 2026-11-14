@@ -107,14 +107,14 @@ ZMap.prototype._showCategoryPage = function(category) {
   }
   if(categoryPaths.paths.length) {
     var pathSection = $('<section class="poi-category-groups category-paths">' +
-      '<div class="poi-category-heading"><h3 class="area-category-title">Paths</h3></div><div class="marker-paths"></div></section>');
+      '<div class="poi-category-heading"><h3 class="area-category-title">Paths</h3></div><div class="path-compact-list"></div></section>');
     categoryPaths.paths.forEach(function(path) {
-      // A path card (PathEditor.js), with the path's thumbnail.
-      var button = $(zmap._pathCardHTML(path));
+      // A compact path card (PathEditor.js), with the path's thumbnail.
+      var button = $(zmap._pathListItemHTML(path));
       button.on('click', function() {
         zmap.openPathPage(path, {back: function() { control._navigatingBack = true; zmap._showCategoryPage(category); }});
       });
-      pathSection.find('.marker-paths').append(button);
+      pathSection.find('.path-compact-list').append(button);
     });
     content.append(pathSection);
   }
@@ -213,11 +213,31 @@ ZMap.prototype.zoomToCategoryRegion = function(markers, regionName) {
   finally { this._preserveCategoryRegionOrder = preserveOrder; }
   this._categoryZoomRegion = !isOcarina(this.mapOptions.shortName) ? region : null;
   if(this.updateRegionBorders) this.updateRegionBorders();
+  this._fitBoundsToVisibleMap(bounds);
+};
+
+// Fit bounds to the part of the map not under the panel (desktop) or the
+// drawer (phones), with room for the header: a region's zoom, a path's.
+// opts.maxDrawerShare caps how much of the map a tall drawer may take from
+// it, so something still shows above a drawer that's open most of the way.
+ZMap.prototype._fitBoundsToVisibleMap = function(bounds, opts) {
+  var map = this.map, control = this.mapControl;
+  opts = opts || {};
   var rect = map.getContainer().getBoundingClientRect();
   var drawer = control.getContainer().getBoundingClientRect();
   var topLeft = [24, 72], bottomRight = [24, 24];
-  if(control.viewStyleBottomSlide) bottomRight[1] += Math.max(0, rect.bottom - drawer.top);
-  else if(window.getComputedStyle(control.getContainer()).display !== 'none') {
+  if(control.viewStyleBottomSlide) {
+    // Where the drawer is going, when it's still on its way there.
+    var drawerTop = drawer.top;
+    if(Number.isFinite(opts.drawerTargetTop)) {
+      var base = Number.isFinite(control._mobileDrawerBaseTop) ? control._mobileDrawerBaseTop :
+        drawer.top - (Number.parseFloat(control._container.style.top) || 0);
+      drawerTop = base + opts.drawerTargetTop;
+    }
+    var covered = Math.max(0, rect.bottom - drawerTop);
+    if(opts.maxDrawerShare) covered = Math.min(covered, rect.height * opts.maxDrawerShare);
+    bottomRight[1] += covered;
+  } else if(window.getComputedStyle(control.getContainer()).display !== 'none') {
     if(control.options.position.endsWith('left')) topLeft[0] += drawer.width;
     else bottomRight[0] += drawer.width;
   }

@@ -13,6 +13,26 @@
   session_write_close();
 
   $markerId = $_POST['markerId'] ?? null;
+  $pathId = $_POST['pathId'] ?? null;
+
+  // A path (lib/common/paths.php): one the account may see, while paths are
+  // only for those allowed them.
+  if (is_numeric($pathId)) {
+    include_once(dirname(__DIR__) . '/lib/common/paths.php');
+    $account = pathAccount($db, $map_prefix);
+    $level = $account ? $account[1] : 0;
+    if (!pathsAllowed($level) || !pathVisibleTo($db, $map_prefix, (int) $pathId, $userId, $level)) {
+      echo json_encode(array("success" => false, "msg" => "That path can't be bookmarked."));
+      return;
+    }
+    $existing = $db->fetchOne("SELECT id FROM {$map_prefix}user_bookmark WHERE user_id = ? AND path_id = ?", [$userId, (int) $pathId]);
+    if (!$existing) {
+      $db->executeStatement("INSERT INTO `{$map_prefix}user_bookmark` (`user_id`, `path_id`, `created`) VALUES (?, ?, now())", [$userId, (int) $pathId]);
+      $existing = $db->lastInsertId();
+    }
+    echo json_encode(array("success" => true, "id" => (int) $existing));
+    return;
+  }
 
   if (is_numeric($markerId)) {
     $markerId = (int) $markerId;

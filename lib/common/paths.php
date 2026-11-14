@@ -60,7 +60,10 @@
 
   // A path from what its editor sends (and from a revision, to restore it):
   // [fields, steps] for pathWrite, or an error message.
-  function pathRead($db, $prefix, $containerId, $in) {
+  // $keep: markers that may be steps though they've been removed from the
+  // map (deleted): those a user's path already had (it keeps them, del_marker
+  // removes them from official ones). No one can add one anew.
+  function pathRead($db, $prefix, $containerId, $in, $keep = array()) {
     $name = trim((string) ($in['name'] ?? ''));
     if ($name === '' || mb_strlen($name) > 120 || preg_match('/[<>]/', $name)) return 'Give the path a name of up to 120 characters, without < or >.';
     $description = trim((string) ($in['description'] ?? ''));
@@ -73,7 +76,9 @@
     $fields = array(
       'name' => $name, 'description' => $description === '' ? null : $description,
       'kind' => ($in['kind'] ?? '') === 'single' ? 'single' : 'guide',
-      'loops' => !empty($in['loops']) ? 1 : 0, 'numbered' => !empty($in['numbered']) ? 1 : 0,
+      'loops' => !empty($in['loops']) ? 1 : 0, 'numbered' => !empty($in['numbered']) ? 1 : 0, 'smooth' => !empty($in['smooth']) ? 1 : 0,
+      // (Unset, as before it was a choice: always.)
+      'always_show' => array_key_exists('alwaysShow', $in) && empty($in['alwaysShow']) ? 0 : 1,
       'category_id' => $categoryId, 'color' => $color
     );
 
@@ -91,7 +96,9 @@
       if (!$ids) return array();
       return array_flip(array_map('intval', $db->fetchFirstColumn(sprintf($sql, implode(',', array_fill(0, count($ids), '?'))), array_merge($ids, [$containerId]))));
     };
-    $okMarkers = $known("SELECT m.id FROM `{$prefix}marker` m JOIN `{$prefix}submap` s ON s.id = m.submap_id JOIN `{$prefix}map` p ON p.id = s.map_id WHERE m.id IN (%s) AND m.visible = 1 AND p.container_id = ?", $markerIds);
+    $keep = array_values(array_filter(array_map('intval', $keep)));
+    $okMarkers = $known("SELECT m.id FROM `{$prefix}marker` m JOIN `{$prefix}submap` s ON s.id = m.submap_id JOIN `{$prefix}map` p ON p.id = s.map_id WHERE m.id IN (%s) AND (m.visible = 1" .
+      ($keep ? " OR m.id IN (" . implode(',', $keep) . ")" : '') . ") AND p.container_id = ?", $markerIds);
     $okSubmaps = $known("SELECT s.id FROM `{$prefix}submap` s JOIN `{$prefix}map` p ON p.id = s.map_id WHERE s.id IN (%s) AND p.container_id = ?", $submapIds);
     $rows = array();
     foreach ($steps as $i => $step) {
@@ -133,7 +140,7 @@
     $steps = $db->fetchAllAssociative("SELECT marker_id, submap_id, x, y, name, note, shown FROM `{$prefix}path_step` WHERE path_id = ? ORDER BY step_order", [$id]);
     return array(
       'name' => $p['name'], 'description' => (string) $p['description'], 'kind' => $p['kind'],
-      'loops' => (bool) $p['loops'], 'numbered' => (bool) $p['numbered'], 'categoryId' => $p['category_id'] ? (int) $p['category_id'] : null,
+      'loops' => (bool) $p['loops'], 'numbered' => (bool) $p['numbered'], 'smooth' => (bool) ($p['smooth'] ?? false), 'alwaysShow' => (bool) ($p['always_show'] ?? true), 'categoryId' => $p['category_id'] ? (int) $p['category_id'] : null,
       'color' => $p['color'], 'scope' => $p['scope'], 'visibility' => $p['visibility'], 'editAccess' => $p['edit_access'],
       'publishedAt' => $p['published_at'], 'published' => (bool) $p['live'],
       'steps' => array_map(function($s) {
@@ -155,7 +162,7 @@
       $b = count($before['steps']); $a = count($after['steps']);
       $parts[] = $a > $b ? 'added ' . ($a - $b) . ' step' . ($a - $b === 1 ? '' : 's') : ($a < $b ? 'removed ' . ($b - $a) . ' step' . ($b - $a === 1 ? '' : 's') : 'the steps');
     }
-    foreach (['kind' => 'checks', 'loops' => 'looping', 'numbered' => 'numbering', 'color' => 'color', 'categoryId' => 'category'] as $key => $label) {
+    foreach (['kind' => 'checks', 'loops' => 'looping', 'numbered' => 'numbering', 'smooth' => 'smoothing', 'alwaysShow' => 'showing', 'color' => 'color', 'categoryId' => 'category'] as $key => $label) {
       if (($before[$key] ?? null) !== ($after[$key] ?? null)) { $parts[] = 'the look'; break; }
     }
     if (($before['visibility'] ?? '') !== ($after['visibility'] ?? '') || $before['scope'] !== $after['scope']) $parts[] = 'who sees it';
@@ -193,8 +200,11 @@
 
   // Each path's checks: its steps' markers, or, for a path that's one check
   // (kind 'single'), its first marker's. As a table (path_id, marker_id).
+  // (Not a marker removed from the map: a user's path keeps it, but it can't
+  // be completed.)
   function pathChecksSql($prefix) {
     return "SELECT s.path_id, s.marker_id FROM `{$prefix}path_step` s JOIN `{$prefix}path` cp ON cp.id = s.path_id
+      JOIN `{$prefix}marker` cm ON cm.id = s.marker_id AND cm.visible = 1
       WHERE s.marker_id IS NOT NULL AND (cp.kind <> 'single' OR s.step_order =
         (SELECT MIN(s2.step_order) FROM `{$prefix}path_step` s2 WHERE s2.path_id = s.path_id AND s2.marker_id IS NOT NULL))
       GROUP BY s.path_id, s.marker_id";
@@ -261,6 +271,30 @@
       if (isset($maps[$line['submap']])) $thumbs[$id] = $maps[$line['submap']] + array('points' => $line['points']);
     }
     return $thumbs;
+  }
+
+  // A marker removed from the map (ajax/del_marker.php) leaves the official
+  // paths it was a step of, each change kept in that path's history. Users'
+  // own paths keep it: they built them on purpose (get_paths sends a copy of
+  // it). Returns the paths it left.
+  function pathRemoveDeletedMarker($db, $prefix, $markerId, $userId) {
+    if (!$db->fetchOne("SHOW TABLES LIKE '{$prefix}path'")) return array();
+    $paths = $db->fetchAllAssociative("SELECT DISTINCT p.id, p.name FROM `{$prefix}path` p JOIN `{$prefix}path_step` s ON s.path_id = p.id
+      WHERE s.marker_id = ? AND p.scope = 'official'", [(int) $markerId]);
+    if (!$paths) return array();
+    $name = html_entity_decode((string) $db->fetchOne("SELECT name FROM `{$prefix}marker` WHERE id = ?", [(int) $markerId]), ENT_QUOTES, 'UTF-8');
+    foreach ($paths as $path) {
+      $id = (int) $path['id'];
+      $before = pathSnapshot($db, $prefix, $id);
+      $db->executeStatement("DELETE FROM `{$prefix}path_step` WHERE path_id = ? AND marker_id = ?", [$id, (int) $markerId]);
+      foreach ($db->fetchFirstColumn("SELECT id FROM `{$prefix}path_step` WHERE path_id = ? ORDER BY step_order, id", [$id]) as $i => $stepId) {
+        $db->executeStatement("UPDATE `{$prefix}path_step` SET step_order = ? WHERE id = ?", [$i + 1, (int) $stepId]);
+      }
+      $db->executeStatement("UPDATE `{$prefix}path` SET updated = NOW() WHERE id = ?", [$id]);
+      pathRecordRevision($db, $prefix, $id, $userId, 'edit',
+        'Removed “' . mb_substr($name !== '' ? $name : 'a marker', 0, 160) . '”: it was deleted from the map', $before);
+    }
+    return array_column($paths, 'name');
   }
 
   // A URL name from a path's name, unique in its game.

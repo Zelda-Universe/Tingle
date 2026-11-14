@@ -12,7 +12,7 @@
   $limit = 30;
   $checks = pathChecksSql($map_prefix);
   $paths = $db->fetchAllAssociative("
-    SELECT p.id, p.name, p.slug, p.description, p.color, p.kind, u.username AS userName,
+    SELECT p.id, p.name, p.slug, p.description, p.color, p.kind, p.loops, p.smooth, u.username AS userName,
            c.short_name AS game, c.name AS gameName, UNIX_TIMESTAMP(p.published_at) AS publishedAt,
            (SELECT COUNT(*) FROM `{$map_prefix}path_step` s WHERE s.path_id = p.id) AS steps,
            (SELECT COUNT(*) FROM `{$map_prefix}like` l WHERE l.target_type = 'path' AND l.target_id = p.id) AS yeahs,
@@ -34,6 +34,7 @@
   $paths = array_slice($paths, 0, $limit);
   foreach ($paths as &$path) {
     foreach (['id', 'publishedAt', 'steps', 'yeahs', 'finished'] as $n) $path[$n] = (int) $path[$n];
+    foreach (['loops', 'smooth'] as $flag) $path[$flag] = (bool) $path[$flag];
     $path['description'] = mb_substr((string) $path['description'], 0, 200);
   }
   unset($path);

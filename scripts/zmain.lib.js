@@ -355,10 +355,17 @@ function finalLoadContent() {
   var marker = ZConfig.getConfig('marker');
   if(marker) {
     if(zMap._prepareMarkerLinkReturn) zMap._prepareMarkerLinkReturn();
+    // Zoomed in on the marker, as opening it from a list does
+    // (navigateToMarker), unless the address gives a view of its own (a
+    // reload keeps where it was). That view is the page's: the map's own
+    // fit on opening doesn't undo it (_fitToMapBounds).
+    var linkHasView = new URL(window.location.href).searchParams.has('zoom');
+    if(!linkHasView) zMap._viewChosen = true;
     zMap.mapControl._restoringInitialPage = true;
     try {
       zMap.goTo({
       marker: marker,
+      zoom: linkHasView ? undefined : Math.max(zMap.map.getZoom(), 6),
       panTo: false,
       centerInVisibleArea: true
       });

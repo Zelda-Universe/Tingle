@@ -1425,6 +1425,12 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
   }
 
   if (marker.categoryTypeId == 1 || marker.categoryTypeId == 2) {
+    // A path in focus (scripts/services/Paths.js): its own markers alone,
+    // whichever categories they're in.
+    if (this._pathFocusIds) {
+      return !!this._pathFocusIds[marker.id] && marker.visible
+        && (ignoreBounds || mapBounds.contains(marker.getLatLng()));
+    }
     return marker.visible
     // A later step of a single path (a Korok pair's second rock): the path's
     // first marker stands for the whole path (scripts/services/Paths.js).
@@ -2382,8 +2388,10 @@ ZMap.prototype.getUserBookmarks = function() {
 ZMap.prototype._findBookmark = function(target) {
   if(!target) return null;
   return (this.bookmarks || []).find(function(bookmark) {
+    // (A path's: scripts/services/PathEditor.js.)
+    if(target.pathId != null) return bookmark.pathId == target.pathId;
     if(target.markerId != null) return bookmark.markerId == target.markerId;
-    return bookmark.markerId == null &&
+    return bookmark.markerId == null && bookmark.pathId == null &&
       bookmark.mapId == target.mapId &&
       bookmark.submapId == target.subMapId &&
       Math.abs(bookmark.x - target.x) < 0.0001 &&
@@ -2425,7 +2433,8 @@ ZMap.prototype.toggleBookmark = function() {
     ? { command: 'del_bookmark', data: { bookmarkId: existing.id } }
     : {
         command: 'add_bookmark',
-        data: target.markerId != null
+        data: target.pathId != null ? { pathId: target.pathId }
+          : target.markerId != null
           ? { markerId: target.markerId }
           : { mapId: target.mapId, submapId: target.subMapId, x: target.x, y: target.y }
       };
@@ -2448,6 +2457,12 @@ ZMap.prototype.toggleBookmark = function() {
         _this.bookmarks = _this.bookmarks.filter(function(bookmark) {
           return bookmark.id != existing.id;
         });
+      } else if(target.pathId != null) {
+        // A path's: what its card in Bookmarks shows (PathEditor.js).
+        var path = (_this.paths || []).find(function(p) { return p.id == target.pathId; }) || {};
+        _this.bookmarks.unshift({id: data.id, pathId: target.pathId, markerId: null, slug: path.slug, name: path.name,
+          color: path.color, kind: path.kind, loops: path.loops, smooth: path.smooth, scope: path.scope,
+          steps: (path.steps || []).length, thumb: path.thumb});
       } else {
         _this.bookmarks.unshift({
           id: data.id,
@@ -2851,11 +2866,16 @@ ZMap.prototype._renderBookmarksList = function(page) {
   if(!list.length) return;
   list.empty();
 
-  var entries = (this.bookmarks || []).map(function(bookmark) {
-    return bookmark.markerId != null
-      ? _this._createMarkerBookmarkEntry(bookmark)
-      : _this._createPinBookmarkEntry(bookmark);
+  // Paths first, as compact path cards (scripts/services/PathEditor.js).
+  var bookmarks = (this.bookmarks || []).filter(function(b) { return b.pathId != null; })
+    .concat((this.bookmarks || []).filter(function(b) { return b.pathId == null; }));
+  // Each shown bookmark with its entry (one whose marker is gone has none).
+  var items = bookmarks.map(function(bookmark) {
+    var entry = bookmark.pathId != null ? (_this._createPathBookmarkEntry ? _this._createPathBookmarkEntry(bookmark) : null)
+      : bookmark.markerId != null ? _this._createMarkerBookmarkEntry(bookmark) : _this._createPinBookmarkEntry(bookmark);
+    return entry ? {bookmark: bookmark, entry: entry} : null;
   }).filter(Boolean);
+  var entries = items.map(function(item) { return item.entry; });
 
   if(!entries.length) {
     list.append('<li class="bookmarks-empty"><div class="bookmarks-empty-title">No Bookmarks</div>' +
@@ -2863,11 +2883,28 @@ ZMap.prototype._renderBookmarksList = function(page) {
     return;
   }
 
-  list.append('<div class="leaflet-control-layers-separator search-result-separator"></div>');
-  entries.forEach(function(entry) {
-    list.append(entry);
-    list.append('<div class="leaflet-control-layers-separator search-result-separator"></div>');
+  // With paths among them, Paths and Markers each have a label.
+  var hasPaths = items.some(function(item) { return item.bookmark.pathId != null; });
+  var hasMarkers = items.some(function(item) { return item.bookmark.pathId == null; });
+  var label = function(text) { return $('<li class="bookmarks-section-label"><h3 class="area-category-title"></h3></li>').find('h3').text(text).end(); };
+  if(!hasPaths) list.append('<div class="leaflet-control-layers-separator search-result-separator"></div>');
+  var labelledMarkers = false;
+  items.forEach(function(item, i) {
+    var isPath = item.bookmark.pathId != null;
+    if(hasPaths && i === 0) list.append(label('Paths'));
+    if(hasPaths && !isPath && !labelledMarkers) {
+      list.append(label('Markers'));
+      list.append('<div class="leaflet-control-layers-separator search-result-separator"></div>');
+      labelledMarkers = true;
+    }
+    list.append(item.entry);
+    if(!isPath) list.append('<div class="leaflet-control-layers-separator search-result-separator"></div>');
   });
+  // Paths but no markers: Markers still has its label, with an empty note.
+  if(hasPaths && !hasMarkers) {
+    list.append(label('Markers'));
+    list.append('<li class="bookmarks-empty-markers">No marker bookmarks yet. Bookmark POIs and dropped pins to find them here.</li>');
+  }
 };
 
 ZMap.prototype._createMarkerBookmarkEntry = function(bookmark) {
@@ -3001,19 +3038,29 @@ ZMap.prototype._limitZoomToMapBounds = function() {
   // with the visible space as the drawer opens. Never move a zoomed-in view.
   this._recenterMobileMapAtMinimumZoom = function(drawerTop) {
     var control = zMap.mapControl;
+    // At every zoom, the map's edges stop at the open drawer's edge, not the
+    // collapsed one's, so whatever's near the bottom of the artwork (a path's
+    // last step) can be brought up into view above it. Beyond partial the
+    // drawer covers the map; its partial edge is kept. (The minimum zoom stays
+    // the collapsed drawer's: update() works it out before this runs.)
+    var applyDrawerEdge = function() {
+      var base = control._mobileDrawerBaseTop;
+      if(!Number.isFinite(base) || !Number.isFinite(drawerTop)) return null;
+      var top = Math.max(control.options.softOpenTo, Math.min(control._startPosition, drawerTop));
+      if(top < control._startPosition - 1) {
+        insets.bottom = Math.max(insets.bottom, map.getContainer().getBoundingClientRect().bottom - (base + top));
+      }
+      return top;
+    };
     if(!control || !control.viewStyleBottomSlide || !map._loaded || map._animatingZoom) return;
     if(Math.abs(map.getZoom() - map.getMinZoom()) > .02) {
       insets = measureInsets();
+      applyDrawerEdge();
       return;
     }
-    var rect = map.getContainer().getBoundingClientRect(), size = map.getSize();
-    var base = control._mobileDrawerBaseTop;
-    if(!Number.isFinite(base) || !Number.isFinite(drawerTop)) return;
-    // Beyond partial the drawer covers the map; keep its partial framing.
-    var top = Math.max(control.options.softOpenTo, Math.min(control._startPosition, drawerTop));
+    var size = map.getSize();
     insets = measureInsets();
-    var drawerEdge = base + top;
-    if(top < control._startPosition - 1) insets.bottom = Math.max(0, rect.bottom - drawerEdge);
+    if(applyDrawerEdge() === null) return;
     var visibleCentre = L.point((insets.left + size.x - insets.right) / 2,
       (insets.top + size.y - insets.bottom) / 2);
     if(visibleCentre.y <= insets.top) return;
@@ -3065,11 +3112,8 @@ ZMap.prototype._limitZoomToMapBounds = function() {
     }
     var size = map.getSize();
     if(!size.x || !size.y) return;
-    var next = measureInsets();
-    var moved = ['top', 'right', 'bottom', 'left'].some(function(side) {
-      return Math.abs(next[side] - insets[side]) > .5;
-    });
-    insets = next;
+    var previous = insets;
+    insets = measureInsets();
     // Not getBoundsZoom(), which never returns less than the current minimum,
     // so the limit could never be lowered again.
     var free = size.subtract(L.point(
@@ -3080,12 +3124,18 @@ ZMap.prototype._limitZoomToMapBounds = function() {
     if(free.x <= 0 || free.y <= 0 || !mapSize.x || !mapSize.y) return;
     var zoom = map.getScaleZoom(Math.min(free.x / mapSize.x, free.y / mapSize.y), current);
     if(Number.isFinite(zoom)) map.setMinZoom(Math.max(0, Math.min(zoom, Number(map.getMaxZoom()))));
-    var mobileMinimum = zMap.mapControl && zMap.mapControl.viewStyleBottomSlide &&
-      Math.abs(map.getZoom() - map.getMinZoom()) <= .02;
-    if(!mobileMinimum && (moved || boundsChanged === true) && map._loaded) map.panInsideBounds(bounds(), { animate: false });
+    // On phones the edges then follow the open drawer (the minimum zoom,
+    // above, stays the collapsed drawer's), before anything is kept inside
+    // them: a view brought up above a partial drawer isn't pushed back down.
     if(zMap.mapControl && zMap.mapControl.viewStyleBottomSlide) {
       zMap._recenterMobileMapAtMinimumZoom(zMap.mapControl.drawerTop());
     }
+    var moved = ['top', 'right', 'bottom', 'left'].some(function(side) {
+      return Math.abs(insets[side] - previous[side]) > .5;
+    });
+    var mobileMinimum = zMap.mapControl && zMap.mapControl.viewStyleBottomSlide &&
+      Math.abs(map.getZoom() - map.getMinZoom()) <= .02;
+    if(!mobileMinimum && (moved || boundsChanged === true) && map._loaded) map.panInsideBounds(bounds(), { animate: false });
   };
   this._updateMinZoom = update;
   update();
@@ -3335,6 +3385,8 @@ ZMap.prototype.deleteMarker = function(vMarkerId) {
             _this.map.removeLayer(markers[i]);
             delete _this.cachedMarkersById[vMarkerId];
             toastr.success(_this.langMsgs.MARKER_DEL_SUCCESS.format(markers[i].id));
+            // The official paths it left, redrawn without it (scripts/services/Paths.js).
+            if (data.paths && data.paths.length && _this._reloadPaths) _this._reloadPaths();
             if (_this.mapControl.isMobile) {
               _this.mapControl.closeDrawer();
             } else {
@@ -3441,6 +3493,14 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
         (editing ? '<input type="hidden" name="markerId" value="' + esc(vMarker.id) + '" />' : '') +
         '<input type="hidden" name="submapId" value="' + esc(submapId) + '" />' +
         this._editorSaveHTML(editing, editing ? 'Save Changes' : 'Add Marker') +
+        // Deleting it, under Save, as Delete Account is under its form, and
+        // asked about first in a dialog. Not part of the editing beta
+        // (scripts/zbeta.js).
+        (editing && this._canEditMarker && this._canEditMarker(vMarker) && !user.betaEditor
+          ? '<div class="marker-edit-delete">' +
+              '<button type="button" class="text-button text-button-bad marker-delete-button">Delete Marker</button>' +
+            '</div>'
+          : '') +
       '</form>' +
     '</div>';
 
@@ -3733,6 +3793,30 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   }
 
   var status = form.find('.admin-user-status');
+  // Delete Marker: asked about first in a dialog (zbeta.js _showAlert, as
+  // Leave the Beta is), then gone.
+  form.find('.marker-delete-button').on('click', function() {
+    // The official paths it's a step of leave it too (lib/common/paths.php
+    // pathRemoveDeletedMarker); users' own paths keep it.
+    var officialPaths = (_this.paths || []).filter(function(p) {
+      return p.scope === 'official' && !p._preview && p.steps.some(function(s) { return s.markerId == vMarker.id; });
+    }).map(function(p) { return '“' + _this._wikiEscape(p.name) + '”'; });
+    _this._showAlert({
+      id: 'marker-delete',
+      title: 'Delete this marker?',
+      description: [
+        // (Set as HTML by _showAlert: the names escaped.)
+        (vMarker.title || vMarker.name ? '“' + _this._wikiEscape(vMarker.title || vMarker.name) + '” will be removed from the map.' : 'It will be removed from the map.')
+      ].concat(officialPaths.length ? ['It will also be removed from the ' + (officialPaths.length === 1 ? 'path ' + officialPaths[0] :
+        'paths ' + officialPaths.slice(0, -1).join(', ') + ' and ' + officialPaths[officialPaths.length - 1]) + '.'] : []).concat([
+        'It can be brought back from its History.'
+      ]),
+      actions: [
+        { label: 'Delete Marker', className: 'infoWindowIcn bad', onSelect: function() { _this.deleteMarker(vMarker.id); } },
+        { label: 'Cancel', cancel: true }
+      ]
+    });
+  });
   form.on('submit', function(e) {
     e.preventDefault();
     if (window.tinymce) tinymce.triggerSave();
@@ -7597,7 +7681,8 @@ ZMap.prototype.goTo = function(vGoTo, notByInput) {
       notByInput,
       !!vGoTo.centerInVisibleArea,
       vGoTo.showPopup !== false,
-      !!vGoTo.preserveView
+      !!vGoTo.preserveView,
+      !!vGoTo.animate
     );
     // Open Marker already does a change map, so it takes precedence
 
@@ -7622,7 +7707,8 @@ ZMap.prototype._openMarker = function(
   notByInput,
   centerInVisibleArea = false,
   showPopup = true,
-  preserveView = false
+  preserveView = false,
+  animate = false
 ) {
   var marker = this.cachedMarkersById[vMarkerId];
   if (marker) {
@@ -7665,7 +7751,7 @@ ZMap.prototype._openMarker = function(
        // here races its animated sidebar bounds and causes a visible recoil.
      } else if(centerInVisibleArea) {
        this._setViewAtMarkerInVisibleArea(marker, vZoom,
-         showPopup && this.mapControl.viewStyleBottomSlide && this.mapControl._partialDrawerMode ? this.mapControl.options.softOpenTo : undefined);
+         showPopup && this.mapControl.viewStyleBottomSlide && this.mapControl._partialDrawerMode ? this.mapControl.options.softOpenTo : undefined, animate);
      } else {
        this.map.setView(latlng, vZoom);
      }
@@ -7758,7 +7844,7 @@ ZMap.prototype.restoreMarkerReturnView = function() {
   return true;
 };
 
-ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom, drawerTargetTop) {
+ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom, drawerTargetTop, animate) {
   var mapRect = this.map.getContainer().getBoundingClientRect();
   var mapSize = this.map.getSize();
   var visibleLeft = 0;
@@ -7809,9 +7895,15 @@ ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom, drawerTarg
   var markerPoint = this.map.project(marker.getLatLng(), zoom);
   var centerPoint = markerPoint.add(mapCenter).subtract(visibleCenter);
 
-  this.map.setView(this.map.unproject(centerPoint, zoom), zoom, {
-    animate: false
-  });
+  // Animated (a path's guide moving between steps, a step opened from its
+  // list: PathEditor.js) as a flight, which Leaflet makes however far the
+  // zoom changes (setView only animates a few levels).
+  var target = this.map.unproject(centerPoint, zoom);
+  if(animate && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    this.map.flyTo(target, zoom, {duration: .6});
+  } else {
+    this.map.setView(target, zoom, {animate: false});
+  }
 };
 
 ZMap.prototype.getMarkers = function() {

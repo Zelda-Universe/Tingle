@@ -66,7 +66,7 @@
   $paths = null;
   if (pathsAllowed($viewerLevel) && $db->fetchOne("SHOW TABLES LIKE '{$map_prefix}path'")) {
     $paths = $db->fetchAllAssociative("
-      SELECT p.id, p.name, p.slug, p.kind, p.loops, p.color, p.visibility, UNIX_TIMESTAMP(p.published_at) AS publishedAt,
+      SELECT p.id, p.name, p.slug, p.kind, p.loops, p.smooth, p.color, p.visibility, UNIX_TIMESTAMP(p.published_at) AS publishedAt,
              " . pathPublishedSql() . " AS published, c.short_name AS game, c.name AS gameName,
              (SELECT COUNT(*) FROM `{$map_prefix}like` l WHERE l.target_type = 'path' AND l.target_id = p.id) AS yeahs,
              (SELECT COUNT(*) FROM `{$map_prefix}path_step` s WHERE s.path_id = p.id) AS steps
@@ -76,7 +76,7 @@
          AND (c.visible = 1 OR (c.visible = 2 AND ? >= " . (int) WIKI_ADMIN_LEVEL . "))
        ORDER BY p.updated DESC, p.id DESC
     ", [$user['id'], $viewerId, $viewerLevel]);
-    foreach ($paths as &$path) { $path['steps'] = (int) $path['steps']; $path['loops'] = (bool) $path['loops']; $path['published'] = (bool) $path['published'];
+    foreach ($paths as &$path) { $path['steps'] = (int) $path['steps']; $path['loops'] = (bool) $path['loops']; $path['smooth'] = (bool) $path['smooth']; $path['published'] = (bool) $path['published'];
       $path['publishedAt'] = $path['publishedAt'] === null ? null : (int) $path['publishedAt']; $path['yeahs'] = (int) $path['yeahs']; }
     unset($path);
     // Path cards' thumbnails (lib/common/paths.php).

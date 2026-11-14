@@ -77,6 +77,13 @@ function getPOIStyle(category) {
       '64051': 'travel', '64052': 'travel', '64053': 'travel'
     }[String(category.id)] || '';
   }
+  // Path Lab, the paths test map: badges as the real games' have.
+  if(category && String(category.container_id || category.containerId) === '90') {
+    return {
+      '9000': 'interest', '9001': 'treasure', '9002': 'interest', '9003': 'location',
+      '9004': 'korok', '9005': 'memory', '9006': 'interest'
+    }[String(category.id)] || '';
+  }
   if(category && String(category.container_id || category.containerId) === '3') {
     return {
       // Dungeon Entrances, Warp Tiles, Flute Spots.

@@ -802,7 +802,7 @@ main.leaflet-container,
 	display: block;
 	margin: 0 0 16px;
 	text-align: center;
-	border: 1px solid currentColor;
+	border: 0;
 	border-radius: 10px;
 	color: #ff6b63;
 	background: transparent;
@@ -813,6 +813,11 @@ main.leaflet-container,
 	color: #ff8c85;
 	background: transparent;
 }
+
+/* Delete Marker, under the marker editor's Save (zmap.js editMarker): words
+   only (text-button), centred, close under Save. */
+.marker-edit-delete { margin: 4px 0 0; }
+.marker-edit-delete .marker-delete-button { display: flex; justify-content: center; width: 100%; box-sizing: border-box; }
 
 #account #log_out_btn {
 	margin-bottom: 0;
@@ -7626,11 +7631,11 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	height: 22px;
 	box-sizing: border-box;
 	border-radius: 50%;
-	border: 2px solid #fff;
-	background: var(--path-color, #2f5d50);
-	color: #fff;
-	font: 700 12px/1 'Open Sans', sans-serif;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, .45);
+	/* White with the number in the path's colour, as its white border is. */
+	background: #fff;
+	color: var(--path-color, #2f5d50);
+	font: 800 12px/1 'Open Sans', sans-serif;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
 }
 .leaflet-tooltip.zm-path-pin {
 	background: rgba(20, 20, 20, .85);
@@ -7669,7 +7674,6 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	display: flex; align-items: center; justify-content: center; box-sizing: border-box;
 }
 .path-step-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: none; border: 0; color: inherit; text-align: left; padding: 0; }
-.path-page .path-step-name:hover { text-decoration: underline; }
 .path-step-pin-name.form-control { flex: 1; min-width: 0; height: 30px; padding: 4px 8px; }
 .path-step-handle { cursor: grab; touch-action: none; padding: 4px 2px; opacity: .6; }
 .path-step-dragging { position: relative; z-index: 2; background: rgba(255, 255, 255, .16); box-shadow: 0 4px 14px rgba(0, 0, 0, .4); transition: none; }
@@ -7838,3 +7842,139 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .profile-path-list { gap: 10px; }
 /* In line with the actions above them (marker pages) and the headings (category pages). */
 .marker-paths { padding: 0 16px; }
+
+/* A path's page: controls as a marker's, a "Path" pill, step names that
+   open their markers. */
+.leaflet-control-layers .path-actions-row { margin: 12px 16px 16px; }
+.path-actions-row .yeah-icon { width: 22px; height: 22px; }
+.path-actions-row .path-yeah[aria-pressed="true"] { background: rgba(80, 200, 120, .3); }
+.path-actions-row .path-yeah .yeah-count { opacity: .75; }
+.path-kind-pill { display: inline-flex; align-items: center; gap: 5px; }
+/* A step's name: large, a little dim until hovered, its chevron inline
+   after the last word. */
+.path-timeline .path-step-name {
+	display: block; font-size: 19px; font-weight: 700; line-height: 1.3; min-height: 26px; padding: 1px 0 2px;
+	opacity: .85; transition: opacity .12s ease;
+}
+.path-page .path-step-name:hover, .path-page .path-step-name:focus-visible { opacity: 1; text-decoration: none; outline: none; }
+.path-step-label { display: inline; }
+.path-step-chevron { display: inline-block; margin-left: 7px; font-size: 13px; vertical-align: 2px; opacity: .45; transition: opacity .12s ease, transform .12s ease; }
+.path-page .path-step-name:hover .path-step-chevron { opacity: .9; transform: translateX(2px); }
+/* Its number stays at the top while its step scrolls by, until the next
+   step's number pushes it off (it's held within its own step). */
+.path-timeline .path-step-number { margin-top: 2px; position: sticky; top: var(--path-sticky-top, 72px); z-index: 1; }
+/* The step a path's guide is on (Start, Complete). */
+.path-timeline .path-step-current .path-step-number { box-shadow: 0 0 0 4px rgba(255, 255, 255, .25); }
+.path-timeline .path-step-current .path-step-label { text-decoration: underline; text-decoration-color: var(--path-color, #ffad48); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+
+/* "Make a path from here": full width under a marker's edit controls. */
+.marker-editor-tools .path-new-button {
+	flex-direction: row; gap: 10px; width: 100%; min-height: 44px; margin-top: 8px; font-size: 13px;
+}
+.marker-editor-buttons[hidden] ~ .path-new-button { display: none; }
+.path-new-icon { position: relative; display: inline-flex; width: 20px; height: 18px; }
+.marker-editor-button .path-new-icon .fa-map-signs { width: 16px; height: 16px; font-size: 16px; }
+.marker-editor-button .path-new-icon .fa-plus {
+	position: absolute; right: -4px; bottom: -3px; width: 9px; height: 9px; font-size: 9px;
+	padding: 1px; border-radius: 50%; background: #2b2b2f; box-sizing: content-box;
+}
+
+/* A path as a compact row (PathEditor.js _pathListItemHTML), the size of a
+   search result: the top of a marker's page. */
+.leaflet-control-layers .marker-paths .marker-paths-title {
+	margin: 4px 0 0; text-align: left; font-size: 12px; font-weight: 700; line-height: 1.3;
+	text-transform: uppercase; letter-spacing: .05em; opacity: .6;
+}
+.path-list-item { border: 0; background: none; color: inherit; text-align: left; font: inherit; width: 100%; }
+.path-list-item .icon { width: 64px; height: 64px; }
+.path-thumb-square { width: 64px; height: 64px; aspect-ratio: auto; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
+.path-list-item .details .name { display: block; font-weight: 600; }
+.path-list-item .location .fa-map-signs { color: var(--path-color, #ffad48); margin-right: 2px; }
+
+/* A marker since removed from the map, kept by a user's path. */
+.path-step-removed, .path-step-removed-hint { margin: 2px 0 4px; font-size: 13px; color: #ffb3ae; }
+.path-step-removed-hint { flex-basis: 100%; margin-left: 50px; }
+.path-timeline .path-step-deleted .path-step-number { background: #6b6b6b; }
+.path-timeline .path-step-deleted .path-step-label { text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, .45); }
+.path-timeline .path-step-deleted .path-step-content { opacity: .6; }
+.path-steps-editable .path-step-deleted { background: rgba(255, 107, 99, .1); box-shadow: inset 0 0 0 1px rgba(255, 107, 99, .35); }
+.path-steps-editable .path-step-deleted .path-step-number { background: #6b6b6b; }
+.path-steps-editable .path-step-deleted .path-step-name { text-decoration: line-through; opacity: .75; }
+
+/* Compact path cards (PathEditor.js _pathListItemHTML): a search result's
+   height, their own background, the thumbnail against the top, left and
+   bottom edges. */
+.path-compact-list { display: flex; flex-direction: column; gap: 8px; }
+.path-compact-card {
+	display: flex; align-items: stretch; width: 100%; min-height: 72px; padding: 0; margin: 0;
+	border: 0; border-radius: 12px; overflow: hidden; background: rgba(255, 255, 255, .08);
+	color: inherit; text-align: left; font: inherit; cursor: pointer;
+}
+.path-compact-card:hover, .path-compact-card:focus-visible { background: rgba(255, 255, 255, .14); outline: none; }
+.path-compact-card:focus-visible { box-shadow: inset 0 0 0 2px #4395f7; }
+.path-compact-thumb { flex: 0 0 72px; align-self: stretch; position: relative; }
+.path-compact-thumb .path-card-thumb.path-thumb-square {
+	position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; box-shadow: none;
+}
+.path-compact-body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 8px 4px 8px 12px; }
+.path-compact-name { font-size: 15px; font-weight: 600; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.path-compact-line { font-size: 12px; color: rgba(255, 255, 255, .65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.path-compact-line .fa-map-signs { color: var(--path-color, #ffad48); margin-right: 2px; }
+.path-compact-chevron { flex: none; align-self: center; padding: 0 12px 0 4px; font-size: 13px; opacity: .35; }
+.path-compact-card:hover .path-compact-chevron { opacity: .7; }
+/* Where they sit. */
+.marker-paths-section { margin: 4px 0 8px; }
+.marker-paths-section .poi-category-heading { padding: 0; }
+.category-paths .path-compact-list { padding: 0 16px; }
+.marker-paths .category-paths .path-compact-list { padding: 0; }
+.bookmarks-list .path-compact-row, .marker-list .path-search-results { list-style: none; padding: 8px 12px; display: flex; flex-direction: column; gap: 8px; }
+
+/* A path's Start (or Continue): full width under its controls. */
+.path-start-row { margin: -4px 16px 16px; }
+.path-start {
+	display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 48px;
+	border: 0; border-radius: 12px; background: rgba(255, 255, 255, .2); color: #fff; font: inherit; font-size: 15px; font-weight: 600;
+}
+.path-start:hover, .path-start:focus-visible { background: rgba(255, 255, 255, .3); outline: none; }
+/* Bookmarks' Paths and Markers labels, as a category page's section titles. */
+.bookmarks-list .bookmarks-section-label { list-style: none; padding: 12px 16px 4px; }
+.leaflet-control-layers .bookmarks-list .bookmarks-section-label h3 { margin: 0; font-size: 14px; font-weight: 700; line-height: 1.4; color: #fff; text-align: left; }
+/* On a marker's page a compact path card is as wide as it needs to be, not
+   the page's full width. */
+.marker-paths .path-compact-list { align-items: flex-start; }
+.marker-paths .path-compact-card { width: auto; max-width: 100%; }
+.marker-paths .path-compact-body { padding-right: 8px; }
+/* Bookmarks with paths but no markers: Markers' own empty note. */
+.bookmarks-list .bookmarks-empty-markers { list-style: none; padding: 4px 16px 12px; color: rgba(255, 255, 255, .65); font-size: 14px; }
+
+/* Marker pages: compact path cards full width within the page's padding,
+   their section set off from the marker's contents by a line above and below. */
+.marker-paths .path-compact-list { align-items: stretch; }
+.marker-paths .path-compact-card { width: 100%; }
+.marker-paths .marker-paths-section {
+	margin: 4px 0 12px; padding: 12px 0 14px;
+	border-top: 1px solid rgba(255, 255, 255, .12); border-bottom: 1px solid rgba(255, 255, 255, .12);
+}
+
+/* The step list's spacing: room between steps for a number to stop 16px under
+   the compact title bar before the next pushes it off; 6px from a title to its
+   contents; Complete 16px after them; 24px from Start to the first step. */
+.path-detail-page .path-start-row { margin-bottom: 0; }
+.path-detail-page .path-page { padding-top: 0; }
+.path-detail-page .path-timeline { margin-top: 24px; }
+.path-timeline .path-step { padding-bottom: 32px; }
+.path-timeline .path-step-head { margin-bottom: 6px; }
+.path-timeline .path-step-note { margin: 0 0 6px; }
+.leaflet-control-layers .popupContent.path-step-content { margin-top: 0; }
+.path-step-complete { margin-top: 16px; }
+/* Show more: a centred pill with a chevron. */
+.path-step-more {
+	display: flex; align-items: center; gap: 6px; margin: 12px auto 0; padding: 6px 14px;
+	border-radius: 999px; background: rgba(255, 255, 255, .1); text-decoration: none; opacity: 1;
+	font-size: 13px; font-weight: 600;
+}
+.path-step-more:hover, .path-step-more:focus-visible { background: rgba(255, 255, 255, .18); outline: none; }
+.path-step-more .fas { font-size: 11px; }
+/* The title's chevron, centred on its line, still. */
+.path-step-chevron { vertical-align: middle; position: relative; top: -4px; transition: none; }
+.path-page .path-step-name:hover .path-step-chevron { transform: none; }

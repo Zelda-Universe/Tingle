@@ -99,6 +99,8 @@ SearchMarkerHandler.prototype._displayResults = function(e, query) {
   results = this._addMarkersInMatchedAreas(results, query);
   if (!this.showSearchStats) results = results.map(function(entry) { return entry.item; });
   this.markerListView.showMarkers(query, results);
+  // Paths that match, first (scripts/services/PathEditor.js).
+  if(typeof zMap !== 'undefined' && zMap._addPathSearchResults) zMap._addPathSearchResults(query, this.markerListView, results.length);
   this.handlers["markerListViewBuilt"].forEach(function(handler) {
     handler(this.markerListView);
   }, this);

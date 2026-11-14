@@ -257,7 +257,8 @@ function getUserInfo() {
     applyUserInfo(ZOfflineSync.savedUserInfo() || {}, true);
    };
    // An embed (embed.php) is never signed in: it doesn't ask.
-   if(window.zmapEmbed) { applyUserInfo({}, true); return; }
+   // (Unless it's previewed on Zelda Maps' own pages: index.php.)
+   if(window.zmapEmbed && !window.zmapEmbedPreview) { applyUserInfo({}, true); return; }
    $.getJSON("ajax.php?command=get_user_info").done(function(vResults) {
     if(!vResults || (!vResults.user && !vResults.loggedOut)) {
       keepSavedUser();
@@ -376,6 +377,8 @@ function finalLoadContent() {
     } finally {
       zMap.mapControl._restoringInitialPage = false;
     }
+    // An embed in a small frame shows more around it (zmap.js).
+    if(zMap.isFramed && zMap.isFramed()) setTimeout(function() { zMap._fitEmbedMarker(marker); }, 0);
     if(zMap._hasWikiLink()) zMap._openRevisionLinkWhenReady('markers');
     return;
   }

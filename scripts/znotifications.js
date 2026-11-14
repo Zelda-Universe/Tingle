@@ -259,7 +259,7 @@ ZMap.prototype._openNotificationsPage = function(back) {
     var target = n.url ? _this._wikiLinkParams(n.url) : {};
     if(target.page === 'report' && target.report) { _this._openReport(target.report, reopen); return; }
     if(target.page === 'admin-reports') { _this._openAdminReports(); return; }
-    if(target.path && target.game) { _this.openPathFromLink(target.game, target.path); return; }
+    if(target.path && target.game) { _this.openPathFromLink(target.game, target.path, reopen); return; }
     if(target.page === 'notifications') return;
     if(target.page==='game-settings-revision' && target.settingsRev) {_this._openSettingsRevisionLink(target.settingsRev,target.game,reopen);return;}
     if(!n.revisionId && n.commentId && (n.markerId || n.pageType==='marker')) {

@@ -1,0 +1,76 @@
+<!doctype html>
+<!-- Embeds side by side, as another site would show them (embed.php), for
+     working on their design. Opened from this site, so the embeds are signed
+     in as you (index.php zmapEmbedPreview): a path shows while paths are
+     admin-only. Add ?game=, ?path= and ?marker= to preview others. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Embed Preview</title>
+  <style>
+    :root { color-scheme: light; --bg: #f4f1ea; --ink: #2b2a27; --muted: #77736b; --card: #fffdf8; --line: #e2dccf; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Georgia, 'Times New Roman', serif; }
+    main { max-width: 1200px; margin: 0 auto; padding: 32px 16px 64px; }
+    h1 { font-size: 28px; margin: 0 0 4px; }
+    p.lede { color: var(--muted); margin: 0 0 28px; font-family: system-ui, sans-serif; font-size: 14px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 32px; }
+    article { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+    article h2 { font-size: 20px; margin: 0 0 4px; }
+    article p { margin: 0 0 14px; color: var(--muted); font-size: 15px; }
+    code { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); word-break: break-all; display: block; margin-top: 10px; }
+    iframe { display: block; width: 100%; height: 60vh; min-height: 420px; border: 0; border-radius: 8px; background: #000; }
+    .widths { display: flex; gap: 8px; margin-bottom: 20px; font-family: system-ui, sans-serif; font-size: 13px; }
+    .widths button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+    .widths button[aria-pressed="true"] { background: var(--ink); color: var(--card); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Embed Preview</h1>
+    <p class="lede">Each map below is embed.php in an iframe, as a guide on another site would show it.</p>
+    <div class="widths" role="group" aria-label="Embed width">
+      <button type="button" data-cols="" aria-pressed="true">Side by side</button>
+      <button type="button" data-cols="1" aria-pressed="false">Full width</button>
+      <button type="button" data-cols="phone" aria-pressed="false">Phone width</button>
+    </div>
+    <div class="grid">
+      <article>
+        <h2>An embedded path</h2>
+        <p>The whole route, opened on its page.</p>
+        <iframe id="path_embed" title="Embedded path" allowfullscreen></iframe>
+        <code id="path_src"></code>
+      </article>
+      <article>
+        <h2>An embedded marker</h2>
+        <p>One marker, the rest of the map hidden.</p>
+        <iframe id="marker_embed" title="Embedded marker" allowfullscreen></iframe>
+        <code id="marker_src"></code>
+      </article>
+    </div>
+  </main>
+  <script>
+    (function() {
+      var params = new URLSearchParams(location.search);
+      var game = params.get('game') || 'LA';
+      var base = new URL('../embed.php', location.href).href;
+      var path = base + '?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(params.get('path') || 'trading-sequence') + '&showMapControl=true';
+      var marker = base + '?game=' + encodeURIComponent(game) + '&marker=' + encodeURIComponent(params.get('marker') || '10585') +
+        '&zoom=4&hideOthers=true&showMapControl=true&hidePin=false';
+      document.getElementById('path_embed').src = path;
+      document.getElementById('marker_embed').src = marker;
+      document.getElementById('path_src').textContent = path;
+      document.getElementById('marker_src').textContent = marker;
+      var grid = document.querySelector('.grid');
+      document.querySelectorAll('.widths button').forEach(function(button) {
+        button.addEventListener('click', function() {
+          document.querySelectorAll('.widths button').forEach(function(b) { b.setAttribute('aria-pressed', String(b === button)); });
+          var cols = button.getAttribute('data-cols');
+          grid.style.gridTemplateColumns = cols === '1' ? '1fr' : cols === 'phone' ? 'repeat(auto-fit, 375px)' : '';
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

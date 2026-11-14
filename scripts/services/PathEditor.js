@@ -15,8 +15,10 @@ ZMap.prototype._pathStepLabel = function(step) {
   return step.name || (step.shown === false || step.shown == 0 ? 'Waypoint' : 'Pin');
 };
 
-ZMap.prototype._pathUrl = function(path) {
-  var url = new URL(window.location.href);
+// share: on the map's own page, even from inside an embed (whose address
+// it otherwise keeps).
+ZMap.prototype._pathUrl = function(path, share) {
+  var url = new URL(share && this._pageAddress ? this._pageAddress(false) : window.location.href);
   url.search = '';
   url.searchParams.set('game', this.mapOptions.shortName);
   url.searchParams.set('path', path.slug);
@@ -31,7 +33,7 @@ ZMap.prototype._markerPathsHTML = function(marker) {
     if(path._preview) return;
     var index = path.steps.findIndex(function(s) { return s.markerId == marker.id; });
     if(index === -1) return;
-    rows.push(zmap._pathListItemHTML(path, {attrs: "onclick='_this.openPathPage(\"" + zmap._pathEsc(path.slug) + "\"); return false'",
+    rows.push(zmap._pathListItemHTML(path, {attrs: "onclick='_this._openPathFromMarker(\"" + zmap._pathEsc(path.slug) + "\", " + Number(marker.id) + "); return false'",
       context: path.kind === 'single' ? null : 'Step ' + (index + 1) + ' of ' + path.steps.length}));
   });
   // Headed as a category page's Paths are (CategoryPage.js).
@@ -58,6 +60,12 @@ ZMap.prototype._addMakePathButton = function(marker) {
   button.addEventListener('click', function() { zmap.openPathEditor(null, marker.id); });
   var edit = row.querySelector('[data-editor-action="edit"]');
   row.insertBefore(button, edit ? edit.nextSibling : row.firstChild);
+};
+
+// A path opened from a marker's page: its Back returns to the marker.
+ZMap.prototype._openPathFromMarker = function(slug, markerId) {
+  var zmap = this, control = this.mapControl;
+  this.openPathPage(slug, {back: function() { control._navigatingBack = true; zmap.navigateToMarker(markerId); }});
 };
 
 // Fill in any marker page's paths once they've loaded (a marker page opened
@@ -111,7 +119,8 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   this._endPathEditing();
   // The path in focus (Paths.js): its markers alone, its line on top.
   this._focusedPath = path;
-  history.replaceState(history.state, '', this._pathUrl(path));
+  // (Not an embed's: it stays as embedded, zmap.js updateUrl.)
+  if(!this.isFramed || !this.isFramed()) history.replaceState(history.state, '', this._pathUrl(path));
   var shown = path.steps.filter(function(step) { return step.markerId || step.shown != 0; });
   var status = this._pathStatusHTML(path);
   // Others' Yeahs, once it's out where others can see it.
@@ -135,13 +144,18 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   // Bookmarked as a marker is (zmap.js toggleBookmark, _findBookmark).
   this._bookmarkTarget = {pathId: path.id};
   // (Edit and History are at the foot of the page, as a marker's are.)
+  // (In an embed, no Yeah or Bookmark: nothing of anyone's account.)
+  var framed = this.isFramed && this.isFramed();
   var actions = [
-    // A Yeah, as the comments' (zwiki.js _wireYeahs fills and wires it).
-    yeahs ? "<button type='button' class='marker-action-button infoWindowIcn yeah-target yeah-button path-yeah' data-yeah-key='path:" + Number(path.id) + "' aria-pressed='false' disabled>" +
+    // A user's path's Yeah, as the comments' (zwiki.js _wireYeahs fills and
+    // wires it), first, before Bookmark.
+    yeahs && !framed ? "<button type='button' class='marker-action-button infoWindowIcn yeah-target yeah-button path-yeah' data-yeah-key='path:" + Number(path.id) + "' aria-pressed='false' disabled>" +
       "<span class='marker-action-icon'><span class='yeah-icon yeah-plus' aria-hidden='true'></span></span>" +
       "<span class='marker-action-label'><span class='yeah-label'>Yeah!</span> <span class='yeah-count'>0</span></span></button>" : '',
-    this._bookmarkButtonHTML ? this._bookmarkButtonHTML() : '',
-    action('path-copy', 'fas fa-link', 'Copy Link')
+    this._bookmarkButtonHTML && !framed ? this._bookmarkButtonHTML() : '',
+    action('path-copy', 'fas fa-link', 'Copy Link'),
+    // Its embed code, as a marker's (zmap.js _copyToClipboardEmbed).
+    action('path-embed', 'icon-embed2', 'Embed Code')
   ].filter(Boolean);
   // Who made a user's path (their picture, a link to them), how many finish
   // it, and how long ago it came out: one small line under Start.
@@ -190,7 +204,12 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   // Its markers alone on the map, then the map fitted to it (Paths.js).
   this._updatePathFocus();
   if(!opts.keepView) this.focusPath(path.slug, {instant: !!opts.instant});
-  $(page).find('.path-copy').on('click', function() { zmap._wikiCopy(zmap._pathUrl(path), 'Path link'); });
+  $(page).find('.path-copy').on('click', function() { zmap._wikiCopy(zmap._pathUrl(path, true), 'Path link'); });
+  $(page).find('.path-embed').on('click', function() {
+    zmap.trackEmbedCopy('path');
+    var src = zmap._pageAddress(true) + '?game=' + encodeURIComponent(zmap.mapOptions.shortName) + '&path=' + encodeURIComponent(path.slug) + '&showMapControl=true';
+    zmap._copyText("<iframe src=\"" + src + "\" frameborder=\"0\" allowfullscreen></iframe>", this);
+  });
   // (The author's link: zwiki.js _wireWikiLinks opens their profile.)
   $(page).find('.path-edit').on('click', function() { zmap.openPathEditor(path); });
   $(page).find('.path-history').on('click', function() { zmap.openPathHistory(path); });
@@ -302,7 +321,7 @@ ZMap.prototype._startPathGuide = function(path, page) {
   if(!target.length) target = rows.first();
   if(!target.length) return;
   if(control.viewStyleBottomSlide) control.openDrawerDefaultPartial();
-  this._goToPathStep(path.steps[Number(target.attr('data-index'))]);
+  this._goToPathStep(path.steps[Number(target.attr('data-index'))], false, {path: path});
   this._setCurrentPathStep(page, target[0]);
   var zmap = this;
   // (After the drawer's scroll reset.)
@@ -317,7 +336,10 @@ ZMap.prototype._setCurrentPathStep = function(page, li) {
 
 // The map to a step: zoomed in on its marker or pin, centred in the map
 // that's left to see (under the drawer's partial height when it's there).
-ZMap.prototype._goToPathStep = function(step, instant) {
+// leg (the path's guide): {path, from}: the map framed on the way there from
+// the step before (from, the step just completed), not zoomed in on the
+// step itself (_framePathLeg).
+ZMap.prototype._goToPathStep = function(step, instant, leg) {
   if(!step) return;
   var control = this.mapControl;
   var marker = step.markerId && this._pathMarker(step.markerId);
@@ -330,6 +352,7 @@ ZMap.prototype._goToPathStep = function(step, instant) {
     var layer = (this.maps || []).find(function(l) { return String(l.defaultSubMapId) === String(step.submapId); });
     if(layer && String(control.getCurrentMap().subMapId) !== String(step.submapId)) control.changeMapOnly(layer.originalId, step.submapId);
   }
+  if(leg && leg.path && this._framePathLeg(leg.path, leg.from, step, instant)) return;
   // Close enough to see where it is, as a marker's link does (zmap.js
   // navigateToMarker); no further out than the guide already is.
   var zoom = Math.min(this.map.getMaxZoom(), Math.max(this.map.getZoom(), 6));
@@ -337,6 +360,30 @@ ZMap.prototype._goToPathStep = function(step, instant) {
   this._prepareMapEdgesForDrawer();
   this._setViewAtMarkerInVisibleArea({getLatLng: function() { return latlng; }}, zoom,
     control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined, !instant);
+};
+
+// The guide's view of the next step: the stretch of the path from the step
+// before it (from, or the shown step before it) to it, filling the map
+// that's left to see, as a region's page does, with room around it, so the
+// way there can be seen and followed. A first step, with no way to it yet: two and a half levels
+// short of the closest zoom. False if the step isn't drawn.
+ZMap.prototype._framePathLeg = function(path, from, to, instant) {
+  var points = path.points || [], index = path.steps.indexOf(to);
+  if(index < 0 || !points[index]) return false;
+  var submap = String(points[index].submapId);
+  var start = from ? path.steps.indexOf(from) : -1;
+  if(start < 0) for(var i = index - 1; i >= 0; i--) if(points[i].shown) { start = i; break; }
+  var leg = start < 0 ? [] : points.slice(Math.min(start, index), Math.max(start, index) + 1);
+  leg = leg.filter(function(p) { return String(p.submapId) === submap; }).map(function(p) { return p.latLng; });
+  if(leg.length < 2) leg = [points[index].latLng];
+  var max = this.map.getMaxZoom(), control = this.mapControl;
+  this._viewChosen = true;
+  this._prepareMapEdgesForDrawer();
+  // (A fifth again around it, so neither step sits at the edge.)
+  this._fitBoundsToVisibleMap(L.latLngBounds(leg).pad(leg.length > 1 ? .2 : 0), {
+    animate: !instant, fly: true, maxZoom: leg.length > 1 ? max : max - 2.5,
+    drawerTargetTop: control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined});
+  return true;
 };
 
 // A step to the top of the page (under the compact title bar).
@@ -438,7 +485,8 @@ ZMap.prototype._wirePathSteps = function(page, steps, reopen, label, path) {
       // On to the next step: in the list and on the map.
       zmap._scrollToPathStep(next[0]);
       zmap._setCurrentPathStep(page, next[0]);
-      zmap._goToPathStep(steps[Number(next.attr('data-index'))]);
+      // (Framed from the step just completed: where they are now.)
+      zmap._goToPathStep(steps[Number(next.attr('data-index'))], false, path ? {path: path, from: steps[Number(li.attr('data-index'))]} : null);
     };
     var requested;
     if(li.is('[data-pin-key]')) {
@@ -527,7 +575,7 @@ ZMap.prototype.openPathPin = function(path, stepOrKey, back, opts) {
   this._focusedPath = path;
   var url = new URL(this._pathUrl(path));
   url.searchParams.set('pin', step.pinKey);
-  history.replaceState(history.state, '', url.toString());
+  if(!this.isFramed || !this.isFramed()) history.replaceState(history.state, '', url.toString());
   var esc = this._pathEsc.bind(this);
   var check = this._pathCheckPins(path).indexOf(step) !== -1;
   var number = path.steps.filter(function(s) { return s.markerId || s.shown != 0; }).indexOf(step) + 1;
@@ -711,7 +759,7 @@ ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
         (snap.description ? "<div class='path-description'>" + zmap._renderWikiText(snap.description) + "</div>" : '') +
         zmap._pathStepsHTML(snap, steps) + "</div>");
     body.find('[data-action=revert]').on('click', function() { zmap._restorePathRevision(path, rev); });
-    body.find('[data-action=copy-url]').on('click', function() { zmap._wikiCopy(zmap._pathUrl(path), 'Path link'); });
+    body.find('[data-action=copy-url]').on('click', function() { zmap._wikiCopy(zmap._pathUrl(path, true), 'Path link'); });
     body.find('[data-action=history]').on('click', function() { zmap._endPathEditing(); zmap.openPathHistory(path); });
     zmap._wirePathSteps(page, steps, null, snap.name);
     zmap._previewPath({scope: path.scope, kind: snap.kind, loops: snap.loops, numbered: snap.numbered, smooth: !!snap.smooth, categoryId: snap.categoryId,
@@ -1095,16 +1143,18 @@ ZMap.prototype._pathDragReorder = function(listEl, items, changed) {
   });
 };
 
-// A path from a profile: opened here when it's this game's (loaded first if
-// it's someone else's), else its game opened at it.
-ZMap.prototype.openPathFromLink = function(game, slug) {
+// A path from a profile, Community Paths or a notification: opened here when
+// it's this game's (loaded first if it's someone else's), else its game
+// opened at it. back: the page it was opened from, which its Back returns to.
+ZMap.prototype.openPathFromLink = function(game, slug, back) {
   var zmap = this;
   if(game !== this.mapOptions.shortName) {
     window.location.href = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug);
     return;
   }
-  if((this.paths || []).some(function(p) { return p.slug === slug; })) { this.openPathPage(slug); return; }
-  this._reloadPaths(function() { zmap.openPathPage(slug); }, slug);
+  var open = function() { zmap.openPathPage(slug, {back: back || null}); };
+  if((this.paths || []).some(function(p) { return p.slug === slug; })) { open(); return; }
+  this._reloadPaths(open, slug);
 };
 
 // A profile's paths: the owner's own routes, in every game.
@@ -1170,7 +1220,7 @@ ZMap.prototype.openCommunityPaths = function(back, sort) {
     list.empty(); offset = 0; load();
   });
   $(page).on('click.communityPaths', '.community-path', function() {
-    zmap.openPathFromLink(this.getAttribute('data-game'), this.getAttribute('data-slug'));
+    zmap.openPathFromLink(this.getAttribute('data-game'), this.getAttribute('data-slug'), function() { zmap.openCommunityPaths(back, sort); });
   });
   more.off('click').on('click', load);
   list.empty();
@@ -1329,7 +1379,13 @@ ZMap.prototype._addPathSearchResults = function(query, listView, markerCount) {
   var rows = $("<li class='path-search-results'></li>");
   found.forEach(function(p) {
     var card = $(zmap._pathListItemHTML(p));
-    card.on('click', function() { zmap.openPathPage(p.slug); });
+    // As a marker result opens: on desktop, with a Back to the results
+    // (HeaderBar.js), else closing as a page from the map does.
+    card.on('click', function() {
+      var header = zmap.mapControl.headerBar;
+      if(header && header._returnToSearchResults) header._returnToSearchResults();
+      zmap.openPathPage(p.slug, {back: null});
+    });
     rows.append(card);
   });
   list.prepend(rows);

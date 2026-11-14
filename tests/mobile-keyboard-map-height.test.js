@@ -23,11 +23,16 @@ test('keyboard viewport panning cannot shrink the map clipping container',()=>{
   const source=fs.readFileSync(path.join(__dirname,'../scripts/zmap.js'),'utf8');
   const body=source.slice(source.indexOf('  var updateMobileMapHeight = function()'),source.indexOf('  // Resizes keep the map'));
   const setProperty=jest.fn();
-  const context={isMobile:()=>true,document:{documentElement:{style:{setProperty,removeProperty:jest.fn()}}},
+  const classes=new Set();
+  const context={isMobile:()=>true,document:{documentElement:{classList:{contains:name=>classes.has(name)},style:{setProperty,removeProperty:jest.fn()}}},
     window:{innerHeight:513,screen:{height:890},visualViewport:{offsetTop:283}},mapControl:{_keyboardDrawerViewport:{height:837}}};
   vm.runInNewContext(body+'; updateMobileMapHeight();',context);
   expect(setProperty).not.toHaveBeenCalled();
   context.mapControl._keyboardDrawerViewport=null;
   vm.runInNewContext(body+'; updateMobileMapHeight();',context);
   expect(setProperty).toHaveBeenCalledWith('--mobile-map-height','607px');
+  // An embed is as tall as its frame, whatever the screen.
+  classes.add('zm-framed');
+  vm.runInNewContext(body+'; updateMobileMapHeight();',context);
+  expect(setProperty).toHaveBeenLastCalledWith('--mobile-map-height','513px');
 });

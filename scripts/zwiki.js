@@ -1119,7 +1119,7 @@ ZMap.prototype._renderUserProfile = function(data, back) {
   };
   showBio(profile.bio);
   $(page).find('.profile-path').on('click', function() {
-    _this.openPathFromLink(this.getAttribute('data-game'), this.getAttribute('data-slug'));
+    _this.openPathFromLink(this.getAttribute('data-game'), this.getAttribute('data-slug'), reopen);
   });
   var changes = $(page).find('.profile-changes');
   var renderActivity=function(rows) {

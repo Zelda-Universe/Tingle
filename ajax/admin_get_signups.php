@@ -1,6 +1,7 @@
 <?php
   include_once(dirname(__DIR__) . '/lib/common/admin.php');
   include_once(dirname(__DIR__) . '/lib/common/signups.php');
+  include_once(dirname(__DIR__) . '/lib/common/embeds.php');
   if (adminRequire($db, $map_prefix) === null) return;
 
   // Admin's Sign-Up Sources: for each place registration is offered, how
@@ -99,8 +100,27 @@
       'items' => $count("SELECT COUNT(*) FROM `{$map_prefix}marker_revision` WHERE `action` <> 'import'"), 'unit' => 'edits');
   }
 
+  // Embeds, over the same range: codes copied, and embeds shown on other
+  // sites, with the sites showing them most (lib/common/embeds.php).
+  $embeds = null;
+  if (embedsAvailable($db, $map_prefix)) {
+    $embeds = array('copies' => 0, 'views' => 0, 'sites' => 0, 'copiesBy' => array(), 'viewsBy' => array(), 'topSites' => array(),
+      'trackingSince' => $db->fetchOne("SELECT MIN(`created`) FROM `{$map_prefix}embed_event`"));
+    foreach (embedTargets() as $target => $label) { $embeds['copiesBy'][$target] = 0; $embeds['viewsBy'][$target] = 0; }
+    foreach ($db->fetchAllAssociative("SELECT `kind`, `target`, COUNT(*) AS `n` FROM `{$map_prefix}embed_event` WHERE `created` >= ? GROUP BY `kind`, `target`", [$since]) as $row) {
+      $n = (int) $row['n'];
+      if ($row['kind'] === 'copy') { $embeds['copies'] += $n; if (isset($embeds['copiesBy'][$row['target']])) $embeds['copiesBy'][$row['target']] = $n; }
+      if ($row['kind'] === 'view') { $embeds['views'] += $n; if (isset($embeds['viewsBy'][$row['target']])) $embeds['viewsBy'][$row['target']] = $n; }
+    }
+    $embeds['sites'] = (int) $db->fetchOne("SELECT COUNT(DISTINCT `host`) FROM `{$map_prefix}embed_event` WHERE `kind` = 'view' AND `host` IS NOT NULL AND `created` >= ?", [$since]);
+    foreach ($db->fetchAllAssociative("SELECT `host`, COUNT(*) AS `n` FROM `{$map_prefix}embed_event` WHERE `kind` = 'view' AND `host` IS NOT NULL AND `created` >= ?
+        GROUP BY `host` ORDER BY `n` DESC, `host` LIMIT 10", [$since]) as $row) {
+      $embeds['topSites'][] = array('host' => $row['host'], 'views' => (int) $row['n']);
+    }
+  }
+
   echo json_encode(array(
-    'success' => true, 'range' => $range, 'available' => $available,
+    'success' => true, 'range' => $range, 'embeds' => $embeds, 'available' => $available,
     'total' => $total, 'untracked' => $untracked, 'trackingSince' => $tracking,
     'sources' => array_values($sources), 'usage' => $usage, 'experiment' => $experiment,
     'accounts' => (int) $db->fetchOne("SELECT COUNT(*) FROM `{$map_prefix}user` WHERE `deleted` IS NULL")

@@ -255,6 +255,9 @@
         try { framed = window.self !== window.top; } catch (e) { framed = true; }
         // (embed.php: always, framed or not, and never signed in.)
         window.zmapEmbed = <?= $zmEmbed ? 'true' : 'false' ?>;
+        // An embed shown on Zelda Maps' own pages (a preview) is signed in as
+        // the page around it is: our own pages framing it can't trick anyone.
+        window.zmapEmbedPreview = <?= $zmEmbed && ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '') === 'same-origin' ? 'true' : 'false' ?>;
         if (!framed && !window.zmapEmbed) return;
         document.documentElement.classList.add('zm-framed');
         // A link in what's shown (a marker's sources) opens in a new tab,
@@ -389,10 +392,12 @@
           /Safari/.test(window.navigator.userAgent) &&
           !/(CriOS|FxiOS|EdgiOS|OPiOS)/.test(window.navigator.userAgent);
 
-        if (isStandalone) {
+        // (Not an embed: it's a frame in someone's page, not the screen.)
+        var embedded = document.documentElement.classList.contains('zm-framed');
+        if (!embedded && isStandalone) {
           document.documentElement.classList.add('zm-standalone');
           document.documentElement.style.setProperty('--mobile-control-top', '89px');
-        } else if (isIOSSafari) {
+        } else if (!embedded && isIOSSafari) {
           document.documentElement.classList.add('zm-ios-safari');
           document.documentElement.style.setProperty('--mobile-control-top', '18px');
         }

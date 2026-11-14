@@ -17,6 +17,12 @@ ZMap.prototype.loadPaths = function() {
   var linked = new URL(window.location.href).searchParams.get('path') || '';
   $.getJSON('ajax.php?command=get_paths&game=' + gameId + '&path=' + encodeURIComponent(linked)).done(function(paths) {
     zmap.paths = Array.isArray(paths) ? paths : [];
+    // An embed (previewed on Zelda Maps, signed in) shows only what anyone
+    // would see: the official paths and the one embedded, nobody's progress.
+    if(zmap.isFramed && zmap.isFramed()) {
+      zmap.paths = zmap.paths.filter(function(p) { return p.scope === 'official' || p.slug === linked; });
+      zmap.paths.forEach(function(p) { p.complete = false; p.steps.forEach(function(s) { s.done = false; }); });
+    }
     zmap._preparePaths();
     zmap.refreshMap();
     zmap._pathsEnabled = !!(zmap.getUser() && zmap.getUser().level >= 10);
@@ -160,7 +166,7 @@ ZMap.prototype._updatePathFocus = function(type) {
     // Leaving the path: coming back, its guide offers to Continue (PathEditor.js).
     this._pathStartLabel = null;
     var url = new URL(window.location.href);
-    if(url.searchParams.has('path') || url.searchParams.has('pin')) {
+    if((url.searchParams.has('path') || url.searchParams.has('pin')) && !(this.isFramed && this.isFramed())) {
       url.searchParams.delete('path');
       url.searchParams.delete('pin');
       history.replaceState(history.state, '', url.toString());
@@ -244,7 +250,8 @@ ZMap.prototype.drawPaths = function(ifChanged) {
     // arrow's, thickens, so it's clear it can be clicked.
     if(!path._preview && !zmap._pathEditing && !(zmap.isFramed && zmap.isFramed())) {
       var hit = widthVar(L.polyline(line, {renderer: renderer, color: '#000', opacity: 0, weight: 18, bubblingMouseEvents: false, className: 'zm-path-hit'})
-        .on('click', function(e) { L.DomEvent.stop(e); zmap.openPathPage(path.slug); })
+        // (From the map: its page closes, as a marker's does.)
+        .on('click', function(e) { L.DomEvent.stop(e); zmap.openPathPage(path.slug, {back: null}); })
         .addTo(zmap._pathLayer));
       if(!selected) {
         var hover = function(on) { arrows.setBorder(on ? hoverBorder : border); };
@@ -319,6 +326,8 @@ ZMap.prototype.focusPath = function(slug, opts) {
   // the map above it; with the drawer pulled up, it still gets the top half.)
   var control = this.mapControl;
   this._prepareMapEdgesForDrawer();
+  // (A tenth again around it, so it doesn't run right up to the edges.)
+  bounds = bounds.pad(.1);
   if(this._fitBoundsToVisibleMap) this._fitBoundsToVisibleMap(bounds, {maxDrawerShare: .5, animate: !(opts && opts.instant),
     drawerTargetTop: control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined});
   else this.map.fitBounds(bounds.pad(.15), {animate: false});

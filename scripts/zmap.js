@@ -675,6 +675,8 @@ ZMap.prototype.addMarker = function(vMarker) {
    });
 
    marker.on('contextmenu',function(e){
+      // (An embed has no Complete.)
+      if (_this.isFramed()) return;
       if (!marker.complete) {
         _this._doSetMarkerDoneAndCookie(marker);
       } else {
@@ -939,7 +941,8 @@ ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
     var areaNameLink = this.markerLabelLink ? this.markerLabelLink(marker, 'area') : null;
     var areaLink = this.markerAreaLink ? this.markerAreaLink(marker) : null;
     // The place and area name pills are left out of the compact title bar
-    // (marker-name-pill), which keeps the coordinates and the region.
+    // (marker-name-pill), which keeps the coordinates and the region, or,
+    // with no region, the place name (ZLayers _setupCompactTitle).
     var pillFor = function(link, which) {
       if(!link) return '';
       var label = $('<span>').text(link.label).html();
@@ -1116,7 +1119,17 @@ ZMap.prototype._getClipboardParams = function(href) {
 ZMap.prototype._pageAddress = function(embed) {
    return new URL(embed ? 'embed.php' : './', window.location.href.split('?')[0]).href;
 }
+// An Embed Code copied, counted for the Admin panel's Embeds (anonymous:
+// lib/common/embeds.php). target: 'marker', 'pin' or 'path'.
+ZMap.prototype.trackEmbedCopy = function(target) {
+  try {
+    var data = new URLSearchParams({ target: target, game: this.mapOptions.shortName || '' });
+    if(navigator.sendBeacon) navigator.sendBeacon('ajax.php?command=track_embed', data);
+    else $.post('ajax.php?command=track_embed', data.toString());
+  } catch(e) {}
+};
 ZMap.prototype._copyToClipboardEmbed = function(vMarkerId, button) {
+   this.trackEmbedCopy('marker');
    var href = window.location.href.split("?");
    var clipboardParams = this._getClipboardParams(href);
 
@@ -1894,7 +1907,8 @@ ZMap.prototype.buildMap = function(gameId) {
     var viewportTop = window.visualViewport
       ? window.visualViewport.offsetTop
       : 0;
-    var height = Math.max(
+    // (In an embed, the frame's own height: the screen's is the page around it.)
+    var height = document.documentElement.classList.contains('zm-framed') ? window.innerHeight : Math.max(
       window.innerHeight,
       window.screen.height - viewportTop
     );
@@ -2367,6 +2381,7 @@ ZMap.prototype._openDroppedPin = function(latlng) {
     return false;
   });
   $('#copy_dropped_pin_embed').on('click', function() {
+    zmap.trackEmbedCopy('pin');
     zmap._copyText("<iframe src=\"" + embedLink + "\" frameborder=\"0\" allowfullscreen></iframe>", this);
     return false;
   });
@@ -3343,9 +3358,13 @@ ZMap.prototype.setUser = function(vUser) {
    _this._buildContextMenu();
    if (this._watchWikiUser) this._watchWikiUser();
    this.notifyUserChanged();
-   if (this._watchNotifications) this._watchNotifications();
+   // (An embed, even previewed signed in, keeps to what anyone would see:
+   // no notifications, completions or bookmarks, and nothing moved into the
+   // account.)
+   var framed = this.isFramed();
+   if (this._watchNotifications && !framed) this._watchNotifications();
 
-   if (user != null) {
+   if (user != null && !framed) {
       // Transfer cookies completed markers to database
       var cookieCompletedMarkers = getCookie('completedMarkers');
       if (cookieCompletedMarkers != undefined && cookieCompletedMarkers != null && cookieCompletedMarkers != "") {
@@ -3986,6 +4005,8 @@ ZMap.prototype.transferCompletedMarkersToDB = function() {
 };
 
 ZMap.prototype.getUserCompletedMarkers = function() {
+   // (Nor an embed previewed on Zelda Maps itself, signed in: index.php.)
+   if (this.isFramed()) return;
    // clean the categories complete count
    this.categoriesArr.forEach(function(category) {
       this.categories[category.id].complete = 0;
@@ -4047,7 +4068,8 @@ ZMap.prototype.syncOfflineChanges = function() {
 };
 
 ZMap.prototype.addCompletedMarkers = function(vComplete) {
-   completedMarkers = vComplete;
+   // (An embed shows no one's completions: it's the same for every reader.)
+   completedMarkers = this.isFramed() ? [] : vComplete;
 };
 
 ZMap.prototype._setMarkerDone = function(vID, vComplete, onSettled) {
@@ -5447,6 +5469,12 @@ ZMap.prototype._createAdminPage = function(opts) {
         '<h4 class="admin-section-heading">Feature Adoption <span id="admin_usage_total" class="admin-muted admin-section-summary"></span></h4>' +
         '<div id="admin_usage" class="admin-usage"><p class="admin-muted">Loading…</p></div>' +
       '</section>' +
+      // Embed Code copied, and embeds shown on other sites (embed.php), over
+      // Sign-Up Sources' time frame.
+      '<section data-section="embeds" class="admin-section admin-analytics-section">' +
+        '<h4 class="admin-section-heading">Embeds <span id="admin_embeds_total" class="admin-muted admin-section-summary"></span></h4>' +
+        '<div id="admin_embeds" class="admin-usage"><p class="admin-muted">Loading…</p></div>' +
+      '</section>' +
       '<section data-section="markers" class="admin-section admin-analytics-section admin-activity" data-activity="markers">' +
         '<h4 class="admin-section-heading">Completes &amp; Bookmarks <span class="admin-muted admin-section-summary admin-activity-total"></span></h4>' +
         '<div class="admin-chart">' +
@@ -5724,6 +5752,8 @@ ZMap.prototype._createAdminPage = function(opts) {
     $('#admin_usage').empty().append(_this._adminFeatureUsage(data));
     var most = (data.usage || []).slice().sort(function(a, b) { return (b.people || 0) - (a.people || 0); })[0];
     $('#admin_usage_total').text(most && most.people ? 'Most used: ' + most.label : '');
+    $('#admin_embeds').empty().append(_this._adminEmbeds(data));
+    $('#admin_embeds_total').text(data.embeds && rangeLabel ? rangeLabel : '');
   };
   var showSignupRange = function() {
     $('#admin .admin-signup-ranges button').each(function() {
@@ -5739,7 +5769,7 @@ ZMap.prototype._createAdminPage = function(opts) {
       showSignups(data);
     }).fail(function() {
       if(requestId !== signupRequest) return;
-      $('#admin_signups, #admin_usage').html('<p class="admin-muted">Unable to load stats. Try again.</p>');
+      $('#admin_signups, #admin_usage, #admin_embeds').html('<p class="admin-muted">Unable to load stats. Try again.</p>');
     });
   };
   $('#admin .admin-signup-ranges button').click(function() {
@@ -6189,6 +6219,40 @@ ZMap.prototype._adminReminderTest = function(groups) {
   }
   box.append($('<p class="admin-muted admin-test-verdict"></p>').text(verdict));
   return box;
+};
+
+// Admin's Embeds: codes copied (by what was embedded) and embeds shown on
+// other sites, with the sites showing them most (ajax/admin_get_signups.php).
+ZMap.prototype._adminEmbeds = function(data) {
+  var embeds = data.embeds;
+  if(!embeds) return $('<p class="admin-muted centered-empty-state">Embeds aren’t counted yet.</p>');
+  var labels = { marker: 'markers', pin: 'pins', path: 'paths', map: 'maps' };
+  var breakdown = function(by) {
+    return Object.keys(by).filter(function(k) { return by[k]; }).map(function(k) { return by[k].toLocaleString() + ' ' + labels[k]; }).join(' · ');
+  };
+  var wrap = $('<div></div>'), grid = $('<div class="admin-usage-grid"></div>').appendTo(wrap);
+  var tile = function(label, value, line) {
+    var t = $('<div class="admin-stat"><span class="admin-stat-label"></span><span class="admin-stat-value"></span><span class="admin-stat-change"></span></div>');
+    t.find('.admin-stat-label').text(label);
+    t.find('.admin-stat-value').text(Number(value || 0).toLocaleString());
+    t.find('.admin-stat-change').text(line);
+    grid.append(t);
+  };
+  tile('Embed codes copied', embeds.copies, breakdown(embeds.copiesBy) || 'None yet');
+  tile('Embed views', embeds.views, embeds.sites ? 'on ' + embeds.sites.toLocaleString() + (embeds.sites === 1 ? ' site' : ' sites') : 'None yet');
+  if(embeds.topSites && embeds.topSites.length) {
+    var list = $('<ol class="admin-embed-sites"></ol>').appendTo(wrap);
+    embeds.topSites.forEach(function(site) {
+      var row = $('<li><span class="admin-embed-site"></span><span class="admin-muted"></span></li>');
+      row.find('.admin-embed-site').text(site.host);
+      row.find('.admin-muted').text(site.views.toLocaleString() + (site.views === 1 ? ' view' : ' views'));
+      list.append(row);
+    });
+  }
+  if(embeds.trackingSince) {
+    $('<p class="admin-muted admin-embed-since"></p>').text('Counted since ' + String(embeds.trackingSince).slice(0, 10)).appendTo(wrap);
+  }
+  return wrap;
 };
 
 ZMap.prototype._adminFeatureUsage = function(data) {
@@ -7880,6 +7944,33 @@ ZMap.prototype.restoreMarkerReturnView = function() {
   return true;
 };
 
+// An embedded marker in a small frame (zmain.lib.js finalLoadContent): zoomed
+// out from its link's zoom, so there's enough around it to tell where it is:
+// a level out for every halving of the map left to see below 640px.
+ZMap.prototype.EMBED_ROOM = 640;
+ZMap.prototype._fitEmbedMarker = function(markerId) {
+  var marker = this.cachedMarkersById && this.cachedMarkersById[markerId];
+  if(!marker || !this.map) return;
+  var map = this.map, control = this.mapControl, zmap = this;
+  // (Not mid-way through a zoom the page's start-up began: it'd carry on past it.)
+  if(map._animatingZoom) { map.once('zoomend', function() { setTimeout(function() { zmap._fitEmbedMarker(markerId); }, 0); }); return; }
+  var rect = map.getContainer().getBoundingClientRect(), drawer = control._container.getBoundingClientRect();
+  var width = rect.width, height = rect.height, target;
+  if(control.viewStyleBottomSlide) {
+    // (Above the drawer at its partial height, where it rests.)
+    target = control.options.softOpenTo;
+    var base = Number.isFinite(control._mobileDrawerBaseTop) ? control._mobileDrawerBaseTop :
+      drawer.top - (Number.parseFloat(control._container.style.top) || 0);
+    height = Math.max(0, base + target - rect.top);
+  } else if(window.getComputedStyle(control._container).display !== 'none') {
+    width = Math.max(0, rect.right - drawer.right);
+  }
+  var room = Math.min(width, height);
+  if(!room || room >= this.EMBED_ROOM) return;
+  var zoom = Math.max(map.getMinZoom(), map.getZoom() + Math.log2(room / this.EMBED_ROOM));
+  this._setViewAtMarkerInVisibleArea(marker, zoom, target, false);
+};
+
 ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom, drawerTargetTop, animate) {
   var mapRect = this.map.getContainer().getBoundingClientRect();
   var mapSize = this.map.getSize();
@@ -7953,6 +8044,9 @@ ZMap.prototype.getMarkers = function() {
 
 
 ZMap.prototype.updateUrl = function() {
+   // (An embed's address stays as it was embedded: reloading it starts it
+   // over, and Open on Zelda Maps opens what was embedded.)
+   if (this.isFramed()) return;
    var url = new URL(window.location.toString());
    var markerContent = /^m(\d+)$/.exec(this.mapControl.getContentType() || '');
    if (markerContent) {

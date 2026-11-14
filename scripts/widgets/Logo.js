@@ -7,6 +7,16 @@
 //   - parent: [DOMElement] The parent node to attach to.
 //   - headerHeight: [Number]
 
+// What an embed shows, on Zelda Maps itself, in a new tab (the logo, and
+// the header's Open on Zelda Maps: ZLayers.js).
+function openOnZeldaMaps() {
+  // (The map's own page, not embed.php, without the embed's settings.)
+  var url = new URL(window.location.href);
+  url.pathname = url.pathname.replace(/embed\.php$/, '');
+  ['hideOthers', 'showMapControl', 'hidePin'].forEach(function(name) { url.searchParams.delete(name); });
+  window.open(url.toString(), '_blank', 'noopener');
+}
+
 function Logo(opts) {
   this._initDOMElements(opts);
 };
@@ -26,11 +36,7 @@ Logo.prototype._initDOMElements = function(opts) {
     var open = function(e) {
       if(e.type === 'keydown' && e.key !== 'Enter') return;
       L.DomEvent.stop(e);
-      // (The map's own page, not embed.php.)
-      var url = new URL(window.location.href);
-      url.pathname = url.pathname.replace(/embed\.php$/, '');
-      ['hideOthers', 'showMapControl', 'hidePin'].forEach(function(name) { url.searchParams.delete(name); });
-      window.open(url.toString(), '_blank', 'noopener');
+      openOnZeldaMaps();
     };
     L.DomEvent.on(logoDiv, 'click', open);
     L.DomEvent.on(logoDiv, 'keydown', open);

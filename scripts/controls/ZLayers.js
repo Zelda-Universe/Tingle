@@ -421,6 +421,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
       });
       $(headerMenu).append(this._mapsButton.domNode, this._gamesButton.domNode);
       this._syncSwitchButtonOrder();
+      // In an embed, in their place: Open on Zelda Maps, as the page's own
+      // buttons are (styles/zmain.css shows it only there; widgets/Logo.js
+      // opens it).
+      if(document.documentElement.classList.contains('zm-framed')) {
+        var openSite = $('<button type="button" class="marker-editor-button zm-open-site-button">' +
+          '<i class="fas fa-external-link-alt" aria-hidden="true"></i><span>Open on Zelda Maps</span></button>');
+        openSite.on('click', function(e) { e.preventDefault(); e.stopPropagation(); openOnZeldaMaps(); });
+        $(headerMenu).append(openSite);
+      }
     }
 
     this._drawerHeaderSeparator = L.DomUtil.create(
@@ -823,6 +832,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   _usesPhysicalMobileScreen: function() {
+    // (An embed is only as tall as its frame, whatever the screen.)
+    if(document.documentElement.classList.contains('zm-framed')) return false;
     if(document.documentElement.classList.contains('zm-standalone')) return true;
 
     var navigator = window.navigator;
@@ -1793,7 +1804,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // On mobile, top-level pages opened from the map or header dismiss the
     // drawer, so they get a close button. On desktop the panel stays open and
     // returns to the category list, so they keep a back button.
-    var isMapPage = /^m\d+$/.test(vType) || /^droppedPin-/.test(vType) || /^area-/.test(vType);
+    // (A path's page opened from the map, with nowhere to go back to, is one
+    // too; from a category or a list, it goes back there.)
+    var isMapPage = /^m\d+$/.test(vType) || /^droppedPin-/.test(vType) || /^area-/.test(vType) || (vType === 'path' && !pageBack);
     var closesPage = isMapPage || ['accountPage', 'games', 'maps'].includes(vType);
     // A POI or pin opened from a list (e.g. Bookmarks) can also go back to it.
     var returnsTo = null;
@@ -2268,7 +2281,19 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var pillSource = popup &&
       contents.querySelector('.menu-cat-content-inner > .marker-coordinate-pill, .menu-cat-content-inner > .area-header-pills');
     var pillSources = !pillSource ? [] : (pillSource.classList.contains('marker-coordinate-pill')
-      ? [pillSource] : Array.prototype.slice.call(pillSource.querySelectorAll(':scope > .marker-coordinate-pill:not(.marker-name-pill)')));
+      ? [pillSource] : Array.prototype.slice.call(pillSource.querySelectorAll(':scope > .marker-coordinate-pill')));
+    // Not one the page hides (a path's completion in an embed). A marker's
+    // place and area names are left out when it has a region pill; without
+    // one, its place name stays, so the bar always says where it is.
+    pillSources = pillSources.filter(function(p) { return window.getComputedStyle(p).display !== 'none'; });
+    var hasRegion = pillSources.some(function(p) { return p.classList.contains('marker-region-pill') && !p.classList.contains('marker-name-pill'); });
+    var keptName = false;
+    pillSources = pillSources.filter(function(p) {
+      if(!p.classList.contains('marker-name-pill')) return true;
+      if(hasRegion || keptName) return false;
+      keptName = true;
+      return true;
+    });
     var pills = null;
     if(pillSources.length) {
       pills = document.createElement('span');

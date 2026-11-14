@@ -244,9 +244,13 @@ ZMap.prototype._fitBoundsToVisibleMap = function(bounds, opts) {
   var threshold = map.options.zoomAnimationThreshold;
   map.options.zoomAnimationThreshold = Infinity;
   try {
-    map.fitBounds(bounds, {paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
-      maxZoom: map.getMaxZoom(), animate: opts.animate !== false && !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-      duration: .25, easeLinearity: .2});
+    var fitOptions = {paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
+      maxZoom: Number.isFinite(opts.maxZoom) ? Math.min(opts.maxZoom, map.getMaxZoom()) : map.getMaxZoom(),
+      animate: opts.animate !== false && !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      duration: .25, easeLinearity: .2};
+    // opts.fly: flown there (out and back in), for a longer way.
+    if(opts.fly && fitOptions.animate) map.flyToBounds(bounds, L.extend(fitOptions, {duration: .8}));
+    else map.fitBounds(bounds, fitOptions);
   } finally { map.options.zoomAnimationThreshold = threshold; }
 };
 

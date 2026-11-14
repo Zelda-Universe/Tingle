@@ -6750,6 +6750,13 @@ body .tox .tox-insert-table td.tox-insert-table__cell--selected {
 	margin: 0 16px 12px;
 	border-radius: 10px;
 }
+/* (A path's step has no 16px column, its text running edge to edge: an
+   image on its own fills it too, as one in a paragraph does.) */
+.leaflet-control-layers .popupContent.path-step-content > img,
+.leaflet-control-layers .popupContent.path-step-content > a > img {
+	max-width: 100%;
+	margin: 0 0 12px;
+}
 /* In tables, break words only when one can't fit at all, so columns don't
    squeeze words apart ("Traveler / 's Bow"). */
 .leaflet-control-layers .popupContent table:not(.table),

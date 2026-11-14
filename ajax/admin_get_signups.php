@@ -1,12 +1,11 @@
 <?php
   include_once(dirname(__DIR__) . '/lib/common/admin.php');
   include_once(dirname(__DIR__) . '/lib/common/signups.php');
-  include_once(dirname(__DIR__) . '/lib/common/embeds.php');
   if (adminRequire($db, $map_prefix) === null) return;
 
   // Admin's Sign-Up Sources: for each place registration is offered, how
   // often the prompt was shown, what people chose, and how many accounts it
-  // made, over a range. Then how widely features are used.
+  // made, over a range.
   // The Accounts graph's time frames (admin_get_stats.php).
   $ranges = ['7d' => 7, '14d' => 14, '30d' => 30, '6m' => 182, '1y' => 365, 'all' => null];
   $range = array_key_exists($_GET['range'] ?? '', $ranges) ? $_GET['range'] : '30d';
@@ -72,57 +71,10 @@
     $experiment = array_values($experiment);
   }
 
-  // Feature usage, all time: how many people use each, and how much.
-  $usage = array();
-  $count = function($sql) use ($db) {
-    try { return (int) $db->fetchOne($sql); } catch (\Throwable $e) { return null; }
-  };
-  $has = function($table) use ($db, $map_prefix) {
-    return (bool) $db->fetchOne("SHOW TABLES LIKE '{$map_prefix}{$table}'");
-  };
-  if ($has('user_bookmark')) {
-    $usage[] = array('label' => 'Bookmarks', 'people' => $count("SELECT COUNT(DISTINCT `user_id`) FROM `{$map_prefix}user_bookmark`"),
-      'items' => $count("SELECT COUNT(*) FROM `{$map_prefix}user_bookmark`"), 'unit' => 'bookmarks');
-  }
-  // No completed markers here: counting people across that table (tens of
-  // millions of rows) on every visit isn't worth it. Completes & Bookmarks
-  // covers them, cached.
-  if ($has('push_subscription')) {
-    $usage[] = array('label' => 'Push notifications', 'people' => $count("SELECT COUNT(DISTINCT `user_id`) FROM `{$map_prefix}push_subscription`"),
-      'items' => $count("SELECT COUNT(*) FROM `{$map_prefix}push_subscription`"), 'unit' => 'devices');
-  }
-  if ($has('talk_comment')) {
-    $usage[] = array('label' => 'Talk comments', 'people' => $count("SELECT COUNT(DISTINCT `user_id`) FROM `{$map_prefix}talk_comment` WHERE `deleted` IS NULL"),
-      'items' => $count("SELECT COUNT(*) FROM `{$map_prefix}talk_comment` WHERE `deleted` IS NULL"), 'unit' => 'comments');
-  }
-  if ($has('marker_revision')) {
-    $usage[] = array('label' => 'Marker edits', 'people' => $count("SELECT COUNT(DISTINCT `user_id`) FROM `{$map_prefix}marker_revision` WHERE `action` <> 'import'"),
-      'items' => $count("SELECT COUNT(*) FROM `{$map_prefix}marker_revision` WHERE `action` <> 'import'"), 'unit' => 'edits');
-  }
-
-  // Embeds, over the same range: codes copied, and embeds shown on other
-  // sites, with the sites showing them most (lib/common/embeds.php).
-  $embeds = null;
-  if (embedsAvailable($db, $map_prefix)) {
-    $embeds = array('copies' => 0, 'views' => 0, 'sites' => 0, 'copiesBy' => array(), 'viewsBy' => array(), 'topSites' => array(),
-      'trackingSince' => $db->fetchOne("SELECT MIN(`created`) FROM `{$map_prefix}embed_event`"));
-    foreach (embedTargets() as $target => $label) { $embeds['copiesBy'][$target] = 0; $embeds['viewsBy'][$target] = 0; }
-    foreach ($db->fetchAllAssociative("SELECT `kind`, `target`, COUNT(*) AS `n` FROM `{$map_prefix}embed_event` WHERE `created` >= ? GROUP BY `kind`, `target`", [$since]) as $row) {
-      $n = (int) $row['n'];
-      if ($row['kind'] === 'copy') { $embeds['copies'] += $n; if (isset($embeds['copiesBy'][$row['target']])) $embeds['copiesBy'][$row['target']] = $n; }
-      if ($row['kind'] === 'view') { $embeds['views'] += $n; if (isset($embeds['viewsBy'][$row['target']])) $embeds['viewsBy'][$row['target']] = $n; }
-    }
-    $embeds['sites'] = (int) $db->fetchOne("SELECT COUNT(DISTINCT `host`) FROM `{$map_prefix}embed_event` WHERE `kind` = 'view' AND `host` IS NOT NULL AND `created` >= ?", [$since]);
-    foreach ($db->fetchAllAssociative("SELECT `host`, COUNT(*) AS `n` FROM `{$map_prefix}embed_event` WHERE `kind` = 'view' AND `host` IS NOT NULL AND `created` >= ?
-        GROUP BY `host` ORDER BY `n` DESC, `host` LIMIT 10", [$since]) as $row) {
-      $embeds['topSites'][] = array('host' => $row['host'], 'views' => (int) $row['n']);
-    }
-  }
-
   echo json_encode(array(
-    'success' => true, 'range' => $range, 'embeds' => $embeds, 'available' => $available,
+    'success' => true, 'range' => $range, 'available' => $available,
     'total' => $total, 'untracked' => $untracked, 'trackingSince' => $tracking,
-    'sources' => array_values($sources), 'usage' => $usage, 'experiment' => $experiment,
+    'sources' => array_values($sources), 'experiment' => $experiment,
     'accounts' => (int) $db->fetchOne("SELECT COUNT(*) FROM `{$map_prefix}user` WHERE `deleted` IS NULL")
   ));
 ?>

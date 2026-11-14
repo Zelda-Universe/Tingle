@@ -26,7 +26,14 @@
     // is first edited), and when the editing beta's testers joined. Leaving
     // the beta clears beta_editor, so these are the testers there are now.
     'edits'     => ['table' => 'marker_revision', 'column' => 'created', 'where' => "`action` <> 'import'"],
-    'beta'      => ['table' => 'user', 'column' => 'beta_editor', 'where' => '`beta_editor` IS NOT NULL', 'people' => 'id']
+    'beta'      => ['table' => 'user', 'column' => 'beta_editor', 'where' => '`beta_editor` IS NOT NULL', 'people' => 'id'],
+    // Embeds (lib/common/embeds.php): Embed Code copied (anonymous, so no
+    // people), and embeds shown on other sites (counted by site).
+    'embed_copies' => ['table' => 'embed_event', 'column' => 'created', 'where' => "`kind` = 'copy'", 'people' => false],
+    'embed_views'  => ['table' => 'embed_event', 'column' => 'created', 'where' => "`kind` = 'view'", 'people' => 'host', 'peopleNoun' => 'sites'],
+    // Devices signed up for push notifications (one row each; turning them
+    // off deletes it, so these are the ones there are now).
+    'push' => ['table' => 'push_subscription', 'column' => 'created', 'where' => '1 = 1']
   ];
   $metric = isset($metrics[$_GET['metric'] ?? '']) ? $_GET['metric'] : 'completes';
   $info = $metrics[$metric];
@@ -47,7 +54,8 @@
   }
   if (!$db->fetchOne("SHOW TABLES LIKE '{$map_prefix}{$info['table']}'")) {
     echo json_encode(array('success' => false, 'metric' => $metric,
-      'msg' => $metric === 'downloads' ? 'Run the create_offline_map_event migration to track offline maps.' : 'Nothing to show yet.'));
+      'msg' => $metric === 'downloads' ? 'Run the create_offline_map_event migration to track offline maps.' :
+        (strpos($metric, 'embed_') === 0 ? 'Run the embed_events migration to count embeds.' : 'Nothing to show yet.')));
     return;
   }
   $table = "`{$map_prefix}{$info['table']}`";
@@ -128,7 +136,21 @@
         );
       }
     }
-    return ['buckets' => $buckets, 'top' => $top, 'droppedPins' => $droppedPins];
+    // Embeds over the range: the sites showing them most, or what the codes
+    // copied were for.
+    $embeds = null;
+    if ($metric === 'embed_views') {
+      $embeds = ['topSites' => array_map(function($row) { return ['host' => $row['host'], 'views' => (int) $row['n']]; }, $db->fetchAllAssociative(
+        "SELECT `host`, COUNT(*) AS `n` FROM $table WHERE $where AND `host` IS NOT NULL AND $column >= ? GROUP BY `host` ORDER BY `n` DESC, `host` LIMIT 10",
+        [$start->format('Y-m-d')]))];
+    }
+    if ($metric === 'embed_copies') {
+      $embeds = ['byTarget' => array_fill_keys(['marker', 'pin', 'path', 'map'], 0)];
+      foreach ($db->fetchAllAssociative("SELECT `target`, COUNT(*) AS `n` FROM $table WHERE $where AND $column >= ? GROUP BY `target`", [$start->format('Y-m-d')]) as $row) {
+        if (isset($embeds['byTarget'][$row['target']])) $embeds['byTarget'][$row['target']] = (int) $row['n'];
+      }
+    }
+    return ['buckets' => $buckets, 'top' => $top, 'droppedPins' => $droppedPins, 'embeds' => $embeds];
   });
 
   // The boxes: rolling windows ending now, against the window before. An
@@ -153,7 +175,7 @@
 
   // Distinct people over the whole table: a full scan, six hours.
   $peopleColumn = $info['people'] ?? 'user_id';
-  $people = $allTime ? adminCached("activity-{$metric}-people", 6 * 60 * 60, function() use ($db, $table, $where, $peopleColumn) {
+  $people = $allTime && $peopleColumn !== false ? adminCached("activity-{$metric}-people", 6 * 60 * 60, function() use ($db, $table, $where, $peopleColumn) {
     return ['people' => (int) $db->fetchOne("SELECT COUNT(DISTINCT `{$peopleColumn}`) FROM $table WHERE $where")];
   })['people'] : null;
 
@@ -207,6 +229,7 @@
   echo json_encode(array(
     'success' => true, 'metric' => $metric, 'range' => $range, 'bucket' => $bucket,
     'buckets' => $ranged['buckets'], 'summary' => $summary, 'people' => $people,
+    'peopleNoun' => $info['peopleNoun'] ?? 'people', 'embeds' => $ranged['embeds'] ?? null,
     'games' => $games, 'offline' => $offline, 'top' => $ranged['top'], 'droppedPins' => $ranged['droppedPins']
   ));
 ?>

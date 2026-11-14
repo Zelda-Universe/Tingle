@@ -5465,15 +5465,43 @@ ZMap.prototype._createAdminPage = function(opts) {
         '<div id="admin_signups" class="admin-signups"><p class="admin-muted">Loading…</p></div>' +
       '</section>' +
       '<p class="admin-group-label">Engagement</p>' +
-      '<section data-section="usage" class="admin-section admin-analytics-section">' +
-        '<h4 class="admin-section-heading">Feature Adoption <span id="admin_usage_total" class="admin-muted admin-section-summary"></span></h4>' +
-        '<div id="admin_usage" class="admin-usage"><p class="admin-muted">Loading…</p></div>' +
+      // Embeds (embed.php): Embed Code copied, and embeds shown on other
+      // sites, with the sites showing them most.
+      '<section data-section="embeds" class="admin-section admin-analytics-section admin-activity" data-activity="embeds">' +
+        '<h4 class="admin-section-heading">Embeds <span class="admin-muted admin-section-summary admin-embeds-total"></span></h4>' +
+        '<div class="admin-chart">' +
+          '<div class="admin-chart-options">' +
+            '<div class="admin-toggle admin-metrics" role="group" aria-label="Graph">' +
+              '<button type="button" data-metric="embed_copies">Codes Copied</button>' +
+              '<button type="button" data-metric="embed_views">Embed Views</button>' +
+            '</div>' +
+            '<div class="admin-toggle admin-ranges" role="group" aria-label="Time frame">' +
+              [['7d', '1W'], ['14d', '2W'], ['30d', '30D'], ['6m', '6M'], ['1y', '1Y'], ['all', 'All']].map(function(range) {
+                return '<button type="button" data-range="' + range[0] + '">' + range[1] + '</button>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<p class="admin-chart-readout" aria-live="polite"></p>' +
+          '<div class="admin-activity-chart"><p class="admin-muted">Loading…</p></div>' +
+        '</div>' +
+        '<div class="admin-summary admin-activity-summary"></div>' +
+        '<div class="admin-embeds-detail"></div>' +
       '</section>' +
-      // Embed Code copied, and embeds shown on other sites (embed.php), over
-      // Sign-Up Sources' time frame.
-      '<section data-section="embeds" class="admin-section admin-analytics-section">' +
-        '<h4 class="admin-section-heading">Embeds <span id="admin_embeds_total" class="admin-muted admin-section-summary"></span></h4>' +
-        '<div id="admin_embeds" class="admin-usage"><p class="admin-muted">Loading…</p></div>' +
+      // Devices signed up for push notifications.
+      '<section data-section="push" class="admin-section admin-analytics-section admin-activity" data-activity="push">' +
+        '<h4 class="admin-section-heading">Push Notifications <span class="admin-muted admin-section-summary admin-push-total"></span></h4>' +
+        '<div class="admin-chart">' +
+          '<div class="admin-chart-options">' +
+            '<div class="admin-toggle admin-ranges" role="group" aria-label="Time frame">' +
+              [['7d', '1W'], ['14d', '2W'], ['30d', '30D'], ['6m', '6M'], ['1y', '1Y'], ['all', 'All']].map(function(range) {
+                return '<button type="button" data-range="' + range[0] + '">' + range[1] + '</button>';
+              }).join('') +
+            '</div>' +
+          '</div>' +
+          '<p class="admin-chart-readout" aria-live="polite"></p>' +
+          '<div class="admin-activity-chart"><p class="admin-muted">Loading…</p></div>' +
+        '</div>' +
+        '<div class="admin-summary admin-activity-summary"></div>' +
       '</section>' +
       '<section data-section="markers" class="admin-section admin-analytics-section admin-activity" data-activity="markers">' +
         '<h4 class="admin-section-heading">Completes &amp; Bookmarks <span class="admin-muted admin-section-summary admin-activity-total"></span></h4>' +
@@ -5677,6 +5705,8 @@ ZMap.prototype._createAdminPage = function(opts) {
   state.activity = state.activity || { markers: { metric: 'completes', range: '30d' }, editing: { metric: 'edits', range: '30d' }, offline: { metric: 'downloads', range: '30d' } };
   state.activity.editing = state.activity.editing || { metric: 'edits', range: '30d' };
   ['yeahs','comments'].forEach(function(metric) {state.activity[metric]=state.activity[metric] || {metric:metric,range:'30d'};});
+  state.activity.embeds = state.activity.embeds || { metric: 'embed_copies', range: '30d' };
+  state.activity.push = state.activity.push || { metric: 'push', range: '30d' };
   $('#admin .admin-activity').each(function() {
     var section = $(this);
     var key = section.attr('data-activity');
@@ -5700,6 +5730,15 @@ ZMap.prototype._createAdminPage = function(opts) {
       if(key==='yeahs' || key==='comments') {
         section.find('.admin-community-total').text(data.summary.total ? data.summary.total.current.toLocaleString()+' '+_this.ADMIN_CHART_NOUNS[data.metric][0] : '');
       }
+      if(key === 'embeds' || key === 'push') {
+        // All time, and how many people (sites, for embed views) that is.
+        var total = data.summary.total ? data.summary.total.current : 0;
+        section.find(key === 'embeds' ? '.admin-embeds-total' : '.admin-push-total').text(data.summary.total
+          ? total.toLocaleString() + ' ' + _this.ADMIN_CHART_NOUNS[data.metric][0] +
+            (data.people ? ' · ' + data.people.toLocaleString() + ' ' + (data.people !== 1 ? data.peopleNoun : data.peopleNoun === 'people' ? 'person' : data.peopleNoun.replace(/s$/, '')) : '')
+          : '');
+        if(key === 'embeds') section.find('.admin-embeds-detail').empty().append(_this._adminEmbedsDetail(data));
+      }
       if(key === 'offline') {
         var offline = data.offline || {};
         section.find('.admin-offline-total').text(offline.people
@@ -5721,7 +5760,7 @@ ZMap.prototype._createAdminPage = function(opts) {
         if(requestId !== request) return;
         if(!data.success) {
           section.find('.admin-activity-chart').html('<p class="admin-muted"></p>').find('p').text(data.msg || 'Unable to load stats.');
-          section.find('.admin-activity-summary, .admin-offline-games, .admin-top-markers').empty();
+          section.find('.admin-activity-summary, .admin-offline-games, .admin-top-markers, .admin-embeds-detail').empty();
           return;
         }
         graph.data = data;
@@ -5749,11 +5788,6 @@ ZMap.prototype._createAdminPage = function(opts) {
     $('#admin_signup_total').text(data.total.toLocaleString() + (data.total === 1 ? ' sign-up' : ' sign-ups') +
       (rangeLabel ? ' · ' + rangeLabel : ''));
     $('#admin_signups').empty().append(_this._adminSignupSources(data));
-    $('#admin_usage').empty().append(_this._adminFeatureUsage(data));
-    var most = (data.usage || []).slice().sort(function(a, b) { return (b.people || 0) - (a.people || 0); })[0];
-    $('#admin_usage_total').text(most && most.people ? 'Most used: ' + most.label : '');
-    $('#admin_embeds').empty().append(_this._adminEmbeds(data));
-    $('#admin_embeds_total').text(data.embeds && rangeLabel ? rangeLabel : '');
   };
   var showSignupRange = function() {
     $('#admin .admin-signup-ranges button').each(function() {
@@ -5769,7 +5803,7 @@ ZMap.prototype._createAdminPage = function(opts) {
       showSignups(data);
     }).fail(function() {
       if(requestId !== signupRequest) return;
-      $('#admin_signups, #admin_usage, #admin_embeds').html('<p class="admin-muted">Unable to load stats. Try again.</p>');
+      $('#admin_signups').html('<p class="admin-muted">Unable to load stats. Try again.</p>');
     });
   };
   $('#admin .admin-signup-ranges button').click(function() {
@@ -5894,7 +5928,10 @@ ZMap.prototype.ADMIN_CHART_NOUNS = {
   bookmarks: ['bookmarks', 'Bookmarks'],
   downloads: ['downloads', 'Offline map downloads'],
   edits: ['edits', 'Community edits'],
-  beta: ['beta testers', 'Editing beta sign-ups']
+  beta: ['beta testers', 'Editing beta sign-ups'],
+  embed_copies: ['codes copied', 'Embed codes copied'],
+  embed_views: ['views', 'Embed views'],
+  push: ['devices', 'Push notification sign-ups']
 };
 
 ZMap.prototype._adminChart = function(buckets, metric, readout) {
@@ -6061,7 +6098,10 @@ ZMap.prototype._adminActivitySummary = function(data) {
     box.find('.admin-stat-label').text(item[1]);
     box.find('.admin-stat-value').text(stat.current.toLocaleString());
     if(stat.previous === null) {
-      box.find('.admin-stat-change').text(data.people.toLocaleString() + (data.people === 1 ? ' person' : ' people'));
+      // (People, or sites for embed views; nobody, for anonymous counts.)
+      var noun = data.peopleNoun || 'people';
+      box.find('.admin-stat-change').text(data.people === null || data.people === undefined ? 'all time' :
+        data.people.toLocaleString() + ' ' + (data.people === 1 ? (noun === 'people' ? 'person' : noun.replace(/s$/, '')) : noun));
     } else {
       var change = stat.current - stat.previous;
       var percent = stat.previous ? Math.round(change / stat.previous * 100) : null;
@@ -6221,55 +6261,25 @@ ZMap.prototype._adminReminderTest = function(groups) {
   return box;
 };
 
-// Admin's Embeds: codes copied (by what was embedded) and embeds shown on
-// other sites, with the sites showing them most (ajax/admin_get_signups.php).
-ZMap.prototype._adminEmbeds = function(data) {
-  var embeds = data.embeds;
-  if(!embeds) return $('<p class="admin-muted centered-empty-state">Embeds aren’t counted yet.</p>');
-  var labels = { marker: 'markers', pin: 'pins', path: 'paths', map: 'maps' };
-  var breakdown = function(by) {
-    return Object.keys(by).filter(function(k) { return by[k]; }).map(function(k) { return by[k].toLocaleString() + ' ' + labels[k]; }).join(' · ');
-  };
-  var wrap = $('<div></div>'), grid = $('<div class="admin-usage-grid"></div>').appendTo(wrap);
-  var tile = function(label, value, line) {
-    var t = $('<div class="admin-stat"><span class="admin-stat-label"></span><span class="admin-stat-value"></span><span class="admin-stat-change"></span></div>');
-    t.find('.admin-stat-label').text(label);
-    t.find('.admin-stat-value').text(Number(value || 0).toLocaleString());
-    t.find('.admin-stat-change').text(line);
-    grid.append(t);
-  };
-  tile('Embed codes copied', embeds.copies, breakdown(embeds.copiesBy) || 'None yet');
-  tile('Embed views', embeds.views, embeds.sites ? 'on ' + embeds.sites.toLocaleString() + (embeds.sites === 1 ? ' site' : ' sites') : 'None yet');
-  if(embeds.topSites && embeds.topSites.length) {
-    var list = $('<ol class="admin-embed-sites"></ol>').appendTo(wrap);
-    embeds.topSites.forEach(function(site) {
-      var row = $('<li><span class="admin-embed-site"></span><span class="admin-muted"></span></li>');
-      row.find('.admin-embed-site').text(site.host);
-      row.find('.admin-muted').text(site.views.toLocaleString() + (site.views === 1 ? ' view' : ' views'));
-      list.append(row);
-    });
+// Under the Embeds graph: what the codes copied over its time frame were
+// for, or the sites that showed embeds most (ajax/admin_get_activity.php).
+ZMap.prototype._adminEmbedsDetail = function(data) {
+  var embeds = data.embeds || {};
+  if(embeds.byTarget) {
+    var labels = { marker: ['marker', 'markers'], pin: ['dropped pin', 'dropped pins'], path: ['path', 'paths'], map: ['map', 'maps'] };
+    var parts = Object.keys(embeds.byTarget).filter(function(k) { return embeds.byTarget[k]; })
+      .map(function(k) { var n = embeds.byTarget[k]; return n.toLocaleString() + ' ' + labels[k][n === 1 ? 0 : 1]; });
+    return parts.length ? $('<p class="admin-muted admin-embed-split"></p>').text('For ' + parts.join(' · ')) : $();
   }
-  if(embeds.trackingSince) {
-    $('<p class="admin-muted admin-embed-since"></p>').text('Counted since ' + String(embeds.trackingSince).slice(0, 10)).appendTo(wrap);
-  }
-  return wrap;
-};
-
-ZMap.prototype._adminFeatureUsage = function(data) {
-  var grid = $('<div class="admin-usage-grid"></div>');
-  (data.usage || []).forEach(function(item) {
-    var tile = $('<div class="admin-stat"><span class="admin-stat-label"></span><span class="admin-stat-value"></span>' +
-      '<span class="admin-stat-change"></span></div>');
-    tile.find('.admin-stat-label').text(item.label);
-    tile.find('.admin-stat-value').text(Number(item.people || 0).toLocaleString());
-    tile.find('.admin-stat-change').text(
-      (item.people === 1 ? 'person' : 'people') + ' · ' + Number(item.items || 0).toLocaleString() + ' ' + item.unit +
-      (data.accounts ? ' · ' + Math.round((item.people || 0) / data.accounts * 1000) / 10 + '% of accounts' : '')
-    );
-    grid.append(tile);
+  if(!embeds.topSites || !embeds.topSites.length) return $();
+  var list = $('<ol class="admin-embed-sites"></ol>');
+  embeds.topSites.forEach(function(site) {
+    var row = $('<li><span class="admin-embed-site"></span><span class="admin-muted"></span></li>');
+    row.find('.admin-embed-site').text(site.host);
+    row.find('.admin-muted').text(site.views.toLocaleString() + (site.views === 1 ? ' view' : ' views'));
+    list.append(row);
   });
-  if(!grid.children().length) return $('<p class="admin-muted centered-empty-state">Nothing to show yet.</p>');
-  return grid;
+  return list;
 };
 
 ZMap.prototype._adminRoleLabel = function(level) {

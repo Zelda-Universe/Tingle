@@ -8114,8 +8114,9 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
    reads as text. */
 .zm-framed .path-byline a { pointer-events: none; color: inherit; }
 
-/* Admin's Embeds: the sites showing embeds most, a line each. */
+/* Admin's Embeds, under its graph: the sites showing embeds most, a line
+   each, or what the codes copied were for. */
 .admin-embed-sites { list-style: none; margin: 12px 0 0; padding: 0; }
 .admin-embed-sites li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid rgba(255, 255, 255, .1); font-size: 14px; }
 .admin-embed-site { overflow-wrap: anywhere; }
-.admin-embed-since { margin: 10px 0 0; font-size: 12px; }
+.admin-embed-split { margin: 10px 0 0; font-size: 13px; }

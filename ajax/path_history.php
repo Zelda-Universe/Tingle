@@ -5,8 +5,11 @@
   include_once(dirname(__DIR__) . '/lib/common/paths.php');
   $account = pathAccount($db, $map_prefix);
   [$userId, $level] = $account ?: [0, 0];
-  if (!pathsAllowed($level)) { echo json_encode(array('success' => false, 'msg' => 'Paths are not available yet.')); return; }
-  $path = pathVisibleTo($db, $map_prefix, (int) ($_GET['id'] ?? 0), $userId, $level);
+  if (!pathsVisible($level)) { echo json_encode(array('success' => false, 'msg' => 'Paths are not available yet.')); return; }
+  // (A revision alone, from a [[pathrev:N]] link: its own path.)
+  $pathId = (int) ($_GET['id'] ?? 0);
+  if (!$pathId && (int) ($_GET['revision'] ?? 0)) $pathId = (int) $db->fetchOne("SELECT path_id FROM `{$map_prefix}path_revision` WHERE id = ?", [(int) $_GET['revision']]);
+  $path = pathVisibleTo($db, $map_prefix, $pathId, $userId, $level);
   if (!$path) { echo json_encode(array('success' => false, 'msg' => 'That path is not available.')); return; }
 
   // Each save as marker History has its revisions (zwiki.js _wikiRevisionRow):
@@ -15,7 +18,8 @@
   $picture = wikiHasUserColumn($db, $map_prefix, 'profile_picture') ? 'u.profile_picture' : 'NULL';
   $columns = "r.id, r.action, r.summary, UNIX_TIMESTAMP(r.created) AS created, " . wikiAgoSql('r.created') . " AS ago,
               r.user_id AS userId, u.username, u.username AS userName, {$picture} AS profilePicture";
-  $canRevert = $userId && pathCanEdit($path, $userId, $level);
+  // (Only those who make paths restore them: revert_path.php.)
+  $canRevert = $userId && pathsAllowed($level) && pathCanEdit($path, $userId, $level);
   $latest = (int) $db->fetchOne("SELECT MAX(id) FROM `{$map_prefix}path_revision` WHERE path_id = ?", [$path['id']]);
   $revisionId = (int) ($_GET['revision'] ?? 0);
   if ($revisionId) {
@@ -26,7 +30,9 @@
     unset($revision['snapshot']);
     foreach (['id', 'created', 'ago', 'userId'] as $n) $revision[$n] = (int) $revision[$n];
     echo json_encode(array('success' => true, 'snapshot' => $snapshot, 'revision' => $revision,
-      'isCurrent' => (int) $revision['id'] === $latest, 'canRevert' => $canRevert, 'pathName' => $path['name']));
+      'isCurrent' => (int) $revision['id'] === $latest, 'canRevert' => $canRevert, 'pathName' => $path['name'],
+      'pathId' => (int) $path['id'], 'pathSlug' => $path['slug'],
+      'game' => (string) $db->fetchOne("SELECT short_name FROM `{$map_prefix}container` WHERE id = ?", [$path['container_id']])));
     return;
   }
   $revisions = $db->fetchAllAssociative("
@@ -36,5 +42,6 @@
   ", [$path['id']]);
   foreach ($revisions as &$revision) foreach (['id', 'created', 'ago', 'userId'] as $n) $revision[$n] = (int) $revision[$n];
   unset($revision);
-  echo json_encode(array('success' => true, 'revisions' => $revisions, 'canRevert' => $canRevert, 'pathName' => $path['name']));
+  echo json_encode(array('success' => true, 'revisions' => $revisions, 'canRevert' => $canRevert, 'pathName' => $path['name'],
+    'pathSlug' => $path['slug'], 'game' => (string) $db->fetchOne("SELECT short_name FROM `{$map_prefix}container` WHERE id = ?", [$path['container_id']])));
 ?>

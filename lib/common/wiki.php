@@ -251,6 +251,10 @@
     if ($type === 'user') {
       return (bool) $db->fetchOne("SELECT 1 FROM `{$prefix}user` WHERE `id` = ? AND `deleted` IS NULL", [(int) $id]);
     }
+    // A path's (who may read it: talk_get.php, talk_post.php, paths.php).
+    if ($type === 'path') {
+      return (bool) $db->fetchOne("SELECT 1 FROM `{$prefix}path` WHERE `id` = ? AND `visible` = 1", [(int) $id]);
+    }
     return false;
   }
 

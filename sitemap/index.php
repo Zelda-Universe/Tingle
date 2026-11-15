@@ -18,8 +18,10 @@
      return;
    }
 
-   // Game pages and category pages. Individual markers point search engines
-   // at their category's page instead, so they are left out.
+   // Game pages, category pages, area pages and official paths. Individual
+   // markers point search engines at their category's page instead, so they
+   // are left out. Only public games (visible = 1): never ALttP's while it's
+   // built, nor Path Lab.
    try {
      $games = $db->fetchFirstColumn("
         select c.short_name
@@ -29,6 +31,9 @@
      ");
      $categories = seoLandingCategories($db, $map_prefix);
      $areas = seoAreaPages($db, $map_prefix);
+     // Official paths, once they're out to everyone (none while staff-only;
+     // only public games': seo.php seoPathPages).
+     $paths = seoPathPages($db, $map_prefix);
    } catch (\Throwable $e) {
      debug_log('Sitemap query error: ' . $e->getMessage());
      sitemapUnavailable();
@@ -62,5 +67,10 @@
    }
 
    foreach($areas as $area) echo "\t<url><loc>".sitemapLoc($area['url'])."</loc></url>\n";
+   foreach ($paths as $pathPage) {
+      echo "\t<url>\n\t\t<loc>" . sitemapLoc(seoPathUrl($pathPage['game'], $pathPage['slug'])) . "</loc>\n";
+      if ($pathPage['lastUpdated']) echo "\t\t<lastmod>" . $pathPage['lastUpdated'] . "</lastmod>\n";
+      echo "\t</url>\n";
+   }
    echo "</urlset>\n";
 ?>

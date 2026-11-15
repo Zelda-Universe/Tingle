@@ -24,6 +24,11 @@
     'ootr' => 'OoT'
   ];
   $gameId = $gameAliases[$gameKey] ?? 'OoT';
+  // Only the public games above are for search engines. Any other (a game
+  // still being built, ALttP's; Path Lab, a test map; an old or unknown
+  // name) is never indexed, though its page opens as OoT's would: a game
+  // goes in the list above when it launches.
+  $robots = isset($_GET['game']) && !isset($gameAliases[$gameKey]) ? 'noindex, nofollow' : 'index, follow';
   $gameMetadata = [
     'OoT' => [
       'name' => 'Ocarina of Time Remake',
@@ -225,6 +230,27 @@
       }
     } catch(\Throwable $e) { error_log('Area metadata unavailable: '.$e->getMessage()); }
   }
+  // An official path's page (lib/common/seo.php seoPathPages), once paths
+  // are out to everyone: its name and description, and its steps as text.
+  // Its Talk and revisions' links point search engines at the path.
+  $seoPath = null;
+  if(is_string($_GET['path'] ?? null) && preg_match('/^[a-z0-9-]{1,120}$/', $_GET['path']) && isset($_GET['game'])) {
+    include_once(__DIR__ . '/config.php');
+    include_once(__DIR__ . '/lib/common/database.php');
+    include_once(__DIR__ . '/lib/common/seo.php');
+    try {
+      $pathGame = $gameId === 'OoT' ? 'OoTR' : $gameId;
+      if(!isset($db)) open();
+      $seoPath = isset($db) ? (seoPathPages($db, $map_prefix, $pathGame, $_GET['path'])[0] ?? null) : null;
+      if($seoPath) {
+        $pageHeading = $seoPath['name'] . ' - ' . $metadata['name'] . ' Guide';
+        $pageTitle = $pageHeading . ' - Zelda Maps';
+        $pageDescription = seoPathDescription($seoPath, $metadata['name']);
+        $canonicalUrl = seoPathUrl($pathGame, $seoPath['slug']);
+        $pageUrl = $canonicalUrl;
+      }
+    } catch(\Throwable $e) { error_log('Path metadata unavailable: ' . $e->getMessage()); $seoPath = null; }
+  }
   $profileIdentifier=is_string($_GET['user'] ?? null) ? $_GET['user'] :
     (($_GET['page'] ?? '')==='profile' && is_string($_GET['profile'] ?? null) ? $_GET['profile'] : null);
   if($profileIdentifier!==null) {
@@ -258,6 +284,8 @@
         // An embed shown on Zelda Maps' own pages (a preview) is signed in as
         // the page around it is: our own pages framing it can't trick anyone.
         window.zmapEmbedPreview = <?= $zmEmbed && ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '') === 'same-origin' ? 'true' : 'false' ?>;
+        // How far paths are released (lib/common/paths.php PATHS_STAGE).
+        window.zmapPathsStage = <?php include_once(__DIR__ . '/lib/common/paths.php'); echo json_encode(PATHS_STAGE); ?>;
         if (!framed && !window.zmapEmbed) return;
         document.documentElement.classList.add('zm-framed');
         // A link in what's shown (a marker's sources) opens in a new tab,
@@ -300,7 +328,7 @@
           content="Zelda, eow interactive map, totk interactive map, echoes of wisdom interactive map, tears of the kingdom interactive map, botw interactive map, breath of the wild interactive map, interactive map, map, eow, EoW, botw, BotW, totk, TotK, Echoes of Wisdom, Breath of the Wild, Tears of the Kingdom, Zelda Maps, echoes of wisdom map, tears of the kingdom map, eow map, totk map, breath of the wild map, botw map, Hyrule, hyrule map, eow guide, botw guide, totk guide"
         />
         <meta name='owner'    content='Zelda Universe (zeldauniverse.net) &amp; Hyrule Legends (zelda.com.br)'>
-        <meta name="robots"   content="index, follow">
+        <meta name="robots"   content="<?= $robots ?>">
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover"
@@ -476,6 +504,12 @@
     <header class="sr-only">
       <h1><?= metadataEscape($pageHeading) ?></h1>
       <p><?= metadataEscape($pageDescription) ?></p>
+      <?php if ($seoPath && $seoPath['steps']): ?>
+      <!-- A path's steps, in order (lib/common/seo.php seoPathPages). -->
+      <ol>
+        <?php foreach ($seoPath['steps'] as $stepName): ?><li><?= metadataEscape($stepName) ?></li><?php endforeach; ?>
+      </ol>
+      <?php endif; ?>
       <!-- Every game's map, as plain links search engines can follow. -->
       <nav aria-label="Zelda Maps games">
         <ul>

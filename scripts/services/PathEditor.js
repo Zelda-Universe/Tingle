@@ -172,6 +172,7 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
     "<div class='marker-editor-buttons'>" +
       (path.canEdit ? "<button type='button' class='marker-editor-button path-edit'><i class='fas fa-pencil-alt' aria-hidden='true'></i><span>Edit</span></button>" : '') +
       "<button type='button' class='marker-editor-button path-history'><i class='fas fa-history' aria-hidden='true'></i><span>History</span></button>" +
+      "<button type='button' class='marker-editor-button path-talk'><i class='fas fa-comments' aria-hidden='true'></i><span>Talk</span></button>" +
     "</div></section>";
   // Links in it (a step's [[marker:N]], its description's) open a marker
   // whose Back comes back here, scrolled where it was, the map as it was if
@@ -229,6 +230,7 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   // (The author's link: zwiki.js _wireWikiLinks opens their profile.)
   $(page).find('.path-edit').on('click', function() { zmap.openPathEditor(path); });
   $(page).find('.path-history').on('click', function() { zmap.openPathHistory(path); });
+  $(page).find('.path-talk').on('click', function() { zmap.openPathTalk(path); });
   // Pressing Start, or completing a step here, is starting a user's path
   // (its started and finish figures: ajax/start_path.php).
   $(page).find('.path-start').on('click', function() { zmap._recordPathStart(path); zmap._startPathGuide(path, page); });
@@ -805,23 +807,26 @@ ZMap.prototype._pathSubtitle = function(page, path, link) {
 };
 
 // One save, as a marker's revision page (zwiki.js _openMarkerRevision): who,
-// what and when; Restore, Copy Link and All Revisions; and the path as it
-// was, drawn on the map in place of the path as it is now.
+// what and when; Restore, Copy [[pathrev:N]], Copy Link, Yeah and All
+// Revisions; and the path as it was, in a card, drawn on the map in place of
+// the path as it is now.
 ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
   var zmap = this;
   back = back || function() { zmap.openPathHistory(path); };
   this._focusedPath = path;
+  // (Links on it come back here: [[pathrev:N]], a marker, a user.)
+  var reopen = this._wikiReopen ? this._wikiReopen(function() { zmap._openPathRevision(path, revisionId, back, opts); }, back, 'Revision ' + Number(revisionId)) : null;
   var page = this._showWikiPage(
     "<div id='path_revision' class='wiki-page'><h3 class='text-center'>Revision " + Number(revisionId) + "</h3>" +
       "<div class='area-header-pills wiki-subtitle-row'><p class='wiki-subtitle'></p></div>" +
       "<div class='wiki-revision-body'><p class='wiki-empty'>Loading…</p></div></div>",
-    'pathRevision', function() { zmap._endPathEditing(); back(); }, null, {settles: true});
+    'pathRevision-' + Number(revisionId), function() { zmap._endPathEditing(); back(); }, reopen, {settles: true});
   // (Go to Path only from elsewhere, a feed: from its history, Back is the way.)
   this._pathSubtitle(page, path, !(opts && opts.fromHistory));
   this._wikiGet('path_history', {id: path.id, revision: revisionId}).done(function(r) {
     var body = $(page).find('.wiki-revision-body').empty();
     if(!r || !r.success) { body.append($("<p class='wiki-empty'></p>").text((r && r.msg) || 'Could not load that version.')); return; }
-    var rev = r.revision, snap = r.snapshot;
+    var rev = r.revision, snap = r.snapshot, code = '[[pathrev:' + Number(revisionId) + ']]';
     var steps = snap.steps.map(function(s) { return s.markerId ? {markerId: s.markerId, note: s.note} :
       {submapId: s.submapId, x: s.x, y: s.y, name: s.name, shown: s.shown ? 1 : 0, note: s.note, content: s.content || ''}; });
     body.append(
@@ -830,16 +835,22 @@ ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
         "<p>" + zmap._wikiUserLink(rev.userId, rev.username) + " · " + zmap._pathEsc(zmap._wikiAgo(rev.ago)) + "</p>" +
         (rev.summary ? "<p class='wiki-revision-summary'>" + zmap._renderWikiText(rev.summary) + "</p>" : '') +
       "</section>" +
+      // As a marker's: Restore across, the two copies side by side, then
+      // Yeah and All Revisions across.
       "<div class='wiki-actions'>" +
         (r.canRevert && !r.isCurrent ? "<button type='button' class='wiki-action-button' data-action='revert'><i class='fas fa-undo' aria-hidden='true'></i>Restore This Version</button>" : '') +
+        "<button type='button' class='wiki-action-button' data-action='copy-code'><i class='fas fa-code' aria-hidden='true'></i>Copy <code>" + code + "</code></button>" +
         "<button type='button' class='wiki-action-button' data-action='copy-url'><i class='fas fa-link' aria-hidden='true'></i>Copy Link</button>" +
+        zmap._yeahHTML('pathrev', revisionId, false) +
         "<button type='button' class='wiki-action-button' data-action='history'><i class='fas fa-history' aria-hidden='true'></i>All Revisions</button>" +
       "</div>" +
-      "<div class='path-revision-steps'><h4 class='area-category-title'>" + zmap._pathEsc(snap.name) + "</h4>" +
-        (snap.description ? "<div class='path-description'>" + zmap._renderWikiText(snap.description) + "</div>" : '') +
-        zmap._pathStepsHTML(snap, steps) + "</div>");
+      "<section class='wiki-section'><h4>This Version</h4>" +
+        "<div class='wiki-card path-revision-steps'><h4 class='path-revision-name'>" + zmap._pathEsc(snap.name) + "</h4>" +
+          (snap.description ? "<div class='path-description'>" + zmap._renderWikiText(snap.description) + "</div>" : '') +
+          zmap._pathStepsHTML(snap, steps) + "</div></section>");
     body.find('[data-action=revert]').on('click', function() { zmap._restorePathRevision(path, rev); });
-    body.find('[data-action=copy-url]').on('click', function() { zmap._copyText(zmap._pathUrl(path, true), this); });
+    body.find('[data-action=copy-code]').on('click', function() { zmap._copyText(code, this); });
+    body.find('[data-action=copy-url]').on('click', function() { zmap._copyText(zmap._pathRevisionUrl(path, revisionId), this); });
     body.find('[data-action=history]').on('click', function() { zmap._endPathEditing(); zmap.openPathHistory(path); });
     zmap._wirePathSteps(page, steps, null, snap.name);
     zmap._previewPath({scope: path.scope, kind: snap.kind, loops: snap.loops, numbered: snap.numbered, smooth: !!snap.smooth, categoryId: snap.categoryId,
@@ -849,12 +860,41 @@ ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
   }).always(function() { if(zmap._wikiPageSettled) zmap._wikiPageSettled(page); });
 };
 
+// A revision's own link: the path's, opened at that save.
+ZMap.prototype._pathRevisionUrl = function(path, revisionId) {
+  var url = new URL(this._pathUrl(path, true));
+  url.searchParams.set('pathrev', Number(revisionId));
+  return url.toString();
+};
+
+// A [[pathrev:N]] link: the save's path found first (here, or its game
+// opened at it).
+ZMap.prototype._openPathRevisionById = function(revisionId, back) {
+  var zmap = this;
+  this._wikiGet('path_history', {revision: revisionId}).done(function(r) {
+    if(!r || !r.success) { toastr.info((r && r.msg) || 'That revision is no longer available.'); return; }
+    zmap._openPathRevisionLink(r.pathSlug, revisionId, r.game, back);
+  }).fail(function(x) { toastr.error(zmap._wikiError(x)); });
+};
+
+// A path's Talk page (zwiki.js _openTalk), with its name and the codes for
+// its revisions. opts.highlight: a comment to scroll to.
+ZMap.prototype.openPathTalk = function(path, back, opts) {
+  var zmap = this;
+  opts = opts || {};
+  this._endPathEditing();
+  this._focusedPath = path;
+  var toPath = function() { zmap.openPathPage(path.slug, {keepView: true}); };
+  toPath.label = path.name;
+  this._openTalk('path', path.id, path.name, back || toPath, {path: path, fromPath: !back, highlight: opts.highlight || 0});
+};
+
 // A path's save opened from a feed (All Changes, a profile's activity):
 // here, loaded first if this game hasn't it; else its game opened at it.
 ZMap.prototype._openPathRevisionLink = function(slug, revisionId, game, back) {
   var zmap = this;
   if(game && this.mapOptions && game !== this.mapOptions.shortName) {
-    window.location.href = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug);
+    window.location.href = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug) + '&pathrev=' + Number(revisionId);
     return;
   }
   var open = function() {
@@ -1226,15 +1266,55 @@ ZMap.prototype._pathDragReorder = function(listEl, items, changed) {
 // A path from a profile, Community Paths or a notification: opened here when
 // it's this game's (loaded first if it's someone else's), else its game
 // opened at it. back: the page it was opened from, which its Back returns to.
-ZMap.prototype.openPathFromLink = function(game, slug, back) {
+// opts (a notification's): {talk, comment}, at its Talk; {pathRev}, at one
+// of its revisions.
+ZMap.prototype.openPathFromLink = function(game, slug, back, opts) {
   var zmap = this;
+  opts = opts || {};
   if(game !== this.mapOptions.shortName) {
-    window.location.href = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug);
+    window.location.href = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug) +
+      (opts.pathRev ? '&pathrev=' + Number(opts.pathRev) : opts.talk ? '&talk=1' + (opts.comment ? '&comment=' + Number(opts.comment) : '') : '');
     return;
   }
-  var open = function() { zmap.openPathPage(slug, {back: back || null}); };
+  var open = function() {
+    zmap.openPathPage(slug, {back: back || null});
+    var path = (zmap.paths || []).find(function(p) { return p.slug === slug; });
+    if(path) zmap._openPathSubpage(path, opts);
+  };
   if((this.paths || []).some(function(p) { return p.slug === slug; })) { open(); return; }
   this._reloadPaths(open, slug);
+};
+
+// A comment on a path's Talk from a feed (zwiki.js _openActivityComment):
+// its path found by id, here or in its own game.
+ZMap.prototype._openPathTalkComment = function(pathId, commentId, back) {
+  var zmap = this;
+  var here = (this.paths || []).find(function(p) { return Number(p.id) === Number(pathId); });
+  if(here) { this.openPathTalk(here, back, {highlight: commentId}); return; }
+  this._wikiGet('path_history', {id: pathId}).done(function(r) {
+    if(!r || !r.success) { toastr.info((r && r.msg) || 'That path is no longer available.'); return; }
+    if(r.game !== zmap.mapOptions.shortName) { zmap.openPathFromLink(r.game, r.pathSlug, back, {talk: true, comment: commentId}); return; }
+    zmap._reloadPaths(function() {
+      var path = (zmap.paths || []).find(function(p) { return p.slug === r.pathSlug; });
+      if(path) zmap.openPathTalk(path, back, {highlight: commentId});
+    }, r.pathSlug);
+  }).fail(function(x) { toastr.error(zmap._wikiError(x)); });
+};
+
+// Over a path's page, from a link: its Talk (opts.talk, at opts.comment) or
+// one of its revisions (opts.pathRev), each with Back to the path.
+ZMap.prototype._openPathSubpage = function(path, opts) {
+  if(!opts || !(opts.pathRev || opts.talk)) return;
+  var zmap = this;
+  var open = function() {
+    if(opts.pathRev) zmap._openPathRevision(path, Number(opts.pathRev), null, {fromHistory: false});
+    else zmap.openPathTalk(path, null, {highlight: Number(opts.comment) || 0});
+  };
+  // On a page's first load the path's page focuses its path once the
+  // start-up zoom ends (Paths.js focusPath): after that, or the revision's
+  // version of the path would be put aside for the path as it is.
+  if(this.map && this.map._animatingZoom) this.map.once('zoomend', function() { setTimeout(open, 20); });
+  else open();
 };
 
 // A profile's paths: the owner's own routes, in every game.

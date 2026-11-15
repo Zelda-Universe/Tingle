@@ -7769,6 +7769,10 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-step-note-input.form-control { flex-basis: 100%; margin-left: 50px; width: calc(100% - 50px); font-size: 13px; }
 .path-step-note-toggle { flex: none; background: none; border: 0; color: inherit; opacity: .45; padding: 4px 6px; }
 .path-step-note-toggle.active, .path-step-note-toggle:hover { opacity: 1; }
+/* A path's revision, as it was: in a card, as a marker's This Version is. */
+.path-revision-steps .path-revision-name { margin: 0 0 6px; font-size: 16px; font-weight: 600; }
+.path-revision-steps .path-description { margin: 0 0 12px; }
+.path-revision-steps .path-timeline { margin-bottom: 0; }
 .path-revisions { list-style: none; padding: 0; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
 .path-revision { padding: 8px 10px; border-radius: 8px; background: rgba(255, 255, 255, .06); }
 .path-revision small { opacity: .7; }

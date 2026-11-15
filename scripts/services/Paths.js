@@ -6,13 +6,35 @@
    Official paths show with their category (or their first marker's); a
    user's own paths only when opened by their link (?path=<slug>). */
 
+// How far paths are released (lib/common/paths.php PATHS_STAGE, which the
+// server enforces; index.php tells the page): 'staff', 'readonly' (everyone
+// sees and uses the official paths, staff make them) or 'open'.
+ZMap.prototype._pathsStage = function() {
+  return window.zmapPathsStage || 'staff';
+};
+ZMap.prototype._isPathStaff = function() {
+  var user = this.getUser && this.getUser();
+  return !!user && Number(user.level) >= 10;
+};
+// Seeing and using paths (signed out too, once released).
+ZMap.prototype._pathsVisible = function() {
+  return this._pathsStage() !== 'staff' || this._isPathStaff();
+};
+// Making and changing them, and users' own paths (Community Paths, profiles).
+ZMap.prototype._pathsMakeable = function() {
+  return this._pathsStage() === 'open' || this._isPathStaff();
+};
+
 ZMap.prototype.loadPaths = function() {
   var zmap = this;
   this.paths = [];
-  // Only admins get paths while they're built (lib/common/paths.php, which
-  // decides): no one else needs to ask.
-  var user = this.getUser();
-  if(!user || Number(user.level) < 10) return;
+  // Only those the server gives paths to ask for them. (Signed out of them:
+  // the map loses any it had.)
+  if(!this._pathsVisible()) {
+    this._pathsEnabled = false;
+    if(this._preparePaths) { this._preparePaths(); this.drawPaths(); }
+    return;
+  }
   // A link's path comes too, even someone else's (a shared route).
   var linked = new URL(window.location.href).searchParams.get('path') || '';
   $.getJSON('ajax.php?command=get_paths&game=' + gameId + '&path=' + encodeURIComponent(linked)).done(function(paths) {
@@ -25,7 +47,8 @@ ZMap.prototype.loadPaths = function() {
     }
     zmap._preparePaths();
     zmap.refreshMap();
-    zmap._pathsEnabled = !!(zmap.getUser() && zmap.getUser().level >= 10);
+    // (Make New Path From Here, on markers and dropped pins.)
+    zmap._pathsEnabled = !!zmap.getUser() && zmap._pathsMakeable();
     if(zmap._refreshMarkerPaths) zmap._refreshMarkerPaths();
     // A category page opened before they loaded (a ?category= link) gets
     // its paths now (CategoryPage.js), or becomes its one path's page.
@@ -41,10 +64,15 @@ ZMap.prototype.loadPaths = function() {
         control._restoringInitialPage = true;
         // (A pin's link: its page, over its path's.)
         var pin = new URL(window.location.href).searchParams.get('pin');
+        // (Read before the path's page rewrites the address.)
+        var params = new URL(window.location.href).searchParams;
         try { zmap._withoutPageSlide(function() {
           zmap.openPathPage(slug, {instant: true});
           var path = zmap.paths.find(function(p) { return p.slug === slug; });
           if(pin && path.steps.some(function(s) { return s.pinKey === pin; })) zmap.openPathPin(path, pin, null, {instant: true});
+          // (A revision's link, or a notification's at its Talk.)
+          else if(zmap._openPathSubpage) zmap._openPathSubpage(path, {pathRev: Number(params.get('pathrev')) || 0,
+            talk: params.get('talk') === '1', comment: Number(params.get('comment')) || 0});
         }); }
         finally { control._restoringInitialPage = false; }
       } else { zmap.focusPath(slug, {instant: true}); zmap.drawPaths(); }
@@ -122,13 +150,38 @@ ZMap.prototype._pathCategoryAtZoom = function(category) {
 
 // A path's own pages (PathEditor.js): while one is open, its path is the
 // selected one, drawn on top with a white outline.
-ZMap.prototype.PATH_PAGES = ['path', 'pathEditor', 'pathHistory', 'pathRevision', 'pathPin', 'pathPinEditor'];
+// (A revision's page is pathRevision-N, a path's Talk talk-path-N: _pathPageKind.)
+ZMap.prototype.PATH_PAGES = ['path', 'pathEditor', 'pathHistory', 'pathRevision', 'pathTalk', 'pathPin', 'pathPinEditor'];
 // Pages that put the path in focus: its own markers alone on the map, as a
 // focused category's are. (Not the editor: steps are added from any marker.)
-ZMap.prototype.PATH_FOCUS_PAGES = ['path', 'pathHistory', 'pathRevision', 'pathPin', 'pathPinEditor'];
+ZMap.prototype.PATH_FOCUS_PAGES = ['path', 'pathHistory', 'pathRevision', 'pathTalk', 'pathPin', 'pathPinEditor'];
+ZMap.prototype._pathPageKind = function(type) {
+  type = type || '';
+  return /^pathRevision-\d+$/.test(type) ? 'pathRevision' : /^talk-path-\d+$/.test(type) ? 'pathTalk' : type;
+};
 
 ZMap.prototype._pathPageChanged = function(type) {
   this._updatePathFocus(type);
+  this._updatePathTitle(type);
+};
+
+// The browser's title on a path's own pages, as its page's link has it for
+// search engines (index.php, lib/common/seo.php): "Biggoron's Sword Trading
+// Sequence - Ocarina of Time Remake Guide - Zelda Maps". Leaving them puts
+// back the game's own, unless the page now open has set its own (a
+// category's, an area's).
+ZMap.prototype._updatePathTitle = function(type) {
+  var kind = this._pathPageKind(type), path = this._focusedPath;
+  // (A revision shows its version in focus: the path it's of.)
+  if(path && path._preview) path = this._previewOf;
+  var game = typeof seoGameName === 'function' ? seoGameName(this.mapOptions || {}) : '';
+  if(path && path.name && game && ['path', 'pathHistory', 'pathRevision', 'pathTalk', 'pathPin'].indexOf(kind) !== -1) {
+    this._pathTitle = path.name + ' - ' + game + ' Guide - Zelda Maps';
+    document.title = this._pathTitle;
+  } else if(this._pathTitle) {
+    if(document.title === this._pathTitle && game) document.title = game + ' Interactive Map - Zelda Maps';
+    this._pathTitle = null;
+  }
 };
 
 // Whether a path is selected and in focus, as the page now open says: one
@@ -145,8 +198,9 @@ ZMap.prototype._updatePathFocus = function(type) {
   var markerChanged = openMarker !== (this._pathOpenMarkerId || null);
   this._pathOpenMarkerId = openMarker;
   var ofPath = !!(path && markerPage && path.steps.some(function(s) { return String(s.markerId) === markerPage[1]; }));
-  var open = !!path && (this.PATH_PAGES.indexOf(type) !== -1 || ofPath);
-  var focused = !!path && (this.PATH_FOCUS_PAGES.indexOf(type) !== -1 || ofPath);
+  var kind = this._pathPageKind(type);
+  var open = !!path && (this.PATH_PAGES.indexOf(kind) !== -1 || ofPath);
+  var focused = !!path && (this.PATH_FOCUS_PAGES.indexOf(kind) !== -1 || ofPath);
   var ids = null;
   if(focused) {
     ids = {};

@@ -51,7 +51,7 @@
   include_once(dirname(__DIR__) . '/lib/common/paths.php');
   $account = pathAccount($db, $map_prefix);
   $level = $account ? $account[1] : 0;
-  if (pathsAllowed($level) && $db->fetchOne("SHOW COLUMNS FROM {$map_prefix}user_bookmark LIKE 'path_id'")) {
+  if (pathsVisible($level) && $db->fetchOne("SHOW COLUMNS FROM {$map_prefix}user_bookmark LIKE 'path_id'")) {
     $paths = $db->fetchAllAssociative("
       SELECT ub.id, p.id AS pathId, p.slug, p.name, p.color, p.kind, p.loops, p.smooth, p.scope,
              (SELECT COUNT(*) FROM {$map_prefix}path_step s WHERE s.path_id = p.id) AS steps
@@ -60,6 +60,7 @@
         JOIN {$map_prefix}container c ON c.id = p.container_id
        WHERE ub.user_id = ? AND (c.id = ? OR c.short_name = ?) AND p.visible = 1
          AND (p.user_id = ? OR " . pathOpenSql() . " OR (p.scope = 'official' AND ? >= " . PATHS_ADMIN_LEVEL . "))
+         AND (p.scope = 'official' OR " . (pathsAllowed($level) ? '1' : '0') . ")
        ORDER BY ub.created DESC, ub.id DESC
     ", [$userId, $game, $game, $userId, $level]);
     $thumbs = pathThumbs($db, $map_prefix, array_column($paths, 'pathId'));

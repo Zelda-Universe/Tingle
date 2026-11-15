@@ -87,7 +87,7 @@ ZMap.prototype._wikiLinkParams = function(url) {
     marker: number('marker'), rev: number('rev'), talk: params.get('talk') === '1',
     user: params.get('user'), comment: number('comment'), game: params.get('game'),
     notification: number('notification'), page: params.get('page'), report: number('report'), settingsRev:number('settings-rev'),
-    navigationRestore:params.get('nav-restore'), path: params.get('path')
+    navigationRestore:params.get('nav-restore'), path: params.get('path'), pathRev: number('pathrev')
   };
 };
 
@@ -101,7 +101,8 @@ ZMap.prototype._openWikiURL = function(url) {
   var link = this._wikiLinkParams(url);
   if(link.page==='game-settings-revision' && link.settingsRev) {this._openSettingsRevisionLink(link.settingsRev,link.game);return;}
   if(link.path && link.game && this.openPathFromLink) {
-    this.openPathFromLink(link.game, link.path);
+    // (At its Talk, or one of its revisions: a notification's.)
+    this.openPathFromLink(link.game, link.path, null, {talk: link.talk, comment: link.comment, pathRev: link.pathRev});
     return;
   }
   if(link.page === 'notifications') {

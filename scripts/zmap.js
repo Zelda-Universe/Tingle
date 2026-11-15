@@ -3409,6 +3409,15 @@ ZMap.prototype.goToStart = function() {
 
 ZMap.prototype.setUser = function(vUser) {
    user = vUser;
+   // Signed in or out (or another account) once the page is up: the games
+   // in progress (staff only) and the paths follow, without a reload.
+   var accountKey = user ? user.id + ':' + user.level : '';
+   var accountChanged = this._accountReady && accountKey !== this._accountKey;
+   this._accountKey = accountKey;
+   if(accountChanged && !this.isFramed()) {
+     if(typeof refreshAdminGames === 'function') refreshAdminGames();
+     if(this.loadPaths) this.loadPaths();
+   }
    // Signed out: remove the account's offline data from this device.
    if(user == null) ZOfflineSync.clear();
    _this._buildContextMenu();
@@ -6808,7 +6817,7 @@ ZMap.prototype._createAccountForm = function(user) {
            '<hr class="account-divider">' +
            '<button id="account_all_changes_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-history account-nav-icon" aria-hidden="true"></i>All Changes</button>' +
            // Paths (scripts/services/PathEditor.js): admins only while they're built.
-           (user.level >= 10 ? '<button id="account_community_paths_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-map-signs account-nav-icon" aria-hidden="true"></i>Community Paths</button>' : '') +
+           (this._pathsMakeable && this._pathsMakeable() ? '<button id="account_community_paths_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-map-signs account-nav-icon" aria-hidden="true"></i>Community Paths</button>' : '') +
            '<a id="account_discord_link" class="infoWindowIcn account-nav-button account-discord-link" href="' + this.DISCORD_URL + '" target="_blank" rel="noopener"><i class="fab fa-discord account-nav-icon" aria-hidden="true"></i>Zelda Maps Community Discord</a>' +
            (user.betaEditor ? '<button id="account_leave_beta_btn" type="button" class="account-text-link">Leave Editing Beta</button>'
              : user.level < 5 ? '<button id="account_join_beta_btn" type="button" class="account-text-link">Join the Editing Beta</button>' : '') +

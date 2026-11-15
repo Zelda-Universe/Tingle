@@ -34,7 +34,7 @@ test('All Revisions preserves the originating revision as the history parent',()
 test('profiles include settings edits and revision shortcuts have a separate namespace',()=>{
   expect(fs.readFileSync('ajax/user_profile.php','utf8')).toContain('communityChanges(');
   const wiki=fs.readFileSync('scripts/zwiki.js','utf8');
-  expect(wiki).toContain('rev|settingsrev|marker|user');
+  expect(wiki).toContain('rev|settingsrev|pathrev|marker|user');
   expect(wiki).toContain('data-settings-rev');
   expect(fs.readFileSync('scripts/zmapsettings.js','utf8')).toContain('[[settingsrev:');
 });

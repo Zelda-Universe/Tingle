@@ -194,6 +194,21 @@ function getMapCategories(categoriesSelectedIdPairsObject) {
   ).fail(showOfflineUnavailable);
 };
 
+// Games in progress (ALttP's, Path Lab), after the others: only staff get
+// any. Asked again when someone signs in or out (zmap.js setUser), so the
+// game list follows the account without a reload.
+function refreshAdminGames() {
+  $.getJSON("ajax.php?command=get_admin_games", function(list) {
+    list = Array.isArray(list) ? list : [];
+    var had = games.filter(function(game) { return game && game.adminOnly; }).map(function(game) { return String(game.id); });
+    games.forEach(function(game, i) { if(game && game.adminOnly) delete games[i]; });
+    $.each(list, function(i, game) { game.adminOnly = true; zMap.addGame(game); });
+    var now = list.map(function(game) { return String(game.id); });
+    if(had.join() === now.join()) return;
+    if(zMap.mapControl && zMap.mapControl.refreshGameMenu) zMap.mapControl.refreshGameMenu();
+  });
+}
+
 function getGames() {
    $.getJSON("ajax.php?command=get_games", function(vResults) {
       if (vResults.success === false || vResults.length === 0) {
@@ -204,12 +219,7 @@ function getGames() {
       $.each(vResults, function(i,map){
         zMap.addGame(map);
       });
-      // Games in progress, after the others: only admins get any.
-      $.getJSON("ajax.php?command=get_admin_games", function(games) {
-        if(!games || !games.length) return;
-        $.each(games, function(i, game) { zMap.addGame(game); });
-        if(zMap.mapControl && zMap.mapControl.refreshGameMenu) zMap.mapControl.refreshGameMenu();
-      });
+      refreshAdminGames();
       // Other games' data isn't fetched here. The service worker saves the
       // data of each game as it's viewed, and Offline Maps downloads save a
       // whole game; fetching every game on every visit cost over 10 MB.
@@ -248,6 +258,11 @@ function getUserInfo() {
     // Paths, once we know who's asking (scripts/services/Paths.js: admins
     // only while they're built). The markers are in by now.
     if(zMap.loadPaths) zMap.loadPaths();
+    // From now on, signing in or out refreshes what's the account's
+    // (zmap.js setUser): the games in progress and the paths.
+    zMap._accountReady = true;
+    var startedAs = zMap.getUser();
+    zMap._accountKey = startedAs ? startedAs.id + ':' + startedAs.level : '';
     if(ZConfig.getConfig("changelog") == 'true')
       checkChangelog(vResults.user);
    };
@@ -258,7 +273,8 @@ function getUserInfo() {
    };
    // An embed (embed.php) is never signed in: it doesn't ask.
    // (Unless it's previewed on Zelda Maps' own pages: index.php.)
-   if(window.zmapEmbed && !window.zmapEmbedPreview) { applyUserInfo({}, true); return; }
+   // (Signed out, not offline: its paths still load, lib/common/paths.php.)
+   if(window.zmapEmbed && !window.zmapEmbedPreview) { applyUserInfo({}, false); return; }
    $.getJSON("ajax.php?command=get_user_info").done(function(vResults) {
     if(!vResults || (!vResults.user && !vResults.loggedOut)) {
       keepSavedUser();

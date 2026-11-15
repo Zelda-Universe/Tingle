@@ -20,6 +20,7 @@
       'marker_comment'   => array('label' => 'Comments on your markers', 'group' => 'Your markers', 'inApp' => true, 'email' => false),
       'marker_edit'      => array('label' => 'Changes to your markers', 'hint' => 'Edits, restores and deletions by others.', 'group' => 'Your markers', 'inApp' => true, 'email' => false),
       // Paths (lib/common/paths.php): for admins only while they're built.
+      'path_comment'     => array('label' => 'Comments on your paths', 'group' => 'Your paths', 'inApp' => true, 'email' => false, 'admin' => true),
       'path_edit'        => array('label' => 'Changes to your paths', 'hint' => 'Edits, restores and deletions by others.', 'group' => 'Your paths', 'inApp' => true, 'email' => false, 'admin' => true),
       'followed_comment' => array('label' => 'Comments on markers you follow', 'group' => 'Markers you follow', 'inApp' => true, 'email' => false),
       'followed_edit'    => array('label' => 'Changes to markers you follow', 'group' => 'Markers you follow', 'inApp' => true, 'email' => false),
@@ -82,13 +83,20 @@
 
   function notificationExcerpt($text, $length = 160) {
     // Link codes read as what they show: [[marker:5]] as "marker #5".
-    $text = preg_replace_callback('/\[\[(rev|marker|user):([^\]|]+)(?:\|([^\]]+))?\]\]/i', function($m) {
+    $text = preg_replace_callback('/\[\[(rev|pathrev|settingsrev|marker|user):([^\]|]+)(?:\|([^\]]+))?\]\]/i', function($m) {
       if (isset($m[3]) && trim($m[3]) !== '') return trim($m[3]);
       $kind = strtolower($m[1]);
-      return $kind === 'rev' ? 'revision ' . trim($m[2]) : ($kind === 'marker' ? 'marker #' . trim($m[2]) : trim($m[2]));
+      return in_array($kind, ['rev', 'pathrev', 'settingsrev'], true) ? 'revision ' . trim($m[2]) : ($kind === 'marker' ? 'marker #' . trim($m[2]) : trim($m[2]));
     }, (string) $text);
     $text = trim(preg_replace('/\s+/u', ' ', $text));
     return mb_strlen($text) > $length ? rtrim(mb_substr($text, 0, $length - 1)) . '…' : $text;
+  }
+
+  // A path's name, link and owner, for its notifications.
+  function notificationPathInfo($db, $prefix, $pathId) {
+    $row = $db->fetchAssociative("SELECT p.name, p.slug, p.user_id, c.short_name FROM `{$prefix}path` p
+      JOIN `{$prefix}container` c ON c.id = p.container_id WHERE p.id = ?", [(int) $pathId]);
+    return $row ? array('name' => $row['name'], 'slug' => $row['slug'], 'ownerId' => (int) $row['user_id'], 'game' => $row['short_name']) : null;
   }
 
   function notificationMarkerInfo($db, $prefix, $markerId) {
@@ -159,6 +167,13 @@
     if ($pageType === 'user') {
       $add($pageId, 'user_talk');
       $data['pageTitle'] = (string) $db->fetchOne("SELECT `username` FROM `{$prefix}user` WHERE `id` = ?", [(int) $pageId]);
+    } elseif ($pageType === 'path') {
+      // A path's Talk: its owner hears, and it opens at the comment.
+      $path = notificationPathInfo($db, $prefix, $pageId);
+      if (!$path) return;
+      $data['pageTitle'] = $data['pathTitle'] = $path['name'];
+      $data['link'] = array('game' => $path['game'], 'path' => $path['slug'], 'talk' => 1, 'comment' => (int) $commentId);
+      $add($path['ownerId'], 'path_comment');
     } else {
       $marker = notificationMarkerInfo($db, $prefix, $pageId);
       if (!$marker) return;
@@ -245,6 +260,11 @@
         if(!$marker) return;
         $fields['markerId']=(int)$target['page_id'];
         $data['pageTitle']=$data['markerTitle']=$marker['title'];$data['game']=$marker['game'];
+      } elseif($target['page_type']==='path') {
+        $path=notificationPathInfo($db,$prefix,$target['page_id']);
+        if(!$path) return;
+        $data['pageTitle']=$path['name'];
+        $data['link']=['game'=>$path['game'],'path'=>$path['slug'],'talk'=>1,'comment'=>$id];
       } else $data['pageTitle']=$db->fetchOne("SELECT username FROM `{$prefix}user` WHERE id=?",[$target['page_id']]).'’s Talk';
     } elseif($type==='revision') {
       $target=$db->fetchAssociative("SELECT user_id,marker_id,summary FROM `{$prefix}marker_revision` WHERE id=?",[$id]);
@@ -257,6 +277,12 @@
       $target=$db->fetchAssociative("SELECT r.user_id,r.summary,c.short_name FROM `{$prefix}map_revision` r JOIN `{$prefix}container` c ON c.id=r.container_id WHERE r.id=?",[$id]);
       if(!$target) return;
       $data+=['markerTitle'=>'Game Settings','excerpt'=>notificationExcerpt($target['summary']),'link'=>['game'=>$target['short_name'],'page'=>'game-settings-revision','settings-rev'=>$id]];
+    } elseif($type==='pathrev') {
+      // A save in a path's history: "gave your edit to <path> a Yeah!".
+      $target=$db->fetchAssociative("SELECT r.user_id,r.summary,r.path_id FROM `{$prefix}path_revision` r WHERE r.id=?",[$id]);
+      $path=$target ? notificationPathInfo($db,$prefix,$target['path_id']) : null;
+      if(!$path) return;
+      $data+=['markerTitle'=>$path['name'],'excerpt'=>notificationExcerpt($target['summary']),'link'=>['game'=>$path['game'],'path'=>$path['slug'],'pathrev'=>$id]];
     } elseif($type==='path') {
       $target=$db->fetchAssociative("SELECT p.user_id,p.name,p.slug,c.short_name FROM `{$prefix}path` p JOIN `{$prefix}container` c ON c.id=p.container_id WHERE p.id=?",[$id]);
       if(!$target) return;
@@ -282,6 +308,7 @@
     switch ($row['type']) {
       case 'like':            $title = strpos($data['likeTarget'] ?? '','path:')===0 ? "{$actor} gave your path {$pathTitle} a Yeah!" : (($data['likeTarget'] ?? '') && strpos($data['likeTarget'],'comment:')===0 ? "{$actor} gave your comment on {$page} a Yeah!" : "{$actor} gave your edit to {$marker} a Yeah!"); break;
       case 'path_edit':        $title = "{$actor} {$verb} your path {$pathTitle}"; break;
+      case 'path_comment':     $title = "{$actor} commented on your path {$pathTitle}"; break;
       case 'user_talk':        $title = "{$actor} left a message on your talk page"; break;
       case 'comment_reply':    $title = "{$actor} replied to your comment on {$page}"; break;
       case 'comment_like':     $title = "{$actor} gave your comment on {$page} a Yeah!"; break;

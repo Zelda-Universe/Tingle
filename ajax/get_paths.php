@@ -15,7 +15,9 @@
 
   $account = pathAccount($db, $map_prefix);
   [$userId, $level] = $account ?: [0, 0];
-  if (!pathsAllowed($level)) { echo json_encode(array()); return; }
+  if (!pathsVisible($level)) { echo json_encode(array()); return; }
+  // (Before users' own paths are open, only the official ones: paths.php.)
+  $ownPaths = pathsAllowed($level);
 
   $paths = $db->fetchAllAssociative("
     SELECT p.id, p.user_id AS userId, p.scope, p.visibility, p.edit_access AS editAccess,
@@ -29,7 +31,7 @@
       LEFT JOIN {$map_prefix}user u ON u.id = p.user_id
      WHERE (g.id = ? OR g.short_name = ?) AND p.visible = 1
        AND ((p.scope = 'official' AND (" . pathPublishedSql() . " OR ? >= " . PATHS_ADMIN_LEVEL . "))
-            OR p.user_id = ? OR (p.slug = ? AND " . pathOpenSql() . "))
+            OR (" . ($ownPaths ? '1' : '0') . " AND (p.user_id = ? OR (p.slug = ? AND " . pathOpenSql() . "))))
      ORDER BY p.scope = 'official' DESC, p.id
   ", [$userId, $game, $game, $level, $userId, (string) ($_GET['path'] ?? '')]);
   if (!$paths) { echo json_encode(array()); return; }
@@ -95,8 +97,9 @@
     foreach (['loops', 'numbered', 'smooth', 'alwaysShow', 'complete', 'published'] as $flag) $path[$flag] = (bool) $path[$flag];
     $path['mine'] = $userId && (int) $path['userId'] === $userId;
     $rule = ['user_id' => $path['userId'], 'edit_access' => $path['editAccess']];
-    $path['canEdit'] = $userId && pathCanEdit($rule, $userId, $level);
-    $path['canManage'] = $userId && pathCanManage($rule, $userId, $level);
+    // (Only those who make paths change them: save_path.php checks the same.)
+    $path['canEdit'] = $userId && $ownPaths && pathCanEdit($rule, $userId, $level);
+    $path['canManage'] = $userId && $ownPaths && pathCanManage($rule, $userId, $level);
   }
   echo json_encode($paths);
 ?>

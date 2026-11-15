@@ -115,6 +115,59 @@
     return 'https://zeldamaps.com/?' . http_build_query(['game' => $gameShortName === 'OoT' ? 'OoTR' : $gameShortName, 'category' => $slug]);
   }
 
+  // Paths' pages (scripts/services/PathEditor.js): official, published
+  // paths, once everyone may see them (lib/common/paths.php PATHS_STAGE;
+  // none while they're staff-only). $game: a container short name (OoTR,
+  // not seo.php's OoT), or null for every game. Each: id, name, slug, game,
+  // description (plain text), steps (their names, in order), lastUpdated.
+  function seoPathPages($db, $prefix, $game = null, $slug = null) {
+    include_once(__DIR__ . '/paths.php');
+    if (!pathsVisible(0) || !$db->fetchOne("SHOW TABLES LIKE '{$prefix}path'")) return [];
+    $where = $game !== null ? ' AND c.short_name = ?' : '';
+    $params = $game !== null ? [$game] : [];
+    if ($slug !== null) { $where .= ' AND p.slug = ?'; $params[] = $slug; }
+    $paths = $db->fetchAllAssociative("
+      SELECT p.id, p.name, p.slug, p.description, c.short_name AS game,
+             DATE_FORMAT(GREATEST(COALESCE(p.published_at, 0), COALESCE((SELECT MAX(r.created) FROM `{$prefix}path_revision` r WHERE r.path_id = p.id), 0)), '%Y-%m-%d') AS lastUpdated
+        FROM `{$prefix}path` p JOIN `{$prefix}container` c ON c.id = p.container_id
+       WHERE p.visible = 1 AND p.scope = 'official' AND " . pathPublishedSql() . " AND c.visible = 1{$where}
+       ORDER BY c.short_name, p.id", $params);
+    if (!$paths) return [];
+    $steps = [];
+    foreach ($db->fetchAllAssociative("
+      SELECT s.path_id, COALESCE(m.name, s.name) AS name
+        FROM `{$prefix}path_step` s LEFT JOIN `{$prefix}marker` m ON m.id = s.marker_id AND m.visible = 1
+       WHERE s.path_id IN (" . implode(',', array_map('intval', array_column($paths, 'id'))) . ")
+         AND (s.marker_id IS NOT NULL OR s.shown = 1)
+       ORDER BY s.path_id, s.step_order") as $step) {
+      $name = seoPlainText($step['name']);
+      if ($name !== '') $steps[$step['path_id']][] = $name;
+    }
+    foreach ($paths as &$path) {
+      $path['name'] = seoPlainText($path['name']);
+      // [[marker:5|Cojiro]] reads as "Cojiro", as notifications read codes.
+      $path['description'] = seoPlainText(preg_replace('/\[\[\w+:[^\]|]*\|([^\]]*)\]\]/', '$1', preg_replace('/\[\[\w+:([^\]|]*)\]\]/', '$1', (string) $path['description'])));
+      $path['steps'] = $steps[$path['id']] ?? [];
+    }
+    unset($path);
+    return $paths;
+  }
+
+  function seoPathUrl($game, $slug) {
+    return 'https://zeldamaps.com/?' . http_build_query(['game' => $game, 'path' => $slug]);
+  }
+
+  // A path's description for search results and link previews: its own
+  // words, and how many steps it takes, within 160 characters.
+  function seoPathDescription($path, $gameName) {
+    $count = count($path['steps']);
+    $tail = $count ? 'A ' . $count . '-step guide on the Zelda Maps interactive map.' : 'A guide on the Zelda Maps interactive map.';
+    $own = trim($path['description']);
+    if ($own === '') return $path['name'] . ' in ' . $gameName . '. ' . $tail;
+    $text = mb_strlen($own) <= 160 - mb_strlen($tail) - 1 ? $own . ' ' . $tail : $own;
+    return mb_strimwidth($text, 0, 160, '…', 'UTF-8');
+  }
+
   // Area addresses: apostrophes are dropped, not turned into dashes
   // ("zoras-river", not "zora-s-river"). Category slugs keep seoSlug, so
   // existing category links don't change.

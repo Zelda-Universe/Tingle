@@ -7,7 +7,7 @@
   $account = pathAccount($db, $map_prefix);
   if (!$account) { echo json_encode(array('success' => false, 'msg' => 'Sign in to track a path.')); return; }
   [$userId, $level] = $account;
-  if (!pathsAllowed($level)) { echo json_encode(array('success' => false, 'msg' => 'Paths are not available yet.')); return; }
+  if (!pathsVisible($level)) { echo json_encode(array('success' => false, 'msg' => 'Paths are not available yet.')); return; }
   if (!$db->fetchOne("SHOW TABLES LIKE '{$map_prefix}path_start'")) { echo json_encode(array('success' => true, 'tracked' => false)); return; }
   $path = pathVisibleTo($db, $map_prefix, (int) ($_POST['id'] ?? 0), $userId, $level);
   if (!$path) { echo json_encode(array('success' => false, 'msg' => 'That path is not available.')); return; }

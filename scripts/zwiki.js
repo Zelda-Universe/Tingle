@@ -371,13 +371,15 @@ ZMap.prototype._markerLinkShortcode = function(text) {
 ZMap.prototype._renderWikiText = function(text) {
   var _this = this;
   var html = this._wikiEscape(text);
-  html = html.replace(/\[\[(rev|settingsrev|marker|user):([^\]|]{1,64})(?:\|([^\]]{1,120}))?\]\]/gi, function(all, kind, target, label) {
+  // ([[pathrev:N]]: a save in a path's history, PathEditor.js.)
+  html = html.replace(/\[\[(rev|settingsrev|pathrev|marker|user):([^\]|]{1,64})(?:\|([^\]]{1,120}))?\]\]/gi, function(all, kind, target, label) {
     kind = kind.toLowerCase();
     target = target.trim();
-    if((kind === 'rev' || kind === 'settingsrev' || kind === 'marker') && !/^\d+$/.test(target)) return all;
-    var text = label ? label.trim() : ((kind === 'rev' || kind === 'settingsrev') ? 'revision ' + target : kind === 'marker' ? _this._shortcodeMarkerTitle(target) : target);
-    var icon = (kind === 'rev' || kind === 'settingsrev') ? 'fa-history' : kind === 'marker' ? 'fa-map-marker-alt' : 'fa-user';
-    var attr = kind==='settingsrev' ? 'data-settings-rev="'+target+'"' : kind === 'rev' ? 'data-rev="' + target + '"' : kind === 'marker' ? 'data-marker="' + target + '"' : 'data-username="' + target + '"';
+    var revision = kind === 'rev' || kind === 'settingsrev' || kind === 'pathrev';
+    if((revision || kind === 'marker') && !/^\d+$/.test(target)) return all;
+    var text = label ? label.trim() : (revision ? 'revision ' + target : kind === 'marker' ? _this._shortcodeMarkerTitle(target) : target);
+    var icon = revision ? 'fa-history' : kind === 'marker' ? 'fa-map-marker-alt' : 'fa-user';
+    var attr = kind==='settingsrev' ? 'data-settings-rev="'+target+'"' : kind==='pathrev' ? 'data-path-rev="'+target+'"' : kind === 'rev' ? 'data-rev="' + target + '"' : kind === 'marker' ? 'data-marker="' + target + '"' : 'data-username="' + target + '"';
     return '<a href="#" class="wiki-link wiki-code-link" ' + attr + '><i class="fas ' + icon + '" aria-hidden="true"></i>' + text + '</a>';
   });
   html = html.replace(/(^|[\s(])(https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"])/g, function(all, lead, url) {
@@ -398,6 +400,8 @@ ZMap.prototype._wireWikiLinks = function(root, back) {
     var link = this;
     if(link.hasAttribute('data-settings-rev')) {
       _this._openSettingsRevisionLink(Number(link.getAttribute('data-settings-rev')),null,back);
+    } else if(link.hasAttribute('data-path-rev') && _this._openPathRevisionById) {
+      _this._openPathRevisionById(Number(link.getAttribute('data-path-rev')), back);
     } else if(link.hasAttribute('data-rev')) {
       _this._openMarkerRevision(Number(link.getAttribute('data-rev')), back);
     } else if(link.hasAttribute('data-marker')) {
@@ -595,6 +599,8 @@ ZMap.prototype._wikiActivityRow = function(change,opts) {
 
 ZMap.prototype._openActivityComment = function(element,back) {
   var type=element.getAttribute('data-page-type'),id=Number(element.getAttribute('data-page-id')),comment=Number(element.getAttribute('data-comment')),game=element.getAttribute('data-game');
+  // A path's Talk (PathEditor.js), at the comment.
+  if(type==='path' && this._openPathTalkComment) {this._openPathTalkComment(id,comment,back);return;}
   var marker=type==='marker' && this.cachedMarkersById && this.cachedMarkersById[id];
   this._openTalk(type,id,element.getAttribute('data-title') || (marker && marker.title) || '',back,
     {highlight:comment,game:game || null,region:!!(marker && marker.categoryTypeId==3)});
@@ -881,9 +887,9 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
         '<div class="form-group"><div class="input-group">' +
           '<span class="input-group-addon"><i class="fas fa-comment" aria-hidden="true"></i></span>' +
           '<textarea class="form-control" name="body" rows="3" maxlength="5000" required ' +
-            'placeholder="' + (pageType === 'user' ? 'Leave a message' : 'Start a discussion about this ' + (isRegion ? 'region' : 'marker')) + '"></textarea>' +
+            'placeholder="' + (pageType === 'user' ? 'Leave a message' : 'Start a discussion about this ' + (pageType === 'path' ? 'path' : isRegion ? 'region' : 'marker')) + '"></textarea>' +
         '</div></div>' +
-        '<p class="wiki-hint">Link with <code>[[rev:123]]</code>, <code>[[marker:45]]</code> or <code>[[user:name]]</code>.</p>' +
+        '<p class="wiki-hint">Link with ' + (pageType === 'path' ? '<code>[[pathrev:123]]</code>' : '<code>[[rev:123]]</code>') + ', <code>[[marker:45]]</code> or <code>[[user:name]]</code>.</p>' +
         '<button type="submit" class="infoWindowIcn form-action-button">Post</button>' +
       '</form>' +
       '<ul class="wiki-thread"><li class="wiki-empty">Loading…</li></ul>' +
@@ -894,6 +900,8 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
     { settles: true, waitForReady: true }
   );
   if(pageType === 'marker') this._wikiSetMarkerSubtitle(page, title, pageId, opts.game || null, reopen,{view:true});
+  // A path's: its name, and Go to Path unless that's where Back goes.
+  else if(pageType === 'path' && opts.path && this._pathSubtitle) this._pathSubtitle(page, opts.path, !opts.fromPath);
   else {
     $(page).find('.wiki-subtitle').text(title || '');
     var activitySource=back && back.activitySource;

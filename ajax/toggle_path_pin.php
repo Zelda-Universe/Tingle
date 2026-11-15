@@ -8,7 +8,7 @@
   $account = pathAccount($db, $map_prefix);
   if (!$account) { $fail('Sign in to complete pins.'); return; }
   [$userId, $level] = $account;
-  if (!pathsAllowed($level)) { $fail('Paths are not available yet.'); return; }
+  if (!pathsVisible($level)) { $fail('Paths are not available yet.'); return; }
   if (!pathHasPins($db, $map_prefix)) { $fail('Pins can\'t be completed yet.'); return; }
   $path = pathVisibleTo($db, $map_prefix, (int) ($_POST['pathId'] ?? 0), $userId, $level);
   if (!$path) { $fail('That path is not available.'); return; }

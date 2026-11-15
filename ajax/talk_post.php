@@ -3,7 +3,7 @@
   $editor = wikiRequireEditor($db, $map_prefix);
   if ($editor === null) return;
 
-  // Adds a comment, or a reply to one, to a marker's or user's Talk page.
+  // Adds a comment, or a reply to one, to a marker's, path's or user's Talk page.
   if (!wikiAvailable($db, $map_prefix)) {
     echo json_encode(array('success' => false, 'msg' => 'Run the create_wiki migration to use Talk pages.'));
     return;
@@ -12,6 +12,11 @@
   $pageId = (int) ($_POST['pageId'] ?? 0);
   $parentId = (int) ($_POST['parentId'] ?? 0);
   $body = trim(is_string($_POST['body'] ?? null) ? $_POST['body'] : '');
+  // A path's Talk: only for those who may see the path.
+  if ($type === 'path') {
+    include_once(dirname(__DIR__) . '/lib/common/paths.php');
+    if (!pathReadableBy($db, $map_prefix, $pageId, $editor)) $pageId = 0;
+  }
   if (!wikiTalkPageExists($db, $map_prefix, $type, $pageId)) {
     echo json_encode(array('success' => false, 'msg' => 'That page was not found.'));
     return;

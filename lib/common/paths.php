@@ -5,16 +5,29 @@
   include_once(__DIR__ . '/account_status.php');
 
   const PATH_EDITOR_LEVEL = 5;
-  // While paths are being built they're only for admins: no one else gets
-  // any (get_paths, profiles) or can save one. Set to false to launch them.
-  const PATHS_ADMIN_ONLY = true;
+  // How far paths are released, one step at a time:
+  //  * 'staff': only staff (moderators and up) see or make any, while
+  //    they're built.
+  //  * 'readonly': a soft launch. Everyone, signed in or not, sees and uses
+  //    the official paths (on the map, their pages, the guide, completing
+  //    steps, bookmarking, their History and Talk, embeds); only staff make,
+  //    edit, restore or delete paths. Users' own paths stay staff-only.
+  //  * 'open': everyone also makes their own (Community Paths, profiles).
+  // The page is told which (index.php window.zmapPathsStage, Paths.js).
+  const PATHS_STAGE = 'readonly';
   const PATHS_ADMIN_LEVEL = 10;
   // How much can be written about a pin (its page, ajax/save_path_pin.php).
   const PATH_PIN_CONTENT_MAX = 5000;
 
-  // Whether this account may see and make paths at all.
+  // Whether this account (level 0: signed out) sees and uses paths at all.
+  function pathsVisible($level) {
+    return PATHS_STAGE !== 'staff' || (int) $level >= PATHS_ADMIN_LEVEL;
+  }
+
+  // Whether it makes and changes paths, and sees users' own (theirs and
+  // others'): Community Paths, profiles, Yeahs on paths.
   function pathsAllowed($level) {
-    return !PATHS_ADMIN_ONLY || (int) $level >= PATHS_ADMIN_LEVEL;
+    return PATHS_STAGE === 'open' || (int) $level >= PATHS_ADMIN_LEVEL;
   }
 
   // [userId, level] for the signed-in account, or null.
@@ -55,9 +68,25 @@
 
   // A path this account may see (its own, an admin's view of an official
   // draft, or anyone's open one), or false.
+  // (Before users' own paths are open, only official ones: pathsAllowed.)
   function pathVisibleTo($db, $prefix, $id, $userId, $level) {
+    if (!pathsVisible($level)) return false;
     return $db->fetchAssociative("SELECT p.* FROM `{$prefix}path` p WHERE p.id = ? AND p.visible = 1
-      AND (p.user_id = ? OR " . pathOpenSql() . " OR (p.scope = 'official' AND ? >= " . PATHS_ADMIN_LEVEL . "))", [(int) $id, (int) $userId, (int) $level]);
+      AND (p.user_id = ? OR " . pathOpenSql() . " OR (p.scope = 'official' AND ? >= " . PATHS_ADMIN_LEVEL . "))
+      AND (p.scope = 'official' OR ?)", [(int) $id, (int) $userId, (int) $level, pathsAllowed($level) ? 1 : 0]);
+  }
+
+  // Which paths' edits show in activity feeds (community_changes.php): all
+  // open ones for those who make paths, the official ones for everyone else
+  // once paths are out, none before.
+  function pathsInFeeds($level) {
+    return pathsAllowed($level) ? true : (pathsVisible($level) ? 'official' : false);
+  }
+
+  // A path's Talk page and its revisions' Yeahs: for those who may see the
+  // path (pathVisibleTo). $viewer: ['id', 'level'].
+  function pathReadableBy($db, $prefix, $pathId, $viewer) {
+    return pathVisibleTo($db, $prefix, $pathId, (int) ($viewer['id'] ?? 0), (int) ($viewer['level'] ?? 0));
   }
 
   // A path from what its editor sends (and from a revision, to restore it):

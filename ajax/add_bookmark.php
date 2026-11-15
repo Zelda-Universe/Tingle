@@ -21,7 +21,7 @@
     include_once(dirname(__DIR__) . '/lib/common/paths.php');
     $account = pathAccount($db, $map_prefix);
     $level = $account ? $account[1] : 0;
-    if (!pathsAllowed($level) || !pathVisibleTo($db, $map_prefix, (int) $pathId, $userId, $level)) {
+    if (!pathVisibleTo($db, $map_prefix, (int) $pathId, $userId, $level)) {
       echo json_encode(array("success" => false, "msg" => "That path can't be bookmarked."));
       return;
     }

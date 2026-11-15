@@ -11,6 +11,11 @@
   $type = (string) ($_GET['pageType'] ?? '');
   $pageId = (int) ($_GET['pageId'] ?? 0);
   if($type==='marker' && !wikiReadableMarker($db,$map_prefix,$pageId)) {http_response_code(404);echo json_encode(['success'=>false,'msg'=>'That marker was not found.']);return;}
+  // A path's Talk: only for those who may see the path.
+  if ($type === 'path') {
+    include_once(dirname(__DIR__) . '/lib/common/paths.php');
+    if (!pathReadableBy($db, $map_prefix, $pageId, $editor)) $pageId = 0;
+  }
   if (!wikiTalkPageExists($db, $map_prefix, $type, $pageId)) {
     echo json_encode(array('success' => false, 'msg' => 'That page was not found.'));
     return;

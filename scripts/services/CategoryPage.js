@@ -36,7 +36,10 @@ ZMap.prototype.categoryURLKey = function(category) {
 ZMap.prototype.categoryHasPage = function(category) {
   if(!category || !category.parent_id || String(category.marker_category_type_id) !== '1') return false;
   if(category.visible === false) return false;
-  return this._getCategoryMarkers(category).length > 0;
+  if(this._getCategoryMarkers(category).length > 0) return true;
+  // A category that's a path whose markers are in other categories (OoT's
+  // Trading Sequence): its page is the path's (Paths.js _categoryPaths).
+  return !!(this._categoryPaths && this._categoryPaths(category).single);
 };
 
 // Every marker in the category or one of its children (what focusing it

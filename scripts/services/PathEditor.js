@@ -49,17 +49,16 @@ ZMap.prototype._addMakePathButton = function(marker) {
   var tools = this.mapControl && this.mapControl._contents.querySelector('.menu-cat-content-inner > .marker-editor-tools');
   if(!tools || !marker || tools.querySelector('.path-new-button')) return;
   if(!this.getUser() || !this._pathsEnabled) return;
-  // In line with the others: after Edit, before History.
+  // Full width, under Edit, History and Talk.
   var row = tools.querySelector('.marker-editor-buttons');
   if(!row) return;
   var button = document.createElement('button');
   button.type = 'button';
   button.className = 'marker-editor-button path-new-button';
-  button.innerHTML = "<span class='path-new-icon' aria-hidden='true'><i class='fas fa-plus'></i><i class='fas fa-map-signs'></i></span><span>Make Path</span>";
+  button.innerHTML = "<span class='path-new-icon' aria-hidden='true'><i class='fas fa-plus'></i><i class='fas fa-map-signs'></i></span><span>Make New Path From Here</span>";
   var zmap = this;
   button.addEventListener('click', function() { zmap.openPathEditor(null, marker.id); });
-  var edit = row.querySelector('[data-editor-action="edit"]');
-  row.insertBefore(button, edit ? edit.nextSibling : row.firstChild);
+  row.parentNode.insertBefore(button, row.nextSibling);
 };
 
 // A path opened from a marker's page: its Back returns to the marker.
@@ -183,15 +182,18 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
       "<p class='marker-coordinate-pill path-kind-pill'><i class='fas fa-map-signs' aria-hidden='true'></i> Path</p>" +
       (this._pathCheckCounts(path).total ? "<p class='area-completion-pill marker-coordinate-pill path-completion-pill'></p>" : '') + "</div>" +
     "<div class='marker-actions-row path-actions-row' style='grid-template-columns: repeat(" + actions.length + ", minmax(0, 1fr))'>" + actions.join('') + "</div>" +
-    // Its guide, full width under the controls, and the end of what a phone's
-    // partly open drawer shows (ZLayers.js _mobileDrawerPeekHeight).
-    (shown.length ? "<div class='path-start-row drawer-peek-end'><button type='button' class='path-start'>" +
-      "<i class='fas fa-play' aria-hidden='true'></i><span class='path-start-text'><span>" + this._pathStartLabel.label + "</span>" +
-      (stat ? "<small>" + this._pathEsc(stat) + "</small>" : '') + "</span></button></div>" : '') +
     (byline.length ? "<p class='path-byline'>" + byline.join("<span class='path-byline-dot' aria-hidden='true'>•</span>") + "</p>" : '') +
     "<div class='wiki-page path-page' data-path-slug='" + this._pathEsc(path.slug) + "'>" +
     (status ? "<p class='path-status'>" + status + "</p>" : '') +
-    (path.description ? "<div class='path-description'>" + this._renderWikiText(path.description) + "</div>" : '') +
+    // Its description (what's needed before starting), held to a few lines
+    // with Show more (_wirePathDescription)...
+    (path.description ? "<div class='path-description'>" + this._renderWikiText(path.description) + "</div>" +
+      "<button type='button' class='path-step-more path-description-more' hidden><span>Show more</span><i class='fas fa-chevron-down' aria-hidden='true'></i></button>" : '') +
+    // ...then its guide, full width, right above the first step: the end of
+    // what a phone's partly open drawer shows (ZLayers.js _mobileDrawerPeekHeight).
+    (shown.length ? "<div class='path-start-row drawer-peek-end'><button type='button' class='path-start'>" +
+      "<i class='fas fa-play' aria-hidden='true'></i><span class='path-start-text'><span>" + this._pathStartLabel.label + "</span>" +
+      (stat ? "<small>" + this._pathEsc(stat) + "</small>" : '') + "</span></button></div>" : '') +
     this._pathStepsHTML(path, path.steps, {checks: true}) + "</div>" + footer, 'path', back, null, {partialDrawer: true, instant: !!opts.instant});
   page.classList.add('area-detail-page', 'path-detail-page');
   // Step numbers stick just under the compact title bar, however tall it is
@@ -220,12 +222,36 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   $(page).find('.path-start').on('click', function() { zmap._recordPathStart(path); zmap._startPathGuide(path, page); });
   $(page).on('click', '.path-step-complete:not(.done)', function() { zmap._recordPathStart(path); });
   this._wirePathSteps(page, path.steps, function(scrollTop) { zmap.openPathPage(path.slug, {keepView: true, scrollTop: scrollTop}); }, path.name, path);
+  this._wirePathDescription(page);
   if(opts.scrollTop) {
     var contents = this.mapControl._contents;
     contents.scrollTop = opts.scrollTop;
     // (Again once the page has settled and its images have taken their room.)
     setTimeout(function() { contents.scrollTop = opts.scrollTop; }, 50);
   }
+};
+
+// A path's description, six lines at most until Show more opens it (and
+// Show less closes it again); short ones show whole, with no button.
+ZMap.prototype._wirePathDescription = function(page) {
+  var text = page.querySelector('.path-description'), button = page.querySelector('.path-description-more');
+  if(!text || !button) return;
+  var measure = function() {
+    if(text.classList.contains('expanded')) return;
+    text.classList.add('clamped');
+    var long = text.scrollHeight > text.clientHeight + 2;
+    text.classList.toggle('clamped', long);
+    button.hidden = !long;
+  };
+  button.addEventListener('click', function() {
+    var open = !text.classList.contains('expanded');
+    text.classList.toggle('expanded', open);
+    text.classList.toggle('clamped', !open);
+    // (Rebuilt whole: Font Awesome swaps its <i> for an SVG.)
+    button.innerHTML = "<span>" + (open ? 'Show less' : 'Show more') + "</span><i class='fas fa-chevron-" + (open ? 'up' : 'down') + "' aria-hidden='true'></i>";
+  });
+  measure();
+  setTimeout(measure, 0);
 };
 
 // The markers whose checks a path's page shows: each step's marker, or, for
@@ -368,8 +394,8 @@ ZMap.prototype._goToPathStep = function(step, instant, leg) {
 // The guide's view of the next step: the stretch of the path from the step
 // before it (from, or the shown step before it) to it, filling the map
 // that's left to see, as a region's page does, with room around it, so the
-// way there can be seen and followed. A first step, with no way to it yet: two and a half levels
-// short of the closest zoom. False if the step isn't drawn.
+// way there can be seen and followed. A first step, with no way to it yet:
+// as close as its name's link goes (_pathStepZoom). False if the step isn't drawn.
 ZMap.prototype._framePathLeg = function(path, from, to, instant) {
   var points = path.points || [], index = path.steps.indexOf(to);
   if(index < 0 || !points[index]) return false;
@@ -384,7 +410,7 @@ ZMap.prototype._framePathLeg = function(path, from, to, instant) {
   this._prepareMapEdgesForDrawer();
   // (A fifth again around it, so neither step sits at the edge.)
   this._fitBoundsToVisibleMap(L.latLngBounds(leg).pad(leg.length > 1 ? .2 : 0), {
-    animate: !instant, fly: true, maxZoom: leg.length > 1 ? max : max - 2.5,
+    animate: !instant, fly: true, maxZoom: leg.length > 1 ? max : this._pathStepZoom(),
     drawerTargetTop: control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined});
   return true;
 };
@@ -411,8 +437,11 @@ ZMap.prototype._scrollToPathStep = function(li) {
 // A marker's own contents, as its page shows them (zmap.js), less its
 // coordinates.
 ZMap.prototype._pathMarkerContent = function(marker) {
+  var zmap = this;
   return (marker.tabText || []).map(function(text) {
-    return String(text || '').replace(/<p\b(?=[^>]*\bname\s*=\s*(['"])coord\1)[^>]*>[\s\S]*?<\/p>/gi, '');
+    var html = String(text || '').replace(/<p\b(?=[^>]*\bname\s*=\s*(['"])coord\1)[^>]*>[\s\S]*?<\/p>/gi, '');
+    // (Its [[marker:123]] links as links: zwiki.js.)
+    return zmap._renderContentShortcodes ? zmap._renderContentShortcodes(html) : html;
   }).join('').trim();
 };
 
@@ -451,7 +480,8 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
       // A marker's name opens it: a chevron says so.
       // (Inline, after the last word: a long name wraps with it.)
       "<div class='path-step-body'><div class='path-step-head'><button type='button' class='path-step-name'><span class='path-step-label'>" + zmap._pathEsc(zmap._pathStepLabel(step)) +
-        (opens ? "<i class='fas fa-chevron-right path-step-chevron' aria-hidden='true'></i>" : '') + "</span></button></div>" +
+        (opens ? "<i class='fas fa-chevron-right path-step-chevron' aria-hidden='true'></i>" : '') + "</span></button>" +
+        (marker ? zmap._pathStepPlaceHTML(marker) : '') + "</div>" +
       (removed ? "<p class='path-step-removed'><i class='fas fa-ban' aria-hidden='true'></i> Removed from the map</p>" : '') +
       (step.note ? "<p class='path-step-note'>" + zmap._renderWikiText(step.note) + "</p>" : '') +
       (content ? "<div class='popupContent path-step-content'>" + content + "</div>" +
@@ -462,6 +492,16 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
       (framed && opts && opts.checks && n < shownCount ? "<button type='button' class='path-step-next'><span>Next</span><i class='fas fa-arrow-down' aria-hidden='true'></i></button>" : '') +
       "</div></li>";
   }).join('') + "</ol>";
+};
+
+// Where a step's marker is, under its name: the place, area name and area
+// its page shows as pills (zmap.js _createMarkerPopup), finest first.
+ZMap.prototype._pathStepPlaceHTML = function(marker) {
+  var zmap = this, seen = [];
+  var links = [this.markerLabelLink && this.markerLabelLink(marker, 'place'),
+    this.markerLabelLink && this.markerLabelLink(marker, 'area'), this.markerAreaLink && this.markerAreaLink(marker)];
+  links.forEach(function(link) { if(link && link.label && seen.indexOf(link.label) < 0) seen.push(link.label); });
+  return seen.length ? "<p class='path-step-place'>" + seen.map(function(t) { return zmap._pathEsc(t); }).join(' · ') + "</p>" : '';
 };
 
 // A step's name opens its marker, whose Back comes back here (reopen); a

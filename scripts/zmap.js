@@ -1029,10 +1029,11 @@ ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
 		//content = content + "<hr>";
 
 		for (var i = 0; i < marker.tabText.length; i++) {
-		   content = content + marker.tabText[i].replace(
+		   // (Its [[marker:123]] links as links: zwiki.js.)
+		   content = content + this._renderContentShortcodes(marker.tabText[i].replace(
          /<p\b(?=[^>]*\bname\s*=\s*(['"])coord\1)[^>]*>[\s\S]*?<\/p>/gi,
          ''
-       );
+       ));
 		}
 	}
    /*
@@ -1055,6 +1056,13 @@ ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
   content += "</div>";
 
   this.mapControl.setContent(content, 'm'+marker.id);
+  // Its links to other markers open them, with a way back here.
+  var markerContent = this.mapControl._contents.querySelector('.menu-cat-content-inner > .popupContent');
+  if(markerContent && this._wireWikiLinks) {
+    var zmap = this, markerId = marker.id;
+    // (Back to this page keeps its own Back, to a path, an area, a search…)
+    this._wireWikiLinks(markerContent, this._wikiBackToMarker ? this._wikiBackToMarker(markerId) : function() { zmap.navigateToMarker(markerId); });
+  }
   this._refreshMarkerEditorTools(marker);
   var forcePartialMobile = (
     !!forcePartial &&
@@ -1986,6 +1994,8 @@ ZMap.prototype.buildMap = function(gameId) {
 
       for (var i = markers.length -1; i >= 0; i--) {
         var m = markers[i];
+        // (Not one replaced by a save or deleted: it has no category left.)
+        if (!_this.categories[m.categoryId]) continue;
         if (mapBounds.contains(m.getLatLng()) && m.categoryTypeId != 3 && m._iconKey !== _this._markerIconKey(m)) {
           m._iconKey = _this._markerIconKey(m);
           m.setIcon(_this._createMarkerIcon(m.categoryId, m.complete));
@@ -2318,6 +2328,23 @@ ZMap.prototype._createDroppedPinLink = function(latlng) {
 
 // Shown inside another site's page (an embed): just what was embedded
 // (index.php sets the class first thing).
+// A marker's link pasted into any of the drawer's text boxes becomes its
+// shortcode with its title (zwiki.js _markerLinkShortcode).
+document.addEventListener('paste', function(e) {
+  var field = e.target;
+  if(!field || !window.zMap || !zMap._markerLinkShortcode) return;
+  var typing = field.tagName === 'TEXTAREA' || (field.tagName === 'INPUT' && /^(text|search|url)$/i.test(field.type || 'text'));
+  if(!typing || !field.closest('.leaflet-control-layers') || field.readOnly) return;
+  var data = e.clipboardData || window.clipboardData;
+  var code = data && zMap._markerLinkShortcode(data.getData('text'));
+  if(!code) return;
+  e.preventDefault();
+  var start = field.selectionStart, end = field.selectionEnd;
+  if(typeof start !== 'number') { field.value += code; }
+  else { field.setRangeText(code, start, end, 'end'); }
+  field.dispatchEvent(new Event('input', { bubbles: true }));
+}, true);
+
 ZMap.prototype.isFramed = function() {
   return document.documentElement.classList.contains('zm-framed');
 };
@@ -3740,6 +3767,13 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
     // Keep links and uploads as written: 'uploads/…', not '../uploads/…'.
     convert_urls: false,
     image_dimensions: false,
+    // A marker's link pasted in comes in as its shortcode with its title
+    // (zwiki.js _markerLinkShortcode).
+    paste_preprocess: function(plugin, args) {
+      var text = $('<div>').html(args.content).text();
+      var code = _this._markerLinkShortcode(text);
+      if (code) args.content = code;
+    },
     content_style:
       '@font-face { font-family: BrandonText; src: url("styles/fonts/brandon/264CA8_2_0.woff") format("woff"); font-weight: 400; }' +
       'html, body { background: transparent; } body { margin: 12px 14px; color: #fff; font-family: BrandonText, sans-serif; font-size: 16px; line-height: 1.4; }' +
@@ -3933,6 +3967,13 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       }
       _this.addMarker(saved);
       _this.map.addLayer(markers[markers.length - 1]);
+      // The saved marker is a new object at the end of the list: the pin on
+      // it, and the paths it's a step of, follow it there. (The pin still
+      // pointed at the old one, now gone, so the next move of the map took
+      // it for a hidden marker and closed its page: the map's moveend
+      // handler, addMapControl.)
+      if (newMarker && newMarker.markerId == saved.id) newMarker.markerPos = markers.length - 1;
+      if (_this._preparePaths && _this.paths) { _this._preparePaths(); _this.drawPaths(); }
       _this.mapControl._navigatingBack = editing;
       _this._createMarkerPopup(markers[markers.length - 1]);
       if (editing) toastr.success('Saved your changes to marker ' + saved.id + '.');

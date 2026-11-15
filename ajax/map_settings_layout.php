@@ -66,6 +66,8 @@
   }
   if($before!==$layout) {
   mapSettingsApplyLayout($db, $map_prefix, $containerId, $layout);
+  // (A category moved to another section belongs to it too.)
+  mapSettingsSyncParents($db, $map_prefix, $containerId, $before, $layout);
   mapSettingsRecord($db, $map_prefix, $containerId, $editor['id'], 'layout', 0, $summary,
     array('name' => 'Category list', 'changes' => $changes, 'before' => $before, 'after' => $layout));
   }

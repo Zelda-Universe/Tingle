@@ -2589,6 +2589,29 @@ button[aria-disabled="true"] {
 	user-select: text;
 }
 
+/* What a page says can be selected and copied: its title, and its text (a
+   marker's contents, an area's or category's description, a path's, its
+   steps' notes and contents, a pin's, a profile's bio, a revision's summary). The drawer's controls stay
+   unselectable, so dragging and tapping them never selects text. */
+.leaflet-control-layers .popupTitle,
+.leaflet-control-layers .popupTitle *,
+.leaflet-control-layers .popupContent,
+.leaflet-control-layers .popupContent *,
+.leaflet-control-layers .path-description,
+.leaflet-control-layers .path-description *,
+.leaflet-control-layers .path-step-note,
+.leaflet-control-layers .path-step-note *,
+.leaflet-control-layers .area-description,
+.leaflet-control-layers .area-description *,
+.leaflet-control-layers .profile-bio,
+.leaflet-control-layers .profile-bio *,
+.leaflet-control-layers .wiki-revision-summary,
+.leaflet-control-layers .wiki-revision-summary * {
+	-webkit-touch-callout: default;
+	-webkit-user-select: text;
+	user-select: text;
+}
+
 .settings-control-mobile-floating.leaflet-control {
 	box-sizing: border-box;
 	width: 44px !important;
@@ -4842,7 +4865,10 @@ div.circle:has(>.icon-EoW_Echo) {
 	height: auto;
 }
 
-/* Link codes: [[rev:1]], [[marker:2]], [[user:name]]. */
+/* Link codes: [[rev:1]], [[marker:2]], [[user:name]]. The same light blue
+   wherever they are: a page's text, a marker's own contents (whose links are
+   otherwise the map's default blue). */
+.leaflet-container a.wiki-code-link { color: #8fd8ff; }
 .wiki-code-link {
 	display: inline-flex;
 	align-items: baseline;
@@ -7809,7 +7835,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 }
 .zm-path-card-tooltip .path-card-preview { pointer-events: none; background: none; box-shadow: none; border-radius: 0; }
 /* Each step's check, and the page's count. */
-.path-step-head { display: flex; align-items: flex-start; gap: 10px; }
+.path-step-head { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0 10px; }
 .path-step-head .path-step-name { flex: 1; min-width: 0; }
 /* A completed step: dimmed, its number a check on a darkened circle. */
 .path-step-tick { display: none; font-size: 11px; }
@@ -7827,9 +7853,9 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	font-size: 14px; font-weight: 600; line-height: 1;
 }
 .path-step-complete:hover, .path-step-complete:focus-visible { background: rgba(255, 255, 255, .18); outline: none; }
-.path-step-complete.done { background: rgba(80, 200, 120, .22); }
 .path-step-complete:disabled { opacity: .6; }
 .path-step-complete-icon { font-size: 16px; display: inline-flex; }
+.path-step-place { flex-basis: 100%; margin: 2px 0 0; font-size: 12px; line-height: 1.35; color: rgba(255, 255, 255, .6); }
 .path-finished { white-space: nowrap; }
 /* The path page titled as marker and category pages are. */
 .path-detail-page > .popupTitle { padding: 0 16px; }
@@ -7901,6 +7927,8 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 /* Make Path, in line with a marker's Edit, History and Talk: a small plus
    left of the signpost, centred on it. */
 .path-new-icon { display: inline-flex; align-items: center; gap: 2px; height: 16px; }
+/* A marker's Make New Path From Here: full width under Edit, History and Talk. */
+.marker-editor-tools > .path-new-button { width: 100%; margin-top: 8px; }
 .marker-editor-button .path-new-icon .fa-map-signs { width: 16px; height: 16px; font-size: 16px; }
 .marker-editor-button .path-new-icon .fa-plus { width: 9px; height: 9px; font-size: 9px; }
 
@@ -7976,11 +8004,18 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
    their section set off from the marker's contents by a line above and below. */
 .marker-paths .path-compact-list { align-items: stretch; }
 .marker-paths .path-compact-card { width: 100%; }
-/* Part of this path: a box of its own, as header content. */
+/* Part of this path: a box of its own, as header content: 16px from the
+   sidebar's sides, the controls above and the marker's contents below, 12px
+   inside, its heading 8px over its card. */
 .marker-paths .marker-paths-section {
-	margin: 4px 0 12px; padding: 12px;
+	margin: 0; padding: 12px;
 	border: 1px solid rgba(255, 255, 255, .14); border-radius: 14px;
 }
+.leaflet-control-layers .marker-paths { margin: 0 16px 16px; padding: 0; }
+.marker-paths .marker-paths-section .poi-category-heading { margin: 0; padding: 0; }
+.marker-paths .marker-paths-section .area-category-title { margin: 0 0 8px; line-height: 1.2; }
+/* (Its heading's line sits as close to the top as the card does to the sides.) */
+.marker-paths .marker-paths-section { padding-top: 6px; }
 
 /* The step list's spacing: room between steps for a number to stop 16px under
    the compact title bar before the next pushes it off; 6px from a title to its
@@ -8145,3 +8180,16 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .admin-embed-sites li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid rgba(255, 255, 255, .1); font-size: 14px; }
 .admin-embed-site { overflow-wrap: anywhere; }
 .admin-embed-split { margin: 10px 0 0; font-size: 13px; }
+
+/* A path's description, held to six lines until Show more opens it
+   (PathEditor.js _wirePathDescription), fading out where it's cut: a couple
+   of short paragraphs show whole. */
+.path-description.clamped {
+	max-height: calc(1.4em * 6); overflow: hidden;
+	-webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+	mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+.path-description-more { margin: 4px 0 0; }
+/* Start, now under the description inside the page's column: as wide as the
+   controls above, 16px under the text. */
+.path-page > .path-start-row { margin: 16px 0 0; }

@@ -155,7 +155,13 @@
     if (is_string($layout)) { rollback(); return $fail($layout); }
     $neighbours = array();
     foreach ($layout as $group) if ($group['title'] === $section) $neighbours = $group['ids'];
-    $parentId = null;
+    // Under its section's own category (of the same name), as a category
+    // moved there goes (lib/common/map_settings.php mapSettingsSyncParents),
+    // else under most of its neighbours'.
+    $parentId = (int) $db->fetchOne(
+      "SELECT `id` FROM `{$map_prefix}marker_category` WHERE `container_id` = ? AND `parent_id` IS NULL AND `name` = ? AND `marker_category_type_id` = 1 ORDER BY `id` LIMIT 1",
+      [$containerId, $section]
+    ) ?: null;
     $zoom = null;
     if ($neighbours) {
       $places = $db->fetchAllAssociative(
@@ -169,7 +175,7 @@
         $zoom = $zoom === null ? (int) $place['visible_zoom'] : min($zoom, (int) $place['visible_zoom']);
       }
       arsort($counts);
-      $parentId = (int) array_key_first($counts);
+      if ($parentId === null) $parentId = (int) array_key_first($counts);
     }
     if ($parentId === null) {
       $parentId = (int) $db->fetchOne(

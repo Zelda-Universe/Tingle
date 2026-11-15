@@ -91,6 +91,44 @@
     return $clean;
   }
 
+  // A category moved to another section of the list also moves under that
+  // section's own category (the one without a parent, of the same name),
+  // made if there isn't one: so what a category belongs to (parent_id: its
+  // page, focusing, paths) matches where the list shows it. Only categories
+  // that changed section move: one whose section was never its parent stays
+  // as it is until it's moved. Returns the sections' categories made.
+  function mapSettingsSyncParents($db, $prefix, $containerId, $before, $layout) {
+    $was = array();
+    foreach ((array) $before as $section) foreach ($section['ids'] as $id) $was[(int) $id] = $section['title'];
+    $made = array();
+    foreach ($layout as $section) {
+      $moved = array_values(array_filter($section['ids'], function($id) use ($was, $section) {
+        return ($was[(int) $id] ?? null) !== $section['title'];
+      }));
+      if (!$moved) continue;
+      $parentId = (int) $db->fetchOne(
+        "SELECT `id` FROM `{$prefix}marker_category` WHERE `container_id` = ? AND `parent_id` IS NULL AND `name` = ? AND `marker_category_type_id` = 1 ORDER BY `id` LIMIT 1",
+        [(int) $containerId, $section['title']]
+      );
+      if (!$parentId) {
+        $db->executeStatement(
+          "INSERT INTO `{$prefix}marker_category` (`parent_id`, `marker_category_type_id`, `container_id`, `name`, `default_checked`, `img`, `color`, `visible_zoom`, `visible`, `custom_style`)
+           VALUES (NULL, 1, ?, ?, 1, '', '#000000', 0, 1, 0)",
+          [(int) $containerId, $section['title']]
+        );
+        $parentId = (int) $db->lastInsertId();
+        $made[] = $section['title'];
+      }
+      foreach ($moved as $id) {
+        $db->executeStatement(
+          "UPDATE `{$prefix}marker_category` SET `parent_id` = ? WHERE `id` = ? AND `container_id` = ? AND `parent_id` IS NOT NULL",
+          [$parentId, (int) $id, (int) $containerId]
+        );
+      }
+    }
+    return $made;
+  }
+
   // Saves a layout: each category's section and place in the list. Categories
   // left out keep no section, and are listed after the rest.
   function mapSettingsApplyLayout($db, $prefix, $containerId, $layout) {

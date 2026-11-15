@@ -323,6 +323,45 @@ ZMap.prototype._refreshMarkerEditorTools = function(marker) {
 // Talk comments are plain text. Link codes, interwiki-style:
 //   [[rev:123]]  a marker revision    [[marker:45]]  a marker
 //   [[user:name]]  a profile          [[rev:123|label]]  with a label
+// A [[marker:123]] link's text with no label of its own: the marker's title
+// (as its page has it), or "marker #123" for one not on this map.
+ZMap.prototype._shortcodeMarkerTitle = function(id) {
+  var marker = this.cachedMarkersById && this.cachedMarkersById[id];
+  var title = marker && (marker.title || marker.name);
+  return title ? $('<span>').html(String(title)).text() : 'marker #' + id;
+};
+
+// [[marker:123]] and [[marker:123|label]] in a marker's own contents (rich
+// text, already HTML): links, as in descriptions and notes (_renderWikiText).
+// Opened by _wireWikiLinks on the page they're on.
+ZMap.prototype._renderContentShortcodes = function(html) {
+  var zmap = this;
+  return String(html || '').replace(/\[\[marker:(\d{1,12})(?:\|([^\]<>]{1,120}))?\]\]/gi, function(all, id, label) {
+    var text = label ? $('<span>').html(label).text().trim() : zmap._shortcodeMarkerTitle(id);
+    return '<a href="#" class="wiki-link wiki-code-link" data-marker="' + id + '"><i class="fas fa-map-marker-alt" aria-hidden="true"></i>' + zmap._wikiEscape(text) + '</a>';
+  });
+};
+
+// A marker's link pasted into a text box (a description, a note, a comment)
+// or the marker editor comes in as its shortcode with its title:
+// [[marker:123|Honeycomb]]. Null for anything else.
+ZMap.prototype._markerLinkShortcode = function(text) {
+  var value = String(text || '').trim();
+  if(!/^https?:\/\/\S+$/i.test(value)) return null;
+  var url;
+  try { url = new URL(value); } catch(e) { return null; }
+  var id = url.searchParams.get('marker');
+  if(!id || !/^\d{1,12}$/.test(id)) return null;
+  var ours = url.origin === window.location.origin || /(^|\.)zeldamaps\.com$/i.test(url.hostname);
+  if(!ours) return null;
+  var game = url.searchParams.get('game');
+  var marker = this.cachedMarkersById && this.cachedMarkersById[id];
+  // (A marker in another game's link: its id alone, since its title isn't here.)
+  if(!marker || (game && this.mapOptions && game.toLowerCase() !== String(this.mapOptions.shortName).toLowerCase() &&
+    !(game.toLowerCase() === 'ootr' && String(this.mapOptions.shortName).toLowerCase() === 'oot'))) return '[[marker:' + id + ']]';
+  return '[[marker:' + id + '|' + this._shortcodeMarkerTitle(id).replace(/[\]|]/g, '') + ']]';
+};
+
 ZMap.prototype._renderWikiText = function(text) {
   var _this = this;
   var html = this._wikiEscape(text);
@@ -330,7 +369,7 @@ ZMap.prototype._renderWikiText = function(text) {
     kind = kind.toLowerCase();
     target = target.trim();
     if((kind === 'rev' || kind === 'settingsrev' || kind === 'marker') && !/^\d+$/.test(target)) return all;
-    var text = label ? label.trim() : ((kind === 'rev' || kind === 'settingsrev') ? 'revision ' + target : kind === 'marker' ? 'marker #' + target : target);
+    var text = label ? label.trim() : ((kind === 'rev' || kind === 'settingsrev') ? 'revision ' + target : kind === 'marker' ? _this._shortcodeMarkerTitle(target) : target);
     var icon = (kind === 'rev' || kind === 'settingsrev') ? 'fa-history' : kind === 'marker' ? 'fa-map-marker-alt' : 'fa-user';
     var attr = kind==='settingsrev' ? 'data-settings-rev="'+target+'"' : kind === 'rev' ? 'data-rev="' + target + '"' : kind === 'marker' ? 'data-marker="' + target + '"' : 'data-username="' + target + '"';
     return '<a href="#" class="wiki-link wiki-code-link" ' + attr + '><i class="fas ' + icon + '" aria-hidden="true"></i>' + text + '</a>';

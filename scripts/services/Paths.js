@@ -188,7 +188,9 @@ ZMap.prototype.drawPaths = function(ifChanged) {
   var submap = current && String(current.subMapId);
   var selectedPath = this._pathPageOpen ? this._focusedPath : null;
   var options = this.mapOptions;
+  // (A numbered path's numbers move with the zoom, to keep clear of markers.)
   var key = JSON.stringify([submap, selectedPath && (selectedPath.slug || selectedPath.id), !!this._pathEditing,
+    selectedPath && selectedPath.numbered ? Math.round(map.getZoom() * 4) / 4 : 0,
     this._getDisplayZoom && this._getDisplayZoom() > Number(options.switchIconsAtZoom),
     this.paths.map(function(p) {
       return zmap._pathShown(p) ? [p.slug || p.id, p.color, p.numbered, p.smooth, p.loops,
@@ -274,12 +276,22 @@ ZMap.prototype.drawPaths = function(ifChanged) {
       var options = zmap.mapOptions;
       var iconSize = zmap._getDisplayZoom() > Number(options.switchIconsAtZoom) ? Number(options.iconWidth) : Number(options.iconSmallWidth);
       var clear = Math.ceil((iconSize || 23) / 2 + 1.5) + 1;
+      // Where a marker's number goes: to its right, or, where that would sit
+      // on another marker (or another number), the first place round it that's
+      // clear (_pathNumberOffset).
+      var obstacles = zmap._pathNumberObstacles((iconSize || 23) / 2 + 1.5);
+      var placed = [];
       var n = 0;
       here.forEach(function(p) {
         if(!p.shown) return;
         n++;
+        var anchor = [10, 10];
+        if(p.marker) {
+          var offset = zmap._pathNumberOffset(map.latLngToContainerPoint(p.latLng), clear + 10, obstacles, placed);
+          anchor = [10 - offset.x, 10 - offset.y];
+        }
         L.marker(p.latLng, {interactive: false, keyboard: false, zIndexOffset: 1000, icon: L.divIcon({
-          className: 'zm-path-step', iconSize: [20, 20], iconAnchor: p.marker ? [-clear, 10] : [10, 10],
+          className: 'zm-path-step', iconSize: [20, 20], iconAnchor: anchor,
           html: '<span style="--path-color:' + color + '">' + n + '</span>'})}).addTo(zmap._pathLayer);
       });
     }
@@ -295,6 +307,45 @@ ZMap.prototype._pathPreviewPane = function() {
     pane.style.pointerEvents = 'none';
   }
   return name;
+};
+
+// The markers on the map, as circles in the map's pixels (radius: half an
+// icon and its ring), that a path's step numbers keep clear of.
+ZMap.prototype._pathNumberObstacles = function(radius) {
+  var map = this.map, size = map.getSize(), out = [];
+  this.getMarkers().forEach(function(marker) {
+    if(!marker || !marker._map || marker.categoryTypeId == 3 || !marker.getLatLng) return;
+    var at = map.latLngToContainerPoint(marker.getLatLng());
+    if(at.x < -60 || at.y < -60 || at.x > size.x + 60 || at.y > size.y + 60) return;
+    out.push({x: at.x, y: at.y, r: radius});
+  });
+  // (And a path's pins.)
+  if(this._pathLayer) this._pathLayer.eachLayer(function(layer) {
+    if(layer.options && layer.options.icon && /zm-path-pin-dot/.test(layer.options.icon.options.className || '')) {
+      var at = map.latLngToContainerPoint(layer.getLatLng());
+      out.push({x: at.x, y: at.y, r: 9.5});
+    }
+  });
+  return out;
+};
+
+// A step number's place beside its marker (at `at`, distance `d` to the
+// number's centre): right, then the other sides and corners, the first
+// where its 10px circle overlaps no marker and no number already placed
+// (added to `placed`). Right if nowhere is clear.
+ZMap.prototype._pathNumberOffset = function(at, d, obstacles, placed) {
+  var k = Math.SQRT1_2;
+  var tries = [[1, 0], [k, -k], [k, k], [0, -1], [0, 1], [-1, 0], [-k, -k], [-k, k]];
+  var clearOf = function(x, y) {
+    return obstacles.every(function(o) { return Math.hypot(o.x - x, o.y - y) >= o.r + 11; }) &&
+      placed.every(function(q) { return Math.hypot(q.x - x, q.y - y) >= 21; });
+  };
+  for(var i = 0; i < tries.length; i++) {
+    var dx = Math.round(tries[i][0] * d), dy = Math.round(tries[i][1] * d);
+    if(clearOf(at.x + dx, at.y + dy)) { placed.push({x: at.x + dx, y: at.y + dy}); return {x: dx, y: dy}; }
+  }
+  placed.push({x: at.x + d, y: at.y});
+  return {x: d, y: 0};
 };
 
 // Show one path (?path=<slug>): drawn even if its category is off, and the

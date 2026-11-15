@@ -7674,6 +7674,9 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	/* White with the number in the path's colour, as its white border is. */
 	background: #fff;
 	color: var(--path-color, #2f5d50);
+	/* Never too light to read on the white: darkened, its hue kept, to a
+	   lightness ceiling (as the drawer's numbers are, .path-step-number). */
+	color: oklch(from var(--path-color, #2f5d50) min(l, .62) c h);
 	font: 800 12px/1 'Open Sans', sans-serif;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
 }
@@ -7711,6 +7714,10 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-step-number {
 	flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #fff;
 	background: var(--path-color, #2f5d50); color: #fff; font-size: 11px; font-weight: 700;
+	/* Never too light for its white number: darkened, its hue kept, to a
+	   lightness ceiling (deep colours pass through as they are; the line
+	   between the numbers has a floor instead, .path-timeline .path-step::before). */
+	background: oklch(from var(--path-color, #2f5d50) min(l, .62) c h);
 	display: flex; align-items: center; justify-content: center; box-sizing: border-box;
 }
 .path-step-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: none; border: 0; color: inherit; text-align: left; padding: 0; }

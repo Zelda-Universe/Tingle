@@ -113,12 +113,16 @@
 .poi-travel > .icon-BotW_Dungeon::before { transform: translateY(-.015em); }
 .poi-korok { --poi-fill: #3dbc75; }
 .poi-heart { --poi-fill: #d94b72; }
-.poi-memory { --poi-fill: #c6c396; }
+/* (Its pale gold too light for a white glyph, the games' own: a dark olive
+   one, as silver's and locations' are dark.) */
+.poi-memory { --poi-fill: #c6c396; color: #4d4826; }
 .poi-silver { --poi-fill: #b7c4cf; color: #394a5a; }
 .poi-fairy-thought { --poi-fill: #ad91d5; }
 .poi-song { --poi-fill: #628bd4; }
 .poi-relic, .poi-location, .poi-location-round, .poi-cave { --poi-fill: #8f773a; }
-.poi-location, .poi-location-round, .poi-cave { color: #684521; }
+/* (A darker brown glyph on the brown than BotW's own #684521: tone on tone,
+   but dark enough to make out.) */
+.poi-location, .poi-location-round, .poi-cave { color: #4f3419; }
 .poi-location::after { border-radius: 16%; }
 .poi-cave::after { border-radius: 50% 50% 13% 13%; }
 .poi-enemy { --poi-fill: #e85040; }

@@ -3062,6 +3062,8 @@ ZMap.prototype.openBookmark = function(bookmark) {
   this.mapControl.returnNextPageTo('bookmarks');
   this._closeNewMarker();
 
+  // (Where the map is headed: a marker's zoom as navigateToMarker sets it.)
+  var zoom = marker ? Math.max(this.map.getZoom(), 6) : this.map.getZoom();
   if(marker) {
     this.navigateToMarker(marker.id);
     latlng = marker.getLatLng();
@@ -3072,17 +3074,18 @@ ZMap.prototype.openBookmark = function(bookmark) {
   }
 
   if(this.mapControl.viewStyleBottomSlide) this.mapControl.openDrawerSmall(true);
-  this._centerInVisibleAreaWhenSettled(latlng);
+  // (Still panning and zooming, as it opened: navigateToMarker.)
+  this._centerInVisibleAreaWhenSettled(latlng, 'move', zoom);
 };
 
-ZMap.prototype._centerInVisibleAreaWhenSettled = function(latlng) {
+ZMap.prototype._centerInVisibleAreaWhenSettled = function(latlng, animate, zoom) {
   var attempts = 0;
   var center = function() {
     if(attempts++ < 20 && this.mapControl._drawerAnimationTimeout) {
       window.setTimeout(center, 100);
       return;
     }
-    this._setViewAtMarkerInVisibleArea({ getLatLng: function() { return latlng; } }, this.map.getZoom());
+    this._setViewAtMarkerInVisibleArea({ getLatLng: function() { return latlng; } }, zoom != null ? zoom : this.map.getZoom(), undefined, animate);
   }.bind(this);
   window.setTimeout(center, 0);
 };
@@ -7834,11 +7837,18 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
  **/
 // Explicit marker links share camera and drawer behavior. Internal selection
 // and Back restoration still use goTo directly to preserve the previous view.
-ZMap.prototype.navigateToMarker = function(markerId) {
+// A marker opened from the site (a link, Go to Marker, a list, a search, a
+// bookmark): on the map already showing, the map pans and zooms there
+// (_setViewAtMarkerInVisibleArea), so it shows where it is from here; on
+// another (a dungeon, a floor), it switches. opts.animate overrides.
+ZMap.prototype.navigateToMarker = function(markerId, opts) {
   var marker=this.cachedMarkersById[markerId];
   if(marker && marker.categoryTypeId==3) return this.navigateToArea(marker);
+  var current=this.mapControl && this.mapControl.getCurrentMap && this.mapControl.getCurrentMap();
+  var animate=(opts && 'animate' in opts ? opts.animate :
+    marker && current && String(current.subMapId)===String(marker.submapId)) ? 'move' : false;
   this.goTo({marker:markerId,zoom:Math.max(this.map.getZoom(),6),
-    centerInVisibleArea:true,panTo:false},true);
+    centerInVisibleArea:true,panTo:false,animate:animate},true);
 };
 
 ZMap.prototype.goTo = function(vGoTo, notByInput) {
@@ -7859,7 +7869,7 @@ ZMap.prototype.goTo = function(vGoTo, notByInput) {
       !!vGoTo.centerInVisibleArea,
       vGoTo.showPopup !== false,
       !!vGoTo.preserveView,
-      !!vGoTo.animate
+      vGoTo.animate || false // 'move' or 'fly' (MapMotion.js)
     );
     // Open Marker already does a change map, so it takes precedence
 
@@ -8012,12 +8022,7 @@ ZMap.prototype.restoreMarkerReturnView = function() {
   var moved = map.latLngToContainerPoint(map.getCenter()).distanceTo(map.latLngToContainerPoint(view.arrived.center));
   if(Math.abs(map.getZoom() - view.arrived.zoom) > 0.01 || moved > 2) return false;
   if(!sameMap) this.mapControl.changeMapOnly(view.mapId, view.subMapId); // the menu follows the layer swap
-  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // Leaflet snaps a zoom jump of more than four levels instead of gliding.
-  var threshold = map.options.zoomAnimationThreshold;
-  map.options.zoomAnimationThreshold = Infinity;
-  try { map.setView(view.center, view.zoom, { animate: !reducedMotion, duration: .25, easeLinearity: .2 }); }
-  finally { map.options.zoomAnimationThreshold = threshold; }
+  this._animateView(view.center, view.zoom, 'move');
   return true;
 };
 
@@ -8106,15 +8111,8 @@ ZMap.prototype._setViewAtMarkerInVisibleArea = function(marker, zoom, drawerTarg
   var markerPoint = this.map.project(marker.getLatLng(), zoom);
   var centerPoint = markerPoint.add(mapCenter).subtract(visibleCenter);
 
-  // Animated (a path's guide moving between steps, a step opened from its
-  // list: PathEditor.js) as a flight, which Leaflet makes however far the
-  // zoom changes (setView only animates a few levels).
-  var target = this.map.unproject(centerPoint, zoom);
-  if(animate && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-    this.map.flyTo(target, zoom, {duration: .6});
-  } else {
-    this.map.setView(target, zoom, {animate: false});
-  }
+  // animate: 'move' (or true), 'fly', or none (MapMotion.js).
+  this._animateView(this.map.unproject(centerPoint, zoom), zoom, animate);
 };
 
 ZMap.prototype.getMarkers = function() {

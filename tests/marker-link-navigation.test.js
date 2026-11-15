@@ -1,3 +1,4 @@
+const motionSource=require('fs').readFileSync(require('path').join(__dirname,'../scripts/services/MapMotion.js'),'utf8');
 const fs=require('fs');
 const vm=require('vm');
 const source=fs.readFileSync('scripts/zmap.js','utf8');
@@ -9,7 +10,9 @@ vm.runInNewContext(wiki,context);
 test.each([1,6,8])('marker links zoom in without zooming out from zoom %s',zoom=>{
   const map=Object.assign(Object.create(context.ZMap.prototype),{cachedMarkersById:{5:{id:5,categoryTypeId:1}},map:{getZoom:()=>zoom},goTo:jest.fn()});
   map.navigateToMarker(5);
-  expect(map.goTo).toHaveBeenCalledWith({marker:5,zoom:Math.max(zoom,6),centerInVisibleArea:true,panTo:false},true);
+  expect(map.goTo).toHaveBeenCalledWith({marker:5,zoom:Math.max(zoom,6),centerInVisibleArea:true,panTo:false,animate:false},true);
+  map.navigateToMarker(5,{animate:true});
+  expect(map.goTo).toHaveBeenLastCalledWith({marker:5,zoom:Math.max(zoom,6),centerInVisibleArea:true,panTo:false,animate:'move'},true);
 });
 
 test('region links retain zoom-to-region behavior',()=>{
@@ -54,8 +57,9 @@ test('marker framing uses the final partial drawer top while its resize is anima
   const scope={ZMap:function(){},L:{point},window:{}};
   const start=source.indexOf('ZMap.prototype._setViewAtMarkerInVisibleArea =');
   vm.runInNewContext(source.slice(start,source.indexOf('ZMap.prototype.getMarkers',start)),scope);
+  vm.runInNewContext(motionSource,scope);
   const map={getContainer:()=>({getBoundingClientRect:()=>({top:0,width:400,height:1000})}),getSize:()=>({x:400,y:1000}),project:()=>point(100,100),unproject:p=>[p.x,p.y],setView:jest.fn()};
-  const host={map,mapControl:{viewStyleBottomSlide:true,_mobileDrawerBaseTop:50,_container:{getBoundingClientRect:()=>({top:100})}}};
+  const host=Object.assign(Object.create(scope.ZMap.prototype),{map,mapControl:{viewStyleBottomSlide:true,_mobileDrawerBaseTop:50,_container:{getBoundingClientRect:()=>({top:100})}}});
   scope.ZMap.prototype._setViewAtMarkerInVisibleArea.call(host,{getLatLng:()=>({})},6,600);
   expect(map.setView).toHaveBeenCalledWith([100,275],6,{animate:false});
 });

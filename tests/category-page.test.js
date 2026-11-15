@@ -1,3 +1,4 @@
+const motionSource=require('fs').readFileSync(require('path').join(__dirname,'../scripts/services/MapMotion.js'),'utf8');
 const fs=require('fs');
 const path=require('path');
 const vm=require('vm');
@@ -49,6 +50,7 @@ function loadCategoryPage(overrides) {
     $:sel=>{created.push(sel);return fakeJq(sel);}
   },rest);
   vm.runInNewContext(source,context);
+  vm.runInNewContext(motionSource,context);
   return context;
 }
 

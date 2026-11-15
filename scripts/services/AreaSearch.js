@@ -134,15 +134,9 @@ ZMap.prototype.navigateToArea = function(area) {
         if(ad.top<rect.bottom && ad.bottom>rect.top) bottom=Math.max(bottom,Math.min(rect.height-64,rect.bottom-ad.top));
       }
     }
-    var reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    // Leaflet otherwise snaps when fitting a small area from a distant zoom.
-    var threshold=map.options.zoomAnimationThreshold;
-    map.options.zoomAnimationThreshold=Infinity;
-    var fitOptions={paddingTopLeft:[left+24,top+24],paddingBottomRight:[24,bottom+24],animate:!reducedMotion,duration:.25,easeLinearity:.2};
+    var fitOptions={paddingTopLeft:[left+24,top+24],paddingBottomRight:[24,bottom+24]};
     var arrival=map._getBoundsCenterZoom ? map._getBoundsCenterZoom(validBounds,fitOptions) : null;
-    try {
-      map.fitBounds(validBounds,fitOptions);
-    } finally {map.options.zoomAnimationThreshold=threshold;}
+    this._animateToBounds(validBounds,fitOptions,'move');
   } else {
     var point=typeof area.getLatLng === 'function' ? area.getLatLng() : L.latLng(Number(area.y),Number(area.x));
     this._setViewAtMarkerInVisibleArea({getLatLng:function(){return point;}},map.getZoom());
@@ -509,11 +503,7 @@ ZMap.prototype.restoreAreaReturnView = function() {
   if(current.mapId != view.mapId || current.subMapId != view.subMapId) return false;
   var moved=map.latLngToContainerPoint(map.getCenter()).distanceTo(map.latLngToContainerPoint(view.arrived.center));
   if(Math.abs(map.getZoom()-view.arrived.zoom)>0.01 || moved>2) return false;
-  var reducedMotion=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var threshold=map.options.zoomAnimationThreshold;
-  map.options.zoomAnimationThreshold=Infinity;
-  try { map.setView(view.center,view.zoom,{animate:!reducedMotion,duration:.25,easeLinearity:.2}); }
-  finally { map.options.zoomAnimationThreshold=threshold; }
+  this._animateView(view.center,view.zoom,'move');
   return true;
 };
 

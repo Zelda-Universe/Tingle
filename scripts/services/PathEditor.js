@@ -173,6 +173,15 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
       (path.canEdit ? "<button type='button' class='marker-editor-button path-edit'><i class='fas fa-pencil-alt' aria-hidden='true'></i><span>Edit</span></button>" : '') +
       "<button type='button' class='marker-editor-button path-history'><i class='fas fa-history' aria-hidden='true'></i><span>History</span></button>" +
     "</div></section>";
+  // Links in it (a step's [[marker:N]], its description's) open a marker
+  // whose Back comes back here, scrolled where it was, the map as it was if
+  // it hasn't moved since (as a step's name does: _wirePathSteps).
+  var control = this.mapControl, linkScroll = 0;
+  var linkBack = function() {
+    if(zmap.restoreMarkerReturnView) zmap.restoreMarkerReturnView();
+    zmap.openPathPage(path.slug, {keepView: true, scrollTop: linkScroll});
+  };
+  linkBack.label = path.name;
   // Titled as a marker or category page is, with what it is and its
   // completion as pills: both stay in the compact title bar when the page
   // scrolls (ZLayers.js).
@@ -194,8 +203,10 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
     (shown.length ? "<div class='path-start-row drawer-peek-end'><button type='button' class='path-start'>" +
       "<i class='fas fa-play' aria-hidden='true'></i><span class='path-start-text'><span>" + this._pathStartLabel.label + "</span>" +
       (stat ? "<small>" + this._pathEsc(stat) + "</small>" : '') + "</span></button></div>" : '') +
-    this._pathStepsHTML(path, path.steps, {checks: true}) + "</div>" + footer, 'path', back, null, {partialDrawer: true, instant: !!opts.instant});
+    this._pathStepsHTML(path, path.steps, {checks: true}) + "</div>" + footer, 'path', back, linkBack, {partialDrawer: true, instant: !!opts.instant});
   page.classList.add('area-detail-page', 'path-detail-page');
+  page.addEventListener('pointerdown', function(e) { if(e.target.closest('a.wiki-link')) linkScroll = control._contents.scrollTop; }, true);
+  page.addEventListener('keydown', function(e) { if(e.target.closest('a.wiki-link')) linkScroll = control._contents.scrollTop; }, true);
   // Step numbers stick just under the compact title bar, however tall it is
   // here (ZLayers.js _setupCompactTitle).
   var contents = this.mapControl._contents;
@@ -389,7 +400,7 @@ ZMap.prototype._goToPathStep = function(step, instant, leg) {
   this._viewChosen = true;
   this._prepareMapEdgesForDrawer();
   this._setViewAtMarkerInVisibleArea({getLatLng: function() { return latlng; }}, zoom,
-    control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined, !instant);
+    control.viewStyleBottomSlide && control._partialDrawerMode ? control.options.softOpenTo : undefined, instant ? false : 'fly');
 };
 
 // The guide's view of the next step: the stretch of the path from the step
@@ -531,7 +542,7 @@ ZMap.prototype._wirePathSteps = function(page, steps, reopen, label, path) {
     // As a marker's link opens it, centred, but flown to and not right in:
     // the same zoom for every step, so following a path title by title moves
     // steadily from marker to marker (_pathStepZoom).
-    zmap.goTo({marker: marker.id, zoom: zmap._pathStepZoom(), centerInVisibleArea: true, panTo: false, animate: true}, true);
+    zmap.goTo({marker: marker.id, zoom: zmap._pathStepZoom(), centerInVisibleArea: true, panTo: false, animate: 'fly'}, true);
   });
   // Next (an embed's): on to the next step, in the list and on the map,
   // framed from this one as the guide's Complete does.

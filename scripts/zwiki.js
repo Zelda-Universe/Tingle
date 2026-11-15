@@ -177,11 +177,22 @@ ZMap.prototype._wikiBackToMarker = function(markerId) {
     var marker = _this.cachedMarkersById[markerId];
     if(marker && marker.visible !== false && marker.visible !== 0) {
       if(returnsTo) control.returnNextPageTo(returnsTo);
-      _this._createMarkerPopup(marker);
+      // Left for another map (a dungeon, a floor): back to the marker's own.
+      var current = control.getCurrentMap && control.getCurrentMap();
+      // (A step back, not a new trip: its page's own Back or close doesn't
+      // send the map back to the map just left.)
+      if(current && marker.submapId != null && String(current.subMapId) !== String(marker.submapId)) {
+        _this.navigateToMarker(markerId);
+        _this._markerReturnView = null;
+      }
+      else _this._createMarkerPopup(marker);
     } else {
       _this.mapControl.resetContent();
     }
   };
+  var named = _this.cachedMarkersById[markerId];
+  // (Its Back button: "Back to Pocket Egg".)
+  if(named && (named.title || named.name)) back.label = $('<span>').html(String(named.title || named.name)).text();
   back.fromMarker = Number(markerId);
   back.navigationSource={type:'marker',id:Number(markerId)};
   back.navigationBack=returnsTo && returnsTo.page || null;
@@ -453,8 +464,9 @@ ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game) {
       // Onward, from the page it was opened from.
       this.mapControl._navigatingForward = true;
     }
-    if(marker.categoryTypeId == 3) this.navigateToArea(marker);
-    else this.navigateToMarker(markerId);
+    if(marker.categoryTypeId == 3) { this.navigateToArea(marker); return; }
+    // (Panned and zoomed to on this map; on another, switched to: zmap.js.)
+    this.navigateToMarker(markerId);
     return;
   }
   this._wikiGet('marker_history', { markerId: markerId }).done(function(data) {

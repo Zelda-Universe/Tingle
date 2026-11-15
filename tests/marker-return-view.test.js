@@ -1,3 +1,4 @@
+const motionSource=require('fs').readFileSync(require('path').join(__dirname,'../scripts/services/MapMotion.js'),'utf8');
 const fs=require('fs');
 const path=require('path');
 const vm=require('vm');
@@ -40,6 +41,7 @@ function loadOpenMarker() {
     window:{}
   };
   vm.runInNewContext(zmapSource.slice(start,end),context);
+  vm.runInNewContext(motionSource,context);
   Object.assign(zmap,context.ZMap.prototype);
   const result={zmap,map,marker};
   result.center=function(){return center;};
@@ -103,6 +105,7 @@ function loadReturnView() {
   const end=zmapSource.indexOf('ZMap.prototype._setViewAtMarkerInVisibleArea',start);
   const context={ZMap:function(){},window:{}};
   vm.runInNewContext(zmapSource.slice(start,end),context);
+  vm.runInNewContext(motionSource,context);
   return context;
 }
 

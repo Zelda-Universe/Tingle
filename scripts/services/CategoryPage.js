@@ -244,17 +244,11 @@ ZMap.prototype._fitBoundsToVisibleMap = function(bounds, opts) {
     if(control.options.position.endsWith('left')) topLeft[0] += drawer.width;
     else bottomRight[0] += drawer.width;
   }
-  var threshold = map.options.zoomAnimationThreshold;
-  map.options.zoomAnimationThreshold = Infinity;
-  try {
-    var fitOptions = {paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
-      maxZoom: Number.isFinite(opts.maxZoom) ? Math.min(opts.maxZoom, map.getMaxZoom()) : map.getMaxZoom(),
-      animate: opts.animate !== false && !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-      duration: .25, easeLinearity: .2};
-    // opts.fly: flown there (out and back in), for a longer way.
-    if(opts.fly && fitOptions.animate) map.flyToBounds(bounds, L.extend(fitOptions, {duration: .8}));
-    else map.fitBounds(bounds, fitOptions);
-  } finally { map.options.zoomAnimationThreshold = threshold; }
+  // Moved there, or with opts.fly flown (a path's leg); opts.animate false:
+  // straight there (MapMotion.js).
+  this._animateToBounds(bounds, {paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
+    maxZoom: Number.isFinite(opts.maxZoom) ? Math.min(opts.maxZoom, map.getMaxZoom()) : map.getMaxZoom()},
+    opts.animate === false ? false : opts.fly ? 'fly' : 'move');
 };
 
 // From the category list: focus first (CategoryButton does it), then the
@@ -369,12 +363,7 @@ ZMap.prototype.restoreCategoryReturnView = function() {
   if(current.mapId != view.mapId || current.subMapId != view.subMapId) return false;
   var moved = map.latLngToContainerPoint(map.getCenter()).distanceTo(map.latLngToContainerPoint(view.arrived.center));
   if(Math.abs(map.getZoom() - view.arrived.zoom) > 0.01 || moved > 2) return false;
-  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // Leaflet snaps a zoom jump of more than four levels instead of gliding.
-  var threshold = map.options.zoomAnimationThreshold;
-  map.options.zoomAnimationThreshold = Infinity;
-  try { map.setView(view.center, view.zoom, { animate: !reducedMotion, duration: .25, easeLinearity: .2 }); }
-  finally { map.options.zoomAnimationThreshold = threshold; }
+  this._animateView(view.center, view.zoom, 'move');
   return true;
 };
 

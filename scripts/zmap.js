@@ -5184,7 +5184,7 @@ ZMap.prototype._createLoginForm = function(successMessage) {
                               '<h4>Register <em>for free</em> to:</h4>'+
                               '<ul>'+
                                  ['Remove ads!', 'Download maps to use offline', 'Save completed markers',
-                                  'Save bookmarks &amp; dropped pins', 'Suggest edits to maps (coming soon!)'
+                                  'Save bookmarks &amp; dropped pins', 'Edit markers and contribute to making maps better (beta)'
                                  ].map(function(benefit) {
                                     return '<li><i class="fas fa-check" aria-hidden="true"></i><span>' + benefit + '</span></li>';
                                  }).join('')+

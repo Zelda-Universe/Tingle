@@ -8294,3 +8294,16 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
    Complete is its path's (scripts/zmap.js). */
 .marker-path-check-note { margin: -2px 16px 10px; font-size: 13px; opacity: .7; text-align: center; }
 .marker-path-check-note .fa-link { margin-right: 4px; font-size: 11px; }
+
+/* A map download's progress (scripts/services/OfflineDownloads.js): a toast
+   that stays while it runs, with a bar; tapping it opens Offline Maps. */
+#toast-container>div.offline-download-toast {
+	--toast-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11 3h2v10.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4 3.6 3.6zM4 19h16v2H4z'/%3E%3C/svg%3E");
+	cursor: pointer;
+}
+.offline-download-toast .toast-message { display: flex; flex-direction: column; gap: 2px; }
+.offline-toast-name { font-weight: 700; }
+.offline-toast-detail { font-size: 12px; opacity: .8; }
+.offline-toast-bar { display: block; height: 4px; margin-top: 6px; border-radius: 2px; background: rgba(255, 255, 255, .18); overflow: hidden; }
+.offline-toast-bar span { display: block; height: 100%; border-radius: 2px; background: var(--toast-color); transition: width .25s ease; }
+@media (prefers-reduced-motion: reduce) { .offline-toast-bar span { transition: none; } }

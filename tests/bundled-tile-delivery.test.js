@@ -13,5 +13,5 @@ test('online and offline map URLs share the bundled tile routing rule', () => {
   const offline = fs.readFileSync(__dirname + '/../ajax/get_offline_maps.php','utf8');
   expect(online).toContain("bundledMapTileBaseURL($row2['tileURL'])");
   expect(offline).toContain("bundledMapTileBaseURL($relativeDirectory . '/') ?? $tilePublicBaseURL");
-  expect(offline).toContain('offline-manifests-v8-');
+  expect(offline).toContain('offline-manifests-v9-');
 });

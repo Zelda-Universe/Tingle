@@ -5243,6 +5243,7 @@ ZMap.prototype._createLoginForm = function(successMessage) {
             ZOfflineSync.saveUserInfo({ success: true, user: data.user });
             _this.syncOfflineChanges();
             _this.checkOfflineMapUpdates();
+            if(_this.resumeOfflineDownloads) _this.resumeOfflineDownloads();
           } else {
             showLoginError(data.msg);
           }
@@ -7218,6 +7219,8 @@ var ZMapOfflinePacks = {
   // Each saved tile's size and modified time, to tell which ones an update
   // replaces. Kept in the pack's own cache.
   indexURL: 'offline-pack-index.json',
+  // Which tiles are saved as another, the same image (service-worker.js).
+  aliasesURL: 'offline-pack-aliases.json',
   read: function(gameId) {
     try {
       var value = localStorage.getItem(this.storageKey(gameId));
@@ -7381,6 +7384,13 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
   var removePackRecord = ZMapOfflinePacks.remove.bind(ZMapOfflinePacks);
 
   function setPackState(card, game, packState) {
+    // (A download running or waiting shows that instead.)
+    var job = _this.offlineDownloadFor(game.id);
+    if(job && job.phase !== 'done' && job.phase !== 'failed') {
+      card.data('packState', packState).data('game', game);
+      showDownload(card, job);
+      return;
+    }
     var downloadButton = card.find('.offline-map-download');
     var deleteButton = card.find('.offline-map-delete');
     var status = card.find('.offline-map-status');
@@ -7412,311 +7422,80 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
     if(!navigator.onLine) downloadButton.prop('disabled', true);
   }
 
-  // What happened to a download, for Admin's Offline Maps stats.
-  function reportOfflineEvent(game, event, bytes) {
-    try {
-      var data = { game: game.id, event: event };
-      if(bytes > 0) data.bytes = Math.round(bytes);
-      $.post('ajax.php?command=offline_map_event', data);
-    } catch(e) {}
-  }
+  function reportOfflineEvent(game, event, bytes) { _this._reportOfflineEvent(game, event, bytes); }
 
-  function downloadTiles(game, card) {
+  // A card shows its game's download as it goes: the download runs apart
+  // from this page, carrying on when it's left (OfflineDownloads.js).
+  function showDownload(card, job) {
+    var game = card.data('game') || job.game;
     var progress = card.find('.offline-map-progress');
     var progressLabel = card.find('.offline-map-progress-label');
     var status = card.find('.offline-map-status');
     var downloadButton = card.find('.offline-map-download');
-    var cacheName = packCacheName(game.id);
-    var completedTiles = 0;
-    var completedBytes = 0;
-    var totalTiles = game.tileCount;
-    var totalBytes = game.size;
-    var existingRecord = readPackRecord(game.id);
-    // An update replaces only tiles whose size or modified time changed.
-    var isUpdate = !!existingRecord && (
-      existingRecord.pendingUpdate || card.data('packState') === 'update'
-    );
-    var oldIndex = null;
-    var newIndex = {};
-    var newVersion = null;
-    var dataURLs = [];
-    var embeddedImages = new Set();
-    var savingEmbeddedImages = false;
-    function collectImages(data) {
-      ZMapOfflinePacks.embeddedImageURLs(data, document.baseURI).forEach(function(url) { embeddedImages.add(url); });
-    }
-    // Marker images often live on other sites. One that's missing or slow
-    // is left out (its marker shows no image offline) rather than failing
-    // the whole download.
-    var EMBEDDED_IMAGE_TIMEOUT = 20000;
-    function skipEmbeddedImage(cache, url) {
-      delete newIndex[url];
-      return cache.delete(url).catch(function() {});
-    }
-    function verifyEmbeddedImage(cache, url) {
-      if(!savingEmbeddedImages) return Promise.resolve();
-      // Cross-origin fetch responses are opaque: a 404 can look successful.
-      // Decode from the saved pack before counting the image as downloaded.
-      return new Promise(function(resolve) {
-        var image = new Image();
-        var timer = window.setTimeout(failed, EMBEDDED_IMAGE_TIMEOUT);
-        function failed() {
-          window.clearTimeout(timer);
-          image.onload = image.onerror = null;
-          image.src = '';
-          skipEmbeddedImage(cache, url).then(resolve);
-        }
-        image.onload = function() { window.clearTimeout(timer); resolve(); };
-        image.onerror = failed;
-        image.src = url;
-      });
-    }
-    // fetch() has no time limit of its own: an unreachable host can hold a
-    // download until the browser gives up minutes later.
-    function fetchEmbeddedImage(url, options) {
-      var controller = typeof AbortController === 'function' ? new AbortController() : null;
-      var timer;
-      var timeout = new Promise(function(resolve, reject) {
-        timer = window.setTimeout(function() {
-          if(controller) controller.abort();
-          reject(new Error('Timed out'));
-        }, EMBEDDED_IMAGE_TIMEOUT);
-      });
-      var request = fetch(url, controller ? Object.assign({ signal: controller.signal }, options) : options);
-      return Promise.race([request, timeout]).finally(function() { window.clearTimeout(timer); });
-    }
-
-    downloadButton.prop('disabled', true).text(isUpdate ? 'Updating…' : 'Downloading…');
-    progress.attr('max', Math.max(totalBytes, 1)).val(0).show();
-    progressLabel.text('0%').show();
-    status.removeClass('success error').text(isUpdate ? 'Preparing update…' : 'Preparing download…');
-
-    function updateProgress(tileSize) {
-      completedTiles += 1;
-      completedBytes += tileSize || 0;
-      if(savingEmbeddedImages) {
-        progress.removeAttr('value');
-        progressLabel.text('Saving marker images · ' + completedTiles + ' of ' + totalTiles + ' files');
-        return;
-      }
-      var fraction = totalBytes > 0
-        ? completedBytes / totalBytes
-        : completedTiles / Math.max(totalTiles, 1);
-      var percent = Math.min(100, Math.round(fraction * 100));
-      progress.val(totalBytes > 0 ? completedBytes : completedTiles);
-      progress.attr('max', totalBytes > 0 ? totalBytes : Math.max(totalTiles, 1));
-      progressLabel.text(percent + '% · ' + completedTiles + ' of ' + totalTiles + ' files');
-    }
-
-    function downloadBatch(cache, tiles) {
-      var index = 0;
-      var workerCount = Math.min(6, tiles.length);
-      var workers = [];
-      function worker() {
-        if(index >= tiles.length) return Promise.resolve();
-        var tile = tiles[index++];
-        // Tiles have absolute paths; marker images are relative to the site.
-        var absoluteURL = new URL(tile.url, document.baseURI).href;
-        var sameOrigin = new URL(absoluteURL).origin === window.location.origin;
-        var signature = tile.size + ':' + tile.m;
-        newIndex[absoluteURL] = signature;
-        // Revalidate, so a replaced tile isn't served from the HTTP cache.
-        var fetchOptions = sameOrigin
-          ? {
-              credentials: 'same-origin',
-              redirect: 'follow',
-              cache: 'no-cache'
-            }
-          : {
-              mode: 'no-cors',
-              credentials: 'omit',
-              redirect: 'follow',
-              cache: 'no-cache'
-            };
-        return cache.match(absoluteURL, { ignoreVary: true }).then(function(cachedResponse) {
-          var unchanged = !isUpdate || (oldIndex && oldIndex[absoluteURL] === signature);
-          if(cachedResponse && unchanged) {
-            return (/\.json(?:\?|$)/i.test(absoluteURL) && cachedResponse.type !== 'opaque'
-              ? cachedResponse.clone().json().then(collectImages) : Promise.resolve())
-              .then(function() { return verifyEmbeddedImage(cache, absoluteURL); })
-              .then(function() { updateProgress(tile.size); });
-          }
-          if(savingEmbeddedImages) {
-            return fetchEmbeddedImage(absoluteURL, fetchOptions).then(function(response) {
-              if(!response.ok && response.type !== 'opaque') throw new Error('Not found');
-              return cache.put(absoluteURL, response.clone())
-                .then(function() { return verifyEmbeddedImage(cache, absoluteURL); });
-            }).catch(function() {
-              return skipEmbeddedImage(cache, absoluteURL);
-            }).then(function() { updateProgress(0); });
-          }
-          return fetch(absoluteURL, fetchOptions).then(function(response) {
-            if(!response.ok && response.type !== 'opaque') {
-              throw new Error('A map tile could not be downloaded.');
-            }
-            var inspect = /\.json(?:\?|$)/i.test(absoluteURL) && response.type !== 'opaque'
-              ? response.clone().json().then(collectImages) : Promise.resolve();
-            return inspect.then(function() { return cache.put(absoluteURL, response.clone()); })
-              .then(function() { return verifyEmbeddedImage(cache, absoluteURL); }).then(function() {
-              updateProgress(tile.size);
-            });
-          });
-        }).then(worker);
-      }
-      for(var i = 0; i < workerCount; i++) workers.push(worker());
-      return Promise.all(workers);
-    }
-
-    function downloadPage(cache, offset) {
-      return fetch(
-        'ajax.php?command=get_offline_maps&mode=manifest&game=' +
-        encodeURIComponent(game.id) + '&offset=' + offset + '&limit=250'
-      ).then(function(response) {
-        if(!response.ok) throw new Error('The map manifest could not be loaded.');
-        return response.json();
-      }).then(function(data) {
-        if(!data.success) throw new Error(data.msg || 'The map manifest could not be loaded.');
-        totalTiles = data.total;
-        totalBytes = data.totalBytes;
-        newVersion = data.version || null;
-        return downloadBatch(cache, data.tiles).then(function() {
-          var nextOffset = offset + data.tiles.length;
-          if(nextOffset < data.total) return downloadPage(cache, nextOffset);
-        });
-      });
-    }
-
-    reportOfflineEvent(game, 'started', totalBytes);
-    var persistenceRequest = navigator.storage && navigator.storage.persist
-      ? navigator.storage.persist().catch(function() { return false; })
-      : Promise.resolve(false);
-    var storageCheck = persistenceRequest.then(function() {
-      return navigator.storage && navigator.storage.estimate
-        ? navigator.storage.estimate()
-        : null;
-    });
-
-    storageCheck.then(function(estimate) {
-      if(
-        !existingRecord &&
-        estimate && estimate.quota && estimate.usage + totalBytes * 1.1 > estimate.quota
-      ) {
-        throw new Error('This device does not have enough available browser storage for this map.');
-      }
-      return caches.open(cacheName);
-    }).then(function(cache) {
-      writePackRecord(game.id, {
-        status: 'partial',
-        size: totalBytes,
-        tileCount: totalTiles,
-        version: existingRecord && existingRecord.version,
-        pendingUpdate: isUpdate,
-        updatedAt: Date.now()
-      });
-      var indexRead = isUpdate
-        ? cache.match(ZMapOfflinePacks.indexURL).then(function(response) {
-            return response ? response.json() : null;
-          }).then(function(index) { oldIndex = index && index.tiles; }).catch(function() {})
-        : Promise.resolve();
-      var containerURL = 'ajax.php?command=get_container&game=' + encodeURIComponent(game.id);
-      dataURLs.push(containerURL);
-      return indexRead.then(function() {
-        return fetch(containerURL, { cache: 'no-cache' });
-      }).then(function(response) {
-        if(!response.ok) throw new Error('The offline map data could not be saved.');
-        return response.json().then(function(containers) {
-          if(!containers[0]) throw new Error('The offline map data could not be loaded.');
-          return cache.put(containerURL, new Response(JSON.stringify(containers), {
-            headers: { 'Content-Type': 'application/json' }
-          })).then(function() {
-            var saves = ['get_map', 'get_categories', 'get_markers'].map(function(command) {
-              var url = 'ajax.php?command=' + command + '&game=' + containers[0].id;
-              dataURLs.push(url);
-              return fetch(url, { cache: 'no-cache' }).then(function(dataResponse) {
-                if(!dataResponse.ok) throw new Error('The offline map data could not be saved.');
-                return dataResponse.clone().json().then(collectImages).then(function() { return cache.put(url, dataResponse); });
-              });
-            });
-            // The page itself, so switching to this game works offline.
-            var pageURL = './?game=' + encodeURIComponent(game.id);
-            dataURLs.push(pageURL);
-            saves.push(fetch(pageURL, { cache: 'no-cache', credentials: 'same-origin' }).then(function(pageResponse) {
-              if(pageResponse.ok) return cache.put(pageURL, pageResponse);
-            }));
-            return Promise.all(saves);
-          });
-        });
-      }).then(function() {
-        return downloadPage(cache, 0);
-      }).then(function() {
-        var images = Array.from(embeddedImages).filter(function(url) { return !newIndex[url]; });
-        if(!images.length) return;
-        savingEmbeddedImages = true;
-        totalTiles += images.length;
-        status.text('Saving embedded marker images…');
-        return downloadBatch(cache, images.map(function(url) { return { url: url, size: 0, m: 0 }; }));
-      }).then(function() {
-        // Remove tiles the map no longer uses, then save the new index.
-        var keep = {};
-        dataURLs.concat(ZMapOfflinePacks.indexURL).forEach(function(url) {
-          keep[new URL(url, window.location.href).href] = true;
-        });
-        return cache.keys().then(function(requests) {
-          return Promise.all(requests.filter(function(request) {
-            return !keep[request.url] && !newIndex[request.url];
-          }).map(function(request) { return cache.delete(request); }));
-        }).then(function() {
-          return cache.put(ZMapOfflinePacks.indexURL, new Response(
-            JSON.stringify({ version: newVersion, tiles: newIndex }),
-            { headers: { 'Content-Type': 'application/json' } }
-          ));
-        });
-      });
-    }).then(function() {
-      writePackRecord(game.id, {
-        status: 'downloaded',
-        assetsVersion: ZMapOfflinePacks.assetsVersion,
-        size: totalBytes,
-        tileCount: totalTiles,
-        version: newVersion,
-        downloadedAt: Date.now()
-      });
-      game.version = newVersion;
+    status.removeClass('success error');
+    if(job.phase === 'done') {
       progress.hide();
       progressLabel.hide();
+      game.version = job.game.version;
       setPackState(card, game, 'downloaded');
-      reportOfflineEvent(game, isUpdate ? 'updated' : 'downloaded', totalBytes);
-    }).catch(function(error) {
-      reportOfflineEvent(game, 'failed', completedBytes);
+      return;
+    }
+    if(job.phase === 'failed') {
       progress.hide();
       progressLabel.hide();
-      caches.open(cacheName).then(function(cache) {
-        return cache.keys();
-      }).then(function(cachedTiles) {
-        if(cachedTiles.length > 0) {
-          writePackRecord(game.id, {
-            status: 'partial',
-            size: totalBytes,
-            tileCount: totalTiles,
-            version: existingRecord && existingRecord.version,
-            pendingUpdate: isUpdate,
-            updatedAt: Date.now()
-          });
-          setPackState(card, game, 'partial');
-          var interrupted = isUpdate ? 'The map update was interrupted.' : 'The map download was interrupted.';
-          var message = error instanceof TypeError || !error.message ? interrupted : error.message;
-          if(!/[.!?]$/.test(message)) message += '.';
-          status.addClass('error').text(message + ' Tap Resume to continue.');
-        } else {
-          caches.delete(cacheName);
-          removePackRecord(game.id);
-          setPackState(card, game, null);
-          status.addClass('error').text(
-            error.message || 'The map download could not be started.'
-          );
-        }
-      });
+      if(job.cancelled) return;
+      var record = readPackRecord(game.id);
+      var message = job.error && job.error.message && !(job.error instanceof TypeError) ? job.error.message
+        : (job.isUpdate ? 'The map update was interrupted.' : 'The map download was interrupted.');
+      if(!/[.!?]$/.test(message)) message += '.';
+      if(record && record.status === 'partial') {
+        setPackState(card, game, 'partial');
+        status.addClass('error').text(message + (job.error && job.error.fatal ? '' : ' It carries on when you\'re back online, or tap Resume.'));
+      } else {
+        setPackState(card, game, null);
+        status.addClass('error').text(message);
+      }
+      return;
+    }
+    // Running, or waiting its turn.
+    card.find('.offline-map-delete').show();
+    if(job.phase === 'queued') {
+      downloadButton.prop('disabled', true).removeClass('downloaded').text('Waiting…');
+      progress.hide();
+      progressLabel.hide();
+      status.text('Starts once the download before it finishes.');
+      return;
+    }
+    downloadButton.prop('disabled', true).removeClass('downloaded').text(job.isUpdate ? 'Updating…' : 'Downloading…');
+    var total = job.totalBytes > 0 ? job.totalBytes : Math.max(job.totalFiles, 1);
+    var done = job.totalBytes > 0 ? job.completedBytes : job.completedFiles;
+    progress.show();
+    progressLabel.show();
+    if(job.phase === 'images' || job.phase === 'finishing') {
+      progress.removeAttr('value');
+      progressLabel.text(job.phase === 'images' ? 'Saving marker images · ' + job.completedFiles + ' of ' + job.totalFiles + ' files' : 'Finishing…');
+    } else {
+      progress.attr('max', total).val(Math.min(done, total));
+      progressLabel.text(Math.min(100, Math.floor(done / total * 100)) + '% · ' + job.completedFiles + ' of ' + job.totalFiles + ' files');
+    }
+    status.text(job.phase === 'preparing' ? (job.isUpdate ? 'Preparing update…' : 'Preparing download…') :
+      'Keeps going while you use the map.');
+  }
+
+  // (One listener for every Offline Maps page: the cards showing now.)
+  _this._offlineCardRenderer = function(job) {
+    $('#offline_maps .offline-map-card').each(function() {
+      var card = $(this);
+      if((card.data('game') || {}).id === job.game.id) showDownload(card, job);
     });
+  };
+  if(!_this._offlineCardListening) {
+    _this._offlineCardListening = true;
+    _this.onOfflineDownloadChange(function(job) { if(_this._offlineCardRenderer) _this._offlineCardRenderer(job); });
+  }
+
+  function downloadTiles(game, card) {
+    _this.startOfflineDownload(game, { update: card.data('packState') === 'update' });
   }
 
   function renderGame(game) {
@@ -7772,7 +7551,8 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
         // Saved files (tiles and marker images) have no query string.
         var tileCount = requests.filter(function(request) {
           var url = new URL(request.url);
-          return !url.search && url.pathname.slice(-ZMapOfflinePacks.indexURL.length) !== ZMapOfflinePacks.indexURL;
+          return !url.search && url.pathname.slice(-ZMapOfflinePacks.indexURL.length) !== ZMapOfflinePacks.indexURL &&
+            url.pathname.slice(-ZMapOfflinePacks.aliasesURL.length) !== ZMapOfflinePacks.aliasesURL;
         }).length;
         // The browser removed some files.
         if(tileCount < packRecord.tileCount) {
@@ -7823,6 +7603,8 @@ ZMap.prototype._createOfflineMapsForm = function(opts) {
     });
     deleteButton.click(function() {
       if(!window.confirm('Remove the downloaded ' + game.name + ' maps from this device?')) return;
+      // (Stopping its download, if one's going.)
+      _this.cancelOfflineDownload(game.id);
       caches.delete(packCacheName(game.id)).then(function() {
         removePackRecord(game.id);
         setPackState(card, game, null);

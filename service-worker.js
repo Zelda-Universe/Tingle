@@ -202,22 +202,60 @@ async function reportTileSource(clientId, source, url) {
   if (client) client.postMessage({ type: 'zeldamaps-tile-source', source, url });
 }
 
+// A tile in a downloaded pack, by its address or, from older manifests that
+// used the site's /tiles/ host while the renderer uses the production CDN,
+// by its tile path. These are static images; fetch() and <img> may send
+// different Vary request headers.
+async function matchPackTile(pack, url) {
+  let tile = await pack.match(url, { ignoreVary: true });
+  if (!tile && tilePath(url)) {
+    for (const origin of [self.location.origin, 'https://zeldamaps.com', 'https://www.zeldamaps.com']) {
+      tile = await pack.match(new URL(tilePath(url), origin).href, { ignoreVary: true });
+      if (tile) break;
+    }
+  }
+  return tile;
+}
+
+// Which of a pack's tiles are saved as another, the same image (a download
+// saves each image once: scripts/services/OfflineDownloads.js), by tile
+// path. Read once a minute at most, or afresh when the page says a pack
+// changed.
+const PACK_ALIASES = new Map();
+async function packAliases(name, pack) {
+  const known = PACK_ALIASES.get(name);
+  if (known && Date.now() - known.at < 60000) return known.aliases;
+  let aliases = null;
+  try {
+    const response = await pack.match(new URL('offline-pack-aliases.json', self.registration.scope).href);
+    if (response) {
+      aliases = new Map();
+      for (const [url, same] of Object.entries(await response.json())) {
+        const key = tilePath(url);
+        if (key) aliases.set(key, same);
+      }
+    }
+  } catch (error) {}
+  PACK_ALIASES.set(name, { at: Date.now(), aliases });
+  return aliases;
+}
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'zeldamaps-offline-pack-updated') PACK_ALIASES.delete(event.data.cache);
+});
+
 async function cacheFirstTile(request, clientId) {
-  // Explicit packs take priority over the rolling cache. These are static
-  // images; fetch() and <img> may send different Vary request headers.
+  // Explicit packs take priority over the rolling cache.
   const packNames = (await caches.keys()).filter(name =>
     name.startsWith('zeldamaps-offline-') && name !== 'zeldamaps-offline-navigation'
   );
   for (const name of packNames) {
     const pack = await caches.open(name);
-    let tile = await pack.match(request.url, { ignoreVary: true });
-    // Older manifests used the site's /tiles/ host while the renderer uses
-    // the production CDN. Recover those existing downloads by tile path.
+    let tile = await matchPackTile(pack, request.url);
+    // A tile that's the same image as another: the one saved.
     if (!tile && tilePath(request.url)) {
-      for (const origin of [self.location.origin, 'https://zeldamaps.com', 'https://www.zeldamaps.com']) {
-        tile = await pack.match(new URL(tilePath(request.url), origin).href, { ignoreVary: true });
-        if (tile) break;
-      }
+      const aliases = await packAliases(name, pack);
+      const same = aliases && aliases.get(tilePath(request.url));
+      if (same) tile = await matchPackTile(pack, same);
     }
     if (tile) {
       await reportTileSource(clientId, 'download', request.url);

@@ -11,7 +11,9 @@
 
   // Per site (see $cacheFolder in config.php): staging and production can
   // share a temp folder.
-  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v8-' . substr(md5(dirname(__DIR__)), 0, 12);
+  // (v9: duplicate tiles point at their first copy, 'same'; TotK's unused
+  // _Detail images are left out.)
+  $manifestCacheDirectory = sys_get_temp_dir() . '/zeldamaps-offline-manifests-v9-' . substr(md5(dirname(__DIR__)), 0, 12);
   $manifestCacheLifetime = 6 * 60 * 60;
   $tileRoot = realpath(dirname(__DIR__) . '/tiles');
   $tilePublicBaseURL = rtrim(
@@ -82,14 +84,39 @@
         'pattern' => '/\.(?:png|jpe?g|webp|gif|svg|json|css)$/i',
         // JSON directly in data/<game>/ is server-side data, which offline
         // downloads never need; lang/ JSON is used by the page and stays in.
-        'exclude' => '#^data/[^/]+/[^/]+\.json$#i',
+        // Nor the gallery's _Detail images: the page shows only _Icon ones
+        // (zmap.js), and TotK's _Detail images are over 500 MB.
+        'exclude' => '#^data/[^/]+/[^/]+\.json$|^data/[^/]+/gallery/[^/]+_Detail\.png$#i',
         'tile' => false
       );
     }
     return $sources;
   }
 
-  function buildOfflineManifest($sources) {
+  // A file's contents as a short hash, to find tiles that are the same
+  // image (OoT's floors share blank and edge tiles, and a floor's -state01
+  // is mostly its -state00: three in four of its tiles). Kept by path, size
+  // and modified time in $hashes, so only new or changed files are read.
+  function offlineFileHash($path, $size, $mtime, &$hashes) {
+    $key = $path . '|' . $size . '|' . $mtime;
+    if (!isset($hashes[$key])) {
+      $hashes[$key] = hash_file(in_array('xxh128', hash_algos(), true) ? 'xxh128' : 'md5', $path);
+    }
+    return $hashes[$key];
+  }
+
+  // How much a download is: each different file once (a tile that's the
+  // same as another, 'same', is saved as that one).
+  function offlineManifestBytes($tiles) {
+    $bytes = 0;
+    foreach ($tiles as $tile) if (empty($tile['same'])) $bytes += $tile['size'];
+    return $bytes;
+  }
+
+  function buildOfflineManifest($sources, $hashFile = null) {
+    $hashes = array();
+    if ($hashFile && is_file($hashFile)) $hashes = json_decode((string) file_get_contents($hashFile), true) ?: array();
+    $used = array();
     $filesByURL = array();
     foreach ($sources as $source) {
       $root = $source['root'];
@@ -115,11 +142,28 @@
           // Changes when a file is replaced, so downloads can update just it.
           'm' => $file->getMTime()
         );
-        if ($source['tile']) $filesByURL[$url]['tile'] = 1;
+        if ($source['tile']) {
+          $filesByURL[$url]['tile'] = 1;
+          $key = $absolutePath . '|' . $file->getSize() . '|' . $file->getMTime();
+          $filesByURL[$url]['hash'] = offlineFileHash($absolutePath, $file->getSize(), $file->getMTime(), $hashes);
+          $used[$key] = $hashes[$key];
+        }
       }
     }
 
     ksort($filesByURL, SORT_NATURAL);
+    // A tile that's the same image as one before it is downloaded once:
+    // 'same' names the copy the browser saves (service-worker.js serves it).
+    $first = array();
+    foreach ($filesByURL as $url => &$entry) {
+      if (!isset($entry['hash'])) continue;
+      if (isset($first[$entry['hash']])) $entry['same'] = $first[$entry['hash']];
+      else $first[$entry['hash']] = $url;
+      unset($entry['hash']);
+    }
+    unset($entry);
+    // (Only the files still in use, so the hashes don't grow forever.)
+    if ($hashFile) @file_put_contents($hashFile, json_encode($used), LOCK_EX);
     return array_values($filesByURL);
   }
 
@@ -157,13 +201,17 @@
       ) return $cached;
     }
 
-    $tiles = buildOfflineManifest($sources);
+    // (Hashing a game's tiles the first time takes a while.)
+    @set_time_limit(300);
+    $tiles = buildOfflineManifest($sources, $cacheDirectory . '/' . preg_replace('/[^A-Za-z0-9_-]/', '', $gameId) . '-hashes.json');
     // Only a game with map tiles can be downloaded.
     if (!array_filter(array_column($tiles, 'tile'))) $tiles = array();
     $manifest = array(
       'signature' => $signature,
       'version' => $tiles ? substr(sha1(implode("\n", array_map(function($tile) {
-        return $tile['url'] . '|' . $tile['size'] . '|' . $tile['m'];
+        // (With what a duplicate is the same as: a download made before tiles
+        // were shared is offered an update, which only frees space.)
+        return $tile['url'] . '|' . $tile['size'] . '|' . $tile['m'] . (empty($tile['same']) ? '' : '|' . $tile['same']);
       }, $tiles))), 0, 16) : null,
       'tiles' => $tiles
     );
@@ -207,7 +255,7 @@
       'game' => $requestedGame,
       'version' => $manifest['version'],
       'total' => count($tiles),
-      'totalBytes' => array_sum(array_column($tiles, 'size')),
+      'totalBytes' => offlineManifestBytes($tiles),
       'offset' => $offset,
       'tiles' => array_slice($tiles, $offset, $limit)
     ));
@@ -234,7 +282,7 @@
       'name' => $gameRow['name'],
       'version' => $manifest['version'],
       'tileCount' => count($manifest['tiles']),
-      'size' => array_sum(array_column($manifest['tiles'], 'size')),
+      'size' => offlineManifestBytes($manifest['tiles']),
       'available' => count($manifest['tiles']) > 0
     );
   };

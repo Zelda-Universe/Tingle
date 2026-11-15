@@ -253,6 +253,8 @@ function getUserInfo() {
     if(vResults.user) {
       zMap.syncOfflineChanges();
       zMap.checkOfflineMapUpdates();
+      // (A map download an earlier page left unfinished: OfflineDownloads.js.)
+      if(zMap.resumeOfflineDownloads) zMap.resumeOfflineDownloads();
     }
     if(offline) return;
     // Paths, once we know who's asking (scripts/services/Paths.js: admins

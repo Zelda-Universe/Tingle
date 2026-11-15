@@ -30,13 +30,26 @@
     echo json_encode(array('success' => false, 'msg' => 'Enter a valid email address.'));
     return;
   }
-  if (!in_array($level, [1, 5, 10], true)) {
+  // (Super Admin is kept, not given: that's made at the database.)
+  $allowed = [1, 5, MODERATOR_LEVEL, ADMIN_ROLE_LEVEL];
+  if ((int) $user['level'] >= SUPER_ADMIN_LEVEL) $allowed[] = (int) $user['level'];
+  if (!in_array($level, $allowed, true)) {
     echo json_encode(array('success' => false, 'msg' => 'Choose a role.'));
     return;
   }
   // Admins can't remove their own access by mistake.
   if ($userId === $adminId && $level < ADMIN_LEVEL) {
     echo json_encode(array('success' => false, 'msg' => "You can't remove your own admin role."));
+    return;
+  }
+  if ($userId === $adminId && (int) $user['level'] >= SUPER_ADMIN_LEVEL && $level < SUPER_ADMIN_LEVEL) {
+    echo json_encode(array('success' => false, 'msg' => "You can't remove your own super admin role."));
+    return;
+  }
+  // Staff give only roles below their own: an admin makes moderators, a
+  // super admin admins.
+  if ($level !== (int) $user['level'] && $level >= MODERATOR_LEVEL && $level >= adminLevel()) {
+    echo json_encode(array('success' => false, 'msg' => 'Only admins can make someone a moderator, and only super admins an admin.'));
     return;
   }
   if ($password !== '' && (strlen($password) < 8 || strlen($password) > 72)) {

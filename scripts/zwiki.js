@@ -7,6 +7,8 @@
 // to the POI, and a revision opened from Talk goes back to Talk.
 
 ZMap.prototype.WIKI_EDITOR_LEVEL = 5;
+// (Moderators and up: everything admins have, for now. Admins are 15,
+// super admins 20: zmap.js adminRoles, lib/common/admin.php.)
 ZMap.prototype.WIKI_ADMIN_LEVEL = 10;
 
 // Signing in or out while a POI is open updates its footer.
@@ -45,7 +47,9 @@ ZMap.prototype._wikiAgo = function(seconds) {
 
 ZMap.prototype._wikiRoleLabel = function(level, beta) {
   level = Number(level);
-  if(level >= this.WIKI_ADMIN_LEVEL) return 'Admin';
+  // (A super admin is an Admin here: only the admin panel says otherwise.)
+  if(level >= 15) return 'Admin';
+  if(level >= this.WIKI_ADMIN_LEVEL) return 'Moderator';
   // In the community editing beta (scripts/zbeta.js), who edit at
   // Contributor level.
   if(beta) return 'Beta Editor';
@@ -1037,7 +1041,7 @@ ZMap.prototype._renderTalkThread = function(thread, comments) {
           'onerror="this.onerror=null;this.src=\'images/default-avatar.png\'" />' +
         '<div class="wiki-comment-main">' +
           '<div class="wiki-comment-head">' + _this._wikiUserLink(comment.userId, comment.username) +
-            (comment.level >= _this.WIKI_ADMIN_LEVEL ? '<span class="wiki-role">Admin</span>' : '') +
+            (comment.level >= _this.WIKI_ADMIN_LEVEL ? '<span class="wiki-role">' + _this._wikiRoleLabel(comment.level) + '</span>' : '') +
             '<span class="wiki-comment-time">' + _this._wikiEscape(_this._wikiAgo(comment.ago)) + '</span></div>' +
           '<div class="wiki-comment-body">' +
             (comment.deleted ? '<em>Comment removed</em>' : _this._renderWikiText(comment.body)) + '</div>' +

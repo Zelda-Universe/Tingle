@@ -1,8 +1,24 @@
 <?php
-  // Admin endpoints (ajax/admin_*.php). Admins are level 10+, the same level
-  // that may edit any marker.
+  // Admin endpoints (ajax/admin_*.php). The staff roles, by level:
+  //  * Moderator (10): everything an admin has, for now: the admin panel,
+  //    editing any marker, paths, admin-only games (ALttP's)...
+  //  * Admin (15): what's admin-only, as it comes (ADMIN_ROLE_LEVEL).
+  //  * Super Admin (20): an admin who also manages the other admins. To
+  //    everyone else it's "Admin" (scripts/zwiki.js _wikiRoleLabel).
+  // Each manages the roles below its own: a moderator, users and
+  // contributors; an admin, moderators too; a super admin, admins too.
+  // ADMIN_LEVEL (10, as WIKI_ADMIN_LEVEL and PATHS_ADMIN_LEVEL are) is the
+  // staff's own: moderators and up.
 
-  const ADMIN_LEVEL = 10;
+  const MODERATOR_LEVEL = 10;
+  const ADMIN_LEVEL = MODERATOR_LEVEL;
+  const ADMIN_ROLE_LEVEL = 15;
+  const SUPER_ADMIN_LEVEL = 20;
+
+  // The signed-in admin's level, once adminRequire has checked it.
+  function adminLevel() {
+    return (int) ($GLOBALS['zmAdminLevel'] ?? 0);
+  }
 
   // The signed-in admin's id, or null after answering 403. Checks the
   // database rather than the session, which keeps the level from sign-in.
@@ -20,6 +36,7 @@
       echo json_encode(array('success' => false, 'msg' => 'Admins only.'));
       return null;
     }
+    $GLOBALS['zmAdminLevel'] = (int) $level;
     return $userId;
   }
 
@@ -49,12 +66,18 @@
     return $adminOnly && !adminSignedIn($db, $prefix);
   }
 
-  // Admins are equals: none of them can change, disable or ban another
-  // admin's account from here. Those changes are made at the database, by
-  // the people who run the site. Answers for the caller when it refuses.
+  // Staff change, disable or ban only accounts in a role below their own: a
+  // moderator not another moderator, an admin not another admin. No one
+  // changes a super admin's account but its own; that's made at the
+  // database, by the people who run the site. Answers for the caller when it
+  // refuses.
   function adminCanManage($adminId, $targetId, $targetLevel) {
-    if ((int) $targetId === (int) $adminId || (int) $targetLevel < ADMIN_LEVEL) return true;
-    echo json_encode(array('success' => false, 'msg' => "Other admins' accounts can't be changed here."));
+    $targetLevel = (int) $targetLevel;
+    if ((int) $targetId === (int) $adminId || $targetLevel < MODERATOR_LEVEL) return true;
+    if ($targetLevel < SUPER_ADMIN_LEVEL && adminLevel() > $targetLevel) return true;
+    echo json_encode(array('success' => false, 'msg' => $targetLevel >= SUPER_ADMIN_LEVEL
+      ? "Super admins' accounts can't be changed here."
+      : ($targetLevel >= ADMIN_ROLE_LEVEL ? "Other admins' accounts can't be changed here." : "Other moderators' accounts can't be changed here.")));
     return false;
   }
 

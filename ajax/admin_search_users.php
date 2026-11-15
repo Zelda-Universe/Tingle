@@ -21,7 +21,7 @@
     $conditions[] = '(`username` LIKE ? OR `name` LIKE ? OR `email` LIKE ? OR `id` = ?)';
     array_push($params, $like, $like, $like, ctype_digit($query) ? (int) $query : 0);
   }
-  $roles = ['admin' => '`level` >= 10', 'contributor' => '`level` >= 5 AND `level` < 10', 'user' => '`level` < 5'];
+  $roles = ['admin' => '`level` >= 15', 'moderator' => '`level` >= 10 AND `level` < 15', 'contributor' => '`level` >= 5 AND `level` < 10', 'user' => '`level` < 5'];
   $role = (string) ($_GET['role'] ?? '');
   if (isset($roles[$role])) $conditions[] = $roles[$role];
   $statuses = [

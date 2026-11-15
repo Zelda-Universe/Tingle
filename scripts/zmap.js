@@ -5475,8 +5475,15 @@ ZMap.prototype.restoreResponsiveDrawer = function(snapshot) {
 ZMap.prototype.adminRoles = [
   { level: 1, label: 'User' },
   { level: 5, label: 'Contributor' },
-  { level: 10, label: 'Admin' }
+  // Everything an admin has, for now (lib/common/admin.php).
+  { level: 10, label: 'Moderator' },
+  { level: 15, label: 'Admin' },
+  // Admins who also manage the other admins. Only the admin panel says so:
+  // everywhere else it's "Admin" (zwiki.js).
+  { level: 20, label: 'Super Admin' }
 ];
+ZMap.prototype.ADMIN_ROLE_LEVEL = 15;
+ZMap.prototype.SUPER_ADMIN_LEVEL = 20;
 
 // opts.restore: coming back from an account, so show the search, results and
 // scroll position as they were instead of starting over.
@@ -5656,7 +5663,7 @@ ZMap.prototype._createAdminPage = function(opts) {
           '<i class="fas fa-chevron-down admin-chevron" aria-hidden="true"></i>' +
         '</button>' +
         '<div id="admin_filters" class="admin-filters" hidden>' +
-          [['role', 'Role', [['', 'All'], ['admin', 'Admins'], ['contributor', 'Contributors'], ['user', 'Users']]],
+          [['role', 'Role', [['', 'All'], ['admin', 'Admins'], ['moderator', 'Moderators'], ['contributor', 'Contributors'], ['user', 'Users']]],
            ['status', 'Status', [['', 'All'], ['active', 'Active'], ['disabled', 'Disabled'], ['banned', 'Banned'], ['deleted', 'Deleted']]],
            ['source', 'Signed Up From', [['', 'All'], ['bookmark', 'Bookmark'], ['complete', 'Complete'], ['account', 'Account'], ['editing_beta', 'Editing Beta'], ['unknown', 'Untracked']]],
            ['sort', 'Sort', [['newest', 'Newest'], ['oldest', 'Oldest'], ['seen', 'Last Seen'], ['name', 'Username']]]
@@ -6474,9 +6481,16 @@ ZMap.prototype._createAdminUserPage = function(account) {
   var me = this.getUser();
   var isSelf = me && String(me.id) === String(account.id);
   var levelSelect = $('#admin_user_level');
+  // Staff give only roles below their own, and change only the roles of
+  // accounts below theirs (ajax/admin_update_user.php); Super Admin shows
+  // only for one already (it's given at the database).
+  var myLevel = me ? Number(me.level) : 0, theirs = Number(account.level);
   this.adminRoles.forEach(function(role) {
-    levelSelect.append($('<option></option>').val(role.level).text(role.label));
+    if(role.level >= _this.SUPER_ADMIN_LEVEL && theirs !== role.level) return;
+    levelSelect.append($('<option></option>').val(role.level).text(role.label)
+      .prop('disabled', role.level !== theirs && role.level >= _this.WIKI_ADMIN_LEVEL && role.level >= myLevel));
   });
+  if(!isSelf && theirs >= this.WIKI_ADMIN_LEVEL && theirs >= myLevel) levelSelect.prop('disabled', true).attr('title', 'Only a higher role can change this one.');
   if(!this.adminRoles.some(function(r) { return r.level == account.level; })) {
     levelSelect.prepend($('<option></option>').val(account.level).text('Level ' + account.level));
   }

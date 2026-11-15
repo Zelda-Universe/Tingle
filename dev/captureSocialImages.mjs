@@ -90,12 +90,13 @@ const games = [
   // The whole area beside the sidebar covered by the map.
   { id: 'EoW', setup: `cover([[0, -35.25], [482.25, 693.75]]);` },
   // All of Hyrule (Child), fitted beside the sidebar. The "Map Under
-  // Construction" notice is hidden so the category list shows instead.
+  // Construction" notice and the editing beta's invitation are hidden so the
+  // category list shows instead.
   {
     id: 'OoTR', file: 'oot', settle: 8000,
     setup: `
       var style = document.createElement('style');
-      style.textContent = '.oot-preview-notice { display: none !important; }';
+      style.textContent = '.oot-preview-notice, .editing-beta-notice { display: none !important; }';
       document.head.appendChild(style);
       // Fully zoomed out, which is fractional; round up to a zoom where tiles
       // span whole device pixels, or hairline seams show between them.

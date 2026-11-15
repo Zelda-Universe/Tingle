@@ -2085,6 +2085,8 @@ ZMap.prototype.addMapControl = function(gameId) {
   );
   this.mapControl.setCurrentMapLayer(this.maps[0]);
   this.mapControl.addTo(this.map);
+  // Credits under images, as pages show them (scripts/services/ImageCredits.js).
+  if(this._watchImageCredits) this._watchImageCredits(this.mapControl._contents);
   this.settingsControl = L.control.settings({
     zMap: this,
     mapControl: this.mapControl
@@ -3822,6 +3824,18 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
         icon: 'zm-upload-video', tooltip: 'Insert/edit video',
         onAction: function() { _this._uploadEditorVideo(editor); }
       });
+      // Credit, over a selected image: who made it and where it's from
+      // (scripts/services/ImageCredits.js).
+      if(_this._editImageCredit) {
+        editor.ui.registry.addButton('imagecredit', {
+          text: 'Credit', tooltip: 'Credit this image',
+          onAction: function() { _this._editImageCredit(editor); }
+        });
+        editor.ui.registry.addContextToolbar('imagecredit', {
+          predicate: function(node) { return node.nodeName === 'IMG'; },
+          items: 'imagecredit image', position: 'node', scope: 'node'
+        });
+      }
     };
     editorOptions.automatic_uploads = true;
     editorOptions.images_file_types = 'jpeg,jpg,png,gif,webp';

@@ -8197,3 +8197,72 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 /* Start, now under the description inside the page's column: as wide as the
    controls above, 16px under the text. */
 .path-page > .path-start-row { margin: 16px 0 0; }
+
+/* An image's credit (scripts/services/ImageCredits.js): small, right under it. */
+.zm-image-credit { display: block; margin: 4px 0 12px; font-size: 12px; line-height: 1.35; color: rgba(255, 255, 255, .6); }
+.zm-image-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.zm-image-credit a:hover { color: #8fd8ff; }
+/* (Inset as the image above it is: marker contents pad their paragraphs
+   and images 16px; a path's steps keep theirs flush.) */
+.popupContent > .zm-image-credit { padding: 0 16px; }
+.path-step-content > .zm-image-credit { padding: 0; }
+.path-step-content > img + .zm-image-credit { margin-top: -8px; }
+
+/* Images in a row (scripts/services/ImageCarousel.js): one at a time, swiped
+   or stepped through with the arrows and dots on top of it. As tall as the
+   image showing. */
+.zm-carousel { position: relative; margin: 0 0 12px; }
+.leaflet-control-layers .popupContent > .zm-carousel { margin: 0 16px 12px; }
+.leaflet-control-layers .popupContent.path-step-content > .zm-carousel { margin: 0 0 12px; }
+.zm-carousel-track {
+	display: flex; align-items: flex-start; overflow-x: auto; overflow-y: hidden;
+	scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+	border-radius: 10px; transition: height .2s ease;
+}
+.zm-carousel-track::-webkit-scrollbar { display: none; }
+.zm-carousel-track:focus-visible { outline: 2px solid #8fd8ff; outline-offset: 2px; }
+.zm-carousel-slide { flex: 0 0 100%; min-width: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+.leaflet-control-layers .popupContent .zm-carousel-slide img {
+	display: block; box-sizing: border-box; max-width: 100%; height: auto; margin: 0 auto; border-radius: 10px;
+}
+.zm-carousel-slide > a { display: block; }
+/* (Each image's credit stays in its slide; the one showing is copied under
+   the carousel.) */
+.zm-carousel-slide .zm-image-credit { display: none; }
+.zm-carousel-arrow {
+	position: absolute; top: 50%; transform: translateY(-50%); z-index: 1;
+	display: flex; align-items: center; justify-content: center;
+	width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%;
+	background: rgba(0, 0, 0, .55); color: #fff; cursor: pointer;
+	transition: background-color .15s ease;
+}
+.zm-carousel-arrow:hover { background: rgba(70, 70, 76, .8); }
+.zm-carousel-arrow:focus-visible { outline: 2px solid #8fd8ff; outline-offset: 2px; }
+.zm-carousel-arrow[hidden] { display: none; }
+.zm-carousel-prev { left: 8px; }
+.zm-carousel-next { right: 8px; }
+.zm-carousel-dots {
+	position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); z-index: 1;
+	display: flex; gap: 2px; padding: 2px 4px; border-radius: 999px; background: rgba(0, 0, 0, .4);
+}
+.zm-carousel-dot {
+	display: flex; align-items: center; justify-content: center;
+	width: 16px; height: 16px; padding: 0; border: 0; background: none; cursor: pointer;
+}
+.zm-carousel-dot::before {
+	content: ''; width: 7px; height: 7px; border-radius: 50%;
+	background: rgba(255, 255, 255, .5); transition: background-color .15s ease, transform .15s ease;
+}
+.zm-carousel-dot:hover::before { background: rgba(255, 255, 255, .8); }
+.zm-carousel-dot.active::before { background: #fff; transform: scale(1.15); }
+.zm-carousel-dot:focus-visible { outline: 2px solid #8fd8ff; outline-offset: 0; border-radius: 50%; }
+/* The credit of the image showing, as an image's own credit line. */
+.zm-carousel-credit { display: block; margin: -8px 0 12px; font-size: 12px; line-height: 1.35; color: rgba(255, 255, 255, .6); }
+.zm-carousel-credit[hidden] { display: none; }
+.zm-carousel-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.zm-carousel-credit a:hover { color: #8fd8ff; }
+.popupContent > .zm-carousel-credit { padding: 0 16px; }
+.path-step-content > .zm-carousel-credit { padding: 0; }
+@media (prefers-reduced-motion: reduce) {
+	.zm-carousel-track, .zm-carousel-arrow, .zm-carousel-dot::before { transition: none; }
+}

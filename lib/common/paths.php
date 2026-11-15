@@ -14,7 +14,7 @@
   //    edit, restore or delete paths. Users' own paths stay staff-only.
   //  * 'open': everyone also makes their own (Community Paths, profiles).
   // The page is told which (index.php window.zmapPathsStage, Paths.js).
-  const PATHS_STAGE = 'readonly';
+  const PATHS_STAGE = 'staff';
   const PATHS_ADMIN_LEVEL = 10;
   // How much can be written about a pin (its page, ajax/save_path_pin.php).
   const PATH_PIN_CONTENT_MAX = 5000;

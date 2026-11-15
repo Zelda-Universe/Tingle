@@ -43,6 +43,8 @@ scripts/controls/ZLayers.js
 scripts/controls/SettingsControl.js
 scripts/zmap.js
 scripts/services/MapMotion.js
+scripts/services/ImageCarousel.js
+scripts/services/ImageCredits.js
 scripts/services/AreaSearch.js
 scripts/services/CategoryPage.js
 scripts/controls/OotFloors.js

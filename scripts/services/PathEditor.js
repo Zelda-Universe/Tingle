@@ -469,6 +469,16 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
   // In an embed, no Completes (nobody's progress): Next, on to the next step.
   var framed = this.isFramed && this.isFramed();
   var shownCount = steps.filter(function(s) { return s.markerId || s.shown != 0; }).length;
+  // Each step's contents, less any paragraph every one of them has word for
+  // word ("Adult Link" under each of a path's markers): said on every step,
+  // it says nothing about any one of them.
+  var contents = steps.map(function(step) {
+    if(!step.markerId && step.shown == 0) return '';
+    var marker = step.markerId && zmap._pathMarker(step.markerId);
+    return marker ? zmap._pathMarkerContent(marker) : !marker && step.deleted ? zmap._pathMarkerContent({tabText: [step.content || '']}) :
+      !step.markerId && step.content ? zmap._pathPinContentHTML(step.content) : '';
+  });
+  contents = this._withoutSharedBlocks(contents);
   return "<ol class='path-steps path-timeline' style='--path-color:" + zmap._pathEsc(path.color || '#ffad48') + "'>" + steps.map(function(step, i) {
     if(!step.markerId && step.shown == 0) return '';
     n++;
@@ -479,8 +489,7 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
     // A pin: a place of its own on the path, with its own page (openPathPin)
     // and what's written about it.
     var pin = !step.markerId;
-    var content = marker ? zmap._pathMarkerContent(marker) : removed ? zmap._pathMarkerContent({tabText: [step.content || '']}) :
-      pin && step.content ? zmap._pathPinContentHTML(step.content) : '';
+    var content = contents[i];
     // Its marker's own check (a single path's is its first marker's): the
     // same one as on the marker's page and in lists (zmap.js keeps them in step).
     // A pin's is the path's own.
@@ -506,6 +515,39 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
       (framed && opts && opts.checks && n < shownCount ? "<button type='button' class='path-step-next'><span>Next</span><i class='fas fa-arrow-down' aria-hidden='true'></i></button>" : '') +
       "</div></li>";
   }).join('') + "</ol>";
+};
+
+// The contents given, less each top-level block (a paragraph, a heading,
+// a list) found word for word in every one that has any. Only text: images
+// stay. Fewer than two with contents, or nothing in common, and they're as
+// they were.
+ZMap.prototype._withoutSharedBlocks = function(contents) {
+  if(typeof document === 'undefined') return contents;
+  var parsed = contents.map(function(html) {
+    if(!html) return null;
+    var template = document.createElement('template');
+    template.innerHTML = html;
+    return template;
+  });
+  var filled = parsed.filter(Boolean);
+  if(filled.length < 2) return contents;
+  var key = function(el) {
+    if(el.querySelector('img, video, iframe') || /^(IMG|VIDEO|IFRAME)$/.test(el.nodeName)) return null;
+    var text = el.textContent.replace(/\s+/g, ' ').trim();
+    return text ? el.nodeName + ':' + text : null;
+  };
+  var keysOf = function(template) {
+    return Array.from(template.content.children).map(key).filter(Boolean);
+  };
+  var shared = keysOf(filled[0]).filter(function(k, i, all) {
+    return all.indexOf(k) === i && filled.every(function(t) { return keysOf(t).indexOf(k) !== -1; });
+  });
+  if(!shared.length) return contents;
+  return parsed.map(function(template, i) {
+    if(!template) return contents[i];
+    Array.from(template.content.children).forEach(function(el) { if(shared.indexOf(key(el)) !== -1) el.remove(); });
+    return template.innerHTML.trim();
+  });
 };
 
 // Where a step's marker is, under its name: the place, area name and area
@@ -594,6 +636,8 @@ ZMap.prototype._wirePathSteps = function(page, steps, reopen, label, path) {
     });
   };
   $(page).find('.path-step-content img').on('load', measure);
+  // (And as a carousel of images there takes the height of the one showing.)
+  $(page).on('zm-carousel-resize', measure);
   // Show more grows the text to its full height, animated; Show less shrinks
   // it back and, if the page is scrolled past it, brings the cut-off text's
   // end back into view.

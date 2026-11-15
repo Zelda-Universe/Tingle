@@ -7798,6 +7798,11 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-timeline .path-step::before {
 	content: ''; position: absolute; left: 13px; top: 0; bottom: 0; width: 2px; margin-left: -1px;
 	background: color-mix(in srgb, var(--path-color, #ffad48) 70%, #1b1b1f);
+	/* Never too dark to see on the drawer: lifted, its hue kept, to a
+	   lightness floor (bright colours, like the default orange, pass
+	   through as they are). (Where relative colours aren't supported, the
+	   line above.) */
+	background: oklch(from color-mix(in srgb, var(--path-color, #ffad48) 70%, #1b1b1f) max(l, .6) c h);
 }
 .path-timeline .path-step:first-child::before { top: 15px; }
 .path-timeline .path-step:last-child::before { bottom: auto; height: 15px; }
@@ -7881,7 +7886,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 /* (Anywhere a card goes: the drawer, or a path's hover card on the map.) */
 .path-card-thumb img, .leaflet-control-layers .path-card-thumb img { position: absolute; max-width: none; max-height: none; border-radius: 0; }
 .path-card-thumb svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.path-card-thumb-empty { display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--path-color, #ffad48); }
+.path-card-thumb-empty { display: flex; align-items: center; justify-content: center; font-size: 28px; color: var(--path-color, #ffad48); color: oklch(from var(--path-color, #ffad48) max(l, .6) c h); }
 .path-card-body { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px 12px; }
 .path-card-title { font-size: 15px; font-weight: 700; line-height: 1.3; }
 .path-card-badges { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -7927,7 +7932,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-timeline .path-step-number { margin-top: 2px; position: sticky; top: var(--path-sticky-top, 72px); z-index: 1; }
 /* The step a path's guide is on (Start, Complete). */
 .path-timeline .path-step-current .path-step-number { box-shadow: 0 0 0 4px rgba(255, 255, 255, .25); }
-.path-timeline .path-step-current .path-step-label { text-decoration: underline; text-decoration-color: var(--path-color, #ffad48); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.path-timeline .path-step-current .path-step-label { text-decoration: underline; text-decoration-color: var(--path-color, #ffad48); text-decoration-color: oklch(from var(--path-color, #ffad48) max(l, .6) c h); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 
 /* Make Path, in line with a marker's Edit, History and Talk: a small plus
    left of the signpost, centred on it. */
@@ -7947,7 +7952,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-list-item .icon { width: 64px; height: 64px; }
 .path-thumb-square { width: 64px; height: 64px; aspect-ratio: auto; border-radius: 12px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08); }
 .path-list-item .details .name { display: block; font-weight: 600; }
-.path-list-item .location .fa-map-signs { color: var(--path-color, #ffad48); margin-right: 2px; }
+.path-list-item .location .fa-map-signs { color: var(--path-color, #ffad48); color: oklch(from var(--path-color, #ffad48) max(l, .6) c h); margin-right: 2px; }
 
 /* A marker since removed from the map, kept by a user's path. */
 .path-step-removed, .path-step-removed-hint { margin: 2px 0 4px; font-size: 13px; color: #ffb3ae; }
@@ -7977,7 +7982,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-compact-body { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 8px 4px 8px 12px; }
 .path-compact-name { font-size: 15px; font-weight: 600; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .path-compact-line { font-size: 12px; color: rgba(255, 255, 255, .65); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.path-compact-line .fa-map-signs { color: var(--path-color, #ffad48); margin-right: 2px; }
+.path-compact-line .fa-map-signs { color: var(--path-color, #ffad48); color: oklch(from var(--path-color, #ffad48) max(l, .6) c h); margin-right: 2px; }
 .path-compact-chevron { flex: none; align-self: center; padding: 0 12px 0 4px; font-size: 13px; opacity: .35; }
 .path-compact-card:hover .path-compact-chevron { opacity: .7; }
 /* Where they sit. */
@@ -8267,3 +8272,4 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 @media (prefers-reduced-motion: reduce) {
 	.zm-carousel-track, .zm-carousel-arrow, .zm-carousel-dot::before { transition: none; }
 }
+

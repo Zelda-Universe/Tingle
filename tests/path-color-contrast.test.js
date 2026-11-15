@@ -18,7 +18,7 @@ test('icons and the current step\'s underline get the same floor',()=>{
 test('numbers keep their contrast: a lightness ceiling on the circles, after a plain fallback',()=>{
   const dot=css.slice(css.indexOf('.path-step-number {'));
   const body=dot.slice(0,dot.indexOf('}'));
-  expect(body.indexOf('background: var(--path-color, #2f5d50);')).toBeLessThan(body.indexOf('background: oklch(from var(--path-color, #2f5d50) min(l, .62) c h);'));
+  expect(body.indexOf('background: var(--path-color, #2f5d50);')).toBeLessThan(body.indexOf('background: oklch(from var(--path-color, #2f5d50) min(l, .7) c h);'));
   const badge=css.slice(css.indexOf('.zm-path-step span {'));
-  expect(badge.slice(0,badge.indexOf('}'))).toContain('color: oklch(from var(--path-color, #2f5d50) min(l, .62) c h);');
+  expect(badge.slice(0,badge.indexOf('}'))).toContain('color: oklch(from var(--path-color, #2f5d50) min(l, .7) c h);');
 });

@@ -56,6 +56,8 @@ ZMap.prototype._getCategoryMarkers = function(category) {
   collect(category);
   return this.getMarkers().filter(function(marker) {
     if(marker.categoryTypeId == 3 || marker.dbVisible == 0) return false;
+    // (Not a single path's later marker: checked with its path's first.)
+    if(marker.pathFollower) return false;
     var markerCategory = zmap.categories[marker.categoryId];
     if(!markerCategory || markerCategory.visible === false) return false;
     return !!ids[marker.categoryId];

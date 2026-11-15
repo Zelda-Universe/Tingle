@@ -37,7 +37,17 @@ ZMap.prototype._markerPathsHTML = function(marker) {
       context: path.kind === 'single' ? null : 'Step ' + (index + 1) + ' of ' + path.steps.length}));
   });
   // Headed as a category page's Paths are (CategoryPage.js).
-  return "<div class='marker-paths' data-marker='" + Number(marker.id) + "'>" + (rows.length ?
+  // A single path's markers (a Korok pair's start and finish) are one check:
+  // each says which other it completes with, a link to it whose Back comes
+  // back here (Paths.js _pathPartners).
+  var partners = this._pathPartners && this._pathPartners(marker);
+  var back = "_this._wikiBackToMarker ? _this._wikiBackToMarker(" + Number(marker.id) + ") : null";
+  return "<div class='marker-paths' data-marker='" + Number(marker.id) + "'>" +
+    (partners ? "<p class='marker-path-check-note'><i class='fas fa-link' aria-hidden='true'></i> Completes together with " +
+      partners.others.map(function(other) {
+        return "<a href='#' class='wiki-link wiki-code-link marker-path-partner' onclick='_this._openMarkerLink(" + Number(other.id) + ", null, " + back + "); return false'>" +
+          "<i class='fas fa-map-marker-alt' aria-hidden='true'></i>" + zmap._pathEsc(other.title || other.name || 'Marker') + "</a>";
+      }).join(', ') + "</p>" : '') + (rows.length ?
     "<section class='poi-category-groups category-paths marker-paths-section'><div class='poi-category-heading'><h3 class='area-category-title'>" +
       (rows.length === 1 ? 'Part of this path' : 'Part of these paths') + "</h3></div><div class='path-compact-list'>" + rows.join('') + "</div></section>" : '') + "</div>";
 };
@@ -73,7 +83,13 @@ ZMap.prototype._refreshMarkerPaths = function() {
   var zmap = this;
   document.querySelectorAll('.marker-paths[data-marker]').forEach(function(slot) {
     var marker = zmap._pathMarker(Number(slot.dataset.marker));
-    if(marker) { slot.outerHTML = zmap._markerPathsHTML(marker); zmap._addMakePathButton(marker); }
+    if(!marker) return;
+    // (A single path's later marker, found now: its Complete becomes its
+    // path's first marker's, zmap.js.)
+    var follows = zmap._pathLeadFor && zmap._pathLeadFor(marker);
+    var own = follows && document.getElementById('check' + marker.id);
+    if(own) own.outerHTML = zmap._markerCompleteButtonHTML(follows.lead);
+    slot.outerHTML = zmap._markerPathsHTML(marker); zmap._addMakePathButton(marker);
   });
 };
 
@@ -145,7 +161,16 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   // (Edit and History are at the foot of the page, as a marker's are.)
   // (In an embed, no Yeah or Bookmark: nothing of anyone's account.)
   var framed = this.isFramed && this.isFramed();
+  // A single path (a Korok pair, a dragon): one check, its first marker's,
+  // as the first of its controls, as a marker page has it, in place of a
+  // guide's Start and each step's Complete.
+  var single = path.kind === 'single';
+  var lead = single && !framed ? this._pathCheckMarkers(path)[0] : null;
+  var leadDone = !!lead && (lead.complete === true || lead.complete == 1);
   var actions = [
+    lead ? "<button type='button' id='check" + Number(lead.id) + "' class='marker-action-button infoWindowIcn path-single-complete " + (leadDone ? 'checked' : 'unchecked') + "'>" +
+      "<span class='marker-action-icon'><i class='icon-" + (leadDone ? 'checkmark' : 'checkbox-unchecked') + "' aria-hidden='true'></i></span>" +
+      "<span class='marker-action-label'>" + (leadDone ? 'Completed' : 'Complete') + "</span></button>" : '',
     // A user's path's Yeah, as the comments' (zwiki.js _wireYeahs fills and
     // wires it), first, before Bookmark.
     yeahs && !framed ? "<button type='button' class='marker-action-button infoWindowIcn yeah-target yeah-button path-yeah' data-yeah-key='path:" + Number(path.id) + "' aria-pressed='false' disabled>" +
@@ -201,10 +226,10 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
       "<button type='button' class='path-step-more path-description-more' hidden><span>Show more</span><i class='fas fa-chevron-down' aria-hidden='true'></i></button>" : '') +
     // ...then its guide, full width, right above the first step: the end of
     // what a phone's partly open drawer shows (ZLayers.js _mobileDrawerPeekHeight).
-    (shown.length ? "<div class='path-start-row drawer-peek-end'><button type='button' class='path-start'>" +
+    (shown.length && !single ? "<div class='path-start-row drawer-peek-end'><button type='button' class='path-start'>" +
       "<i class='fas fa-play' aria-hidden='true'></i><span class='path-start-text'><span>" + this._pathStartLabel.label + "</span>" +
       (stat ? "<small>" + this._pathEsc(stat) + "</small>" : '') + "</span></button></div>" : '') +
-    this._pathStepsHTML(path, path.steps, {checks: true}) + "</div>" + footer, 'path', back, linkBack, {partialDrawer: true, instant: !!opts.instant});
+    this._pathStepsHTML(path, path.steps, {checks: true, single: single}) + "</div>" + footer, 'path', back, linkBack, {partialDrawer: true, instant: !!opts.instant});
   page.classList.add('area-detail-page', 'path-detail-page');
   page.addEventListener('pointerdown', function(e) { if(e.target.closest('a.wiki-link')) linkScroll = control._contents.scrollTop; }, true);
   page.addEventListener('keydown', function(e) { if(e.target.closest('a.wiki-link')) linkScroll = control._contents.scrollTop; }, true);
@@ -222,6 +247,15 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   if(!opts.keepView) this.focusPath(path.slug, {instant: !!opts.instant});
   // ("Copied!" on the button itself, as a marker's: zmap.js _copyText.)
   $(page).find('.path-copy').on('click', function() { zmap._copyText(zmap._pathUrl(path, true), this); });
+  // A single path's Complete: its first marker's check (zmap.js
+  // _setMarkerDone redraws the button, as a marker page's).
+  $(page).find('.path-single-complete').on('click', function() {
+    var complete = this.classList.contains('unchecked');
+    this.classList.toggle('unchecked', !complete);
+    this.classList.toggle('checked', complete);
+    zmap._recordPathStart(path);
+    zmap._setMarkerDone(lead.id, complete, function() { zmap.updatePathCompletionCounts(); });
+  });
   $(page).find('.path-embed').on('click', function() {
     zmap.trackEmbedCopy('path');
     var src = zmap._pageAddress(true) + '?game=' + encodeURIComponent(zmap.mapOptions.shortName) + '&path=' + encodeURIComponent(path.slug) + '&showMapControl=true';
@@ -479,7 +513,8 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
       !step.markerId && step.content ? zmap._pathPinContentHTML(step.content) : '';
   });
   contents = this._withoutSharedBlocks(contents);
-  return "<ol class='path-steps path-timeline' style='--path-color:" + zmap._pathEsc(path.color || '#ffad48') + "'>" + steps.map(function(step, i) {
+  var single = !!(opts && opts.single);
+  return "<ol class='path-steps path-timeline" + (single ? ' path-steps-single' : '') + "' style='--path-color:" + zmap._pathEsc(path.color || '#ffad48') + "'>" + steps.map(function(step, i) {
     if(!step.markerId && step.shown == 0) return '';
     n++;
     var marker = step.markerId && zmap._pathMarker(step.markerId);
@@ -511,8 +546,8 @@ ZMap.prototype._pathStepsHTML = function(path, steps, opts) {
         "<button type='button' class='path-step-more' hidden><span>Show more</span><i class='fas fa-chevron-down' aria-hidden='true'></i></button>" : '') +
       // The marker's own Complete, as on its page: checking it here checks
       // the marker everywhere.
-      (check && !framed ? "<button type='button' class='path-step-complete'><span class='path-step-complete-icon'></span><span class='path-step-complete-label'></span></button>" : '') +
-      (framed && opts && opts.checks && n < shownCount ? "<button type='button' class='path-step-next'><span>Next</span><i class='fas fa-arrow-down' aria-hidden='true'></i></button>" : '') +
+      (check && !framed && !single ? "<button type='button' class='path-step-complete'><span class='path-step-complete-icon'></span><span class='path-step-complete-label'></span></button>" : '') +
+      (framed && opts && opts.checks && !single && n < shownCount ? "<button type='button' class='path-step-next'><span>Next</span><i class='fas fa-arrow-down' aria-hidden='true'></i></button>" : '') +
       "</div></li>";
   }).join('') + "</ol>";
 };
@@ -572,6 +607,11 @@ ZMap.prototype._wirePathSteps = function(page, steps, reopen, label, path) {
     var step = steps[Number($(this).closest('li').data('index'))];
     var marker = step.markerId && zmap._pathMarker(step.markerId);
     // A pin opens its own page, whose Back comes back here.
+    // (A single path's point, a Korok race's start: the map moves to it.)
+    if(!step.markerId && path && path.kind === 'single') {
+      zmap._animateView(L.latLng(Number(step.y), Number(step.x)), Math.max(zmap.map.getZoom(), zmap._pathStepZoom ? zmap._pathStepZoom() : 3), 'move');
+      return;
+    }
     if(!step.markerId && step.pinKey && path && reopen) {
       var top = control._contents.scrollTop;
       zmap.openPathPin(path, step, function() { reopen(top); });
@@ -1025,7 +1065,8 @@ ZMap.prototype.openPathEditor = function(path, start) {
     (manages ? field('Who sees it', 'fa-users', "<select class='form-control' name='audience'><option value='private'>Only me (private)</option>" +
       "<option value='unlisted'>Anyone with the link (unlisted)</option>" +
       "<option value='public'>Anyone, and on my profile (public)</option>" +
-      (isEditor || draft.scope === 'official' ? "<option value='official'>Everyone, on the map (official)</option>" : '') + "</select>") +
+      (isEditor || draft.scope === 'official' ? "<option value='official'>Everyone, on the map (official)</option>" +
+        "<option value='official-unlisted'>Everyone, on the map, not in lists (official, unlisted)</option>" : '') + "</select>") +
       field('Publishing', 'fa-paper-plane', "<select class='form-control' name='publish'><option value='draft'>Draft: only I see it for now</option>" +
         "<option value='now'>Published</option><option value='schedule'>Publish at a set time</option></select>") +
       "<div class='path-schedule' hidden>" + field('Publish at', 'fa-clock', "<input type='datetime-local' class='form-control' name='publishAt'>") + "</div>" +
@@ -1053,7 +1094,7 @@ ZMap.prototype.openPathEditor = function(path, start) {
   form.find('[name=loops]').prop('checked', draft.loops);
   form.find('[name=color]').val(draft.color);
   form.find('[name=categoryId]').val(String(draft.categoryId || ''));
-  form.find('[name=audience]').val(draft.scope === 'official' ? 'official' : draft.visibility);
+  form.find('[name=audience]').val(draft.scope === 'official' ? (draft.visibility === 'unlisted' ? 'official-unlisted' : 'official') : draft.visibility);
   form.find('[name=editAccess]').val(draft.editAccess);
   form.find('[name=publish]').val(draft.publish);
   // datetime-local takes the viewer's own time, without a zone.
@@ -1078,8 +1119,10 @@ ZMap.prototype.openPathEditor = function(path, start) {
     draft.categoryId = form.find('[name=categoryId]').val();
     if(manages) {
       var audience = form.find('[name=audience]').val();
-      draft.scope = audience === 'official' ? 'official' : 'user';
-      draft.visibility = audience === 'official' ? 'public' : audience;
+      // (Official and unlisted: on the map, left out of lists, the sitemap
+      // and feeds: ajax/save_path.php.)
+      draft.scope = /^official/.test(audience) ? 'official' : 'user';
+      draft.visibility = audience === 'official' ? 'public' : audience === 'official-unlisted' ? 'unlisted' : audience;
       draft.editAccess = form.find('[name=editAccess]').val();
       draft.publish = form.find('[name=publish]').val();
       var at = form.find('[name=publishAt]').val();
@@ -1452,20 +1495,24 @@ ZMap.prototype._pathCardHTML = function(p, opts) {
   if(opts.context) meta.push(esc(opts.context));
   if(opts.game && p.gameName) meta.push(esc(p.gameName));
   if(p.scope !== 'official' && opts.author && p.userName) meta.push('by ' + esc(p.userName));
-  meta.push(steps + (steps === 1 ? ' step' : ' steps'));
+  // A single path (a Korok pair, a dragon's flight) is one check, not a
+  // guide: no steps, progress, starts or finishes to count on its card
+  // (its Complete is on its page and its markers').
+  var single = p.kind === 'single';
+  if(!single) meta.push(steps + (steps === 1 ? ' step' : ' steps'));
   var stats = [];
   // The viewer's own progress, for this game's paths (their markers are here).
-  if(Array.isArray(p.steps) && this._pathCheckMarkers) {
+  if(!single && Array.isArray(p.steps) && this._pathCheckMarkers) {
     var checks = this._pathCheckMarkers(p);
     var done = checks.filter(function(m) { return m.complete === true || m.complete == 1; }).length;
     if(checks.length) stats.push("<span class='path-card-progress" + (done === checks.length ? ' done' : '') + "'>" +
       (p.kind === 'single' ? (done ? 'Complete' : 'Not complete') : done + '/' + checks.length + ' Complete') + "</span>");
   }
   if(p.scope !== 'official' || p.yeahs) stats.push(this._pathYeahCount(p.yeahs || 0));
-  if(p.started) stats.push("<span class='path-finished' title='People who started it'><i class='fas fa-play' aria-hidden='true'></i> " +
+  if(p.started && !single) stats.push("<span class='path-finished' title='People who started it'><i class='fas fa-play' aria-hidden='true'></i> " +
     Number(p.started) + "<span class='sr-only'> people started it</span></span>");
   // How many of those who started it finish it.
-  if(p.started) stats.push("<span class='path-finished' title='Of those who started it, how many finish'><i class='fas fa-check' aria-hidden='true'></i> " +
+  if(p.started && !single) stats.push("<span class='path-finished' title='Of those who started it, how many finish'><i class='fas fa-check' aria-hidden='true'></i> " +
     Math.round(Number(p.finished || 0) / Number(p.started) * 100) + "%<span class='sr-only'> of people finish it</span></span>");
   if(opts.date && p.publishedAt) stats.push("<span class='path-card-date'>" + esc(this._pathTime(p.publishedAt)) + "</span>");
   return "<button type='button' class='path-card" + (opts.className ? ' ' + opts.className : '') + "' " + (opts.attrs || '') +
@@ -1522,8 +1569,14 @@ ZMap.prototype._pathThumbHTML = function(thumb, color, loops, dashed, smooth, sq
       "<polyline points='" + line.join(' ') + "' fill='none' stroke='#fff' stroke-width='6' stroke-linecap='round' stroke-linejoin='round' opacity='.9'/>" +
       // (A user's path dashed, as on the map: Paths.js.)
       "<polyline points='" + line.join(' ') + "' fill='none' stroke='" + c + "' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'" + (dashed ? " stroke-dasharray='7 5'" : '') + "/>" +
-      (loops ? '' : "<circle cx='" + last[0] + "' cy='" + last[1] + "' r='4.5' fill='#fff' stroke='" + c + "' stroke-width='2.5'/>") +
-      "<circle cx='" + first[0] + "' cy='" + first[1] + "' r='5.5' fill='" + c + "' stroke='#fff' stroke-width='2'/>" +
+      // Its ends as markers are on the map: in its colour, edged in white
+      // (2px however small the thumbnail; a list row's, drawn smaller, has
+      // bigger dots), the finish with a white flag in it.
+      (loops ? '' : "<circle cx='" + last[0] + "' cy='" + last[1] + "' r='" + (square ? 13 : 7) + "' fill='" + c + "' stroke='#fff' stroke-width='2' vector-effect='non-scaling-stroke'/>" +
+        // (A pole and a pennant, drawn in a unit box round the point.)
+        "<g transform='translate(" + last[0] + " " + last[1] + ") scale(" + (square ? 13 : 7) + ")' fill='#fff'>" +
+          "<rect x='-.42' y='-.6' width='.16' height='1.2' rx='.08'/><path d='M-.3 -.6 L.5 -.33 L-.3 -.06 Z'/></g>") +
+      "<circle cx='" + first[0] + "' cy='" + first[1] + "' r='" + (square ? 11 : 5.5) + "' fill='" + c + "' stroke='#fff' stroke-width='2' vector-effect='non-scaling-stroke'/>" +
     "</svg></span>";
 };
 
@@ -1537,14 +1590,22 @@ ZMap.prototype._pathListItemHTML = function(p, opts) {
   var zmap = this, esc = function(s) { return zmap._pathEsc(s); };
   var line = [];
   if(opts.context) line.push(esc(opts.context));
-  if(Array.isArray(p.steps) && this._pathCheckMarkers) {
+  // A single path: where it is, not its progress (one check: on its page and
+  // its markers').
+  var lead = p.kind === 'single' && p.lead;
+  if(lead) {
+    var place = this.markerLabelLink && (this.markerLabelLink(lead, 'place') || this.markerLabelLink(lead, 'area'));
+    var area = !place && this.markerAreaLink && this.markerAreaLink(lead);
+    if((place || area) && (place || area).label) line.push(esc((place || area).label));
+  }
+  if(p.kind !== 'single' && Array.isArray(p.steps) && this._pathCheckMarkers) {
     var checks = this._pathCheckMarkers(p);
     var done = checks.filter(function(m) { return m.complete === true || m.complete == 1; }).length;
     if(checks.length) line.push(p.kind === 'single' ? (done ? 'Complete' : 'Not complete') : done + '/' + checks.length + ' Complete');
   }
   if(!line.length) {
     var steps = Array.isArray(p.steps) ? p.steps.filter(function(s) { return s.markerId || s.shown != 0; }).length : Number(p.steps) || 0;
-    line.push(steps + (steps === 1 ? ' step' : ' steps'));
+    line.push(p.kind === 'single' ? 'Path' : steps + (steps === 1 ? ' step' : ' steps'));
   }
   return "<button type='button' class='path-compact-card path-list-item" + (opts.className ? ' ' + opts.className : '') + "' " +
     (opts.attrs || '') + " style='--path-color:" + esc(p.color || '#ffad48') + "'>" +
@@ -1571,12 +1632,14 @@ ZMap.prototype._createPathBookmarkEntry = function(bookmark) {
 // Paths in search results (SearchMarkerHandler.js), first: those of this
 // game whose name or description has every word searched for, as compact
 // cards.
-ZMap.prototype._addPathSearchResults = function(query, listView, markerCount) {
+// The paths a search finds by their own name or description: not unlisted
+// official ones (hundreds of Korok pairs and races, all alike).
+ZMap.prototype._pathSearchMatches = function(query) {
   var words = String(query || '').toLowerCase().split(/\s+/).filter(Boolean);
-  if(!words.length || !listView || !listView.markerListDomNode) return;
+  if(!words.length) return [];
   var zmap = this;
-  var found = (this.paths || []).filter(function(p) {
-    if(p._preview) return false;
+  return (this.paths || []).filter(function(p) {
+    if(p._preview || p.visibility === 'unlisted') return false;
     var text = (p.name + ' ' + zmap._pathPlainText(p.description || '')).toLowerCase();
     var textWords = text.split(/[^a-z0-9']+/);
     // Each word, or near enough ("trade" finds "Trading"), as marker search is fuzzy.
@@ -1585,6 +1648,21 @@ ZMap.prototype._addPathSearchResults = function(query, listView, markerCount) {
       var stem = w.length > 4 ? w.slice(0, w.length - 1) : null;
       return !!stem && textWords.some(function(t) { return t.indexOf(stem) === 0; });
     });
+  });
+};
+
+// A search's paths, first: those it finds by name (whose markers come into
+// the results too: SearchMarkerHandler.js), then those the markers it found
+// are steps of. markers: the results' marker records.
+ZMap.prototype._addPathSearchResults = function(query, listView, markerCount, markers) {
+  if(!listView || !listView.markerListDomNode) return;
+  var zmap = this;
+  var found = this._pathSearchMatches(query);
+  var ids = Object.create(null);
+  (markers || []).forEach(function(m) { if(m && m.id != null) ids[m.id] = true; });
+  (this.paths || []).forEach(function(p) {
+    if(p._preview || p.visibility === 'unlisted' || found.indexOf(p) !== -1) return;
+    if(p.steps.some(function(s) { return s.markerId && ids[s.markerId]; })) found.push(p);
   });
   if(!found.length) return;
   var list = listView.markerListDomNode;

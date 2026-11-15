@@ -960,13 +960,15 @@ ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
       pills = "<div class='area-header-pills marker-header-pills'>" + gamePill + pills +
         pillFor(placeLink, 'place') + pillFor(areaNameLink, 'area-name') + pillFor(areaLink, 'area') + "</div>";
     }
+    // A single path's later marker (a Korok pair's Carry korok) is checked
+    // with its path's first marker: its Complete is that one's
+    // (scripts/services/Paths.js _pathLeadFor).
+    var follows = this._pathLeadFor ? this._pathLeadFor(marker) : null;
+    var checkMarker = follows ? follows.lead : marker;
     var content = "<h2 class='popupTitle'>" + title + "</h2>" +
       pills +
       "<div class='marker-actions-row marker-actions-row-four'>" +
-        "<button type='button' id='check" + marker.id + "' class='marker-action-button infoWindowIcn " + (!marker.complete ? "unchecked" : "checked") + "' onclick=\"var button = document.getElementById('check" + marker.id + "'); var complete = button.classList.contains('unchecked'); button.classList.toggle('unchecked', !complete); button.classList.toggle('checked', complete); _this._setMarkerDone(" + marker.id + ", complete); return false\">" +
-          "<span class='marker-action-icon'><i class='icon-" + (!marker.complete ? "checkbox-unchecked" : "checkmark") + "'></i></span>" +
-          "<span class='marker-action-label'>" + (!marker.complete ? "Complete" : "Completed") + "</span>" +
-        "</button>" +
+        this._markerCompleteButtonHTML(checkMarker) +
         this._bookmarkButtonHTML() +
         "<button type='button' class='marker-action-button infoWindowIcn' onclick='_this._copyToClipboard(" + marker.id + ", this); return false'>" +
           "<span class='marker-action-icon'><i class='fas fa-link'></i></span>" +
@@ -1355,8 +1357,16 @@ ZMap.prototype._updateMarkersPresence = function(markers) {
 // The look of a marker's icon: its category, whether it's complete, and the
 // size it's drawn at. setIcon replaces the icon's element (it blinks), so
 // it's only called when this changes.
+// Whether a marker shows as done: its own check, or, for a single path's
+// later marker (a Korok pair's finish), its path's first marker's
+// (scripts/services/Paths.js sets pathLead).
+ZMap.prototype._markerShownDone = function(marker) {
+  var check = marker.pathFollower && marker.pathLead ? marker.pathLead : marker;
+  return check.complete === true || check.complete == 1;
+};
+
 ZMap.prototype._markerIconKey = function(marker) {
-  return marker.categoryId + ':' + (marker.complete ? 1 : 0) + ':' +
+  return marker.categoryId + ':' + (this._markerShownDone(marker) ? 1 : 0) + ':' +
     (this._getDisplayZoom() > this.mapOptions.switchIconsAtZoom ? 'medium' : 'small');
 };
 
@@ -1385,7 +1395,7 @@ ZMap.prototype._updateMarkerPresence = function(marker, boundsMeasured) {
       var iconKey = this._markerIconKey(marker);
       if(marker._iconKey !== iconKey) {
         marker._iconKey = iconKey;
-        marker.setIcon(_this._createMarkerIcon(marker.categoryId, marker.complete));
+        marker.setIcon(_this._createMarkerIcon(marker.categoryId, _this._markerShownDone(marker)));
       }
     }
     this.map.addLayer(marker);
@@ -1472,9 +1482,6 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
         && (ignoreBounds || mapBounds.contains(marker.getLatLng()));
     }
     return marker.visible
-    // A later step of a single path (a Korok pair's second rock): the path's
-    // first marker stands for the whole path (scripts/services/Paths.js).
-    && !marker.pathFollower
     && this.mapOptions.showPoiLabels !== false
     && markerCategory.checked
     && (ignoreBounds || mapBounds.contains(marker.getLatLng()))  // Is in the Map Bounds (PERFORMANCE)
@@ -1489,7 +1496,7 @@ ZMap.prototype._shouldShowMarker = function(marker, ignoreBounds) {
     && (
       this.mapOptions.showCompleted == true || (
         this.mapOptions.showCompleted == false
-        && marker.complete != true
+        && !(this._markerShownDone ? this._markerShownDone(marker) : marker.complete == true)
       )
     ); // Should we show completed markers?
   } else if (marker.categoryTypeId == 3) {
@@ -4165,6 +4172,15 @@ ZMap.prototype.addCompletedMarkers = function(vComplete) {
    completedMarkers = this.isFramed() ? [] : vComplete;
 };
 
+// A marker page's Complete: the given marker's check (a single path's later
+// marker's page gives its path's first marker: Paths.js _pathLeadFor).
+ZMap.prototype._markerCompleteButtonHTML = function(checkMarker) {
+  return "<button type='button' id='check" + checkMarker.id + "' class='marker-action-button infoWindowIcn " + (!checkMarker.complete ? "unchecked" : "checked") + "' onclick=\"var button = document.getElementById('check" + checkMarker.id + "'); var complete = button.classList.contains('unchecked'); button.classList.toggle('unchecked', !complete); button.classList.toggle('checked', complete); _this._setMarkerDone(" + checkMarker.id + ", complete); return false\">" +
+    "<span class='marker-action-icon'><i class='icon-" + (!checkMarker.complete ? "checkbox-unchecked" : "checkmark") + "'></i></span>" +
+    "<span class='marker-action-label'>" + (!checkMarker.complete ? "Complete" : "Completed") + "</span>" +
+  "</button>";
+};
+
 ZMap.prototype._setMarkerDone = function(vID, vComplete, onSettled) {
   if (vComplete) {
     _this._doSetMarkerDoneAndCookie(zMap.cachedMarkersById[vID], onSettled);
@@ -4198,7 +4214,19 @@ ZMap.prototype._doSetMarkerDoneIcon = function(vMarker, vComplete) {
      if(checkbox) checkbox.checked = !!vComplete;
    });
    vMarker._iconKey = this._markerIconKey(vMarker);
-   vMarker.setIcon(_this._createMarkerIcon(vMarker.categoryId, vComplete));
+   vMarker.setIcon(_this._createMarkerIcon(vMarker.categoryId, this._markerShownDone(vMarker)));
+   // A single path's later markers (a Korok pair's finish) show as done with
+   // it, and hide with it when completed markers are hidden.
+   var zmap = this;
+   (this.paths || []).forEach(function(path) {
+     if(path.kind !== 'single' || path.lead !== vMarker) return;
+     path.points.forEach(function(p) {
+       if(!p.marker || p.marker === vMarker) return;
+       p.marker._iconKey = zmap._markerIconKey(p.marker);
+       p.marker.setIcon(zmap._createMarkerIcon(p.marker.categoryId, !!vComplete));
+       if(zmap._updateMarkerPresence) zmap._updateMarkerPresence(p.marker);
+     });
+   });
    if(this.updateAreaCompletionCounts) this.updateAreaCompletionCounts();
    if(this.updateCategoryCompletionCounts) this.updateCategoryCompletionCounts();
    if(this.updatePathCompletionCounts) this.updatePathCompletionCounts();

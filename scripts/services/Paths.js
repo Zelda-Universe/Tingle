@@ -92,7 +92,7 @@ ZMap.prototype._pathMarker = function(id) {
 ZMap.prototype._preparePaths = function() {
   var zmap = this;
   this._pathMarkerIndex = null;
-  this.getMarkers().forEach(function(marker) { marker.pathFollower = false; });
+  this.getMarkers().forEach(function(marker) { marker.pathFollower = false; marker.pathLead = null; });
   this.paths.forEach(function(path) {
     path.points = path.steps.map(function(step) {
       if(step.markerId) {
@@ -109,9 +109,54 @@ ZMap.prototype._preparePaths = function() {
     var first = path.points.find(function(p) { return p.marker; });
     path.lead = first ? first.marker : null;
     if(path.kind === 'single') {
-      path.points.forEach(function(p) { if(p.marker && p.marker !== path.lead) p.marker.pathFollower = true; });
+      // (Its later markers still show on the map, checked with its first:
+      // zmap.js _markerShownDone.)
+      path.points.forEach(function(p) { if(p.marker && p.marker !== path.lead) { p.marker.pathFollower = true; p.marker.pathLead = path.lead; } });
     }
   });
+  // A follower isn't a check of its own: categories' counts leave it out
+  // (_categoryCounts), so they're redrawn.
+  var menu = this.mapControl && this.mapControl._categoryMenu;
+  if(menu && menu.categoryButtons) menu.categoryButtons.forEach(function(button) { button.updateCategoryLabel(); });
+};
+
+// The marker that checks for a single path's later marker (a Korok pair's
+// Carry korok: its Pair korok), or null.
+ZMap.prototype._pathLeadFor = function(marker) {
+  if(!marker || !marker.pathFollower) return null;
+  var path = (this.paths || []).find(function(p) {
+    return p.kind === 'single' && p.lead && p.lead !== marker && p.steps.some(function(s) { return String(s.markerId) === String(marker.id); });
+  });
+  return path ? {lead: path.lead, path: path} : null;
+};
+
+// The other markers checked together with this one in a single path (a
+// Korok pair's start and finish), with the path, or null.
+ZMap.prototype._pathPartners = function(marker) {
+  if(!marker) return null;
+  var path = (this.paths || []).find(function(p) {
+    return p.kind === 'single' && !p._preview && p.points && p.points.some(function(pt) { return pt.marker === marker; }) &&
+      p.points.some(function(pt) { return pt.marker && pt.marker !== marker; });
+  });
+  if(!path) return null;
+  var others = [];
+  path.points.forEach(function(pt) { if(pt.marker && pt.marker !== marker && others.indexOf(pt.marker) === -1) others.push(pt.marker); });
+  return {path: path, others: others};
+};
+
+// A category's completion count, less the markers a single path stands in
+// for (a Korok pair's second korok): those are checked with their path's
+// first marker, not on their own.
+ZMap.prototype._categoryCounts = function(category) {
+  var total = category.total || 0, done = category.complete || 0;
+  if(this.paths && this.paths.length) {
+    this.getMarkers().forEach(function(marker) {
+      if(!marker.pathFollower || marker.categoryId != category.id) return;
+      total--;
+      if(marker.complete === true || marker.complete == 1) done--;
+    });
+  }
+  return {done: Math.max(0, done), total: Math.max(0, total)};
 };
 
 ZMap.prototype._pathShown = function(path) {
@@ -291,15 +336,23 @@ ZMap.prototype.drawPaths = function(ifChanged) {
     var arrows = zmap._pathArrows(renderer, line, stops, color, border).addTo(zmap._pathLayer);
     // Its pins: dots (grey, a marker since removed from the map) that open
     // the pin, as a marker opens its page.
+    var pathDots = [];
     here.filter(function(p) { return p.shown && !p.marker; }).forEach(function(p) {
       var dot = L.marker(p.latLng, {keyboard: false, zIndexOffset: 900, icon: L.divIcon({
-        className: 'zm-path-pin-dot' + (p.deleted ? ' deleted' : ''), iconSize: [16, 16], iconAnchor: [8, 8],
+        // (A single path's point, a Korok race's start, is edged as its line
+        // is: thin, thicker while the path is hovered or open.)
+        className: 'zm-path-pin-dot' + (p.deleted ? ' deleted' : '') + (path.kind === 'single' ? ' zm-path-point' + (selected ? ' thick' : '') : ''),
+        iconSize: [16, 16], iconAnchor: [8, 8],
         html: "<span style='--path-color:" + color + "'></span>"})}).addTo(zmap._pathLayer);
       var tip = p.deleted ? (p.step.markerName || 'Marker') + ' (removed from the map)' : p.step.name;
-      if(tip) dot.bindTooltip(zmap._pathEsc ? zmap._pathEsc(tip) : tip, {direction: 'right', offset: [8, 0], className: 'zm-path-pin'});
+      // (Not a single path's point, a Korok race's start: no name of its own to show.)
+      if(tip && path.kind !== 'single') dot.bindTooltip(zmap._pathEsc ? zmap._pathEsc(tip) : tip, {direction: 'right', offset: [8, 0], className: 'zm-path-pin'});
       if(!p.deleted && p.step.pinKey && !path._preview && !zmap._pathEditing && zmap.openPathPin) {
-        dot.on('click', function() { zmap.openPathPin(path, p.step); });
+        // (A single path's point, a Korok race's start: part of the path,
+        // not a place of its own, so it opens the path.)
+        dot.on('click', function() { if(path.kind === 'single') zmap.openPathPage(path.slug, {back: null}); else zmap.openPathPin(path, p.step); });
       }
+      if(path.kind === 'single') pathDots.push(dot);
     });
     // The line itself opens the path's page (not while one's being edited:
     // clicks then add steps and drop pins). Hovered, its edge, and every
@@ -309,17 +362,23 @@ ZMap.prototype.drawPaths = function(ifChanged) {
         // (From the map: its page closes, as a marker's does.)
         .on('click', function(e) { L.DomEvent.stop(e); zmap.openPathPage(path.slug, {back: null}); })
         .addTo(zmap._pathLayer));
+      // (A single path's points, a Korok race's start, are hovered as the
+      // line is: part of it.)
+      var hovered = [hit].concat(pathDots);
       if(!selected) {
-        var hover = function(on) { arrows.setBorder(on ? hoverBorder : border); };
-        hit.on('mouseover', function() { hover(true); }).on('mouseout', function() { hover(false); });
+        var hover = function(on) {
+          arrows.setBorder(on ? hoverBorder : border);
+          pathDots.forEach(function(dot) { var el = dot.getElement(); if(el) el.classList.toggle('thick', on); });
+        };
+        hovered.forEach(function(layer) { layer.on('mouseover', function() { hover(true); }).on('mouseout', function() { hover(false); }); });
       }
       // Its name by the pointer, as a hint at what clicking opens.
       // Hovered, its card (as lists show it: PathEditor.js _pathCardHTML)
       // follows the pointer, a preview of what clicking opens.
       // (Not the path whose page is open: it's already in view.)
-      if(!L.Browser.mobile && !selected) hit.bindTooltip(function() {
+      if(!L.Browser.mobile && !selected) hovered.forEach(function(layer) { layer.bindTooltip(function() {
         return zmap._pathCardHTML ? zmap._pathCardHTML(path, {className: 'path-card-preview', author: true}) : zmap._pathEsc(path.name);
-      }, {sticky: true, direction: 'top', offset: [0, -14], opacity: 1, className: 'zm-path-tooltip zm-path-card-tooltip', pane: zmap._pathPreviewPane()});
+      }, {sticky: true, direction: 'top', offset: [0, -14], opacity: 1, className: 'zm-path-tooltip zm-path-card-tooltip', pane: zmap._pathPreviewPane()}); });
     }
     // Numbers on a numbered path's steps: white, the number in the path's
     // colour (styles/zmain.css .zm-path-step).
@@ -419,8 +478,14 @@ ZMap.prototype.focusPath = function(slug, opts) {
   this._focusedPath = path;
   var first = path.points[0];
   var current = this.mapControl.getCurrentMap();
-  if(String(current.subMapId) !== String(first.submapId) && first.marker) {
-    this.mapControl.changeMapOnly(first.marker.mapId, first.submapId);
+  if(String(current.subMapId) !== String(first.submapId)) {
+    // Its map: the first point's marker's, or, for a path starting at a
+    // bare point (a dragon's flight, a Korok trail), a marker's on the same
+    // submap, or the map that submap opens on.
+    var onFirst = path.points.find(function(p) { return p.marker && String(p.submapId) === String(first.submapId); });
+    var layer = !onFirst && (this.maps || []).find(function(l) { return String(l.defaultSubMapId) === String(first.submapId); });
+    var mapId = onFirst ? onFirst.marker.mapId : layer ? layer.originalId : null;
+    if(mapId != null) this.mapControl.changeMapOnly(mapId, first.submapId);
   }
   var here = path.points.filter(function(p) { return String(p.submapId) === String(first.submapId); });
   // The page's own view: the map's fit-on-open doesn't undo it.
@@ -460,7 +525,8 @@ ZMap.prototype._categoryPaths = function(category) {
     (c.childrenArr || []).forEach(collect);
   };
   collect(category);
-  var paths = (this.paths || []).filter(function(p) { return !p._preview && p.categoryId && ids[p.categoryId]; });
+  // (Not an unlisted official one: on the map, but left out of lists.)
+  var paths = (this.paths || []).filter(function(p) { return !p._preview && p.categoryId && ids[p.categoryId] && p.visibility !== 'unlisted'; });
   if(paths.length !== 1) return {paths: paths, single: null};
   var steps = Object.create(null);
   paths[0].steps.forEach(function(step) { if(step.markerId) steps[step.markerId] = true; });

@@ -25,6 +25,9 @@ function communityChanges($db,$prefix,$editor,$game='',$userId=null,$cursor='',$
       FROM `{$prefix}path_revision` r JOIN `{$prefix}path` p ON p.id=r.path_id JOIN `{$prefix}container` c ON c.id=p.container_id
       LEFT JOIN `{$prefix}user` u ON u.id=r.user_id
       WHERE p.visible=1 AND c.enabled=1 AND ".pathOpenSql('p').
+      // (Not an unlisted official path's: on the map, kept out of lists and
+      // feeds, a Korok pair among hundreds.)
+      " AND NOT (p.scope='official' AND p.visibility='unlisted')".
       // ('official': everyone's view once paths are out, before users' own
       // are: official paths' edits, in public games only. paths.php.)
       ($includePaths==='official' ? " AND p.scope='official' AND c.visible=1" : '');

@@ -33,7 +33,8 @@
      $areas = seoAreaPages($db, $map_prefix);
      // Official paths, once they're out to everyone (none while staff-only;
      // only public games': seo.php seoPathPages).
-     $paths = seoPathPages($db, $map_prefix);
+     // (Not unlisted ones: on the map, left out of lists and the sitemap.)
+     $paths = array_values(array_filter(seoPathPages($db, $map_prefix), function($p) { return $p['visibility'] !== 'unlisted'; }));
    } catch (\Throwable $e) {
      debug_log('Sitemap query error: ' . $e->getMessage());
      sitemapUnavailable();

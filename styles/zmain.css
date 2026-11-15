@@ -7815,6 +7815,11 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-timeline .path-step:last-child::before { bottom: auto; height: 15px; }
 .path-timeline .path-step:only-child::before { display: none; }
 .path-timeline .path-step-number { width: 26px; height: 26px; font-size: 12px; }
+/* A single path's steps (a Korok pair, a dragon): one check for the whole
+   path, so plain dots on the line, not numbers (a check once it's done). */
+.path-timeline.path-steps-single .path-step-number { width: 18px; height: 18px; margin: 6px 4px 0; font-size: 10px; border-width: 2px; }
+.path-timeline.path-steps-single .path-step-n { display: none; }
+.path-timeline.path-steps-single .path-step:first-child::before { top: 15px; }
 .path-timeline .path-step-name { white-space: normal; font-size: 15px; font-weight: 700; line-height: 26px; }
 .path-timeline .path-step-note { font-size: 14px; opacity: .85; font-style: italic; margin: 2px 0 6px; }
 .leaflet-control-layers .popupContent.path-step-content { --path-step-collapsed: 380px; position: relative; max-height: var(--path-step-collapsed); overflow: hidden; margin-top: 4px; padding-bottom: 0; }
@@ -8123,6 +8128,10 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	background: var(--path-color, #ffad48); border: 2.5px solid #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .45); cursor: pointer;
 }
 .zm-path-pin-dot.deleted span { background: #6b6b6b; cursor: default; }
+/* A single path's point (a Korok race's start): edged as its line's arrows
+   are (Paths.js: 1.25px, 2.5px while the path is hovered or open). */
+.zm-path-pin-dot.zm-path-point span { border-width: 1.25px; }
+.zm-path-pin-dot.zm-path-point.thick span { border-width: 2.5px; }
 
 /* A pin's page (PathEditor.js openPathPin): its note on the path, then
    what's written about it, as a marker's contents. */
@@ -8280,3 +8289,8 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	.zm-carousel-track, .zm-carousel-arrow, .zm-carousel-dot::before { transition: none; }
 }
 
+
+/* A single path's later marker's note (a Korok pair's Carry korok): its
+   Complete is its path's (scripts/zmap.js). */
+.marker-path-check-note { margin: -2px 16px 10px; font-size: 13px; opacity: .7; text-align: center; }
+.marker-path-check-note .fa-link { margin-right: 4px; font-size: 11px; }

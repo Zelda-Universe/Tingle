@@ -350,8 +350,10 @@ CategoryButton.prototype.mouseLeave = function() {
 // otherwise it replaces the name while hovered.
 CategoryButton.prototype.updateCategoryLabel = function() {
   var name = this.displayTitle || this.category.name || this.title;
-  var hasCounts = this.showProgress && this.category.total > 0;
-  var counts = hasCounts ? this.category.complete + '/' + this.category.total : '';
+  // (Less the markers a single path stands in for: Paths.js _categoryCounts.)
+  var tally = typeof zMap !== 'undefined' && zMap._categoryCounts ? zMap._categoryCounts(this.category) : {done: this.category.complete, total: this.category.total};
+  var hasCounts = this.showProgress && tally.total > 0;
+  var counts = hasCounts ? tally.done + '/' + tally.total : '';
   var countsBelow = hasCounts && getCookie('showCategoryCompletionCounts') !== 'false';
   this.labelNode.text(hasCounts && !countsBelow && this._labelHovered ? counts : name);
   if(this.countNode) this.countNode.text(countsBelow ? counts : '').prop('hidden', !countsBelow);

@@ -97,10 +97,13 @@ SearchMarkerHandler.prototype._displayResults = function(e, query) {
   }
   var results = this._deduplicateSearchResults(this.searcher.search(query));
   results = this._addMarkersInMatchedAreas(results, query);
-  if (!this.showSearchStats) results = results.map(function(entry) { return entry.item; });
+  results = this._addMarkersOfMatchedPaths(results, query);
+  var markers = results.map(function(entry) { return entry.item || entry; });
+  if (!this.showSearchStats) results = markers;
   this.markerListView.showMarkers(query, results);
-  // Paths that match, first (scripts/services/PathEditor.js).
-  if(typeof zMap !== 'undefined' && zMap._addPathSearchResults) zMap._addPathSearchResults(query, this.markerListView, results.length);
+  // Paths that match, or that the markers found are steps of, first
+  // (scripts/services/PathEditor.js).
+  if(typeof zMap !== 'undefined' && zMap._addPathSearchResults) zMap._addPathSearchResults(query, this.markerListView, results.length, markers);
   this.handlers["markerListViewBuilt"].forEach(function(handler) {
     handler(this.markerListView);
   }, this);
@@ -253,6 +256,27 @@ SearchMarkerHandler.prototype._addMarkersInMatchedAreas = function(results, quer
     if(isPOI(marker) && owners(marker).length && !shown[marker.id]) expanded.push(result);
   });
   return expanded;
+};
+
+// Searching for a path (e.g. "biggoron's sword") also lists its markers, in
+// its order, first: those that matched by name move up with them.
+SearchMarkerHandler.prototype._addMarkersOfMatchedPaths = function(results, query) {
+  if(typeof zMap === 'undefined' || !zMap._pathSearchMatches) return results;
+  var paths = zMap._pathSearchMatches(query);
+  if(!paths.length) return results;
+  var byId = Object.create(null);
+  this.searchableMarkers.forEach(function(marker) { byId[marker.id] = marker; });
+  var listed = Object.create(null), first = [];
+  paths.forEach(function(path) {
+    path.steps.forEach(function(step) {
+      var marker = step.markerId && byId[step.markerId];
+      if(!marker || listed[marker.id]) return;
+      listed[marker.id] = true;
+      var direct = results.find(function(r) { return (r.item || r) === marker; });
+      first.push(direct || { item: marker, refIndex: -1, matches: [], score: 0 });
+    });
+  });
+  return first.concat(results.filter(function(r) { return !listed[(r.item || r).id]; }));
 };
 
 // TODO: Make this a generic mixin, probably automatically included in all widgets, or even use a JS framework that does this already!!

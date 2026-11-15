@@ -36,7 +36,9 @@
   $scope = ($in['scope'] ?? '') === 'official' ? 'official' : 'user';
   if ($scope === 'official' && $level < PATH_EDITOR_LEVEL) { $fail('Only editors can make paths for everyone.'); return; }
   $visibility = in_array($in['visibility'] ?? '', ['private', 'unlisted', 'public'], true) ? $in['visibility'] : 'private';
-  if ($scope === 'official') $visibility = 'public';
+  // An official path is on the map for everyone; unlisted, it's left out of
+  // lists, the sitemap and feeds (a Korok pair: there are hundreds).
+  if ($scope === 'official') $visibility = $visibility === 'unlisted' ? 'unlisted' : 'public';
   $editAccess = ($in['editAccess'] ?? '') === 'editors' ? 'editors' : 'owner';
   $publish = in_array($in['publish'] ?? '', ['draft', 'now', 'schedule'], true) ? $in['publish'] : 'draft';
   $publishAt = null;

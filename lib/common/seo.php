@@ -127,7 +127,7 @@
     $params = $game !== null ? [$game] : [];
     if ($slug !== null) { $where .= ' AND p.slug = ?'; $params[] = $slug; }
     $paths = $db->fetchAllAssociative("
-      SELECT p.id, p.name, p.slug, p.description, c.short_name AS game,
+      SELECT p.id, p.name, p.slug, p.description, p.visibility, c.short_name AS game,
              DATE_FORMAT(GREATEST(COALESCE(p.published_at, 0), COALESCE((SELECT MAX(r.created) FROM `{$prefix}path_revision` r WHERE r.path_id = p.id), 0)), '%Y-%m-%d') AS lastUpdated
         FROM `{$prefix}path` p JOIN `{$prefix}container` c ON c.id = p.container_id
        WHERE p.visible = 1 AND p.scope = 'official' AND " . pathPublishedSql() . " AND c.visible = 1{$where}

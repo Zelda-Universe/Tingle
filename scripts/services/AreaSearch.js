@@ -182,6 +182,8 @@ ZMap.prototype._getAreaMarkers = function(area,bounds) {
   return this.getMarkers().filter(function(marker) {
     var category=zmap.categories[marker.categoryId];
     if(!category || !category.checked || marker.categoryTypeId == 3 || marker.dbVisible == 0) return false;
+    // (Not a single path's later marker: checked with its path's first.)
+    if(marker.pathFollower) return false;
     // A global marker shows on every submap of its map (OoT's both-age ones).
     if(marker.mapId != area.mapId || (marker.submapId != area.submapId && marker.globalMarker != 1)) return false;
     if(area.mapDestination) return true;

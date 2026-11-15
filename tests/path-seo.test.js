@@ -14,7 +14,7 @@ test('the server gives paths their own title, description, canonical address and
   expect(index).toContain("$pageHeading = $seoPath['name'] . ' - ' . $metadata['name'] . ' Guide';");
   expect(index).toContain('$canonicalUrl = seoPathUrl($pathGame, $seoPath[\'slug\']);');
   expect(index).toContain("<?php foreach ($seoPath['steps'] as $stepName): ?>");
-  expect(read('sitemap/index.php')).toContain('$paths = seoPathPages($db, $map_prefix);');
+  expect(read('sitemap/index.php')).toContain('seoPathPages($db, $map_prefix)');
 });
 
 test('games that are not public are never indexed',()=>{

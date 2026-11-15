@@ -248,6 +248,8 @@
         $pageDescription = seoPathDescription($seoPath, $metadata['name']);
         $canonicalUrl = seoPathUrl($pathGame, $seoPath['slug']);
         $pageUrl = $canonicalUrl;
+        // Unlisted (a Korok pair): opens for anyone, but isn't for search.
+        if(($seoPath['visibility'] ?? '') === 'unlisted') $robots = 'noindex, follow';
       }
     } catch(\Throwable $e) { error_log('Path metadata unavailable: ' . $e->getMessage()); $seoPath = null; }
   }

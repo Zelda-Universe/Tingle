@@ -560,6 +560,10 @@ ZMap.prototype._pathStepPlaceHTML = function(marker) {
   return seen.length ? "<p class='path-step-place'>" + seen.map(function(t) { return zmap._pathEsc(t); }).join(' · ') + "</p>" : '';
 };
 
+// How much past its cut-off height a step's contents may run and still
+// show whole, rather than hide a sliver behind Show more.
+ZMap.prototype.PATH_STEP_MORE_SLACK = 160;
+
 // A step's name opens its marker, whose Back comes back here (reopen); a
 // pin's centres the map on it. Long contents get Show more.
 ZMap.prototype._wirePathSteps = function(page, steps, reopen, label, path) {
@@ -630,7 +634,11 @@ ZMap.prototype._wirePathSteps = function(page, steps, reopen, label, path) {
   var measure = function() {
     $(page).find('.path-step-content').each(function() {
       if(this.classList.contains('expanded')) return;
-      var cut = this.scrollHeight > this.clientHeight + 4;
+      // Cut short only when enough is hidden to be worth a click: a step
+      // just over the cut-off height shows whole (.fits).
+      var collapsed = parseFloat(getComputedStyle(this).getPropertyValue('--path-step-collapsed')) || 380;
+      var cut = this.scrollHeight > collapsed + zmap.PATH_STEP_MORE_SLACK;
+      this.classList.toggle('fits', !cut);
       this.classList.toggle('truncated', cut);
       $(this).next('.path-step-more').prop('hidden', !cut);
     });

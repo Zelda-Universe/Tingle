@@ -104,3 +104,10 @@ test('with one step, or nothing in common, steps keep all their text',()=>{
   const two=['<p>A</p><p>Adult Link</p>','<p>B</p><p>Young Link</p>'];
   expect(zmap._withoutSharedBlocks(two)).toEqual(two);
 });
+
+test('Show more only when enough is hidden to be worth a click',()=>{
+  const source=read('scripts/services/PathEditor.js');
+  expect(source).toContain('ZMap.prototype.PATH_STEP_MORE_SLACK = 160;');
+  expect(source).toContain('var cut = this.scrollHeight > collapsed + zmap.PATH_STEP_MORE_SLACK;');
+  expect(read('styles/zmain.css')).toContain('.leaflet-control-layers .popupContent.path-step-content.fits { max-height: none; }');
+});

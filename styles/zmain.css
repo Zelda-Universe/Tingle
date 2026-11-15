@@ -7810,7 +7810,8 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	-webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent);
 	mask-image: linear-gradient(to bottom, #000 65%, transparent);
 }
-.leaflet-control-layers .popupContent.path-step-content.expanded { max-height: none; }
+.leaflet-control-layers .popupContent.path-step-content.expanded,
+.leaflet-control-layers .popupContent.path-step-content.fits { max-height: none; }
 .path-step-content > :first-child { margin-top: 0; }
 .path-step-content > :last-child { margin-bottom: 0; }
 .leaflet-control-layers .popupContent.path-step-content h4 { font-size: 15px; margin: 14px 0 4px; }

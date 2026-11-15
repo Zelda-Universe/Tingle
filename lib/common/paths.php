@@ -238,15 +238,17 @@
     notificationDeliver($db, $prefix, $actorId, [(int) $path['user_id'] => ['path_edit']], array(), $data);
   }
 
-  // Each path's checks: its steps' markers, or, for a path that's one check
-  // (kind 'single'), its first marker's. As a table (path_id, marker_id).
+  // Each path's checks, for how many start and finish it: its steps'
+  // markers, as a table (path_id, marker_id). Not a path that's one check
+  // (kind 'single': a Korok pair, a dragon's flight): it shows no such
+  // figures, and counting them meant every completion of hundreds of Korok
+  // paths' markers on each load of a game's paths (TotK's took seconds).
   // (Not a marker removed from the map: a user's path keeps it, but it can't
   // be completed.)
   function pathChecksSql($prefix) {
     return "SELECT s.path_id, s.marker_id FROM `{$prefix}path_step` s JOIN `{$prefix}path` cp ON cp.id = s.path_id
       JOIN `{$prefix}marker` cm ON cm.id = s.marker_id AND cm.visible = 1
-      WHERE s.marker_id IS NOT NULL AND (cp.kind <> 'single' OR s.step_order =
-        (SELECT MIN(s2.step_order) FROM `{$prefix}path_step` s2 WHERE s2.path_id = s.path_id AND s2.marker_id IS NOT NULL))
+      WHERE s.marker_id IS NOT NULL AND cp.kind <> 'single'
       GROUP BY s.path_id, s.marker_id";
   }
 

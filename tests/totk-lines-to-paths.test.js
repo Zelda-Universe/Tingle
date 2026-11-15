@@ -141,3 +141,9 @@ test('a path card\'s thumbnail draws its ends as markers: its colour, a white ed
   expect(editor).toContain("<rect x='-.42' y='-.6' width='.16' height='1.2' rx='.08'/><path d='M-.3 -.6 L.5 -.33 L-.3 -.06 Z'/></g>");
   expect(editor).toContain("r='\" + (square ? 11 : 5.5) + \"' fill='\" + c + \"' stroke='#fff' stroke-width='2' vector-effect='non-scaling-stroke'/>");
 });
+
+test('one-check paths are left out of start and finish figures (counting them made TotK\'s paths load in seconds)',()=>{
+  const paths=read('lib/common/paths.php');
+  const fn=paths.slice(paths.indexOf('function pathChecksSql'));
+  expect(fn.slice(0,fn.indexOf('\n  }'))).toContain("WHERE s.marker_id IS NOT NULL AND cp.kind <> 'single'");
+});

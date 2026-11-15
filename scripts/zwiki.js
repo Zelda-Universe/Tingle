@@ -165,16 +165,7 @@ ZMap.prototype._wikiPost = function(command, data) {
   return $.ajax({ type: 'POST', url: 'ajax.php?command=' + command, data: data, dataType: 'json' });
 };
 
-ZMap.prototype._wikiCopy = function(text, what) {
-  var done = function() { toastr.success((what || 'Link') + ' copied'); };
-  if(navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(text).then(done, function() {
-      window.prompt('Copy to clipboard: Ctrl+C, Enter', text);
-    });
-  } else {
-    window.prompt('Copy to clipboard: Ctrl+C, Enter', text);
-  }
-};
+// (Copying: zmap.js _copyText, "Copied!" on the button pressed.)
 
 // Back to a marker's POI page, or the category list if it isn't on this map.
 ZMap.prototype._wikiBackToMarker = function(markerId) {
@@ -664,8 +655,8 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
     _this._watchContentVideos();
     body.on('click', '[data-action]', function(e) {
       var action = this.getAttribute('data-action');
-      if(action === 'copy-code') _this._wikiCopy(code, 'Link code');
-      else if(action === 'copy-url') _this._wikiCopy(_this._wikiMarkerURL(revision.markerId, data.game, revisionId), 'Link');
+      if(action === 'copy-code') _this._copyText(code, this);
+      else if(action === 'copy-url') _this._copyText(_this._wikiMarkerURL(revision.markerId, data.game, revisionId), this);
       else if(action === 'history') {
         // Back to the History this was opened from, or else to this edit.
         if(back && back.historyOf === Number(revision.markerId)) {
@@ -1005,7 +996,7 @@ ZMap.prototype._openTalk = function(pageType, pageId, title, back, opts) {
         load();
       }).fail(function(xhr) { toastr.error(_this._wikiError(xhr)); });
     } else if(action === 'copy') {
-      _this._wikiCopy(window.location.href.split('#')[0], 'Link');
+      _this._copyText(window.location.href.split('#')[0], this);
     }
   });
   load(opts.highlight);

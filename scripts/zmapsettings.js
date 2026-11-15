@@ -386,8 +386,8 @@ ZMap.prototype._openGameSettingsRevision = function(id,back) {
     actions.append('<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy Revision</button><button type="button" class="wiki-action-button" data-action="copy-url"><i class="fas fa-link" aria-hidden="true"></i>Copy Link</button>'+zmap._yeahHTML('settings',id,false)+'<button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>');
     body.on('click','[data-action]',function() {
       var action=this.getAttribute('data-action');
-      if(action==='copy-code') {zmap._wikiCopy('[[settingsrev:'+Number(id)+']]','Link code');return;}
-      if(action==='copy-url') {zmap._wikiCopy(window.location.href,'Link');return;}
+      if(action==='copy-code') {zmap._copyText('[[settingsrev:'+Number(id)+']]',this);return;}
+      if(action==='copy-url') {zmap._copyText(window.location.href,this);return;}
       if(action==='history') {
         zmap._openMapSettingsHistory(reopen,result.game);
         return;

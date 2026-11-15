@@ -1159,15 +1159,27 @@ ZMap.prototype._copyText = function(text, button) {
     if(!button) return;
     var icon = button.querySelector('.marker-action-icon, .copy-action-icon');
     var label = button.querySelector('.marker-action-label, .copy-action-label');
+    // A wiki page's button (glyph, then its words): the two wrapped, once.
+    var glyph = !icon && button.querySelector(':scope > i, :scope > svg');
+    if(glyph) {
+      icon = document.createElement('span');
+      icon.className = 'copy-action-icon';
+      button.insertBefore(icon, glyph);
+      icon.appendChild(glyph);
+      label = document.createElement('span');
+      label.className = 'copy-action-label';
+      while(icon.nextSibling) label.appendChild(icon.nextSibling);
+      button.appendChild(label);
+    }
     if(!icon || !label) return;
-    if(!button._copyOriginal) button._copyOriginal = { icon: icon.innerHTML, label: label.textContent };
+    if(!button._copyOriginal) button._copyOriginal = { icon: icon.innerHTML, label: label.innerHTML };
     icon.innerHTML = "<i class='fas fa-check' aria-hidden='true'></i>";
     label.textContent = 'Copied!';
     button.classList.add('is-copied');
     window.clearTimeout(button._copyTimer);
     button._copyTimer = window.setTimeout(function() {
       icon.innerHTML = button._copyOriginal.icon;
-      label.textContent = button._copyOriginal.label;
+      label.innerHTML = button._copyOriginal.label;
       button.classList.remove('is-copied');
     }, 1500);
   };

@@ -208,7 +208,8 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
   // Its markers alone on the map, then the map fitted to it (Paths.js).
   this._updatePathFocus();
   if(!opts.keepView) this.focusPath(path.slug, {instant: !!opts.instant});
-  $(page).find('.path-copy').on('click', function() { zmap._wikiCopy(zmap._pathUrl(path, true), 'Path link'); });
+  // ("Copied!" on the button itself, as a marker's: zmap.js _copyText.)
+  $(page).find('.path-copy').on('click', function() { zmap._copyText(zmap._pathUrl(path, true), this); });
   $(page).find('.path-embed').on('click', function() {
     zmap.trackEmbedCopy('path');
     var src = zmap._pageAddress(true) + '?game=' + encodeURIComponent(zmap.mapOptions.shortName) + '&path=' + encodeURIComponent(path.slug) + '&showMapControl=true';
@@ -685,7 +686,7 @@ ZMap.prototype.openPathPin = function(path, stepOrKey, back, opts) {
     else this._goToPathStep(step);
   }
   $(page).find('.path-pin-path').on('click', function() { zmap.openPathPage(path.slug); });
-  $(page).find('.path-pin-copy').on('click', function() { zmap._wikiCopy(url.toString(), 'Pin link'); });
+  $(page).find('.path-pin-copy').on('click', function() { zmap._copyText(url.toString(), this); });
   $(page).find('.path-pin-edit').on('click', function() { zmap.openPathPinEditor(path, step, back); });
   $(page).find('.path-pin-complete').on('click', function() {
     var button = this, requested = !step.done;
@@ -827,7 +828,7 @@ ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
         (snap.description ? "<div class='path-description'>" + zmap._renderWikiText(snap.description) + "</div>" : '') +
         zmap._pathStepsHTML(snap, steps) + "</div>");
     body.find('[data-action=revert]').on('click', function() { zmap._restorePathRevision(path, rev); });
-    body.find('[data-action=copy-url]').on('click', function() { zmap._wikiCopy(zmap._pathUrl(path, true), 'Path link'); });
+    body.find('[data-action=copy-url]').on('click', function() { zmap._copyText(zmap._pathUrl(path, true), this); });
     body.find('[data-action=history]').on('click', function() { zmap._endPathEditing(); zmap.openPathHistory(path); });
     zmap._wirePathSteps(page, steps, null, snap.name);
     zmap._previewPath({scope: path.scope, kind: snap.kind, loops: snap.loops, numbered: snap.numbered, smooth: !!snap.smooth, categoryId: snap.categoryId,

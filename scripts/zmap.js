@@ -3798,7 +3798,9 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
     // An edit in the rich text should enable the save, whatever the field.
     setup: bindEditorDirty,
     plugins: 'lists link image media table code autoresize paste',
-    toolbar: 'bold italic | bullist numlist | link image media' + (isEditor ? ' uploadvideo' : '') + ' | table | removeformat code',
+    // (Editors upload: Insert Photo and Insert Video put an upload straight
+    // into the content, scripts/zvideo.js.)
+    toolbar: 'bold italic | bullist numlist | link ' + (isEditor ? 'uploadphoto' : 'image') + ' media' + (isEditor ? ' uploadvideo' : '') + ' | table | removeformat code',
     // Uploaded clips (scripts/zvideo.js) keep what makes them play quietly.
     extended_valid_elements: 'video[src|muted|loop|playsinline|autoplay|controls|preload|poster|width|height|class]',
     toolbar_mode: 'wrap',
@@ -3820,6 +3822,8 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       'html, body { background: transparent; } body { margin: 12px 14px; color: #fff; font-family: BrandonText, sans-serif; font-size: 16px; line-height: 1.4; }' +
       'a { color: #8fd8ff; }' +
       'img { max-width: 100%; height: auto; border-radius: 8px; }' +
+      // Uploading a dropped photo or video (scripts/zvideo.js _wireEditorDrops).
+      'p.zm-uploading { padding: 10px 12px; border-radius: 8px; background: #2a2a2d; color: #bbb; font-size: 14px; }' +
       // Videos and tables as they'll show on the marker, with cell edges
       // visible while editing.
       'iframe, video { max-width: 100%; border: 0; border-radius: 8px; }' +
@@ -3835,6 +3839,18 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
       // A video camera with an up arrow, unlike Media's embed icon.
       editor.ui.registry.addIcon('zm-upload-video',
         '<svg width="24" height="24" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M4 6h10a2 2 0 0 1 2 2v1.5l4-2.5v10l-4-2.5V16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm5 2.5L5.5 12H8v3h2v-3h2.5L9 8.5z"/></svg>');
+      // Insert Photo: an upload goes straight in. On a photo already in the
+      // content, TinyMCE's own dialog (its address and description).
+      editor.ui.registry.addButton('uploadphoto', {
+        icon: 'image', tooltip: 'Insert/edit image',
+        onAction: function() {
+          var node = editor.selection.getNode();
+          if(node && node.nodeName === 'IMG') editor.execCommand('mceImage');
+          else _this._uploadEditorPhoto(editor);
+        }
+      });
+      // Photos and videos dropped into the text upload where they land.
+      if(_this._wireEditorDrops) _this._wireEditorDrops(editor);
       editor.ui.registry.addButton('uploadvideo', {
         icon: 'zm-upload-video', tooltip: 'Insert/edit video',
         onAction: function() { _this._uploadEditorVideo(editor); }

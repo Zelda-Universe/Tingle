@@ -5355,6 +5355,46 @@ div.circle:has(>.icon-EoW_Echo) {
 	color: rgba(255,255,255,.7);
 }
 
+/* A photo or video dragged over the page (zvideo.js _fileDragging): over
+   each section's editor (its toolbar and text, not the Section label), a
+   dark area inside a 2px dashed outline, inset from
+   the section's edges so its edge still shows, with a white message. The one
+   under the pointer is brighter. It doesn't catch the drag, which goes on to
+   the text beneath. Inside TinyMCE's box, whose reset (.tox *) undoes plain
+   rules: hence .tox before each. */
+.marker-edit-section .tox.tox-tinymce { position: relative; }
+.tox .zm-editor-drop-overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 20;
+	box-sizing: border-box;
+	padding: 8px;
+	pointer-events: none;
+	display: none;
+}
+.tox .zm-editor-drop-box {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	height: 100%;
+	padding: 16px;
+	border: 2px dashed rgba(255,255,255,.45);
+	border-radius: 8px;
+	background: rgba(0,0,0,.78);
+	-webkit-backdrop-filter: blur(4px);
+	backdrop-filter: blur(4px);
+	color: white;
+	font-size: 16px;
+	font-weight: 600;
+	text-align: center;
+}
+.tox .zm-editor-drop-box span { color: white; }
+.tox .zm-editor-drop-box svg, .tox .zm-editor-drop-box i { width: 28px; height: 28px; font-size: 28px; color: white; }
+.marker-edit-section.zm-editor-dropping .tox .zm-editor-drop-overlay { display: block; }
+.marker-edit-section.zm-editor-drop-target .tox .zm-editor-drop-box { border-color: rgba(255,255,255,.9); background: rgba(0,0,0,.85); }
 /* TinyMCE's dark skin, in the drawer's greys rather than its blue. */
 .marker-edit-section .tox.tox-tinymce {
 	border: 0;

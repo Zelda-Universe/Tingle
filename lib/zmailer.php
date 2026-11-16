@@ -50,11 +50,12 @@ function resetPasswordEmailBodies($toName, $resetLink) {
   $htmlPath = preg_replace('/\.txt$/i', '', (string) $lostPasswordBodyTemplateFilePath) . '.html';
   if (is_file($htmlPath)) {
     $escape = function ($value) { return htmlspecialchars((string) $value, ENT_QUOTES | ENT_HTML5, 'UTF-8'); };
-    $html = str_replace(
-      ["{{name}}", "{{resetLink}}", "{{siteBaseURL}}"],
-      [$escape($toName), $escape($resetLink), $escape($siteBaseURL)],
-      file_get_contents($htmlPath)
-    );
+    // (In one pass: what's filled in is never filled in again.)
+    $html = strtr(file_get_contents($htmlPath), [
+      "{{name}}" => $escape($toName),
+      "{{resetLink}}" => $escape($resetLink),
+      "{{siteBaseURL}}" => $escape($siteBaseURL)
+    ]);
   }
   return ['text' => $text, 'html' => $html];
 }

@@ -331,7 +331,7 @@
       $query['user'] = $row['page_id'] ?? $row['pageId'];
       $query['talk'] = 1;
     } else {
-      $query['marker'] = $row['marker_id'] ?? $row['markerId'] ?? $row['page_id'] ?? $row['pageId'];
+      $query['marker'] = $row['marker_id'] ?? $row['markerId'] ?? $row['page_id'] ?? $row['pageId'] ?? null;
       $query['talk'] = 1;
     }
     $comment = $row['comment_id'] ?? $row['commentId'] ?? null;
@@ -348,6 +348,53 @@
     );
   }
 
+  // What a notification's email button says.
+  function notificationEmailButton($type) {
+    switch ($type) {
+      case 'user_talk': case 'comment_reply': case 'mention':
+      case 'marker_comment': case 'path_comment': case 'followed_comment': return 'Read and Reply';
+      case 'marker_edit': case 'path_edit': case 'followed_edit': return 'See the Changes';
+      case 'edit_report': return 'Review the Report';
+      case 'warning': return 'See Your Edit';
+      default: return 'See It on Zelda Maps';
+    }
+  }
+
+  // A notification's email: its subject, plain text, and HTML in the
+  // password reset email's design (content/notificationEmailTemplate.html,
+  // when it's there). Also used to preview them.
+  function notificationEmailText($row, $baseURL) {
+    $text = notificationRender($row, $baseURL);
+    $settingsURL = rtrim($baseURL, '/') . "/?page=notification-settings";
+    $body = "Hi " . ($row['name'] ?: $row['username']) . ",\n\n" .
+      $text['title'] . ".\n\n" .
+      ($text['body'] !== '' ? "“" . $text['body'] . "”\n\n" : '') .
+      "See it on Zelda Maps:\n" . $text['url'] . "\n\n" .
+      "—\nYou're getting this because of your notification settings. Choose which emails you get here:\n" .
+      $settingsURL . "\n";
+    $html = null;
+    $template = dirname(__DIR__, 2) . '/content/notificationEmailTemplate.html';
+    if (is_file($template)) {
+      $e = function ($value) { return htmlspecialchars((string) $value, ENT_QUOTES | ENT_HTML5, 'UTF-8'); };
+      $quote = $text['body'] === '' ? '' :
+        '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;"><tr>' .
+        '<td width="3" bgcolor="#4a4a50" style="background-color:#4a4a50;border-radius:2px;font-size:0;line-height:0;">&nbsp;</td>' .
+        '<td style="padding:2px 0 2px 14px;font-size:16px;line-height:1.55;color:#e6e6e8;">' . nl2br($e($text['body'])) . '</td>' .
+        '</tr></table>';
+      // (In one pass: what's filled in is never filled in again.)
+      $html = strtr(file_get_contents($template), array(
+        '{{title}}' => $e($text['title']),
+        '{{preheader}}' => $e($text['body'] !== '' ? $text['body'] : $text['title']),
+        '{{quote}}' => $quote,
+        '{{url}}' => $e($text['url']),
+        '{{button}}' => $e(notificationEmailButton($row['type'])),
+        '{{settingsURL}}' => $e($settingsURL),
+        '{{siteBaseURL}}' => $e(rtrim($baseURL, '/'))
+      ));
+    }
+    return array('subject' => mb_substr($text['title'], 0, 140), 'body' => $body, 'html' => $html);
+  }
+
   function notificationEmail($db, $prefix, $notificationId) {
     global $mailEnabled, $siteBaseURL, $mailReplyToAddress, $mailReplyToName;
     if (empty($mailEnabled)) return false;
@@ -357,20 +404,15 @@
        WHERE `n`.`id` = ?
     ", [(int) $notificationId]);
     if (!$row || !$row['email']) return false;
-    $text = notificationRender($row, $siteBaseURL);
-    $body = "Hi " . ($row['name'] ?: $row['username']) . ",\n\n" .
-      $text['title'] . ".\n\n" .
-      ($text['body'] !== '' ? "“" . $text['body'] . "”\n\n" : '') .
-      "See it on Zelda Maps:\n" . $text['url'] . "\n\n" .
-      "—\nYou're getting this because of your notification settings. Choose which emails you get here:\n" .
-      rtrim($siteBaseURL, '/') . "/?page=notification-settings\n";
+    $text = notificationEmailText($row, $siteBaseURL);
     include_once(dirname(__DIR__) . '/zmailer.php');
     try {
       $message = (new \Symfony\Component\Mime\Email())
         ->from(new \Symfony\Component\Mime\Address($mailReplyToAddress, $mailReplyToName))
         ->to(new \Symfony\Component\Mime\Address($row['email'], $row['name'] ?: $row['username']))
-        ->subject(mb_substr($text['title'], 0, 140))
-        ->text($body);
+        ->subject($text['subject'])
+        ->text($text['body']);
+      if ($text['html'] !== null) $message->html($text['html']);
     } catch (\Throwable $e) {
       error_log('notificationEmail: ' . $e->getMessage());
       return false;

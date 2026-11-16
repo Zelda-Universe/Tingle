@@ -39,10 +39,16 @@ test('both forms keep the login page\'s 24px sides and 16px fields',()=>{
 test('the reset e-mail has an HTML version beside its plain text, its values escaped',()=>{
   const mailer=read('lib/zmailer.php');
   expect(mailer).toContain("if ($bodies['html'] !== null) $email->html($bodies['html']);");
-  expect(mailer).toContain("[$escape($toName), $escape($resetLink), $escape($siteBaseURL)],");
+  expect(mailer).toContain("\"{{resetLink}}\" => $escape($resetLink),");
   const html=read('content/lostPasswordEmailBodyTemplate.html');
   for (const key of ['{{name}}','{{resetLink}}','{{siteBaseURL}}']) expect(html).toContain(key);
   // Mail apps: tables and inline styles, no stylesheet or script.
   expect(html).not.toMatch(/<style|<script|<link/i);
   expect(html).toContain('href="{{resetLink}}"');
+});
+
+test('the HTML email\'s own notes never hold a placeholder (it would be filled in, the reset link with it)',()=>{
+  const html=read('content/lostPasswordEmailBodyTemplate.html');
+  const comments=(html.match(/<!--[\s\S]*?-->/g)||[]).join('');
+  expect(comments).not.toMatch(/\{\{/);
 });

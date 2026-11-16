@@ -2006,12 +2006,31 @@ a.button.leaflet-control-layers-toggle {
 	padding: 16px 16px 24px;
 }
 
-/* Sign In and Register keep a roomier 24px. */
+/* Sign In and Register keep a roomier 24px, as do Forgot Password and
+   choosing a new one (.account-form). */
 .menu-cat-content-inner form#loginform,
-.menu-cat-content-inner form#newuserform {
+.menu-cat-content-inner form#newuserform,
+.menu-cat-content-inner .account-form {
 	padding-left: 24px;
 	padding-right: 24px;
 }
+.menu-cat-content-inner div.account-form { box-sizing: border-box; padding-top: 16px; padding-bottom: 24px; }
+.menu-cat-content-inner div.account-form:has(+ form:not([hidden])),
+.menu-cat-content-inner div.account-form:has(.account-form-status[hidden]) { display: none; }
+.account-form .form-control { font-size: 16px; }
+.menu-cat-content-inner .account-form-intro {
+	margin: 0 0 16px;
+	padding: 0;
+	font-size: 15px;
+	line-height: 1.45;
+	color: rgba(255,255,255,.8);
+	text-align: center;
+}
+.menu-cat-content-inner .account-form-status { margin: 0; }
+.account-form-done .login-message + .account-form-intro { margin-top: -4px; }
+/* Leaflet shows its panel's lists (.leaflet-control-layers-list) whatever
+   the page says: hidden is hidden. */
+.leaflet-control-layers [hidden] { display: none !important; }
 
 .menu-cat-content-inner form .modal-footer .infoWindowIcn {
 	width: 100%;

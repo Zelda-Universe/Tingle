@@ -105,7 +105,7 @@ function ZMap() {
       LOST_PASSWORD_SUCCESS: "Hey, listen! If that email has an account, Saria sent it a link to reset your password.",
       LOST_PASSWORD_ERROR: "I AM ERROR. You ended up back at the beginning! %1",
 
-      RESET_PASSWORD_WELCOME: "Choose a New Password",
+      RESET_PASSWORD_WELCOME: "New Password",
       RESET_PASSWORD_CHECKING: "Checking your link…",
       RESET_PASSWORD_INVALID: "This password reset link is invalid or has expired.",
       RESET_PASSWORD_MISMATCH: "Those passwords don't match.",
@@ -4708,46 +4708,75 @@ ZMap.prototype._createDialogDeleteAllMarkers = function() {
    }
 }
 
+// Forgot Password: an email address, then a link to choose a new password
+// (ajax/lost_password.php). Laid out as the login page is, its messages in
+// the page (as login's are), not in toasts.
 ZMap.prototype._createLostPasswordForm = function() {
+   var _this = this;
    this.mapControl.setContent('<div id="lostpassword">'+
                         '<h3 class="text-center">' + this.langMsgs.LOST_PASSWORD_WELCOME + '</h3>'+
-                        '<form class="leaflet-control-layers-list" role="lostpasswordform" id="lostpasswordform" enctype="multipart/form-data">'+
+                        '<form class="leaflet-control-layers-list account-form" role="lostpasswordform" id="lostpasswordform" novalidate>'+
+                          '<p class="account-form-intro">Enter the email address of your account, and we’ll send you a link to choose a new password.</p>'+
+                          '<div id="lostpassword_error" class="alert alert-danger login-error" role="alert" aria-live="assertive" hidden></div>'+
                           '<div class="form-group">'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="fas fa-envelope" aria-hidden="true"></i></span>'+
-                                   '<input type="text" class="form-control" name="email" id="email" required="" placeholder="Enter your email address"/>'+
+                                   '<input type="email" class="form-control" name="email" id="lostpassword_email" required="" maxlength="254" placeholder="Email address" autocomplete="email" autocapitalize="off" spellcheck="false"/>'+
                                 '</div>'+
                              '</div>'+
                           '</div>'+
                           '<div class="modal-footer">'+
-                                 '<div>'+
-                                    '<button type="submit" class="infoWindowIcn form-action-button">Reset Password</button>'+
-                                 '</div>'+
-                               '</div>'+
+                             '<div>'+
+                                '<button type="submit" class="infoWindowIcn form-action-button">Send Reset Link</button>'+
+                             '</div>'+
+                          '</div>'+
                         '</form>'+
+                        // Once sent: what happens next, and the way back.
+                        '<div class="account-form account-form-done" id="lostpassword_sent" hidden>'+
+                          '<div class="alert alert-success login-message" role="status" aria-live="polite">' + this.langMsgs.LOST_PASSWORD_SUCCESS + '</div>'+
+                          '<p class="account-form-intro">The link works for an hour. Can’t find it? Check your spam folder, or try again in a few minutes.</p>'+
+                          '<div class="modal-footer"><div>'+
+                             '<button type="button" id="lostpassword_login_btn" class="infoWindowIcn form-action-button">Back to Login</button>'+
+                          '</div></div>'+
+                        '</div>'+
                      '</div>'
    , 'lostPasswordForm');
+   this._lockWhileOffline('#lostpassword', { dim: '#lostpasswordform' });
 
+   var showError = function(message) {
+      $('#lostpassword_error').text(_this.langMsgs.LOST_PASSWORD_ERROR.format(message || '')).prop('hidden', false);
+   };
+   $('#lostpassword_email').on('input', function() { $('#lostpassword_error').prop('hidden', true).text(''); });
+   $('#lostpassword_login_btn').on('click', function() { _this._createLoginForm(); });
 
-   $("#lostpasswordform").submit(function(e) {
-      $.ajax({
-        type: "POST",
-        async: false,
-        url: "ajax.php?command=lost_password",
-        data: $("#lostpasswordform").serialize(), // serializes the form's elements.
-        success: function(data) {
-          //data = jQuery.parseJSON(data);
-          if (data.success) {
-            toastr.success(_this.langMsgs.LOST_PASSWORD_SUCCESS);
-            _this.mapControl.resetContent();
-          } else {
-            toastr.error(_this.langMsgs.LOST_PASSWORD_ERROR.format(data.msg));
-          }
-        }
-      });
-
+   $('#lostpasswordform').on('submit', function(e) {
       e.preventDefault();
+      var field = document.getElementById('lostpassword_email');
+      if(!field.value.trim() || !field.checkValidity()) {
+         showError('Please enter a valid email address.');
+         field.focus();
+         return;
+      }
+      var button = $('#lostpasswordform button[type="submit"]').prop('disabled', true);
+      $.ajax({
+        type: 'POST',
+        url: 'ajax.php?command=lost_password',
+        data: { email: field.value.trim() },
+        dataType: 'json'
+      }).done(function(data) {
+         if(data && data.success) {
+            $('#lostpasswordform').prop('hidden', true);
+            $('#lostpassword_sent').prop('hidden', false);
+            $('#lostpassword_login_btn').trigger('focus');
+         } else {
+            showError(data && data.msg);
+            button.prop('disabled', false);
+         }
+      }).fail(function() {
+         showError('Please try again.');
+         button.prop('disabled', false);
+      });
    });
 }
 
@@ -4765,13 +4794,18 @@ ZMap.prototype._createResetPasswordForm = function() {
 
    this.mapControl.setContent('<div id="resetpassword">'+
                         '<h3 class="text-center">' + this.langMsgs.RESET_PASSWORD_WELCOME + '</h3>'+
-                        '<p class="text-center" id="resetpassword_status">' + this.langMsgs.RESET_PASSWORD_CHECKING + '</p>'+
-                        '<form class="leaflet-control-layers-list" role="resetpasswordform" id="resetpasswordform" hidden>'+
+                        '<div class="account-form">'+
+                          '<p class="account-form-intro account-form-status" id="resetpassword_status" role="status" aria-live="polite">' + this.langMsgs.RESET_PASSWORD_CHECKING + '</p>'+
+                        '</div>'+
+                        '<form class="leaflet-control-layers-list account-form" role="resetpasswordform" id="resetpasswordform" hidden>'+
+                          '<div id="resetpassword_error" class="alert alert-danger login-error" role="alert" aria-live="assertive" hidden></div>'+
+                          // For the browser's password manager: whose password this is.
+                          '<input type="text" name="username" id="resetpassword_username" autocomplete="username" hidden/>'+
                           '<div class="form-group">'+
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
-                                   '<input type="password" class="form-control" name="password" id="resetpassword_new" required="" minlength="8" maxlength="72" placeholder="Enter a new password (8+ characters)" autocomplete="new-password"/>'+
+                                   '<input type="password" class="form-control" name="password" id="resetpassword_new" required="" minlength="8" maxlength="72" placeholder="New password (8+ characters)" autocomplete="new-password"/>'+
                                 '</div>'+
                              '</div>'+
                           '</div>'+
@@ -4779,7 +4813,7 @@ ZMap.prototype._createResetPasswordForm = function() {
                              '<div class="cols-sm-10">'+
                                 '<div class="input-group">'+
                                    '<span class="input-group-addon"><i class="icon-fa-lock fa-lg" aria-hidden="true"></i></span>'+
-                                   '<input type="password" class="form-control" name="confirm" id="resetpassword_confirm" required="" minlength="8" maxlength="72" placeholder="Enter it again" autocomplete="new-password"/>'+
+                                   '<input type="password" class="form-control" name="confirm" id="resetpassword_confirm" required="" minlength="8" maxlength="72" placeholder="New password again" autocomplete="new-password"/>'+
                                 '</div>'+
                              '</div>'+
                           '</div>'+
@@ -4789,20 +4823,24 @@ ZMap.prototype._createResetPasswordForm = function() {
                              '</div>'+
                            '</div>'+
                         '</form>'+
-                        '<div class="modal-footer" id="resetpassword_expired" hidden>'+
-                           '<div>'+
+                        '<div class="account-form account-form-done" id="resetpassword_expired" hidden>'+
+                           '<div class="modal-footer"><div>'+
                               '<button id="resetpassword_again_btn" type="button" class="infoWindowIcn form-action-button">Request a New Link</button>'+
-                           '</div>'+
+                           '</div></div>'+
                         '</div>'+
                      '</div>'
    , 'resetPasswordForm');
    this._lockWhileOffline('#resetpassword', { dim: '#resetpasswordform' });
 
+   var showError = function(message) {
+      $('#resetpassword_error').text(message).prop('hidden', false);
+   };
    var showExpired = function() {
-      $('#resetpassword_status').text(_this.langMsgs.RESET_PASSWORD_INVALID);
+      $('#resetpassword_status').text(_this.langMsgs.RESET_PASSWORD_INVALID).prop('hidden', false);
       $('#resetpasswordform').prop('hidden', true);
       $('#resetpassword_expired').prop('hidden', false);
    };
+   $('#resetpasswordform input').on('input', function() { $('#resetpassword_error').prop('hidden', true).text(''); });
 
    $('#resetpassword_again_btn').click(function(e) {
       forgetToken();
@@ -4817,18 +4855,24 @@ ZMap.prototype._createResetPasswordForm = function() {
 
    $.getJSON('ajax.php?command=reset_password&check=1&token=' + encodeURIComponent(token)).done(function(data) {
       if(!data.success || !data.valid) { showExpired(); return; }
+      if(data.username) $('#resetpassword_username').val(data.username);
       $('#resetpassword_status').prop('hidden', true);
       $('#resetpasswordform').prop('hidden', false);
       $('#resetpassword_new').trigger('focus');
    }).fail(function() {
-      $('#resetpassword_status').text(_this.langMsgs.GENERAL_ERROR.format(''));
+      $('#resetpassword_status').text(_this.langMsgs.GENERAL_ERROR.format('The link couldn’t be checked. Please reload the page to try again.'));
    });
 
    $('#resetpasswordform').submit(function(e) {
       e.preventDefault();
       var password = $('#resetpassword_new').val();
+      if(password.length < 8) {
+         showError(_this.langMsgs.RESET_PASSWORD_ERROR.format('Use a password of at least 8 characters.'));
+         $('#resetpassword_new').trigger('focus');
+         return;
+      }
       if(password !== $('#resetpassword_confirm').val()) {
-         toastr.error(_this.langMsgs.RESET_PASSWORD_MISMATCH);
+         showError(_this.langMsgs.RESET_PASSWORD_MISMATCH);
          $('#resetpassword_confirm').trigger('focus');
          return;
       }
@@ -4836,21 +4880,22 @@ ZMap.prototype._createResetPasswordForm = function() {
       $.ajax({
         type: 'POST',
         url: 'ajax.php?command=reset_password',
-        data: { token: token, password: password }
+        data: { token: token, password: password },
+        dataType: 'json'
       }).done(function(data) {
          if(data.success) {
             forgetToken();
-            toastr.success(_this.langMsgs.RESET_PASSWORD_SUCCESS);
-            _this._createLoginForm();
+            // The login page, saying so (as it does after registering).
+            _this._createLoginForm(_this.langMsgs.RESET_PASSWORD_SUCCESS);
          } else if(data.field === 'password') {
-            toastr.error(_this.langMsgs.RESET_PASSWORD_ERROR.format(data.msg));
+            showError(_this.langMsgs.RESET_PASSWORD_ERROR.format(data.msg));
             button.prop('disabled', false);
          } else {
             // The link was used or expired between the check and now.
             showExpired();
          }
       }).fail(function() {
-         toastr.error(_this.langMsgs.RESET_PASSWORD_ERROR.format(''));
+         showError(_this.langMsgs.RESET_PASSWORD_ERROR.format('Please try again.'));
          button.prop('disabled', false);
       });
    });

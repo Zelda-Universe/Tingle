@@ -33,8 +33,32 @@ function prepareMailTransport() {
 
 /**
  * The password-reset e-mail. The template carries a link; the password itself
- * is never generated or sent.
+ * is never generated or sent. Plain text, and HTML when its template is there
+ * (the plain text template's path, ending .html instead: content/), so mail
+ * apps show the HTML and fall back to the text.
  */
+function resetPasswordEmailBodies($toName, $resetLink) {
+  global $lostPasswordBodyTemplate, $lostPasswordBodyTemplateFilePath, $siteBaseURL;
+
+  $text = str_replace(
+    ["{{name}}", "{{resetLink}}"],
+    [$toName, $resetLink],
+    $lostPasswordBodyTemplate
+  );
+
+  $html = null;
+  $htmlPath = preg_replace('/\.txt$/i', '', (string) $lostPasswordBodyTemplateFilePath) . '.html';
+  if (is_file($htmlPath)) {
+    $escape = function ($value) { return htmlspecialchars((string) $value, ENT_QUOTES | ENT_HTML5, 'UTF-8'); };
+    $html = str_replace(
+      ["{{name}}", "{{resetLink}}", "{{siteBaseURL}}"],
+      [$escape($toName), $escape($resetLink), $escape($siteBaseURL)],
+      file_get_contents($htmlPath)
+    );
+  }
+  return ['text' => $text, 'html' => $html];
+}
+
 function createResetPasswordEmail($toAddress, $toName, $resetLink) {
   global $lostPasswordBodyTemplate, $mailReplyToAddress, $mailReplyToName, $lostPasswordSubject;
 
@@ -43,19 +67,17 @@ function createResetPasswordEmail($toAddress, $toName, $resetLink) {
     return null;
   }
 
-  $body = str_replace(
-    ["{{name}}", "{{resetLink}}"],
-    [$toName, $resetLink],
-    $lostPasswordBodyTemplate
-  );
+  $bodies = resetPasswordEmailBodies($toName, $resetLink);
 
   try {
-    return (new Email())
+    $email = (new Email())
       ->from(new Address($mailReplyToAddress, $mailReplyToName))
       ->replyTo(new Address($mailReplyToAddress, $mailReplyToName))
       ->to(new Address($toAddress, $toName))
       ->subject($lostPasswordSubject)
-      ->text($body);
+      ->text($bodies['text']);
+    if ($bodies['html'] !== null) $email->html($bodies['html']);
+    return $email;
   } catch (RfcComplianceException $e) {
     // A stored address that isn't RFC-valid (old data). Nothing to send.
     error_log('zmailer: ' . $e->getMessage());

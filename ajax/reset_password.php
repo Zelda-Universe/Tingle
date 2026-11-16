@@ -14,7 +14,7 @@
   $tokenHash = hash('sha256', $token);
 
   $reset = $db->fetchAssociative("
-    SELECT pr.`id`, pr.`user_id`
+    SELECT pr.`id`, pr.`user_id`, u.`username`
       FROM `{$map_prefix}password_reset` pr
       JOIN `{$map_prefix}user` u ON u.`id` = pr.`user_id`
      WHERE pr.`token_hash` = ?
@@ -31,7 +31,9 @@
 
   // GET with check=1 lets the page confirm the link before showing the form.
   if ($_SERVER['REQUEST_METHOD'] !== 'POST' || isset($_GET['check'])) {
-    echo json_encode(array("success" => true, "valid" => true));
+    // Its username, for the browser's password manager (only whoever has
+    // the e-mail has the link).
+    echo json_encode(array("success" => true, "valid" => true, "username" => (string) $reset['username']));
     return;
   }
 

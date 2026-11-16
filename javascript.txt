@@ -53,6 +53,7 @@ scripts/zwiki.js
 scripts/services/MarkerNavigation.js
 scripts/services/Paths.js
 scripts/services/PathEditor.js
+scripts/services/EmbedDialog.js
 scripts/zbeta.js
 scripts/zmapsettings.js
 scripts/zreports.js

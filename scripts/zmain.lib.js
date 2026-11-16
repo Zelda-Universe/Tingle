@@ -642,7 +642,10 @@ function updateAdState() {
   var authenticated = !!user;
   var mobile = isMobile();
   var mode = getAdMode();
-  var size = authenticated || mode == 'off' ? null : getAdSize(mobile);
+  // No ads in an embed (embed.php, or the map framed anywhere): it's part of
+  // someone else's page. Nor the room kept for one, so the sidebar fills it.
+  var embedded = !!window.zmapEmbed || (zMap.isFramed && zMap.isFramed());
+  var size = authenticated || embedded || mode == 'off' ? null : getAdSize(mobile);
 
   zMap.mapControl.setBottomReserve(
     size && !mobile ? getDesktopAdBottom(ads) + size.height + AD_SIDEBAR_GAP : 0

@@ -257,9 +257,8 @@ ZMap.prototype.openPathPage = function(slugOrPath, opts) {
     zmap._setMarkerDone(lead.id, complete, function() { zmap.updatePathCompletionCounts(); });
   });
   $(page).find('.path-embed').on('click', function() {
-    zmap.trackEmbedCopy('path');
     var src = zmap._pageAddress(true) + '?game=' + encodeURIComponent(zmap.mapOptions.shortName) + '&path=' + encodeURIComponent(path.slug) + '&showMapControl=true';
-    zmap._copyText("<iframe src=\"" + src + "\" frameborder=\"0\" allowfullscreen></iframe>", this);
+    zmap.openEmbedDialog({ src: src, target: 'path', title: path.name });
   });
   // (The author's link: zwiki.js _wireWikiLinks opens their profile.)
   $(page).find('.path-edit').on('click', function() { zmap.openPathEditor(path); });

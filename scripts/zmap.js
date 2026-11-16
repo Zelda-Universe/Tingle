@@ -1140,12 +1140,18 @@ ZMap.prototype.trackEmbedCopy = function(target) {
     else $.post('ajax.php?command=track_embed', data.toString());
   } catch(e) {}
 };
+// Embed Code: the dialog with a preview and its code (EmbedDialog.js).
 ZMap.prototype._copyToClipboardEmbed = function(vMarkerId, button) {
-   this.trackEmbedCopy('marker');
    var href = window.location.href.split("?");
    var clipboardParams = this._getClipboardParams(href);
-
-   this._copyText("<iframe src=\"" + this._pageAddress(true) + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false\" frameborder=\"0\" allowfullscreen></iframe>", button);
+   // Its name as its page shows it (a game's own names: _createMarkerPopup).
+   var heading = button && $(button).closest('.leaflet-control-layers, body').find('.popupTitle').first().text();
+   var marker = this.cachedMarkersById && this.cachedMarkersById[vMarkerId];
+   this.openEmbedDialog({
+     src: this._pageAddress(true) + "?" + clipboardParams + "marker=" + vMarkerId + "&zoom=" + this.map.getZoom() + "&hideOthers=true&showMapControl=true&hidePin=false",
+     target: 'marker',
+     title: heading || (marker && marker.title)
+   });
 }
 ZMap.prototype._copyToClipboard = function(vMarkerId, button) {
    var href = window.location.href.split("?");
@@ -2194,6 +2200,9 @@ ZMap.prototype.addMapControl = function(gameId) {
       && !_this.map.hasLayer(markers[newMarker.markerPos])
       // Markers are culled outside the viewport; only deselect when hidden.
       && !_this._shouldShowMarker(markers[newMarker.markerPos], true)
+      // (Not an embed's marker: an embed hides all the others, hideOthers,
+      // and the map moving as a phone-shaped frame settles would close it.)
+      && !_this.isFramed()
     ) {
       _this._closeNewMarker();
       _this.mapControl.resetContent();
@@ -2443,8 +2452,7 @@ ZMap.prototype._openDroppedPin = function(latlng) {
     return false;
   });
   $('#copy_dropped_pin_embed').on('click', function() {
-    zmap.trackEmbedCopy('pin');
-    zmap._copyText("<iframe src=\"" + embedLink + "\" frameborder=\"0\" allowfullscreen></iframe>", this);
+    zmap.openEmbedDialog({ src: embedLink, target: 'pin', title: 'Dropped Pin' });
     return false;
   });
   $('#make_path_from_pin').on('click', function() {

@@ -35,10 +35,12 @@ ZMap.prototype._watchImageCredits = function(root) {
 };
 
 // New images: those in a row made a carousel (ImageCarousel.js), then each
-// credited.
+// credited, and those with more to see opened larger when clicked.
 ZMap.prototype._imagesAdded = function(root) {
   if(this._buildImageCarousels) this._buildImageCarousels(root);
   this._creditImages(root);
+  // (Clicked, shown larger: ImageViewer.js.)
+  if(this._wireImageViewer) this._wireImageViewer(root);
 };
 
 // Each image's credit, asked for once (100 at a time), then drawn.

@@ -824,7 +824,6 @@ ZMap.prototype.openPathPinEditor = function(path, step, back) {
     field('Name', 'fa-heading', "<input type='text' class='form-control' name='name' maxlength='120' placeholder='Pin'>") +
     field('Description', 'fa-align-left', "<textarea class='form-control' name='content' maxlength='5000' rows='8' placeholder='What’s here, and what to do. Links like [[marker:123]] and web addresses work.'></textarea>") +
     this._editorSaveHTML(true, 'Save Pin') +
-    "<div class='path-editor-actions'><button type='button' class='path-cancel'>Cancel</button></div>" +
     "</form></div>", 'pathPinEditor', reopen);
   var form = $(page).find('form'), busy = false;
   form.find('[name=name]').val(step.name || '');
@@ -837,7 +836,6 @@ ZMap.prototype.openPathPinEditor = function(path, step, back) {
     zmap._editorSaveState(form, now.name !== (step.name || '') || now.content !== (step.content || ''), !error, busy, 'Save Pin');
   };
   form.on('input', update);
-  form.find('.path-cancel').on('click', reopen);
   form.on('submit', function(e) {
     e.preventDefault();
     var now = read();
@@ -1047,21 +1045,45 @@ ZMap.prototype.openPathEditor = function(path, start) {
     .filter(function(c) { return c.parent_id && c.marker_category_type_id == 1; })
     .sort(function(a, b) { return String(a.name).localeCompare(b.name); });
   var field = function(label, icon, control) { return zmap._mapSettingsField(label, icon, control); };
+  // Laid out as Game Settings' and the marker editor are: a label over each
+  // field, options as cards with a line saying what they do, then Save, and
+  // Delete under it. The steps come first after the name: they're the path.
+  var check = function(type, name, value, title, detail) {
+    return "<label class='map-settings-check path-editor-check'><input type='" + type + "' name='" + name + "'" + (value ? " value='" + value + "'" : '') + ">" +
+      "<span><strong>" + title + "</strong><small>" + detail + "</small></span></label>";
+  };
   var page = this._showWikiPage("<div class='wiki-page path-editor'>" +
     "<h3 class='text-center'>" + (path ? 'Edit Path' : 'New Path') + "</h3><form class='map-settings-form path-editor-form'>" +
-    field('Name', 'fa-heading', "<input type='text' class='form-control' name='name' maxlength='120' required>") +
+    field('Name', 'fa-heading', "<input type='text' class='form-control' name='name' maxlength='120' required placeholder='What is it?'>") +
     field('Description', 'fa-align-left', "<textarea class='form-control' name='description' maxlength='2000' rows='3' placeholder='Optional. Links like [[marker:123]] and web addresses work.'></textarea>") +
-    "<fieldset class='path-kind'><legend class='map-settings-label'>Checks</legend>" +
-      "<label><input type='radio' name='kind' value='guide'> <b>Each step</b> is its own check (a guide, a route)</label>" +
-      "<label><input type='radio' name='kind' value='single'> <b>One check</b> for the whole path (a Korok pair, a dragon)</label></fieldset>" +
-    "<div class='path-toggles'><label><input type='checkbox' name='numbered'> Number the steps</label>" +
-      "<label><input type='checkbox' name='smooth'> Smooth the line (curves through each step)</label>" +
-      "<label><input type='checkbox' name='alwaysShow'> Always show the path on the map (otherwise it shows once one of its markers is opened)</label>" +
-      "<label><input type='checkbox' name='loops'> Loops back to the start</label></div>" +
-    "<div class='path-row'>" + field('Color', 'fa-tint', "<input type='color' class='form-control' name='color'>") +
-      field('Show as category', 'fa-folder', "<select class='form-control' name='categoryId'><option value=''>None</option>" +
-        categories.map(function(c) { return "<option value='" + c.id + "'>" + zmap._pathEsc(c.name) + "</option>"; }).join('') + "</select>") + "</div>" +
-    (manages ? field('Who sees it', 'fa-users', "<select class='form-control' name='audience'><option value='private'>Only me (private)</option>" +
+
+    "<h4 class='path-editor-heading'>Steps <span class='path-step-count'></span></h4>" +
+    "<p class='path-hint'>" + (this.mapControl.viewStyleBottomSlide ? 'Tap “Add steps on the map”, then tap markers to add them, or drop a pin.' :
+      'Click markers on the map to add them, or drop a pin.') + " Drag a step by its handle to move it.</p>" +
+    "<ol class='path-steps path-steps-editable'></ol>" +
+    "<div class='path-add-buttons'>" +
+      (this.mapControl.viewStyleBottomSlide ? "<button type='button' class='marker-edit-add path-add-on-map'><i class='fas fa-plus' aria-hidden='true'></i>Add steps on the map</button>" : '') +
+      "<button type='button' class='marker-edit-add path-drop-pin'><i class='fas fa-map-pin' aria-hidden='true'></i>Drop a pin</button></div>" +
+
+    "<h4 class='path-editor-heading'>Completing</h4>" +
+    "<div class='path-editor-options' role='radiogroup' aria-label='Completing'>" +
+      check('radio', 'kind', 'guide', 'Each step is a check', 'A guide or a route: each step is completed on its own.') +
+      check('radio', 'kind', 'single', 'One check for the whole path', 'A Korok pair or a dragon: completing it completes the path.') +
+    "</div>" +
+
+    "<h4 class='path-editor-heading'>On the map</h4>" +
+    field('Color', 'fa-tint', "<input type='color' class='form-control path-color-input' name='color'><span class='path-color-value'></span>") +
+    field('Show as category', 'fa-folder', "<select class='form-control' name='categoryId'><option value=''>None</option>" +
+      categories.map(function(c) { return "<option value='" + c.id + "'>" + zmap._pathEsc(c.name) + "</option>"; }).join('') + "</select>") +
+    "<div class='path-editor-options'>" +
+      check('checkbox', 'numbered', '', 'Number the steps', 'Each step shows its number on the map and in the list.') +
+      check('checkbox', 'smooth', '', 'Smooth the line', 'Curves through each step instead of straight lines between them.') +
+      check('checkbox', 'alwaysShow', '', 'Always show it', 'Otherwise it shows once one of its markers is opened.') +
+      check('checkbox', 'loops', '', 'Loops back to the start', 'The last step joins up with the first.') +
+    "</div>" +
+
+    (manages ? "<h4 class='path-editor-heading'>Sharing</h4>" +
+      field('Who sees it', 'fa-users', "<select class='form-control' name='audience'><option value='private'>Only me (private)</option>" +
       "<option value='unlisted'>Anyone with the link (unlisted)</option>" +
       "<option value='public'>Anyone, and on my profile (public)</option>" +
       (isEditor || draft.scope === 'official' ? "<option value='official'>Everyone, on the map (official)</option>" +
@@ -1071,17 +1093,11 @@ ZMap.prototype.openPathEditor = function(path, start) {
       "<div class='path-schedule' hidden>" + field('Publish at', 'fa-clock', "<input type='datetime-local' class='form-control' name='publishAt'>") + "</div>" +
       field('Who can edit', 'fa-pencil-alt', "<select class='form-control' name='editAccess'><option value='owner'>Only me</option>" +
         "<option value='editors'>Anyone who can edit markers</option></select>") : '') +
-    "<h4 class='path-steps-title'>Steps <small class='path-step-count'></small></h4>" +
-    "<p class='path-hint'>" + (this.mapControl.viewStyleBottomSlide ? 'Tap “Add steps on the map”, then tap markers to add them, or drop a pin.' :
-      'Click markers on the map to add them, or drop a pin.') + " Drag steps by their handle to reorder.</p>" +
-    "<ol class='path-steps path-steps-editable'></ol>" +
-    "<div class='path-add-buttons'>" +
-      (this.mapControl.viewStyleBottomSlide ? "<button type='button' class='infoWindowIcn form-action-button path-add-on-map'><i class='fas fa-plus'></i> Add steps on the map</button>" : '') +
-      "<button type='button' class='infoWindowIcn form-action-button path-drop-pin'><i class='fas fa-map-pin'></i> Drop a pin</button></div>" +
-    (path ? field('Summary', 'fa-comment', "<input type='text' class='form-control' name='summary' maxlength='255' placeholder='What you changed (optional)'>") : '') +
+
+    (path ? field('Edit Summary', 'fa-comment-alt', "<input type='text' class='form-control' name='summary' maxlength='255' placeholder='What did you change? (optional)'>") : '') +
     this._editorSaveHTML(!!path, path ? 'Save Path' : 'Create Path') +
-    "<div class='path-editor-actions'><button type='button' class='path-cancel'>Cancel</button>" +
-      (path && manages ? "<button type='button' class='path-delete'>Delete path</button>" : '') + "</div>" +
+    // Deleting it, under Save, as the marker editor's Delete Marker is.
+    (path && manages ? "<div class='marker-edit-delete'><button type='button' class='text-button text-button-bad path-delete'>Delete Path</button></div>" : '') +
     "</form></div>", 'pathEditor', function() { zmap._endPathEditing(); if(path) zmap.openPathPage(path.slug, {keepView: true}); });
   var form = $(page).find('form'), list = $(page).find('.path-steps-editable');
   form.find('[name=name]').val(draft.name);
@@ -1136,6 +1152,7 @@ ZMap.prototype.openPathEditor = function(path, start) {
       (draft.publish === 'schedule' && !(draft.publishAt > Date.now() / 1000) ? 'Pick a time in the future to publish it.' : '');
     zmap._editorSaveState(form, JSON.stringify(draft) !== original, !error, busy, path ? 'Save Path' : 'Create Path');
     form.find('.admin-user-status').text(error && draft.name ? error : '');
+    $(page).find('.path-color-value').text(String(draft.color || '').toUpperCase());
     zmap._previewPath(draft, path);
   };
   var renderSteps = function() {
@@ -1179,7 +1196,7 @@ ZMap.prototype.openPathEditor = function(path, start) {
       });
       list.append(li);
     });
-    $(page).find('.path-step-count').text(draft.steps.length ? '(' + draft.steps.length + ')' : '');
+    $(page).find('.path-step-count').text(draft.steps.length || '');
     zmap._pathDragReorder(list[0], draft.steps, function() { renderSteps(); update(); });
   };
   state.addMarker = function(marker) {
@@ -1220,7 +1237,7 @@ ZMap.prototype.openPathEditor = function(path, start) {
     });
   });
   form.find('.path-drop-pin').on('click', function() {
-    var button = $(this).addClass('active').html('<i class="fas fa-crosshairs"></i> Click the map to drop it…');
+    var button = $(this).addClass('active').html('<i class="fas fa-crosshairs" aria-hidden="true"></i>Click the map to drop it…');
     zmap.map.getContainer().classList.add('path-pin-mode');
     zmap._pathPinClick = function(e) {
       zmap._stopPathPinMode();
@@ -1234,12 +1251,18 @@ ZMap.prototype.openPathEditor = function(path, start) {
     zmap._pathPinButton = button;
     zmap.map.once('click', zmap._pathPinClick);
   });
-  form.find('.path-cancel').on('click', function() {
-    zmap._endPathEditing();
-    if(path) zmap.openPathPage(path.slug, {keepView: true}); else zmap.mapControl.resetContent();
-  });
   form.find('.path-delete').on('click', function() {
-    if(!confirm('Delete "' + path.name + '"? This can\'t be undone.')) return;
+    zmap._showAlert({
+      id: 'path-delete',
+      title: 'Delete this path?',
+      description: ['“' + zmap._pathEsc(path.name) + '” and its history will be deleted. This can’t be undone.'],
+      actions: [
+        {label: 'Delete Path', className: 'infoWindowIcn bad', onSelect: deletePath},
+        {label: 'Cancel', cancel: true}
+      ]
+    });
+  });
+  var deletePath = function() {
     zmap._wikiPost('delete_path', {id: path.id}).done(function(r) {
       if(!r || !r.success) { toastr.error((r && r.msg) || 'Could not delete the path.'); return; }
       toastr.success('Path deleted');
@@ -1251,7 +1274,7 @@ ZMap.prototype.openPathEditor = function(path, start) {
       zmap._preparePaths(); zmap.refreshMap();
       zmap.mapControl.resetContent();
     }).fail(function(x) { toastr.error(zmap._wikiError(x)); });
-  });
+  };
   form.on('submit', function(e) {
     e.preventDefault();
     readForm();
@@ -1274,7 +1297,7 @@ ZMap.prototype._stopPathPinMode = function() {
   if(this._pathPinClick) this.map.off('click', this._pathPinClick);
   this._pathPinClick = null;
   this.map.getContainer().classList.remove('path-pin-mode');
-  if(this._pathPinButton) this._pathPinButton.removeClass('active').html('<i class="fas fa-map-pin"></i> Drop a pin');
+  if(this._pathPinButton) this._pathPinButton.removeClass('active').html('<i class="fas fa-map-pin" aria-hidden="true"></i>Drop a pin');
   this._pathPinButton = null;
 };
 

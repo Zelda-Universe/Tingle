@@ -46,6 +46,7 @@ scripts/services/MapMotion.js
 scripts/services/OfflineDownloads.js
 scripts/services/ImageCarousel.js
 scripts/services/ImageCredits.js
+scripts/services/ImageViewer.js
 scripts/services/AreaSearch.js
 scripts/services/CategoryPage.js
 scripts/controls/OotFloors.js

@@ -285,7 +285,8 @@ ZMap.prototype.drawPaths = function(ifChanged) {
   var zmap = this, map = this.map;
   var current = this.mapControl && this.mapControl.getCurrentMap();
   var submap = current && String(current.subMapId);
-  var selectedPath = this._pathPageOpen ? this._focusedPath : null;
+  // (Its page open, or being edited: the editor shows its numbers too.)
+  var selectedPath = this._pathPageOpen || this._pathEditing ? this._focusedPath : null;
   var options = this.mapOptions;
   // (A numbered path's numbers move with the zoom, to keep clear of markers.)
   var key = JSON.stringify([submap, selectedPath && (selectedPath.slug || selectedPath.id), !!this._pathEditing,

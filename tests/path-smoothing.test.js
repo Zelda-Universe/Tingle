@@ -45,5 +45,17 @@ test('smoothing is a saved, history-tracked path setting',()=>{
   expect(read('migrations/20261113120000_path_smooth.sql')).toContain('ADD COLUMN IF NOT EXISTS smooth');
   expect(read('lib/common/paths.php')).toContain("'smooth' => !empty($in['smooth']) ? 1 : 0");
   expect(read('ajax/get_paths.php')).toContain('p.smooth');
-  expect(read('scripts/services/PathEditor.js')).toContain("name='smooth'");
+  expect(read('scripts/services/PathEditor.js')).toContain("check('checkbox', 'smooth', '', 'Smooth the line'");
+});
+
+test('the path editor is laid out as the other editors are',()=>{
+  const editor=read('scripts/services/PathEditor.js');
+  // Options as cards with a line saying what they do, Delete under Save, asked about first.
+  expect(editor).toContain("<label class='map-settings-check path-editor-check'>");
+  expect(editor).toContain("<div class='marker-edit-delete'><button type='button' class='text-button text-button-bad path-delete'>Delete Path</button></div>");
+  expect(editor).toContain("id: 'path-delete',");
+  expect(editor).not.toContain('confirm(\'Delete');
+  expect(editor).not.toContain('path-cancel');
+  // The map numbers its steps while it's edited, too.
+  expect(read('scripts/services/Paths.js')).toContain('var selectedPath = this._pathPageOpen || this._pathEditing ? this._focusedPath : null;');
 });

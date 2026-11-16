@@ -3138,7 +3138,9 @@ button[aria-disabled="true"] {
 .mouse-coords,
 .oot-floor-pill,
 .oot-floor-control select,
-.offline-map-empty-message {
+.offline-map-empty-message,
+.zm-image-viewer-close,
+.zm-image-viewer-arrow {
 	outline: 1px solid var(--map-glass-edge);
 	outline-offset: -1px;
 }
@@ -7870,7 +7872,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 
 /* A path's page and the path editor. */
 .path-meta, .path-description { text-align: center; opacity: .8; }
-.path-page-actions, .path-editor-actions { display: flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+.path-page-actions { display: flex; gap: 8px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
 .path-steps { list-style: none; padding: 0; margin: 10px 0; display: flex; flex-direction: column; gap: 4px; }
 .path-step {
 	display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px;
@@ -7887,33 +7889,82 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 	display: flex; align-items: center; justify-content: center; box-sizing: border-box;
 }
 .path-step-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: none; border: 0; color: inherit; text-align: left; padding: 0; }
-.path-step-pin-name.form-control { flex: 1; min-width: 0; height: 30px; padding: 4px 8px; }
 .path-step-handle { cursor: grab; touch-action: none; padding: 4px 2px; opacity: .6; }
 .path-step-dragging { position: relative; z-index: 2; background: rgba(255, 255, 255, .16); box-shadow: 0 4px 14px rgba(0, 0, 0, .4); transition: none; }
 .path-step-dragging .path-step-handle { cursor: grabbing; }
 .path-step-remove, .path-step-toggle { flex: none; background: none; border: 0; color: inherit; opacity: .7; padding: 4px 6px; }
 .path-step-remove:hover, .path-step-toggle:hover { opacity: 1; }
-.path-kind { border: 0; padding: 0; margin: 6px 0 10px; }
-.path-kind label, .path-toggles label { display: flex; gap: 8px; align-items: baseline; font-weight: 400; margin: 4px 0; }
-.path-toggles { margin-bottom: 10px; }
-.path-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.path-row input[type=color].form-control { padding: 2px 4px; height: 34px; }
-.path-steps-title { margin: 14px 0 2px; }
-.path-hint { opacity: .7; font-size: 13px; margin: 0 0 6px; }
-.path-drop-pin.active { background: #4395f7; }
-.path-editor-actions button { background: none; border: 0; color: inherit; opacity: .75; text-decoration: underline; }
-.path-editor-actions .path-delete { color: #ff6b63; }
 .path-pin-mode, .path-pin-mode .leaflet-interactive { cursor: crosshair !important; }
 .path-steps { font-size: 14px; }
 .path-page-actions .form-action-button { flex: 1; margin: 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
-.path-kind label, .path-toggles label, .path-hint { font-size: 14px; }
-.path-kind label b { white-space: nowrap; }
 .profile-path-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
 .profile-path .path-step-number { width: 26px; height: 26px; font-size: 11px; }
 .path-owner { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; font: inherit; }
 .marker-path-link .path-step-number { flex: none; }
-.path-add-buttons { display: flex; flex-direction: column; gap: 8px; }
-.path-add-buttons .form-action-button { margin: 0; }
+/* The path editor (PathEditor.js openPathEditor), in Game Settings' and the
+   marker editor's pieces: labels over fields, option cards, a dashed Add
+   button, Save with Delete under it. */
+.menu-cat-content-inner .path-editor form.map-settings-form { padding-bottom: 28px; }
+.path-editor-heading {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 28px 0 0;
+	padding: 0;
+	color: white;
+	font-size: 16px;
+	font-weight: 700;
+}
+.path-editor-heading .path-step-count:not(:empty) {
+	padding: 1px 8px;
+	border-radius: 999px;
+	background: rgba(255,255,255,.12);
+	color: rgba(255,255,255,.8);
+	font-size: 12px;
+	font-weight: 600;
+}
+.path-editor-heading + .map-settings-label { margin-top: 12px; }
+.path-hint { margin: 10px 0 0; color: rgba(255,255,255,.6); font-size: 13px; line-height: 1.4; }
+/* Option cards: several close together, each its own card. */
+.path-editor-options { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.menu-cat-content-inner form.map-settings-form .path-editor-options .map-settings-check { margin: 0; }
+.map-settings-check strong { font-weight: 600; }
+.menu-cat-content-inner form.map-settings-form .path-editor-check:has(input:checked) { background: rgba(255,255,255,.14); }
+/* Color: the swatch filling the field, its value beside it. */
+.menu-cat-content-inner form.map-settings-form .input-group .path-color-input.form-control { flex: none; width: 56px; height: 30px; margin: 7px 0; padding: 0; border: 0; border-radius: 6px; background: none; cursor: pointer; }
+.path-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+.path-color-input::-webkit-color-swatch { border: 0; border-radius: 6px; }
+.path-color-input::-moz-color-swatch { border: 0; border-radius: 6px; }
+.path-color-value { order: 3; align-self: center; padding: 0 12px; color: rgba(255,255,255,.75); font-size: 13px; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+/* The steps: rows like the marker editor's sections. */
+.path-editor .path-steps-editable { gap: 6px; margin: 12px 0 0; font-size: 14px; }
+.path-editor .path-steps-editable:empty { display: none; }
+.path-editor .path-steps-editable .path-step { gap: 6px; min-height: 44px; padding: 4px 4px 4px 6px; border-radius: 10px; background: rgba(255,255,255,.1); box-sizing: border-box; }
+.path-editor .path-step-handle { display: flex; align-items: center; justify-content: center; width: 24px; height: 32px; padding: 0; color: rgba(255,255,255,.5); opacity: 1; }
+.path-editor .path-step-handle:hover { color: white; }
+.path-editor .path-step-name { font-weight: 500; }
+.path-step-pin-name.form-control { flex: 1; min-width: 0; height: 32px; padding: 4px 10px; border: 0; border-radius: 8px; background: rgba(255,255,255,.12); color: white; font-size: 14px; box-shadow: none; }
+.path-step-pin-name.form-control:focus { background: rgba(255,255,255,.2); }
+.path-step-pin-name.form-control::placeholder { color: rgba(255,255,255,.55); }
+.path-editor .path-step-remove, .path-editor .path-step-toggle, .path-editor .path-step-note-toggle {
+	display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0;
+	border-radius: 8px; color: rgba(255,255,255,.7); opacity: 1; transition: background-color .15s, color .15s;
+}
+.path-editor .path-step-note-toggle { color: rgba(255,255,255,.4); }
+.path-editor .path-step-note-toggle.active { color: rgba(255,255,255,.85); }
+.path-editor .path-step-remove:hover, .path-editor .path-step-toggle:hover, .path-editor .path-step-note-toggle:hover { background: rgba(255,255,255,.12); color: white; }
+.path-step-note-input.form-control { flex-basis: 100%; box-sizing: border-box; width: 100%; margin: 2px 0 4px; padding: 8px 10px; border: 0; border-radius: 8px; background: rgba(255,255,255,.12); color: white; font-size: 13px; box-shadow: none; resize: vertical; }
+.path-step-note-input.form-control:focus { background: rgba(255,255,255,.2); }
+.path-add-buttons { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.path-add-buttons .marker-edit-add { margin: 0; }
+.path-add-buttons .marker-edit-add.active { border-style: solid; border-color: #4395f7; background: rgba(67,149,247,.18); color: white; }
+/* Save, as the marker editor's: "No changes" over it, centred. */
+.path-editor .admin-user-status:empty { display: none; }
+.path-editor .admin-user-status { margin: 16px 0 0; color: #ffb3ae; font-size: 13px; text-align: center; }
+.path-editor .marker-edit-pending { margin: 20px 0 0; color: rgba(255,255,255,.6); font-size: 13px; text-align: center; }
+.menu-cat-content-inner .path-editor form.map-settings-form .marker-edit-pending + .form-action-button { margin-top: 8px; }
+.path-editor .marker-edit-delete { margin: 8px 0 0; }
+.path-editor .marker-edit-delete .text-button { display: flex; justify-content: center; width: 100%; background: none; border: 0; }
 /* Adding steps on a phone: the editor's put away, this bar stays. */
 .path-add-bar {
 	position: fixed; z-index: 1200; left: 12px; right: 12px; top: calc(env(safe-area-inset-top, 0px) + 72px);
@@ -7939,7 +7990,6 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .path-step-body .path-step-name { display: block; width: 100%; }
 .path-step-note { margin: 2px 0 0; font-size: 13px; opacity: .75; white-space: normal; }
 .path-steps-editable .path-step { flex-wrap: wrap; }
-.path-step-note-input.form-control { flex-basis: 100%; margin-left: 50px; width: calc(100% - 50px); font-size: 13px; }
 .path-step-note-toggle { flex: none; background: none; border: 0; color: inherit; opacity: .45; padding: 4px 6px; }
 .path-step-note-toggle.active, .path-step-note-toggle:hover { opacity: 1; }
 /* A path's revision, as it was: in a card, as a marker's This Version is. */
@@ -7962,7 +8012,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 
 /* A path's page: its steps down a line in the path's color, each with its
    marker's contents (long ones cut short until expanded). */
-.path-page, .path-history-page, .path-editor, .community-paths { padding: 4px 16px 28px; box-sizing: border-box; }
+.path-page, .path-history-page, .community-paths { padding: 4px 16px 28px; box-sizing: border-box; }
 .path-timeline { gap: 0; margin: 18px 0 0; }
 .path-timeline .path-step { position: relative; align-items: flex-start; gap: 12px; padding: 0 0 20px; background: none; border-radius: 0; }
 /* The line joining the numbers runs unbroken down the whole list (behind
@@ -8134,7 +8184,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 
 /* A marker since removed from the map, kept by a user's path. */
 .path-step-removed, .path-step-removed-hint { margin: 2px 0 4px; font-size: 13px; color: #ffb3ae; }
-.path-step-removed-hint { flex-basis: 100%; margin-left: 50px; }
+.path-step-removed-hint { flex-basis: 100%; margin-left: 30px; }
 .path-timeline .path-step-deleted .path-step-number { background: #6b6b6b; }
 .path-timeline .path-step-deleted .path-step-label { text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, .45); }
 .path-timeline .path-step-deleted .path-step-content { opacity: .6; }
@@ -8399,6 +8449,89 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 /* Images in a row (scripts/services/ImageCarousel.js): one at a time, swiped
    or stepped through with the arrows and dots on top of it. As tall as the
    image showing. */
+/* Images with more to see open larger when clicked (ImageViewer.js). */
+.zm-zoomable { cursor: zoom-in; }
+.zm-image-viewer {
+	box-sizing: border-box;
+	width: 100vw;
+	max-width: none;
+	height: 100dvh;
+	max-height: none;
+	margin: 0;
+	padding: 56px 64px 24px;
+	border: 0;
+	background: transparent;
+	color: #fff;
+	font-family: "BrandonText", sans-serif;
+	overflow: hidden;
+}
+.zm-image-viewer[open] { display: flex; align-items: center; justify-content: center; }
+.zm-image-viewer::backdrop { background: rgba(0,0,0,.88); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.zm-image-viewer[open] { animation: zm-image-viewer-enter 250ms cubic-bezier(.16,1,.3,1) both; }
+.zm-image-viewer[open]::backdrop { animation: bookmark-alert-backdrop-enter 250ms ease-out both; }
+.zm-image-viewer.is-closing { animation: bookmark-alert-exit 150ms ease-in both; }
+.zm-image-viewer.is-closing::backdrop { animation: bookmark-alert-backdrop-exit 150ms ease-in both; }
+@keyframes zm-image-viewer-enter {
+	from { opacity: 0; transform: scale(.96); }
+	to { opacity: 1; transform: scale(1); }
+}
+.zm-image-viewer-figure {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	max-width: 100%;
+	max-height: 100%;
+	margin: 0;
+}
+.zm-image-viewer-img {
+	display: block;
+	min-height: 0;
+	max-width: 100%;
+	max-height: calc(100dvh - 120px);
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	border-radius: 10px;
+	box-shadow: 0 16px 48px rgba(0,0,0,.5);
+	cursor: auto;
+}
+.zm-image-viewer-caption.zm-image-viewer-caption { margin-top: 12px; font-size: 14px; color: rgba(255,255,255,.75); text-align: center; }
+.zm-image-viewer-caption .zm-image-credit { margin: 0; font-size: 14px; color: inherit; }
+.zm-image-viewer-close,
+.zm-image-viewer-arrow {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	/* The map's own buttons' look (.leaflet-bar a), and their hover. */
+	background: rgba(0,0,0,.8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	color: rgba(255,255,255,.8);
+	cursor: pointer;
+	transition: background-color .15s, color .15s;
+}
+.zm-image-viewer-close:hover, .zm-image-viewer-arrow:hover { background: rgba(50,50,50,.8); color: #fff; }
+.zm-image-viewer-close:focus-visible, .zm-image-viewer-arrow:focus-visible { outline: 2px solid #8fd8ff; outline-offset: 2px; }
+.zm-image-viewer-close { top: 12px; right: 12px; }
+.zm-image-viewer-arrow { top: 50%; margin-top: -22px; }
+.zm-image-viewer-prev { left: 12px; }
+.zm-image-viewer-next { right: 12px; }
+.zm-image-viewer-arrow[hidden] { display: none; }
+@media (max-width: 600px) {
+	.zm-image-viewer { padding: 64px 12px 24px; }
+	.zm-image-viewer-arrow { top: auto; bottom: 16px; margin-top: 0; }
+	.zm-image-viewer-img { max-height: calc(100dvh - 180px); }
+}
+@media (prefers-reduced-motion: reduce) {
+	.zm-image-viewer[open], .zm-image-viewer[open]::backdrop,
+	.zm-image-viewer.is-closing, .zm-image-viewer.is-closing::backdrop { animation: none; }
+}
 .zm-carousel { position: relative; margin: 0 0 12px; }
 .leaflet-control-layers .popupContent > .zm-carousel { margin: 0 16px 12px; }
 .leaflet-control-layers .popupContent.path-step-content > .zm-carousel { margin: 0 0 12px; }

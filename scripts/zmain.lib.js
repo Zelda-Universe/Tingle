@@ -256,7 +256,9 @@ function getUserInfo() {
       // (A map download an earlier page left unfinished: OfflineDownloads.js.)
       if(zMap.resumeOfflineDownloads) zMap.resumeOfflineDownloads();
     }
-    if(offline) return;
+    // Offline, as this device last saw the account: its saved paths
+    // (Paths.js loadPaths falls back to them).
+    if(offline) { if(zMap.loadPaths) zMap.loadPaths(); return; }
     // Paths, once we know who's asking (scripts/services/Paths.js: admins
     // only while they're built). The markers are in by now.
     if(zMap.loadPaths) zMap.loadPaths();

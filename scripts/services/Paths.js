@@ -37,7 +37,22 @@ ZMap.prototype.loadPaths = function() {
   }
   // A link's path comes too, even someone else's (a shared route).
   var linked = new URL(window.location.href).searchParams.get('path') || '';
+  // Offline: kept on this device for the signed-in account
+  // (ZOfflineSync.savePaths), and with a downloaded map as anyone sees them
+  // (OfflineDownloads.js), so signing out keeps the map's paths.
+  var user = this.getUser && this.getUser(), game = gameId;
   $.getJSON('ajax.php?command=get_paths&game=' + gameId + '&path=' + encodeURIComponent(linked)).done(function(paths) {
+    if(user && window.ZOfflineSync && Array.isArray(paths)) ZOfflineSync.savePaths(user.id, game, paths);
+    show(paths);
+  }).fail(function(xhr) {
+    // Offline: this account's own copy (its paths and completions), else the
+    // game's paths saved with its downloaded map, as anyone sees them.
+    if(!window.ZOfflineSync || !ZOfflineSync.isNetworkError(xhr)) return;
+    (user ? ZOfflineSync.savedPaths(user.id, game) : Promise.resolve(null)).then(function(paths) {
+      return paths || (window.ZMapOfflinePacks ? ZMapOfflinePacks.savedPaths(game) : null);
+    }).then(function(paths) { if(paths && game === gameId) show(paths); });
+  });
+  var show = function(paths) {
     zmap.paths = Array.isArray(paths) ? paths : [];
     // An embed (previewed on Zelda Maps, signed in) shows only what anyone
     // would see: the official paths and the one embedded, nobody's progress.
@@ -77,7 +92,7 @@ ZMap.prototype.loadPaths = function() {
         finally { control._restoringInitialPage = false; }
       } else { zmap.focusPath(slug, {instant: true}); zmap.drawPaths(); }
     }
-  });
+  };
 };
 
 ZMap.prototype._pathMarker = function(id) {

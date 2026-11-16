@@ -7,6 +7,9 @@ const DATA_CACHE = `zeldamaps-data-${CACHE_VERSION}`;
 const TILE_CACHE = `zeldamaps-tiles-${CACHE_VERSION}`;
 const MAX_TILE_ENTRIES = 500;
 const NAVIGATION_CACHE = 'zeldamaps-offline-navigation';
+// The signed-in account's own data kept for offline (ZOfflineSync.savePaths):
+// not a map pack, and kept through updates as packs are.
+const ACCOUNT_CACHE = 'zeldamaps-offline-account';
 
 const CORE_ASSETS = [
   './?game=OoT',
@@ -35,6 +38,8 @@ const OPTIONAL_ASSETS = [
   './images/icons/oot/FairyThought.svg',
   './images/icons/oot/Weapons.svg',
   './images/icons/oot/Upgrades.svg',
+  // Hylia Serif: marker, path and area titles (styles/zmain.css).
+  './fonts/HyliaSerifBeta-Regular.otf',
   './fonts/icomoon.ttf?xz2wpa',
   './fonts/icomoon.woff?xz2wpa',
   ...['265406_1_0', '265406_0_0', '264CA8_2_0', '264CA8_1_0', '265406_2_0', '265406_3_0', '264CA8_0_0']
@@ -246,7 +251,7 @@ self.addEventListener('message', event => {
 async function cacheFirstTile(request, clientId) {
   // Explicit packs take priority over the rolling cache.
   const packNames = (await caches.keys()).filter(name =>
-    name.startsWith('zeldamaps-offline-') && name !== 'zeldamaps-offline-navigation'
+    name.startsWith('zeldamaps-offline-') && name !== 'zeldamaps-offline-navigation' && name !== ACCOUNT_CACHE
   );
   for (const name of packNames) {
     const pack = await caches.open(name);
@@ -299,7 +304,7 @@ function isStaticAssetRequest(url, request) {
 }
 
 async function downloadedImageOrNetwork(request) {
-  const names = (await caches.keys()).filter(name => name.startsWith('zeldamaps-offline-') && name !== NAVIGATION_CACHE);
+  const names = (await caches.keys()).filter(name => name.startsWith('zeldamaps-offline-') && name !== NAVIGATION_CACHE && name !== ACCOUNT_CACHE);
   for (const name of names) {
     const image = await (await caches.open(name)).match(request, { ignoreVary: true });
     if (image) return image;

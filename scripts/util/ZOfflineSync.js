@@ -65,6 +65,8 @@ var ZOfflineSync = {
   },
 
   clear: function() {
+    // (Paths are kept in a cache of their own: savePaths.)
+    try { if(window.caches) caches.delete(this.accountCache); } catch(error) {}
     try {
       Object.keys(localStorage).forEach(function(key) {
         if(
@@ -96,6 +98,28 @@ var ZOfflineSync = {
 
   savedBookmarks: function(userId, game) {
     return this._read(this._dataKey('bookmarks', userId, game));
+  },
+
+  // A game's paths as get_paths gave them to this account (its drafts and
+  // completions with them), for the map offline. Kept in the browser's cache
+  // storage rather than localStorage: TotK's are about 300 KB. Promises.
+  accountCache: 'zeldamaps-offline-account',
+  _pathsRequest: function(userId, game) {
+    return new URL('zeldamaps-account/paths/' + encodeURIComponent(userId) + '/' + encodeURIComponent(game) + '.json', location.href).href;
+  },
+  savePaths: function(userId, game, paths) {
+    if(!userId || game == null || !window.caches || !Array.isArray(paths)) return Promise.resolve();
+    var request = this._pathsRequest(userId, game);
+    return caches.open(this.accountCache).then(function(cache) {
+      return cache.put(request, new Response(JSON.stringify(paths), { headers: { 'Content-Type': 'application/json' } }));
+    }).catch(function() {});
+  },
+  savedPaths: function(userId, game) {
+    if(!userId || game == null || !window.caches) return Promise.resolve(null);
+    var request = this._pathsRequest(userId, game);
+    return caches.open(this.accountCache).then(function(cache) { return cache.match(request); })
+      .then(function(response) { return response ? response.json() : null; })
+      .catch(function() { return null; });
   },
 
   queue: function() {

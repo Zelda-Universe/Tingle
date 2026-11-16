@@ -7266,6 +7266,21 @@ var ZMapOfflinePacks = {
   cacheName: function(gameId) {
     return 'zeldamaps-offline-' + gameId;
   },
+  // A game's paths as anyone sees them, saved with its downloaded map
+  // (OfflineDownloads.js).
+  pathsURL: function(gameId) {
+    return 'ajax.php?command=get_paths&game=' + encodeURIComponent(gameId) + '&path=';
+  },
+  // Those, from the game's downloaded map: a promise of the list, or null.
+  // (Its pack is named by its offline id, OoT, not the container id the
+  // page asks with: the address, unique to the game, finds it.)
+  savedPaths: function(gameId) {
+    if(!window.caches) return Promise.resolve(null);
+    var url = new URL(this.pathsURL(gameId), window.location.href).href;
+    return caches.match(url)
+      .then(function(response) { return response ? response.json() : null; })
+      .catch(function() { return null; });
+  },
   storageKey: function(gameId) {
     return 'zeldamapsOfflineMap-' + gameId;
   },

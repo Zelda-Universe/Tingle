@@ -349,6 +349,24 @@ ZMap.prototype._runOfflineDownload = function(job) {
               return dataResponse.clone().json().then(collectImages).then(function() { return cache.put(url, dataResponse); });
             });
           });
+          // The game's paths, as anyone sees them (no account: they're map
+          // data, kept with the map like its markers, so signing out keeps
+          // them). Paths.js loadPaths uses them offline when this account
+          // has no copy of its own. Not needed for the map itself: a failure
+          // here doesn't stop the download.
+          var pathsURL = ZMapOfflinePacks.pathsURL(containers[0].id);
+          dataURLs.push(pathsURL);
+          saves.push(fetchWithRetry(pathsURL, { cache: 'no-cache', credentials: 'omit' }).then(function(pathsResponse) {
+            if(pathsResponse.ok) return cache.put(pathsURL, pathsResponse);
+          }).catch(function() {}));
+          // And the signed-in account's (its own paths and completions).
+          var account = zmap.getUser && zmap.getUser();
+          if(account && window.ZOfflineSync) {
+            saves.push(fetchWithRetry(pathsURL, { cache: 'no-cache', credentials: 'same-origin' })
+              .then(function(pathsResponse) { return pathsResponse.ok ? pathsResponse.json() : null; })
+              .then(function(paths) { if(Array.isArray(paths)) return ZOfflineSync.savePaths(account.id, containers[0].id, paths); })
+              .catch(function() {}));
+          }
           // The page itself, so switching to this game works offline.
           var pageURL = './?game=' + encodeURIComponent(game.id);
           dataURLs.push(pageURL);

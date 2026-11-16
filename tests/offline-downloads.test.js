@@ -31,7 +31,7 @@ test('a download runs apart from the page, with a toast, and is picked up again'
   const job=read('scripts/services/OfflineDownloads.js');
   // Remembered, so the next page picks it up.
   expect(job).toContain("ZMap.prototype.OFFLINE_QUEUE_KEY = 'zeldamapsOfflineQueue';");
-  expect(job).toContain("window.addEventListener('online', function() { zmap.resumeOfflineDownloads(); });");
+  expect(job).toContain("this._onPage(window, 'online', function() { zmap.resumeOfflineDownloads(); });");
   expect(read('scripts/zmain.lib.js')).toContain('if(zMap.resumeOfflineDownloads) zMap.resumeOfflineDownloads();');
   // A toast that stays while it runs.
   expect(job).toContain("timeOut: 0, extendedTimeOut: 0, tapToDismiss: false");

@@ -383,7 +383,7 @@ ZMap.prototype._openGameSettingsRevision = function(id,back) {
     body.append(zmap._wikiFieldDiffHTML(fields,'No content changes.'));
     var actions=body.find('.wiki-actions');
     if(!actions.length) {actions=$('<div class="wiki-actions"></div>');body.find('.wiki-revision-meta').after(actions);}
-    actions.append('<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy Revision</button><button type="button" class="wiki-action-button" data-action="copy-url"><i class="fas fa-link" aria-hidden="true"></i>Copy Link</button>'+zmap._yeahHTML('settings',id,false)+'<button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>');
+    actions.append(zmap._revisionControlsHTML('[[settingsrev:'+Number(id)+']]','settings',id)+'<button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>');
     body.on('click','[data-action]',function() {
       var action=this.getAttribute('data-action');
       if(action==='copy-code') {zmap._copyText('[[settingsrev:'+Number(id)+']]',this);return;}
@@ -421,7 +421,7 @@ ZMap.prototype._openSettingsRevisionLink = function(id,game,back) {
     var url=new URL(window.location.origin+'/');
     url.searchParams.set('game',game || this.mapOptions.shortName);
     if(this._isWikiEditor()) {url.searchParams.set('page','game-settings-revision');url.searchParams.set('settings-rev',id);}
-    window.location.href=url.href;return;
+    this.openGameURL ? this.openGameURL(url.href) : (window.location.href=url.href);return;
   }
   var zmap=this;
   this._openGameSettingsRevision(id,back || function() {zmap.mapControl.resetContent();});

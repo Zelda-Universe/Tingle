@@ -167,8 +167,19 @@ function zMapInit(vResults) {
  });
 }
 
+// A request the page starts with, or, switching games without a reload
+// (scripts/services/GameSwitch.js), what that switch already asked the
+// server for: done at once when it's in, else when it is. (On a page load
+// there's none: $.getJSON, as always.)
+function startupJSON(url, success) {
+  var ready = window.zmGameSwitchData && window.zmGameSwitchData[url];
+  if(!ready) return $.getJSON(url, success);
+  delete window.zmGameSwitchData[url];
+  return ready.done(success);
+}
+
 function getMapCategories(categoriesSelectedIdPairsObject) {
-  $.getJSON(
+  startupJSON(
     "ajax.php?command=get_categories&game=" + gameId,
     function(vResults) {
       vResults = ensureBotWNPCCategory(vResults);
@@ -219,6 +230,10 @@ function getGames() {
       $.each(vResults, function(i,map){
         zMap.addGame(map);
       });
+      // A sidebar built before the games were in (switching games without a
+      // reload builds it early: GameSwitch.js) gets them now. (A page load
+      // builds it after: nothing to do.)
+      if(zMap.mapControl && zMap.mapControl.refreshGameMenu) zMap.mapControl.refreshGameMenu();
       refreshAdminGames();
       // Other games' data isn't fetched here. The service worker saves the
       // data of each game as it's viewed, and Offline Maps downloads save a
@@ -227,11 +242,18 @@ function getGames() {
 };
 
 function getMaps() {
-  $.getJSON("ajax.php?command=get_map&game=" + gameId, function(vResults) {
+  startupJSON("ajax.php?command=get_map&game=" + gameId, function(vResults) {
     $.each(vResults, function(i, map) {
       zMap.addMap(map);
     });
 
+    // Switching games without a reload: the map and its sidebar now, from
+    // what's in (they don't need the markers), the markers once they're in.
+    // (A page load builds them with the markers, as always.)
+    if(window.zmGameSwitchBuildEarly) {
+      zMap.buildMap(gameId);
+      zMap._builtBeforeMarkers = true;
+    }
     getMarkers();
   }).fail(showOfflineUnavailable);
 };
@@ -316,7 +338,7 @@ function showLoginControls() {
 }
 
 function getMarkers(categories) {
-  $.getJSON(
+  startupJSON(
     "ajax.php?command=get_markers&game=" + gameId,
     function(gameId, vResults) {
       if (vResults.success === false) {
@@ -324,7 +346,7 @@ function getMarkers(categories) {
         return 5;
       }
 
-      zMap.buildMap(gameId);
+      if(!zMap._builtBeforeMarkers) zMap.buildMap(gameId);
 
       getUserInfo();
       if(vResults && vResults.length > 0) {
@@ -623,16 +645,29 @@ function positionAds() {
 }
 
 function observeAdLayout() {
-  if(adState.observing || !zMap.mapControl) return;
-  adState.observing = true;
+  if(!zMap.mapControl) return;
   var drawer = zMap.mapControl._container;
+  // (Each map's own drawer: a game switched without a reload has a new one,
+  // scripts/services/GameSwitch.js.)
+  if(adState.observing === drawer) return;
+  if(adState.observers) adState.observers.forEach(function(observer) { observer.disconnect(); });
+  adState.observing = drawer;
   // The drawer moves by its inline top, so follow its style.
-  new MutationObserver(positionAds).observe(drawer, {
+  var moves = new MutationObserver(positionAds);
+  moves.observe(drawer, {
     attributes: true,
     attributeFilter: ['style', 'class']
   });
-  if(window.ResizeObserver) new ResizeObserver(function() { updateAdState(); }).observe(drawer);
-  window.addEventListener('resize', function() { updateAdState(); });
+  adState.observers = [moves];
+  if(window.ResizeObserver) {
+    var sizes = new ResizeObserver(function() { updateAdState(); });
+    sizes.observe(drawer);
+    adState.observers.push(sizes);
+  }
+  if(!adState.resizeWatched) {
+    adState.resizeWatched = true;
+    window.addEventListener('resize', function() { updateAdState(); });
+  }
 }
 
 // Called once the user is known and whenever they sign in or out. Ads are

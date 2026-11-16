@@ -40,7 +40,7 @@ test('photos and videos dropped into the editor upload where they land',()=>{
   expect(js).toContain('e.stopImmediatePropagation();');
   expect(js).toMatch(/editor\.on\('drop', function\(e\) \{\n\s*_this\._fileDragging\(null, true\);/);
   // Shown as soon as a file's dragged anywhere over the page, gone once it isn't.
-  expect(js).toContain("document.addEventListener('dragover', function(e) {");
+  expect(js).toContain("this._onPage(document, 'dragover', function(e) {");
   expect(js).toContain('this._fileDragTimer = window.setTimeout(hide, 250);');
   // A file dropped beside the editor isn't opened in place of the page.
   expect(js).toContain("e.dataTransfer.dropEffect = 'none';");
@@ -65,6 +65,9 @@ describe('the drop overlays follow a file dragged over the page', () => {
       '<div class="marker-edit-section" data-zm-drops="1" id="one"></div>' +
       '<div class="marker-edit-section" data-zm-drops="1" id="two"></div>';
     const ZMap = function() {};
+    // (zmap.js's: a page-wide listener, recorded.)
+    ZMap.prototype._onPage = function(target, type, fn, options) { target.addEventListener(type, fn, options); };
+    ZMap.prototype._onCleanup = function() {};
     global.$ = () => ({});
     new Function('ZMap', read('scripts/zvideo.js'))(ZMap);
     zmap = new ZMap();

@@ -420,6 +420,27 @@ ZMap.prototype._yeahHTML = function(type,id,summary) {
   return '<button type="button" class="wiki-action-button yeah-target yeah-button" data-yeah-key="'+key+'" aria-pressed="false" disabled><span class="yeah-icon yeah-plus" aria-hidden="true"></span><span class="yeah-label">Yeah!</span><span class="yeah-count">0</span></button>';
 };
 
+// A revision's controls: Yeah, Copy Link and Copy Shortcode, as tiles like
+// a marker's or path's controls (marker-action-button). code: the
+// shortcode Copy Shortcode copies ([[rev:N]]), named on it for screen
+// readers and on hover.
+ZMap.prototype._revisionControlsHTML = function(code, yeahType, id) {
+  var tile = function(action, icon, text, name) {
+    return '<button type="button" class="marker-action-button infoWindowIcn" data-action="' + action + '"' +
+      (name ? ' aria-label="' + name + '" title="' + name + '"' : '') + '>' +
+      '<span class="marker-action-icon">' + icon + '</span>' +
+      '<span class="marker-action-label">' + text + '</span></button>';
+  };
+  return '<div class="marker-actions-row wiki-revision-controls">' +
+    '<button type="button" class="marker-action-button infoWindowIcn yeah-target yeah-button" data-yeah-key="' + yeahType + ':' + Number(id) + '" aria-pressed="false" disabled>' +
+      '<span class="marker-action-icon"><span class="yeah-icon yeah-plus" aria-hidden="true"></span></span>' +
+      '<span class="marker-action-label"><span class="yeah-label">Yeah!</span> <span class="yeah-count">0</span></span></button>' +
+    tile('copy-url', '<i class="fas fa-link" aria-hidden="true"></i>', 'Copy Link') +
+    // (Its glyph: the brackets a shortcode is written in.)
+    tile('copy-code', '<svg class="shortcode-icon" viewBox="0 0 24 20" aria-hidden="true" focusable="false"><path d="M5 2.5H2v15h3M10 2.5H7v15h3M14 2.5h3v15h-3M19 2.5h3v15h-3"/></svg>', 'Copy Shortcode', 'Copy ' + this._wikiEscape(code)) +
+  '</div>';
+};
+
 ZMap.prototype._wireYeahs = function(root) {
   root=root && (root.jquery ? root[0] : root);
   if(!root || root._yeahWired || typeof MutationObserver==='undefined') return;
@@ -462,7 +483,7 @@ ZMap.prototype._wireYeahs = function(root) {
 ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game) {
   var _this = this;
   if(game && this.mapOptions && game !== this.mapOptions.shortName) {
-    window.location.href = this._markerURLWithReturn(this._wikiMarkerURL(markerId, game, revisionId),back);
+    this.openGameURL(this._markerURLWithReturn(this._wikiMarkerURL(markerId, game, revisionId),back));
     return;
   }
   var marker = this.cachedMarkersById[markerId];
@@ -484,7 +505,7 @@ ZMap.prototype._openMarkerLink = function(markerId, revisionId, back, game) {
       toastr.info('That marker isn\'t visible on this map.');
       return;
     }
-    window.location.href = _this._markerURLWithReturn(_this._wikiMarkerURL(markerId, game, revisionId),back);
+    _this.openGameURL(_this._markerURLWithReturn(_this._wikiMarkerURL(markerId, game, revisionId),back));
   }).fail(function(xhr) { toastr.error(_this._wikiError(xhr)); });
 };
 
@@ -650,9 +671,7 @@ ZMap.prototype._openMarkerRevision = function(revisionId, back) {
         (data.canRevert && !data.isCurrent
           ? '<button type="button" class="wiki-action-button" data-action="revert"><i class="fas fa-undo" aria-hidden="true"></i>Restore This Version</button>'
           : '') +
-        '<button type="button" class="wiki-action-button" data-action="copy-code"><i class="fas fa-code" aria-hidden="true"></i>Copy <code>' + code + '</code></button>' +
-        '<button type="button" class="wiki-action-button" data-action="copy-url"><i class="fas fa-link" aria-hidden="true"></i>Copy Link</button>' +
-        _this._yeahHTML('revision',revisionId,false)+'<button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>' +
+        _this._revisionControlsHTML(code, 'revision', revisionId) + '<button type="button" class="wiki-action-button" data-action="history"><i class="fas fa-history" aria-hidden="true"></i>All Revisions</button>' +
       '</div>' +
       // Anyone signed in can report an edit (scripts/zreports.js).
       (_this.getUser() && revision.action !== 'import' && String(revision.userId) !== String(_this.getUser().id)

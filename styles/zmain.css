@@ -446,6 +446,90 @@ main.leaflet-container,
 	background-repeat: repeat;
 }
 
+/* While a map's first images load (a game switched to: GameSwitch.js
+   _watchMapLoading), its background pulses, under the map. */
+main.leaflet-container.zm-map-loading,
+#map.leaflet-container.zm-map-loading {
+	background-image: none;
+}
+
+main.leaflet-container.zm-map-loading::before,
+#map.leaflet-container.zm-map-loading::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	background-image: url(images/zelda-maps-bg-tile.png);
+	background-repeat: repeat;
+	pointer-events: none;
+	animation: zm-map-loading-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes zm-map-loading-pulse {
+	0%, 100% { opacity: 1; }
+	50% { opacity: .35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	main.leaflet-container.zm-map-loading::before,
+	#map.leaflet-container.zm-map-loading::before { animation: none; }
+}
+
+/* A map slow to come up (ZLayers _swapMapLayer, GameSwitch.js): the one on
+   screen dimmed, a spinner in the middle of what can be seen of it. Over
+   the map, under the sidebar and the map's buttons. */
+.zm-map-waiting {
+	position: absolute;
+	inset: 0;
+	z-index: 500;
+	pointer-events: none;
+	background: rgba(0, 0, 0, .45);
+	opacity: 0;
+	transition: opacity .2s ease-out;
+}
+
+.zm-map-waiting.is-on {
+	opacity: 1;
+}
+
+.zm-map-waiting-spinner {
+	position: absolute;
+	left: calc(var(--zm-waiting-left, 0px) + (100% - var(--zm-waiting-left, 0px)) / 2);
+	top: calc((100% - var(--zm-waiting-bottom, 0px)) / 2);
+	width: 40px;
+	height: 40px;
+	margin: -20px 0 0 -20px;
+	box-sizing: border-box;
+	border: 3px solid rgba(255, 255, 255, .25);
+	border-top-color: rgba(255, 255, 255, .9);
+	border-radius: 50%;
+	animation: offline-map-spin .8s linear infinite;
+}
+
+.zm-map-waiting-label {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.zm-map-waiting { transition: none; }
+	.zm-map-waiting-spinner { animation-duration: 2s; }
+}
+
+/* The game switched from, still on screen till the new one's drawn
+   (GameSwitch.js _coverMap): over the new map, under the dimming. */
+.zm-map-cover {
+	position: absolute;
+	inset: 0;
+	z-index: 450;
+	overflow: hidden;
+	pointer-events: none;
+}
+
 /* Toast Notification Styling */
 
 /* Under the settings button (top right), where the Completes reminder sits. */
@@ -4984,6 +5068,34 @@ div.circle:has(>.icon-EoW_Echo) {
 	background: #36a065;
 }
 
+/* Yeah, Copy Link and Copy Shortcode: tiles, as a marker's or path's
+   controls (.marker-actions-row), across the actions between Restore and
+   All Revisions. */
+.leaflet-control-layers .wiki-actions > .wiki-revision-controls {
+	grid-column: 1 / -1;
+	margin: 0;
+}
+
+.wiki-revision-controls .marker-action-label {
+	max-width: 100%;
+	overflow-wrap: anywhere;
+}
+
+/* Copy Shortcode's glyph: [[ ]], the brackets a shortcode is written in. */
+.leaflet-control-layers .marker-actions-row .marker-action-icon svg.shortcode-icon {
+	width: 24px;
+	flex-basis: 24px;
+	fill: none;
+	stroke: currentColor;
+	stroke-width: 2;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.wiki-revision-controls .yeah-icon { width: 22px; height: 22px; }
+.wiki-revision-controls .yeah-button .marker-action-label { white-space: nowrap; }
+.wiki-revision-controls .yeah-button .yeah-count { opacity: .75; }
+
 .wiki-revert-form > p {
 	margin: 0 0 12px;
 	font-size: 14px;
@@ -5354,6 +5466,9 @@ div.circle:has(>.icon-EoW_Echo) {
 	background: none;
 	color: rgba(255,255,255,.7);
 }
+
+/* Switching games in place (GameSwitch.js): waiting on the new game's settings. */
+html.zm-switching-game, html.zm-switching-game * { cursor: progress !important; }
 
 /* A photo or video dragged over the page (zvideo.js _fileDragging): over
    each section's editor (its toolbar and text, not the Section label), a
@@ -6261,9 +6376,16 @@ body .tox .tox-insert-table td.tox-insert-table__cell--selected {
 .profile-activity-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:16px; }
 .menu-cat-content-inner .profile-activity-heading h4 { margin:0; line-height:1.2; }
 .profile-activity-heading .activity-filters { margin:0; flex:none; }
-.profile-activity-heading .activity-filters button { min-height:34px; padding:6px 12px; gap:5px; font-size:13px; }
+/* Recent Edits: All Changes or Current Game, full width, and under it the
+   activity filter at a profile's size. */
+#recent_changes .activity-scope { margin-bottom:10px; }
+#recent_changes .activity-filters { width:max-content; max-width:calc(100% - 32px); margin:0 auto 16px; }
+.profile-activity-heading .activity-filters button,
+#recent_changes .activity-filters button { min-height:34px; padding:6px 12px; gap:5px; font-size:13px; }
 .profile-activity-heading .activity-filters button svg,
-.profile-activity-heading .activity-filters button i { width:13px; height:13px; }
+.profile-activity-heading .activity-filters button i,
+#recent_changes .activity-filters button svg,
+#recent_changes .activity-filters button i { width:13px; height:13px; }
 .activity-talk .activity-comment-body { margin:0; font-size:14px; line-height:1.5; color:rgba(255,255,255,.85); overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden; }
 .activity-talk > .activity-reply-quote { align-self:stretch; box-sizing:border-box; min-width:0; max-width:calc(100% - 22px); margin:0 22px 0 0; padding:8px 12px; border:0; border-left:2px solid rgba(255,255,255,.35); border-radius:2px 8px 8px 2px; background:rgba(255,255,255,.06); color:rgba(255,255,255,.6); font-size:13px; }
 .activity-reply-quote cite { display:block; margin-bottom:4px; font-style:normal; font-weight:600; }

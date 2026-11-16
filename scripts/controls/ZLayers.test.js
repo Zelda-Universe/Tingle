@@ -9,6 +9,8 @@ function drawerMethods(globals = {}) {
     return Control;
   } } }, control: {} } };
   vm.runInNewContext(fs.readFileSync(__dirname + '/ZLayers.js', 'utf8'), context);
+  // (Leaflet's helpers a test brings, beside the control.)
+  if(globals.L) Object.assign(context.L, globals.L);
   return context.L.Control.ZLayers.prototype;
 }
 
@@ -270,7 +272,7 @@ describe('shared mobile drawer resize animation', () => {
 });
 
 describe('Switch Map menu follows programmatic map switches', () => {
-  const methods = drawerMethods();
+  const methods = drawerMethods({ window });
 
   function harness(submapLayers) {
     const hyrule = { id: 11, originalId: 11, defaultSubMapId: 11, bringToBack: jest.fn() };
@@ -280,7 +282,10 @@ describe('Switch Map menu follows programmatic map switches', () => {
       zMap: { mapOptions: { submapLayers } },
       _maps: [hyrule, deku],
       currentMapLayer: hyrule,
-      _map: { removeLayer: jest.fn(), addLayer: jest.fn(), fire: jest.fn() },
+      _map: { removeLayer: jest.fn(), addLayer: jest.fn(), fire: jest.fn(), hasLayer: jest.fn(() => false) },
+      ...Object.fromEntries(['_swapMapLayer', '_dropOutgoingMapLayer', '_setMapLayerHidden', '_finishTileFades',
+        '_mapLayerDrawn', '_clearMapSwap', '_endMapSwapHold', '_releaseMapContent', '_setMapWaiting', '_mapTransition']
+        .map(name => [name, methods[name]])),
       setCurrentMap: jest.fn(),
       _syncMapsMenuSelection: methods._syncMapsMenuSelection,
       _mapButtonIsCurrent: methods._mapButtonIsCurrent,
@@ -313,7 +318,10 @@ describe('Switch Map menu follows programmatic map switches', () => {
       zMap: { mapOptions: { submapLayers: true } },
       _maps: [child, adult, deku],
       currentMapLayer: child,
-      _map: { removeLayer: jest.fn(), addLayer: jest.fn(), fire: jest.fn() },
+      _map: { removeLayer: jest.fn(), addLayer: jest.fn(), fire: jest.fn(), hasLayer: jest.fn(() => false) },
+      ...Object.fromEntries(['_swapMapLayer', '_dropOutgoingMapLayer', '_setMapLayerHidden', '_finishTileFades',
+        '_mapLayerDrawn', '_clearMapSwap', '_endMapSwapHold', '_releaseMapContent', '_setMapWaiting', '_mapTransition']
+        .map(name => [name, methods[name]])),
       setCurrentMap: jest.fn(),
       _syncMapsMenuSelection: methods._syncMapsMenuSelection,
       _mapButtonIsCurrent: methods._mapButtonIsCurrent,
@@ -333,4 +341,352 @@ describe('Switch Map menu follows programmatic map switches', () => {
     expect(h.drawer._map.addLayer).not.toHaveBeenCalled();
     expect(h.updateSelection).not.toHaveBeenCalled();
   });
+});
+
+describe('swapping maps never shows neither', () => {
+  const methods = drawerMethods({ window });
+  function layer(id, loading, originalId) {
+    const handlers = {};
+    const container = document.createElement('div');
+    // (Separate maps have bounds of their own: no bounds, the same place.)
+    return { id, originalId: originalId === undefined ? 'same' : originalId, options: {}, bringToBack: jest.fn(),
+      mapBounds: originalId === undefined ? null : [[0, 0], [1, 1]],
+      getContainer: () => container, isLoading: () => loading,
+      once: (event, fn) => { handlers[event] = fn; }, handlers };
+  }
+  function drawer(current, transitions) {
+    const onMap = new Set([current]);
+    const d = Object.create(methods);
+    Object.assign(d, {
+      zMap: { MAP_TRANSITIONS: Object.assign({ variant: 'cut', map: 'fade' }, transitions) },
+      currentMapLayer: current,
+      _map: { addLayer: l => onMap.add(l), removeLayer: l => onMap.delete(l), hasLayer: l => onMap.has(l) },
+      onMap
+    });
+    return d;
+  }
+  const hidden = l => l.getContainer().style.visibility === 'hidden';
+  afterEach(() => jest.useRealTimers());
+
+  test('another map fades: loaded out of sight, then the old one fades away over it, then the markers come in', () => {
+    jest.useFakeTimers();
+    const surface = layer('surface', false, 1), sky = layer('sky', true, 2);
+    const d = drawer(surface);
+    d._releaseMapContent = jest.fn();
+    d._swapMapLayer(sky);
+    expect(d.currentMapLayer).toBe(sky);
+    expect([...d.onMap]).toEqual([surface, sky]);
+    // Never filling in over the old one.
+    expect(sky.bringToBack).toHaveBeenCalled();
+    expect(hidden(sky)).toBe(true);
+    sky.handlers.load();
+    expect(hidden(sky)).toBe(false);
+    expect(surface.getContainer().style.opacity).toBe('0');
+    expect(d._releaseMapContent).not.toHaveBeenCalled();
+    jest.advanceTimersByTime(200);
+    expect([...d.onMap]).toEqual([sky]);
+    expect(d._releaseMapContent).toHaveBeenCalledWith(d.MAP_MARKERS_IN_MS, true);
+    // Back as it was, for when it's shown again.
+    expect(surface.getContainer().style.opacity).toBe('');
+  });
+
+
+
+  test('another version of the same map cuts: shown and the old one gone, together', () => {
+    jest.useFakeTimers();
+    const child = layer('child', false), adult = layer('adult', true);
+    const d = drawer(child);
+    d._swapMapLayer(adult);
+    expect([...d.onMap]).toEqual([child, adult]);
+    expect(hidden(adult)).toBe(true);
+    expect(hidden(child)).toBe(false);
+    adult.handlers.load();
+    expect(hidden(adult)).toBe(false);
+    expect([...d.onMap]).toEqual([adult]);
+    expect(child.getContainer().style.opacity).toBe('');
+  });
+
+  test('the transitions are a setting: each kind can be either', () => {
+    jest.useFakeTimers();
+    const child = layer('child', false), adult = layer('adult', true);
+    const d = drawer(child, { variant: 'fade' });
+    d._swapMapLayer(adult);
+    adult.handlers.load();
+    expect(d.onMap.has(child)).toBe(true);
+    expect(child.getContainer().style.opacity).toBe('0');
+    const a = layer('a', false, 1), b = layer('b', true, 2);
+    const e = drawer(a, { map: 'cut' });
+    e._swapMapLayer(b);
+    b.handlers.load();
+    expect([...e.onMap]).toEqual([b]);
+  });
+
+
+
+  test('a new map that takes too long is shown anyway', () => {
+    jest.useFakeTimers();
+    const child = layer('child', false), adult = layer('adult', true);
+    const d = drawer(child);
+    d._swapMapLayer(adult);
+    jest.advanceTimersByTime(d.MAP_SWAP_WAIT_MS);
+    expect(hidden(adult)).toBe(false);
+    expect([...d.onMap]).toEqual([adult]);
+  });
+
+  test('slow to load: the map on screen dims under a spinner till the new one is in', () => {
+    jest.useFakeTimers();
+    const waiting = jest.fn();
+    window.zmMapWaiting = waiting;
+    const child = layer('child', false), adult = layer('adult', true);
+    const d = drawer(child);
+    const element = document.createElement('div');
+    d._map.getContainer = () => element;
+    d._swapMapLayer(adult);
+    jest.advanceTimersByTime(d.MAP_SWAP_SLOW_MS - 1);
+    expect(waiting).not.toHaveBeenCalled();
+    jest.advanceTimersByTime(1);
+    expect(waiting).toHaveBeenLastCalledWith(element, true, undefined);
+    adult.handlers.load();
+    expect(waiting).toHaveBeenLastCalledWith(element, false, undefined);
+    delete window.zmMapWaiting;
+  });
+
+  test('quick to load: never dimmed', () => {
+    jest.useFakeTimers();
+    const waiting = jest.fn();
+    window.zmMapWaiting = waiting;
+    const child = layer('child', false), adult = layer('adult', true);
+    const d = drawer(child);
+    d._map.getContainer = () => document.createElement('div');
+    d._swapMapLayer(adult);
+    adult.handlers.load();
+    jest.advanceTimersByTime(5000);
+    expect(waiting).not.toHaveBeenCalled();
+    delete window.zmMapWaiting;
+  });
+
+  test('floors tapped through quickly keep the one on screen till the last is drawn', () => {
+    jest.useFakeTimers();
+    const one = layer('1F', false), two = layer('2F', true), three = layer('3F', true);
+    const d = drawer(one);
+    d._swapMapLayer(two);
+    d._swapMapLayer(three);
+    // 2F, never shown, is gone; 1F still on screen; 3F loading out of sight.
+    expect([...d.onMap]).toEqual([one, three]);
+    expect(hidden(one)).toBe(false);
+    expect(hidden(two)).toBe(false);
+    expect(hidden(three)).toBe(true);
+    // 2F's tiles finishing late change nothing.
+    two.handlers.load();
+    expect([...d.onMap]).toEqual([one, three]);
+    three.handlers.load();
+    expect([...d.onMap]).toEqual([three]);
+    expect(hidden(three)).toBe(false);
+  });
+
+  test('maps picked quickly keep the one on screen till the last is in, then fade from it', () => {
+    jest.useFakeTimers();
+    const one = layer('1', false, 1), two = layer('2', true, 2), three = layer('3', true, 3);
+    const d = drawer(one);
+    d._swapMapLayer(two);
+    d._swapMapLayer(three);
+    expect([...d.onMap]).toEqual([one, three]);
+    expect(hidden(three)).toBe(true);
+    three.handlers.load();
+    expect(one.getContainer().style.opacity).toBe('0');
+    jest.advanceTimersByTime(200);
+    expect([...d.onMap]).toEqual([three]);
+  });
+
+
+
+  test('going back to the map still on screen keeps it, and drops the one loading', () => {
+    jest.useFakeTimers();
+    const child = layer('child', false), adult = layer('adult', true);
+    const d = drawer(child);
+    d._swapMapLayer(adult);
+    d._swapMapLayer(child);
+    expect(d.currentMapLayer).toBe(child);
+    expect([...d.onMap]).toEqual([child]);
+    expect(hidden(child)).toBe(false);
+    adult.handlers.load();
+    jest.advanceTimersByTime(10000);
+    expect([...d.onMap]).toEqual([child]);
+  });
+
+  test('nothing of the old map drawn yet (a page opening on another): straight to the new one', () => {
+    const first = layer('first', true), wanted = layer('wanted', true);
+    first._tiles = {};
+    const d = drawer(first);
+    d._swapMapLayer(wanted);
+    expect([...d.onMap]).toEqual([wanted]);
+    expect(hidden(wanted)).toBe(false);
+    expect(d._mapSwap).toBeFalsy();
+  });
+});
+
+describe('another map: at once, markers after its tiles', () => {
+  const methods = drawerMethods({ window });
+  test('the old map goes at once, the new one fills in, and its markers come in once it has', () => {
+    jest.useFakeTimers();
+    const handlers = {};
+    const surface = { id: 'a', originalId: 1, mapBounds: [[0, 0], [1, 1]], options: {} };
+    const dungeon = { id: 'b', originalId: 2, mapBounds: [[0, 0], [1, 1]], options: {}, isLoading: () => true,
+      once: (e, fn) => { handlers[e] = fn; } };
+    const onMap = new Set([surface]);
+    const d = Object.create(methods);
+    Object.assign(d, {
+      zMap: { MAP_TRANSITIONS: { variant: 'cut', map: 'instant' }, _watchMapLoading: jest.fn() },
+      currentMapLayer: surface,
+      _map: { addLayer: l => onMap.add(l), removeLayer: l => onMap.delete(l), hasLayer: l => onMap.has(l) },
+      _freezeMapContent: jest.fn(), _releaseMapContent: jest.fn()
+    });
+    d._swapMapLayer(dungeon);
+    expect([...onMap]).toEqual([dungeon]);
+    expect(d.currentMapLayer).toBe(dungeon);
+    expect(d.zMap._watchMapLoading).toHaveBeenCalled();
+    expect(d._freezeMapContent).toHaveBeenCalledWith({ copies: false });
+    d._releaseMapContent.mockClear();
+    handlers.load();
+    expect(d._releaseMapContent).toHaveBeenCalledWith(d.MAP_MARKERS_IN_MS, true);
+    jest.useRealTimers();
+  });
+
+  test('which kind: the same map, or two maps that are each the whole game (TotK), are versions of one place', () => {
+    const d = Object.create(methods);
+    d.zMap = { mapOptions: {} };
+    expect(d._mapSwapKind({ originalId: 1 }, { originalId: 1 })).toBe('variant');
+    expect(d._mapSwapKind({ originalId: 2101 }, { originalId: 2102 })).toBe('variant');
+    expect(d._mapSwapKind({ originalId: 20, mapBounds: [] }, { originalId: 21, mapBounds: [] })).toBe('map');
+    d.zMap.mapOptions.submapLayers = true;
+    expect(d._mapSwapKind({ originalId: 1 }, { originalId: 2 })).toBe('map');
+  });
+});
+
+describe('the other floors and ages, loaded ahead', () => {
+  const made = [];
+  const FakeImage = function() { made.push(this); };
+  const methods = drawerMethods({ window, navigator: { onLine: true }, Image: FakeImage,
+    L: { Util: { template: (url, data) => url.replace(/\{(\w+)\}/g, (m, k) => data[k]) }, extend: Object.assign, Browser: {} } });
+  test('their tiles for what\'s in view, once each', () => {
+    made.length = 0;
+    const tile = (x, y, current) => ({ coords: { x, y, z: 3 }, current });
+    const layer = (url, originalId) => ({ _url: url, originalId, options: { maxNativeZoom: 5, tileSize: 256 } });
+    const child = Object.assign(layer('child/{z}_{x}_{y}.png', 1), { _tiles: { a: tile(1, 2, true), b: tile(9, 9, false) } });
+    const adult = layer('adult/{z}_{x}_{y}.png', 1), dungeon = Object.assign(layer('deku/{z}_{x}_{y}.png', 2), { mapBounds: [] });
+    const d = Object.create(methods);
+    Object.assign(d, { zMap: { mapOptions: { submapLayers: true } }, _map: {}, currentMapLayer: child, _maps: [child, adult, dungeon], _preloadedTiles: {}, _preloadedImages: [] });
+    d._preloadVariants();
+    expect(made.map(i => i.src)).toEqual(['adult/3_1_2.png']);
+    d._preloadVariants();
+    expect(made.length).toBe(1);
+    expect(d._preloadedImages).toEqual(made);
+  });
+
+  test('not while the map on screen, or a swap, is still loading: again later', () => {
+    const d = Object.create(methods);
+    Object.assign(d, { _map: {}, currentMapLayer: { _tiles: {}, isLoading: () => true }, _maps: [] });
+    expect(d._preloadVariants()).toBe('busy');
+    d.currentMapLayer.isLoading = () => false;
+    d._mapSwap = {};
+    expect(d._preloadVariants()).toBe('busy');
+  });
+});
+
+describe('markers change with the map, not before it', () => {
+  const methods = drawerMethods({ window, L: undefined });
+  function setup() {
+    const mapPane = document.createElement('div');
+    const panes = {};
+    ['tilePane', 'markerPane', 'tooltipPane', 'popupPane', 'ootConnections'].forEach(name => {
+      const pane = document.createElement('div');
+      pane.className = 'leaflet-pane leaflet-' + name;
+      mapPane.appendChild(pane);
+      panes[name] = pane;
+    });
+    panes.markerPane.innerHTML = '<img class="old-marker" id="m1">';
+    panes.tooltipPane.innerHTML = '<div class="old-label">Kokiri Forest</div>';
+    panes.tilePane.innerHTML = '<img class="tile">';
+    const listeners = {};
+    const map = {
+      _panes: Object.assign({ mapPane }, panes), _mapPane: mapPane,
+      getCenter: () => ({}), getZoom: () => 3, latLngToLayerPoint: () => ({ subtract: () => ({}) }),
+      on: (e, fn) => { listeners[e] = fn; }, off: e => { delete listeners[e]; }
+    };
+    const d = Object.create(methods);
+    d._map = map;
+    return { d, map, panes, mapPane, listeners };
+  }
+
+  test('a still copy of the markers stays while the real ones change out of sight', () => {
+    const { d, panes, mapPane } = setup();
+    d._freezeMapContent();
+    const copies = mapPane.querySelectorAll('.zm-held-pane');
+    // Markers, labels and OoT's connections; not the tiles or popups.
+    expect([...copies].map(c => c.className)).toEqual([
+      'leaflet-pane leaflet-markerPane zm-held-pane',
+      'leaflet-pane leaflet-tooltipPane zm-held-pane',
+      'leaflet-pane leaflet-ootConnections zm-held-pane']);
+    expect(panes.markerPane.style.visibility).toBe('hidden');
+    expect(panes.markerPane.style.opacity).toBe('0');
+    expect(panes.tilePane.style.visibility).toBe('');
+    expect(panes.popupPane.style.visibility).toBe('');
+    // Just to look at: no ids to be found instead of the real ones.
+    expect(copies[0].querySelector('#m1')).toBeNull();
+    expect(copies[0].querySelector('.old-marker')).not.toBeNull();
+    expect(copies[0].getAttribute('aria-hidden')).toBe('true');
+    // The real ones change...
+    panes.markerPane.innerHTML = '<img class="new-marker">';
+    expect(copies[0].querySelector('.new-marker')).toBeNull();
+    // ...and show when the map does.
+    d._releaseMapContent();
+    expect(mapPane.querySelectorAll('.zm-held-pane').length).toBe(0);
+    expect(panes.markerPane.style.visibility).toBe('');
+    expect(panes.markerPane.style.opacity).toBe('');
+  });
+
+  test('a zoom while held lets the real ones show', () => {
+    const { d, mapPane, listeners } = setup();
+    d._freezeMapContent();
+    listeners.zoomstart();
+    expect(mapPane.querySelectorAll('.zm-held-pane').length).toBe(0);
+    expect(d._frozenContent).toBeNull();
+  });
+
+  test('held once only, however many maps are picked while waiting', () => {
+    const { d, mapPane } = setup();
+    d._freezeMapContent();
+    d._freezeMapContent();
+    expect(mapPane.querySelectorAll('.zm-held-pane').length).toBe(3);
+  });
+  test('fade: the old markers fade away at once; the new ones fade in once the map is in', () => {
+    jest.useFakeTimers();
+    const { d, panes, mapPane } = setup();
+    d._freezeMapContent();
+    d._fadeHeldContent(150);
+    const copy = mapPane.querySelector('.zm-held-pane');
+    expect(copy.style.opacity).toBe('0');
+    expect(copy.style.transition).toBe('opacity 150ms ease-out');
+    // No markers at all meanwhile.
+    expect(panes.markerPane.style.opacity).toBe('0');
+    d._releaseMapContent(200, true);
+    expect(mapPane.querySelectorAll('.zm-held-pane').length).toBe(0);
+    expect(panes.markerPane.style.opacity).toBe('');
+    expect(panes.markerPane.style.visibility).toBe('');
+    expect(panes.markerPane.style.transition).toBe('opacity 200ms ease-out');
+    jest.advanceTimersByTime(250);
+    expect(panes.markerPane.style.transition).toBe('');
+    jest.useRealTimers();
+  });
+
+  test('a map just built: its markers hidden (no copies), through zooms, till let in', () => {
+    const { d, panes, mapPane, listeners } = setup();
+    d._freezeMapContent({ copies: false });
+    expect(mapPane.querySelectorAll('.zm-held-pane').length).toBe(0);
+    expect(panes.markerPane.style.opacity).toBe('0');
+    expect(listeners.zoomstart).toBeUndefined();
+    d._releaseMapContent();
+    expect(panes.markerPane.style.opacity).toBe('');
+  });
+
 });

@@ -98,8 +98,8 @@ ZMap.prototype.resumeOfflineDownloads = function() {
   var zmap = this;
   if(!this._offlineResumeListeners) {
     this._offlineResumeListeners = true;
-    window.addEventListener('online', function() { zmap.resumeOfflineDownloads(); });
-    document.addEventListener('visibilitychange', function() { if(!document.hidden) zmap.resumeOfflineDownloads(); });
+    this._onPage(window, 'online', function() { zmap.resumeOfflineDownloads(); });
+    this._onPage(document, 'visibilitychange', function() { if(!document.hidden) zmap.resumeOfflineDownloads(); });
   }
   if(!this.getUser() || !navigator.onLine || !('caches' in window) || (this.isFramed && this.isFramed())) return;
   this._offlineQueue().forEach(function(entry) {

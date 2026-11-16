@@ -288,19 +288,26 @@ ZMap.prototype._applyEditingBeta = function(data) {
 //  Recent Changes (one game) and All Changes (every game)                //
 //************************************************************************//
 
-// game: a game's short name, or null for every game.
+// game: truthy for Current Game, null for All Changes. One page, Recent
+// Edits, either way, picked at its top (the list, and the page's address,
+// changed in place). Current Game is always the game on screen, whatever
+// game a caller names.
 ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
   var _this = this;
-  var title = game ? 'Recent Edits' : 'All Changes';
+  var title = 'Recent Edits';
   activityFilter=activityFilter || 'all';
+  var oneGame = this.mapOptions.shortName;
+  game = game ? oneGame : null;
   var reopen = this._wikiReopen(function() { _this._openRecentChanges(game, back,activityFilter); }, back, title);
   // Serializable counterpart for comment links that switch games.
   Object.defineProperty(reopen,'activitySource',{get:function() {return {type:'recent',game:game || '',filter:activityFilter};}});
   var page = this._showWikiPage(
     '<div id="recent_changes" class="wiki-page">' +
       '<h3 class="text-center">' + title + '</h3>' +
-      '<p class="wiki-subtitle">' + (game ? 'Community edits to ' + this._wikiEscape(game === this.mapOptions.shortName ? (this.mapOptions.name || game) : game)
-        : 'Community edits to every map') + '</p>' +
+      '<div class="admin-tabs activity-scope" role="group" aria-label="Which edits">' +
+        '<button type="button" data-activity-scope="all" aria-selected="' + (game ? 'false' : 'true') + '"><i class="fas fa-globe" aria-hidden="true"></i>All Changes</button>' +
+        '<button type="button" data-activity-scope="game" aria-selected="' + (game ? 'true' : 'false') + '"><i class="fas fa-map" aria-hidden="true"></i>Current Game</button>' +
+      '</div>' +
       this._activityFilterHTML(activityFilter)+'<ul class="wiki-revisions"><li class="wiki-empty">Loading…</li></ul>' +
       '<button type="button" class="infoWindowIcn form-action-button recent-changes-more" hidden>Show More</button>' +
     '</div>',
@@ -314,7 +321,9 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
   var editor = this._editingRole() === 'editor';
   var oldest = 0;
   var request=0;
+  // Each list's first page, by game and filter: {'|all': ..., 'TotK|talk': ...}.
   var activityCache={};
+  var cacheKey=function(filter) { return (game || '')+'|'+filter; };
   var renderActivity=function(data) {
     list.empty();
     if(!data.success) { list.append($('<li class="wiki-empty"></li>').text(data.msg)); return; }
@@ -327,24 +336,23 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
     });
     more.prop('hidden',!data.more).prop('disabled',false);
   };
-  ['all','edits','talk'].forEach(function(filter) {
-    if(filter===activityFilter) return;
-    _this._wikiGet('recent_changes',{game:game || '',before:'',filter:filter}).done(function(data) {
-      if(data.success) activityCache[filter]=data;
+  // The other lists asked for meanwhile, so picking one shows it at once.
+  [null, oneGame].forEach(function(scope) {
+    ['all','edits','talk'].forEach(function(filter) {
+      if(scope===game && filter===activityFilter) return;
+      _this._wikiGet('recent_changes',{game:scope || '',before:'',filter:filter}).done(function(data) {
+        if(data.success) activityCache[(scope || '')+'|'+filter]=data;
+      });
     });
   });
   var load = function() {
     var version=++request;
-    var loadingFilter=activityFilter,firstPage=!oldest;
+    var loadingKey=cacheKey(activityFilter),firstPage=!oldest;
     more.prop('disabled', true);
     _this._wikiGet('recent_changes', { game: game || '', before: oldest || '',filter:activityFilter }).done(function(data) {
       if(version!==request) return;
-      if(firstPage && data.success) activityCache[loadingFilter]=data;
+      if(firstPage && data.success) activityCache[loadingKey]=data;
       if(!oldest) list.empty();
-      // Another game's edits (a link from elsewhere): name that game.
-      if(game && game !== _this.mapOptions.shortName && data.changes && data.changes[0] && data.changes[0].gameName) {
-        $(page).find('.wiki-subtitle').text('Community edits to ' + data.changes[0].gameName);
-      }
       if(!data.success) { list.append($('<li class="wiki-empty"></li>').text(data.msg)); return; }
       // Empty, like Bookmarks: a title and a line, centred with room around.
       if(!data.changes.length && !oldest) list.append('<li class="wiki-empty-state"><div class="wiki-empty-state-title">No Activity Yet</div>' +
@@ -367,8 +375,20 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
     var next=this.getAttribute('data-activity-filter');if(next===activityFilter) return;
     activityFilter=next;oldest=0;
     $(this).siblings().attr('aria-selected','false');$(this).attr('aria-selected','true');
-    if(activityCache[next]) {++request;renderActivity(activityCache[next]);}
+    if(activityCache[cacheKey(next)]) {++request;renderActivity(activityCache[cacheKey(next)]);}
     else load();
+  });
+  $(page).find('.activity-scope').on('click','button',function() {
+    var next=this.getAttribute('data-activity-scope')==='game' ? oneGame : null;
+    if(next===game) return;
+    game=next;oldest=0;
+    $(this).siblings().attr('aria-selected','false');$(this).attr('aria-selected','true');
+    // The page's address follows (all-changes, recent-edits).
+    var type=game ? 'recentChanges-' + game : 'allChanges';
+    if(_this.mapControl) _this.mapControl._contentType=type;
+    if(_this.syncDrawerPageURL) _this.syncDrawerPageURL(type);
+    if(activityCache[cacheKey(activityFilter)]) {++request;renderActivity(activityCache[cacheKey(activityFilter)]);}
+    else { list.empty().append('<li class="wiki-empty">Loading…</li>'); load(); }
   });
   list.on('click keydown', '.wiki-revision', function(e) {
     if($(e.target).closest('a.wiki-link').length) return;

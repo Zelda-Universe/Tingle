@@ -55,6 +55,7 @@ scripts/services/MarkerNavigation.js
 scripts/services/Paths.js
 scripts/services/PathEditor.js
 scripts/services/EmbedDialog.js
+scripts/services/GameSwitch.js
 scripts/zbeta.js
 scripts/zmapsettings.js
 scripts/zreports.js

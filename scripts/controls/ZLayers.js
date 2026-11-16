@@ -519,17 +519,24 @@ L.Control.ZLayers = L.Control.Layers.extend({
           }
           this._refreshMobileDrawerLayout();
         }.bind(this);
-        document.addEventListener('focusin', function(e) {
+        // (Recorded, to go if the game's switched without a reload:
+        // zmap.js _onPage.)
+        var zmapForPage = this.options.zMap;
+        var onPage = function(target, type, fn) {
+          if(zmapForPage && zmapForPage._onPage) zmapForPage._onPage(target, type, fn);
+          else target.addEventListener(type, fn);
+        };
+        onPage(document, 'focusin', function(e) {
           if(!this._keyboardDrawerViewport && e.target.matches('input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]), textarea, [contenteditable="true"]')) {
             this._keyboardDrawerViewport = {
               height: this._viewportHeight(), bottom: this._viewportBottom(), width: window.innerWidth
             };
           }
         }.bind(this));
-        document.addEventListener('focusout', function() {
+        onPage(document, 'focusout', function() {
           window.setTimeout(refreshMobileLayout, 350);
         });
-        window.addEventListener('resize', refreshMobileLayout);
+        onPage(window, 'resize', refreshMobileLayout);
         // Chrome on Android changes the bottom safe area as its bottom bar
         // shows and hides, without a resize event. A hidden strip as tall as
         // the inset tells us when it changes, so the drawer never rests on a
@@ -540,10 +547,12 @@ L.Control.ZLayers = L.Control.Layers.extend({
           safeAreaProbe.style.cssText = 'position:fixed;left:0;bottom:0;width:1px;' +
             'height:var(--safe-area-bottom);visibility:hidden;pointer-events:none;';
           document.body.appendChild(safeAreaProbe);
-          new ResizeObserver(refreshMobileLayout).observe(safeAreaProbe);
+          var probeObserver = new ResizeObserver(refreshMobileLayout);
+          probeObserver.observe(safeAreaProbe);
+          if(zmapForPage && zmapForPage._onCleanup) zmapForPage._onCleanup(function() { probeObserver.disconnect(); safeAreaProbe.remove(); });
         }
         if(window.visualViewport) {
-          window.visualViewport.addEventListener('resize', refreshMobileLayout);
+          onPage(window.visualViewport, 'resize', refreshMobileLayout);
         }
       }
     }
@@ -1350,7 +1359,20 @@ L.Control.ZLayers = L.Control.Layers.extend({
   },
 
   createGameMenu: function() {
-    var gameMenu = new CategoryMenu({
+    var gameMenu;
+    // The game picked marked as the one on, at once, as Switch Map marks
+    // its map (in place only: a page load shows it anyway).
+    var select = function(button) {
+      gameMenu.categoryButtons.forEach(function(other) {
+        if(other === button || !other.disabled) return;
+        other.disabled = false;
+        other.toggledOn = gameMenu.defaultToggledState;
+        other._updateState();
+      });
+      button.disabled = true;
+      button._updateState();
+    };
+    gameMenu = new CategoryMenu({
       categories: sortGames(games.filter(Boolean)),
       categorySelectionMethod: this.options.categorySelectionMethod,
       defaultToggledState: true,
@@ -1361,10 +1383,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
           return true;
         },
         beforeToggle: function() {
-          window.location.replace(
-            location.protocol + '//' + location.host +
-            location.pathname + "?game=" + this.category.shortName
-          );
+          var url = location.protocol + '//' + location.host + location.pathname + "?game=" + this.category.shortName;
+          // In place, for staff with it turned on (services/GameSwitch.js);
+          // otherwise the page, as always.
+          if(window.zMap && zMap.openGameURL && zMap._gameSwitchOn && zMap._gameSwitchOn()) {
+            if(!zMap._switchingGame) { try { select(this); } catch(e) {} }
+            zMap.openGameURL(url);
+          }
+          else window.location.replace(url);
 
           return false;
         } // TODO: Have a handler pass in the zMap's method from even higher above, for this function and others?!
@@ -1412,11 +1438,11 @@ L.Control.ZLayers = L.Control.Layers.extend({
       categoryButtonOptions: {
         afterToggle: function () {
           var parent = layers._headerPageParent;
-          layers._map.removeLayer(layers.currentMapLayer);
-          layers._map.addLayer(this.category);
-          layers.currentMapLayer = this.category;
-          layers.currentMapLayer.bringToBack();
+          layers._swapMapLayer(this.category);
           layers._map.fire("baselayerchange", layers.currentMapLayer);
+          // The address names the map now (the view may not have moved, as
+          // between TotK's Sky and Depths), so a reload opens it again.
+          if(layers.zMap && layers.zMap.updateUrl) layers.zMap.updateUrl();
 
           layers._mapsMenu.updateCategorySelectionFn.call(
             layers._mapsMenu,
@@ -2142,7 +2168,13 @@ L.Control.ZLayers = L.Control.Layers.extend({
       if(scrollsSideways(e.target)) return;
       swipe = { id: e.pointerId, x: e.clientX, y: e.clientY, dx: 0, active: false, lastX: e.clientX, lastTime: e.timeStamp, velocity: 0 };
     });
-    document.addEventListener('pointermove', function(e) {
+    // (Recorded, to go if the game's switched without a reload: zmap.js _onPage.)
+    var zmapForPage = control.options && control.options.zMap;
+    var onPage = function(target, type, fn) {
+      if(zmapForPage && zmapForPage._onPage) zmapForPage._onPage(target, type, fn);
+      else target.addEventListener(type, fn);
+    };
+    onPage(document, 'pointermove', function(e) {
       if(!swipe || e.pointerId !== swipe.id || swipe.finishing) return;
       var dx = e.clientX - swipe.x, dy = e.clientY - swipe.y;
       if(!swipe.active) {
@@ -2173,8 +2205,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
       var fast = e.type === 'pointerup' && swipe.velocity > .4 && swipe.dx > 24;
       finish(e.type === 'pointerup' && (swipe.dx > swipe.width * .4 || fast));
     };
-    document.addEventListener('pointerup', release);
-    document.addEventListener('pointercancel', release);
+    onPage(document, 'pointerup', release);
+    onPage(document, 'pointercancel', release);
     // iOS: keep the page from scrolling while it's being swiped.
     contents.addEventListener('touchmove', function(e) {
       if(swipe && swipe.active && e.cancelable) e.preventDefault();
@@ -2647,10 +2679,7 @@ L.Control.ZLayers = L.Control.Layers.extend({
     var newMap = this._maps.find((map) => map.originalId == mapId &&
       (!this.zMap.mapOptions.submapLayers || !subMapId || map.defaultSubMapId == subMapId));
     if (newMap && this.currentMapLayer.id != newMap.id) {
-      this._map.removeLayer(this.currentMapLayer);
-      this._map.addLayer(newMap);
-      this.currentMapLayer = newMap;
-      this.currentMapLayer.bringToBack();
+      this._swapMapLayer(newMap);
       this._map.fire("baselayerchange", this.currentMapLayer);
 
       // With no floor named (?map=64023), the one opened: its markers are
@@ -2659,6 +2688,357 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._syncMapsMenuSelection();
     }
   },
+  // One map for another (Switch Map, an age, a floor, a link to a marker
+  // elsewhere), never markers over the wrong map. How, is ZMap's
+  // MAP_TRANSITIONS (zmap.js), by kind (_mapSwapKind): 'variant' for another
+  // version of the same place (an age, a floor, TotK's Sky and Depths),
+  // 'map' for another map.
+  //  - 'cut': the new map loads out of sight, under the one on screen, which
+  //    stays meanwhile, markers and all (a still copy of them:
+  //    _freezeMapContent); once the new map's in it all changes in one
+  //    frame. Its tiles are usually in already (_preloadVariants).
+  //  - 'fade': as a cut, but the old markers fade out at once, and once
+  //    the new map's in, the old map fades away over it and then the new
+  //    markers fade in.
+  //  - 'instant': the old map gone at once, the new one coming in over the
+  //    page's background (pulsing while it loads: _watchMapLoading), its
+  //    markers once its tiles are in.
+  // A cut or fade not in after MAP_SWAP_SLOW_MS: the map on screen dims
+  // under a spinner (zmMapWaiting); too slow, it's shown anyway.
+  MAP_SWAP_FADE_MS: 150,
+  MAP_MARKERS_IN_MS: 200,
+  MAP_SWAP_SLOW_MS: 1000,
+  MAP_SWAP_WAIT_MS: 8000,
+  // Another version of the same place: the same map (OoT's ages and
+  // floors, ALttP's worlds), or maps that are each the game's whole space
+  // (TotK's Sky, Surface and Depths: no bounds of their own).
+  _mapSwapKind: function(a, b) {
+    if(a.originalId == b.originalId) return 'variant';
+    var submapped = this.zMap && this.zMap.mapOptions && this.zMap.mapOptions.submapLayers;
+    return !submapped && !a.mapBounds && !b.mapBounds ? 'variant' : 'map';
+  },
+  _mapTransition: function(kind) {
+    var transitions = (this.zMap && this.zMap.MAP_TRANSITIONS) || {};
+    var style = transitions[kind];
+    return style === 'cut' || style === 'instant' ? style : 'fade';
+  },
+  _reducedMotion: function() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  },
+  _swapMapLayer: function(newMap) {
+    var map = this._map, control = this, pending = this._mapSwap;
+    var shown = pending ? pending.shown : this.currentMapLayer;
+    if(pending) {
+      // Still waiting: the map it waited on was never all there, so it's
+      // dropped; the one under it stays there for this one.
+      this._clearMapSwap(pending);
+      var unseen = pending.incoming;
+      this._setMapLayerHidden(unseen, false);
+      if(unseen && unseen !== newMap && unseen !== shown && map.hasLayer(unseen)) map.removeLayer(unseen);
+    } else {
+      // (One still going from a swap just before: gone now.)
+      this._dropOutgoingMapLayer();
+    }
+    if(newMap === shown && map.hasLayer(shown)) {
+      this.currentMapLayer = shown;
+      this._endMapSwapHold();
+      return;
+    }
+    if(shown && shown !== newMap && map.hasLayer(shown) && this._mapTransition(this._mapSwapKind(shown, newMap)) === 'instant') {
+      this._swapMapLayerInstantly(shown, newMap);
+      return;
+    }
+    map.addLayer(newMap);
+    this.currentMapLayer = newMap;
+    if(!shown || shown === newMap || !map.hasLayer(shown)) { this._endMapSwapHold(); return; }
+    // Nothing of the old one drawn yet (a page opening on another map):
+    // nothing to keep on screen.
+    if(!this._mapLayerDrawn(shown)) { map.removeLayer(shown); this._endMapSwapHold(); return; }
+    var style = this._mapTransition(this._mapSwapKind(shown, newMap));
+    var reduce = this._reducedMotion();
+    this._outgoingMapLayer = shown;
+    // Under the one on screen, out of sight.
+    newMap.bringToBack();
+    this._setMapLayerHidden(newMap, true);
+    var swap = this._mapSwap = { shown: shown, incoming: newMap };
+    var finish = function() {
+      if(control._mapSwap !== swap) return;
+      control._clearMapSwap(swap);
+      control._setMapWaiting(false);
+      // The new one on, its tiles whole (not partway through Leaflet's
+      // fade-in).
+      control._finishTileFades(newMap);
+      control._setMapLayerHidden(newMap, false);
+      var container = shown.getContainer && shown.getContainer();
+      if(style === 'cut' || reduce || !container) {
+        // In the same frame as its markers, the old one off.
+        control._dropOutgoingMapLayer();
+        control._releaseMapContent();
+        return;
+      }
+      // The old one fades away over it; then the new markers fade in.
+      container.style.transition = 'opacity ' + control.MAP_SWAP_FADE_MS + 'ms ease-out';
+      container.style.opacity = '0';
+      control._outgoingMapTimer = window.setTimeout(function() {
+        control._dropOutgoingMapLayer();
+        control._releaseMapContent(control.MAP_MARKERS_IN_MS, true);
+      }, control.MAP_SWAP_FADE_MS + 20);
+    };
+    if(newMap.isLoading && newMap.isLoading()) {
+      this._freezeMapContent();
+      // Fade: the old markers going at once.
+      if(style !== 'cut') this._fadeHeldContent(reduce ? 0 : this.MAP_SWAP_FADE_MS);
+      newMap.once('load', finish);
+      swap.timer = window.setTimeout(finish, this.MAP_SWAP_WAIT_MS);
+      swap.slowTimer = window.setTimeout(function() { if(control._mapSwap === swap) control._setMapWaiting(true); }, this.MAP_SWAP_SLOW_MS);
+    } else finish();
+  },
+  // 'instant': the old map off now, the new one on, filling in over the
+  // page's pulsing background; its markers in once its tiles are.
+  _swapMapLayerInstantly: function(shown, newMap) {
+    var map = this._map, control = this;
+    this._releaseMapContent();
+    this._setMapWaiting(false);
+    if(this.zMap && this.zMap._watchMapLoading) this.zMap._watchMapLoading();
+    map.removeLayer(shown);
+    map.addLayer(newMap);
+    this.currentMapLayer = newMap;
+    if(!(newMap.isLoading && newMap.isLoading())) return;
+    // (Hidden before its markers are put on it: baselayerchange, next.)
+    this._freezeMapContent({ copies: false });
+    var swap = this._mapSwap = { shown: newMap, incoming: newMap };
+    var done = function() {
+      if(control._mapSwap !== swap) return;
+      control._clearMapSwap(swap);
+      control._releaseMapContent(control._reducedMotion() ? 0 : control.MAP_MARKERS_IN_MS, true);
+    };
+    newMap.once('load', done);
+    swap.timer = window.setTimeout(done, this.MAP_SWAP_WAIT_MS);
+  },
+  // The other versions of the map on screen (its other floors, the other
+  // age), their tiles for what's in view asked for while nothing else is
+  // going on, so picking one is a cut with nothing to wait for. Not on a
+  // connection asking to save data.
+  // Asked for soon after the map settles (PRELOAD_DELAY_MS), once what's on
+  // screen has loaded (so it's never slowed by these); kept (the images
+  // themselves) so the browser keeps them to hand.
+  PRELOAD_MAX_TILES: 200,
+  PRELOAD_DELAY_MS: 250,
+  PRELOAD_KEEP: 1000,
+  _startPreloadingVariants: function() {
+    var control = this, map = this._map, timer = null;
+    if(!map || this._preloadingVariants) return;
+    this._preloadingVariants = true;
+    this._preloadedTiles = {};
+    this._preloadedImages = [];
+    var later = function() {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function() {
+        if(control._map !== map) return;
+        var idle = window.requestIdleCallback || function(fn) { fn(); };
+        // (Busy, a map still loading or a swap still going: again shortly.)
+        idle(function() { if(control._map === map && control._preloadVariants() === 'busy') later(); }, { timeout: 500 });
+      }, control.PRELOAD_DELAY_MS);
+    };
+    map.on('moveend zoomend baselayerchange', later);
+    later();
+  },
+  _preloadVariants: function() {
+    var control = this, current = this.currentMapLayer;
+    if(!this._map || !current || !current._tiles) return;
+    if(this._mapSwap || (current.isLoading && current.isLoading())) return 'busy';
+    if(navigator.onLine === false) return;
+    var connection = navigator.connection;
+    if(connection && (connection.saveData || /2g/.test(connection.effectiveType || ''))) return;
+    var others = (this._maps || []).filter(function(layer) {
+      return layer !== current && layer._url && control._mapSwapKind(current, layer) === 'variant' &&
+        layer.options.maxNativeZoom === current.options.maxNativeZoom && layer.options.tileSize === current.options.tileSize;
+    });
+    if(!others.length) return;
+    var coords = Object.keys(current._tiles).map(function(key) { return current._tiles[key]; })
+      .filter(function(tile) { return tile.current && tile.coords; }).map(function(tile) { return tile.coords; });
+    var asked = 0;
+    others.forEach(function(layer) {
+      coords.forEach(function(at) {
+        if(asked >= control.PRELOAD_MAX_TILES) return;
+        var url;
+        // (As Leaflet's getTileUrl makes it.)
+        try { url = L.Util.template(layer._url, L.extend({ r: L.Browser.retina ? '@2x' : '', s: '', x: at.x, y: at.y, z: at.z }, layer.options)); }
+        catch(e) { return; }
+        if(control._preloadedTiles[url]) return;
+        control._preloadedTiles[url] = true;
+        asked++;
+        var image = new Image();
+        image.decoding = 'async';
+        image.src = url;
+        control._preloadedImages.push(image);
+        if(control._preloadedImages.length > control.PRELOAD_KEEP) control._preloadedImages.shift();
+      });
+    });
+  },
+  _mapLayerDrawn: function(layer) {
+    var tiles = layer && layer._tiles;
+    if(!tiles) return true;
+    return Object.keys(tiles).some(function(key) { return !!tiles[key].loaded; });
+  },
+  _clearMapSwap: function(swap) {
+    window.clearTimeout(swap.timer);
+    window.clearTimeout(swap.slowTimer);
+    if(this._mapSwap === swap) this._mapSwap = null;
+  },
+  // Done waiting: what's on the map live again (the still copy gone, faded
+  // over ms if given), and not dimmed.
+  _endMapSwapHold: function(ms) {
+    this._releaseMapContent(ms);
+    this._setMapWaiting(false);
+  },
+  _setMapWaiting: function(on) {
+    // (Only its own: not a game switch's, on the same map element.)
+    if(!on && !this._mapWaitingShown) return;
+    this._mapWaitingShown = on;
+    var container = this._map && this._map.getContainer && this._map.getContainer();
+    if(container && window.zmMapWaiting) window.zmMapWaiting(container, on, this._container);
+  },
+  // Panes that aren't held while a map loads: the maps' own (they're
+  // swapped themselves), and popups and the path hover card, which follow
+  // what's picked at once.
+  MAP_LIVE_PANES: ['mapPane', 'tilePane', 'tileBackdropPane', 'map-grid-background', 'popupPane', 'zmPathPreview'],
+  // The panes held while a map loads: what's on the map (markers, labels,
+  // paths, borders, OoT's connections).
+  _contentPanes: function() {
+    var map = this._map, live = this.MAP_LIVE_PANES;
+    if(!map || !map._panes || !map._mapPane) return [];
+    return Object.keys(map._panes).filter(function(name) {
+      var pane = map._panes[name];
+      return live.indexOf(name) < 0 && pane && pane.parentNode === map._mapPane;
+    }).map(function(name) { return map._panes[name]; });
+  },
+  // What's on the map held as it is: a still copy of each pane in its place,
+  // the pane itself hidden while it changes underneath, until
+  // _releaseMapContent. Panning carries the copies along (they're in the
+  // map's pane); a zoom ends the hold, as the copies can't follow it.
+  // opts.copies false: just hidden (a map just built, its markers to come
+  // in after its tiles), and kept hidden through zooms.
+  _freezeMapContent: function(opts) {
+    var map = this._map, control = this, copies = !(opts && opts.copies === false);
+    if(this._frozenContent || !map || !map._panes || !map._mapPane || !map.getCenter) return;
+    var held = this._contentPanes().map(function(pane) {
+      var h = { pane: pane, visibility: pane.style.visibility, opacity: pane.style.opacity };
+      if(copies) {
+        h.copy = control._stillCopy(pane);
+        h.copy.classList.add('zm-held-pane');
+        h.copy.style.pointerEvents = 'none';
+        pane.parentNode.insertBefore(h.copy, pane.nextSibling);
+      }
+      pane.style.visibility = 'hidden';
+      pane.style.opacity = '0';
+      return h;
+    });
+    var frozen = this._frozenContent = { held: held };
+    if(!copies) return;
+    var ref = map.getCenter(), zoom = map.getZoom(), at = map.latLngToLayerPoint(ref);
+    // A view set afresh (an age or floor keeps the view, but Leaflet lays
+    // it out again): the copies moved to match.
+    frozen.reset = function() {
+      if(map.getZoom() !== zoom) { control._releaseMapContent(); return; }
+      var offset = map.latLngToLayerPoint(ref).subtract(at);
+      held.forEach(function(h) { L.DomUtil.setPosition(h.copy, offset); });
+    };
+    frozen.zoom = function() { control._releaseMapContent(); };
+    map.on('viewreset', frozen.reset);
+    map.on('zoomstart', frozen.zoom);
+  },
+  // The held copies faded away (over ms), the real ones still hidden: no
+  // markers till the map's in.
+  _fadeHeldContent: function(ms) {
+    var frozen = this._frozenContent;
+    if(!frozen) return;
+    frozen.held.forEach(function(h) {
+      if(!h.copy) return;
+      if(ms) {
+        // (Drawn as it is first, so it fades.)
+        void h.copy.offsetWidth;
+        h.copy.style.transition = 'opacity ' + ms + 'ms ease-out';
+      }
+      h.copy.style.opacity = '0';
+    });
+  },
+  // What's on the map live again. ms: the copies fading out over that long,
+  // or with fadeIn, the real ones fading in (the copies already gone).
+  _releaseMapContent: function(ms, fadeIn) {
+    var frozen = this._frozenContent, map = this._map;
+    if(!frozen) return;
+    this._frozenContent = null;
+    if(map && map.off && frozen.reset) { map.off('viewreset', frozen.reset); map.off('zoomstart', frozen.zoom); }
+    frozen.held.forEach(function(h) {
+      h.pane.style.visibility = h.visibility;
+      if(fadeIn && ms) {
+        if(h.copy) h.copy.remove();
+        h.pane.style.transition = 'opacity ' + ms + 'ms ease-out';
+        h.pane.style.opacity = h.opacity;
+        window.setTimeout(function() { h.pane.style.transition = ''; }, ms + 20);
+        return;
+      }
+      h.pane.style.opacity = h.opacity;
+      if(!h.copy) return;
+      if(!ms || fadeIn) { h.copy.remove(); return; }
+      h.copy.style.transition = 'opacity ' + ms + 'ms ease-out';
+      h.copy.style.opacity = '0';
+      window.setTimeout(function() { h.copy.remove(); }, ms + 20);
+    });
+  },
+  // A copy of part of the map just to look at: canvases' drawings copied
+  // too, no ids (they'd be found instead of the real ones), and out of
+  // reach of screen readers, focus and the mouse.
+  _stillCopy: function(el) {
+    var copy = el.cloneNode(true);
+    var from = el.querySelectorAll('canvas'), to = copy.querySelectorAll('canvas');
+    for(var i = 0; i < from.length && i < to.length; i++) {
+      try { to[i].getContext('2d').drawImage(from[i], 0, 0); } catch(e) {}
+    }
+    copy.removeAttribute('id');
+    copy.querySelectorAll('[id]').forEach(function(part) { part.removeAttribute('id'); });
+    copy.setAttribute('aria-hidden', 'true');
+    copy.inert = true;
+    return copy;
+  },
+  // A map's loaded tiles at full strength now, as if their fade-in had
+  // finished (Leaflet fades each in over 200ms from when it loaded).
+  _finishTileFades: function(layer) {
+    try {
+      var long = Date.now() - 1000;
+      Object.keys(layer._tiles || {}).forEach(function(key) {
+        var tile = layer._tiles[key];
+        if(!tile.loaded) return;
+        tile.loaded = Math.min(tile.loaded, long);
+        tile.active = true;
+        if(tile.el) L.DomUtil.setOpacity(tile.el, 1);
+      });
+    } catch(e) {}
+  },
+  // A map (and its backdrop) loading out of sight, or shown.
+  _setMapLayerHidden: function(layer, hidden) {
+    [layer, layer && layer.backdrop].forEach(function(part) {
+      var container = part && part.getContainer && part.getContainer();
+      if(container) container.style.visibility = hidden ? 'hidden' : '';
+    });
+  },
+  // The map that was swapped out, off the map now, and as it was before
+  // its fade (Leaflet keeps a layer's container for when it's added again).
+  _dropOutgoingMapLayer: function() {
+    var outgoing = this._outgoingMapLayer;
+    window.clearTimeout(this._outgoingMapTimer);
+    this._outgoingMapTimer = null;
+    this._outgoingMapLayer = null;
+    if(!outgoing) return;
+    if(this._map && this._map.hasLayer(outgoing) && outgoing !== this.currentMapLayer) this._map.removeLayer(outgoing);
+    var container = outgoing.getContainer && outgoing.getContainer();
+    if(container) {
+      container.style.transition = '';
+      container.style.opacity = outgoing.options.opacity === undefined ? '' : String(outgoing.options.opacity);
+    }
+  },
+
   changeMapToMarker: function(marker) {
     this.changeMapOnly(marker.mapId, marker.submapId);
   },

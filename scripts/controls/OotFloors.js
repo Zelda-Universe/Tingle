@@ -114,6 +114,7 @@ ZMap.prototype.setupOotFloors = function() {
   panel.className = 'oot-floor-control';
   panel.setAttribute('aria-label','Map age, floors and states');
   document.body.appendChild(panel);
+  zmap._onCleanup(function() { panel.remove(); });
   L.DomEvent.disableClickPropagation(panel);
   L.DomEvent.disableScrollPropagation(panel);
   function choose(layer) {
@@ -181,7 +182,8 @@ ZMap.prototype.setupOotFloors = function() {
   }
   var observer=new MutationObserver(position);
   observer.observe(zmap.mapControl.getContainer(),{attributes:true,attributeFilter:['style','class']});
+  zmap._onCleanup(function() { observer.disconnect(); });
   zmap.map.on('baselayerchange',render);
-  window.addEventListener('resize',position);
+  zmap._onPage(window,'resize',position);
   render();
 };

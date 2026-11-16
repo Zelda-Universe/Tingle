@@ -273,18 +273,18 @@ ZMap.prototype._watchFileDrags = function() {
   var zmap = this;
   var files = function(e) { return e.dataTransfer && Array.prototype.indexOf.call(e.dataTransfer.types || [], 'Files') !== -1; };
   var open = function() { return !!document.querySelector('[data-zm-drops]'); };
-  document.addEventListener('dragover', function(e) {
+  this._onPage(document, 'dragover', function(e) {
     if(!files(e) || !open()) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'none';
     zmap._fileDragging(null);
   });
-  document.addEventListener('drop', function(e) {
+  this._onPage(document, 'drop', function(e) {
     if(!files(e) || !open()) return;
     e.preventDefault();
     zmap._fileDragging(null, true);
   });
-  document.addEventListener('dragend', function() { zmap._fileDragging(null, true); });
+  this._onPage(document, 'dragend', function() { zmap._fileDragging(null, true); });
 };
 
 // Sends a photo to ajax/upload_marker_image.php (as pasting one does:

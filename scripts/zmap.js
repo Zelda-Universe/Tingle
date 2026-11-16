@@ -1303,6 +1303,59 @@ ZMap.prototype.focusSingleMapCategory = function(category, deferFit) {
   }
 };
 
+// How the map changes from one to another (ZLayers _swapMapLayer has the
+// details): 'cut' (the one on screen till the new one's in, then both, map
+// and markers, in one frame), 'fade' (the old markers fading at once, then
+// the old map fading over the new once it's in, then the new markers) or
+// 'instant' (the old map gone at once, the new one coming in over the
+// page's background, its markers once its tiles are in; not for games).
+// variant: another version of the same place (OoT's ages and floors,
+// ALttP's Light and Dark World, TotK's Sky, Surface and Depths); map:
+// another map (Switch Map, a link to somewhere else); game: another game
+// (Switch Game). One place to change them (an admin setting, one day).
+ZMap.prototype.MAP_TRANSITIONS = { variant: 'cut', map: 'instant', game: 'fade' };
+
+// A map taking a while to come up (another map, floor or game picked): the
+// one on screen dimmed, under a spinner, till the new one's in. On the map's
+// element itself, so it lasts through a game switched in place. avoid: the
+// sidebar, or a phone's sheet, for the spinner to be centred beside or
+// above, in the map that can be seen.
+function zmMapWaiting(container, on, avoid) {
+  if(!container) return;
+  var veil = null;
+  for(var i = 0; i < container.children.length; i++) {
+    if(container.children[i].classList.contains('zm-map-waiting')) { veil = container.children[i]; break; }
+  }
+  if(!on) {
+    if(!veil || !veil.classList.contains('is-on')) return;
+    veil.classList.remove('is-on');
+    veil._zmGone = window.setTimeout(function() { veil.remove(); }, 250);
+    return;
+  }
+  if(!veil) {
+    veil = document.createElement('div');
+    veil.className = 'zm-map-waiting';
+    veil.setAttribute('role', 'status');
+    veil.innerHTML = '<span class="zm-map-waiting-spinner" aria-hidden="true"></span><span class="zm-map-waiting-label">Loading map</span>';
+    container.appendChild(veil);
+  }
+  window.clearTimeout(veil._zmGone);
+  var left = 0, bottom = 0;
+  try {
+    var box = container.getBoundingClientRect(), cover = avoid && avoid.getBoundingClientRect();
+    if(cover && cover.width && cover.height) {
+      // A sheet along the bottom, or a sidebar down the left.
+      if(cover.top > box.top + 40 && cover.width > box.width * .6) bottom = Math.max(0, box.bottom - cover.top);
+      else if(cover.left <= box.left + 40 && cover.height > box.height * .6) left = Math.max(0, cover.right - box.left);
+    }
+  } catch(e) {}
+  veil.style.setProperty('--zm-waiting-left', left + 'px');
+  veil.style.setProperty('--zm-waiting-bottom', bottom + 'px');
+  // (Drawn clear first, so it fades in.)
+  void veil.offsetWidth;
+  veil.classList.add('is-on');
+}
+
 ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
   // Markers may appear or go (the layout notices those itself), or change
   // look: lay the place names out again afterwards.
@@ -1602,6 +1655,8 @@ ZMap.prototype._setupLabelLayout = function() {
     if(frame) window.cancelAnimationFrame(frame);
     frame = window.requestAnimationFrame(function() {
       frame = null;
+      // (A frame asked for just before switching games: that map's gone.)
+      if(zmap.map !== map) return;
       var zoom = map.getZoom();
       if(!changed && zoom === laidOutAt) return;
       changed = false;
@@ -1967,13 +2022,14 @@ ZMap.prototype.buildMap = function(gameId) {
       if(this.map === map) map.invalidateSize(settling ? { pan: true, animate: false } : { pan: false });
     }.bind(this));
   }.bind(this);
-  window.addEventListener('resize', invalidateMapSize);
+  this._onPage(window, 'resize', invalidateMapSize);
   if(window.visualViewport) {
-    window.visualViewport.addEventListener('resize', invalidateMapSize);
+    this._onPage(window.visualViewport, 'resize', invalidateMapSize);
   }
   if(window.ResizeObserver) {
-    this._mapSizeObserver = new window.ResizeObserver(invalidateMapSize);
-    this._mapSizeObserver.observe(mainEl);
+    var sizeObserver = this._mapSizeObserver = new window.ResizeObserver(invalidateMapSize);
+    sizeObserver.observe(mainEl);
+    this._onCleanup(function() { sizeObserver.disconnect(); });
   }
   invalidateMapSize();
 
@@ -2098,6 +2154,8 @@ ZMap.prototype.addMapControl = function(gameId) {
   );
   this.mapControl.setCurrentMapLayer(this.maps[0]);
   this.mapControl.addTo(this.map);
+  // The other floors and ages, ready (ZLayers _preloadVariants).
+  if(this.mapControl._startPreloadingVariants) this.mapControl._startPreloadingVariants();
   // Credits under images, as pages show them (scripts/services/ImageCredits.js).
   if(this._watchImageCredits) this._watchImageCredits(this.mapControl._contents);
   this.settingsControl = L.control.settings({
@@ -2126,6 +2184,11 @@ ZMap.prototype.addMapControl = function(gameId) {
     // END OF WORKAROUND!!!
     //console.log(e.originalId + " " + defaultSubMapId);
     var sameOotMap = _this.mapOptions.submapLayers && _this.mapControl.currentMap == e.originalId;
+    // Maps that are each the game's whole space (TotK's Sky, Surface and
+    // Depths: no bounds of their own) are the same place: the view stays.
+    var previousLayer = _this.maps.find(function(layer) { return layer.originalId == _this.mapControl.currentMap; });
+    var sameSpace = sameOotMap || (!_this.mapOptions.submapLayers && previousLayer && previousLayer !== e &&
+      !previousLayer.mapBounds && !e.mapBounds);
     _this.mapControl.setCurrentMap(parseInt(e.originalId), parseInt(defaultSubMapId));
     if(_this.sortCategoryRegionsForCurrentMap) _this.sortCategoryRegionsForCurrentMap();
     if(isOcarina(_this.mapOptions.shortName)) _this._reconcileOotMarkerSelection(e.originalId, defaultSubMapId);
@@ -2133,12 +2196,15 @@ ZMap.prototype.addMapControl = function(gameId) {
     if(!isOcarina(_this.mapOptions.shortName)) _this._closeNewMarker();
     //this.mapControl.resetContent();
 
-    if(!sameOotMap) _this.map.setView(new L.LatLng(
+    if(!sameSpace) _this.map.setView(new L.LatLng(
       _this.mapOptions.centerY,
       _this.mapOptions.centerX
     ), _this.map.getZoom());
     _this.applyOotMapBounds();
-    if(!sameOotMap && _this._fitsWhenOpened(e)) _this._fitToMapBounds(e);
+    // (The layer itself: e is Leaflet's copy of its properties, which the
+    // fit would never find to be the map on screen.)
+    var openedLayer = _this.mapControl.currentMapLayer;
+    if(!sameSpace && _this._fitsWhenOpened(openedLayer)) _this._fitToMapBounds(openedLayer);
   });
   // Open the map the address names (?map=2101 is TotK's Surface), on every
   // game, keeping the address's view: switching maps otherwise recentres.
@@ -3334,6 +3400,18 @@ ZMap.prototype._addMapGridBackground = function() {
   this._mapGridBackground = layer;
 };
 
+// Page-wide listeners, timers and elements a map sets up for its game,
+// recorded so switching games without a reload (scripts/services/
+// GameSwitch.js) can take them all away again: _onPage for a listener,
+// _onCleanup for anything else (an observer, a timer, an element).
+ZMap.prototype._onPage = function(target, type, fn, options) {
+  target.addEventListener(type, fn, options);
+  this._onCleanup(function() { target.removeEventListener(type, fn, options); });
+};
+ZMap.prototype._onCleanup = function(fn) {
+  (this._pageCleanups = this._pageCleanups || []).push(fn);
+};
+
 ZMap.prototype.setupOfflineMapMessage = function() {
   var map = this;
   if(!document.body) {
@@ -3347,8 +3425,9 @@ ZMap.prototype.setupOfflineMapMessage = function() {
   message.setAttribute('role', 'status');
   message.style.display = 'none';
   document.body.appendChild(message);
+  this._onCleanup(function() { message.remove(); });
   var usingDownloadedTiles = false;
-  if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function(event) {
+  if('serviceWorker' in navigator) this._onPage(navigator.serviceWorker, 'message', function(event) {
     var data = event.data;
     if(!data || data.type !== 'zeldamaps-tile-source') return;
     var path = new URL(data.url, location.href).pathname;
@@ -3401,16 +3480,16 @@ ZMap.prototype.setupOfflineMapMessage = function() {
     message.style.display = 'block';
     positionMessage();
   }
-  window.addEventListener('online', refresh);
-  window.addEventListener('offline', refresh);
-  window.addEventListener('resize', function() {
+  this._onPage(window, 'online', refresh);
+  this._onPage(window, 'offline', refresh);
+  this._onPage(window, 'resize', function() {
     positionMessage();
     if(window.requestAnimationFrame) window.requestAnimationFrame(positionMessage);
   });
-  window.addEventListener('pageshow', refresh);
-  document.addEventListener('visibilitychange', refresh);
+  this._onPage(window, 'pageshow', refresh);
+  this._onPage(document, 'visibilitychange', refresh);
   this._refreshOfflineMapMessage = refresh;
-  if(window.visualViewport) window.visualViewport.addEventListener('resize', positionMessage);
+  if(window.visualViewport) this._onPage(window.visualViewport, 'resize', positionMessage);
   refresh();
 };
 
@@ -3437,6 +3516,8 @@ ZMap.prototype.setUser = function(vUser) {
    }
    // Signed out: remove the account's offline data from this device.
    if(user == null) ZOfflineSync.clear();
+   // Staff: the switch for changing games without a reload (GameSwitch.js).
+   if(this._addGameSwitchSetting) this._addGameSwitchSetting();
    _this._buildContextMenu();
    if (this._watchWikiUser) this._watchWikiUser();
    this.notifyUserChanged();
@@ -4178,7 +4259,7 @@ ZMap.prototype.syncOfflineChanges = function() {
   var _this = this;
   if(!this._offlineSyncListener) {
     this._offlineSyncListener = true;
-    window.addEventListener('online', function() { _this.syncOfflineChanges(); });
+    this._onPage(window, 'online', function() { _this.syncOfflineChanges(); });
   }
   if(!this.getUser()) return;
   ZOfflineSync.flush(this.getUser().id, {
@@ -5376,7 +5457,6 @@ ZMap.prototype.syncDrawerPageURL = function(contentType) {
   if(profile || userTalk) page = null;
   url.searchParams.delete('edits-game');
   url.searchParams.delete('profile');
-  if(recent) url.searchParams.set('edits-game', recent[1]);
   // By username, which reads better and lasts; IDs from older links still work.
   if(contentType === 'allChanges' || recent || profile) {
     url.searchParams.delete('marker');
@@ -5491,7 +5571,7 @@ ZMap.prototype._restoreDrawerPage = function(page) {
       if(!profileName || profileName.length > 100) return;
       this._openUserProfile({ name: profileName }, back);
     } else {
-      this._openRecentChanges(page === 'recent-edits' ? (params.get('edits-game') || this.mapOptions.shortName) : null, back);
+      this._openRecentChanges(page === 'recent-edits' ? this.mapOptions.shortName : null, back);
     }
     return;
   }
@@ -6354,7 +6434,7 @@ ZMap.prototype._adminTopMarkers = function(data, range) {
           url.searchParams.set('game', marker.game);
           url.searchParams.set('marker', marker.markerId);
           url.searchParams.set('zoom',6);
-          window.location.href = url.href;
+          _this.openGameURL(url.href);
         }
       });
       list.append(row);
@@ -6892,8 +6972,8 @@ ZMap.prototype._lockWhileOffline = function(rootSelector, opts) {
     (opts.dim ? root.find(opts.dim) : controls).toggleClass('offline-dimmed', offline);
     if(opts.onChange) opts.onChange(offline);
   };
-  window.addEventListener('online', update);
-  window.addEventListener('offline', update);
+  this._onPage(window, 'online', update);
+  this._onPage(window, 'offline', update);
   // After the page's own setup, which may enable some controls.
   Promise.resolve().then(update);
 };
@@ -7355,7 +7435,7 @@ ZMap.prototype.checkOfflineMapUpdates = function() {
   var _this = this;
   if(!this._offlineUpdateListener) {
     this._offlineUpdateListener = true;
-    window.addEventListener('online', function() { _this.checkOfflineMapUpdates(); });
+    this._onPage(window, 'online', function() { _this.checkOfflineMapUpdates(); });
   }
   if(!this.getUser() || !navigator.onLine || !('caches' in window)) return;
   if(this._checkingOfflineUpdates) return;

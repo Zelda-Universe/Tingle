@@ -5,7 +5,7 @@ const path=require('path');
 test('keyboard dismissal unfreezes a still-focused editor and clears Safari page scrolling',()=>{
   const source=fs.readFileSync(path.join(__dirname,'../scripts/controls/ZLayers.js'),'utf8');
   const start=source.indexOf('        var refreshMobileLayout = function()');
-  const end=source.indexOf("        document.addEventListener('focusin'",start);
+  const end=source.indexOf("        // (Recorded, to go if the game's switched",start);
   const control={viewStyleBottomSlide:true,_keyboardDrawerViewport:{height:837,width:390},_refreshMobileDrawerLayout:jest.fn()};
   const context={...control,document:{activeElement:{matches:()=>false,tagName:'IFRAME',closest:()=>true}},window:{innerWidth:390,visualViewport:{height:447},scrollTo:jest.fn(),requestAnimationFrame:jest.fn()}};
   vm.runInNewContext(source.slice(start,end)+'; this.refresh=refreshMobileLayout;',context);

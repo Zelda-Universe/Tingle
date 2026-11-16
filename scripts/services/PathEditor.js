@@ -928,9 +928,7 @@ ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
       // Yeah and All Revisions across.
       "<div class='wiki-actions'>" +
         (r.canRevert && !r.isCurrent ? "<button type='button' class='wiki-action-button' data-action='revert'><i class='fas fa-undo' aria-hidden='true'></i>Restore This Version</button>" : '') +
-        "<button type='button' class='wiki-action-button' data-action='copy-code'><i class='fas fa-code' aria-hidden='true'></i>Copy <code>" + code + "</code></button>" +
-        "<button type='button' class='wiki-action-button' data-action='copy-url'><i class='fas fa-link' aria-hidden='true'></i>Copy Link</button>" +
-        zmap._yeahHTML('pathrev', revisionId, false) +
+        zmap._revisionControlsHTML(code, 'pathrev', revisionId) +
         "<button type='button' class='wiki-action-button' data-action='history'><i class='fas fa-history' aria-hidden='true'></i>All Revisions</button>" +
       "</div>" +
       "<section class='wiki-section'><h4>This Version</h4>" +
@@ -983,7 +981,10 @@ ZMap.prototype.openPathTalk = function(path, back, opts) {
 ZMap.prototype._openPathRevisionLink = function(slug, revisionId, game, back) {
   var zmap = this;
   if(game && this.mapOptions && game !== this.mapOptions.shortName) {
-    window.location.href = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug) + '&pathrev=' + Number(revisionId);
+    // (With the way back to the feed it came from, as a marker's link:
+    // MarkerNavigation.js. Paths.js opens just the revision there.)
+    var url = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug) + '&pathrev=' + Number(revisionId);
+    zmap.openGameURL(zmap._markerURLWithReturn ? zmap._markerURLWithReturn(url, back) : url);
     return;
   }
   var open = function() {
@@ -1389,13 +1390,20 @@ ZMap.prototype.openPathFromLink = function(game, slug, back, opts) {
   var zmap = this;
   opts = opts || {};
   if(game !== this.mapOptions.shortName) {
-    window.location.href = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug) +
+    var url = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug) +
       (opts.pathRev ? '&pathrev=' + Number(opts.pathRev) : opts.talk ? '&talk=1' + (opts.comment ? '&comment=' + Number(opts.comment) : '') : '');
+    zmap.openGameURL(back && zmap._markerURLWithReturn ? zmap._markerURLWithReturn(url, back) : url);
     return;
   }
   var open = function() {
-    zmap.openPathPage(slug, {back: back || null});
     var path = (zmap.paths || []).find(function(p) { return p.slug === slug; });
+    // A revision: just it, over the path in view (Go to Path is on it).
+    if(path && opts.pathRev) {
+      zmap.focusPath(slug);
+      zmap._openPathRevision(path, Number(opts.pathRev), back || null, {fromHistory: false});
+      return;
+    }
+    zmap.openPathPage(slug, {back: back || null});
     if(path) zmap._openPathSubpage(path, opts);
   };
   if((this.paths || []).some(function(p) { return p.slug === slug; })) { open(); return; }
@@ -1424,7 +1432,7 @@ ZMap.prototype._openPathSubpage = function(path, opts) {
   if(!opts || !(opts.pathRev || opts.talk)) return;
   var zmap = this;
   var open = function() {
-    if(opts.pathRev) zmap._openPathRevision(path, Number(opts.pathRev), null, {fromHistory: false});
+    if(opts.pathRev) zmap._openPathRevision(path, Number(opts.pathRev), opts.back || null, {fromHistory: false});
     else zmap.openPathTalk(path, null, {highlight: Number(opts.comment) || 0});
   };
   // On a page's first load the path's page focuses its path once the

@@ -81,13 +81,22 @@ ZMap.prototype.loadPaths = function() {
         var pin = new URL(window.location.href).searchParams.get('pin');
         // (Read before the path's page rewrites the address.)
         var params = new URL(window.location.href).searchParams;
+        var revision = Number(params.get('pathrev')) || 0;
         try { zmap._withoutPageSlide(function() {
-          zmap.openPathPage(slug, {instant: true});
           var path = zmap.paths.find(function(p) { return p.slug === slug; });
+          // A revision's link (a feed's, from another game): just the
+          // revision, over the path in view, Back going where it came from
+          // (MarkerNavigation.js), else to the path's History. Go to Path
+          // is on it.
+          if(revision && zmap._openPathSubpage) {
+            zmap.focusPath(slug, {instant: true});
+            zmap._openPathSubpage(path, {pathRev: revision, back: zmap._markerLinkReturnBack ? zmap._markerLinkReturnBack() : null});
+            return;
+          }
+          zmap.openPathPage(slug, {instant: true});
           if(pin && path.steps.some(function(s) { return s.pinKey === pin; })) zmap.openPathPin(path, pin, null, {instant: true});
-          // (A revision's link, or a notification's at its Talk.)
-          else if(zmap._openPathSubpage) zmap._openPathSubpage(path, {pathRev: Number(params.get('pathrev')) || 0,
-            talk: params.get('talk') === '1', comment: Number(params.get('comment')) || 0});
+          // (A notification's link, at its Talk.)
+          else if(zmap._openPathSubpage) zmap._openPathSubpage(path, {talk: params.get('talk') === '1', comment: Number(params.get('comment')) || 0});
         }); }
         finally { control._restoringInitialPage = false; }
       } else { zmap.focusPath(slug, {instant: true}); zmap.drawPaths(); }
@@ -221,6 +230,19 @@ ZMap.prototype._pathPageKind = function(type) {
 };
 
 ZMap.prototype._pathPageChanged = function(type) {
+  // A revision's link (?pathrev=), once off its revision, leaves the address:
+  // a reload opens the page now open, not the revision again. (Only on
+  // leaving one: before it opens, the page's start-up still reads it.)
+  var onRevision = this._pathPageKind(type) === 'pathRevision';
+  var leftRevision = this._onPathRevision && !onRevision;
+  this._onPathRevision = onRevision;
+  if(leftRevision) {
+    var url = new URL(window.location.href);
+    if(url.searchParams.has('pathrev') && !(this.isFramed && this.isFramed())) {
+      url.searchParams.delete('pathrev');
+      history.replaceState(history.state, '', url.toString());
+    }
+  }
   this._updatePathFocus(type);
   this._updatePathTitle(type);
 };

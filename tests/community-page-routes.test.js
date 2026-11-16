@@ -16,7 +16,14 @@ test.each([['allChanges','all-changes'],['recentChanges-BotW','recent-edits'],['
   expect(url.searchParams.has('area')).toBe(false);
   map.restoreDrawerPage(page);
   if(page==='profile')expect(map._openUserProfile.mock.calls[0][0]).toEqual({name:'42'});
-  else expect(map._openRecentChanges.mock.calls[0][0]).toBe(page==='all-changes'?null:'BotW');
+  // Current Game is the game on screen, whatever the page was opened for.
+  else expect(map._openRecentChanges.mock.calls[0][0]).toBe(page==='all-changes'?null:'OoTR');
+  expect(url.searchParams.has('edits-game')).toBe(false);
+});
+test('an older address naming another game\'s edits opens the game on screen\'s',()=>{
+  const {map}=setup('https://example.test/?game=OoTR&page=recent-edits&edits-game=TotK');
+  map.restoreDrawerPage('recent-edits');
+  expect(map._openRecentChanges.mock.calls[0][0]).toBe('OoTR');
 });
 test('leaving a community page removes its route arguments',()=>{
   const {map,context}=setup('https://example.test/?page=profile&profile=42&edits-game=BotW');

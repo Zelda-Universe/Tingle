@@ -57,13 +57,14 @@ ZMap.prototype._watchNotifications = function() {
   var _this = this;
   if(!this._notificationsWatched) {
     this._notificationsWatched = true;
-    document.addEventListener('visibilitychange', function() {
+    this._onPage(document, 'visibilitychange', function() {
       if(document.visibilityState === 'visible') _this.refreshNotificationCount();
     });
-    window.setInterval(function() {
+    var poll = window.setInterval(function() {
       if(document.visibilityState === 'visible') _this.refreshNotificationCount();
     }, this.NOTIFICATION_POLL_MS);
-    if('serviceWorker' in navigator) navigator.serviceWorker.addEventListener('message', function(event) {
+    this._onCleanup(function() { window.clearInterval(poll); });
+    if('serviceWorker' in navigator) this._onPage(navigator.serviceWorker, 'message', function(event) {
       var data = event.data || {};
       if(data.type === 'zeldamaps-notifications') _this.refreshNotificationCount();
       if(data.type === 'zeldamaps-open-notification' && data.url) _this._openWikiURL(data.url);
@@ -118,7 +119,7 @@ ZMap.prototype._openWikiURL = function(url) {
     return;
   }
   if(!link.rev && !link.talk && link.game && this.mapOptions && link.game !== this.mapOptions.shortName && link.marker) {
-    window.location.href = new URL(url, window.location.href).href;
+    this.openGameURL(new URL(url, window.location.href).href);
     return;
   }
   this._openWikiLink(link);
@@ -600,7 +601,7 @@ ZMap.prototype._openFollowedMarkers = function(back) {
       );
       row.find('.followed-marker-open').on('click', function() {
         if(marker.game && marker.game !== _this.mapOptions.shortName) {
-          window.location.href = _this._wikiMarkerURL(marker.markerId, marker.game) + '&talk=1';
+          _this.openGameURL(_this._wikiMarkerURL(marker.markerId, marker.game) + '&talk=1');
           return;
         }
         _this._openTalk('marker', marker.markerId, marker.title, reopen);

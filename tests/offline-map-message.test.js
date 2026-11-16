@@ -12,7 +12,7 @@ test('announces downloaded maps only after the worker serves a tile for this gam
   } });
   window.caches = {};
   const context = { ZMap: function() {}, document, window, navigator, URL, location };
-  vm.runInNewContext(source.slice(source.indexOf('ZMap.prototype.setupOfflineMapMessage ='),
+  vm.runInNewContext(source.slice(source.indexOf('ZMap.prototype._onPage ='),
     source.indexOf('ZMap.prototype.goToStart =')), context);
   const map = Object.assign(Object.create(context.ZMap.prototype), {
     maps: [], mapOptions: {}

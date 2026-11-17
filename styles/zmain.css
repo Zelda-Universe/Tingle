@@ -886,7 +886,7 @@ main.leaflet-container.zm-map-loading::before,
 	display: block;
 	margin: 0 0 16px;
 	text-align: center;
-	border: 0;
+	border: 1px solid currentColor;
 	border-radius: 10px;
 	color: #ff6b63;
 	background: transparent;

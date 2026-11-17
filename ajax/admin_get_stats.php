@@ -17,10 +17,12 @@
   $bucket = $ranges[$range]['bucket'];
 
   $hasActivity = (bool) $db->fetchOne("SHOW TABLES LIKE '{$map_prefix}user_activity'");
+  // (Registrations: accounts there are now, as the total and Sign-Up
+  // Sources count them, not ones deleted since.)
   if ($metric === 'registrations') {
-    $table = "`{$map_prefix}user`"; $column = '`created`'; $count = 'COUNT(*)';
+    $table = "`{$map_prefix}user`"; $column = '`created`'; $count = 'COUNT(*)'; $only = ' AND `deleted` IS NULL';
   } else {
-    $table = "`{$map_prefix}user_activity`"; $column = '`day`'; $count = 'COUNT(DISTINCT `user_id`)';
+    $table = "`{$map_prefix}user_activity`"; $column = '`day`'; $count = 'COUNT(DISTINCT `user_id`)'; $only = '';
   }
   // SQL bucket keys, matched by the PHP keys below.
   $sqlKey = [
@@ -33,7 +35,7 @@
   $today = new DateTimeImmutable($db->fetchOne('SELECT CURDATE()'));
   if ($ranges[$range]['days'] === null) {
     $first = $metric === 'active' && !$hasActivity ? null
-      : $db->fetchOne("SELECT MIN($column) FROM $table WHERE $column IS NOT NULL");
+      : $db->fetchOne("SELECT MIN($column) FROM $table WHERE $column IS NOT NULL$only");
     $start = new DateTimeImmutable($first ? substr($first, 0, 7) . '-01' : $today->format('Y-m-01'));
   } else {
     $start = $today->modify('-' . ($ranges[$range]['days'] - 1) . ' days');
@@ -44,7 +46,7 @@
   $counts = [];
   if ($metric === 'registrations' || $hasActivity) {
     foreach ($db->fetchAllAssociative(
-      "SELECT $sqlKey AS `bucket`, $count AS `count` FROM $table WHERE $column >= ? GROUP BY `bucket`",
+      "SELECT $sqlKey AS `bucket`, $count AS `count` FROM $table WHERE $column >= ?$only GROUP BY `bucket`",
       [$start->format('Y-m-d')]
     ) as $row) {
       $counts[$row['bucket']] = (int) $row['count'];

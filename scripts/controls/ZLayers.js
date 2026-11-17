@@ -1536,6 +1536,16 @@ L.Control.ZLayers = L.Control.Layers.extend({
 
   setContent: function(vContent, vType) {
     var previousContentType = this._contentType;
+    // A page being gone back to, while it's built (this task): what it asks
+    // the server for is answered as it was when it was left, so it's drawn
+    // as it was, at once, rather than as "Loading…" first (zwiki.js
+    // _wikiGet).
+    if(this._navigatingBack) {
+      this._backRendering = true;
+      window.clearTimeout(this._backRenderingTimer);
+      var control = this;
+      this._backRenderingTimer = window.setTimeout(function() { control._backRendering = false; }, 0);
+    }
     // Set by pages whose content loads after they open (zwiki.js):
     // keep the drawer's height until the content settles (below).
     var pageSettles = !!this._nextPageSettles;

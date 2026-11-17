@@ -161,9 +161,48 @@ ZMap.prototype._wikiPageSettled = function(page) {
   });
 };
 
-ZMap.prototype._wikiGet = function(command, params) {
-  return $.getJSON('ajax.php?command=' + command, params);
+// What pages ask the server for. Each answer is kept (the last 60), so a
+// page gone back to is drawn at once from what it showed when it was left,
+// as a browser's Back shows a page, rather than "Loading…" and then its
+// content (ZLayers setContent: _backRendering). Anything sent to the server
+// (a save, a post, a Yeah) or a change of account forgets them all, so a
+// page never comes back showing what's since changed; opened any other way
+// it always asks afresh.
+ZMap.prototype.WIKI_BACK_CACHE_SIZE = 60;
+// Pictures in a page (avatars) load as they come into view, except on a
+// page gone back to: those were just shown, so they're drawn with it at
+// once rather than popping in after its slide.
+ZMap.prototype._lazyImage = function() {
+  return this.mapControl && this.mapControl._backRendering ? '' : ' loading="lazy"';
 };
+ZMap.prototype._wikiGet = function(command, params) {
+  var zmap = this, me = this.getUser && this.getUser();
+  var key = command + '?' + $.param(params || {}) + '|' + (me ? me.id : '');
+  var kept = this._wikiAnswers || (this._wikiAnswers = { keys: [], data: {} });
+  if(this.mapControl && this.mapControl._backRendering && kept.data.hasOwnProperty(key)) {
+    return $.Deferred().resolve(kept.data[key]).promise();
+  }
+  var generation = this._wikiAnswersGeneration || 0;
+  return $.getJSON('ajax.php?command=' + command, params).done(function(data) {
+    // (Not one asked for before something changed: it may not show it.)
+    if(!data || data.success === false || (zmap._wikiAnswersGeneration || 0) !== generation) return;
+    var answers = zmap._wikiAnswers || (zmap._wikiAnswers = { keys: [], data: {} });
+    if(!answers.data.hasOwnProperty(key)) answers.keys.push(key);
+    answers.data[key] = data;
+    while(answers.keys.length > zmap.WIKI_BACK_CACHE_SIZE) delete answers.data[answers.keys.shift()];
+  });
+};
+ZMap.prototype._forgetWikiAnswers = function() {
+  this._wikiAnswers = null;
+  this._wikiAnswersGeneration = (this._wikiAnswersGeneration || 0) + 1;
+};
+// Anything sent to the server could change what a page shows.
+if(typeof document !== 'undefined' && typeof $ === 'function') {
+  var zmWikiDocument = $(document);
+  if(zmWikiDocument && zmWikiDocument.ajaxSend) zmWikiDocument.ajaxSend(function(event, xhr, options) {
+    if(options && /^post$/i.test(options.type || '') && window.zMap && zMap._forgetWikiAnswers) zMap._forgetWikiAnswers();
+  });
+}
 
 ZMap.prototype._wikiPost = function(command, data) {
   return $.ajax({ type: 'POST', url: 'ajax.php?command=' + command, data: data, dataType: 'json' });
@@ -603,7 +642,7 @@ ZMap.prototype._activityFilterHTML = function(selected) {
 };
 
 ZMap.prototype._activityAvatarHTML = function(item) {
-  return '<img class="activity-avatar" src="'+this._wikiEscape(item.profilePicture || 'images/default-avatar.png')+'" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'images/default-avatar.png\'">';
+  return '<img class="activity-avatar" src="'+this._wikiEscape(item.profilePicture || 'images/default-avatar.png')+'" alt=""' + this._lazyImage() + ' onerror="this.onerror=null;this.src=\'images/default-avatar.png\'">';
 };
 
 ZMap.prototype._wikiActivityRow = function(change,opts) {
@@ -1064,7 +1103,7 @@ ZMap.prototype._renderTalkThread = function(thread, comments) {
       .toggleClass('wiki-comment-deleted', comment.deleted);
     item.append(
       '<div class="wiki-comment-body-wrap">' +
-        '<img class="wiki-avatar" src="' + _this._wikiEscape(avatar) + '" alt="" loading="lazy" ' +
+        '<img class="wiki-avatar" src="' + _this._wikiEscape(avatar) + '" alt=""' + _this._lazyImage() + ' ' +
           'onerror="this.onerror=null;this.src=\'images/default-avatar.png\'" />' +
         '<div class="wiki-comment-main">' +
           '<div class="wiki-comment-head">' + _this._wikiUserLink(comment.userId, comment.username) +

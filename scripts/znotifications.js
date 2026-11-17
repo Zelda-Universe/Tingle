@@ -300,7 +300,7 @@ ZMap.prototype._notificationRow = function(n) {
   var icon = this.NOTIFICATION_ICONS[n.type] || 'fa-bell';
   var item = $(
     '<li class="notification notification-type-' + this._wikiEscape(n.type) + '" role="button" tabindex="0">' +
-      '<span class="notification-avatar"><img src="' + this._wikiEscape(avatar) + '" alt="" loading="lazy" ' +
+      '<span class="notification-avatar"><img src="' + this._wikiEscape(avatar) + '" alt=""' + this._lazyImage() + ' ' +
         'onerror="this.onerror=null;this.src=\'images/default-avatar.png\'" />' +
         '<span class="notification-kind"><i class="fas ' + icon + '" aria-hidden="true"></i></span></span>' +
       '<span class="notification-main">' +

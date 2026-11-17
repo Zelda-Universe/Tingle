@@ -408,14 +408,46 @@ self.addEventListener('push', event => {
       });
       return;
     }
-    // Tagged by id, so one shown by an earlier push is replaced, not repeated.
-    await Promise.all(items.map(item => self.registration.showNotification(item.title, {
+    // Each push is for one new notification, but two close together each
+    // find both; an iPhone shows a repeat again rather than replacing it by
+    // its tag. So: the oldest not shown yet. (All shown already: the newest
+    // again, which other browsers replace in place by its tag.)
+    // (One push at a time, so two together don't both pick the same one.)
+    const turn = pushTurns.then(async () => {
+      const shown = await shownPushIds();
+      const next = items.slice().reverse().find(item => !shown.includes(item.id)) || items[0];
+      await rememberPushShown(shown, next.id);
+      return next;
+    });
+    pushTurns = turn.catch(() => {});
+    const item = await turn;
+    await self.registration.showNotification(item.title, {
       body: item.body || undefined, icon, tag: 'zeldamaps-notification-' + item.id,
       // notification= marks it read when it's opened.
       data: { url: new URL(item.url + '&notification=' + item.id, self.registration.scope).href }
-    })));
+    });
   })());
 });
+
+// The notifications pushes have shown on this device, newest last. (Not a
+// 'zeldamaps-' cache, which an update clears.)
+const PUSH_SHOWN_CACHE = 'zm-push-shown';
+let pushTurns = Promise.resolve();
+const pushShownURL = () => new URL('push-shown.json', self.registration.scope).href;
+async function shownPushIds() {
+  try {
+    const saved = await (await caches.open(PUSH_SHOWN_CACHE)).match(pushShownURL());
+    const ids = saved ? await saved.json() : [];
+    return Array.isArray(ids) ? ids : [];
+  } catch (e) { return []; }
+}
+async function rememberPushShown(shown, id) {
+  try {
+    const ids = shown.filter(shownId => shownId !== id).concat([id]).slice(-50);
+    await (await caches.open(PUSH_SHOWN_CACHE)).put(pushShownURL(),
+      new Response(JSON.stringify(ids), { headers: { 'Content-Type': 'application/json' } }));
+  } catch (e) {}
+}
 
 self.addEventListener('notificationclick', event => {
   event.notification.close();

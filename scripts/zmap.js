@@ -7083,6 +7083,9 @@ ZMap.prototype._createAccountForm = function(user) {
            '<button id="account_profile_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-id-badge account-nav-icon" aria-hidden="true"></i>Profile</button>' +
            (user.level >= 5 ? '<button id="account_notifications_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bell account-nav-icon" aria-hidden="true"></i>Notifications<span class="account-nav-count" hidden></span></button>' : '') +
            '<hr class="account-divider">' +
+           // Recent Edits, on All Changes (every game); the category list's
+           // opens on Current Game (zbeta.js). One page either way.
+           '<button id="account_all_changes_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-history account-nav-icon" aria-hidden="true"></i>All Changes</button>' +
            // Paths (scripts/services/PathEditor.js): admins only while they're built.
            (this._pathsMakeable && this._pathsMakeable() ? '<button id="account_community_paths_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-map-signs account-nav-icon" aria-hidden="true"></i>Community Paths</button>' : '') +
            '<a id="account_discord_link" class="infoWindowIcn account-nav-button account-discord-link" href="' + this.DISCORD_URL + '" target="_blank" rel="noopener"><i class="fab fa-discord account-nav-icon" aria-hidden="true"></i>Zelda Maps Community Discord</a>' +
@@ -7126,6 +7129,9 @@ ZMap.prototype._createAccountForm = function(user) {
   });
   $('#account_information_btn').click(function() {
     _this._createAccountInformationForm();
+  });
+  $('#account_all_changes_btn').click(function() {
+    _this._openRecentChanges(null, _this._wikiBackToAccount());
   });
   $('#account_community_paths_btn').click(function() {
     _this.openCommunityPaths(_this._wikiBackToAccount());

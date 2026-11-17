@@ -93,9 +93,10 @@ ZMap.prototype._renderEditingBeta = function() {
     e.stopImmediatePropagation();
     _this._openMapSettings(function() { _this.mapControl.resetContent(); });
   });
-  // All Changes first, for everyone (Current Game is a tap away at its top).
+  // Current Game first, for everyone (All Changes is a tap away at its top,
+  // and the account page's All Changes opens on it).
   slot.on('click', '.editing-beta-changes:not(.editing-beta-settings)', function() {
-    _this._openRecentChanges(null, function() { _this.mapControl.resetContent(); });
+    _this._openRecentChanges(game, function() { _this.mapControl.resetContent(); });
   });
   var recent=slot.find('.editing-beta-changes:not(.editing-beta-settings)').last();
   var toolbar=$('<div class="category-view-toolbar"></div>');

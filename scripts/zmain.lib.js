@@ -173,9 +173,29 @@ function zMapInit(vResults) {
 // there's none: $.getJSON, as always.)
 function startupJSON(url, success) {
   var ready = window.zmGameSwitchData && window.zmGameSwitchData[url];
-  if(!ready) return $.getJSON(url, success);
-  delete window.zmGameSwitchData[url];
-  return ready.done(success);
+  if(ready) {
+    delete window.zmGameSwitchData[url];
+    return ready.done(success);
+  }
+  // Asked for as the page started (index.php): its answer, or, if that
+  // request failed, asked for again as always (so a failure is handled as
+  // ever, offline included).
+  var early = window.zmEarlyData && window.zmEarlyData[url];
+  if(!early) return $.getJSON(url, success);
+  delete window.zmEarlyData[url];
+  var answer = $.Deferred();
+  // (Not before the page is ready: an early answer can arrive while the
+  // page is still being read, before the map's element exists. Not $(fn):
+  // jQuery 3.0 keeps every function given it after the page is ready, and
+  // with it, this game's data.)
+  early.then(function(data) {
+    var resolve = function() { answer.resolve(data); };
+    if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', resolve, { once: true });
+    else resolve();
+  }, function() {
+    $.getJSON(url).done(function(data) { answer.resolve(data); }).fail(function() { answer.reject.apply(answer, arguments); });
+  });
+  return answer.done(success);
 }
 
 function getMapCategories(categoriesSelectedIdPairsObject) {
@@ -356,6 +376,10 @@ function getMarkers(categories) {
       zMap.setupOfflineMapMessage();
 
       finalLoad();
+      // The map's up, markers and all: what waits for that can start
+      // (index.php: analytics).
+      window.zmMapReady = true;
+      try { document.dispatchEvent(new Event('zeldamaps:ready')); } catch(e) {}
     }.bind(this, gameId)
   ).fail(showOfflineUnavailable);
 };
@@ -532,6 +556,13 @@ var AD_GAP = 8;
 var AD_BOTTOM = 10; // Matches #ads in zmain.css.
 var AD_SIDEBAR_GAP = 16;
 var adState = { key: null, observing: false, fallbackTimer: null };
+
+// A new ad in place of the one shown (another game switched to in place:
+// as the page load it stands for would have), if one's shown at all.
+function refreshAds() {
+  adState.key = null;
+  updateAdState();
+}
 
 // "live" on the production site. Elsewhere "test" asks AdSense for test ads
 // and shows a placeholder when none are served, as on localhost.

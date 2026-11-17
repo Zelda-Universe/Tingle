@@ -28,6 +28,18 @@
     if (!$revision) { echo json_encode(array('success' => false, 'msg' => 'That version is not available.')); return; }
     $snapshot = json_decode($revision['snapshot'], true);
     unset($revision['snapshot']);
+    // Each marker step's name, for a page that hasn't its game's markers (a
+    // revision of another game's path, opened where it was clicked).
+    $markerIds = array();
+    foreach (($snapshot['steps'] ?? array()) as $step) if (!empty($step['markerId'])) $markerIds[] = (int) $step['markerId'];
+    if ($markerIds) {
+      $markerIds = array_values(array_unique($markerIds));
+      $names = array();
+      foreach ($db->fetchAllAssociative("SELECT id, name FROM `{$map_prefix}marker` WHERE id IN (" . implode(',', array_fill(0, count($markerIds), '?')) . ")", $markerIds) as $row)
+        $names[(int) $row['id']] = wikiDecode($row['name']);
+      foreach ($snapshot['steps'] as &$step) if (!empty($step['markerId']) && isset($names[(int) $step['markerId']])) $step['markerName'] = $names[(int) $step['markerId']];
+      unset($step);
+    }
     foreach (['id', 'created', 'ago', 'userId'] as $n) $revision[$n] = (int) $revision[$n];
     echo json_encode(array('success' => true, 'snapshot' => $snapshot, 'revision' => $revision,
       'isCurrent' => (int) $revision['id'] === $latest, 'canRevert' => $canRevert, 'pathName' => $path['name'],

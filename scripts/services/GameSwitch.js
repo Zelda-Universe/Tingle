@@ -24,7 +24,14 @@ ZMap.prototype._gameSwitchAllowed = function() {
   return !!user && Number(user.level) >= this.GAME_SWITCH_LEVEL;
 };
 
+// On for everyone when an admin has turned it on for the site (the admin
+// panel's Settings: window.zmapSiteSettings, index.php); otherwise only for
+// staff who've turned it on in their own browser (Settings).
+ZMap.prototype._gameSwitchForEveryone = function() {
+  return !!(window.zmapSiteSettings && window.zmapSiteSettings.gameSwitch);
+};
 ZMap.prototype._gameSwitchOn = function() {
+  if(this._gameSwitchForEveryone()) return true;
   try { return this._gameSwitchAllowed() && localStorage.getItem(this.GAME_SWITCH_KEY) === 'on'; } catch(e) { return false; }
 };
 
@@ -52,10 +59,8 @@ ZMap.prototype._gameSwitchBlocker = function() {
   if(!this.map || !this.mapControl) return 'not loaded';
   // Something being edited: a full load is what happened before (and may
   // be asked about), never lost in place.
-  if(window.tinymce && tinymce.editors && tinymce.editors.length) return 'editing';
-  if(this._pathEditing) return 'editing a path';
-  var type = this.mapControl.getContentType && this.mapControl.getContentType() || '';
-  if(/^(markerEdit|newMarker|pathEditor|pathPinEditor|mapSettings|areaNameEdit|regionEdit|accountInformation)/.test(type)) return 'editing';
+  var editing = this._editingSomething();
+  if(editing) return editing;
   if(document.querySelector('dialog[open]')) return 'dialog open';
   // A map download runs in this page: a reload picks it up again afterwards.
   if(this._offlineJob) return 'downloading';
@@ -107,11 +112,19 @@ ZMap.prototype._switchGameInPlace = function(target, opts) {
   old._switchingGame = true;
   document.documentElement.classList.add('zm-switching-game');
   var done = function() { document.documentElement.classList.remove('zm-switching-game'); };
-  var container = old.map && old.map.getContainer();
   var slowMs = old.mapControl && old.mapControl.MAP_SWAP_SLOW_MS || 350;
+  // (The map's element as it is then: teardown gives the new game a fresh one.)
   var slow = window.setTimeout(function() {
-    if(window.zmMapWaiting) zmMapWaiting(container, true, old.mapControl && old.mapControl._container);
+    if(window.zmMapWaiting) zmMapWaiting(document.querySelector('main'), true, old.mapControl && old.mapControl._container);
   }, slowMs);
+  // The new game's page as the server writes it, for its title and the
+  // rest of its head (description, canonical, social cards, colour): put
+  // in before the address changes, as a page load would have them, for
+  // analytics to read (_applyHeadMetadata). Not had: the title alone, as
+  // start-up sets it.
+  var page = window.fetch ? fetch(target.href, { credentials: 'same-origin' })
+    .then(function(response) { return response.ok ? response.text() : null; })
+    .catch(function() { return null; }) : null;
   var loadPage = function() { window.location.href = target.href; };
   // On a phone, picked in Switch Game: the sheet back to its categories and
   // closed at once, as picking a map does (ZLayers _finishMapMenuSelection),
@@ -131,7 +144,7 @@ ZMap.prototype._switchGameInPlace = function(target, opts) {
     data[url('get_categories')] = $.getJSON(url('get_categories'));
     data[url('get_map')] = $.getJSON(url('get_map'));
     data[url('get_markers')] = $.getJSON(url('get_markers'));
-    $.when(data[url('get_categories')], data[url('get_map')]).done(function() {
+    $.when(data[url('get_categories')], data[url('get_map')], page).done(function(categoriesAnswer, mapAnswer, html) {
       // (Out of jQuery's handling of those answers first: asked for again
       // from inside it, as the start-up chain does, one would come after
       // this, not in it.)
@@ -146,8 +159,16 @@ ZMap.prototype._switchGameInPlace = function(target, opts) {
           // The old game's map, as it is, to stay on screen meanwhile.
           var fade = old.MAP_TRANSITIONS.game !== 'cut';
           var cover = old._coverMap(fade);
-          if(opts && opts.push) history.pushState({ zmGame: game }, '', target.href);
-          else history.replaceState(Object.assign({}, history.state, { zmGame: game }), '', target.href);
+          var head = typeof html === 'string' ? old._headMetadataFromHTML(html) : null;
+          if(opts && opts.push) {
+            // The page left keeps its own, for Back (the popstate listener).
+            history.replaceState(Object.assign({}, history.state, { zmHead: old._headMetadata() }), '');
+            if(head) old._applyHeadMetadata(head);
+            history.pushState({ zmGame: game, zmHead: head }, '', target.href);
+          } else {
+            if(head) old._applyHeadMetadata(head);
+            history.replaceState(Object.assign({}, history.state, { zmGame: game, zmHead: head || (history.state && history.state.zmHead) || null }), '', target.href);
+          }
           old._teardownForGameSwitch();
           // What the server put in the page for its first game.
           window.zmapLandingCategoryId = null;
@@ -168,6 +189,9 @@ ZMap.prototype._switchGameInPlace = function(target, opts) {
             if(closingFrom) zMap._continueSheetClose(closingFrom);
           }
           zMap._watchMapLoading();
+          // As a page load: a fresh ad, and the visit counted.
+          if(typeof refreshAds === 'function') { try { refreshAds(); } catch(e) {} }
+          zMap._countGameSwitchVisit();
           // Fading: its markers to come in after its map.
           if(fade && zMap.mapControl._freezeMapContent) zMap.mapControl._freezeMapContent({ copies: false });
           zMap._uncoverWhenDrawn(cover, fade ? null : data[url('get_markers')], slow);
@@ -227,6 +251,46 @@ ZMap.prototype._slideBackFromGameMenu = function(page) {
   } catch(e) {
     try { control.resetContent(); } catch(e2) {}
   }
+};
+
+// The page's metadata (index.php's head): its title, description,
+// canonical, social cards, colour and robots, as tags.
+ZMap.prototype.HEAD_METADATA = 'title, meta[name], meta[property], link[rel="canonical"], link[rel="alternate"], script[type="application/ld+json"]';
+ZMap.prototype._headMetadata = function(doc) {
+  return Array.prototype.map.call((doc || document).head.querySelectorAll(this.HEAD_METADATA), function(tag) { return tag.outerHTML; });
+};
+ZMap.prototype._headMetadataFromHTML = function(html) {
+  try {
+    var doc = new DOMParser().parseFromString(html, 'text/html');
+    var tags = this._headMetadata(doc);
+    return tags.length ? tags : null;
+  } catch(e) { return null; }
+};
+// This page's metadata swapped for another's (tags, as _headMetadata
+// gives them), as a page load of it would have it.
+ZMap.prototype._applyHeadMetadata = function(tags) {
+  if(!Array.isArray(tags) || !tags.length) return;
+  var head = document.head, current = head.querySelectorAll(this.HEAD_METADATA);
+  var fresh = document.createElement('template');
+  fresh.innerHTML = tags.join('');
+  head.insertBefore(fresh.content, current[0] || null);
+  Array.prototype.forEach.call(current, function(tag) { tag.remove(); });
+};
+
+// The visit counted as a page load counts it: Google Analytics' page view
+// (its history events don't count an address changed in place: measured),
+// with the page it came from; comScore's page view; Nielsen's pixel asked
+// for again.
+ZMap.prototype._gameSwitchFrom = window.location.href;
+ZMap.prototype._countGameSwitchVisit = function() {
+  var from = ZMap.prototype._gameSwitchFrom;
+  ZMap.prototype._gameSwitchFrom = window.location.href;
+  try {
+    if(typeof window.gtag === 'function') gtag('event', 'page_view', { page_title: document.title, page_location: window.location.href, page_referrer: from });
+  } catch(e) {}
+  try { if(window.COMSCORE && COMSCORE.beacon) COMSCORE.beacon({ c1: '2', c2: '6035118' }); } catch(e) {}
+  var pixel = document.querySelector('#tracking img[src*="imrworldwide.com"]');
+  if(pixel) { try { new Image().src = pixel.src; } catch(e) {} }
 };
 
 // The map on screen copied (just to look at) over the map's element, to
@@ -346,8 +410,36 @@ ZMap.prototype._teardownForGameSwitch = function() {
   (this._pageCleanups || []).splice(0).forEach(function(cleanup) {
     try { cleanup(); } catch(e) { if(window.console) console.warn('Game switch cleanup', e); }
   });
+  // Search's settings handlers (SearchMarkerHandler, SearcherFuse): the
+  // new map's search adds its own.
+  if(window.ZConfig) ZConfig.handlers = {};
+  var element = this.map && this.map.getContainer();
+  // (Its own clean-up runs on the map's unload, which map.off() below
+  // would take away first.)
+  if(this.trackpadGestureHandler && this.trackpadGestureHandler.destroy) { try { this.trackpadGestureHandler.destroy(); } catch(e) {} }
   if(this.map) {
     try { this.map.off(); this.map.remove(); } catch(e) { if(window.console) console.warn('Game switch: removing the map', e); }
+  }
+  // A fresh element for the new map: the same tag, id, classes and style,
+  // but none of the listeners the old map and its handlers put on it (each
+  // would keep the whole old game in memory). Only the page's own parts in
+  // it move across (the ad, the copy of the old map shown meanwhile, the
+  // dimming); what the old map left in it (its right-click menu) stays
+  // behind with it.
+  if(element && element.parentNode) {
+    try {
+      var fresh = element.cloneNode(false);
+      Array.prototype.slice.call(element.children).forEach(function(child) {
+        if(child.matches('#ads, .zm-map-cover, .zm-map-waiting')) fresh.appendChild(child);
+      });
+      element.parentNode.replaceChild(fresh, element);
+      // And the old one emptied of what's left on it: something else may
+      // still hold it (Google's ad script keeps a reference to it), and
+      // whatever's on it would keep the old game with it.
+      while(element.firstChild) element.removeChild(element.firstChild);
+      if(window.L && L.DomEvent && L.DomEvent.off) L.DomEvent.off(element);
+      Object.keys(element).forEach(function(key) { if(/^_leaflet/.test(key)) { try { delete element[key]; } catch(e) {} } });
+    } catch(e) { if(window.console) console.warn('Game switch: renewing the map element', e); }
   }
   // (Any of its timers still to come find nothing to act on.)
   this.map = null;
@@ -362,6 +454,9 @@ window.addEventListener('popstate', function() {
   var target = new URL(window.location.href);
   var game = target.searchParams.get('game');
   if(!game || zMap._sameGame(game, zMap.mapOptions && zMap.mapOptions.shortName)) return;
+  // That page's metadata at once, before analytics reads the change (its
+  // listener is added after this one).
+  if(history.state && history.state.zmHead) zMap._applyHeadMetadata(history.state.zmHead);
   if(zMap._gameSwitchBlocker()) { window.location.reload(); return; }
   zMap._switchGameInPlace(target, { push: false });
 });
@@ -370,7 +465,8 @@ window.addEventListener('popstate', function() {
 // account's known). Off by default; on just for this browser.
 ZMap.prototype._addGameSwitchSetting = function() {
   var settings = this.settingsControl;
-  if(!settings || !settings.addCheckbox || this._gameSwitchCheckbox || !this._gameSwitchAllowed()) return;
+  // (On for everyone: nothing for one browser to turn on.)
+  if(!settings || !settings.addCheckbox || this._gameSwitchCheckbox || !this._gameSwitchAllowed() || this._gameSwitchForEveryone()) return;
   var zmap = this;
   this._gameSwitchCheckbox = settings.addCheckbox('Switch games without reloading (staff test)', this._gameSwitchOn(), function(checked) {
     zmap._setGameSwitch(checked);

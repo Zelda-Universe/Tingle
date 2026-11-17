@@ -197,7 +197,11 @@ ZMap.prototype._runEditingBetaCarousel = function(root) {
     place(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     if(window.matchMedia('(prefers-reduced-motion: reduce)').matches && index >= count + 2) { index -= count; place(false); }
   }, this.EDITING_BETA_SLIDE_MS);
-  window.addEventListener('resize', function() { if(root.isConnected) place(false); });
+  // (Gone with the map, as a game switched in place takes it down.)
+  if(this._onCleanup) this._onCleanup(function() { window.clearInterval(timer); });
+  var resize = function() { if(root.isConnected) place(false); };
+  if(this._onPage) this._onPage(window, 'resize', resize);
+  else window.addEventListener('resize', resize);
 };
 
 // joined runs once they're in, before the welcome.
@@ -297,6 +301,8 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
   var title = 'Recent Edits';
   activityFilter=activityFilter || 'all';
   var oneGame = this.mapOptions.shortName;
+  // The game's own icon, as Switch Game shows it (its icon font).
+  var gameIcon = /^[\w-]+$/.test(this.mapOptions.icon || '') ? '<i class="icon-' + this.mapOptions.icon + ' activity-scope-game-icon" aria-hidden="true"></i>' : '<i class="fas fa-map" aria-hidden="true"></i>';
   game = game ? oneGame : null;
   var reopen = this._wikiReopen(function() { _this._openRecentChanges(game, back,activityFilter); }, back, title);
   // Serializable counterpart for comment links that switch games.
@@ -306,7 +312,7 @@ ZMap.prototype._openRecentChanges = function(game, back, activityFilter) {
       '<h3 class="text-center">' + title + '</h3>' +
       '<div class="admin-tabs activity-scope" role="group" aria-label="Which edits">' +
         '<button type="button" data-activity-scope="all" aria-selected="' + (game ? 'false' : 'true') + '"><i class="fas fa-globe" aria-hidden="true"></i>All Changes</button>' +
-        '<button type="button" data-activity-scope="game" aria-selected="' + (game ? 'true' : 'false') + '"><i class="fas fa-map" aria-hidden="true"></i>Current Game</button>' +
+        '<button type="button" data-activity-scope="game" aria-selected="' + (game ? 'true' : 'false') + '">' + gameIcon + 'Current Game</button>' +
       '</div>' +
       this._activityFilterHTML(activityFilter)+'<ul class="wiki-revisions"><li class="wiki-empty">Loading…</li></ul>' +
       '<button type="button" class="infoWindowIcn form-action-button recent-changes-more" hidden>Show More</button>' +

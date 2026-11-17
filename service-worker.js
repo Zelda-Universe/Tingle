@@ -246,6 +246,11 @@ async function packAliases(name, pack) {
 }
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'zeldamaps-offline-pack-updated') PACK_ALIASES.delete(event.data.cache);
+  // A page asking which version of the site this worker is for (index.php):
+  // a page whose scripts are older reloads; one already up to date doesn't.
+  if (event.data && event.data.type === 'zeldamaps-worker-version?' && event.source) {
+    event.source.postMessage({ type: 'zeldamaps-worker-version', version: ASSET_VERSION });
+  }
 });
 
 async function cacheFirstTile(request, clientId) {

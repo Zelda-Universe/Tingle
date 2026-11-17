@@ -328,6 +328,14 @@
     $output .= file_get_contents("$cacheDestFile");
     $output .= "\n";
     header("Content-Type: $mtype");
+    // Asked for by this exact version (index.php's ?v=, which changes
+    // whenever these bytes do): the same address never means anything else,
+    // so browsers and Cloudflare can keep it rather than check back each
+    // visit. Any other address (an old version, none) is checked as before.
+    include_once(__DIR__ . '/lib/common/assets.php');
+    if (isset($_GET['v']) && is_string($_GET['v']) && hash_equals(asset_version(), $_GET['v'])) {
+      header('Cache-Control: public, max-age=31536000, immutable');
+    }
     header("X-Updated: ".(($update) ? 'true' : 'false'));
     header("Content-Length: ".strlen($output));
     print($output);

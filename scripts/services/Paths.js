@@ -85,15 +85,17 @@ ZMap.prototype.loadPaths = function() {
         try { zmap._withoutPageSlide(function() {
           var path = zmap.paths.find(function(p) { return p.slug === slug; });
           // A revision's link (a feed's, from another game): just the
-          // revision, over the path in view, Back going where it came from
-          // (MarkerNavigation.js), else to the path's History. Go to Path
-          // is on it.
+          // revision, the map left where it opens (only Go to Path goes to
+          // the path), Back going where it came from (MarkerNavigation.js),
+          // else to the path's History.
           if(revision && zmap._openPathSubpage) {
-            zmap.focusPath(slug, {instant: true});
             zmap._openPathSubpage(path, {pathRev: revision, back: zmap._markerLinkReturnBack ? zmap._markerLinkReturnBack() : null});
             return;
           }
-          zmap.openPathPage(slug, {instant: true});
+          // (Back to the page it was opened from, in another game: a
+          // revision's Go to Path, MarkerNavigation.js.)
+          var linkBack = zmap._markerLinkReturnBack ? zmap._markerLinkReturnBack() : null;
+          zmap.openPathPage(slug, linkBack ? {instant: true, back: linkBack} : {instant: true});
           if(pin && path.steps.some(function(s) { return s.pinKey === pin; })) zmap.openPathPin(path, pin, null, {instant: true});
           // (A notification's link, at its Talk.)
           else if(zmap._openPathSubpage) zmap._openPathSubpage(path, {talk: params.get('talk') === '1', comment: Number(params.get('comment')) || 0});
@@ -223,7 +225,9 @@ ZMap.prototype._pathCategoryAtZoom = function(category) {
 ZMap.prototype.PATH_PAGES = ['path', 'pathEditor', 'pathHistory', 'pathRevision', 'pathTalk', 'pathPin', 'pathPinEditor'];
 // Pages that put the path in focus: its own markers alone on the map, as a
 // focused category's are. (Not the editor: steps are added from any marker.)
-ZMap.prototype.PATH_FOCUS_PAGES = ['path', 'pathHistory', 'pathRevision', 'pathTalk', 'pathPin', 'pathPinEditor'];
+// (Not a revision's page: it shows that version's line over the map as it
+// is, every marker still on it.)
+ZMap.prototype.PATH_FOCUS_PAGES = ['path', 'pathHistory', 'pathTalk', 'pathPin', 'pathPinEditor'];
 ZMap.prototype._pathPageKind = function(type) {
   type = type || '';
   return /^pathRevision-\d+$/.test(type) ? 'pathRevision' : /^talk-path-\d+$/.test(type) ? 'pathTalk' : type;

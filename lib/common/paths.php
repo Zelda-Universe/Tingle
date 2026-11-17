@@ -228,13 +228,16 @@
   }
 
   // Tells a path's owner someone else changed, restored or deleted it.
-  function pathNotifyOwner($db, $prefix, $path, $actorId, $action, $summary = '') {
+  // $revisionId: the save it made, which the notification opens (See the
+  // Changes), not the path itself.
+  function pathNotifyOwner($db, $prefix, $path, $actorId, $action, $summary = '', $revisionId = 0) {
     if ((int) $path['user_id'] === (int) $actorId) return;
     include_once(__DIR__ . '/notifications.php');
     $game = $db->fetchOne("SELECT short_name FROM `{$prefix}container` WHERE id = ?", [$path['container_id']]);
     $actor = $db->fetchOne("SELECT username FROM `{$prefix}user` WHERE id = ?", [$actorId]);
     $data = array('actor' => $actor, 'pathTitle' => $path['name'], 'action' => $action, 'excerpt' => notificationExcerpt($summary));
     $data['link'] = $action === 'delete' ? array('page' => 'notifications') : array('game' => $game, 'path' => $path['slug']);
+    if ($action !== 'delete' && (int) $revisionId > 0) $data['link']['pathrev'] = (int) $revisionId;
     notificationDeliver($db, $prefix, $actorId, [(int) $path['user_id'] => ['path_edit']], array(), $data);
   }
 

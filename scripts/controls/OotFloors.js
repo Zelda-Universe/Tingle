@@ -35,10 +35,17 @@ ZMap.prototype.setupOotFloors = function() {
     var scale=svg ? new DOMMatrixReadOnly(getComputedStyle(svg).transform).a : 1;
     connectionPane.style.setProperty('--oot-zoom-scale', scale>0 ? scale : 1);
   };
+  var connectionsGone=false;
   var trackConnectionZoom=function() {
+    if(connectionsGone) return;
     applyConnectionZoom();
     connectionZoomFrame=window.requestAnimationFrame(trackConnectionZoom);
   };
+  // (Never left running once the map's gone: a game switched in place.)
+  zmap._onCleanup(function() {
+    connectionsGone=true;
+    if(connectionZoomFrame!==null) window.cancelAnimationFrame(connectionZoomFrame);
+  });
   // An animated zoom scales the lines with a CSS transition, so only the page
   // knows the scale mid-animation: read it each frame.
   this.map.on('zoomanim', function() {

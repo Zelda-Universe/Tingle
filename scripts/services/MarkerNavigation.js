@@ -70,6 +70,8 @@ ZMap.prototype._restoreMarkerLinkSource = function(token) {
         zmap._openUserProfile({id:id},parent);
       } else if(source.type==='history' && valid) zmap._openMarkerHistory(id,parent);
       else if(source.type==='revision' && valid) zmap._openMarkerRevision(id,parent);
+      // A path's revision: where it was, in whichever game (PathEditor.js).
+      else if(source.type==='pathRevision' && valid && zmap._openPathRevisionById) zmap._openPathRevisionById(id,parent);
       else if(source.type==='talk' && valid && ['marker','user'].includes(source.pageType)) zmap._openTalk(source.pageType,id,String(source.title || ''),parent,{highlight:Number(source.comment)||0,region:!!source.region});
       else if(source.type==='notifications') zmap._openNotificationsPage(parent);
       else if(source.type==='categories') zmap.mapControl.resetContent();

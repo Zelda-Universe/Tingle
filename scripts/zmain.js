@@ -25,7 +25,8 @@ zMap.setupOfflineMapMessage();
 
 $(document).on('keydown', globalKeyPressHandler);
 
-$.getJSON(
+// (Asked for as the page started, if it was: startupJSON.)
+startupJSON(
   "ajax.php?command=get_container&game=" + gameId,
   zMapInit
 ).fail(showOfflineUnavailable);

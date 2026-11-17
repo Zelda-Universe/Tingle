@@ -32,12 +32,12 @@
     pathWrite($db, $map_prefix, $id, $read[0], $read[1]);
     // (Who saved it, not when: times read in each viewer's own zone.)
     $summary = 'Restored ' . $db->fetchOne("SELECT u.username FROM `{$map_prefix}path_revision` r JOIN `{$map_prefix}user` u ON u.id = r.user_id WHERE r.id = ?", [$revisionId]) . '’s earlier version';
-    pathRecordRevision($db, $map_prefix, $id, $userId, 'revert', $summary, $before);
+    $restored = pathRecordRevision($db, $map_prefix, $id, $userId, 'revert', $summary, $before);
     $db->commit();
   } catch (Throwable $ex) {
     $db->rollBack();
     throw $ex;
   }
-  pathNotifyOwner($db, $map_prefix, array_merge($path, array('name' => $read[0]['name'])), $userId, 'revert', $summary);
+  pathNotifyOwner($db, $map_prefix, array_merge($path, array('name' => $read[0]['name'])), $userId, 'revert', $summary, $restored);
   echo json_encode(array('success' => true, 'slug' => $path['slug']));
 ?>

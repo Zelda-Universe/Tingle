@@ -25,7 +25,9 @@ CopyLink.prototype._initSettings = function(opts) {
 CopyLink.prototype._initDOMElements = function() {
   Link.prototype._initDOMElements.call(this);
 
-  this.textCopyArea = L.DomUtil.create('div', 'copy text-area', document.body);
+  // One for the page, shared by every Copy Link (each map built, a game
+  // switched to in place, makes new ones; it only holds what's being copied).
+  this.textCopyArea = document.querySelector('body > div.copy.text-area') || L.DomUtil.create('div', 'copy text-area', document.body);
 };
 
 CopyLink.prototype.action = function() {

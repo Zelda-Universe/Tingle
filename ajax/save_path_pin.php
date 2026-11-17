@@ -38,6 +38,6 @@
     $db->rollBack();
     throw $ex;
   }
-  if ($revision) pathNotifyOwner($db, $map_prefix, $path, $userId, 'edit', $summary);
+  if ($revision) pathNotifyOwner($db, $map_prefix, $path, $userId, 'edit', $summary, $revision);
   echo json_encode(array('success' => true, 'name' => $name, 'content' => $content));
 ?>

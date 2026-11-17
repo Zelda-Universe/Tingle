@@ -11,7 +11,9 @@ test.each([
   const getJSON = jest.fn(() => ({ fail() {} }));
   const replaceState = jest.fn();
   const $ = Object.assign(() => ({ on() {} }), { getJSON });
-  const context = { URL, $, document: {}, globalKeyPressHandler() {}, zMapInit() {}, showOfflineUnavailable() {},
+  // (Start-up asks through startupJSON, which asks as getJSON does when
+  // nothing was asked for early.)
+  const context = { URL, $, startupJSON: getJSON, document: {}, globalKeyPressHandler() {}, zMapInit() {}, showOfflineUnavailable() {},
     navigator: { onLine: online }, ZConfig: { getConfig() {} },
     ZMap: function() { this.setupOfflineMapMessage = jest.fn(); },
     ZMapOfflinePacks: { downloadedGameIds: () => downloads }, getUrlParam: () => linked,

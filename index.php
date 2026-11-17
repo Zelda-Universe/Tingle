@@ -273,6 +273,34 @@
 <!DOCTYPE html>
 <html lang="en"<?= $zmEmbed ? ' class="zm-framed zm-embed"' : '' ?>>
   <head>
+    <!-- The game's data asked for at once, while the page's scripts are
+         still on their way, rather than once they've all loaded and run
+         (zmain.lib.js startupJSON takes these in place of asking again).
+         The same requests start-up would make: the game's settings, then
+         its categories, maps and markers together. -->
+    <script>
+      (function() {
+        if (!window.fetch || !window.Promise) return;
+        var early = window.zmEarlyData = {};
+        var game = new URLSearchParams(window.location.search).get('game');
+        // As zmain.js reads it (with no game, OoT, unless offline).
+        if (!game) { if (!navigator.onLine) return; game = 'OoT'; }
+        if (/^ootr?$/i.test(game)) game = 'OoT';
+        var ask = function(url) {
+          return early[url] = fetch(url, { credentials: 'same-origin' }).then(function(response) {
+            if (!response.ok) throw new Error(response.status);
+            return response.json();
+          });
+        };
+        ask('ajax.php?command=get_container&game=' + game).then(function(containers) {
+          if (!Array.isArray(containers) || !containers.length || !containers.every(Boolean)) return;
+          var id = containers[0].id;
+          ['get_categories', 'get_map', 'get_markers'].forEach(function(command) {
+            ask('ajax.php?command=' + command + '&game=' + id);
+          });
+        }).catch(function() {});
+      })();
+    </script>
     <!-- Shown inside another site's page (an embed: zmap.js
          _copyToClipboardEmbed), the map is just what was embedded: no
          account, search or ways elsewhere (styles/zmain.css .zm-framed). Set
@@ -288,6 +316,20 @@
         window.zmapEmbedPreview = <?= $zmEmbed && ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '') === 'same-origin' ? 'true' : 'false' ?>;
         // How far paths are released (lib/common/paths.php PATHS_STAGE).
         window.zmapPathsStage = <?php include_once(__DIR__ . '/lib/common/paths.php'); echo json_encode(PATHS_STAGE); ?>;
+        // The site's settings, as admins have set them (the admin panel's
+        // Settings: lib/common/site_settings.php). Each its default if the
+        // database can't be had.
+        window.zmapSiteSettings = <?php
+          include_once(__DIR__ . '/lib/common/site_settings.php');
+          $zmSiteSettings = null;
+          try {
+            include_once(__DIR__ . '/config.php');
+            include_once(__DIR__ . '/lib/common/database.php');
+            if (open() === 0) $zmSiteSettings = siteSettings($db, $map_prefix);
+          } catch (Throwable $e) {}
+          if ($zmSiteSettings === null) $zmSiteSettings = siteSettings(null, '');
+          echo json_encode($zmSiteSettings);
+        ?>;
         if (!framed && !window.zmapEmbed) return;
         document.documentElement.classList.add('zm-framed');
         // A link in what's shown (a marker's sources) opens in a new tab,
@@ -439,14 +481,31 @@
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;
           var reloadingForWorker = false;
+          // The version of the scripts this page is running.
+          var pageAssetVersion = <?= json_encode(asset_version()) ?>;
+          // A new worker (the site was updated) took over. The page is
+          // loaded from the server first, so one loaded just now already
+          // runs the new scripts: it's asked which version it's for, and
+          // only a page left open from before the update is reloaded, and
+          // not in the middle of an edit (then it's offered instead).
           navigator.serviceWorker.addEventListener('controllerchange', function() {
             if(!hadServiceWorkerController) {
               hadServiceWorkerController = true;
               return;
             }
-            if(reloadingForWorker) return;
+            var worker = navigator.serviceWorker.controller;
+            if(worker) worker.postMessage({ type: 'zeldamaps-worker-version?' });
+          });
+          navigator.serviceWorker.addEventListener('message', function(event) {
+            var data = event.data || {};
+            if(data.type !== 'zeldamaps-worker-version' || data.version === pageAssetVersion || reloadingForWorker) return;
             reloadingForWorker = true;
-            window.location.reload();
+            var busy = false;
+            try { busy = !!(window.zMap && zMap._editingSomething && zMap._editingSomething()); } catch(e) {}
+            if(!busy) { window.location.reload(); return; }
+            if(window.toastr) toastr.info('Zelda Maps has been updated. Reload when you\'re done to get the latest version.', '', {
+              timeOut: 0, extendedTimeOut: 0, onclick: function() { window.location.reload(); }
+            });
           });
           window.addEventListener('load', function() {
             var lastUpdateCheck = 0;
@@ -533,13 +592,31 @@
     </main>
 
     <div id="tracking">
-      <!-- Google tag (gtag.js), on the production site only. -->
+      <!-- Google tag (gtag.js), on the production site only, loaded at
+           once as always. Admins can try loading it once the map is up
+           instead (zmain.lib.js, zeldamaps:ready; or after 15 seconds
+           whatever happens), in Settings, for this browser
+           (zmap.js _addAnalyticsTimingSetting): loaded while the map is
+           built, it holds the map back by seconds. The visit is recorded as
+           starting when the page did either way. -->
       <script>
         if (['zeldamaps.com', 'www.zeldamaps.com'].indexOf(location.hostname) > -1) {
-          var gtagScript = document.createElement('script');
-          gtagScript.async = true;
-          gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-YGLG406J6N';
-          document.head.appendChild(gtagScript);
+          var gtagLoaded = false;
+          var loadGtag = function() {
+            if (gtagLoaded) return;
+            gtagLoaded = true;
+            var gtagScript = document.createElement('script');
+            gtagScript.async = true;
+            gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-YGLG406J6N';
+            document.head.appendChild(gtagScript);
+          };
+          var afterMap = false;
+          try { afterMap = localStorage.getItem('zeldamapsAnalyticsAfterMap') === 'on'; } catch (e) {}
+          if (!afterMap || window.zmMapReady) loadGtag();
+          else {
+            document.addEventListener('zeldamaps:ready', loadGtag);
+            setTimeout(loadGtag, 15000);
+          }
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());

@@ -2012,9 +2012,10 @@ ZMap.prototype.buildMap = function(gameId) {
   // further on every reload.
   var settling = true;
   var settled = function() { settling = false; };
+  // (Taken off with the map, if never fired: a game switched in place.)
   ['mousedown', 'touchstart', 'wheel', 'keydown'].forEach(function(type) {
-    map.getContainer().addEventListener(type, settled, { once: true, passive: true });
-  });
+    this._onPage(map.getContainer(), type, settled, { once: true, passive: true });
+  }, this);
   window.setTimeout(settled, 5000);
   var invalidateMapSize = function() {
     updateMobileMapHeight();
@@ -2229,7 +2230,8 @@ ZMap.prototype.addMapControl = function(gameId) {
     this._fitToMapBounds(initialLayer);
   }
 
-  $(document).on('keydown', function(e) {
+  // (Taken off with the map: a game switched in place leaves none behind.)
+  var pageKeydown = function(e) {
     if(e.key == "Escape") {
       // (An embed keeps what it shows.)
       if(_this.isFramed()) return;
@@ -2246,7 +2248,9 @@ ZMap.prototype.addMapControl = function(gameId) {
       _this.updateUrl();
       zLogger.info('Manually updated URL!');
     }
-  }.bind(this.mapControl));
+  }.bind(this.mapControl);
+  $(document).on('keydown', pageKeydown);
+  this._onCleanup(function() { $(document).off('keydown', pageKeydown); });
 
   // A trackpad pan ends a move every frame: refresh markers at most every
   // 150ms while it goes on, and once when it stops, rather than every frame
@@ -2287,7 +2291,7 @@ ZMap.prototype._setupMarkerTouchTaps = function() {
   var map = this.map;
   var container = map.getContainer();
   var tap = null;
-  container.addEventListener('touchstart', function(event) {
+  this._onPage(container, 'touchstart', function(event) {
     tap = null;
     if(event.touches.length !== 1) return;
     var icon = event.target.closest && event.target.closest('.leaflet-marker-icon');
@@ -2296,13 +2300,13 @@ ZMap.prototype._setupMarkerTouchTaps = function() {
     var touch = event.touches[0];
     tap = { target: target, x: touch.clientX, y: touch.clientY, time: Date.now() };
   }, { capture: true, passive: true });
-  container.addEventListener('touchmove', function(event) {
+  this._onPage(container, 'touchmove', function(event) {
     if(!tap) return;
     if(event.touches.length !== 1 ||
       Math.hypot(event.touches[0].clientX - tap.x, event.touches[0].clientY - tap.y) > 12) tap = null;
   }, { capture: true, passive: true });
-  container.addEventListener('touchcancel', function() { tap = null; }, { passive: true });
-  container.addEventListener('touchend', function(event) {
+  this._onPage(container, 'touchcancel', function() { tap = null; }, { passive: true });
+  this._onPage(container, 'touchend', function(event) {
     var completedTap = tap;
     tap = null;
     if(!completedTap || event.touches.length || Date.now() - completedTap.time > 500) return;
@@ -2332,21 +2336,21 @@ ZMap.prototype._setupDoubleTapZoom = function() {
   };
   if(wasEnabled) doubleClickZoom.enable();
 
-  container.addEventListener('touchstart', function(event) {
+  this._onPage(container, 'touchstart', function(event) {
     tap = null;
     if(event.touches.length !== 1) { lastTap = null; return; }
     if(event.target.closest && event.target.closest('.leaflet-marker-icon, .leaflet-control, .leaflet-popup')) return;
     var touch = event.touches[0];
     tap = { x: touch.clientX, y: touch.clientY, time: Date.now() };
   }, { capture: true, passive: true });
-  container.addEventListener('touchmove', function(event) {
+  this._onPage(container, 'touchmove', function(event) {
     if(tap && (event.touches.length !== 1 ||
       Math.hypot(event.touches[0].clientX - tap.x, event.touches[0].clientY - tap.y) > 12)) {
       tap = lastTap = null;
     }
   }, { capture: true, passive: true });
-  container.addEventListener('touchcancel', function() { tap = lastTap = null; }, { passive: true });
-  container.addEventListener('touchend', function(event) {
+  this._onPage(container, 'touchcancel', function() { tap = lastTap = null; }, { passive: true });
+  this._onPage(container, 'touchend', function(event) {
     var completedTap = tap;
     tap = null;
     if(!completedTap || event.touches.length || Date.now() - completedTap.time > 300) {
@@ -3518,6 +3522,7 @@ ZMap.prototype.setUser = function(vUser) {
    if(user == null) ZOfflineSync.clear();
    // Staff: the switch for changing games without a reload (GameSwitch.js).
    if(this._addGameSwitchSetting) this._addGameSwitchSetting();
+   this._addAnalyticsTimingSetting();
    _this._buildContextMenu();
    if (this._watchWikiUser) this._watchWikiUser();
    this.notifyUserChanged();
@@ -5691,11 +5696,14 @@ ZMap.prototype.SUPER_ADMIN_LEVEL = 20;
 ZMap.prototype._createAdminPage = function(opts) {
   var _this = this;
   var saved = opts && opts.restore ? this._adminState : null;
+  // The site's settings: Admins and up only (lib/common/site_settings.php).
+  var me = this.getUser && this.getUser();
+  var siteSettings = !!me && Number(me.level) >= this.ADMIN_ROLE_LEVEL;
   this.mapControl.setContent(
     '<div id="admin">' +
       '<h3 class="text-center">Admin</h3>' +
       // Two tabs: the stats, and finding and managing accounts.
-      '<div class="admin-tabs" role="tablist" aria-label="Admin">' +
+      '<div class="admin-tabs admin-page-tabs" role="tablist" aria-label="Admin">' +
         '<button type="button" role="tab" id="admin_tab_analytics" aria-controls="admin_panel_analytics" data-admin-tab="analytics">' +
           '<i class="fas fa-chart-bar" aria-hidden="true"></i>Analytics</button>' +
         '<button type="button" role="tab" id="admin_tab_users" aria-controls="admin_panel_users" data-admin-tab="users">' +
@@ -5703,7 +5711,10 @@ ZMap.prototype._createAdminPage = function(opts) {
         // Reported edits (scripts/zreports.js).
         '<button type="button" role="tab" id="admin_tab_reports" aria-controls="admin_panel_reports" data-admin-tab="reports">' +
           '<i class="fas fa-flag" aria-hidden="true"></i>Reports<span class="admin-tab-count" hidden></span></button>' +
+        (siteSettings ? '<button type="button" role="tab" id="admin_tab_settings" aria-controls="admin_panel_settings" data-admin-tab="settings">' +
+          '<i class="fas fa-sliders-h" aria-hidden="true"></i>Settings</button>' : '') +
       '</div>' +
+      (siteSettings ? '<div class="admin-panel" id="admin_panel_settings" role="tabpanel" aria-labelledby="admin_tab_settings" data-admin-panel="settings" hidden></div>' : '') +
       '<div class="admin-panel" id="admin_panel_reports" role="tabpanel" aria-labelledby="admin_tab_reports" data-admin-panel="reports" hidden></div>' +
       '<div class="admin-panel" id="admin_panel_analytics" role="tabpanel" aria-labelledby="admin_tab_analytics" data-admin-panel="analytics">' +
       // Growth: how many people sign up and come back, and what brought
@@ -5921,18 +5932,19 @@ ZMap.prototype._createAdminPage = function(opts) {
     });
     if(restoreScroll !== false) contents.scrollTop = state.tabScroll[tab] || 0;
     if(tab === 'reports' && _this._loadAdminReports) _this._loadAdminReports();
+    if(tab === 'settings') _this._loadSiteSettings();
   };
   $('#admin [data-admin-tab]').on('click', function() {
     showTab(this.getAttribute('data-admin-tab'));
   }).on('keydown', function(e) {
     if(e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
     e.preventDefault();
-    var tabs = ['analytics', 'users', 'reports'];
+    var tabs = siteSettings ? ['analytics', 'users', 'reports', 'settings'] : ['analytics', 'users', 'reports'];
     var next = tabs[(tabs.indexOf(state.tab) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
     showTab(next);
     $('#admin [data-admin-tab="' + next + '"]').trigger('focus');
   });
-  showTab(state.tab || 'analytics', false);
+  showTab(state.tab === 'settings' && !siteSettings ? 'analytics' : state.tab || 'analytics', false);
   // How many reports are waiting, on the Reports tab.
   if(state.tab !== 'reports') this._wikiGet('admin_reports', { status: 'open' }).done(function(data) {
     if(data.success && _this._setAdminReportCount) _this._setAdminReportCount(data.openCount);
@@ -6911,10 +6923,63 @@ ZMap.prototype._createAdminUserPage = function(account) {
   });
 };
 
+// The site's settings (Admins and up), as the admin page's Settings shows
+// them: each a switch, saved as it's changed, for everyone from their next
+// page load. (lib/common/site_settings.php; index.php gives them to pages.)
+ZMap.prototype.ADMIN_ROLE_LEVEL = 15;
+ZMap.prototype.SITE_SETTINGS = [
+  { name: 'gameSwitch', label: 'Switch games without reloading',
+    description: 'Changing games happens in place, without loading the page again. Off: each game loads as a new page, as before (staff can still try it in their own browser, from Settings).' }
+];
+ZMap.prototype._loadSiteSettings = function() {
+  var _this = this, panel = $('#admin_panel_settings');
+  if(!panel.length || panel.data('loaded')) return;
+  panel.data('loaded', true);
+  panel.html(
+    '<section class="admin-section admin-site-settings">' +
+      '<h4 class="admin-section-heading">Site Settings</h4>' +
+      '<p class="admin-muted admin-site-settings-note">For everyone on the site, from their next page load.</p>' +
+      this.SITE_SETTINGS.map(function(setting) {
+        return '<label class="notification-switch admin-site-setting"><span><strong>' + _this._wikiEscape(setting.label) + '</strong>' +
+          '<small>' + _this._wikiEscape(setting.description) + '</small></span>' +
+          '<input type="checkbox" data-site-setting="' + setting.name + '" disabled></label>';
+      }).join('') +
+      '<p class="admin-site-settings-status" aria-live="polite"></p>' +
+    '</section>'
+  );
+  var status = panel.find('.admin-site-settings-status');
+  var show = function(data) {
+    var settings = (data && data.settings) || {};
+    panel.find('[data-site-setting]').each(function() {
+      this.checked = !!settings[this.getAttribute('data-site-setting')];
+      this.disabled = !(data && data.success);
+    });
+    status.removeClass('error').text(data && !data.success ? data.msg || '' : '');
+  };
+  this._wikiGet('admin_site_settings').done(show).fail(function(xhr) { status.addClass('error').text(_this._wikiError(xhr)); });
+  panel.on('change', '[data-site-setting]', function() {
+    var input = this, name = input.getAttribute('data-site-setting'), on = input.checked;
+    var setting = _this.SITE_SETTINGS.find(function(s) { return s.name === name; });
+    input.disabled = true;
+    _this._wikiPost('admin_site_settings', { name: name, value: on ? '1' : '0' }).done(function(data) {
+      show(data);
+      if(data && data.success) status.removeClass('error').text((setting ? setting.label : name) + ' is ' + (on ? 'on' : 'off') + ' for everyone, from their next page load.');
+    }).fail(function(xhr) {
+      input.checked = !on;
+      input.disabled = false;
+      status.addClass('error').text(_this._wikiError(xhr));
+    });
+  });
+};
+
 // A change log entry as a sentence, e.g. "Role: User → Admin, email changed".
 ZMap.prototype._adminLogText = function(entry) {
   var _this = this;
   var details = entry.details || {};
+  if(entry.action === 'site_setting') {
+    var setting = this.SITE_SETTINGS.find(function(s) { return s.name === details.name; });
+    return 'Turned “' + (setting ? setting.label : details.name) + '” ' + (details.value ? 'on' : 'off') + ' for everyone';
+  }
   if(entry.action === 'disable') return 'Disabled the account';
   if(entry.action === 'enable') return 'Enabled the account';
   if(entry.action === 'unban') return 'Unbanned the account';
@@ -7007,7 +7072,6 @@ ZMap.prototype._createAccountForm = function(user) {
            '<button id="account_profile_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-id-badge account-nav-icon" aria-hidden="true"></i>Profile</button>' +
            (user.level >= 5 ? '<button id="account_notifications_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-bell account-nav-icon" aria-hidden="true"></i>Notifications<span class="account-nav-count" hidden></span></button>' : '') +
            '<hr class="account-divider">' +
-           '<button id="account_all_changes_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-history account-nav-icon" aria-hidden="true"></i>All Changes</button>' +
            // Paths (scripts/services/PathEditor.js): admins only while they're built.
            (this._pathsMakeable && this._pathsMakeable() ? '<button id="account_community_paths_btn" type="button" class="infoWindowIcn account-nav-button"><i class="fas fa-map-signs account-nav-icon" aria-hidden="true"></i>Community Paths</button>' : '') +
            '<a id="account_discord_link" class="infoWindowIcn account-nav-button account-discord-link" href="' + this.DISCORD_URL + '" target="_blank" rel="noopener"><i class="fab fa-discord account-nav-icon" aria-hidden="true"></i>Zelda Maps Community Discord</a>' +
@@ -7051,9 +7115,6 @@ ZMap.prototype._createAccountForm = function(user) {
   });
   $('#account_information_btn').click(function() {
     _this._createAccountInformationForm();
-  });
-  $('#account_all_changes_btn').click(function() {
-    _this._openRecentChanges(null, _this._wikiBackToAccount());
   });
   $('#account_community_paths_btn').click(function() {
     _this.openCommunityPaths(_this._wikiBackToAccount());
@@ -8135,6 +8196,31 @@ ZMap.prototype.getMarkers = function() {
 //*************                                                  *************//
 //****************************************************************************//
 
+
+// Analytics loaded once the map is up rather than at once (index.php), for
+// admins to try, in this browser only. Off by default: analytics loads at
+// once, as always.
+ZMap.prototype.ANALYTICS_AFTER_MAP_KEY = 'zeldamapsAnalyticsAfterMap';
+ZMap.prototype._addAnalyticsTimingSetting = function() {
+  var settings = this.settingsControl, user = this.getUser && this.getUser();
+  if(!settings || !settings.addCheckbox || this._analyticsTimingCheckbox || !user || Number(user.level) < 15) return;
+  var key = this.ANALYTICS_AFTER_MAP_KEY, on = false;
+  try { on = localStorage.getItem(key) === 'on'; } catch(e) {}
+  this._analyticsTimingCheckbox = settings.addCheckbox('Load analytics after the map (staff test)', on, function(checked) {
+    try { if(checked) localStorage.setItem(key, 'on'); else localStorage.removeItem(key); } catch(e) {}
+    toastr.info(checked ? 'Analytics will load once the map is up, from the next page load, in this browser.' : 'Analytics loads straight away again, from the next page load.');
+  });
+};
+
+// Whether something is being edited that a reload would lose: what (for
+// a log), or null. (GameSwitch.js, and index.php's update reload.)
+ZMap.prototype._editingSomething = function() {
+  if(window.tinymce && tinymce.editors && tinymce.editors.length) return 'editing';
+  if(this._pathEditing) return 'editing a path';
+  var type = this.mapControl && this.mapControl.getContentType && this.mapControl.getContentType() || '';
+  if(/^(markerEdit|newMarker|pathEditor|pathPinEditor|mapSettings|areaNameEdit|regionEdit|accountInformation)/.test(type)) return 'editing';
+  return null;
+};
 
 ZMap.prototype.updateUrl = function() {
    // (An embed's address stays as it was embedded: reloading it starts it

@@ -5971,6 +5971,32 @@ body .tox .tox-insert-table td.tox-insert-table__cell--selected {
 	background: rgba(255,255,255,.12);
 }
 
+/* The Admin page's own tabs: icon over label, as the marker page's
+   controls are, in one segmented bar (an iOS tab bar), so four fit. */
+.admin-tabs.admin-page-tabs { border-radius: 16px; }
+.admin-tabs.admin-page-tabs button {
+	position: relative;
+	flex-direction: column;
+	gap: 4px;
+	min-height: 54px;
+	padding: 7px 2px 6px;
+	border-radius: 14px;
+	font-size: 12px;
+	line-height: 1.1;
+}
+.admin-tabs.admin-page-tabs button i,
+.admin-tabs.admin-page-tabs button svg { width: 18px; height: 18px; }
+/* (Reports' count, at its icon's corner rather than after its label.) */
+.admin-tabs.admin-page-tabs .admin-tab-count { position: absolute; top: 4px; left: calc(50% + 6px); margin: 0; }
+
+/* The admin page's Settings: the site's settings, each a switch
+   (scripts/zmap.js _loadSiteSettings). */
+.admin-site-settings-note { margin: 0 0 4px; font-size: 13px; }
+.leaflet-control-layers .admin-site-settings .admin-site-setting { padding: 12px 0; border-top: 1px solid rgba(255,255,255,.1); }
+.admin-site-settings-status { margin: 10px 0 0; font-size: 13px; color: rgba(255,255,255,.7); }
+.admin-site-settings-status:empty { display: none; }
+.admin-site-settings-status.error { color: #ff8a80; }
+
 /* Switches. (Leaflet sets its labels to display: block.) */
 .leaflet-control-layers .notification-switch {
 	display: flex;
@@ -6379,6 +6405,8 @@ body .tox .tox-insert-table td.tox-insert-table__cell--selected {
 /* Recent Edits: All Changes or Current Game, full width, and under it the
    activity filter at a profile's size. */
 #recent_changes .activity-scope { margin-bottom:10px; }
+/* The game's own icon (its icon font), sized as the other's. */
+#recent_changes .activity-scope .activity-scope-game-icon { width:auto; font-size:16px; line-height:1; }
 #recent_changes .activity-filters { width:max-content; max-width:calc(100% - 32px); margin:0 auto 16px; }
 .profile-activity-heading .activity-filters button,
 #recent_changes .activity-filters button { min-height:34px; padding:6px 12px; gap:5px; font-size:13px; }

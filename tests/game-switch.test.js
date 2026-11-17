@@ -10,6 +10,8 @@ const load=(user, stored)=>{
   const ZMap=function(){};
   global.isOcarina=g=>/^(ootr?|64)$/i.test(String(g||''));
   new Function('ZMap',read('scripts/services/GameSwitch.js'))(ZMap);
+  // (zmap.js's, shared with the update reload in index.php.)
+  new Function('ZMap',read('scripts/zmap.js').match(/ZMap\.prototype\._editingSomething = function[\s\S]*?\n\};\n/)[0])(ZMap);
   const zmap=new ZMap();
   zmap.getUser=()=>user;
   localStorage.clear();
@@ -54,7 +56,8 @@ test('every way to another game goes through openGameURL',()=>{
   expect(read('scripts/controls/ZLayers.js')).toContain('zMap.openGameURL(url);');
   expect(read('scripts/zwiki.js').match(/openGameURL\(/g).length).toBe(2);
   expect(read('scripts/znotifications.js').match(/openGameURL\(/g).length).toBe(2);
-  expect(read('scripts/services/PathEditor.js').match(/openGameURL\(/g).length).toBe(2);
+  // (A path's revision opens where it's clicked, in any game: no longer one.)
+  expect(read('scripts/services/PathEditor.js').match(/openGameURL\(/g).length).toBe(1);
   expect(read('scripts/zmap.js')).toContain('_this.openGameURL(url.href);');
   expect(read('scripts/zmapsettings.js')).toContain('this.openGameURL(url.href)');
   // (None left loading another game's address directly.)
@@ -214,4 +217,19 @@ test('the dimming: over the map, under the sidebar, and its spinner beside a sid
   const css=read('styles/zmain.css');
   expect(css).toMatch(/\.zm-map-waiting \{[^}]*z-index: 500/);
   delete window.zmMapWaiting;
+});
+
+test('a game switched in place is counted as the page load it stands for',()=>{
+  const zmap=load(null);
+  const sent=[];
+  window.gtag=(...args)=>sent.push(['gtag',...args]);
+  window.COMSCORE={beacon:o=>sent.push(['comscore',o])};
+  document.title='Breath of the Wild Interactive Map - Zelda Maps';
+  zmap._countGameSwitchVisit();
+  const view=sent.find(s=>s[0]==='gtag');
+  expect(view.slice(1,3)).toEqual(['event','page_view']);
+  expect(view[3].page_title).toBe('Breath of the Wild Interactive Map - Zelda Maps');
+  expect(view[3].page_location).toBe(window.location.href);
+  expect(sent.find(s=>s[0]==='comscore')[1]).toEqual({c1:'2',c2:'6035118'});
+  delete window.gtag; delete window.COMSCORE;
 });

@@ -20,7 +20,8 @@ ZMap.prototype._pathStepLabel = function(step) {
 ZMap.prototype._pathUrl = function(path, share) {
   var url = new URL(share && this._pageAddress ? this._pageAddress(false) : window.location.href);
   url.search = '';
-  url.searchParams.set('game', this.mapOptions.shortName);
+  // (Another game's path, a revision of it opened here: its own game.)
+  url.searchParams.set('game', path.elsewhere && path.game ? path.game : this.mapOptions.shortName);
   url.searchParams.set('path', path.slug);
   return url.toString();
 };
@@ -861,7 +862,8 @@ ZMap.prototype.openPathHistory = function(path, back) {
   back = back || function() { zmap.openPathPage(path.slug, {keepView: true}); };
   // (The path in focus meanwhile, as on its page: Paths.js.)
   this._endPathEditing();
-  this._focusedPath = path;
+  // (Another game's path: nothing of it on this map to focus.)
+  this._focusedPath = path.elsewhere ? null : path;
   var page = this._showWikiPage(
     "<div id='path_history' class='wiki-page'><h3 class='text-center'>History</h3>" +
       "<div class='area-header-pills wiki-subtitle-row'><p class='wiki-subtitle'></p></div>" +
@@ -888,11 +890,17 @@ ZMap.prototype.openPathHistory = function(path, back) {
 
 // The path's name under a history or revision page's title, and, given
 // link, a way to it, as a marker's (zwiki.js _wikiSetMarkerSubtitle).
-ZMap.prototype._pathSubtitle = function(page, path, link) {
+// back: where the path's page goes Back to (the page Go to Path was on).
+ZMap.prototype._pathSubtitle = function(page, path, link, back) {
   var zmap = this, row = $(page).find('.wiki-subtitle-row').first();
   row.find('.wiki-subtitle').text(path.name || '');
   if(link) $("<button type='button' class='marker-coordinate-pill marker-region-pill wiki-marker-pill'>Go to Path<i class='fas fa-chevron-right' aria-hidden='true'></i></button>")
-    .on('click', function() { zmap.openPathPage(path.slug); }).appendTo(row);
+    .on('click', function() {
+      // (Another game's: that game, opened at it. The one thing on a
+      // revision that goes there.)
+      if(path.elsewhere) zmap.openPathFromLink(path.game, path.slug, back || null);
+      else zmap.openPathPage(path.slug, {back: back || null});
+    }).appendTo(row);
 };
 
 // One save, as a marker's revision page (zwiki.js _openMarkerRevision): who,
@@ -902,21 +910,33 @@ ZMap.prototype._pathSubtitle = function(page, path, link) {
 ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
   var zmap = this;
   back = back || function() { zmap.openPathHistory(path); };
-  this._focusedPath = path;
+  // Another game's path (path.elsewhere: a feed's revision, opened where it
+  // was clicked): the map stays as it is, nothing of it drawn on this game's
+  // map, its steps just read; Go to Path goes to its game.
+  this._focusedPath = path.elsewhere ? null : path;
   // (Links on it come back here: [[pathrev:N]], a marker, a user.)
   var reopen = this._wikiReopen ? this._wikiReopen(function() { zmap._openPathRevision(path, revisionId, back, opts); }, back, 'Revision ' + Number(revisionId)) : null;
+  // (Kept through a page load to another game, Go to Path's, for its Back:
+  // MarkerNavigation.js.)
+  if(reopen) reopen.navigationSource = {type: 'pathRevision', id: Number(revisionId)};
   var page = this._showWikiPage(
     "<div id='path_revision' class='wiki-page'><h3 class='text-center'>Revision " + Number(revisionId) + "</h3>" +
       "<div class='area-header-pills wiki-subtitle-row'><p class='wiki-subtitle'></p></div>" +
       "<div class='wiki-revision-body'><p class='wiki-empty'>Loading…</p></div></div>",
     'pathRevision-' + Number(revisionId), function() { zmap._endPathEditing(); back(); }, reopen, {settles: true});
   // (Go to Path only from elsewhere, a feed: from its history, Back is the way.)
-  this._pathSubtitle(page, path, !(opts && opts.fromHistory));
-  this._wikiGet('path_history', {id: path.id, revision: revisionId}).done(function(r) {
+  var goToPath = !(opts && opts.fromHistory);
+  // (Go to Path's Back: this revision, and from it, where it came from.)
+  if(path.name) this._pathSubtitle(page, path, goToPath, reopen);
+  this._wikiGet('path_history', path.id ? {id: path.id, revision: revisionId} : {revision: revisionId}).done(function(r) {
     var body = $(page).find('.wiki-revision-body').empty();
     if(!r || !r.success) { body.append($("<p class='wiki-empty'></p>").text((r && r.msg) || 'Could not load that version.')); return; }
+    if(path.elsewhere) {
+      $.extend(path, {id: r.pathId, name: r.pathName, slug: r.pathSlug, game: r.game});
+      if(!$(page).find('.wiki-subtitle').text()) zmap._pathSubtitle(page, path, goToPath, reopen);
+    }
     var rev = r.revision, snap = r.snapshot, code = '[[pathrev:' + Number(revisionId) + ']]';
-    var steps = snap.steps.map(function(s) { return s.markerId ? {markerId: s.markerId, note: s.note} :
+    var steps = snap.steps.map(function(s) { return s.markerId ? {markerId: s.markerId, note: s.note, markerName: s.markerName} :
       {submapId: s.submapId, x: s.x, y: s.y, name: s.name, shown: s.shown ? 1 : 0, note: s.note, content: s.content || ''}; });
     body.append(
       "<section class='wiki-card wiki-revision-meta'>" +
@@ -935,10 +955,17 @@ ZMap.prototype._openPathRevision = function(path, revisionId, back, opts) {
         "<div class='wiki-card path-revision-steps'><h4 class='path-revision-name'>" + zmap._pathEsc(snap.name) + "</h4>" +
           (snap.description ? "<div class='path-description'>" + zmap._renderWikiText(snap.description) + "</div>" : '') +
           zmap._pathStepsHTML(snap, steps) + "</div></section>");
-    body.find('[data-action=revert]').on('click', function() { zmap._restorePathRevision(path, rev); });
+    body.find('[data-action=revert]').on('click', function() {
+      // (Another game's: restored, and this page shown again, still here.)
+      zmap._restorePathRevision(path, rev, path.elsewhere ? function() { zmap._openPathRevision(path, revisionId, back, opts); } : null);
+    });
     body.find('[data-action=copy-code]').on('click', function() { zmap._copyText(code, this); });
     body.find('[data-action=copy-url]').on('click', function() { zmap._copyText(zmap._pathRevisionUrl(path, revisionId), this); });
-    body.find('[data-action=history]').on('click', function() { zmap._endPathEditing(); zmap.openPathHistory(path); });
+    body.find('[data-action=history]').on('click', function() {
+      zmap._endPathEditing();
+      zmap.openPathHistory(path, path.elsewhere ? function() { zmap._openPathRevision(path, revisionId, back, opts); } : undefined);
+    });
+    if(path.elsewhere) return;
     zmap._wirePathSteps(page, steps, null, snap.name);
     zmap._previewPath({scope: path.scope, kind: snap.kind, loops: snap.loops, numbered: snap.numbered, smooth: !!snap.smooth, categoryId: snap.categoryId,
       color: snap.color || '#ffad48', name: snap.name, steps: steps.map(function(s) { return $.extend({}, s, {shown: s.markerId ? 1 : s.shown}); })}, path);
@@ -979,12 +1006,12 @@ ZMap.prototype.openPathTalk = function(path, back, opts) {
 // A path's save opened from a feed (All Changes, a profile's activity):
 // here, loaded first if this game hasn't it; else its game opened at it.
 ZMap.prototype._openPathRevisionLink = function(slug, revisionId, game, back) {
-  var zmap = this;
-  if(game && this.mapOptions && game !== this.mapOptions.shortName) {
-    // (With the way back to the feed it came from, as a marker's link:
-    // MarkerNavigation.js. Paths.js opens just the revision there.)
-    var url = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug) + '&pathrev=' + Number(revisionId);
-    zmap.openGameURL(zmap._markerURLWithReturn ? zmap._markerURLWithReturn(url, back) : url);
+  var zmap = this, current = this.mapOptions && this.mapOptions.shortName;
+  // Another game's path: its revision here, the game and the map as they
+  // are (only Go to Path, on it, goes to that game).
+  var here = !game || !current || (this._sameGame ? this._sameGame(game, current) : game === current);
+  if(!here) {
+    this._openPathRevision({slug: slug, game: game, elsewhere: true}, revisionId, back, {fromHistory: false});
     return;
   }
   var open = function() {
@@ -996,7 +1023,8 @@ ZMap.prototype._openPathRevisionLink = function(slug, revisionId, game, back) {
   else this._reloadPaths(open, slug);
 };
 
-ZMap.prototype._restorePathRevision = function(path, rev) {
+// after: what's shown once it's restored, in place of the path's page.
+ZMap.prototype._restorePathRevision = function(path, rev, after) {
   var zmap = this;
   this._showAlert({
     id: 'path-restore',
@@ -1009,6 +1037,7 @@ ZMap.prototype._restorePathRevision = function(path, rev) {
           if(!r || !r.success) { toastr.error((r && r.msg) || 'Could not restore the path.'); return; }
           toastr.success('Path restored');
           zmap._endPathEditing();
+          if(after) { after(); return; }
           zmap._reloadPaths(function() { zmap.openPathPage(r.slug); }, r.slug);
         }).fail(function(x) { toastr.error(zmap._wikiError(x)); });
       }},
@@ -1389,6 +1418,8 @@ ZMap.prototype._pathDragReorder = function(listEl, items, changed) {
 ZMap.prototype.openPathFromLink = function(game, slug, back, opts) {
   var zmap = this;
   opts = opts || {};
+  // A revision (a notification's): just it, where it's opened, any game.
+  if(opts.pathRev) { this._openPathRevisionLink(slug, Number(opts.pathRev), game, back || null); return; }
   if(game !== this.mapOptions.shortName) {
     var url = 'index.php?game=' + encodeURIComponent(game) + '&path=' + encodeURIComponent(slug) +
       (opts.pathRev ? '&pathrev=' + Number(opts.pathRev) : opts.talk ? '&talk=1' + (opts.comment ? '&comment=' + Number(opts.comment) : '') : '');
@@ -1397,9 +1428,9 @@ ZMap.prototype.openPathFromLink = function(game, slug, back, opts) {
   }
   var open = function() {
     var path = (zmap.paths || []).find(function(p) { return p.slug === slug; });
-    // A revision: just it, over the path in view (Go to Path is on it).
+    // A revision: just it, the map left as it is (only Go to Path, on it,
+    // goes to the path).
     if(path && opts.pathRev) {
-      zmap.focusPath(slug);
       zmap._openPathRevision(path, Number(opts.pathRev), back || null, {fromHistory: false});
       return;
     }

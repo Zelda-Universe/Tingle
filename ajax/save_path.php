@@ -84,6 +84,6 @@
     throw $ex;
   }
   if ($action === 'edit' && $revision) pathNotifyOwner($db, $map_prefix, array_merge($old, array('name' => $fields['name'])), $userId, 'edit',
-    $db->fetchOne("SELECT summary FROM `{$map_prefix}path_revision` WHERE id = ?", [$revision]));
+    $db->fetchOne("SELECT summary FROM `{$map_prefix}path_revision` WHERE id = ?", [$revision]), $revision);
   echo json_encode(array('success' => true, 'id' => $id, 'slug' => $slug));
 ?>

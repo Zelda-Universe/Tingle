@@ -57,26 +57,82 @@ ZMap.prototype.offlineDownloadFor = function(gameId) {
 ZMap.prototype.startOfflineDownload = function(game, opts) {
   if(this.offlineDownloadFor(game.id)) return;
   var job = { game: game, isUpdate: !!(opts && opts.update), phase: 'queued',
-    completedFiles: 0, totalFiles: game.tileCount || 0, completedBytes: 0, totalBytes: game.size || 0 };
+    completedFiles: 0, totalFiles: game.tileCount || 0, completedBytes: 0, totalBytes: game.size || 0,
+    // Whether it may use cellular data: yes when started on it (someone
+    // chose to); otherwise it waits for Wi-Fi there (_onCellular).
+    cellular: opts && 'cellular' in opts ? !!opts.cellular : this._onCellular() };
   var queue = this._offlineQueue().filter(function(entry) { return entry.id !== game.id; });
-  queue.push({ id: game.id, name: game.name, update: job.isUpdate });
+  queue.push({ id: game.id, name: game.name, update: job.isUpdate, cellular: job.cellular });
   this._setOfflineQueue(queue);
   (this._offlineWaiting = this._offlineWaiting || []).push(job);
   this._offlineDownloadChanged(job);
   this._nextOfflineDownload();
 };
 
-// Stops a game's download (its saved map being removed).
+// Stops a game's download or update. An update leaves the map that was
+// saved before it, as it was (offered the update again); a first download
+// is removed, all of it. Resolves 'kept' or 'removed' once it's tidied up.
 ZMap.prototype.cancelOfflineDownload = function(gameId) {
   this._setOfflineQueue(this._offlineQueue().filter(function(entry) { return entry.id !== gameId; }));
   this._offlineWaiting = (this._offlineWaiting || []).filter(function(job) { return job.game.id !== gameId; });
-  if(this._offlineJob && this._offlineJob.game.id === gameId) this._offlineJob.cancelled = true;
+  var running = this._offlineJob && this._offlineJob.game.id === gameId ? this._offlineJob : null;
+  if(running) running.cancelled = true;
+  // (Once it's stopped, so no file is saved after it's tidied up.)
+  var stopped = running && running.finished ? running.finished.catch(function() {}) : Promise.resolve();
+  return stopped.then(function() {
+    var record = ZMapOfflinePacks.read(gameId);
+    var update = caches.delete(ZMapOfflinePacks.updateCacheName(gameId)).catch(function() {});
+    if(ZMapOfflinePacks.isComplete(record)) {
+      delete record.pendingUpdate;
+      ZMapOfflinePacks.write(gameId, record);
+      return update.then(function() { return 'kept'; });
+    }
+    return Promise.all([update, caches.delete(ZMapOfflinePacks.cacheName(gameId)).catch(function() {})]).then(function() {
+      ZMapOfflinePacks.remove(gameId);
+      return 'removed';
+    });
+  });
+};
+
+// Whether this device says it's on cellular data. Only some browsers say
+// (Chrome on Android); iPhones and iPads never do, so there this is false.
+ZMap.prototype._onCellular = function() {
+  var connection = navigator.connection;
+  return !!(connection && connection.type === 'cellular');
+};
+
+// How an update changes a saved map's size, for the update alert and the
+// Offline Maps page: { size: '2.0 GB', change: 'larger' | 'smaller' |
+// 'same' | null (not known), amount: '120 MB' }.
+ZMap.prototype._offlineUpdateSize = function(game) {
+  var record = ZMapOfflinePacks.read(game.id) || {};
+  if(!(game.size > 0)) return null;
+  var size = { size: this._offlineFormatBytes(game.size), change: null, amount: '' };
+  if(!(record.size > 0)) return size;
+  var difference = game.size - record.size;
+  // (Under half a megabyte reads as the same.)
+  if(Math.abs(difference) < 512 * 1024) size.change = 'same';
+  else {
+    size.change = difference > 0 ? 'larger' : 'smaller';
+    size.amount = this._offlineFormatBytes(Math.abs(difference));
+  }
+  return size;
+};
+// That as a phrase: "2.0 GB, 120 MB larger than the map on this device".
+// short: "2.0 GB, 120 MB larger".
+ZMap.prototype._offlineUpdateSizeText = function(game, short) {
+  var size = this._offlineUpdateSize(game);
+  if(!size) return '';
+  var than = short ? '' : ' than the map on this device';
+  if(size.change === 'same') return size.size + ', about the same size' + (short ? '' : ' as the map on this device');
+  if(size.change) return size.size + ', ' + size.amount + ' ' + size.change + than;
+  return size.size;
 };
 
 ZMap.prototype._nextOfflineDownload = function() {
   if(this._offlineJob || !(this._offlineWaiting || []).length) return;
   var zmap = this, job = this._offlineJob = this._offlineWaiting.shift();
-  this._runOfflineDownload(job).then(function() {
+  job.finished = this._runOfflineDownload(job).then(function() {
     job.phase = 'done';
     zmap._setOfflineQueue(zmap._offlineQueue().filter(function(entry) { return entry.id !== job.game.id; }));
   }, function(error) {
@@ -100,10 +156,16 @@ ZMap.prototype.resumeOfflineDownloads = function() {
     this._offlineResumeListeners = true;
     this._onPage(window, 'online', function() { zmap.resumeOfflineDownloads(); });
     this._onPage(document, 'visibilitychange', function() { if(!document.hidden) zmap.resumeOfflineDownloads(); });
+    // And on reaching Wi-Fi, for those waiting for it.
+    if(navigator.connection && navigator.connection.addEventListener) {
+      this._onPage(navigator.connection, 'change', function() { zmap.resumeOfflineDownloads(); });
+    }
   }
   if(!this.getUser() || !navigator.onLine || !('caches' in window) || (this.isFramed && this.isFramed())) return;
   this._offlineQueue().forEach(function(entry) {
     if(zmap.offlineDownloadFor(entry.id)) return;
+    // Not on cellular data, unless it was started there.
+    if(!entry.cellular && zmap._onCellular()) return;
     // Its size and version now, as the Offline Maps page loads them.
     $.getJSON('ajax.php?command=get_offline_maps&game=' + encodeURIComponent(entry.id)).then(function(data) {
       if(!data || !data.success || !data.game || !data.game.available) return;
@@ -111,7 +173,7 @@ ZMap.prototype.resumeOfflineDownloads = function() {
       var record = ZMapOfflinePacks.read(entry.id) || {};
       zmap.startOfflineDownload({ id: entry.id, name: data.game.name || entry.name, size: data.game.size,
         tileCount: data.game.tileCount, available: true, version: data.game.version },
-        { update: entry.update || !!record.pendingUpdate });
+        { update: entry.update || !!record.pendingUpdate, cellular: !!entry.cellular });
     });
   });
 };
@@ -146,7 +208,9 @@ ZMap.prototype._offlineDownloadToast = function(job) {
     toastr.success(name + (job.isUpdate ? ' is up to date offline.' : ' is saved for offline use.'), null, { timeOut: 5000 });
   } else {
     var message = job.error && job.error.message && !(job.error instanceof TypeError) ? job.error.message : 'The download was interrupted.';
-    toastr.warning($('<span>').text(message).html() + (job.error && job.error.fatal ? '' : ' It will carry on when you\'re back online, or from Offline Maps.'),
+    var carriesOn = job.error && job.error.waitingForWifi ? ' It will carry on when you\'re on Wi-Fi, or from Offline Maps.'
+      : ' It will carry on when you\'re back online, or from Offline Maps.';
+    toastr.warning($('<span>').text(message).html() + (job.error && job.error.fatal ? '' : carriesOn),
       null, { timeOut: 8000, onclick: function() { zmap.openOfflineMapsPage(); } });
   }
 };
@@ -159,12 +223,31 @@ ZMap.prototype._runOfflineDownload = function(job) {
   var cacheName = ZMapOfflinePacks.cacheName(game.id);
   var existingRecord = ZMapOfflinePacks.read(game.id);
   var isUpdate = job.isUpdate = job.isUpdate || !!(existingRecord && existingRecord.pendingUpdate);
+  // An update is saved apart (ZMapOfflinePacks.updateCacheName) from the
+  // map it replaces, which stays whole and in use until the update is all
+  // there: cancelled or failed, the map on this device is as it was.
+  // (Not for a map that's only partly downloaded: that's filled in place.)
+  var staging = isUpdate && ZMapOfflinePacks.isComplete(existingRecord);
+  var stagingName = ZMapOfflinePacks.updateCacheName(game.id);
+  // The cache files are saved to (the update's, or the map's), and those
+  // saved in an update's, to move into the map when it's done.
+  var saveCache = null, stagedURLs = [];
   var oldIndex = null, newIndex = {}, aliases = {}, aliasCount = 0, newVersion = null;
   var dataURLs = [], embeddedImages = new Set(), savingEmbeddedImages = false, failed = [];
+  // Whether this pack has anything in it, without listing it (see below).
+  var savedAny = !!existingRecord;
   function changed(phase) { if(phase) job.phase = phase; zmap._offlineDownloadChanged(job); }
   function check() {
     if(job.cancelled) throw Object.assign(new Error('Cancelled'), { fatal: true });
     if(navigator.onLine === false) throw new Error('You went offline.');
+    // Started on Wi-Fi, now on cellular data: paused until Wi-Fi.
+    if(!job.cellular && zmap._onCellular()) throw Object.assign(new Error('Paused while you\'re on cellular data.'), { waitingForWifi: true });
+  }
+  function save(url, response) {
+    return saveCache.put(url, response).then(function() {
+      savedAny = true;
+      if(staging) stagedURLs.push(url);
+    });
   }
   function collectImages(data) {
     ZMapOfflinePacks.embeddedImageURLs(data, document.baseURI).forEach(function(url) { embeddedImages.add(url); });
@@ -256,32 +339,45 @@ ZMap.prototype._runOfflineDownload = function(job) {
       var fetchOptions = sameOrigin
         ? { credentials: 'same-origin', redirect: 'follow', cache: 'no-cache' }
         : { mode: 'no-cors', credentials: 'omit', redirect: 'follow', cache: 'no-cache' };
-      return cache.match(absoluteURL, { ignoreVary: true }).then(function(cachedResponse) {
-        var unchanged = !isUpdate || (oldIndex && oldIndex[absoluteURL] === signature);
-        if(cachedResponse && unchanged) {
+      var unchanged = !isUpdate || (oldIndex && oldIndex[absoluteURL] === signature);
+      // Already saved: unchanged, in the map; or in the update, by an
+      // earlier try at it.
+      return cache.match(absoluteURL, { ignoreVary: true }).then(function(found) {
+        if(found && unchanged) return found;
+        if(!staging) return null;
+        return saveCache.match(absoluteURL, { ignoreVary: true }).then(function(staged) {
+          if(staged) stagedURLs.push(absoluteURL);
+          return staged || null;
+        });
+      }).then(function(cachedResponse) {
+        if(cachedResponse) {
           return (/\.json(?:\?|$)/i.test(absoluteURL) && cachedResponse.type !== 'opaque'
             ? cachedResponse.clone().json().then(collectImages) : Promise.resolve())
-            .then(function() { return verifyEmbeddedImage(cache, absoluteURL); })
+            .then(function() { return verifyEmbeddedImage(saveCache, absoluteURL); })
             .then(function() { progressed(tile.size); });
         }
         if(savingEmbeddedImages) {
           return fetchEmbeddedImage(absoluteURL, fetchOptions).then(function(response) {
             if(!response.ok && response.type !== 'opaque') throw new Error('Not found');
-            return cache.put(absoluteURL, response.clone())
-              .then(function() { return verifyEmbeddedImage(cache, absoluteURL); });
+            return save(absoluteURL, response)
+              .then(function() { return verifyEmbeddedImage(saveCache, absoluteURL); });
           }).catch(function() {
-            return skipEmbeddedImage(cache, absoluteURL);
+            return skipEmbeddedImage(saveCache, absoluteURL);
           }).then(function() { progressed(0); });
         }
         return fetchWithRetry(absoluteURL, fetchOptions).then(function(response) {
           if(!response.ok && response.type !== 'opaque') throw new Error('A map file could not be downloaded.');
           var inspect = /\.json(?:\?|$)/i.test(absoluteURL) && response.type !== 'opaque'
             ? response.clone().json().then(collectImages) : Promise.resolve();
-          return inspect.then(function() { return cache.put(absoluteURL, response.clone()); })
+          // Saved as it came, not a copy: a copy left the original's bytes
+          // held in memory, which grew through a large download until
+          // Safari closed the tab.
+          return inspect.then(function() { return save(absoluteURL, response); })
             .then(function() { progressed(tile.size); });
         }).catch(function(error) {
           // (Out of room: no use going on.)
           if(error && error.name === 'QuotaExceededError') throw Object.assign(error, { fatal: true });
+          if(error && error.waitingForWifi) throw error;
           check();
           // Tried again at the end, after the rest.
           failed.push(tile);
@@ -321,9 +417,13 @@ ZMap.prototype._runOfflineDownload = function(job) {
     if(!existingRecord && estimate && estimate.quota && estimate.usage + job.totalBytes * 1.1 > estimate.quota) {
       throw Object.assign(new Error('This device does not have enough available browser storage for this map.'), { fatal: true });
     }
-    return caches.open(cacheName);
-  }).then(function(cache) {
-    ZMapOfflinePacks.write(game.id, { status: 'partial', size: job.totalBytes, tileCount: job.totalFiles,
+    return Promise.all([caches.open(cacheName), staging ? caches.open(stagingName) : null]);
+  }).then(function(opened) {
+    var cache = opened[0];
+    saveCache = opened[1] || cache;
+    // An update: the map stays as it was, downloaded, until it's done.
+    if(staging) ZMapOfflinePacks.write(game.id, Object.assign({}, existingRecord, { pendingUpdate: true, updatedAt: Date.now() }));
+    else ZMapOfflinePacks.write(game.id, { status: 'partial', size: job.totalBytes, tileCount: job.totalFiles,
       version: existingRecord && existingRecord.version, pendingUpdate: isUpdate, updatedAt: Date.now() });
     var indexRead = isUpdate
       ? cache.match(ZMapOfflinePacks.indexURL).then(function(response) {
@@ -338,7 +438,7 @@ ZMap.prototype._runOfflineDownload = function(job) {
       if(!response.ok) throw new Error('The offline map data could not be saved.');
       return response.json().then(function(containers) {
         if(!containers[0]) throw new Error('The offline map data could not be loaded.');
-        return cache.put(containerURL, new Response(JSON.stringify(containers), {
+        return save(containerURL, new Response(JSON.stringify(containers), {
           headers: { 'Content-Type': 'application/json' }
         })).then(function() {
           var saves = ['get_map', 'get_categories', 'get_markers'].map(function(command) {
@@ -346,7 +446,7 @@ ZMap.prototype._runOfflineDownload = function(job) {
             dataURLs.push(url);
             return fetchWithRetry(url, { cache: 'no-cache' }).then(function(dataResponse) {
               if(!dataResponse.ok) throw new Error('The offline map data could not be saved.');
-              return dataResponse.clone().json().then(collectImages).then(function() { return cache.put(url, dataResponse); });
+              return dataResponse.clone().json().then(collectImages).then(function() { return save(url, dataResponse); });
             });
           });
           // The game's paths, as anyone sees them (no account: they're map
@@ -357,7 +457,7 @@ ZMap.prototype._runOfflineDownload = function(job) {
           var pathsURL = ZMapOfflinePacks.pathsURL(containers[0].id);
           dataURLs.push(pathsURL);
           saves.push(fetchWithRetry(pathsURL, { cache: 'no-cache', credentials: 'omit' }).then(function(pathsResponse) {
-            if(pathsResponse.ok) return cache.put(pathsURL, pathsResponse);
+            if(pathsResponse.ok) return save(pathsURL, pathsResponse);
           }).catch(function() {}));
           // And the signed-in account's (its own paths and completions).
           var account = zmap.getUser && zmap.getUser();
@@ -371,7 +471,7 @@ ZMap.prototype._runOfflineDownload = function(job) {
           var pageURL = './?game=' + encodeURIComponent(game.id);
           dataURLs.push(pageURL);
           saves.push(fetchWithRetry(pageURL, { cache: 'no-cache', credentials: 'same-origin' }).then(function(pageResponse) {
-            if(pageResponse.ok) return cache.put(pageURL, pageResponse);
+            if(pageResponse.ok) return save(pageURL, pageResponse);
           }));
           return Promise.all(saves);
         });
@@ -397,14 +497,42 @@ ZMap.prototype._runOfflineDownload = function(job) {
       changed('finishing');
       // Remove files the map no longer uses (and tiles now saved once, as
       // another), then save the new index and which tiles share a file.
+      // Those are the previous index's files not in the new one: listing
+      // the pack instead (cache.keys()) took over a gigabyte of Safari's
+      // memory for 56,000 files, and TotK has several times that.
       var keep = {};
       dataURLs.concat(ZMapOfflinePacks.indexURL, ZMapOfflinePacks.aliasesURL).forEach(function(url) {
         keep[new URL(url, window.location.href).href] = true;
       });
-      return cache.keys().then(function(requests) {
-        return Promise.all(requests.filter(function(request) {
-          return !keep[request.url] && !newIndex[request.url];
-        }).map(function(request) { return cache.delete(request); }));
+      var unused = isUpdate && !oldIndex
+        // (A pack saved before indexes: only a listing says what's in it.)
+        ? cache.keys().then(function(requests) { return requests.map(function(request) { return request.url; }); })
+        : Promise.resolve(Object.keys(oldIndex || {}));
+      return unused.then(function(urls) {
+        urls = urls.filter(function(url) { return !keep[url] && !newIndex[url]; });
+        // A few at a time.
+        var next = 0;
+        function remover() {
+          if(next >= urls.length) return Promise.resolve();
+          return cache.delete(urls[next++]).catch(function() {}).then(remover);
+        }
+        var removers = [];
+        for(var i = 0; i < Math.min(6, urls.length); i++) removers.push(remover());
+        return Promise.all(removers);
+      }).then(function() {
+        // An update's files, into the map. (Left in the update until it's
+        // gone, so an update stopped here picks them up again.)
+        var next = 0;
+        function mover() {
+          if(next >= stagedURLs.length) return Promise.resolve();
+          var url = stagedURLs[next++];
+          return saveCache.match(url, { ignoreVary: true }).then(function(response) {
+            if(response) return cache.put(url, response);
+          }).then(mover);
+        }
+        var movers = [];
+        for(var i = 0; i < Math.min(6, stagedURLs.length); i++) movers.push(mover());
+        return Promise.all(movers);
       }).then(function() {
         return cache.put(ZMapOfflinePacks.aliasesURL, new Response(JSON.stringify(aliases),
           { headers: { 'Content-Type': 'application/json' } }));
@@ -412,6 +540,8 @@ ZMap.prototype._runOfflineDownload = function(job) {
         return cache.put(ZMapOfflinePacks.indexURL, new Response(
           JSON.stringify({ version: newVersion, tiles: newIndex }),
           { headers: { 'Content-Type': 'application/json' } }));
+      }).then(function() {
+        if(staging) return caches.delete(stagingName);
       });
     });
   }).then(function() {
@@ -424,9 +554,13 @@ ZMap.prototype._runOfflineDownload = function(job) {
     game.version = newVersion;
     zmap._reportOfflineEvent(game, isUpdate ? 'updated' : 'downloaded', job.totalBytes);
   }, function(error) {
-    zmap._reportOfflineEvent(game, 'failed', job.completedBytes);
-    return caches.open(cacheName).then(function(cache) { return cache.keys(); }).then(function(saved) {
-      if(saved.length > 0 && !job.cancelled) {
+    // (Cancelled or waiting for Wi-Fi isn't a failure.)
+    if(!job.cancelled && !error.waitingForWifi) zmap._reportOfflineEvent(game, 'failed', job.completedBytes);
+    return Promise.resolve().then(function() {
+      // Cancelling tidies up (cancelOfflineDownload); a stopped update
+      // leaves the map as it was, and itself to pick up again.
+      if(job.cancelled || staging) return;
+      if(savedAny) {
         ZMapOfflinePacks.write(game.id, { status: 'partial', size: job.totalBytes, tileCount: job.totalFiles,
           version: existingRecord && existingRecord.version, pendingUpdate: isUpdate, updatedAt: Date.now() });
       } else if(!job.cancelled) {

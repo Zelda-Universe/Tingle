@@ -122,21 +122,32 @@ function canCache(response) {
   return response && (response.ok || response.type === 'opaque');
 }
 
-async function putSafely(cacheName, request, response) {
+// A copy saved without holding up the answer: the page gets the response
+// as soon as the network gives it. After Safari has been idle a while, the
+// first touch of the saved copies reads all of them from disk, downloaded
+// maps included: seconds, or far longer on a phone with several games, all
+// before a page that waited on it could draw anything.
+function saveInBackground(event, cacheName, request, response, then) {
   if (!canCache(response)) return;
-  try {
-    const cache = await caches.open(cacheName);
-    await cache.put(request, response.clone());
-  } catch (error) {
-    // Storage can be reclaimed or denied, especially on iOS. A cache failure
-    // should never prevent the live response from reaching the page.
-  }
+  let copy;
+  try { copy = response.clone(); } catch (error) { return; }
+  const saving = (async () => {
+    try {
+      const cache = await caches.open(cacheName);
+      await cache.put(request, copy);
+      if (then) await then();
+    } catch (error) {
+      // Storage can be reclaimed or denied, especially on iOS. A cache
+      // failure should never prevent the live response reaching the page.
+    }
+  })();
+  if (event) event.waitUntil(saving);
 }
 
-async function networkFirst(request, cacheName, fallbackRequest) {
+async function networkFirst(request, cacheName, fallbackRequest, event) {
   try {
     const response = await fetch(request);
-    await putSafely(cacheName, request, response);
+    saveInBackground(event, cacheName, request, response);
     return response;
   } catch (error) {
     const cachedResponse = await caches.match(request);
@@ -149,10 +160,10 @@ async function networkFirst(request, cacheName, fallbackRequest) {
   }
 }
 
-async function navigateWithCurrentShell(request) {
+async function navigateWithCurrentShell(request, event) {
   try {
     const response = await fetch(request);
-    await putSafely(APP_CACHE, request, response);
+    saveInBackground(event, APP_CACHE, request, response);
     return response;
   } catch (error) {
     // Downloaded HTML can name obsolete, versioned JS/CSS removed by an
@@ -168,18 +179,26 @@ async function navigateWithCurrentShell(request) {
   }
 }
 
-async function staleWhileRevalidate(request, cacheName) {
-  // Downloaded maps save marker images with fetch(), whose Vary request
-  // headers can differ from an <img>'s.
-  const cachedResponse = await caches.match(request, { ignoreVary: true });
+async function staleWhileRevalidate(request, cacheName, event) {
   const networkResponse = fetch(request)
-    .then(async response => {
-      await putSafely(cacheName, request, response);
+    .then(response => {
+      saveInBackground(event, cacheName, request, response);
       return response;
     })
     .catch(() => null);
+  // Downloaded maps save marker images with fetch(), whose Vary request
+  // headers can differ from an <img>'s.
+  const cachedResponse = caches.match(request, { ignoreVary: true }).catch(() => null);
+  const usable = response => (canCache(response) ? response : null);
 
-  if (cachedResponse) return cachedResponse;
+  // Whichever is ready first: the saved copy, normally, in a moment; the
+  // network when the saved copies are slow to read (see saveInBackground).
+  // These are the scripts and styles the page waits on before it draws.
+  const first = await Promise.race([
+    cachedResponse.then(cached => cached || networkResponse.then(usable)),
+    networkResponse.then(response => usable(response) || cachedResponse)
+  ]);
+  if (first) return first;
   const response = await networkResponse;
   if (response) return response;
   throw new Error('The asset is unavailable offline.');
@@ -253,11 +272,18 @@ self.addEventListener('message', event => {
   }
 });
 
-async function cacheFirstTile(request, clientId) {
+// Downloaded maps before updates on their way to them (OfflineDownloads.js
+// saves an update apart until it's all there): a map being updated shows
+// as it was, apart from what's new to it.
+function savedMapsFirst(names) {
+  return names.filter(name => !name.endsWith('-update')).concat(names.filter(name => name.endsWith('-update')));
+}
+
+async function cacheFirstTile(request, clientId, event) {
   // Explicit packs take priority over the rolling cache.
-  const packNames = (await caches.keys()).filter(name =>
+  const packNames = savedMapsFirst((await caches.keys()).filter(name =>
     name.startsWith('zeldamaps-offline-') && name !== 'zeldamaps-offline-navigation' && name !== ACCOUNT_CACHE
-  );
+  ));
   for (const name of packNames) {
     const pack = await caches.open(name);
     let tile = await matchPackTile(pack, request.url);
@@ -276,10 +302,7 @@ async function cacheFirstTile(request, clientId) {
   if (cachedResponse) return cachedResponse;
 
   const response = await fetch(request);
-  if (canCache(response)) {
-    await putSafely(TILE_CACHE, request, response);
-    await trimTileCache();
-  }
+  saveInBackground(event, TILE_CACHE, request, response, trimTileCache);
   return response;
 }
 
@@ -309,7 +332,7 @@ function isStaticAssetRequest(url, request) {
 }
 
 async function downloadedImageOrNetwork(request) {
-  const names = (await caches.keys()).filter(name => name.startsWith('zeldamaps-offline-') && name !== NAVIGATION_CACHE && name !== ACCOUNT_CACHE);
+  const names = savedMapsFirst((await caches.keys()).filter(name => name.startsWith('zeldamaps-offline-') && name !== NAVIGATION_CACHE && name !== ACCOUNT_CACHE));
   for (const name of names) {
     const image = await (await caches.open(name)).match(request, { ignoreVary: true });
     if (image) return image;
@@ -326,20 +349,20 @@ self.addEventListener('fetch', event => {
   // An embed (embed.php) straight from the server: never the app's shell.
   if (request.mode === 'navigate' && url.pathname.endsWith('/embed.php')) return;
   if (request.mode === 'navigate') {
-    event.respondWith(navigateWithCurrentShell(request));
+    event.respondWith(navigateWithCurrentShell(request, event));
     return;
   }
 
   // Profile pictures, so the signed-in account looks the same offline.
   if (url.origin === self.location.origin && url.pathname.includes('/uploads/profile-pictures/')) {
-    event.respondWith(networkFirst(request, APP_CACHE));
+    event.respondWith(networkFirst(request, APP_CACHE, null, event));
     return;
   }
 
   if (isPublicDataRequest(url)) {
     // Public game metadata is needed to navigate even to undownloaded games.
     // Unlike the app bundle cache, it must survive version upgrades.
-    event.respondWith(networkFirst(request, NAVIGATION_CACHE));
+    event.respondWith(networkFirst(request, NAVIGATION_CACHE, null, event));
     return;
   }
 
@@ -348,12 +371,12 @@ self.addEventListener('fetch', event => {
       event.respondWith(fetch(request));
       return;
     }
-    event.respondWith(cacheFirstTile(request, event.clientId));
+    event.respondWith(cacheFirstTile(request, event.clientId, event));
     return;
   }
 
   if (isStaticAssetRequest(url, request)) {
-    event.respondWith(staleWhileRevalidate(request, APP_CACHE));
+    event.respondWith(staleWhileRevalidate(request, APP_CACHE, event));
     return;
   }
   // Embedded marker images from other hosts are only served when explicitly

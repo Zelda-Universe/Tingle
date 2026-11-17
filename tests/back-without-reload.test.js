@@ -76,3 +76,12 @@ test('a page counts as gone back to only while it is built', () => {
   expect(js).toContain("this._backRenderingTimer = window.setTimeout(function() { control._backRendering = false; }, 0);");
   expect(read('scripts/zwiki.js')).toContain("if(options && /^post$/i.test(options.type || '') && window.zMap && zMap._forgetWikiAnswers) zMap._forgetWikiAnswers();");
 });
+
+test('a settling page that changes again re-fits from where it is, never ending at the old height and jumping', () => {
+  const js = read('scripts/controls/ZLayers.js');
+  const fit = js.slice(js.indexOf('var fitSettledHeight = function()'), js.indexOf('this._settleFit = fitSettledHeight;'));
+  const cancel = fit.indexOf('if(this._settleFitAnimation) { this._settleFitAnimation.cancel(); this._settleFitAnimation = null; }');
+  const measure = fit.indexOf('var targetHeight = this._container.getBoundingClientRect().height;');
+  expect(cancel).toBeGreaterThan(-1);
+  expect(cancel).toBeLessThan(measure);
+});

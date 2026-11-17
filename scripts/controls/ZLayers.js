@@ -1732,9 +1732,14 @@ L.Control.ZLayers = L.Control.Layers.extend({
               this._settleHeightPinned = false;
               this._container.style.height = '';
             }
+            // A fit already on its way (the page changed again as it
+            // settled: a path revision's name, then its steps) stops where it
+            // is first: while it runs, the drawer measures as its animated
+            // height, so the new height would look reached, and the old fit
+            // would end at the old height and then jump.
+            if(this._settleFitAnimation) { this._settleFitAnimation.cancel(); this._settleFitAnimation = null; }
             var targetHeight = this._container.getBoundingClientRect().height;
             if(Math.abs(targetHeight - currentHeight) <= .5) return;
-            if(this._settleFitAnimation) this._settleFitAnimation.cancel();
             this._settleFitAnimation = this._container.animate([
               { height: Math.max(0, currentHeight - verticalExtras) + 'px' },
               { height: Math.max(0, targetHeight - verticalExtras) + 'px' }

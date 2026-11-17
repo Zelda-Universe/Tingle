@@ -157,6 +157,8 @@ ZMap.prototype._wikiPageSettled = function(page) {
   window.requestAnimationFrame(function() {
     if(!page || !control._contents.contains(page)) return;
     control._settleWaitingForReady = false;
+    // (A page gone back to: where it was scrolled, now that it's long enough.)
+    if(control._applyPendingScroll) control._applyPendingScroll(true);
     if(control._settleFit) control._settleFit();
   });
 };

@@ -1540,6 +1540,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // the server for is answered as it was when it was left, so it's drawn
     // as it was, at once, rather than as "Loading…" first (zwiki.js
     // _wikiGet).
+    // Gone back to (the back button, or a swipe: _skipNextSlide): where it
+    // was scrolled when it was left, kept with the page (_rememberBackPage),
+    // to scroll back to once it's built.
+    var returnScroll = null;
+    if(this._navigatingBack || this._skipNextSlide) {
+      var kept = this._backPages && this._backPages[this._backPages.length - 1];
+      if(kept && kept.type === vType && kept.scrollTop > 0) returnScroll = kept.scrollTop;
+    }
+    this._pendingScroll = null;
     if(this._navigatingBack) {
       this._backRendering = true;
       window.clearTimeout(this._backRenderingTimer);
@@ -1819,6 +1828,15 @@ L.Control.ZLayers = L.Control.Layers.extend({
     }
     this._navigatingBack = false;
     this._navigatingForward = false;
+    if(returnScroll !== null) {
+      // Once the page has built (its content, drawn from what it showed
+      // when it was left, comes in after this, in the same task: zwiki.js
+      // _wikiGet), before anything's drawn; a page whose content comes from
+      // the server later is scrolled when it settles (zwiki.js).
+      this._pendingScroll = { type: vType, top: returnScroll };
+      var scrollingControl = this;
+      Promise.resolve().then(function() { scrollingControl._applyPendingScroll(); });
+    }
     if(this.zMap && this.zMap.syncDrawerPageURL) this.zMap.syncDrawerPageURL(vType);
     if(
       /^m\d+$/.test(previousContentType || '') ||
@@ -2080,6 +2098,18 @@ L.Control.ZLayers = L.Control.Layers.extend({
     // $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
   },
 
+  // A page gone back to, scrolled to where it was (setContent). Kept till
+  // the page is long enough to get there, or has settled.
+  _applyPendingScroll: function(settled) {
+    var pending = this._pendingScroll;
+    if(!pending) return;
+    if(this._contentType !== pending.type) { this._pendingScroll = null; return; }
+    var contents = this._contents;
+    var furthest = Math.max(0, contents.scrollHeight - contents.clientHeight);
+    contents.scrollTop = Math.min(pending.top, furthest);
+    if(furthest >= pending.top - 1 || settled) this._pendingScroll = null;
+  },
+
   _rememberBackPage: function(page, scrollTop, type) {
     this._backPages = (this._backPages || []).concat([{
       page: page, scrollTop: scrollTop || 0, type: type
@@ -2163,15 +2193,51 @@ L.Control.ZLayers = L.Control.Layers.extend({
         place(from + (to - from) * (1 - Math.pow(1 - t, 3)));
         if(t < 1) return window.requestAnimationFrame(step);
         var button = commit && backButton();
-        // Out of the document before the page it previews is rebuilt, which
-        // looks up its elements by id. All in one frame, so nothing flickers.
-        reset();
-        if(button) {
-          // The swipe already moved the pages; skip the back button's slide.
-          control._skipNextSlide = true;
-          pressingBack = true;
-          try { button.click(); } finally { control._skipNextSlide = false; pressingBack = false; }
+        var preview = button && swipe.preview;
+        if(!preview) {
+          reset();
+          if(button) goBack(button);
+          return;
         }
+        // Gone back: the page it previews is rebuilt underneath, out of
+        // sight, while the preview (the page as it was left, icons and
+        // pictures drawn) stays on screen; once the rebuilt page's icons and
+        // pictures are in, the two swap in one frame. Rebuilt and shown at
+        // once, its icons (drawn by Font Awesome a frame later) and pictures
+        // (decoded a frame later) would blink in.
+        // (Its ids stay: pages are styled by them, and the preview, after
+        // the real page in the document, never comes first in a lookup by id.)
+        preview.style.transform = '';
+        preview.style.clipPath = '';
+        preview.style.zIndex = '2';
+        contents.style.transform = '';
+        contents.style.boxShadow = '';
+        contents.style.zIndex = swipe.previousZIndex;
+        contents.style.visibility = 'hidden';
+        swipe = null;
+        goBack(button);
+        var frames = 0;
+        var reveal = function() {
+          if(!preview.isConnected) { contents.style.visibility = ''; return; }
+          var box = contents.getBoundingClientRect();
+          var pending = contents.querySelector('i.fas, i.far, i.fab') ||
+            Array.prototype.some.call(contents.querySelectorAll('img'), function(img) {
+              var r = img.getBoundingClientRect();
+              return !img.complete && r.bottom > box.top && r.top < box.bottom;
+            });
+          // (A few frames at most: whatever isn't in by then comes in after.)
+          if(pending && ++frames < 8) return window.requestAnimationFrame(reveal);
+          contents.style.visibility = '';
+          preview.remove();
+          preview.style.zIndex = '';
+        };
+        window.requestAnimationFrame(reveal);
+      };
+      var goBack = function(button) {
+        // The swipe already moved the pages; skip the back button's slide.
+        control._skipNextSlide = true;
+        pressingBack = true;
+        try { button.click(); } finally { control._skipNextSlide = false; pressingBack = false; }
       };
       window.requestAnimationFrame(step);
     };

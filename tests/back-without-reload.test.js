@@ -85,3 +85,67 @@ test('a settling page that changes again re-fits from where it is, never ending 
   expect(cancel).toBeGreaterThan(-1);
   expect(cancel).toBeLessThan(measure);
 });
+
+test('swiping back keeps the page as it was on screen till the rebuilt one is drawn, then swaps them in one frame', () => {
+  const js = read('scripts/controls/ZLayers.js');
+  const finish = js.slice(js.indexOf('var finish = function(commit) {'), js.indexOf("contents.addEventListener('pointerdown'"));
+  // Rebuilt out of sight, the preview on top, styled as it was: its ids
+  // (pages are styled by them) kept, as it's after the real page in the
+  // document, so never found first.
+  expect(finish).toContain("contents.style.visibility = 'hidden';");
+  expect(finish).toContain("preview.style.zIndex = '2';");
+  expect(finish).not.toContain("removeAttribute('id')");
+  expect(js).toMatch(/contents\.parentNode\.appendChild\(page\);\s*page\.scrollTop = entry\.scrollTop;/);
+  expect(finish.indexOf("contents.style.visibility = 'hidden';")).toBeLessThan(finish.indexOf('goBack(button);\n        var frames = 0;'));
+  // Swapped once its icons and the pictures in view are in, or after a few frames.
+  expect(finish).toContain("contents.querySelector('i.fas, i.far, i.fab')");
+  expect(finish).toContain('if(pending && ++frames < 8) return window.requestAnimationFrame(reveal);');
+  expect(finish).toMatch(/contents\.style\.visibility = '';\s*preview\.remove\(\);/);
+});
+
+describe('going back returns to where the page was scrolled', () => {
+  const vm = require('vm');
+  const methods = (() => {
+    const context = { $: { extend: (_, ...v) => Object.assign({}, ...v) }, ZConfig: { getConfig: () => null }, L: { Control: { Layers: { prototype: { options: {} }, extend(m) { function C() {} C.prototype = m; C.addInitHook = () => {}; return C; } } }, control: {} } };
+    vm.runInNewContext(read('scripts/controls/ZLayers.js'), context);
+    return context.L.Control.ZLayers.prototype;
+  })();
+  const control = (scrollHeight) => Object.assign(Object.create(methods), {
+    _contentType: 'recentChanges-TotK',
+    _contents: { scrollTop: 0, scrollHeight, clientHeight: 500 },
+    _pendingScroll: { type: 'recentChanges-TotK', top: 900 }
+  });
+
+  test('scrolled to where it was, once it is long enough', () => {
+    const c = control(2000);
+    c._applyPendingScroll();
+    expect(c._contents.scrollTop).toBe(900);
+    expect(c._pendingScroll).toBeNull();
+  });
+
+  test('not long enough yet (its content still coming): as far as it goes, and again when it settles', () => {
+    const c = control(800);
+    c._applyPendingScroll();
+    expect(c._contents.scrollTop).toBe(300);
+    expect(c._pendingScroll).not.toBeNull();
+    c._contents.scrollHeight = 2000;
+    c._applyPendingScroll(true);
+    expect(c._contents.scrollTop).toBe(900);
+    expect(c._pendingScroll).toBeNull();
+  });
+
+  test('another page open by then: left alone', () => {
+    const c = control(2000);
+    c._contentType = 'pathRevision-5';
+    c._applyPendingScroll();
+    expect(c._contents.scrollTop).toBe(0);
+  });
+
+  test('both the back button and a swipe use the place kept with the page', () => {
+    const js = read('scripts/controls/ZLayers.js');
+    expect(js).toContain('if(this._navigatingBack || this._skipNextSlide) {');
+    expect(js).toContain('if(kept && kept.type === vType && kept.scrollTop > 0) returnScroll = kept.scrollTop;');
+    expect(js).toContain('Promise.resolve().then(function() { scrollingControl._applyPendingScroll(); });');
+    expect(read('scripts/zwiki.js')).toContain('if(control._applyPendingScroll) control._applyPendingScroll(true);');
+  });
+});

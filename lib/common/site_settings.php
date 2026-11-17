@@ -9,6 +9,10 @@
     // for everyone. Off: as always, each game's a page load (staff can
     // still try it in their own browser, from Settings).
     'gameSwitch' => array('type' => 'bool', 'default' => false),
+    // The browser's Back for the sidebar's pages
+    // (scripts/services/BrowserBack.js), for everyone. Off: Back does what
+    // it always did (staff can still try it in their own browser).
+    'browserBack' => array('type' => 'bool', 'default' => false),
   );
 
   function siteSettingsTable($db, $prefix) {

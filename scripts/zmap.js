@@ -3530,6 +3530,7 @@ ZMap.prototype.setUser = function(vUser) {
    if(user == null) ZOfflineSync.clear();
    // Staff: the switch for changing games without a reload (GameSwitch.js).
    if(this._addGameSwitchSetting) this._addGameSwitchSetting();
+   if(this._addBrowserBackSetting) this._addBrowserBackSetting();
    this._addAnalyticsTimingSetting();
    _this._buildContextMenu();
    if (this._watchWikiUser) this._watchWikiUser();
@@ -6937,7 +6938,9 @@ ZMap.prototype._createAdminUserPage = function(account) {
 ZMap.prototype.ADMIN_ROLE_LEVEL = 15;
 ZMap.prototype.SITE_SETTINGS = [
   { name: 'gameSwitch', label: 'Switch games without reloading',
-    description: 'Changing games happens in place, without loading the page again. Off: each game loads as a new page, as before (staff can still try it in their own browser, from Settings).' }
+    description: 'Changing games happens in place, without loading the page again. Off: each game loads as a new page, as before (staff can still try it in their own browser, from Settings).' },
+  { name: 'browserBack', label: 'Experimental back button support',
+    description: 'The browser\'s Back button (and the phone back gesture) goes back through the sidebar\'s pages and closes them, like their own Back and close buttons. Off: Back leaves the page, as before (staff can still try it in their own browser, from Settings).' }
 ];
 ZMap.prototype._loadSiteSettings = function() {
   var _this = this, panel = $('#admin_panel_settings');

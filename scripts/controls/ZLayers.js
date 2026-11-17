@@ -1390,6 +1390,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
             if(!zMap._switchingGame) { try { select(this); } catch(e) {} }
             zMap.openGameURL(url);
           }
+          // (Off a sidebar page's history entry first: BrowserBack.js.)
+          else if(window.zMap && zMap._leavingSidebarHistory) zMap._leavingSidebarHistory(function() { window.location.replace(url); });
           else window.location.replace(url);
 
           return false;
@@ -2095,6 +2097,8 @@ L.Control.ZLayers = L.Control.Layers.extend({
     this._contentType = vType;
     // (Paths.js: a path is highlighted while its pages are open.)
     if(this.zMap && this.zMap._pathPageChanged) this.zMap._pathPageChanged(vType);
+    // (The browser's Back, in step with this page's: BrowserBack.js.)
+    if(this.zMap && this.zMap._syncBrowserBack) this.zMap._syncBrowserBack();
     // $("#menu-cat-content").animate({ scrollTop: 0 }, "fast");
   },
 

@@ -70,6 +70,15 @@ ZMap.prototype._gameSwitchBlocker = function() {
 // Another game's address: switched to in place when on and safe, else
 // loaded. Returns true when it switched in place.
 ZMap.prototype.openGameURL = function(url) {
+  // (Off a sidebar page's history entry first: BrowserBack.js.)
+  var map = this;
+  if(this._leavingSidebarHistory) {
+    this._leavingSidebarHistory(function() { map._openGameURL(url); });
+    return;
+  }
+  return this._openGameURL(url);
+};
+ZMap.prototype._openGameURL = function(url) {
   var target = new URL(url, window.location.href);
   var game = target.searchParams.get('game');
   var current = this.mapOptions && this.mapOptions.shortName;

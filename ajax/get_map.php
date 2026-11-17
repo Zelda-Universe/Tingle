@@ -131,6 +131,13 @@
          } elseif (PHP_SAPI === 'cli-server' && is_dir(dirname(__DIR__) . '/tiles/' . $row2['tileURL'])) {
             $row2['tileBaseURL'] = '/tiles/';
          }
+         // The Switch Map thumbnail's version (its file's change time and
+         // size): in its address (scripts/zmap.js _mapIconURL), so new art
+         // at the same file is a new address, never a cached copy of the old.
+         $iconFile = dirname(__DIR__) . '/images/icons/' . $row2['tileURL'] . 'icon.' . $row2['tileExt'];
+         if (strpos($row2['tileURL'] . $row2['tileExt'], '..') === false && is_file($iconFile)) {
+            $row2['iconVersion'] = substr(md5(filemtime($iconFile) . ':' . filesize($iconFile)), 0, 10);
+         }
          $row2['submapLayer'] = $db->fetchAllAssociative("
             select sml.id
                  , sml.name

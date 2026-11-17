@@ -322,6 +322,17 @@ ZMap.prototype._submapRegionData = function(submaps) {
   });
 };
 
+// A map's Switch Map thumbnail: images/icons/<its tiles' folder>/icon.<ext>,
+// with its version (get_map.php iconVersion, from the file itself) in the
+// address, so new art is never hidden by a cached copy of the old (browsers
+// and Cloudflare keep images for a month). Without one: the artwork's own
+// version, if it has one (versionSuffix: "?v=…").
+ZMap.prototype._mapIconURL = function(submap, versionSuffix) {
+  if(!submap) return '';
+  var version = submap.iconVersion ? '?v=' + encodeURIComponent(submap.iconVersion) : (versionSuffix || '');
+  return this.defaultIconURL + submap.tileURL + 'icon.' + submap.tileExt + version;
+};
+
 ZMap.prototype.addMap = function(vMap) {
    // If there is no subMap, we can't add to the map
    if (vMap.subMap.length == 0) {
@@ -351,7 +362,7 @@ ZMap.prototype.addMap = function(vMap) {
          attribution: vMap.mapCopyright, label: title,
          // The Switch Map thumbnail, where every game's is, versioned with
          // the artwork so a new picture isn't hidden by a cached old one.
-         iconURL: submap.iconURL || this.defaultIconURL + submap.tileURL + 'icon.' + submap.tileExt + tileVersion
+         iconURL: submap.iconURL || this._mapIconURL(submap, tileVersion)
        });
        this._addTileBackdrop(layer, tileURL, maxNativeZoom);
        layer.id = 'mID' + vMap.id + 's' + submap.id;
@@ -399,10 +410,7 @@ ZMap.prototype.addMap = function(vMap) {
         , updateWhenZooming : true
         , keepBuffer        : 4
         , label             : vMap.name
-        , iconURL           : vMap.subMap[0].iconURL || this.defaultIconURL
-          + vMap.subMap[0].tileURL
-          + 'icon.'
-          + vMap.subMap[0].tileExt
+        , iconURL           : vMap.subMap[0].iconURL || this._mapIconURL(vMap.subMap[0])
         , errorTileUrl      : this.errorTileUrl
       }
     );
@@ -438,7 +446,7 @@ ZMap.prototype.addMap = function(vMap) {
                                              , updateWhenZooming: true
                                              , keepBuffer:        4
                                              , label:             vMap.name
-                                             , iconURL:           vMap.subMap[0].iconURL || this.defaultIconURL + vMap.subMap[0].tileURL + 'icon.' + vMap.subMap[0].tileExt
+                                             , iconURL:           vMap.subMap[0].iconURL || this._mapIconURL(vMap.subMap[0])
                                              }
       );
 
@@ -464,7 +472,7 @@ ZMap.prototype.addMap = function(vMap) {
                                             , updateWhenZooming: true
                                             , keepBuffer:        4
                                             , label:             vMap.name
-                                            , iconURL:           vMap.subMap[i].iconURL || this.defaultIconURL + vMap.subMap[i].tileURL + 'icon.' + vMap.subMap[i].tileExt
+                                            , iconURL:           vMap.subMap[i].iconURL || this._mapIconURL(vMap.subMap[i])
                                           }
        );
 
@@ -497,7 +505,7 @@ ZMap.prototype.addMap = function(vMap) {
                                                                        , updateWhenZooming: true
                                                                        , keepBuffer:        4
                                                                        , label:             vMap.name
-                                                                       , iconURL:           this.defaultIconURL + vMap.subMap.tileURL + 'icon.' + vMap.subMap.tileExt
+                                                                       , iconURL:           this._mapIconURL(vMap.subMap)
                                                                        });
              overlay2.id             = 'mID' + submap.id;
              overlay2.originalId     = submap.id;

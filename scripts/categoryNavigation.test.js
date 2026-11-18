@@ -19,7 +19,8 @@ describe('category viewport navigation', () => {
         _container: { getBoundingClientRect: () => ({ width: 360 }) }, options: { collapsed: true } },
       map: { getZoom: () => 7, getMaxZoom: () => 8,
         getBounds: () => ({ contains: point => point.inView }),
-        getContainer: () => ({ getBoundingClientRect: () => ({ bottom: 900 }) }), fitBounds: jest.fn() }
+        getContainer: () => ({ getBoundingClientRect: () => ({ bottom: 900 }) }), fitBounds: jest.fn() },
+      _visibleMapPadding: context.ZMap.prototype._visibleMapPadding
     };
     return { category, map };
   }

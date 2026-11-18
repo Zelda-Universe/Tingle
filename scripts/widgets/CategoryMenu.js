@@ -264,7 +264,7 @@ CategoryMenu.prototype._buildListView = function() {
     categories.forEach(function(category) {
       var button=menu.categoryButtons.find(function(b) {return b.category.id==category.id;});
       var title=button && button.displayTitle || category.name;
-      var row=$('<div class="category-list-row"></div>').append(checkbox([category],title));
+      var row=$('<div class="category-list-row"></div>').attr('data-category-id',category.id).append(checkbox([category],title));
       var link=$('<button type="button" class="category-list-link"></button>');
       if(zMap._mapSettingsBadge) link.append(zMap._mapSettingsBadge(category));
       else if(button) link.append(button.domNode.find('.icon-container').clone());

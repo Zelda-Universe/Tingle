@@ -19,6 +19,12 @@ describe('isInteractiveUiEvent', () => {
     );
   });
 
+  test('leaves gestures over a 3D map to the 3D map', () => {
+    const view = {closest: jest.fn(() => view)};
+    expect(isInteractiveUiEvent({target: view}, {})).toBe(true);
+    expect(view.closest).toHaveBeenCalledWith(expect.stringContaining('.zm-3d-view'));
+  });
+
   test('pans and pinches over place names (Leaflet tooltips) like the map', () => {
     const selector = jest.fn(() => null);
     isInteractiveUiEvent({target: {closest: selector}}, {});

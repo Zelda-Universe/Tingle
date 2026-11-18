@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vah Ruta 3D</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; height: 100%; background: #10141a; color: #eee; font: 13px/1.4 system-ui, sans-serif; overflow: hidden; }
+  #view { position: fixed; inset: 0; }
+  .label { padding: 2px 7px; border-radius: 10px; background: rgba(0,0,0,.72); color: #fff; white-space: nowrap; cursor: pointer; font-size: 12px; }
+  .label.chest { background: rgba(60,188,117,.9); }
+  .label.terminal { background: rgba(67,149,247,.9); }
+  .label.gate { background: rgba(142,114,185,.95); }
+  .label.enemy { background: rgba(232,80,64,.9); }
+  .label[hidden] { display: none; }
+  #panel { position: fixed; top: 12px; left: 12px; padding: 12px 14px; border-radius: 12px; background: rgba(0,0,0,.75); max-width: 260px; }
+  #panel h1 { margin: 0 0 6px; font-size: 16px; }
+  #panel label { display: block; margin-top: 4px; }
+  #status { margin-top: 8px; color: #aaa; }
+  /* Map / Full, as the site's Child / Adult pill (styles/poi.css .oot-floor-pill) */
+  /* Map: the site's own backdrop (styles/zmain.css), which is BotW's map grid. */
+  body.map { background-color: #000; background-image: url(../../images/zelda-maps-bg-tile.png); }
+  #mode { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); display: flex; gap: 2px; padding: 6px; border-radius: 28px;
+          background: rgba(0,0,0,.8); box-shadow: 0 4px 18px #0005; backdrop-filter: blur(10px); }
+  #mode button { width: 64px; height: 40px; border: 0; border-radius: 24px; color: #ccc; background: transparent; font: inherit; cursor: pointer; }
+  #mode button[aria-pressed=true] { background: #fff; color: #111; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="view"></div>
+<div id="mode" role="group" aria-label="Map style"><button type="button" data-mode="map" aria-pressed="false">Map</button><button type="button" data-mode="full" aria-pressed="true">Textured</button></div>
+<div id="panel">
+  <h1>Vah Ruta</h1>
+  <label><input type="checkbox" id="outside" checked> Outer shell</label>
+  <label><input type="checkbox" id="labels" checked> Labels</label>
+  <div id="status">Loading…</div>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+const view = document.getElementById('view');
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(devicePixelRatio);
+renderer.setSize(innerWidth, innerHeight);
+view.appendChild(renderer.domElement);
+const labels = new CSS2DRenderer();
+labels.setSize(innerWidth, innerHeight);
+Object.assign(labels.domElement.style, { position: 'absolute', top: 0, pointerEvents: 'none' });
+view.appendChild(labels.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x10141a);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x334455, 1.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.4); sun.position.set(80, 160, 120); scene.add(sun);
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.5, 4000);
+camera.position.set(220, 160, 260);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 40, 20); controls.enableDamping = true;
+
+let outside = null, model = null;
+// Map: the Sheikah Slate's dungeon map, matched to in-game screenshots: the
+// Beast's own geometry drawn as additive cyan light, brightest at its
+// silhouettes and where walls overlap (so dense parts glow near-white), with
+// bright edges, over a cyan grid floor on the Slate's navy. Full: real materials.
+const holo = new THREE.ShaderMaterial({
+  transparent: true, depthWrite: false, depthTest: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending,
+  uniforms: { color: { value: new THREE.Color(0x3fa6ff) } },
+  vertexShader: `varying vec3 vN; varying vec3 vV;
+    void main() { vec4 mv = modelViewMatrix * vec4(position, 1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: `uniform vec3 color; varying vec3 vN; varying vec3 vV;
+    void main() { float rim = 1.0 - abs(dot(normalize(vN), normalize(vV))); float a = 0.05 + 0.2 * pow(rim, 2.0); gl_FragColor = vec4(color * a, 1.0); }`
+});
+const edgeMat = new THREE.LineBasicMaterial({ color: 0x6cc4ff, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false });
+// The grid floor the Beast stands over in the Slate map.
+const grid = new THREE.GridHelper(260, 44, 0x2d7fd6, 0x2d7fd6);
+grid.material.transparent = true; grid.material.opacity = 0.28; grid.material.blending = THREE.AdditiveBlending; grid.material.depthWrite = false;
+grid.position.y = -72; grid.visible = false; scene.add(grid);
+function setMode(mode) {
+  document.querySelectorAll('#mode button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+  document.body.classList.toggle('map', mode === 'map');
+  scene.background = mode === 'map' ? null : new THREE.Color(0x10141a);
+  grid.visible = mode === 'map';
+  if (!model) return;
+  model.traverse(o => {
+    if (o.isMesh) {
+      o.userData.full = o.userData.full || o.material;
+      o.material = mode === 'map' ? holo : o.userData.full;
+      if (!o.userData.edges) {
+        o.userData.edges = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 35), edgeMat);
+        o.add(o.userData.edges);
+      }
+      o.userData.edges.visible = mode === 'map';
+    }
+  });
+}
+document.querySelectorAll('#mode button').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+new GLTFLoader().load('vah-ruta.glb', gltf => {
+  model = gltf.scene; scene.add(model);
+  outside = gltf.scene.getObjectByName('DgnObj_IbutsuWaterBodyOutside_A_01');
+  setMode(document.querySelector('#mode [aria-pressed=true]').dataset.mode);
+  document.getElementById('status').textContent = 'Drag to turn, scroll to zoom, right-drag to pan.';
+}, undefined, e => { document.getElementById('status').textContent = 'Could not load the model.'; console.error(e); });
+
+const KIND = { 'Treasure Chest': 'chest', 'Terminal': 'terminal', 'Main Control Unit': 'terminal', 'Travel Gate': 'gate', 'Guardian Scout': 'enemy' };
+const markers = await fetch('vah-ruta-markers.json').then(r => r.json());
+const labelEls = [];
+for (const m of markers) {
+  const el = document.createElement('div');
+  el.className = 'label ' + (KIND[m.kind] || '');
+  el.textContent = m.name;
+  el.style.pointerEvents = 'auto';
+  el.addEventListener('click', () => { controls.target.set(...m.pos); camera.position.set(m.pos[0] + 40, m.pos[1] + 30, m.pos[2] + 40); });
+  const obj = new CSS2DObject(el); obj.position.set(...m.pos); scene.add(obj);
+  const dot = new THREE.Mesh(new THREE.SphereGeometry(0.8), new THREE.MeshBasicMaterial({ color: 0xffe066 }));
+  dot.position.set(...m.pos); scene.add(dot);
+  labelEls.push(el);
+}
+document.getElementById('outside').onchange = e => { if (outside) outside.visible = e.target.checked; };
+document.getElementById('labels').onchange = e => labelEls.forEach(el => el.hidden = !e.target.checked);
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight); labels.setSize(innerWidth, innerHeight);
+});
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); labels.render(scene, camera); });
+</script>
+</body>
+</html>

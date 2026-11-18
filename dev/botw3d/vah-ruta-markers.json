@@ -1,0 +1,146 @@
+[
+ {
+  "kind": "Travel Gate",
+  "name": "Travel Gate",
+  "pos": [
+   48.0,
+   6.0,
+   3.0
+  ]
+ },
+ {
+  "kind": "Main Control Unit",
+  "name": "Main Control Unit",
+  "pos": [
+   4.470348358154297e-07,
+   11.649999618530273,
+   51.70000076293945
+  ]
+ },
+ {
+  "kind": "Treasure Chest",
+  "name": "Treasure Chest (Weapon_Spear_003)",
+  "pos": [
+   0.0,
+   61.19999313354492,
+   52.5
+  ]
+ },
+ {
+  "kind": "Treasure Chest",
+  "name": "Treasure Chest (Item_Enemy_28)",
+  "pos": [
+   10.5,
+   6.0,
+   34.5
+  ]
+ },
+ {
+  "kind": "Treasure Chest",
+  "name": "Treasure Chest (Item_Enemy_29)",
+  "pos": [
+   8.102506399154663e-08,
+   7.449999809265137,
+   187.5
+  ]
+ },
+ {
+  "kind": "Terminal",
+  "name": "Terminal",
+  "pos": [
+   9.313225746154785e-09,
+   9.699999809265137,
+   209.26365661621094
+  ]
+ },
+ {
+  "kind": "Terminal",
+  "name": "Terminal",
+  "pos": [
+   -19.0,
+   8.0,
+   -5.199999809265137
+  ]
+ },
+ {
+  "kind": "Terminal",
+  "name": "Terminal",
+  "pos": [
+   0.0,
+   39.5,
+   -22.5
+  ]
+ },
+ {
+  "kind": "Treasure Chest",
+  "name": "Treasure Chest (PutRupee_Silver)",
+  "pos": [
+   -19.5,
+   35.79999923706055,
+   -48.0
+  ]
+ },
+ {
+  "kind": "Treasure Chest",
+  "name": "Treasure Chest (Obj_IceArrow_A_02)",
+  "pos": [
+   -31.5,
+   110.15255737304688,
+   30.0078125
+  ]
+ },
+ {
+  "kind": "Treasure Chest",
+  "name": "Treasure Chest (Obj_FireArrow_A_02)",
+  "pos": [
+   3.0,
+   55.0,
+   18.0
+  ]
+ },
+ {
+  "kind": "Terminal",
+  "name": "Terminal",
+  "pos": [
+   0.5,
+   45.5,
+   6.5
+  ]
+ },
+ {
+  "kind": "Terminal",
+  "name": "Terminal",
+  "pos": [
+   3.4969110629390343e-07,
+   68.0,
+   73.0
+  ]
+ },
+ {
+  "kind": "Treasure Chest",
+  "name": "Treasure Chest (Item_Enemy_30)",
+  "pos": [
+   -0.25,
+   40.69140625,
+   2.3515625
+  ]
+ },
+ {
+  "kind": "Guardian Scout",
+  "name": "Guardian Scout",
+  "pos": [
+   -12.0,
+   30.0,
+   -24.0
+  ]
+ },
+ {
+  "kind": "Guardian Scout",
+  "name": "Guardian Scout",
+  "pos": [
+   0.0,
+   50.0,
+   43.0
+  ]
+ }
+]

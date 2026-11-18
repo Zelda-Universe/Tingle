@@ -10,7 +10,11 @@
   include_once(dirname(__DIR__) . '/lib/common/admin.php');
   if (adminOnlyGameDenied($db, $map_prefix, $map)) { echo json_encode(array()); return; }
 
-   if (file_exists("$path/static/map_{$map}.json")) {
+   // Maps still being built (map.visible = 2, BotW's 3D Divine Beasts) are
+   // for staff only, as games in progress are: they get them from the
+   // database, never a cached copy made for everyone.
+   $staff = adminSignedIn($db, $map_prefix);
+   if (!$staff && file_exists("$path/static/map_{$map}.json")) {
      readfile("$path/static/map_{$map}.json");
      return;
    }
@@ -50,10 +54,10 @@
            , {$map_prefix}container c
        where c.id = ?
          and c.id = m.container_id
-         and m.visible = 1
+         and (m.visible = 1 or (m.visible = 2 and ?))
        order by m.map_order
              , m.id
-   ", [$map]);
+   ", [$map, $staff ? 1 : 0]);
 
    // Named regions with borders, by submap: tower regions (kind tower) and
    // the game's named areas (kind area). Optional: until the map_region

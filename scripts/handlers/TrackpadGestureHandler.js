@@ -40,9 +40,10 @@ function isInteractiveUiEvent(event, container) {
   }
 
   // Not .leaflet-tooltip: place names are tooltips spread over the map, and
-  // a swipe passing over one must still pan it, not zoom.
+  // a swipe passing over one must still pan it, not zoom. .zm-3d-view: a 3D
+  // map (Map3D.js) covers the 2D one and takes the same gestures itself.
   return target.closest(
-    '.leaflet-control, .leaflet-popup, '
+    '.leaflet-control, .leaflet-popup, .zm-3d-view, '
     + '.mobile-search-results-panel, button, input, select, textarea, a, '
     + '[contenteditable="true"]'
   ) !== null;

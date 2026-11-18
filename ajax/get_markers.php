@@ -11,7 +11,10 @@
   include_once(dirname(__DIR__) . '/lib/common/admin.php');
   if (adminOnlyGameDenied($db, $map_prefix, $game)) { echo json_encode(array()); return; }
 
-  if (file_exists("$path/static/markers_{$game}.json")) {
+  // Markers on maps still being built (map.visible = 2) are for staff only,
+  // as their maps are (get_map.php): staff never get the cached copy.
+  $staff = adminSignedIn($db, $map_prefix);
+  if (!$staff && file_exists("$path/static/markers_{$game}.json")) {
     readfile("$path/static/markers_{$game}.json");
     return;
   }
@@ -77,8 +80,9 @@
        and m.user_id = u.id
        and {$sqlVisible}
        and mc.visible = 1
+       and (mp.visible = 1 or (mp.visible = 2 and ?))
   ";
-  $params = [$game];
+  $params = [$game, $staff ? 1 : 0];
 
   // One category's, when Map Settings shows a hidden category again.
   if (isset($_GET['categoryId'])) {

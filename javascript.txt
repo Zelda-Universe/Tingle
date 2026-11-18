@@ -50,6 +50,7 @@ scripts/services/ImageViewer.js
 scripts/services/AreaSearch.js
 scripts/services/CategoryPage.js
 scripts/controls/OotFloors.js
+scripts/controls/Map3D.js
 scripts/zwiki.js
 scripts/services/MarkerNavigation.js
 scripts/services/Paths.js

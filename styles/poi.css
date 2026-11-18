@@ -411,3 +411,53 @@
 .category-list-link .map-settings-badge.category-icon { position:relative; flex:none; width:32px; height:32px; font-size:20px; line-height:32px; text-align:center; }
 .category-list-link .map-settings-badge.category-icon.poi-travel { font-size:18px; }
 .category-list-view .marker-list-completion:indeterminate + .fa-check { visibility:visible; opacity:.5; }
+
+/* 3D maps (scripts/controls/Map3D.js): the model covers the 2D map, whose
+   tiles and markers hide while it's open; on the site's own grid in Map. */
+.zm-3d-active .leaflet-tile-pane, .zm-3d-active .leaflet-map-pane .leaflet-marker-pane, .zm-3d-active .leaflet-shadow-pane,
+.zm-3d-active .leaflet-overlay-pane, .zm-3d-active .leaflet-regionBorders-pane { visibility: hidden; }
+.zm-3d-view { position: absolute; inset: 0; z-index: 450; background: #10141a; touch-action: none; }
+.zm-3d-view.zm-3d-map { background-color: #000; background-image: url(images/zelda-maps-bg-tile.png); }
+.zm-3d-view canvas { display: block; }
+.zm-3d-labels { position: absolute; top: 0; left: 0; pointer-events: none; }
+.zm-3d-marker { pointer-events: auto; cursor: pointer; }
+/* Categories with no markers on the map on screen (ZMap._limitCategoriesToMap). */
+.zm-off-map { display: none !important; }
+/* A Divine Beast's part the Slate moves (Map3D.js _buildJoints): an arc gauge
+   whose handle is dragged, as the game's; in the 3D map's pill column. */
+.zm-3d-joint { flex-direction:column; align-items:center; padding:8px 6px 10px; border-radius:20px; touch-action:none; cursor:grab; user-select:none; -webkit-user-select:none; }
+.zm-3d-joint.is-dragging { cursor:grabbing; }
+.zm-3d-joint:focus-visible { outline:2px solid #6cc4ff; outline-offset:2px; }
+.zm-3d-joint svg { display:block; overflow:visible; }
+.zm-3d-joint-track { fill:none; stroke:rgba(255,255,255,.22); stroke-width:6; stroke-linecap:round; }
+.zm-3d-joint-fill { fill:none; stroke:#6cc4ff; stroke-width:6; stroke-linecap:round; filter:drop-shadow(0 0 4px rgba(108,196,255,.8)); }
+.zm-3d-joint-arm { stroke:rgba(108,196,255,.55); stroke-width:2; }
+.zm-3d-joint-hinge { fill:#6cc4ff; }
+.zm-3d-joint-handle { fill:#fff; stroke:#6cc4ff; stroke-width:3; filter:drop-shadow(0 0 6px rgba(108,196,255,.9)); }
+.zm-3d-joint-label { margin-top:4px; font-size:12px; color:#ccc; }
+/* The Sheikah Slate's Divine Beast control, on the 3D model (Map3D.js
+   _buildNotches), drawn as the game's Vah Ruta map draws it: a magenta drop
+   for each notch the part stops at, pointing in at its hinge, glowing; the
+   picked one big and white with orange brackets and chevrons leading to it. */
+.zm-3d-labels .zm-slate-notch { position:absolute; width:30px; height:30px; margin:0; padding:0; border:0; background:none; pointer-events:auto; cursor:pointer; touch-action:none; -webkit-tap-highlight-color:transparent; }
+.zm-slate-notch:focus { outline:none; }
+.zm-slate-notch-turn { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; transform:rotate(var(--zm-out, 0rad)); }
+.zm-slate-notch-drop { width:9px; height:9px; border-radius:0 50% 50% 50%; background:#d6338a; transform:rotate(45deg) scale(1.45, 1); box-shadow:0 0 6px 2px rgba(232,64,150,.55); transition:width .12s, height .12s, background-color .12s, box-shadow .12s; }
+.zm-slate-notch.is-current .zm-slate-notch-drop { background:#ff69b9; box-shadow:0 0 9px 3px rgba(255,105,185,.75); }
+.zm-slate-notch.is-target .zm-slate-notch-drop { animation:zm-slate-pulse .9s ease-in-out infinite alternate; }
+.zm-slate-notch.is-picked .zm-slate-notch-drop { width:15px; height:15px; background:#fff3fa; box-shadow:0 0 6px 2px #ff7ac4, 0 0 16px 6px rgba(255,64,160,.7); }
+@keyframes zm-slate-pulse { from { box-shadow:0 0 6px 2px rgba(232,64,150,.5); } to { box-shadow:0 0 14px 6px rgba(255,120,200,.95); } }
+.zm-slate-notch-brackets { position:absolute; inset:-3px; display:none; }
+.zm-slate-notch.is-picked .zm-slate-notch-brackets { display:block; }
+.zm-slate-notch-brackets i { position:absolute; width:0; height:0; border:5px solid transparent; filter:drop-shadow(0 0 3px #ffb347); }
+.zm-slate-notch-brackets i:first-child { left:-2px; top:-2px; border-left-color:#ffae3d; border-top-color:#ffae3d; }
+.zm-slate-notch-brackets i:last-child { right:-2px; bottom:-2px; border-right-color:#ffae3d; border-bottom-color:#ffae3d; }
+.zm-slate-chevrons { position:absolute; left:50%; top:50%; width:0; height:0; display:none; transform:rotate(var(--zm-from, 0rad)); pointer-events:none; }
+.zm-slate-notch.is-picked .zm-slate-chevrons { display:block; }
+.zm-slate-chevrons span { position:absolute; left:16px; top:-13px; transform:rotate(180deg); transform-origin:center; font:900 22px/26px system-ui, sans-serif; letter-spacing:-5px; color:#ff4fa8; text-shadow:0 0 6px rgba(255,80,170,.9); white-space:nowrap; }
+/* The game's legend for it: an orange title, then what each input does. */
+.zm-slate-legend { display:flex; flex-direction:column; gap:3px; padding:8px 12px; border-radius:14px; background:rgba(4,14,26,.82); box-shadow:0 0 0 1px rgba(108,196,255,.25), 0 4px 18px #0005; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); color:#dce9f5; font-size:12px; line-height:1.3; }
+.zm-slate-legend b { color:#ffae3d; font-style:italic; font-weight:600; text-shadow:0 0 6px rgba(255,150,40,.5); }
+.zm-slate-legend span { display:flex; align-items:center; gap:6px; }
+.zm-slate-key { display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; background:#dce9f5; color:#04121e; font-style:normal; font-size:10px; font-weight:700; }
+.zm-3d-joint[hidden] { display:none; }

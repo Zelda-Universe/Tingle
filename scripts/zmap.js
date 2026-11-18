@@ -339,6 +339,17 @@ ZMap.prototype.addMap = function(vMap) {
       console.log("No subMap configured for \"" + vMap.name + "\"!!!");
       return;
    }
+   // A 3D map (BotW's Divine Beasts): the game's model in place of tiles
+   // (scripts/controls/Map3D.js), listed and switched to as any map is.
+   if (vMap.kind === '3d' && typeof ZMap3D !== 'undefined') {
+     var layer3d = ZMap3D.layer(this, vMap);
+     layer3d.id = 'mID' + vMap.id; layer3d.originalId = vMap.id; layer3d.title = vMap.name;
+     layer3d.mapDescription = vMap.description || ''; layer3d.mapKind = '3d';
+     layer3d.alwaysShowCategories = vMap.alwaysShowCategories == 1;
+     layer3d.submapRegions = []; layer3d.defaultSubMapId = vMap.subMap[0].id; layer3d.mapBounds = null; layer3d._overlayMap = [];
+     this.maps.push(layer3d);
+     return;
+   }
    var tileBaseURL = vMap.subMap[0].tileBaseURL || this.tilesBaseURL;
    // A map with a kind (OoT's world and dungeons) makes each of its submaps
    // (ages, floors, water levels) its own selectable layer, chosen with the
@@ -1094,13 +1105,52 @@ ZMap.prototype._getDisplayZoom = function() {
    return Math.round(this._layoutZoom !== undefined ? this._layoutZoom : this.map.getZoom());
 }
 
-ZMap.prototype._createMarkerIcon = function(vCatId, vComplete) {
+// Only the categories with markers on one map in the category menu (an
+// experiment, on 3D maps for now: Map3D.js): the others, and any section
+// heading left with none, hidden until it's called with null. A category
+// counts if it or one under it has a marker there.
+ZMap.prototype._limitCategoriesToMap = function(submapId) {
+  var menu = this.mapControl && this.mapControl._categoryMenu;
+  if(!menu || !menu.categoryButtons) return;
+  var categories = this.categories || {}, on = null;
+  if(submapId != null) {
+    on = {};
+    this.getMarkers().forEach(function(marker) {
+      if(String(marker.submapId) !== String(submapId)) return;
+      // (Guarded against a loop in the category tree.)
+      for(var id = marker.categoryId, n = 0; id != null && categories[id] && !on[id] && n < 20; n++) {
+        on[id] = true; id = categories[id].parent_id;
+      }
+    });
+  }
+  var shown = function(category) { return !on || !!on[category.id]; };
+  menu.categoryButtons.forEach(function(button) {
+    button.domNode.closest('li').toggleClass('zm-off-map', !shown(button.category));
+  });
+  (menu.poiCategoryGroups || []).forEach(function(group) {
+    group.toggle.closest('li').toggleClass('zm-off-map', !group.categories.some(shown));
+  });
+  if(menu.listViewNode) {
+    menu.listViewNode.find('.category-list-row[data-category-id]').each(function() {
+      var category = categories[this.getAttribute('data-category-id')];
+      $(this).toggleClass('zm-off-map', !!category && !shown(category));
+    });
+    menu.listViewNode.find('.category-list-section').each(function() {
+      var section = $(this);
+      section.toggleClass('zm-off-map', !section.find('.category-list-row:not(.zm-off-map)').length);
+    });
+  }
+};
+
+// size: 'Medium' or 'Small' for that size whatever the zoom (a 3D map's
+// markers are always the zoomed-in ones).
+ZMap.prototype._createMarkerIcon = function(vCatId, vComplete, size) {
    var poiStyle = getPOIStyle(this.categories[vCatId]);
    var poiClass = poiStyle ? ' poi-badge poi-' + poiStyle : '';
    // The colours given in Map Settings (fill or outline, and glyph).
    var fillStyle = getPOIStyleVars(this.categories[vCatId]);
    if(poiStyle && String(this.categories[vCatId].container_id) === '22') poiClass += ' poi-eow';
-   if (this._getDisplayZoom() > this.mapOptions.switchIconsAtZoom) {
+   if (size ? size === 'Medium' : this._getDisplayZoom() > this.mapOptions.switchIconsAtZoom) {
       return new markerIconMedium({className: 'map-icon-svg'
                             ,html: "<div class='circle circleMap-medium" + poiClass + "' style='" + fillStyle + "background-color: " + this.categories[vCatId].color + "; "
                                                                       + "border-color: " + this.categories[vCatId].color + "'>"
@@ -1283,17 +1333,9 @@ ZMap.prototype.focusSingleMapCategory = function(category, deferFit) {
     var menu = this.mapControl && this.mapControl._categoryMenu;
     if(navigationRequest !== this._categoryNavigationRequest || !category.checked ||
       (menu && menu.modeAutomatic)) return;
-    var rect = this.map.getContainer().getBoundingClientRect();
-    var drawer = this.mapControl._container.getBoundingClientRect();
-    var topLeft = [32, 72], bottomRight = [32, 32];
-    if(this.mapControl.viewStyleBottomSlide) {
-      bottomRight[1] += Math.max(0, rect.bottom - drawer.top);
-    } else if(!this.mapControl.options.collapsed) {
-      if(this.mapControl.options.position.endsWith('left')) topLeft[0] += drawer.width;
-      else bottomRight[0] += drawer.width;
-    }
+    var padding = this._visibleMapPadding();
     var bounds = L.latLngBounds(candidates.map(function(m) { return m.getLatLng(); }));
-    var fitOptions = { paddingTopLeft: topLeft, paddingBottomRight: bottomRight,
+    var fitOptions = { paddingTopLeft: padding.topLeft, paddingBottomRight: padding.bottomRight,
       maxZoom: stayOnCurrentMap ? previousZoom : this.map.getMaxZoom(), animate: true };
     // Where the map was before the fit moved it, and where the fit lands:
     // the category page's Back (CategoryPage.js) returns it here when the
@@ -1367,6 +1409,22 @@ function zmMapWaiting(container, on, avoid) {
   void veil.offsetWidth;
   veil.classList.add('is-on');
 }
+
+// The part of the map not under the drawer (beside it on a desktop, above it
+// on a phone), less a margin, as padding from each edge in pixels: what a fit
+// frames (a focused category, a 3D map's model: Map3D.js).
+ZMap.prototype._visibleMapPadding = function() {
+  var rect = this.map.getContainer().getBoundingClientRect();
+  var drawer = this.mapControl._container.getBoundingClientRect();
+  var topLeft = [32, 72], bottomRight = [32, 32];
+  if(this.mapControl.viewStyleBottomSlide) {
+    bottomRight[1] += Math.max(0, rect.bottom - drawer.top);
+  } else if(!this.mapControl.options.collapsed) {
+    if(this.mapControl.options.position.endsWith('left')) topLeft[0] += drawer.width;
+    else bottomRight[0] += drawer.width;
+  }
+  return { topLeft: topLeft, bottomRight: bottomRight };
+};
 
 ZMap.prototype.refreshMap = function(affectedCategories, completedChanged) {
   // Markers may appear or go (the layout notices those itself), or change
@@ -2285,6 +2343,9 @@ ZMap.prototype.addMapControl = function(gameId) {
       // (Not an embed's marker: an embed hides all the others, hideOthers,
       // and the map moving as a phone-shaped frame settles would close it.)
       && !_this.isFramed()
+      // (Not on a 3D map: it shows its markers whatever the 2D zoom, which
+      // moves under it as a marker's picked.)
+      && !(_this.mapControl.currentMapLayer && _this.mapControl.currentMapLayer.mapKind === '3d')
     ) {
       _this._closeNewMarker();
       _this.mapControl.resetContent();

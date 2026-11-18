@@ -45,9 +45,11 @@
         and mp.container_id = ?
         and m.user_id = u.id
         and m.visible = 1
+        and (mp.visible = 1 or (mp.visible = 2 and ?))
         and (upper(tab_text) like upper(?) or m.name like upper(?))
    ";
-   $params = [$game, $search, $search];
+   // Markers on staff-only maps (map.visible = 2) are found by staff alone.
+   $params = [$game, adminSignedIn($db, $map_prefix) ? 1 : 0, $search, $search];
 
    if (isset($_GET['newMarkerId'])) {
      $sql .= " and m.id = ?";

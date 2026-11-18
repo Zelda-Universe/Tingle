@@ -276,7 +276,9 @@
 
     include __DIR__."/lib/minify.php";
 
-    $output = "/* index$ext */\n";
+    // File names only in an unminified (local) build: a minified one names
+    // nothing about its sources.
+    $output = $minify ? "" : "/* index$ext */\n";
     foreach($cacheRegistryData as $resFile => $time) {
       // // debug_log("resFile: $resFile");
       $isCommented = preg_match($commentRegex, $resFile);
@@ -288,12 +290,12 @@
       $resFilePath = __DIR__."/$resFile";
       // // debug_log("resFilePath: $resFilePath");
       if(!file_exists($resFilePath)) {
-          $output .= "/* $resFile doesn't exist */\n";
+          if(!$minify) $output .= "/* $resFile doesn't exist */\n";
 
           continue;
       }
 
-      $output .= "/* Source: $resFile */\n";
+      if(!$minify) $output .= "/* Source: $resFile */\n";
       $resFileData = file_get_contents($resFilePath);
       if($minify) {
         if($type == "javascript") {

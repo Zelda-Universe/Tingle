@@ -273,17 +273,17 @@
 <!DOCTYPE html>
 <html lang="en"<?= $zmEmbed ? ' class="zm-framed zm-embed"' : '' ?>>
   <head>
-    <!-- The game's data asked for at once, while the page's scripts are
+    <?php /* The game's data asked for at once, while the page's scripts are
          still on their way, rather than once they've all loaded and run
          (zmain.lib.js startupJSON takes these in place of asking again).
          The same requests start-up would make: the game's settings, then
-         its categories, maps and markers together. -->
+         its categories, maps and markers together. */ ?>
     <script>
       (function() {
         if (!window.fetch || !window.Promise) return;
         var early = window.zmEarlyData = {};
         var game = new URLSearchParams(window.location.search).get('game');
-        // As zmain.js reads it (with no game, OoT, unless offline).
+        <?php // As zmain.js reads it (with no game, OoT, unless offline). ?>
         if (!game) { if (!navigator.onLine) return; game = 'OoT'; }
         if (/^ootr?$/i.test(game)) game = 'OoT';
         var ask = function(url) {
@@ -301,24 +301,24 @@
         }).catch(function() {});
       })();
     </script>
-    <!-- Shown inside another site's page (an embed: zmap.js
+    <?php /* Shown inside another site's page (an embed: zmap.js
          _copyToClipboardEmbed), the map is just what was embedded: no
          account, search or ways elsewhere (styles/zmain.css .zm-framed). Set
-         before anything draws, so none of it flashes up first. -->
+         before anything draws, so none of it flashes up first. */ ?>
     <script>
       (function() {
         var framed;
         try { framed = window.self !== window.top; } catch (e) { framed = true; }
-        // (embed.php: always, framed or not, and never signed in.)
+        <?php // (embed.php: always, framed or not, and never signed in.) ?>
         window.zmapEmbed = <?= $zmEmbed ? 'true' : 'false' ?>;
-        // An embed shown on Zelda Maps' own pages (a preview) is signed in as
-        // the page around it is: our own pages framing it can't trick anyone.
+        <?php // An embed shown on Zelda Maps' own pages (a preview) is signed in as ?>
+        <?php // the page around it is: our own pages framing it can't trick anyone. ?>
         window.zmapEmbedPreview = <?= $zmEmbed && ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '') === 'same-origin' ? 'true' : 'false' ?>;
-        // How far paths are released (lib/common/paths.php PATHS_STAGE).
+        <?php // How far paths are released (lib/common/paths.php PATHS_STAGE). ?>
         window.zmapPathsStage = <?php include_once(__DIR__ . '/lib/common/paths.php'); echo json_encode(PATHS_STAGE); ?>;
-        // The site's settings, as admins have set them (the admin panel's
-        // Settings: lib/common/site_settings.php). Each its default if the
-        // database can't be had.
+        <?php // The site's settings, as admins have set them (the admin panel's ?>
+        <?php // Settings: lib/common/site_settings.php). Each its default if the ?>
+        <?php // database can't be had. ?>
         window.zmapSiteSettings = <?php
           include_once(__DIR__ . '/lib/common/site_settings.php');
           $zmSiteSettings = null;
@@ -332,8 +332,8 @@
         ?>;
         if (!framed && !window.zmapEmbed) return;
         document.documentElement.classList.add('zm-framed');
-        // A link in what's shown (a marker's sources) opens in a new tab,
-        // not in place of the embed.
+        <?php // A link in what's shown (a marker's sources) opens in a new tab, ?>
+        <?php // not in place of the embed. ?>
         document.addEventListener('click', function(e) {
           var link = e.target.closest && e.target.closest('a[href]');
           var href = link && link.getAttribute('href');
@@ -343,9 +343,9 @@
         }, true);
       })();
     </script>
-    <!-- Metadata -->
+    <?php /* Metadata */ ?>
 
-      <!-- Generic / Web Standard -->
+      <?php /* Generic / Web Standard */ ?>
 
         <link
           rel="shortcut icon"
@@ -379,7 +379,7 @@
         />
 
 
-      <!-- Apple -->
+      <?php /* Apple */ ?>
 
         <link
           rel="apple-touch-icon"
@@ -391,13 +391,13 @@
         <meta name="apple-mobile-web-app-title" content="Zelda Maps" />
 
 
-      <!-- OpenGraph (OG) / Facebook/Meta Tags -->
+      <?php /* OpenGraph (OG) / Facebook/Meta Tags */ ?>
 
         <meta property="og:description" content="<?= metadataEscape($pageDescription) ?>">
         <meta property="og:locale"  content="en_US" />
         <meta property="og:locale:alternate"  content="en_US" />
         <meta property="og:image" content="<?= metadataEscape($socialImageUrl) ?>">
-        <!-- Screenshots from dev/captureSocialImages.sh: 1200x630 at 2x. -->
+        <?php /* Screenshots from dev/captureSocialImages.sh: 1200x630 at 2x. */ ?>
         <meta property="og:image:type" content="image/jpeg">
         <meta property="og:image:width" content="2400">
         <meta property="og:image:height" content="1260">
@@ -409,7 +409,7 @@
         <link rel="canonical" href="<?= metadataEscape($canonicalUrl) ?>">
 
 
-      <!-- Twitter Meta Tags -->
+      <?php /* Twitter Meta Tags */ ?>
 
         <meta name="twitter:card"     content="summary_large_image">
         <meta name="twitter:description" content="<?= metadataEscape($pageDescription) ?>">
@@ -421,7 +421,7 @@
 
 
 
-    <!-- Third-Party Code -->
+    <?php /* Third-Party Code */ ?>
 
       <script
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"
@@ -447,14 +447,14 @@
       ></script>
 
 
-    <!-- Third-Party Styles -->
+    <?php /* Third-Party Styles */ ?>
 
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
 
-    <!-- First-Party Code & Style -->
+    <?php /* First-Party Code & Style */ ?>
 
       <script>
         var isStandalone =
@@ -464,7 +464,7 @@
           /Safari/.test(window.navigator.userAgent) &&
           !/(CriOS|FxiOS|EdgiOS|OPiOS)/.test(window.navigator.userAgent);
 
-        // (Not an embed: it's a frame in someone's page, not the screen.)
+        <?php // (Not an embed: it's a frame in someone's page, not the screen.) ?>
         var embedded = document.documentElement.classList.contains('zm-framed');
         if (!embedded && isStandalone) {
           document.documentElement.classList.add('zm-standalone');
@@ -481,13 +481,13 @@
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;
           var reloadingForWorker = false;
-          // The version of the scripts this page is running.
+          <?php // The version of the scripts this page is running. ?>
           var pageAssetVersion = <?= json_encode(asset_version()) ?>;
-          // A new worker (the site was updated) took over. The page is
-          // loaded from the server first, so one loaded just now already
-          // runs the new scripts: it's asked which version it's for, and
-          // only a page left open from before the update is reloaded, and
-          // not in the middle of an edit (then it's offered instead).
+          <?php // A new worker (the site was updated) took over. The page is ?>
+          <?php // loaded from the server first, so one loaded just now already ?>
+          <?php // runs the new scripts: it's asked which version it's for, and ?>
+          <?php // only a page left open from before the update is reloaded, and ?>
+          <?php // not in the middle of an edit (then it's offered instead). ?>
           navigator.serviceWorker.addEventListener('controllerchange', function() {
             if(!hadServiceWorkerController) {
               hadServiceWorkerController = true;
@@ -527,7 +527,7 @@
         }
       </script>
 
-      <!-- Auto-select default game when none other provided. -->
+      <?php /* Auto-select default game when none other provided. */ ?>
       <script>
         (function() {
           var urlParams;
@@ -548,9 +548,9 @@
 
           var game = urlParams["game"];
 
-          // Name the game in the address in place, without reloading: a
-          // reload looked to search engines like the home page redirecting
-          // to OoT's map, and dropped any other part of the link.
+          <?php // Name the game in the address in place, without reloading: a ?>
+          <?php // reload looked to search engines like the home page redirecting ?>
+          <?php // to OoT's map, and dropped any other part of the link. ?>
           if(game === undefined) {
             var url = new URL(window.location.href);
             url.searchParams.set('game', 'OoTR');
@@ -561,17 +561,17 @@
       </script>
   </head>
   <body>
-    <!-- What the page is, in text, for search engines and screen readers. -->
+    <?php /* What the page is, in text, for search engines and screen readers. */ ?>
     <header class="sr-only">
       <h1><?= metadataEscape($pageHeading) ?></h1>
       <p><?= metadataEscape($pageDescription) ?></p>
       <?php if ($seoPath && $seoPath['steps']): ?>
-      <!-- A path's steps, in order (lib/common/seo.php seoPathPages). -->
+      <?php /* A path's steps, in order (lib/common/seo.php seoPathPages). */ ?>
       <ol>
         <?php foreach ($seoPath['steps'] as $stepName): ?><li><?= metadataEscape($stepName) ?></li><?php endforeach; ?>
       </ol>
       <?php endif; ?>
-      <!-- Every game's map, as plain links search engines can follow. -->
+      <?php /* Every game's map, as plain links search engines can follow. */ ?>
       <nav aria-label="Zelda Maps games">
         <ul>
           <?php foreach (['TotK' => 'TotK', 'BotW' => 'BotW', 'OoT' => 'OoTR', 'EoW' => 'EoW', 'LA' => 'LA'] as $linkGame => $linkParam): ?>
@@ -581,24 +581,24 @@
       </nav>
     </header>
     <main>
-      <!--
+      <?php /*
         Note: Ads should be above the map/layers/tiles area,
         and beneath the leaflet controls.
         Filled and placed by updateAdState() in scripts/zmain.lib.js.
-      -->
+      */ ?>
       <div id="ads"></div>
 
-      <!-- Zelda Maps -->
+      <?php /* Zelda Maps */ ?>
     </main>
 
     <div id="tracking">
-      <!-- Google tag (gtag.js), on the production site only, loaded at
+      <?php /* Google tag (gtag.js), on the production site only, loaded at
            once as always. Admins can try loading it once the map is up
            instead (zmain.lib.js, zeldamaps:ready; or after 15 seconds
            whatever happens), in Settings, for this browser
            (zmap.js _addAnalyticsTimingSetting): loaded while the map is
            built, it holds the map back by seconds. The visit is recorded as
-           starting when the page did either way. -->
+           starting when the page did either way. */ ?>
       <script>
         if (['zeldamaps.com', 'www.zeldamaps.com'].indexOf(location.hostname) > -1) {
           var gtagLoaded = false;
@@ -624,7 +624,7 @@
         }
       </script>
 
-      <!-- comScore -->
+      <?php /* comScore */ ?>
   	  <script>
   		  var _comscore = _comscore || [];
   		  _comscore.push({ c1: "2", c2: "6035118" });
@@ -635,12 +635,12 @@
     		})();
   	  </script>
 
-      <!-- Scorecard Research -->
+      <?php /* Scorecard Research */ ?>
   	  <noscript>
   	    <img src="http://b.scorecardresearch.com/p?c1=2&amp;c2=6035118&amp;cv=2.0&amp;cj=1" />
   	  </noscript>
 
-  	  <!-- Nielsen Online SiteCensus -->
+  	  <?php /* Nielsen Online SiteCensus */ ?>
   	  <div>
         <img src="//secure-us.imrworldwide.com/cgi-bin/m?ci=us-603339h&amp;cg=0&amp;cc=1&amp;ts=noscript" width="1" height="1" alt="" />
       </div>

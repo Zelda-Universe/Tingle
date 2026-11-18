@@ -83,7 +83,7 @@ test('a page from before an update reloads; one already up to date doesn\'t; nev
 
 test('analytics loads at once, as always; admins can try it after the map, in this browser',()=>{
   const page=read('index.php');
-  const tag=page.slice(page.indexOf('<!-- Google tag'),page.indexOf('<!-- comScore'));
+  const tag=page.slice(page.indexOf('<?php /* Google tag'),page.indexOf('<?php /* comScore'));
   expect(tag).toContain("afterMap = localStorage.getItem('zeldamapsAnalyticsAfterMap') === 'on';");
   expect(tag).toContain('if (!afterMap || window.zmMapReady) loadGtag();');
   expect(tag).toContain("document.addEventListener('zeldamaps:ready', loadGtag);");

@@ -13,6 +13,11 @@
 // A marker or area opened from the map over another has only a close button,
 // which closes it; Back reopens the one before it instead (the trail).
 //
+// Before the page, in turn: an open dialog is closed; a phone's drawer pulled
+// down is brought back up; an editor with changes asks before they're lost.
+// Asked and kept (here, or by the page's own "leave without saving?"), the
+// page keeps its entry.
+//
 // Experimental: on for everyone when an admin turns it on for the site (the
 // admin panel's Settings: window.zmapSiteSettings.browserBack); otherwise
 // only for staff who've turned it on in their own browser (Settings), as
@@ -26,6 +31,8 @@
   // History moves of our own (history.back()), whose popstates aren't Back
   // presses; and what to do once the last of them lands.
   var ignoring = 0, afterIgnored = [], leaving = null;
+  // Ours, landed after we'd stopped waiting (a slow phone): not a Back.
+  var late = 0, lateLeaving = null;
   var onEntry = false;
   var syncTimer = null;
 
@@ -44,6 +51,44 @@
       contents.querySelector(':scope > a.back-button.close-button');
   }
   function pageType(map) { return map.mapControl._contentType; }
+  // A dialog open over the page (the site's are all <dialog>s).
+  function openDialog() { return document.querySelector && document.querySelector('dialog[open]'); }
+  // A phone's drawer pulled down over a page still open in it.
+  function drawerDown(map) { return !!(map.mapControl.viewStyleBottomSlide && !map.mapControl._open); }
+
+  // An editor's fields as they were once it was shown, to tell whether
+  // they've been changed since (rich text: TinyMCE's own isDirty).
+  var editBaseline = null;
+  function editState(map) {
+    var fields = map.mapControl._contents.querySelectorAll('input, select, textarea');
+    var values = Array.prototype.map.call(fields, function(field) {
+      if(field.type === 'checkbox' || field.type === 'radio') return field.checked ? '1' : '0';
+      if(field.type === 'file') return field.files ? String(field.files.length) : '0';
+      return field.value;
+    });
+    // A path's points, placed on the map.
+    try { values.push(map._pathEditing ? JSON.stringify(map._pathEditing.draft) : ''); } catch(e) {}
+    return values.join('\u0001');
+  }
+  function editing(map) { return !!(map._editingSomething && map._editingSomething()); }
+  function noteEditor(map) {
+    if(!editing(map)) { editBaseline = null; return; }
+    if(!editBaseline || editBaseline.type !== pageType(map)) editBaseline = { type: pageType(map), state: editState(map) };
+  }
+  function unsaved(map) {
+    // (Game Settings asks for itself.)
+    if(!editing(map) || /^mapSettings/.test(pageType(map) || '')) return false;
+    var editors = window.tinymce && tinymce.editors || [];
+    for(var i = 0; i < editors.length; i++) { try { if(editors[i].isDirty()) return true; } catch(e) {} }
+    return !!(editBaseline && editBaseline.type === pageType(map) && editBaseline.state !== editState(map));
+  }
+  // Presses a button, noting whether it asked to leave and was told no.
+  function pressKept(press) {
+    var confirm = window.confirm, kept = false;
+    window.confirm = function() { var yes = confirm.apply(window, arguments); if(!yes) kept = true; return yes; };
+    try { press(); } finally { window.confirm = confirm; }
+    return kept;
+  }
   // A page whose button, pressed by Back, left it showing (a phone's login
   // closes the drawer, not the page): no entry for it again till another
   // page shows, so Back can still leave the site.
@@ -83,14 +128,10 @@
     showing = page;
   }
 
-  // An entry left from before a reload, or from another page of the site
-  // gone back to: the page it was for isn't showing (yet). It's the site's
-  // entry now; one's added again if the page opened has a Back button.
-  if(window.history && state()[KEY]) {
-    var cleared = Object.assign({}, state());
-    delete cleared[KEY];
-    try { history.replaceState(cleared, '', window.location.href); } catch(e) {}
-  }
+  // An entry left from before a reload, or from another site gone back from:
+  // still ours. Kept if the page that opens has a Back button, and left if
+  // not, so there's no step left over that Back does nothing on.
+  if(window.history && state()[KEY]) onEntry = true;
 
   function back(then) {
     // The address and title the page has now, which the entry below it,
@@ -102,7 +143,11 @@
     // (Should the browser not move, carry on anyway.)
     var waited = ignoring;
     window.setTimeout(function() {
-      if(ignoring === waited && ignoring > 0) { ignoring = 0; landed(); }
+      if(ignoring !== waited || ignoring <= 0) return;
+      // Not moved yet: its popstate's still to come, and isn't a Back.
+      if(state()[KEY]) { late++; lateLeaving = leaving; }
+      ignoring = 0;
+      landed();
     }, 400);
   }
   function landed() {
@@ -127,13 +172,16 @@
     // (Not while history's moving, or a game's being switched to.)
     if(ignoring || map._switchingGame) { schedule(); return; }
     if(pressedOn !== null && pageType(map) !== pressedOn) pressedOn = null;
-    var hasBack = !!backButton(map) && pageType(map) !== pressedOn;
+    noteEditor(map);
+    var hasBack = (!!backButton(map) && pageType(map) !== pressedOn) || !!openDialog();
     if(hasBack && !onEntry) {
       var entry = Object.assign({}, state());
       entry[KEY] = true;
       history.pushState(entry, '', window.location.href);
       onEntry = true;
     } else if(!hasBack && onEntry) {
+      // (Off it now, so a slow move isn't asked for twice.)
+      onEntry = false;
       back();
     }
   }
@@ -150,13 +198,29 @@
       if(!ignoring) landed();
       return;
     }
+    if(late && !onEntry) {
+      late--;
+      if(lateLeaving) { try { history.replaceState(state(), '', lateLeaving.url); } catch(e) {} document.title = lateLeaving.title; lateLeaving = null; }
+      schedule();
+      return;
+    }
     var map = current();
     if(!enabled(map)) return;
     // Back, off the page's entry: its Back button, as if pressed.
     if(left && !onEntry && !map._switchingGame) {
       var button = backButton(map);
       var before = trailMap === map && closeOnly(map) && trail[trail.length - 1];
-      if(before) {
+      var dialog = openDialog();
+      if(dialog) {
+        // As Escape does: its cancel, then closed (unless that's refused).
+        var cancel;
+        try { cancel = new Event('cancel', { cancelable: true }); } catch(e) { cancel = null; }
+        if(!cancel || dialog.dispatchEvent(cancel)) dialog.close();
+      } else if(button && drawerDown(map)) {
+        map.mapControl.openDrawerDefaultPartial();
+      } else if(button && unsaved(map) && !window.confirm('Leave without saving your changes?')) {
+        // Kept: its entry's put back.
+      } else if(before) {
         // The marker or area before this one, opened again.
         trail = trail.slice(0, -1);
         pressedOn = pageType(map);
@@ -164,7 +228,7 @@
         before.reopen();
       } else if(button) {
         pressedOn = pageType(map);
-        button.click();
+        if(pressKept(function() { button.click(); })) pressedOn = null;
       }
     }
     schedule();
@@ -211,9 +275,28 @@
     if(this._browserBackOn()) { pageShown(this); schedule(); }
   };
 
+  // A dialog opened or closed: an entry for it, or not.
+  function dialogChanged() { var map = current(); if(enabled(map)) schedule(); }
+  // (Closed and removed at once, as the site's alerts are, its close event
+  // never reaches the page: close() itself, too.)
+  if(window.HTMLDialogElement && HTMLDialogElement.prototype.showModal) {
+    ['showModal', 'close'].forEach(function(name) {
+      var original = HTMLDialogElement.prototype[name];
+      HTMLDialogElement.prototype[name] = function() {
+        var result = original.apply(this, arguments);
+        dialogChanged();
+        return result;
+      };
+    });
+  }
+  if(document.addEventListener) document.addEventListener('close', function(e) {
+    if(e.target && e.target.tagName === 'DIALOG') dialogChanged();
+  }, true);
+
   // The page showing changed (ZLayers.js _setContent).
   ZMap.prototype._syncBrowserBack = function() {
     if(!enabled(this)) return;
+    editBaseline = editBaseline && editBaseline.type === pageType(this) ? editBaseline : null;
     pageShown(this);
     schedule();
   };

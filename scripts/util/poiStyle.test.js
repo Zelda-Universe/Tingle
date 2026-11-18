@@ -63,6 +63,32 @@ describe('TotK POI visual prototype', () => {
     'OoT %s uses the shared %s treatment, by category ID', (id, expected) => {
     expect(style({ id, container_id: '64' })).toBe(expected);
   });
+  test('Minish Cap sections follow ALttP and OoT, with hearts first and dungeon treasure ordered', () => {
+    const root = (id, name) => ({ id, name, parent_id: null, container_id: '12', marker_category_type_id: '1' });
+    const leaf = (id, parent) => ({ id, parent_id: parent, container_id: '12', marker_category_type_id: '1' });
+    const records = [root('12000', 'Collectibles'), root('12020', 'Treasure Chests'), root('12030', 'Locations'),
+      root('12040', 'Points of Interest'), root('12050', 'Travel Points'), root('12060', 'Items & Equipment'),
+      root('12070', 'Enemies & Bosses'), {id: '12090', name: 'Labels', parent_id: null, container_id: '12', marker_category_type_id: '3'},
+      leaf('12005', '12000'), leaf('12001', '12000'), leaf('12021', '12020'), leaf('12022', '12020'),
+      leaf('12052', '12050'), leaf('12053', '12050'), leaf('12054', '12050'), leaf('12036', '12050'), leaf('12051', '12050'),
+      leaf('12074', '12070'), leaf('12072', '12070'), leaf('12073', '12070'), leaf('12071', '12070')];
+    const groups = context.getPOICategoryGroups(records);
+    expect(groups.map(g => g.title)).toEqual(['Travel Points', 'Collectibles', 'Locations', 'Points of Interest',
+      'Items & Equipment', 'Treasure Chests', 'Enemies & Bosses']);
+    expect(groups[0].categories.map(c => c.id)).toEqual(['12051', '12036', '12054', '12053', '12052']);
+    expect(groups[6].categories.map(c => c.id)).toEqual(['12071', '12073', '12072', '12074']);
+    expect(groups[1].categories.map(c => c.id)).toEqual(['12001', '12005']);
+    expect(groups[5].categories.map(c => c.id)).toEqual(['12022', '12021']);
+  });
+  test.each([
+    ['12051', 'travel'], ['12036', 'travel'], ['12052', 'travel'], ['12001', 'heart'], ['12002', 'heart'],
+    ['12003', 'memory'], ['12005', 'silver'], ['12004', 'korok'], ['12006', 'song'], ['12034', 'cave'],
+    ['12031', 'location'], ['12041', 'interest'], ['12063', 'treasure'], ['12024', 'treasure'], ['12071', 'enemy'], ['12000', ''],
+    ['12053', 'travel'], ['12038', 'cave'], ['12042', 'interest'], ['12043', 'interest'], ['12066', 'treasure'],
+    ['12054', 'travel'], ['12044', 'interest'], ['12045', 'interest'], ['12073', 'enemy'], ['12074', 'enemy']
+  ])('Minish Cap %s receives the shared %s treatment', (id, treatment) => {
+    expect(style({ id, container_id: '12' })).toBe(treatment);
+  });
   test.each([
     ['2232', 'travel'], ['2220', 'heart'], ['2221', 'memory'], ['2231', 'relic'],
     ['2211', 'korok'], ['2230', 'cave'], ['2233', 'location'], ['2278', 'treasure']

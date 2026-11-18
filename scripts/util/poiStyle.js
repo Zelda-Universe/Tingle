@@ -96,6 +96,19 @@ function getPOIStyle(category) {
       '3041': 'interest', '3071': 'enemy'
     }[String(category.id)] || '';
   }
+  if(category && String(category.container_id || category.containerId) === '12') {
+    return {
+      // Dungeon Entrances, Minish Portals, Wind Crests.
+      '12051': 'travel', '12036': 'travel', '12052': 'travel', '12053': 'travel', '12054': 'travel',
+      // Pieces of Heart, Heart Containers, Bottles, Mysterious Shells, Kinstone Fusions, Elements.
+      '12001': 'heart', '12002': 'heart', '12003': 'memory', '12005': 'silver', '12004': 'korok', '12006': 'song',
+      '12031': 'location', '12032': 'location', '12033': 'location', '12034': 'cave', '12035': 'location', '12038': 'cave',
+      '12041': 'interest', '12042': 'interest', '12043': 'interest', '12044': 'interest', '12045': 'interest',
+      '12061': 'treasure', '12062': 'treasure', '12063': 'treasure', '12065': 'treasure', '12066': 'treasure',
+      '12021': 'treasure', '12022': 'treasure', '12023': 'treasure', '12024': 'treasure', '12025': 'treasure',
+      '12071': 'enemy', '12072': 'enemy', '12073': 'enemy', '12074': 'enemy'
+    }[String(category.id)] || '';
+  }
   if(category && String(category.container_id || category.containerId) === '4') {
     return {
       '1951': 'interest', '1952': 'interest', '1953': 'interest', '1954': 'interest',
@@ -195,14 +208,16 @@ function getPOICategoryGroups(categories) {
   var records = Object.values(categories || {});
   var saved = getPOISavedLayout(records);
   if(saved) return saved;
-  var sectioned = records.some(function(c) { return String(c.container_id) === '64'; }) ? '64' :
-    (records.some(function(c) { return String(c.container_id) === '3'; }) ? '3' : null);
+  var sectioned = ['64', '3', '12'].find(function(game) {
+    return records.some(function(c) { return String(c.container_id) === game; });
+  }) || null;
   if(sectioned) {
     // Label categories (type 3: place names) are set in Settings, not listed.
     // Sections in BotW's and TotK's order: Travel, Collectibles, Locations,
-    // Points of Interest, then Treasure; any others after. ALttP's are laid
-    // out as OoT's.
+    // Points of Interest, then Treasure; any others after. ALttP's and
+    // Minish Cap's are laid out as OoT's.
     var sectionOrder = sectioned === '64' ? ['64050', '64000', '64030', '64040', '64060', '64020'] :
+      sectioned === '12' ? ['12050', '12000', '12030', '12040', '12060', '12020', '12070'] :
       ['3050', '3000', '3030', '3040', '3060', '3020', '3070'];
     var rank = function(c) { var i = sectionOrder.indexOf(String(c.id)); return i === -1 ? sectionOrder.length : i; };
     return records.filter(function(c) { return !c.parent_id && String(c.marker_category_type_id) !== '3'; })
@@ -213,6 +228,10 @@ function getPOICategoryGroups(categories) {
         if(String(root.id)==='64020') order=['64022','64023','64024','64025','64026','64027','64028','64021'];
         if(String(root.id)==='64060') order=['64061','64062','64063','64064','64065','64066'];
         if(String(root.id)==='3020') order=['3022','3023','3024','3025','3021'];
+        if(String(root.id)==='12000') order=['12001','12002','12003','12005','12004','12006'];
+        if(String(root.id)==='12020') order=['12022','12023','12024','12025','12021'];
+        if(String(root.id)==='12050') order=['12051','12036','12054','12053','12052'];
+        if(String(root.id)==='12070') order=['12071','12073','12072','12074'];
         return order.indexOf(String(a.id))-order.indexOf(String(b.id));
       }) };
     });

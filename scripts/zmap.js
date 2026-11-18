@@ -391,12 +391,16 @@ ZMap.prototype.addMap = function(vMap) {
         vMap.subMap.length == 1
     &&  vMap.subMap[0].submapLayer.length == 0
   ) {
+    // Its artwork's version, where it has one (as for the maps above), so
+    // new art isn't hidden by cached tiles and downloaded maps' tiles match.
+    var singleTileVersion = vMap.subMap[0].tileVersion ? '?v=' + encodeURIComponent(vMap.subMap[0].tileVersion) : '';
     var tLayer = L.tileLayer(
       tileBaseURL
       + vMap.subMap[0].tileURL
       + this.tileNameFormat
       + '.'
       + vMap.subMap[0].tileExt
+      + singleTileVersion
       , {
           maxZoom           : Math.max(Number(vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
         , maxNativeZoom     : Number(vMap.maxZoom)
@@ -410,7 +414,7 @@ ZMap.prototype.addMap = function(vMap) {
         , updateWhenZooming : true
         , keepBuffer        : 4
         , label             : vMap.name
-        , iconURL           : vMap.subMap[0].iconURL || this._mapIconURL(vMap.subMap[0])
+        , iconURL           : vMap.subMap[0].iconURL || this._mapIconURL(vMap.subMap[0], singleTileVersion)
         , errorTileUrl      : this.errorTileUrl
       }
     );

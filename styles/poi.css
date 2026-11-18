@@ -47,7 +47,8 @@
 /* Game icons: the SVG is a mask so it takes the text colour, like the font
    glyphs other games use. Zelda Universe's full set is in images/icons/games. */
 .icon-Ocarina-of-Time::before,
-.icon-A-Link-to-the-Past::before {
+.icon-A-Link-to-the-Past::before,
+.icon-Minish-Cap::before {
   content: '';
   display: inline-block;
   width: 1em;
@@ -61,6 +62,15 @@
 .icon-A-Link-to-the-Past::before {
   -webkit-mask-image: url('images/icons/games/a-link-to-the-past.svg');
   mask-image: url('images/icons/games/a-link-to-the-past.svg');
+}
+.icon-Minish-Cap::before {
+  -webkit-mask-image: url('images/icons/games/minish-cap.svg');
+  mask-image: url('images/icons/games/minish-cap.svg');
+  /* Ezlo's weight sits right of and below the artwork's middle (54%, 56%),
+     and he covers less of it than the other games' icons do (42% against
+     about 51%): moved up and left by as much, and drawn 10% larger, he looks
+     centred and as big as they do. */
+  transform: translate(-4%, -6%) scale(1.1);
 }
 .poi-badge {
   position: relative;

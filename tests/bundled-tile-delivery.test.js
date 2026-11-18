@@ -3,9 +3,9 @@ const {execFileSync} = require('child_process');
 
 test('bundled HQ tiles use the current site in web and CLI runtimes', () => {
   const result = execFileSync('php', ['-r',
-    'require "lib/common/tile_delivery.php"; echo json_encode([bundledMapTileBaseURL("oot/hq-v1/hyrule-child/"),bundledMapTileBaseURL("oot/hq-v1/gerudo-training-ground-1f-state00/"),bundledMapTileBaseURL("totk/surface/"),bundledMapTileBaseURL("oot/hyrule-child/")]);'
+    'require "lib/common/tile_delivery.php"; echo json_encode([bundledMapTileBaseURL("oot/hq-v1/hyrule-child/"),bundledMapTileBaseURL("oot/hq-v1/gerudo-training-ground-1f-state00/"),bundledMapTileBaseURL("totk/surface/"),bundledMapTileBaseURL("oot/hyrule-child/"),bundledMapTileBaseURL("alttp/v1/light-world/"),bundledMapTileBaseURL("tmc/v1/hyrule/")]);'
   ], {cwd: __dirname + '/..', encoding:'utf8'});
-  expect(JSON.parse(result)).toEqual(['/tiles/','/tiles/',null,null]);
+  expect(JSON.parse(result)).toEqual(['/tiles/','/tiles/',null,null,'/tiles/','/tiles/']);
 });
 
 test('online and offline map URLs share the bundled tile routing rule', () => {

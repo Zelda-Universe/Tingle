@@ -161,8 +161,9 @@ ZMap.prototype.setupOotFloors = function() {
     if(current.mapKind === 'world') { position(); return; }
     function floor(layer) {return (layer.submapName.match(/(?:^|\s)(B\d+|\d+F)(?:\s|$)/)||[])[1] || layer.submapName.split(' · ')[0];}
     var names = Array.from(new Set(variants.map(floor))).sort(function(a,b) {
-      function level(v) {return v[0] === 'B' ? -parseInt(v.slice(1)) : parseInt(v);}
-      return level(b)-level(a);
+      // A floor with no number (Dark Hyrule Castle's Sacred Realm) goes on top.
+      function level(v) {var n = v[0] === 'B' ? -parseInt(v.slice(1)) : parseInt(v); return isNaN(n) ? Infinity : n;}
+      return level(b) === level(a) ? 0 : level(b) > level(a) ? 1 : -1;
     });
     // One floor (ALttP's Caves & Houses): nothing to switch between.
     if(names.length < 2) { position(); return; }

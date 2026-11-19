@@ -5695,6 +5695,57 @@ body .tox .tox-insert-table td.tox-insert-table__cell--selected {
 	border-color: rgba(255,255,255,.6);
 }
 
+/* The toolbar over a selected image or video (Add/Change Credit, Image or
+   Video Settings: zmap.js), in the same dark glass as the menus and the
+   site's tooltips. */
+body .tox .tox-pop__dialog {
+	background: rgba(0,0,0,.8);
+	-webkit-backdrop-filter: blur(10px);
+	backdrop-filter: blur(10px);
+	border: 1px solid rgba(255,255,255,.1);
+	border-radius: 12px;
+	box-shadow: 0 16px 32px rgba(0,0,0,.6);
+	overflow: hidden;
+}
+/* Its pointer, toward the image or video, in the same glass: TinyMCE's
+   triangle (::after, on whichever side faces it), without its outline. */
+body .tox .tox-pop::before { display: none; }
+body .tox .tox-pop.tox-pop--bottom::after { border-color: rgba(0,0,0,.8) transparent transparent transparent; }
+body .tox .tox-pop.tox-pop--top::after { border-color: transparent transparent rgba(0,0,0,.8) transparent; }
+body .tox .tox-pop.tox-pop--left::after { border-color: transparent rgba(0,0,0,.8) transparent transparent; }
+body .tox .tox-pop.tox-pop--right::after { border-color: transparent transparent transparent rgba(0,0,0,.8); }
+/* (TinyMCE pulls the toolbar 1px under the glass's bottom edge and rules
+   each group off on its right: neither, so the buttons sit evenly inside.) */
+body .tox .tox-pop .tox-toolbar,
+body .tox .tox-pop .tox-toolbar__group,
+body .tox .tox-pop .tox-toolbar__group:not(:last-of-type) {
+	margin: 0;
+	background: transparent;
+	border: 0;
+}
+body .tox .tox-pop .tox-toolbar__group { gap: 2px; padding: 4px; }
+/* (A short line between Credit and the settings.) */
+body .tox .tox-pop .tox-toolbar__group + .tox-toolbar__group {
+	background: linear-gradient(rgba(255,255,255,.2), rgba(255,255,255,.2)) left center / 1px 18px no-repeat;
+}
+body .tox .tox-pop .tox-tbtn {
+	width: auto;
+	height: 30px;
+	margin: 0;
+	padding: 0 10px;
+	border-radius: 8px;
+	background: transparent;
+	color: rgba(255,255,255,.8);
+	font: 600 13px/1 "BrandonText", sans-serif;
+	cursor: pointer;
+}
+body .tox .tox-pop .tox-tbtn .tox-tbtn__select-label { margin: 0; cursor: pointer; }
+body .tox .tox-pop .tox-tbtn:hover,
+body .tox .tox-pop .tox-tbtn:focus {
+	background: rgba(255,255,255,.15);
+	color: white;
+}
+
 
 /**** NOTIFICATIONS (znotifications.js) ***/
 
@@ -8626,8 +8677,8 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
    controls above, 16px under the text. */
 .path-page > .path-start-row { margin: 16px 0 0; }
 
-/* An image's credit (scripts/services/ImageCredits.js): small, right under it. */
-.zm-image-credit { display: block; margin: 4px 0 12px; font-size: 12px; line-height: 1.35; color: rgba(255, 255, 255, .6); }
+/* An image's credit (scripts/services/ImageCredits.js): small, centred right under it. */
+.zm-image-credit { display: block; margin: 4px 0 12px; text-align: center; font-size: 12px; line-height: 1.35; color: rgba(255, 255, 255, .6); }
 .zm-image-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .zm-image-credit a:hover { color: #8fd8ff; }
 /* (Inset as the image above it is: marker contents pad their paragraphs
@@ -8768,7 +8819,7 @@ body .tox .tox-dialog__body-nav-item:focus-visible {
 .zm-carousel-dot.active::before { background: #fff; transform: scale(1.15); }
 .zm-carousel-dot:focus-visible { outline: 2px solid #8fd8ff; outline-offset: 0; border-radius: 50%; }
 /* The credit of the image showing, as an image's own credit line. */
-.zm-carousel-credit { display: block; margin: -8px 0 12px; font-size: 12px; line-height: 1.35; color: rgba(255, 255, 255, .6); }
+.zm-carousel-credit { display: block; margin: -8px 0 12px; text-align: center; font-size: 12px; line-height: 1.35; color: rgba(255, 255, 255, .6); }
 .zm-carousel-credit[hidden] { display: none; }
 .zm-carousel-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .zm-carousel-credit a:hover { color: #8fd8ff; }

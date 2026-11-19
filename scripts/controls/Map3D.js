@@ -37,6 +37,9 @@ var ZMap3D = (function() {
       this.submapId = submap.id;
       this.options = { label: vMap.name, iconURL: submap.tileURL + 'icon.webp', attribution: vMap.mapCopyright };
       this.mode = 'map';
+      // The Beast as it is while you're in it (held by Malice), or once
+      // it's freed: in Textured, a pill switches them (STATES).
+      this.state = 'during';
     },
     // What Switch Map's swap (ZLayers.js _swapMapLayer) asks of a map layer,
     // as of a tile layer: it's put under the map on screen, hidden by its
@@ -66,13 +69,13 @@ var ZMap3D = (function() {
       if(this._frame) cancelAnimationFrame(this._frame);
       if(this.composer) { this.composer.dispose(); this.composer = null; }
       if(this.renderer) { this.renderer.dispose(); this.renderer = null; }
-      this.scene = null; this.env = null; this._envLoading = false; this._zoomAt = null; this._pin = null;
+      this.scene = null; this.env = null; this.field = null; this.malice = null; this._flowing = null; this._glowing = null; this._envLoading = false; this._zoomAt = null; this._pin = null;
       if(this._onPinLayer) { map.off('layeradd layerremove', this._onPinLayer); this._onPinLayer = null; }
       if(this.zmap._limitCategoriesToMap) this.zmap._limitCategoriesToMap(null);
       this._zoomButtons(false);
       if(this._resize) window.removeEventListener('resize', this._resize);
       if(this.view) { this.view.remove(); this.view = null; }
-      if(this.pill) { this.pill.remove(); this.pill = null; }
+      if(this.pill) { this.pill.remove(); this.pill = null; this.statePill = null; }
       this._joints = null;
       map.getContainer().classList.remove('zm-3d-active');
       (this._disabled || []).forEach(function(h) { map[h].enable(); });
@@ -90,6 +93,17 @@ var ZMap3D = (function() {
         b.setAttribute('aria-pressed', String(layer.mode === b.dataset.mode));
         b.onclick = function() { layer.setMode(b.dataset.mode); };
       });
+      // During / Freed, over it, while Textured is shown.
+      var states = this.statePill = L.DomUtil.create('div', 'oot-floor-pill oot-age-pill zm-3d-state', this.pill);
+      states.setAttribute('aria-label', 'Divine Beast');
+      this.pill.insertBefore(states, pill);
+      Object.keys(this.STATES).forEach(function(key) {
+        var b = L.DomUtil.create('button', '', states);
+        b.type = 'button'; b.textContent = layer.STATES[key].label; b.dataset.state = key;
+        b.setAttribute('aria-pressed', String(layer.state === key));
+        b.onclick = function() { layer.setState(key); };
+      });
+      states.hidden = this.mode !== 'textured';
       L.DomEvent.disableClickPropagation(this.pill);
       // Where the floor switch goes: just above the zoom buttons (OotFloors.js).
       var zoom = document.querySelector('.leaflet-control-zoom');
@@ -97,7 +111,8 @@ var ZMap3D = (function() {
     },
     setMode: function(mode) {
       this.mode = mode;
-      if(this.pill) this.pill.querySelectorAll('button').forEach(function(b) { b.setAttribute('aria-pressed', String(b.dataset.mode === mode)); });
+      if(this.pill) this.pill.querySelectorAll('button[data-mode]').forEach(function(b) { b.setAttribute('aria-pressed', String(b.dataset.mode === mode)); });
+      if(this.statePill) this.statePill.hidden = mode !== 'textured';
       if(this.view) this.view.classList.toggle('zm-3d-map', mode === 'map');
       this._applyLook(mode);
       if(!this.model) return;
@@ -105,6 +120,7 @@ var ZMap3D = (function() {
       this.grid.visible = mode === 'map';
       if(mode === 'textured') this._loadEnvironment();
       if(this.env) this.env.visible = mode === 'textured';
+      if(this.field) this.field.visible = mode === 'textured';
       this.model.traverse(function(o) {
         if(!o.isMesh) return;
         o.userData.textured = o.userData.textured || o.material;
@@ -120,21 +136,41 @@ var ZMap3D = (function() {
     // morning sun casting shadows, sky light from all round, filmic tone
     // mapping, bloom on what glows, haze in the distance, a sky behind. Map
     // is the hologram over the page's grid: none of it.
+    // The Beast's two states, as the game shows them: while Malice holds it
+    // (its lights pink-red, Malice on it, the sky hazy) and once it's freed
+    // (its lights blue, the Malice gone, the sky clear).
+    STATES: {
+      during: { label: 'During', glow: 0xff3d8a, malice: true, sky: ['#a9b4bd', '#c8ced2', '#d4d7d8'], fog: [0xc9cdcf, 300, 2200], sun: 1.0, hemi: 1.25 },
+      freed: { label: 'Freed', glow: 0x4cc3ff, malice: false, sky: ['#8fb0d4', '#c9d6e2', '#dde4e8'], fog: [0xd5dde3, 450, 3000], sun: 1.6, hemi: 1.1 }
+    },
+    setState: function(state) {
+      this.state = state;
+      if(this.statePill) this.statePill.querySelectorAll('button').forEach(function(b) { b.setAttribute('aria-pressed', String(b.dataset.state === state)); });
+      this._applyLook(this.mode);
+    },
     _applyLook: function(mode) {
       if(!this.scene) return;
-      var textured = mode === 'textured', THREE = this.lib.THREE;
+      var textured = mode === 'textured', THREE = this.lib.THREE, st = this.STATES[this.state];
+      // The sky and haze of the state.
+      var g = this.skyCanvas.getContext('2d'), grad = g.createLinearGradient(0, 0, 0, 256);
+      grad.addColorStop(0, st.sky[0]); grad.addColorStop(0.55, st.sky[1]); grad.addColorStop(1, st.sky[2]);
+      g.fillStyle = grad; g.fillRect(0, 0, 2, 256); this.sky.needsUpdate = true;
+      this.fog.color.set(st.fog[0]); this.fog.near = st.fog[1]; this.fog.far = st.fog[2];
       this.scene.background = textured ? this.sky : null;
       this.scene.environment = textured ? this.envMap : null;
       this.scene.fog = textured ? this.fog : null;
       this.sun.castShadow = textured;
-      this.sun.intensity = textured ? 2.4 : 1.4;
-      this.hemi.intensity = textured ? 0.5 : 1.6;
+      this.sun.intensity = textured ? st.sun : 1.4;
+      this.hemi.intensity = textured ? st.hemi : 1.6;
+      // Its lights, and its Malice.
+      (this._glowing || []).forEach(function(m) { m.emissive.setHex(st.glow); });
+      if(this.malice) this.malice.visible = textured && st.malice;
     },
     // The game's material, beyond what glTF says (build_model.py): a second
     // layer (moss, wear) blended in by the vertex colours' alpha (_blend), its
     // normal map with it; metal masks; emission bright enough to bloom.
     _gameMaterials: function(gltf) {
-      var THREE = this.lib.THREE, parser = gltf.parser, cache = {};
+      var THREE = this.lib.THREE, parser = gltf.parser, cache = {}, layer = this;
       var tex = function(i, srgb) {
         if(i == null) return Promise.resolve(null);
         if(!cache[i]) cache[i] = parser.getDependency('texture', i);
@@ -145,6 +181,33 @@ var ZMap3D = (function() {
         o.castShadow = o.receiveShadow = true;
         var m = o.material, x = m.userData || {};
         if(m.emissiveMap) m.emissiveIntensity = 3;
+        // Lights the state colours (build's glow: a mask).
+        if(x.glow) { (layer._glowing = layer._glowing || []).push(m); m.emissive.setHex(layer.STATES[layer.state].glow); }
+        // Malice: near-black, wet, its veins glowing (build's malice).
+        if(x.malice) {
+          m.color.setRGB(0.07, 0.015, 0.04); m.vertexColors = false; m.roughness = 0.3; m.metalness = 0;
+          if(m.emissiveMap) { m.emissive.setHex(0xff2a6a); m.emissiveIntensity = 2.5; }
+        }
+        // Ice (build's ice): clear and see-through, as the game's refracting ice.
+        if(x.ice) {
+          m.transparent = true; m.opacity = 0.35; m.depthWrite = false; m.roughness = 0.15;
+          m.vertexColors = false; m.color.setRGB(0.8, 0.9, 1.0); o.castShadow = false;
+        }
+        // Water that falls (build_field.py's flow): see-through, and it runs
+        // (layer._stepFlow moves its textures down).
+        if(x.flow) {
+          // (Its vertex colours are the game's colour combiner's inputs, not
+          // colours: drawn as they are, the falls come out purple.)
+          m.vertexColors = false; m.color.setRGB(0.85, 0.93, 1.0);
+          m.transparent = true; m.alphaTest = 0; m.depthWrite = false; m.opacity = 0.85;
+          o.castShadow = false;
+          [m.map, m.normalMap].forEach(function(t) {
+            if(!t) return;
+            var own = t.clone(); own.needsUpdate = true;
+            if(t === m.map) m.map = own; else m.normalMap = own;
+            (layer._flowing = layer._flowing || []).push(own);
+          });
+        }
         if(x.metal != null) tex(x.metal).then(function(t) { m.metalnessMap = t; m.metalness = 1; m.roughness = 0.45; m.needsUpdate = true; });
         if(x.layer2Albedo == null || !o.geometry.attributes._blend) return;
         Promise.all([tex(x.layer2Albedo, true), tex(x.layer2Normal)]).then(function(t) {
@@ -392,6 +455,18 @@ var ZMap3D = (function() {
       if(this._envLoading || !this.scene) return;
       this._envLoading = true;
       var layer = this;
+      // What stands round it (field.glb: rocks, cliffs, the dam, trees,
+      // waterfalls), its materials as the Beast's are.
+      new this.lib.GLTFLoader().load(this.folder + 'field.glb', function(gltf) {
+        if(!layer.scene) return;
+        layer.field = gltf.scene; layer.scene.add(gltf.scene);
+        layer._gameMaterials(gltf);
+        // Stone and earth, as the ground: little sky in them.
+        gltf.scene.traverse(function(o) {
+          if(o.isMesh && o.material && !(o.material.userData || {}).flow) o.material.envMapIntensity = 0.3;
+        });
+        layer.field.visible = layer.mode === 'textured';
+      }, undefined, function() { /* none for this map */ });
       new this.lib.GLTFLoader().load(this.folder + 'environment.glb', function(gltf) {
         if(!layer.scene) return;
         layer.env = gltf.scene; layer.scene.add(gltf.scene);
@@ -424,8 +499,10 @@ var ZMap3D = (function() {
       var renderer = this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(view.clientWidth, view.clientHeight);
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 0.9;
+      // AgX, not ACES: the game's soft, pale, hazy light (ACES pushed the
+      // stone golden and the cliffs saturated blue).
+      renderer.toneMapping = THREE.AgXToneMapping;
+      renderer.toneMappingExposure = 1.15;
       renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       view.appendChild(renderer.domElement);
       var labels = new lib.CSS2D.CSS2DRenderer();
@@ -434,7 +511,7 @@ var ZMap3D = (function() {
       labels.domElement.className = 'zm-3d-labels leaflet-marker-pane';
       view.appendChild(labels.domElement);
       var scene = this.scene = new THREE.Scene();
-      this.hemi = new THREE.HemisphereLight(0xcfe3ff, 0x5a4a35, 1.6); scene.add(this.hemi);
+      this.hemi = new THREE.HemisphereLight(0xe8ecf0, 0x8a8070, 1.6); scene.add(this.hemi);
       var sun = this.sun = new THREE.DirectionalLight(0xfff1dc, 1.4); sun.position.set(160, 220, 90); scene.add(sun);
       sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.4;
       Object.assign(sun.shadow.camera, { left: -170, right: 170, top: 170, bottom: -170, near: 10, far: 700 });
@@ -447,19 +524,17 @@ var ZMap3D = (function() {
         uniforms: { sunDir: { value: sun.position.clone().normalize() } },
         vertexShader: 'varying vec3 vDir; void main() { vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
         fragmentShader: 'uniform vec3 sunDir; varying vec3 vDir; void main() {' +
-          ' float h = vDir.y; vec3 zenith = vec3(0.16, 0.36, 0.72), horizon = vec3(0.62, 0.74, 0.86), ground = vec3(0.22, 0.24, 0.22);' +
+          ' float h = vDir.y; vec3 zenith = vec3(0.33, 0.48, 0.68), horizon = vec3(0.78, 0.83, 0.88), ground = vec3(0.3, 0.31, 0.29);' +
           ' vec3 c = h > 0.0 ? mix(horizon, zenith, pow(h, 0.6)) : mix(horizon, ground, pow(-h, 0.4));' +
           ' c += vec3(1.0, 0.9, 0.75) * (pow(max(dot(vDir, sunDir), 0.0), 600.0) * 40.0 + pow(max(dot(vDir, sunDir), 0.0), 8.0) * 0.4);' +
           ' gl_FragColor = vec4(c, 1.0); }'
       })));
       var pmrem = new THREE.PMREMGenerator(renderer);
       this.envMap = pmrem.fromScene(skyScene, 0, 0.1, 200).texture; pmrem.dispose();
-      var sky = document.createElement('canvas'); sky.width = 2; sky.height = 256;
-      var g = sky.getContext('2d'), grad = g.createLinearGradient(0, 0, 0, 256);
-      grad.addColorStop(0, '#5d8fcf'); grad.addColorStop(0.55, '#a9c6e4'); grad.addColorStop(1, '#d9e4ea');
-      g.fillStyle = grad; g.fillRect(0, 0, 2, 256);
+      // (Its colours are the state's: _applyLook.)
+      var sky = this.skyCanvas = document.createElement('canvas'); sky.width = 2; sky.height = 256;
       this.sky = new THREE.CanvasTexture(sky); this.sky.colorSpace = THREE.SRGBColorSpace;
-      this.fog = new THREE.Fog(0xc9d8e4, 500, 2600);
+      this.fog = new THREE.Fog(0xd5dde3, 450, 3000);
       var camera = new THREE.PerspectiveCamera(50, view.clientWidth / view.clientHeight, 0.5, 6000);
       camera.position.set(200, 110, 120);
       var controls = new lib.OrbitControls(camera, renderer.domElement);
@@ -483,6 +558,19 @@ var ZMap3D = (function() {
       new lib.GLTFLoader().load(this.folder + 'model.glb', function(gltf) {
         if(layer.scene !== scene) return;
         layer.model = gltf.scene; scene.add(gltf.scene); layer._gameMaterials(gltf); layer.setMode(layer.mode);
+        // The dungeon's own parts (parts.glb: gears, wheels, terminals,
+        // its inner water...), part of the Beast in both looks.
+        new lib.GLTFLoader().load(layer.folder + 'parts.glb', function(parts) {
+          if(layer.scene !== scene || !layer.model) return;
+          layer.model.add(parts.scene); layer._gameMaterials(parts); layer.setMode(layer.mode);
+        }, undefined, function() { /* none for this map */ });
+        // Its Malice (malice.glb), for the state before it's freed: not part
+        // of the hologram, so beside the model rather than in it.
+        new lib.GLTFLoader().load(layer.folder + 'malice.glb', function(malice) {
+          if(layer.scene !== scene) return;
+          layer.malice = malice.scene; scene.add(malice.scene); layer._gameMaterials(malice);
+          layer._applyLook(layer.mode);
+        }, undefined, function() { /* none for this map */ });
         layer._buildJoints();
         layer._fit();
         layer._loaded = true; layer.fire('load');
@@ -511,6 +599,7 @@ var ZMap3D = (function() {
         var dt = Math.min(clock.getDelta(), 0.1);
         layer._waterTime.value = clock.elapsedTime;
         layer._stepJoints(dt);
+        (layer._flowing || []).forEach(function(t) { t.offset.y -= dt * 0.6; });
         controls.update();
         (layer._joints || []).forEach(function(joint) { layer._syncNotches(joint); });
         if(layer.mode === 'textured') composer.render(); else renderer.render(scene, camera);

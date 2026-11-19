@@ -15,7 +15,7 @@
   if (!imageCreditsAvailable($db, $map_prefix)) { $fail('Run the image_credits migration to credit images.'); return; }
 
   $key = imageCreditKey($_POST['src'] ?? '');
-  if ($key === null) { $fail('Only uploaded images and images from other sites can be credited.'); return; }
+  if ($key === null) { $fail('Only uploaded images and videos, and those from other sites, can be credited.'); return; }
   $author = trim(is_string($_POST['author'] ?? null) ? $_POST['author'] : '');
   $source = trim(is_string($_POST['source'] ?? null) ? $_POST['source'] : '');
   $license = is_string($_POST['license'] ?? null) ? $_POST['license'] : 'own';

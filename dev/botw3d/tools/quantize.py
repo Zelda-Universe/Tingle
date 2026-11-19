@@ -37,7 +37,8 @@ def add(arr, comp, typ, target, normalized=False, stride=None, mm=False):
     row = arr.reshape(count, -1).view(np.uint8)
     if stride and row.shape[1] < stride:
         row = np.hstack([row, np.zeros((count, stride - row.shape[1]), np.uint8)])
-    view = dict(buffer=0, byteOffset=len(new_bin), byteLength=row.size, target=target)
+    view = dict(buffer=0, byteOffset=len(new_bin), byteLength=row.size)
+    if target: view['target'] = target
     if stride: view['byteStride'] = stride
     new_bin.extend(row.tobytes()); views.append(view)
     a = dict(bufferView=len(views) - 1, componentType=comp, count=count, type=typ)
@@ -46,6 +47,10 @@ def add(arr, comp, typ, target, normalized=False, stride=None, mm=False):
         flat = arr.reshape(count, -1)
         a['min'] = flat.min(0).tolist(); a['max'] = flat.max(0).tolist()
     accs.append(a); return len(accs) - 1
+
+def accs_count(at):
+    """How many instances (the new TRANSLATION accessor's count)."""
+    return accs[at['TRANSLATION']]['count']
 
 def snorm8(x): return np.clip(np.rint(x * 127), -127, 127).astype(np.int8)
 
@@ -78,8 +83,21 @@ for mi, mesh in enumerate(gl['meshes']):
             if idx.max() < 65535: p['indices'] = add(idx.astype(np.uint16), 5123, 'SCALAR', 34963)
             else: p['indices'] = add(idx, 5125, 'SCALAR', 34963)
 for node in gl['nodes']:
-    if 'mesh' in node:
-        q = mesh_scale[node['mesh']]
+    if 'mesh' not in node: continue
+    q = mesh_scale[node['mesh']]
+    inst = (node.get('extensions') or {}).get('EXT_mesh_gpu_instancing')
+    if inst:
+        # Instanced (EXT_mesh_gpu_instancing): each instance scaled back up,
+        # as the node's own scale would scale the instances' places too.
+        at = inst['attributes']
+        for key in ('TRANSLATION', 'ROTATION', 'SCALE'):
+            if key not in at: continue
+            v = read(at[key]).astype(np.float32)
+            if key == 'SCALE': v = v * q
+            at[key] = add(v, 5126, {3: 'VEC3', 4: 'VEC4'}[v.shape[1]], None)
+        if 'SCALE' not in at:
+            at['SCALE'] = add(np.full((accs_count(at), 3), q, np.float32), 5126, 'VEC3', None)
+    else:
         node['scale'] = [s * q for s in node.get('scale', [1, 1, 1])]
 while len(new_bin) % 4: new_bin.append(0)
 gl['accessors'], gl['bufferViews'] = accs, views

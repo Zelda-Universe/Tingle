@@ -21,9 +21,10 @@
     return $available;
   }
 
-  // An image's key: an upload's path relative to the site (uploads/...),
-  // whichever address it was written with, or another site's full URL.
-  // Null for anything else (data: URLs, scripts).
+  // An image's or video's key: an upload's path relative to the site
+  // (uploads/...), whichever address it was written with, or another site's
+  // full URL. An uploaded video, shown through marker-video.php?f=<name>, is
+  // its file's path. Null for anything else (data: URLs, scripts).
   function imageCreditKey($src) {
     $src = trim((string) $src);
     if ($src === '' || strlen($src) > 500) return null;
@@ -35,8 +36,10 @@
       $ours = preg_match('/(^|\.)zeldamaps\.com$/', $host) || $host === strtolower(preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST'] ?? '')) || $host === 'localhost';
       if (!$ours) return $src;
       $src = ltrim($parts['path'] ?? '', '/');
+      if ($src === 'marker-video.php' && isset($parts['query'])) $src .= '?' . $parts['query'];
     }
     $src = ltrim(preg_replace('#^\./#', '', $src), '/');
+    if (preg_match('#^marker-video\.php\?f=(\d+-[0-9a-f]+\.(mp4|mov|webm))$#', $src, $video)) return 'uploads/marker-videos/' . $video[1];
     return preg_match('#^uploads/[A-Za-z0-9_./-]+$#', $src) && strpos($src, '..') === false ? $src : null;
   }
 

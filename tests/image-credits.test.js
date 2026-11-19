@@ -30,10 +30,10 @@ test('a credit line names the author, links the source and shows a license that 
 test('the server keys an image the same however its address is written',()=>{
   const script='include "lib/common/image_credits.php"; $_SERVER["HTTP_HOST"]="localhost:8080"; echo json_encode(array_map("imageCreditKey", json_decode($argv[1], true)));';
   const srcs=['uploads/marker-images/1.webp','/uploads/marker-images/1.webp','https://zeldamaps.com/uploads/marker-images/1.webp','http://localhost:8080/uploads/marker-images/1.webp',
-    'https://example.com/a.png','javascript:alert(1)','uploads/../config.php','data:image/png;base64,AA'];
+    'https://example.com/a.png','marker-video.php?f=15-ab12.mp4','http://localhost:8080/marker-video.php?f=15-ab12.mov','marker-video.php?f=../x.mp4','javascript:alert(1)','uploads/../config.php','data:image/png;base64,AA'];
   const keys=JSON.parse(execFileSync('php',['-r',script,JSON.stringify(srcs)],{cwd:path.join(__dirname,'..')}).toString());
   expect(keys).toEqual(['uploads/marker-images/1.webp','uploads/marker-images/1.webp','uploads/marker-images/1.webp','uploads/marker-images/1.webp',
-    'https://example.com/a.png',null,null,null]);
+    'https://example.com/a.png','uploads/marker-videos/15-ab12.mp4','uploads/marker-videos/15-ab12.mov',null,null,null,null]);
 });
 
 test('only editors set credits, and the editor offers Credit on a selected image',()=>{
@@ -41,7 +41,13 @@ test('only editors set credits, and the editor offers Credit on a selected image
   expect(save).toContain('$editor = wikiRequireEditor($db, $map_prefix);');
   expect(save).toContain("'HTTP_SEC_FETCH_SITE'");
   const zmap=read('scripts/zmap.js');
-  expect(zmap).toContain("editor.ui.registry.addContextToolbar('imagecredit'");
+  expect(zmap).toContain("mediaToolbar('imagecredit', 'image', false, 'addcredit | imagesettings');");
+  expect(zmap).toContain("mediaToolbar('videocredited', 'video', true, 'changecredit | videosettings');");
   expect(zmap).toContain('this._watchImageCredits(this.mapControl._contents);');
   expect(read('javascript.txt')).toContain('scripts/services/ImageCredits.js');
+});
+
+test('a video\'s credit line calls it a video',()=>{
+  const zmap=load();
+  expect(zmap._imageCreditHTML({author:'Jane',source:'',license:'cc-by'},'Video')).toBe('<span class="zm-image-credit">Video: Jane · CC BY</span>');
 });

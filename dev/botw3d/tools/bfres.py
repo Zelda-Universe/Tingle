@@ -51,6 +51,9 @@ def read_attr(d, base, count, stride, fmt, n4=False):
                 if c & 512: c -= 1024
                 comp.append(max(c / 511, -1))
             out.append(tuple(comp))
+        elif fmt == 0x100: out.append(struct.unpack_from('>B', d, o))          # skinning indices
+        elif fmt == 0x104: out.append(struct.unpack_from('>2B', d, o))
+        elif fmt == 0x10a: out.append(struct.unpack_from('>4B', d, o))
         elif fmt == 0x004: out.append(tuple(x / 255 for x in struct.unpack_from('>2B', d, o)))
         elif fmt == 0x007: out.append(tuple(x / 65535 for x in struct.unpack_from('>2H', d, o)))
         elif fmt == 0x207: out.append(tuple(max(x / 32767, -1) for x in struct.unpack_from('>2h', d, o)))
@@ -62,26 +65,28 @@ def models(d):
     res = []
     for mname, m in group(r, r.rel(0x20)):
         fvtx_arr = r.rel(m + 0x10); nvtx = r.u16(m + 0x20)
-        # skeleton: bones' world matrices
+        # The skeleton: each bone's place under its parent (scale, rotation:
+        # Euler XYZ or a quaternion, translation), and the table from the
+        # skinning matrices vertices name (_i0) to bones.
         fskl = r.rel(m + 0x0C)
-        bones = []
+        bones, matrix_bone = [], []
         if fskl:
-            nb = r.u16(fskl + 0x08); barr = r.rel(fskl + 0x10); flags = r.u32(fskl + 0x04)
-            size = 0x40 if r.u32(fskl+0) == 0x46534B4C and False else None
-            # bone stride: v3.x 0x40 (with user data) — find by scanning names
-            stride = 0x40
+            nb = r.u16(fskl + 0x08); n_smooth = r.u16(fskl + 0x0A); n_rigid = r.u16(fskl + 0x0C)
+            barr = r.rel(fskl + 0x14); inv = r.rel(fskl + 0x18)
             for i in range(nb):
-                b = barr + i * stride
-                try: name = r.str(b)
-                except ValueError: bones = []; break   # another bone layout: skip the skeleton
+                b = barr + i * 0x40
+                name = r.str(b)
                 parent = struct.unpack_from('>h', d, b + 0x06)[0]
-                bflags = r.u32(b + 0x0C)
-                sc = struct.unpack_from('>3f', d, b + 0x10); rot = struct.unpack_from('>4f', d, b + 0x1C)
-                tr = struct.unpack_from('>3f', d, b + 0x2C)
-                bones.append(dict(name=name, parent=parent, s=sc, r=rot, t=tr, quat=bool(bflags & 0x1000)))
+                bflags = r.u32(b + 0x10)
+                sc = struct.unpack_from('>3f', d, b + 0x14); rot = struct.unpack_from('>4f', d, b + 0x20)
+                tr = struct.unpack_from('>3f', d, b + 0x30)
+                bones.append(dict(name=name, parent=parent, s=sc, r=rot, t=tr, euler=bool(bflags & 0x1000)))
+            if inv:
+                matrix_bone = [struct.unpack_from('>H', d, inv + 2 * i)[0] for i in range(n_smooth + n_rigid)]
         shapes = []
         for sname, sh in group(r, r.rel(m + 0x14)):
             vb_index = r.u16(sh + 0x12); skel_index = r.u16(sh + 0x10); mat = r.u16(sh + 0x0E)
+            skin = r.u8(sh + 0x16)   # vertex skin count: 0 bound to bone skel_index, 1 to one matrix each
             fv = r.rel(sh + 0x20)
             nat = r.u8(fv + 4); nverts = r.u32(fv + 8)
             attrs = {}
@@ -98,7 +103,7 @@ def models(d):
             idata = r.rel(ib + 0x14)
             if ifmt in (4, 0): idx = [struct.unpack_from('>H', d, idata + 2 * i)[0] + first for i in range(npts)]
             else: idx = [struct.unpack_from('>I', d, idata + 4 * i)[0] + first for i in range(npts)]
-            shapes.append(dict(name=sname, mat=mat, bone=skel_index, prim=prim, attrs=attrs, idx=idx, nverts=nverts))
+            shapes.append(dict(name=sname, mat=mat, bone=skel_index, skin=skin, prim=prim, attrs=attrs, idx=idx, nverts=nverts))
         mats = []
         for mat_name, fm in group(r, r.rel(m + 0x18)):
             n = r.u8(fm + 0x10); ta = r.rel(fm + 0x28)
@@ -116,5 +121,65 @@ def models(d):
             for k, v in group(r, r.rel(sa + 0x18)) if sa else []:
                 options[k] = d[v:d.index(b'\0', v)].decode() if v else None
             mats.append(dict(name=mat_name, textures=dict(zip(samplers, texs)), params=params, options=options))
-        res.append(dict(name=mname, shapes=shapes, bones=bones, mats=mats))
+        model = dict(name=mname, shapes=shapes, bones=bones, matrix_bone=matrix_bone, mats=mats)
+        pose(model)
+        res.append(model)
     return res
+
+
+def _mat(bone):
+    """A bone's transform under its parent, as a 4x4 (row major) matrix."""
+    sx, sy, sz = bone['s']
+    if bone['euler']:
+        x, y, z = bone['r'][:3]
+        cx, sx_, cy, sy_, cz, sz_ = math.cos(x), math.sin(x), math.cos(y), math.sin(y), math.cos(z), math.sin(z)
+        # R = Rz * Ry * Rx
+        R = [[cy * cz, sx_ * sy_ * cz - cx * sz_, cx * sy_ * cz + sx_ * sz_],
+             [cy * sz_, sx_ * sy_ * sz_ + cx * cz, cx * sy_ * sz_ - sx_ * cz],
+             [-sy_, sx_ * cy, cx * cy]]
+    else:
+        qx, qy, qz, qw = bone['r']
+        R = [[1 - 2 * (qy * qy + qz * qz), 2 * (qx * qy - qz * qw), 2 * (qx * qz + qy * qw)],
+             [2 * (qx * qy + qz * qw), 1 - 2 * (qx * qx + qz * qz), 2 * (qy * qz - qx * qw)],
+             [2 * (qx * qz - qy * qw), 2 * (qy * qz + qx * qw), 1 - 2 * (qx * qx + qy * qy)]]
+    t = bone['t']
+    return [[R[i][0] * sx, R[i][1] * sy, R[i][2] * sz, t[i]] for i in range(3)] + [[0, 0, 0, 1]]
+
+def _mul(a, b):
+    return [[sum(a[i][k] * b[k][j] for k in range(4)) for j in range(4)] for i in range(4)]
+
+def pose(model):
+    """Vertices of skinned shapes are stored in their bone's space: moves
+    them (positions, normals, tangents) into the model's, as the skeleton
+    stands at rest. Shapes bound to the root, or smoothly skinned (already in
+    the model's space), are left as they are."""
+    bones = model['bones']
+    if len(bones) < 2: return
+    world = [None] * len(bones)
+    def w(i):
+        if world[i] is None:
+            local = _mat(bones[i]); p = bones[i]['parent']
+            world[i] = _mul(w(p), local) if p >= 0 else local
+        return world[i]
+    for i in range(len(bones)): w(i)
+    mb = model['matrix_bone']
+    def apply(M, v, point):
+        x, y, z = v[:3]
+        out = [M[i][0] * x + M[i][1] * y + M[i][2] * z + (M[i][3] if point else 0) for i in range(3)]
+        if not point:
+            l = math.sqrt(sum(c * c for c in out)) or 1
+            out = [c / l for c in out]
+        return tuple(out) + tuple(v[3:])
+    for s in model['shapes']:
+        if s['skin'] > 1: continue
+        idx = s['attrs'].get('_i0', (0, None))[1]
+        if s['skin'] == 1 and idx and mb:
+            per = [w(mb[i[0]]) if i[0] < len(mb) else None for i in idx]
+        elif s['skin'] == 0 and s['bone'] < len(bones):
+            per = [w(s['bone'])] * s['nverts']
+        else:
+            continue
+        for name, point in (('_p0', True), ('_n0', False), ('_t0', False), ('_b0', False)):
+            fmt, vals = s['attrs'].get(name, (0, None))
+            if not vals or len(vals) != len(per): continue
+            s['attrs'][name] = (fmt, [apply(M, v, point) if M else v for M, v in zip(per, vals)])

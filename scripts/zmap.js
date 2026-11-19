@@ -4015,16 +4015,45 @@ ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
         icon: 'zm-upload-video', tooltip: 'Insert/edit video',
         onAction: function() { _this._uploadEditorVideo(editor); }
       });
-      // Credit, over a selected image: who made it and where it's from
-      // (scripts/services/ImageCredits.js).
+      // Over a selected image or video, a toolbar: Add Credit (Change
+      // Credit once it has one: who made it and where it's from,
+      // scripts/services/ImageCredits.js), then its settings: TinyMCE's
+      // own dialog for an image (its address and description), Insert/Edit
+      // Video's for a video. One toolbar for each pair, as TinyMCE's
+      // buttons keep the words they're made with; none while it's still
+      // being found out whether it has a credit (asked for once, then
+      // shown).
       if(_this._editImageCredit) {
-        editor.ui.registry.addButton('imagecredit', {
-          text: 'Credit', tooltip: 'Credit this image',
-          onAction: function() { _this._editImageCredit(editor); }
+        var credit = function() { _this._editImageCredit(editor); };
+        editor.ui.registry.addButton('addcredit', { text: 'Add Credit', tooltip: 'Say who made it', onAction: credit });
+        editor.ui.registry.addButton('changecredit', { text: 'Change Credit', tooltip: 'Change who made it', onAction: credit });
+        editor.ui.registry.addButton('imagesettings', {
+          text: 'Image Settings', tooltip: 'Image address and description',
+          onAction: function() { editor.execCommand('mceImage'); }
         });
-        editor.ui.registry.addContextToolbar('imagecredit', {
-          predicate: function(node) { return node.nodeName === 'IMG'; },
-          items: 'imagecredit image', position: 'node', scope: 'node'
+        editor.ui.registry.addButton('videosettings', {
+          text: 'Video Settings', tooltip: 'Video address',
+          onAction: function() { _this._uploadEditorVideo(editor); }
+        });
+        var mediaToolbar = function(name, kind, credited, items) {
+          editor.ui.registry.addContextToolbar(name, {
+            predicate: function(node) {
+              var media = _this._editorMedia(node);
+              return !!media && media.kind === kind && _this._editorMediaCredited(editor, node) === credited;
+            },
+            items: items, position: 'node', scope: 'node'
+          });
+        };
+        mediaToolbar('imagecredit', 'image', false, 'addcredit | imagesettings');
+        mediaToolbar('imagecredited', 'image', true, 'changecredit | imagesettings');
+        mediaToolbar('videocredit', 'video', false, 'addcredit | videosettings');
+        mediaToolbar('videocredited', 'video', true, 'changecredit | videosettings');
+        // (The credits of what's already in it, asked for up front.)
+        editor.on('init', function() {
+          var srcs = Array.from(editor.getBody().querySelectorAll('img, .mce-object-video')).map(function(el) {
+            return el.getAttribute('data-mce-p-src') || el.getAttribute('src');
+          });
+          _this._fetchImageCredits(srcs, function() { if(!editor.removed) editor.nodeChanged(); });
         });
       }
     };

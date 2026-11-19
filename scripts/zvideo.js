@@ -14,12 +14,16 @@ ZMap.prototype.VIDEO_TYPES = ['video/mp4', 'video/quicktime', 'video/webm'];
 ZMap.prototype.PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
 ZMap.prototype._uploadEditorVideo = function(editor) {
+  // A video selected in the content (TinyMCE shows each as a stand-in
+  // holding it, its address kept as data-mce-p-src): that one's replaced.
   var selected = editor.selection.getNode();
-  var current = selected && selected.nodeName === 'VIDEO' ? selected : null;
+  var current = selected && selected.nodeName === 'VIDEO' ? selected
+    : (selected && selected.closest && selected.closest('.mce-object-video')) || null;
+  var currentSrc = current ? (current.getAttribute('data-mce-p-src') || current.getAttribute('src') || '') : '';
   var _this = this;
   return this._editorMediaDialog(editor, {
     title: current ? 'Edit Video' : 'Insert Video',
-    current: current ? (current.getAttribute('src') || '') : '',
+    current: currentSrc,
     fileTypes: this.VIDEO_TYPES, fileExtensions: /\.(mp4|m4v|mov|webm)$/i,
     wrongType: 'That isn\'t a video this site takes: upload an MP4, MOV or WebM.',
     accept: 'video/mp4,video/quicktime,video/webm,.mp4,.m4v,.mov,.webm',
@@ -29,9 +33,13 @@ ZMap.prototype._uploadEditorVideo = function(editor) {
     badAddress: 'Use the address of a video file, starting with https://, or upload one.',
     send: function(file, progress, done) { return _this._sendEditorVideo(file, progress, done); },
     insert: function(src) {
-      if(current) {
+      if(current && current.nodeName === 'VIDEO') {
         editor.dom.setAttrib(current, 'src', src);
         editor.undoManager.add();
+      } else if(current) {
+        // (The stand-in, put back as a new one with the new address.)
+        editor.selection.select(current);
+        editor.insertContent('<video src="' + editor.dom.encode(src) + '" muted loop playsinline controls preload="metadata"></video>');
       } else {
         editor.insertContent('<p><video src="' + editor.dom.encode(src) + '" muted loop playsinline controls preload="metadata"></video></p><p></p>');
       }
@@ -144,9 +152,10 @@ ZMap.prototype._editorMediaDialog = function(editor, kind) {
   return dialog;
 };
 
-// Photos and videos dropped straight into the editor (editors, who can
-// upload): each uploads where it was dropped, a line there meanwhile saying
-// how far along it is, then put in as Insert Photo or Insert Video would.
+// Photos and videos dropped or pasted straight into the editor (editors, who
+// can upload): each uploads where it was dropped or pasted, a line there
+// meanwhile saying how far along it is, then put in as Insert Photo or
+// Insert Video would.
 // Placeholders never reach what's saved: they're left out of the editor's
 // content. (Text, not a preview of the photo: TinyMCE uploads any temporary
 // image it finds itself, which would send the photo twice.)
@@ -208,6 +217,29 @@ ZMap.prototype._wireEditorDrops = function(editor) {
     }
     // Where it was dropped.
     if(editor.selection.placeCaretAt) editor.selection.placeCaretAt(e.clientX, e.clientY);
+    upload(dropped);
+  }, true);
+  // A photo pasted in (a screenshot, or "Copy Image" in a browser) uploads
+  // like a dropped one, in place of anything else that came with it (the
+  // other site's address for it, which would show their copy). Anything
+  // without a file, text or a web page's HTML, pastes as usual.
+  editor.on('paste', function(e) {
+    var data = e.clipboardData;
+    var pasted = data && data.files ? Array.prototype.slice.call(data.files) : [];
+    if(!pasted.length && data && data.items) {
+      pasted = Array.prototype.slice.call(data.items)
+        .filter(function(item) { return item.kind === 'file'; })
+        .map(function(item) { return item.getAsFile(); })
+        .filter(Boolean);
+    }
+    pasted = pasted.filter(function(file) { return media(file); });
+    if(!pasted.length) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    upload(pasted);
+  }, true);
+  // Each file uploaded at the caret, a placeholder there meanwhile.
+  function upload(dropped) {
     // Every file's placeholder at once (one after another, the next would
     // land inside the last and split it).
     var uploads = dropped.map(function(file) {
@@ -243,7 +275,7 @@ ZMap.prototype._wireEditorDrops = function(editor) {
         editor.fire('change');
       });
     });
-  }, true);
+  }
 };
 
 // A file being dragged over the page: every editor section that takes drops
@@ -287,9 +319,9 @@ ZMap.prototype._watchFileDrags = function() {
   this._onPage(document, 'dragend', function() { zmap._fileDragging(null, true); });
 };
 
-// Sends a photo to ajax/upload_marker_image.php (as pasting one does:
-// zmap.js images_upload_handler): progress(percent), then done(error) or
-// done(null, its address). Returns the request, to abort it.
+// Sends a photo to ajax/upload_marker_image.php (as TinyMCE does for an
+// image of its own: zmap.js images_upload_handler): progress(percent), then
+// done(error) or done(null, its address). Returns the request, to abort it.
 ZMap.prototype._sendEditorPhoto = function(file, progress, done) {
   var request = { xhr: null, abort: function() { if(this.xhr) this.xhr.abort(); } };
   progress(0);

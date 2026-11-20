@@ -1,0 +1,8116 @@
+{
+ "description": "Breath of the Wild data from the game's files, made by missing-data.py prepare. Game positions are [X, Y, Z]; quests start at their giver (or the quest's trigger, or a named place); edits are the site's markers as they stood, with what they become.",
+ "sources": [
+  "https://github.com/zeldamods/radar (content/)",
+  "https://objmap.zeldamods.org/game_files",
+  "https://github.com/kenshiisod/botw-gettext (botw-wiiu/USen/QuestMsg)"
+ ],
+ "dragons": [
+  {
+   "name": "Dinraal",
+   "path": "Dinraal's Flight Path",
+   "slug": "dinraals-flight-path",
+   "color": "#d8453a",
+   "loops": false,
+   "rails": [
+    "Dragon_Fire_MainRoute"
+   ],
+   "points": [
+    [
+     3585.0,
+     1200.0,
+     -2548.5
+    ],
+    [
+     3596.0,
+     1200.0,
+     -2623.5
+    ],
+    [
+     3643.5,
+     1200.0,
+     -2696.5
+    ],
+    [
+     3640.5,
+     1200.0,
+     -2782.5
+    ],
+    [
+     3714.5,
+     1200.0,
+     -2854.5
+    ],
+    [
+     3695.0,
+     1200.0,
+     -2938.5
+    ],
+    [
+     3639.5,
+     1200.0,
+     -2947.0
+    ],
+    [
+     3580.0,
+     1200.0,
+     -3000.0
+    ],
+    [
+     3660.5,
+     1200.0,
+     -3154.0
+    ],
+    [
+     3671.5,
+     1200.0,
+     -3298.5
+    ],
+    [
+     3707.5,
+     1200.0,
+     -3443.0
+    ],
+    [
+     3691.0,
+     1200.0,
+     -3543.5
+    ],
+    [
+     3637.0,
+     1200.0,
+     -3669.5
+    ],
+    [
+     3584.0,
+     1200.0,
+     -3800.5
+    ],
+    [
+     3469.5,
+     1200.0,
+     -3873.0
+    ],
+    [
+     3356.5,
+     1200.0,
+     -3912.0
+    ],
+    [
+     3187.0,
+     1200.0,
+     -3894.5
+    ],
+    [
+     3000.0,
+     1200.0,
+     -3920.0
+    ],
+    [
+     2898.5,
+     1200.0,
+     -3898.0
+    ],
+    [
+     2823.0,
+     1200.0,
+     -3918.0
+    ],
+    [
+     2729.5,
+     1200.0,
+     -3914.0
+    ],
+    [
+     2633.0,
+     1200.0,
+     -3945.0
+    ],
+    [
+     2544.0,
+     1200.0,
+     -3961.5
+    ],
+    [
+     2461.5,
+     1200.0,
+     -3949.5
+    ],
+    [
+     2377.0,
+     1200.0,
+     -3985.0
+    ],
+    [
+     2272.66,
+     1200.0,
+     -3969.93
+    ],
+    [
+     2183.0,
+     1200.0,
+     -3973.0
+    ],
+    [
+     2111.5,
+     1200.0,
+     -3953.5
+    ],
+    [
+     2000.0,
+     1200.0,
+     -3920.0
+    ],
+    [
+     1684.0,
+     311.5,
+     -3729.0
+    ],
+    [
+     1551.0,
+     282.2,
+     -3733.5
+    ],
+    [
+     1390.0,
+     243.5,
+     -3760.0
+    ],
+    [
+     1251.0,
+     240.0,
+     -3731.0
+    ],
+    [
+     1101.5,
+     240.0,
+     -3720.5
+    ],
+    [
+     1000.0,
+     240.0,
+     -3650.0
+    ],
+    [
+     883.0,
+     240.0,
+     -3656.0
+    ],
+    [
+     756.5,
+     240.0,
+     -3673.0
+    ],
+    [
+     623.0,
+     240.0,
+     -3704.5
+    ],
+    [
+     502.5,
+     240.0,
+     -3708.0
+    ],
+    [
+     378.0,
+     240.0,
+     -3755.5
+    ],
+    [
+     254.0,
+     240.0,
+     -3757.5
+    ],
+    [
+     152.5,
+     240.0,
+     -3693.0
+    ],
+    [
+     71.0,
+     240.0,
+     -3607.0
+    ],
+    [
+     0.0,
+     240.0,
+     -3450.0
+    ],
+    [
+     -83.0,
+     225.0,
+     -3373.5
+    ],
+    [
+     -164.5,
+     225.0,
+     -3283.5
+    ],
+    [
+     -266.5,
+     225.0,
+     -3235.5
+    ],
+    [
+     -362.5,
+     225.0,
+     -3186.5
+    ],
+    [
+     -455.5,
+     412.5,
+     -3106.0
+    ],
+    [
+     -540.0,
+     600.0,
+     -3000.0
+    ],
+    [
+     -1000.0,
+     600.0,
+     -2900.0
+    ],
+    [
+     -1680.0,
+     400.0,
+     -2000.0
+    ],
+    [
+     -1804.02,
+     312.18,
+     -1941.47
+    ],
+    [
+     -2000.0,
+     180.0,
+     -1830.0
+    ],
+    [
+     -2093.0,
+     228.5,
+     -1703.5
+    ],
+    [
+     -2195.5,
+     282.0,
+     -1662.0
+    ],
+    [
+     -2322.0,
+     283.0,
+     -1565.0
+    ],
+    [
+     -2443.5,
+     243.5,
+     -1508.5
+    ],
+    [
+     -2583.0,
+     233.5,
+     -1462.0
+    ],
+    [
+     -2724.5,
+     232.0,
+     -1496.5
+    ],
+    [
+     -2885.0,
+     225.5,
+     -1427.5
+    ],
+    [
+     -2929.5,
+     206.0,
+     -1263.5
+    ],
+    [
+     -3000.0,
+     180.0,
+     -1125.0
+    ],
+    [
+     -3070.0,
+     180.0,
+     -1000.0
+    ],
+    [
+     -3105.0,
+     180.0,
+     -897.5
+    ],
+    [
+     -3182.5,
+     180.0,
+     -793.5
+    ],
+    [
+     -3123.5,
+     180.0,
+     -666.5
+    ],
+    [
+     -3176.0,
+     203.5,
+     -580.0
+    ],
+    [
+     -3164.0,
+     180.0,
+     -439.0
+    ],
+    [
+     -3263.0,
+     180.0,
+     -351.0
+    ],
+    [
+     -3342.5,
+     180.0,
+     -280.0
+    ],
+    [
+     -3442.5,
+     180.0,
+     -196.5
+    ],
+    [
+     -3543.5,
+     180.0,
+     -147.0
+    ],
+    [
+     -3655.0,
+     180.0,
+     -163.5
+    ],
+    [
+     -3778.5,
+     180.0,
+     -163.0
+    ],
+    [
+     -3910.5,
+     199.3,
+     -190.6
+    ],
+    [
+     -4000.0,
+     220.0,
+     -180.0
+    ],
+    [
+     -4344.0,
+     670.0,
+     -316.5
+    ],
+    [
+     -4533.5,
+     756.5,
+     -452.5
+    ],
+    [
+     -4593.0,
+     925.5,
+     -664.0
+    ],
+    [
+     -4440.8,
+     1200.0,
+     -917.8
+    ]
+   ]
+  },
+  {
+   "name": "Naydra",
+   "path": "Naydra's Flight Path",
+   "slug": "naydras-flight-path",
+   "color": "#3a86d4",
+   "loops": true,
+   "rails": [
+    "Dragon_Ice_MainRoute"
+   ],
+   "points": [
+    [
+     4380.0,
+     170.0,
+     1000.0
+    ],
+    [
+     4360.1,
+     331.1,
+     1056.9
+    ],
+    [
+     4000.0,
+     750.0,
+     1280.0
+    ],
+    [
+     3789.8,
+     764.0,
+     1338.3
+    ],
+    [
+     3752.3,
+     742.6,
+     1199.5
+    ],
+    [
+     3874.6,
+     723.6,
+     1286.5
+    ],
+    [
+     3723.0,
+     646.2,
+     1303.9
+    ],
+    [
+     3440.9,
+     453.3,
+     1262.5
+    ],
+    [
+     3147.0,
+     298.0,
+     1150.5
+    ],
+    [
+     3000.0,
+     280.0,
+     1140.0
+    ],
+    [
+     2873.5,
+     280.0,
+     1137.5
+    ],
+    [
+     2707.0,
+     280.0,
+     1162.5
+    ],
+    [
+     2600.0,
+     280.0,
+     1078.5
+    ],
+    [
+     2490.0,
+     280.0,
+     1000.0
+    ],
+    [
+     2422.5,
+     300.0,
+     939.0
+    ],
+    [
+     2333.0,
+     350.0,
+     849.5
+    ],
+    [
+     2279.0,
+     350.0,
+     740.0
+    ],
+    [
+     2702.5,
+     350.0,
+     720.0
+    ],
+    [
+     3000.0,
+     350.0,
+     850.0
+    ],
+    [
+     3371.5,
+     377.0,
+     749.0
+    ],
+    [
+     3461.5,
+     147.0,
+     735.0
+    ],
+    [
+     3722.5,
+     150.5,
+     662.0
+    ],
+    [
+     4000.0,
+     150.0,
+     620.0
+    ],
+    [
+     4218.78,
+     150.0,
+     792.14
+    ]
+   ]
+  },
+  {
+   "name": "Naydra (Malice)",
+   "path": "Naydra's Flight Path (Malice)",
+   "slug": "naydras-flight-path-malice",
+   "color": "#3a86d4",
+   "loops": true,
+   "rails": [
+    "Runel_Dragon_Rail_2"
+   ],
+   "points": [
+    [
+     3445.8,
+     291.5,
+     1284.6
+    ],
+    [
+     3431.5,
+     301.5,
+     1431.5
+    ],
+    [
+     3471.0,
+     297.0,
+     1470.0
+    ],
+    [
+     3485.0,
+     294.5,
+     1268.5
+    ],
+    [
+     3551.0,
+     329.0,
+     1417.5
+    ],
+    [
+     3513.5,
+     300.0,
+     1472.5
+    ],
+    [
+     3427.0,
+     278.5,
+     1287.5
+    ],
+    [
+     3407.5,
+     290.0,
+     1377.5
+    ],
+    [
+     3475.0,
+     290.0,
+     1496.0
+    ],
+    [
+     3485.5,
+     287.0,
+     1257.0
+    ],
+    [
+     3551.0,
+     325.5,
+     1357.0
+    ],
+    [
+     3523.0,
+     296.5,
+     1493.0
+    ],
+    [
+     3415.0,
+     276.0,
+     1312.0
+    ],
+    [
+     3408.5,
+     291.5,
+     1422.5
+    ],
+    [
+     3501.6,
+     280.5,
+     1470.8
+    ],
+    [
+     3454.6,
+     281.2,
+     1283.1
+    ],
+    [
+     3536.5,
+     318.5,
+     1347.5
+    ],
+    [
+     3532.0,
+     292.0,
+     1465.0
+    ]
+   ]
+  },
+  {
+   "name": "Farosh (Lake Floria)",
+   "path": "Farosh's Flight Path (Lake Floria)",
+   "slug": "faroshs-flight-path-lake-floria",
+   "color": "#2f9e4f",
+   "loops": false,
+   "rails": [
+    "Dragon_Electric_Start_LakeFloria",
+    "Dragon_Electric_PreMainRoute_LakeFloria",
+    "Dragon_Electric_MainRoute_LakeFloria"
+   ],
+   "points": [
+    [
+     1783.0,
+     50.0,
+     2936.2
+    ],
+    [
+     1778.0,
+     124.5,
+     2910.5
+    ],
+    [
+     1800.7,
+     172.8,
+     2938.5
+    ],
+    [
+     1794.11,
+     297.9,
+     2936.04
+    ],
+    [
+     1798.6,
+     420.5,
+     2946.5
+    ],
+    [
+     1781.0,
+     414.5,
+     3015.5
+    ],
+    [
+     1778.5,
+     226.0,
+     3062.0
+    ],
+    [
+     1766.5,
+     205.5,
+     3252.0
+    ],
+    [
+     1772.0,
+     142.0,
+     3347.5
+    ],
+    [
+     1692.3,
+     145.5,
+     3438.0
+    ],
+    [
+     1807.0,
+     171.3,
+     3551.7
+    ],
+    [
+     1837.5,
+     290.5,
+     3620.6
+    ],
+    [
+     1853.5,
+     289.0,
+     3678.4
+    ],
+    [
+     1854.0,
+     171.6,
+     3686.5
+    ],
+    [
+     1853.0,
+     31.3,
+     3687.3
+    ],
+    [
+     1845.7,
+     166.2,
+     3687.0
+    ],
+    [
+     1853.5,
+     285.0,
+     3678.4
+    ],
+    [
+     1837.5,
+     286.0,
+     3620.6
+    ],
+    [
+     1807.0,
+     165.1,
+     3551.7
+    ],
+    [
+     1692.3,
+     142.0,
+     3438.0
+    ],
+    [
+     1772.0,
+     137.5,
+     3347.5
+    ],
+    [
+     1766.5,
+     203.5,
+     3252.0
+    ],
+    [
+     1778.5,
+     222.5,
+     3062.0
+    ],
+    [
+     1781.0,
+     412.5,
+     3013.5
+    ],
+    [
+     1799.2,
+     418.5,
+     2948.0
+    ],
+    [
+     1806.1,
+     297.04,
+     2941.74
+    ],
+    [
+     1800.7,
+     172.8,
+     2938.5
+    ]
+   ]
+  },
+  {
+   "name": "Farosh (Lake Hylia)",
+   "path": "Farosh's Flight Path (Lake Hylia)",
+   "slug": "faroshs-flight-path-lake-hylia",
+   "color": "#2f9e4f",
+   "loops": false,
+   "rails": [
+    "Dragon_Electric_Start_LakeHylia",
+    "Dragon_Electric_PreMainRoute_LakeHylia",
+    "Dragon_Electric_MainRoute_LakeHylia"
+   ],
+   "points": [
+    [
+     -41.34,
+     57.0,
+     2596.87
+    ],
+    [
+     -63.08,
+     55.31,
+     2583.39
+    ],
+    [
+     -177.05,
+     57.0,
+     2492.03
+    ],
+    [
+     -308.0,
+     57.0,
+     2375.5
+    ],
+    [
+     -474.59,
+     233.7,
+     2456.74
+    ],
+    [
+     -564.0,
+     279.5,
+     2597.5
+    ],
+    [
+     -439.5,
+     198.5,
+     2760.5
+    ],
+    [
+     -283.0,
+     162.0,
+     2723.0
+    ],
+    [
+     -176.0,
+     110.0,
+     2700.5
+    ],
+    [
+     0.0,
+     180.0,
+     2625.0
+    ],
+    [
+     172.5,
+     90.0,
+     2682.6
+    ],
+    [
+     279.5,
+     69.0,
+     2594.0
+    ],
+    [
+     203.0,
+     222.0,
+     2461.0
+    ],
+    [
+     93.0,
+     146.0,
+     2411.0
+    ],
+    [
+     0.0,
+     160.0,
+     2390.0
+    ],
+    [
+     -110.0,
+     220.0,
+     2415.5
+    ],
+    [
+     -308.0,
+     57.0,
+     2375.5
+    ]
+   ]
+  },
+  {
+   "name": "Farosh (Gerudo Highlands)",
+   "path": "Farosh's Flight Path (Gerudo Highlands)",
+   "slug": "faroshs-flight-path-gerudo-highlands",
+   "color": "#2f9e4f",
+   "loops": true,
+   "rails": [
+    "Dragon_Electric_SubRoute_HighlandGerudo"
+   ],
+   "points": [
+    [
+     -4000.0,
+     800.0,
+     805.0
+    ],
+    [
+     -3864.5,
+     790.0,
+     742.0
+    ],
+    [
+     -3593.0,
+     780.0,
+     691.0
+    ],
+    [
+     -3384.5,
+     780.0,
+     813.0
+    ],
+    [
+     -3180.0,
+     780.0,
+     1000.0
+    ],
+    [
+     -3306.5,
+     780.0,
+     1131.5
+    ],
+    [
+     -3752.5,
+     780.0,
+     1162.5
+    ],
+    [
+     -4000.0,
+     780.0,
+     1150.0
+    ],
+    [
+     -4170.9,
+     788.1,
+     1143.0
+    ],
+    [
+     -4410.0,
+     780.0,
+     1000.0
+    ],
+    [
+     -4481.5,
+     780.0,
+     730.5
+    ],
+    [
+     -4283.0,
+     810.0,
+     692.5
+    ],
+    [
+     -4158.5,
+     810.0,
+     783.5
+    ]
+   ]
+  }
+ ],
+ "shops": [
+  {
+   "name": "Armor Shop",
+   "icon": "ShopBougu",
+   "place": "Rito Village",
+   "pos": [
+    -3631.49,
+    292.22,
+    -1787.28
+   ]
+  },
+  {
+   "name": "Armor Shop",
+   "icon": "ShopBougu",
+   "place": "Gerudo Town",
+   "pos": [
+    -3806.33,
+    200.0,
+    2906.15
+   ]
+  },
+  {
+   "name": "Armor Shop",
+   "icon": "ShopBougu",
+   "place": "Goron City",
+   "pos": [
+    1642.87,
+    490.16,
+    -2409.2
+   ]
+  },
+  {
+   "name": "Armor Shop",
+   "icon": "ShopBougu",
+   "place": "Kakariko Village",
+   "pos": [
+    1854.69,
+    239.38,
+    981.32
+   ]
+  },
+  {
+   "name": "Armor Shop",
+   "icon": "ShopBougu",
+   "place": "Tarrey Town",
+   "pos": [
+    3958.93,
+    243.58,
+    -1636.3
+   ]
+  },
+  {
+   "name": "Armor Shop",
+   "icon": "ShopBougu",
+   "place": "Hateno Village",
+   "pos": [
+    3356.95,
+    238.59,
+    2127.88
+   ]
+  },
+  {
+   "name": "Dye Shop",
+   "icon": "ShopColor",
+   "place": "Hateno Village",
+   "pos": [
+    3403.99,
+    238.59,
+    2152.26
+   ]
+  },
+  {
+   "name": "Jewelry Shop",
+   "icon": "ShopJewel",
+   "place": "Gerudo Town",
+   "pos": [
+    -3836.8,
+    200.0,
+    2877.07
+   ]
+  },
+  {
+   "name": "Jewelry Shop",
+   "icon": "ShopJewel",
+   "place": "Tarrey Town",
+   "pos": [
+    3951.27,
+    235.69,
+    -1627.05
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Rito Village",
+   "pos": [
+    -3612.09,
+    289.03,
+    -1852.53
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Gerudo Town",
+   "pos": [
+    -3850.25,
+    200.0,
+    2890.02
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Kara Kara Bazaar",
+   "pos": [
+    -3267.75,
+    200.0,
+    2610.06
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Korok Forest",
+   "pos": [
+    406.67,
+    259.63,
+    -2177.88
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Goron City",
+   "pos": [
+    1682.05,
+    489.24,
+    -2424.02
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Kakariko Village",
+   "pos": [
+    1835.57,
+    240.0,
+    1021.77
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Lurelin Village",
+   "pos": [
+    2944.61,
+    134.65,
+    3437.03
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Tarrey Town",
+   "pos": [
+    3999.58,
+    249.01,
+    -1595.97
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Zora's Domain",
+   "pos": [
+    3296.23,
+    245.86,
+    -508.53
+   ]
+  },
+  {
+   "name": "Inn",
+   "icon": "ShopYadoya",
+   "place": "Hateno Village",
+   "pos": [
+    3473.25,
+    247.29,
+    2111.21
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Rito Village",
+   "pos": [
+    -3644.61,
+    289.88,
+    -1820.46
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Gerudo Town",
+   "pos": [
+    -3857.55,
+    200.0,
+    2913.25
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Gerudo Town",
+   "pos": [
+    -3848.66,
+    199.99,
+    2903.62
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Gerudo Town",
+   "pos": [
+    -3819.99,
+    199.98,
+    2925.9
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Gerudo Town",
+   "pos": [
+    -3821.89,
+    199.99,
+    2936.29
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Kara Kara Bazaar",
+   "pos": [
+    -3277.18,
+    200.0,
+    2564.78
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Kara Kara Bazaar",
+   "pos": [
+    -3240.66,
+    200.0,
+    2527.17
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Kara Kara Bazaar",
+   "pos": [
+    -3261.75,
+    200.0,
+    2603.47
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Gerudo Town",
+   "pos": [
+    -3823.02,
+    200.0,
+    2878.63
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Korok Forest",
+   "pos": [
+    434.34,
+    258.36,
+    -2181.18
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Goron City",
+   "pos": [
+    1683.58,
+    490.77,
+    -2463.49
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Goron City",
+   "pos": [
+    1667.14,
+    492.35,
+    -2468.1
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Kakariko Village",
+   "pos": [
+    1825.86,
+    235.65,
+    1041.0
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Kakariko Village",
+   "pos": [
+    1794.48,
+    235.04,
+    1029.26
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Lurelin Village",
+   "pos": [
+    2959.36,
+    106.85,
+    3493.91
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Tarrey Town",
+   "pos": [
+    3951.2,
+    235.45,
+    -1593.14
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Zora's Domain",
+   "pos": [
+    3322.85,
+    245.46,
+    -490.74
+   ]
+  },
+  {
+   "name": "General Store",
+   "icon": "ShopYorozu",
+   "place": "Hateno Village",
+   "pos": [
+    3360.78,
+    238.59,
+    2171.56
+   ]
+  }
+ ],
+ "quests": [
+  {
+   "id": "100enemy",
+   "name": "EX Trial of the Sword",
+   "giver": "The Great Deku Tree",
+   "how": "npc",
+   "pos": [
+    418.51,
+    245.76,
+    -2188.76
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "Animal_Forest",
+   "name": "The Crowned Beast",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    2589.68,
+    232.4,
+    444.25
+   ],
+   "kind": "shrine",
+   "existing": 301
+  },
+  {
+   "id": "BalladOfHeroGerudo",
+   "name": "EX Champion Urbosa's Song",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    -2146.0,
+    471.28,
+    2560.5
+   ],
+   "kind": "dlc",
+   "dlc": 2
+  },
+  {
+   "id": "BalladOfHeroGoron",
+   "name": "EX Champion Daruk's Song",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    2461.0,
+    996.72,
+    -2536.0
+   ],
+   "kind": "dlc",
+   "dlc": 2
+  },
+  {
+   "id": "BalladOfHeroRito",
+   "name": "EX Champion Revali's Song",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    -3628.5,
+    516.0,
+    -1810.5
+   ],
+   "kind": "dlc",
+   "dlc": 2
+  },
+  {
+   "id": "BalladOfHeroZora",
+   "name": "EX Champion Mipha's Song",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    2958.5,
+    406.61,
+    133.5
+   ],
+   "kind": "dlc",
+   "dlc": 2
+  },
+  {
+   "id": "BalladOfHeroes",
+   "name": "EX The Champions' Ballad",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    -1026.0,
+    253.08,
+    1794.5
+   ],
+   "kind": "dlc",
+   "dlc": 2
+  },
+  {
+   "id": "BloodyMoonRelief",
+   "name": "Under a Red Moon",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    -2778.84,
+    348.24,
+    206.35
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "Bottle_Mes",
+   "name": "Special Delivery",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    2757.25,
+    199.5,
+    -81.25
+   ],
+   "kind": "side",
+   "existing": 321
+  },
+  {
+   "id": "Carnivorous_Boy",
+   "name": "A Rare Find",
+   "giver": "Trott",
+   "how": "npc",
+   "pos": [
+    -1432.5,
+    137.72,
+    1264.5
+   ],
+   "kind": "side",
+   "existing": 290
+  },
+  {
+   "id": "CarryingBlueFireEXMini",
+   "name": "Locked Mementos",
+   "giver": "Impa",
+   "how": "npc",
+   "pos": [
+    1772.71,
+    229.43,
+    984.31
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "Cliff_Maze",
+   "name": "Trial on the Cliff",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -791.9,
+    271.0,
+    -3533.2
+   ],
+   "kind": "shrine",
+   "existing": 1101
+  },
+  {
+   "id": "CompleteDungeon",
+   "name": "A Gift from the Monks",
+   "place": "Forgotten Temple",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    -1567.36,
+    0.0,
+    -2118.34
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "CursedStatue",
+   "name": "The Cursed Statue",
+   "giver": "Calip",
+   "how": "npc",
+   "pos": [
+    2398.96,
+    118.64,
+    1834.33
+   ],
+   "kind": "shrine",
+   "existing": 417
+  },
+  {
+   "id": "DarkWoods",
+   "name": "Shrouded Shrine",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    157.11,
+    280.79,
+    -3128.88
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "Desert_Maze",
+   "name": "The Desert Labyrinth",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -1798.1,
+    137.6,
+    3397.7
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "DokuroEye",
+   "name": "The Skull's Eye",
+   "giver": "Jerrin",
+   "how": "npc",
+   "pos": [
+    4513.25,
+    353.01,
+    -3157.79
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "DontDamageFlower",
+   "name": "Watch Out for the Flowers",
+   "giver": "Magda",
+   "how": "npc",
+   "pos": [
+    816.8,
+    115.22,
+    836.77
+   ],
+   "kind": "shrine",
+   "existing": 293
+  },
+  {
+   "id": "Drag_Hero",
+   "name": "Forbidden City Entry",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -3820.5,
+    177.0,
+    2907.0
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "Electric_Relic",
+   "name": "Divine Beast Vah Naboris",
+   "giver": "Riju",
+   "how": "npc",
+   "pos": [
+    -3892.04,
+    157.48,
+    2968.14
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "FairyFountain",
+   "name": "Find the Fairy Fountain",
+   "giver": "Pikango",
+   "how": "npc",
+   "pos": [
+    1828.22,
+    218.59,
+    990.14
+   ],
+   "kind": "main",
+   "existing": 1115
+  },
+  {
+   "id": "FindDungeon",
+   "name": "The Isolated Plateau",
+   "giver": "Old Man",
+   "how": "npc",
+   "pos": [
+    -567.5,
+    246.39,
+    1700.0
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "Find_4Relic",
+   "name": "Free the Divine Beasts",
+   "giver": "Impa",
+   "how": "npc",
+   "pos": [
+    1772.71,
+    229.43,
+    984.31
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "Find_Impa",
+   "name": "Seek Out Impa",
+   "giver": "Impa",
+   "how": "npc",
+   "pos": [
+    1772.71,
+    229.43,
+    984.31
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "Fire_Relic",
+   "name": "Divine Beast Vah Rudania",
+   "giver": "Bludo",
+   "how": "npc",
+   "pos": [
+    1713.95,
+    498.05,
+    -2446.92
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "FironeMini_GiantHorse",
+   "name": "Hunt for the Giant Horse",
+   "giver": "Straia",
+   "how": "npc",
+   "pos": [
+    -212.39,
+    128.7,
+    3487.13
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "FironeMini_HeartPond",
+   "name": "A Gift of Nightshade",
+   "giver": "Wabbin",
+   "how": "npc",
+   "pos": [
+    2584.9,
+    290.11,
+    3547.64
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "FironeMini_HorseEnemy",
+   "name": "The Horseback Hoodlums",
+   "giver": "Perosa",
+   "how": "npc",
+   "pos": [
+    516.76,
+    152.98,
+    3453.71
+   ],
+   "kind": "side",
+   "existing": 344
+  },
+  {
+   "id": "FironeMini_TerribleThunder",
+   "name": "Thunder Magnet",
+   "giver": "Cima",
+   "how": "npc",
+   "pos": [
+    1540.08,
+    165.97,
+    3531.94
+   ],
+   "kind": "side",
+   "existing": 347
+  },
+  {
+   "id": "FirstOhenro",
+   "name": "The Lost Pilgrimage",
+   "giver": "Oaki",
+   "how": "npc",
+   "pos": [
+    254.2,
+    280.29,
+    -2258.1
+   ],
+   "kind": "shrine",
+   "existing": 467
+  },
+  {
+   "id": "FirstTower",
+   "name": "Follow the Sheikah Slate",
+   "place": "Shrine of Resurrection",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    -1102.23,
+    0,
+    1880.13
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "FourJewel",
+   "name": "Trial of Thunder",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -2242.55,
+    611.29,
+    -929.9
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "Gaman",
+   "name": "Test of Will",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -1989.44,
+    234.47,
+    1735.32
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "GanonQuest",
+   "name": "Destroy Ganon",
+   "place": "Temple of Time",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    -818.75,
+    258.6,
+    2005.45
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "GerudoMiniJewel",
+   "name": "Tools of the Trade",
+   "giver": "Isha",
+   "how": "npc",
+   "pos": [
+    -3834.85,
+    149.52,
+    2875.26
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Gerudo_CarryIce",
+   "name": "The Perfect Drink",
+   "giver": "Pokki",
+   "how": "npc",
+   "pos": [
+    -3856.82,
+    152.41,
+    2858.19
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "Gerudo_Ch_FindingValetta",
+   "name": "The Search for Barta",
+   "giver": "Barta",
+   "how": "npc",
+   "pos": [
+    -3906.6,
+    149.68,
+    2929.22
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Gerudo_Ch_Helmet",
+   "name": "The Thunder Helm",
+   "giver": "Riju",
+   "how": "npc",
+   "pos": [
+    -3892.04,
+    157.48,
+    2968.14
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "Gerudo_Ch_Poison",
+   "name": "The Mystery Polluter",
+   "giver": "Dalia",
+   "how": "npc",
+   "pos": [
+    -3844.31,
+    148.98,
+    2945.58
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Gerudo_Ch_SandWarm",
+   "name": "Medicinal Molduga",
+   "giver": "Malena",
+   "how": "npc",
+   "pos": [
+    -3855.29,
+    149.47,
+    2898.87
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Gerudo_Ch_SecretClub",
+   "name": "The Secret Club's Secret",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -3789.85,
+    151.76,
+    2930.98
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Gerudo_Ch_SnowBoots",
+   "name": "The Forgotten Sword",
+   "giver": "Bozai",
+   "how": "npc",
+   "pos": [
+    -3800.28,
+    148.99,
+    2835.61
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Gerudo_Ch_SnowMT",
+   "name": "The Eighth Heroine",
+   "giver": "Bozai",
+   "how": "npc",
+   "pos": [
+    -3800.28,
+    148.99,
+    2835.61
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Gerudo_HorseBuyer",
+   "name": "Good-Sized Horse",
+   "giver": "Zyle",
+   "how": "npc",
+   "pos": [
+    -2033.5,
+    157.54,
+    1873.19
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Gerudo_tsukamidake",
+   "name": "Rushroom Rush!",
+   "giver": "Pirou",
+   "how": "npc",
+   "pos": [
+    -2796.56,
+    134.9,
+    2240.07
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Get_MasterSword",
+   "name": "The Hero's Sword",
+   "giver": "The Great Deku Tree",
+   "how": "npc",
+   "pos": [
+    418.51,
+    245.76,
+    -2188.76
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "Giant_ZoraMini",
+   "name": "The Giant of Ralis Pond",
+   "giver": "Torfeau",
+   "how": "npc",
+   "pos": [
+    3300.84,
+    255.66,
+    -505.93
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "GodTree",
+   "name": "Trial of Second Sight",
+   "giver": "Zooki",
+   "how": "npc",
+   "pos": [
+    251.03,
+    285.34,
+    -1979.93
+   ],
+   "kind": "shrine",
+   "existing": 468
+  },
+  {
+   "id": "GoronCamp",
+   "name": "The Gut Check Challenge",
+   "giver": "Bayge",
+   "how": "npc",
+   "pos": [
+    2672.5,
+    469.21,
+    -3467.5
+   ],
+   "kind": "shrine",
+   "existing": 412
+  },
+  {
+   "id": "GoronCityMini_BeatGolem",
+   "name": "The Road to Respect",
+   "giver": "Fugo",
+   "how": "npc",
+   "pos": [
+    1688.42,
+    502.3,
+    -2496.72
+   ],
+   "kind": "side",
+   "existing": 402
+  },
+  {
+   "id": "GoronMini_ImportGem",
+   "name": "The Jewel Trade",
+   "giver": "Ramella",
+   "how": "npc",
+   "pos": [
+    1675.13,
+    488.76,
+    -2430.46
+   ],
+   "kind": "side",
+   "existing": 459
+  },
+  {
+   "id": "GoronMini_WallCrackTBox",
+   "name": "Death Mountain's Secret",
+   "giver": "Dugby",
+   "how": "npc",
+   "pos": [
+    1787.98,
+    581.97,
+    -2244.39
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "GoronsRock",
+   "name": "A Brother's Roast",
+   "giver": "Bladon",
+   "how": "npc",
+   "pos": [
+    1648.5,
+    490.02,
+    -2472.5
+   ],
+   "kind": "side",
+   "existing": 403
+  },
+  {
+   "id": "GotoZoraVillage",
+   "name": "Reach Zora's Domain",
+   "giver": "Sidon",
+   "how": "npc",
+   "pos": [
+    2332.91,
+    119.43,
+    -267.92
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "HateeluMini_Treasure",
+   "name": "The Hero's Cache",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    3746.19,
+    125.42,
+    2629.38
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "HatenoMini_BlueFire",
+   "name": "Robbie's Research",
+   "giver": "Purah",
+   "how": "npc",
+   "pos": [
+    3774.95,
+    357.0,
+    2126.02
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "HatenoMini_CameraBoy",
+   "name": "Sunshroom Sensing",
+   "giver": "Symin",
+   "how": "npc",
+   "pos": [
+    3778.96,
+    356.86,
+    2132.45
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "HatenoMini_DevilSeal",
+   "name": "The Statue's Bargain",
+   "giver": "Horned Statue",
+   "how": "object",
+   "pos": [
+    3286.0,
+    218.0,
+    2198.0
+   ],
+   "kind": "side",
+   "existing": 451
+  },
+  {
+   "id": "HatenoMini_GoatThief",
+   "name": "The Sheep Rustlers",
+   "giver": "Koyin",
+   "how": "npc",
+   "pos": [
+    3621.69,
+    283.36,
+    2098.12
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "HatenoMini_LoveInsects",
+   "name": "A Gift for My Beloved",
+   "giver": "Manny",
+   "how": "npc",
+   "pos": [
+    3418.24,
+    226.84,
+    2121.22
+   ],
+   "kind": "side",
+   "existing": 460
+  },
+  {
+   "id": "HatenoMini_MyHome",
+   "name": "Hylian Homeowner",
+   "giver": "Bolson",
+   "how": "npc",
+   "pos": [
+    3331.22,
+    235.28,
+    2284.61
+   ],
+   "kind": "side",
+   "existing": 798
+  },
+  {
+   "id": "HatenoMini_ThreeTree",
+   "name": "Secret of the Cedars",
+   "place": "Hateno Village",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    3592.74,
+    362.61,
+    2121.85
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "HatenoMini_WeaponMania",
+   "name": "The Weapon Connoisseur",
+   "giver": "Nebb",
+   "how": "npc",
+   "pos": [
+    3352.4,
+    225.55,
+    2138.81
+   ],
+   "kind": "side",
+   "existing": 423
+  },
+  {
+   "id": "HatenoMini_WhiteDragon",
+   "name": "The Spring of Wisdom",
+   "giver": "Medda",
+   "how": "npc",
+   "pos": [
+    3381.11,
+    226.15,
+    2105.53
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "Hateno_SheikPad_PowerUp",
+   "name": "Slated for Upgrades",
+   "giver": "Purah",
+   "how": "npc",
+   "pos": [
+    3774.95,
+    357.0,
+    2126.02
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "HigakkareMini_RedDragon",
+   "name": "The Spring of Power",
+   "place": "East Akkala Stable",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    4227.82,
+    275.29,
+    -2747.77
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "HigakkareMini_StrangeMan",
+   "name": "A Shady Customer",
+   "giver": "Hoz",
+   "how": "npc",
+   "pos": [
+    4243.71,
+    231.44,
+    -2746.65
+   ],
+   "kind": "side",
+   "existing": 416
+  },
+  {
+   "id": "HutagoHatago_Ch_001",
+   "name": "Wild Horses",
+   "giver": "Rensa",
+   "how": "npc",
+   "pos": [
+    1748.38,
+    116.11,
+    1923.67
+   ],
+   "kind": "side",
+   "existing": 292
+  },
+  {
+   "id": "HyruleDepthMini_WhiteHorse",
+   "name": "The Royal White Stallion",
+   "giver": "Toffa",
+   "how": "npc",
+   "pos": [
+    -1439.25,
+    137.72,
+    1278.45
+   ],
+   "kind": "side",
+   "existing": 291
+  },
+  {
+   "id": "HyrulePlainMini_Balloon",
+   "name": "Balloon Flight",
+   "giver": "Shamae",
+   "how": "npc",
+   "pos": [
+    1080.5,
+    127.38,
+    -1125.0
+   ],
+   "kind": "side",
+   "existing": 1191
+  },
+  {
+   "id": "Kakariko_Ch_004",
+   "name": "By Firefly's Light",
+   "giver": "Lasli",
+   "how": "npc",
+   "pos": [
+    1847.65,
+    221.27,
+    969.82
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Kakariko_Ch_005",
+   "name": "Playtime with Cottla",
+   "giver": "Cottla",
+   "how": "npc",
+   "pos": [
+    1870.67,
+    228.35,
+    957.56
+   ],
+   "kind": "side",
+   "existing": 285
+  },
+  {
+   "id": "Kakariko_Ch_006",
+   "name": "Arrows of Burning Heat",
+   "giver": "Rola",
+   "how": "npc",
+   "pos": [
+    1830.49,
+    222.41,
+    1044.89
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Kakariko_Ch_Cooking2",
+   "name": "Cooking with Koko",
+   "giver": "Koko",
+   "how": "npc",
+   "pos": [
+    1825.47,
+    218.49,
+    969.96
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Kakariko_Ch_Cooking3",
+   "name": "Koko Cuisine",
+   "giver": "Koko",
+   "how": "npc",
+   "pos": [
+    1825.47,
+    218.49,
+    969.96
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Kakariko_Ch_Cooking4",
+   "name": "Koko's Specialty",
+   "giver": "Koko",
+   "how": "npc",
+   "pos": [
+    1825.47,
+    218.49,
+    969.96
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Kakariko_Cha_001",
+   "name": "Koko's Kitchen",
+   "giver": "Koko",
+   "how": "npc",
+   "pos": [
+    1825.47,
+    218.49,
+    969.96
+   ],
+   "kind": "side",
+   "existing": 283
+  },
+  {
+   "id": "Kakariko_Cha_003",
+   "name": "Flown the Coop",
+   "giver": "Cado",
+   "how": "npc",
+   "pos": [
+    1808.09,
+    218.86,
+    985.83
+   ],
+   "kind": "side",
+   "existing": 284
+  },
+  {
+   "id": "KnightDoll",
+   "name": "The Seven Heroines",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -2688.6,
+    104.01,
+    2811.2
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "KorokMini_KorokShiren",
+   "name": "The Korok Trials",
+   "giver": "Chio",
+   "how": "npc",
+   "pos": [
+    431.66,
+    250.56,
+    -2139.55
+   ],
+   "kind": "side",
+   "existing": 469
+  },
+  {
+   "id": "KorokMini_RiddleShiren",
+   "name": "Riddles of Hyrule",
+   "giver": "Walton",
+   "how": "npc",
+   "pos": [
+    417.59,
+    334.17,
+    -2180.27
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "KorokMini_RodShiren",
+   "name": "A Freezing Rod",
+   "giver": "Kula",
+   "how": "npc",
+   "pos": [
+    419.28,
+    248.65,
+    -2134.93
+   ],
+   "kind": "side",
+   "existing": 386
+  },
+  {
+   "id": "KorokMini_UMAShiren",
+   "name": "Legendary Rabbit Trial",
+   "giver": "Peeks",
+   "how": "npc",
+   "pos": [
+    441.0,
+    248.56,
+    -2133.05
+   ],
+   "kind": "side",
+   "existing": 387
+  },
+  {
+   "id": "MacuseIseki",
+   "name": "Into the Vortex",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    4524.6,
+    106.77,
+    -2127.5
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "MagneticFld",
+   "name": "The Silent Swordswomen",
+   "place": "Gerudo Desert Gateway",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    -2918.18,
+    142.22,
+    2322.4
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "MarittaMini_BigWhales",
+   "name": "Leviathan Bones",
+   "giver": "Akrah",
+   "how": "npc",
+   "pos": [
+    -1541.84,
+    212.23,
+    -1804.59
+   ],
+   "kind": "side",
+   "existing": 431
+  },
+  {
+   "id": "MinakkareMini_Dragonfly",
+   "name": "Little Sister's Big Request",
+   "giver": "Jana",
+   "how": "npc",
+   "pos": [
+    3133.57,
+    306.78,
+    -1693.04
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "MinamihateeluMini_touzoku",
+   "name": "Misko, the Great Bandit",
+   "giver": "Domidak",
+   "how": "npc",
+   "pos": [
+    1767.48,
+    116.07,
+    1925.15
+   ],
+   "kind": "side",
+   "existing": 296
+  },
+  {
+   "id": "MouthofDragon",
+   "name": "The Serpent's Jaws",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    815.25,
+    117.95,
+    3063.44
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "MtMotelMini_Landscape",
+   "name": "A Landscape of a Stable",
+   "giver": "Ozunda",
+   "how": "npc",
+   "pos": [
+    2607.23,
+    253.85,
+    -1137.91
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "My_Hero",
+   "name": "My Hero",
+   "giver": "Aliza",
+   "how": "npc",
+   "pos": [
+    -1400.0,
+    137.72,
+    1280.0
+   ],
+   "kind": "side",
+   "existing": 289
+  },
+  {
+   "id": "NakedIsland",
+   "name": "Stranded on Eventide",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    4498.17,
+    141.04,
+    3744.34
+   ],
+   "kind": "shrine",
+   "existing": 365
+  },
+  {
+   "id": "Oasis_Drug_Challenge",
+   "name": "An Ice Guy",
+   "giver": "Guy",
+   "how": "npc",
+   "pos": [
+    -3238.62,
+    130.1,
+    2574.56
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "OldKorok_Help",
+   "name": "The Priceless Maracas",
+   "giver": "Hestu",
+   "how": "npc",
+   "pos": [
+    2069.45,
+    188.17,
+    1422.25
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "OneHundred",
+   "name": "Missing in Action",
+   "giver": "Sesami",
+   "how": "npc",
+   "pos": [
+    -2797.53,
+    135.05,
+    2240.97
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "PictureMemory",
+   "name": "Captured Memories",
+   "giver": "Impa",
+   "how": "npc",
+   "pos": [
+    1772.71,
+    229.43,
+    984.31
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "Relief_Landing",
+   "name": "Master of the Wind",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    4151.39,
+    109.13,
+    346.02
+   ],
+   "kind": "shrine",
+   "existing": 399
+  },
+  {
+   "id": "Remains_Fancier",
+   "name": "Guardian Slideshow",
+   "giver": "Loone",
+   "how": "npc",
+   "pos": [
+    104.5,
+    109.3,
+    3825.5
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "RinelSearch",
+   "name": "Lynel Safari",
+   "giver": "Laflat",
+   "how": "npc",
+   "pos": [
+    3328.97,
+    268.46,
+    -532.02
+   ],
+   "kind": "side",
+   "existing": 312
+  },
+  {
+   "id": "RitoMini_Cook",
+   "name": "The Apple of My Eye",
+   "giver": "Juney",
+   "how": "npc",
+   "pos": [
+    -3611.76,
+    289.03,
+    -1849.23
+   ],
+   "kind": "side",
+   "existing": 1490
+  },
+  {
+   "id": "RitoMini_Flint",
+   "name": "The Spark of Romance",
+   "giver": "Jogo",
+   "how": "npc",
+   "pos": [
+    -3605.16,
+    289.12,
+    -1852.43
+   ],
+   "kind": "side",
+   "existing": 1491
+  },
+  {
+   "id": "RitoMini_IceGolem",
+   "name": "Face the Frost Talus",
+   "giver": "Gesane",
+   "how": "npc",
+   "pos": [
+    -3308.27,
+    227.83,
+    -1803.34
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "RitoRabitMountain",
+   "name": "The Bird in the Mountains",
+   "giver": "Molli",
+   "how": "npc",
+   "pos": [
+    -3618.43,
+    320.15,
+    -1797.41
+   ],
+   "kind": "shrine",
+   "existing": 1492
+  },
+  {
+   "id": "RitoSongMystery",
+   "name": "The Ancient Rito Song",
+   "giver": "Bedoli",
+   "how": "npc",
+   "pos": [
+    -3632.6,
+    320.12,
+    -1793.79
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "RitoUmayadoMini_HotRecipe",
+   "name": "Curry for What Ails You",
+   "giver": "Lester",
+   "how": "npc",
+   "pos": [
+    -3267.07,
+    224.6,
+    -1773.77
+   ],
+   "kind": "side",
+   "existing": 1295
+  },
+  {
+   "id": "Rito_BrosRock",
+   "name": "Recital at Warbler's Nest",
+   "giver": "Kheel",
+   "how": "npc",
+   "pos": [
+    -3664.86,
+    321.49,
+    -1775.02
+   ],
+   "kind": "shrine",
+   "existing": 1495
+  },
+  {
+   "id": "Rito_KeelSearch",
+   "name": "Find Kheel",
+   "giver": "Amali",
+   "how": "npc",
+   "pos": [
+    -3668.51,
+    321.49,
+    -1769.96
+   ],
+   "kind": "side",
+   "existing": 1487
+  },
+  {
+   "id": "RiversideMini_CastleWeapon",
+   "name": "The Royal Guard's Gear",
+   "giver": "Parcy",
+   "how": "npc",
+   "pos": [
+    345.0,
+    121.73,
+    1091.5
+   ],
+   "kind": "side",
+   "existing": 875
+  },
+  {
+   "id": "RiversideMini_RoyalRecipe",
+   "name": "A Royal Recipe",
+   "giver": "Gotter",
+   "how": "npc",
+   "pos": [
+    325.82,
+    115.4,
+    1092.5
+   ],
+   "kind": "side",
+   "existing": 876
+  },
+  {
+   "id": "SandStorm",
+   "name": "The Eye of the Sandstorm",
+   "place": "Kara Kara Bazaar",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    -3237.72,
+    128.88,
+    2558.08
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "SanrokuMini_Lizard",
+   "name": "Fireproof Lizard Roundup",
+   "giver": "Kima",
+   "how": "npc",
+   "pos": [
+    1657.35,
+    430.17,
+    -1960.6
+   ],
+   "kind": "side",
+   "existing": 404
+  },
+  {
+   "id": "SearchStone",
+   "name": "A Fragmented Monument",
+   "giver": "Garini",
+   "how": "npc",
+   "pos": [
+    3439.86,
+    114.87,
+    3344.2
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "SecretofObject",
+   "name": "Secret of the Snowy Peaks",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -1418.2,
+    544.4,
+    3448.3
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "SeekerEye",
+   "name": "Cliffside Etchings",
+   "giver": "Geggle",
+   "how": "npc",
+   "pos": [
+    -2912.28,
+    274.78,
+    -551.75
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "SetugenUmayadoMini_Umahonephoto",
+   "name": "Stalhorse: Pictured!",
+   "giver": "Juannelle",
+   "how": "npc",
+   "pos": [
+    -1641.43,
+    339.19,
+    -2561.69
+   ],
+   "kind": "side",
+   "existing": 1105
+  },
+  {
+   "id": "Shadow_Sign",
+   "name": "Sign of the Shadow",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    -3655.84,
+    471.9,
+    1837.15
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "ShieldofKolog",
+   "name": "The Test of Wood",
+   "giver": "Damia",
+   "how": "npc",
+   "pos": [
+    564.99,
+    264.83,
+    -2160.65
+   ],
+   "kind": "shrine",
+   "existing": 466
+  },
+  {
+   "id": "Solitary_Maze",
+   "name": "Trial of the Labyrinth",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    4684.2,
+    51.6,
+    -3658.6
+   ],
+   "kind": "shrine",
+   "existing": 410
+  },
+  {
+   "id": "StatueofZora",
+   "name": "The Ceremonial Song",
+   "giver": "Laruta",
+   "how": "npc",
+   "pos": [
+    3299.29,
+    255.66,
+    -522.49
+   ],
+   "kind": "shrine",
+   "existing": 315
+  },
+  {
+   "id": "StolenBook",
+   "name": "The Stolen Heirloom",
+   "giver": "Dorian",
+   "how": "npc",
+   "pos": [
+    2030.03,
+    284.52,
+    950.26
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "SunazarashiRace",
+   "name": "The Undefeated Champ",
+   "giver": "Tali",
+   "how": "npc",
+   "pos": [
+    -3761.14,
+    154.79,
+    3116.47
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "TabantaBridgeMini_Sundial",
+   "name": "A Gift for the Great Fairy",
+   "giver": "Toren",
+   "how": "npc",
+   "pos": [
+    -2916.0,
+    274.73,
+    -561.0
+   ],
+   "kind": "side",
+   "existing": 854
+  },
+  {
+   "id": "Threebros_giant",
+   "name": "The Three Giant Brothers",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    2637.53,
+    317.17,
+    2834.39
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "Thunder_Sword",
+   "name": "A Song of Storms",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    2081.89,
+    287.42,
+    3226.31
+   ],
+   "kind": "shrine",
+   "existing": 349
+  },
+  {
+   "id": "TreasureHunt01",
+   "name": "EX Strange Mask Rumors",
+   "place": "Woodland Stable",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    1065.67,
+    171.96,
+    -1141.58
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt02",
+   "name": "EX Teleportation Rumors!",
+   "place": "South Akkala Stable",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    3149.83,
+    350.49,
+    -1692.65
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt03",
+   "name": "EX Ancient Horse Rumors",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -738.02,
+    325.31,
+    2026.01
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt04",
+   "name": "EX Royal Guard Rumors",
+   "place": "Riverside Stable",
+   "giver": null,
+   "how": "place",
+   "pos": [
+    339.23,
+    145.31,
+    1095.3
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt_touzoku01",
+   "name": "EX Treasure: Ancient Mask",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -485.85,
+    166.04,
+    1280.91
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt_touzoku02",
+   "name": "EX Treasure: Twilight Relic",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -1396.75,
+    129.19,
+    220.45
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt_touzoku03",
+   "name": "EX Treasure: Fairy Clothes",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -671.36,
+    142.94,
+    208.32
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt_touzoku04",
+   "name": "EX Treasure: Phantasma",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -507.9,
+    144.74,
+    616.26
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt_touzoku05",
+   "name": "EX Treasure: Merchant Hood",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    884.14,
+    183.55,
+    2417.75
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt_touzoku06",
+   "name": "EX Treasure: Garb of Winds",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    -131.32,
+    125.65,
+    3079.92
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt_touzoku07",
+   "name": "EX Treasure: Usurper King",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    1287.08,
+    208.35,
+    2452.65
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TreasureHunt_touzoku08",
+   "name": "EX Treasure: Dark Armor",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    1675.86,
+    212.1,
+    3243.67
+   ],
+   "kind": "dlc",
+   "dlc": 1
+  },
+  {
+   "id": "TwoWheels",
+   "name": "The Two Rings",
+   "giver": "Kass",
+   "how": "npc",
+   "pos": [
+    -1681.68,
+    214.5,
+    51.38
+   ],
+   "kind": "shrine"
+  },
+  {
+   "id": "UMiiMini_GiveCake",
+   "name": "A Parent's Love",
+   "giver": "Hagie",
+   "how": "npc",
+   "pos": [
+    3973.26,
+    235.4,
+    -1570.29
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "UMiiMini_MakeVillage",
+   "name": "From the Ground Up",
+   "giver": "Hudson",
+   "how": "npc",
+   "pos": [
+    3327.28,
+    235.03,
+    2297.52
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "UMiiMini_RichmansHobby",
+   "name": "Hobbies of the Rich",
+   "giver": "Hagie",
+   "how": "npc",
+   "pos": [
+    3973.26,
+    235.4,
+    -1570.29
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "UotoriMini_RecipeSea",
+   "name": "What's for Dinner?",
+   "giver": "Kiana",
+   "how": "npc",
+   "pos": [
+    2884.25,
+    112.44,
+    3413.51
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "UotoriMini_RecoverBay",
+   "name": "Take Back the Sea",
+   "giver": "Sebasto",
+   "how": "npc",
+   "pos": [
+    2884.78,
+    112.44,
+    3414.2
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "UotoriMini_SinkTreasure",
+   "name": "Sunken Treasure",
+   "giver": "Rozel",
+   "how": "npc",
+   "pos": [
+    2850.09,
+    110.21,
+    3455.21
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Water_Relic",
+   "name": "Divine Beast Vah Ruta",
+   "giver": "Muzu",
+   "how": "npc",
+   "pos": [
+    3303.95,
+    256.5,
+    -511.54
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "Wind_Relic",
+   "name": "Divine Beast Vah Medoh",
+   "giver": "Kaneli",
+   "how": "npc",
+   "pos": [
+    -3627.2,
+    323.57,
+    -1830.81
+   ],
+   "kind": "main"
+  },
+  {
+   "id": "ZoraMini_DiveChallenge",
+   "name": "Diving is Beauty!",
+   "giver": "Gruve",
+   "how": "npc",
+   "pos": [
+    3292.2,
+    255.43,
+    -520.38
+   ],
+   "kind": "side",
+   "existing": 314
+  },
+  {
+   "id": "ZoraMini_FlowedWife",
+   "name": "A Wife Washed Away",
+   "giver": "Fronk",
+   "how": "npc",
+   "pos": [
+    3344.32,
+    246.76,
+    -471.8
+   ],
+   "kind": "side",
+   "existing": 316
+  },
+  {
+   "id": "ZoraMini_HarvestingStone",
+   "name": "Luminous Stone Gathering",
+   "giver": "Ledo",
+   "how": "npc",
+   "pos": [
+    3330.65,
+    268.46,
+    -530.09
+   ],
+   "kind": "side",
+   "existing": 319
+  },
+  {
+   "id": "ZoraMini_ReliefSearch",
+   "name": "Zora Stone Monuments",
+   "giver": "Jiahto",
+   "how": "npc",
+   "pos": [
+    3340.25,
+    256.66,
+    -564.31
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "Zora_FlogMini",
+   "name": "Frog Catching",
+   "giver": "Tumbo",
+   "how": "npc",
+   "pos": [
+    3320.59,
+    244.66,
+    -474.01
+   ],
+   "kind": "side",
+   "existing": 318
+  },
+  {
+   "id": "bf2_collabo",
+   "name": "[Xenoblade Chronicles 2]",
+   "giver": null,
+   "how": "trigger",
+   "pos": [
+    128.53,
+    307.5,
+    -2651.5
+   ],
+   "kind": "side"
+  },
+  {
+   "id": "isso_treasure_mini",
+   "name": "Riverbed Reward",
+   "giver": "Izra",
+   "how": "npc",
+   "pos": [
+    881.36,
+    131.31,
+    157.56
+   ],
+   "kind": "side"
+  }
+ ],
+ "dlcChests": [
+  {
+   "hash": 81579026,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Ancient Bridle",
+   "drop": "GameRomHorseReins_10",
+   "pos": [
+    -2295.86,
+    455.02,
+    343.47
+   ],
+   "existing": 11836
+  },
+  {
+   "hash": 408756811,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Midna's Helmet",
+   "drop": "Armor_173_Head",
+   "pos": [
+    -1402.26,
+    113.92,
+    219.36
+   ],
+   "existing": 11848
+  },
+  {
+   "hash": 1244520185,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Phantom Helmet",
+   "drop": "Armor_171_Head",
+   "pos": [
+    -1200.47,
+    152.65,
+    1229.24
+   ],
+   "existing": 11841
+  },
+  {
+   "hash": 759164510,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Bomb Arrow x5",
+   "drop": "Obj_BombArrow_A_02",
+   "pos": [
+    -1451.49,
+    317.61,
+    2028.07
+   ],
+   "existing": 9487
+  },
+  {
+   "hash": 406427291,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Phantom Armor",
+   "drop": "Armor_171_Upper",
+   "pos": [
+    -245.8,
+    124.56,
+    -86.58
+   ],
+   "existing": 11840
+  },
+  {
+   "hash": 1584160939,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Royal Guard Uniform",
+   "drop": "Armor_179_Upper",
+   "pos": [
+    -175.26,
+    211.33,
+    -889.62
+   ],
+   "existing": 11846
+  },
+  {
+   "hash": 2392017071,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Royal Guard Cap",
+   "drop": "Armor_179_Head",
+   "pos": [
+    -253.98,
+    336.07,
+    -1080.48
+   ],
+   "existing": 11845
+  },
+  {
+   "hash": 3010491383,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Tingle's Shirt",
+   "drop": "Armor_174_Upper",
+   "pos": [
+    -681.15,
+    119.72,
+    -813.12
+   ],
+   "existing": 11842
+  },
+  {
+   "hash": 3754531071,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Royal Guard Boots",
+   "drop": "Armor_179_Lower",
+   "pos": [
+    -360.58,
+    182.44,
+    -855.37
+   ],
+   "existing": 11847
+  },
+  {
+   "hash": 135294763,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Tingle's Hood",
+   "drop": "Armor_174_Head",
+   "pos": [
+    -744.04,
+    132.58,
+    890.13
+   ],
+   "existing": 11839
+  },
+  {
+   "hash": 1243080332,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Phantom Greaves",
+   "drop": "Armor_171_Lower",
+   "pos": [
+    -507.27,
+    130.0,
+    609.95
+   ],
+   "existing": 30336
+  },
+  {
+   "hash": 2377598779,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Tingle's Tights",
+   "drop": "Armor_174_Lower",
+   "pos": [
+    -31.15,
+    129.91,
+    211.62
+   ],
+   "existing": 11843
+  },
+  {
+   "hash": 473644037,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    -671.65,
+    171.79,
+    1522.61
+   ],
+   "existing": 9436
+  },
+  {
+   "hash": 1305595304,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Majora's Mask",
+   "drop": "Armor_172_Head",
+   "pos": [
+    -448.19,
+    136.21,
+    1281.96
+   ],
+   "existing": 30337
+  },
+  {
+   "hash": 4093217196,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Nintendo Switch Shirt",
+   "drop": "Armor_170_Upper",
+   "pos": [
+    -468.57,
+    183.24,
+    2007.5
+   ],
+   "existing": 9016
+  },
+  {
+   "hash": 2842888344,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Island Lobster Shirt",
+   "drop": "Armor_175_Upper",
+   "pos": [
+    -164.33,
+    97.54,
+    3078.89
+   ],
+   "existing": 11856
+  },
+  {
+   "hash": 4123439869,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Korok Mask",
+   "drop": "Armor_176_Head",
+   "pos": [
+    721.69,
+    280.22,
+    -1847.74
+   ],
+   "existing": 11838
+  },
+  {
+   "hash": 1777801040,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Ravio's Hood",
+   "drop": "Armor_177_Head",
+   "pos": [
+    830.43,
+    134.03,
+    2438.38
+   ],
+   "existing": 30341
+  },
+  {
+   "hash": 849119559,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Ancient Saddle",
+   "drop": "GameRomHorseSaddle_10",
+   "pos": [
+    812.99,
+    185.91,
+    3700.97
+   ],
+   "existing": 11837
+  },
+  {
+   "hash": 449459230,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Zant's Helmet",
+   "drop": "Armor_178_Head",
+   "pos": [
+    1288.07,
+    188.3,
+    2451.24
+   ],
+   "existing": 30342
+  },
+  {
+   "hash": 142903821,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Phantom Ganon Skull",
+   "drop": "Armor_180_Head",
+   "pos": [
+    1669.19,
+    209.34,
+    3163.02
+   ],
+   "existing": 30345
+  },
+  {
+   "hash": 1174572224,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Phantom Ganon Armor",
+   "drop": "Armor_180_Upper",
+   "pos": [
+    1026.21,
+    119.18,
+    3239.89
+   ],
+   "existing": 30343
+  },
+  {
+   "hash": 2234779324,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc",
+   "item": "Phantom Ganon Greaves",
+   "drop": "Armor_180_Lower",
+   "pos": [
+    1832.85,
+    160.08,
+    3355.49
+   ],
+   "existing": 30344
+  },
+  {
+   "hash": 3048637654,
+   "actor": "TBox_Field_Iron_NoReaction_Aoc_long",
+   "item": "Travel Medallion",
+   "drop": "Obj_WarpDLC",
+   "pos": [
+    4655.0,
+    155.5,
+    -3560.02
+   ],
+   "existing": 11844
+  }
+ ],
+ "collabChests": [
+  {
+   "hash": 1367988891,
+   "actor": "TBox_Field_Iron_NoReaction_Collabo",
+   "item": "Salvager Trousers",
+   "drop": "Armor_185_Lower",
+   "pos": [
+    -2605.0,
+    583.0,
+    -2652.0
+   ]
+  },
+  {
+   "hash": 3715709569,
+   "actor": "TBox_Field_Iron_NoReaction_Collabo",
+   "item": "Salvager Headwear",
+   "drop": "Armor_185_Head",
+   "pos": [
+    126.03,
+    92.65,
+    2710.94
+   ]
+  },
+  {
+   "hash": 696414052,
+   "actor": "TBox_Field_Iron_NoReaction_Collabo",
+   "item": "Salvager Vest",
+   "drop": "Armor_185_Upper",
+   "pos": [
+    3636.0,
+    302.0,
+    -3520.0
+   ]
+  }
+ ],
+ "masterChests": [
+  {
+   "hash": 3090346856,
+   "actor": "TBox_Field_Iron",
+   "item": "Swallow Bow",
+   "drop": "Weapon_Bow_016",
+   "pos": [
+    -3509.7,
+    400.9,
+    -1121.2
+   ]
+  },
+  {
+   "hash": 2123040883,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Bow",
+   "drop": "Weapon_Bow_036",
+   "pos": [
+    -3056.3,
+    271.5,
+    -572.7
+   ]
+  },
+  {
+   "hash": 3884079561,
+   "actor": "TBox_Field_Iron",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    -3178.8,
+    271.63,
+    -566.0
+   ]
+  },
+  {
+   "hash": 1680416200,
+   "actor": "TBox_Field_Iron",
+   "item": "Moonlight Scimitar",
+   "drop": "Weapon_Sword_030",
+   "pos": [
+    -3667.6,
+    231.5,
+    1896.2
+   ]
+  },
+  {
+   "hash": 1794283002,
+   "actor": "TBox_Field_Iron",
+   "item": "Topaz",
+   "drop": "Item_Ore_D",
+   "pos": [
+    -3671.2,
+    238.7,
+    1871.3
+   ]
+  },
+  {
+   "hash": 278435547,
+   "actor": "TBox_Field_Wood",
+   "item": "Sapphire",
+   "drop": "Item_Ore_C",
+   "pos": [
+    -2238.6,
+    486.0,
+    -2175.4
+   ]
+  },
+  {
+   "hash": 422501104,
+   "actor": "TBox_Field_Iron",
+   "item": "Feathered Edge",
+   "drop": "Weapon_Sword_031",
+   "pos": [
+    -2950.2,
+    375.5,
+    -2142.8
+   ]
+  },
+  {
+   "hash": 873002914,
+   "actor": "TBox_Field_Iron",
+   "item": "Feathered Spear",
+   "drop": "Weapon_Spear_032",
+   "pos": [
+    -2204.5,
+    506.5,
+    -2112.2
+   ]
+  },
+  {
+   "hash": 1125107508,
+   "actor": "TBox_Field_Wood",
+   "item": "Sapphire",
+   "drop": "Item_Ore_C",
+   "pos": [
+    -2918.4,
+    379.7,
+    -2119.4
+   ]
+  },
+  {
+   "hash": 1766076031,
+   "actor": "TBox_Field_Wood",
+   "item": "Kite Shield",
+   "drop": "Weapon_Shield_042",
+   "pos": [
+    -2803.8,
+    506.08,
+    -2375.2
+   ]
+  },
+  {
+   "hash": 4272592660,
+   "actor": "TBox_Field_Wood",
+   "item": "Blizzard Rod",
+   "drop": "Weapon_Sword_049",
+   "pos": [
+    -2735.3,
+    375.1,
+    -1964.9
+   ]
+  },
+  {
+   "hash": 1326734489,
+   "actor": "TBox_Field_Iron",
+   "item": "Edge of Duality",
+   "drop": "Weapon_Lsword_055",
+   "pos": [
+    -2672.4,
+    339.8,
+    -895.6
+   ]
+  },
+  {
+   "hash": 725308796,
+   "actor": "TBox_Field_Wood",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    -2132.5,
+    421.0,
+    2460.0
+   ]
+  },
+  {
+   "hash": 2989622470,
+   "actor": "TBox_Field_Iron",
+   "item": "Gerudo Spear",
+   "drop": "Weapon_Spear_029",
+   "pos": [
+    -2148.5,
+    427.0,
+    2443.5
+   ]
+  },
+  {
+   "hash": 1370307555,
+   "actor": "TBox_Field_Wood",
+   "item": "Falcon Bow",
+   "drop": "Weapon_Bow_017",
+   "pos": [
+    -1705.0,
+    306.59,
+    -870.0
+   ]
+  },
+  {
+   "hash": 2194167583,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Guard's Claymore",
+   "drop": "Weapon_Lsword_047",
+   "pos": [
+    -1062.8,
+    146.3,
+    -497.7
+   ]
+  },
+  {
+   "hash": 3054835428,
+   "actor": "TBox_Field_Wood",
+   "item": "Sapphire",
+   "drop": "Item_Ore_C",
+   "pos": [
+    -1726.56,
+    299.59,
+    -879.62
+   ]
+  },
+  {
+   "hash": 3239192178,
+   "actor": "TBox_Field_Wood",
+   "item": "Diamond",
+   "drop": "Item_Ore_A",
+   "pos": [
+    -1111.6,
+    147.5,
+    -456.5
+   ]
+  },
+  {
+   "hash": 1930580661,
+   "actor": "TBox_Field_Iron",
+   "item": "Gerudo Scimitar",
+   "drop": "Weapon_Sword_029",
+   "pos": [
+    -1318.1,
+    115.0,
+    773.6
+   ]
+  },
+  {
+   "hash": 3102932533,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Bow",
+   "drop": "Weapon_Bow_036",
+   "pos": [
+    -1685.8,
+    207.1,
+    106.5
+   ]
+  },
+  {
+   "hash": 3488992931,
+   "actor": "TBox_Field_Iron",
+   "item": "Topaz",
+   "drop": "Item_Ore_D",
+   "pos": [
+    -1693.5,
+    206.6,
+    158.7
+   ]
+  },
+  {
+   "hash": 695521123,
+   "actor": "TBox_Field_Iron",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    -1592.9,
+    136.39,
+    1000.8
+   ]
+  },
+  {
+   "hash": 773393274,
+   "actor": "TBox_Field_Iron",
+   "item": "Diamond",
+   "drop": "Item_Ore_A",
+   "pos": [
+    -1701.8,
+    106.87,
+    1579.7
+   ]
+  },
+  {
+   "hash": 1495153644,
+   "actor": "TBox_Field_Iron",
+   "item": "Diamond",
+   "drop": "Item_Ore_A",
+   "pos": [
+    -1646.8,
+    111.48,
+    1549.7
+   ]
+  },
+  {
+   "hash": 1584660469,
+   "actor": "TBox_Field_Iron",
+   "item": "Knight's Shield",
+   "drop": "Weapon_Shield_003",
+   "pos": [
+    -1147.0,
+    144.2,
+    1047.1
+   ]
+  },
+  {
+   "hash": 1633197501,
+   "actor": "TBox_Field_Iron",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    -1474.5,
+    158.59,
+    1839.5
+   ]
+  },
+  {
+   "hash": 2961022681,
+   "actor": "TBox_Field_Wood",
+   "item": "Radiant Shield",
+   "drop": "Weapon_Shield_036",
+   "pos": [
+    -1620.8,
+    136.05,
+    1036.3
+   ]
+  },
+  {
+   "hash": 3071302336,
+   "actor": "TBox_Field_Wood",
+   "item": "Gerudo Shield",
+   "drop": "Weapon_Shield_026",
+   "pos": [
+    -1691.0,
+    134.9,
+    1544.2
+   ]
+  },
+  {
+   "hash": 3222760022,
+   "actor": "TBox_Field_Wood",
+   "item": "Sapphire",
+   "drop": "Item_Ore_C",
+   "pos": [
+    -1109.7,
+    143.4,
+    984.8
+   ]
+  },
+  {
+   "hash": 3382781565,
+   "actor": "TBox_Field_Iron",
+   "item": "Gerudo Shield",
+   "drop": "Weapon_Shield_026",
+   "pos": [
+    -1654.6,
+    97.2,
+    1958.2
+   ]
+  },
+  {
+   "hash": 3908874605,
+   "actor": "TBox_Field_Iron",
+   "item": "Golden Claymore",
+   "drop": "Weapon_Lsword_029",
+   "pos": [
+    -1478.55,
+    108.25,
+    1812.99
+   ]
+  },
+  {
+   "hash": 4058480684,
+   "actor": "TBox_Field_Wood",
+   "item": "Soldier's Bow",
+   "drop": "Weapon_Bow_002",
+   "pos": [
+    -1348.0,
+    249.2,
+    1870.3
+   ]
+  },
+  {
+   "hash": 4166110215,
+   "actor": "TBox_Field_Wood",
+   "item": "Golden Bow",
+   "drop": "Weapon_Bow_015",
+   "pos": [
+    -1783.0,
+    106.86,
+    1493.0
+   ]
+  },
+  {
+   "hash": 1116013200,
+   "actor": "TBox_Field_Iron",
+   "item": "Knight's Claymore",
+   "drop": "Weapon_Lsword_003",
+   "pos": [
+    -1111.5,
+    265.6,
+    2132.5
+   ]
+  },
+  {
+   "hash": 1272405920,
+   "actor": "TBox_Field_Wood",
+   "item": "Soldier's Shield",
+   "drop": "Weapon_Shield_002",
+   "pos": [
+    -1060.29,
+    249.2,
+    2021.44
+   ]
+  },
+  {
+   "hash": 1613917961,
+   "actor": "TBox_Field_Wood",
+   "item": "Royal Guard's Sword",
+   "drop": "Weapon_Sword_047",
+   "pos": [
+    -615.5,
+    125.85,
+    -650.0
+   ]
+  },
+  {
+   "hash": 2276860653,
+   "actor": "TBox_Field_Iron",
+   "item": "Knight's Claymore",
+   "drop": "Weapon_Lsword_003",
+   "pos": [
+    -771.5,
+    171.33,
+    300.0
+   ]
+  },
+  {
+   "hash": 2056288946,
+   "actor": "TBox_Field_Wood",
+   "item": "Soldier's Broadsword",
+   "drop": "Weapon_Sword_002",
+   "pos": [
+    -613.4,
+    162.9,
+    1563.0
+   ]
+  },
+  {
+   "hash": 3841257233,
+   "actor": "TBox_Field_Wood",
+   "item": "Knight's Broadsword",
+   "drop": "Weapon_Sword_003",
+   "pos": [
+    -383.5,
+    192.57,
+    1758.5
+   ]
+  },
+  {
+   "hash": 2170253242,
+   "actor": "TBox_Field_Iron",
+   "item": "Knight's Halberd",
+   "drop": "Weapon_Spear_003",
+   "pos": [
+    -76.64,
+    157.54,
+    2383.04
+   ]
+  },
+  {
+   "hash": 328352811,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Guard's Bow",
+   "drop": "Weapon_Bow_033",
+   "pos": [
+    366.44,
+    128.13,
+    -1165.96
+   ]
+  },
+  {
+   "hash": 2772519871,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Guard's Spear",
+   "drop": "Weapon_Spear_047",
+   "pos": [
+    491.84,
+    139.57,
+    -508.22
+   ]
+  },
+  {
+   "hash": 3527834409,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Guard's Shield",
+   "drop": "Weapon_Shield_033",
+   "pos": [
+    249.87,
+    127.68,
+    -709.32
+   ]
+  },
+  {
+   "hash": 974581977,
+   "actor": "TBox_Field_Wood",
+   "item": "Throwing Spear",
+   "drop": "Weapon_Spear_030",
+   "pos": [
+    978.5,
+    149.28,
+    968.5
+   ]
+  },
+  {
+   "hash": 2719018821,
+   "actor": "TBox_Field_Iron",
+   "item": "Serpentine Spear",
+   "drop": "Weapon_Spear_037",
+   "pos": [
+    679.58,
+    118.93,
+    995.68
+   ]
+  },
+  {
+   "hash": 3575111635,
+   "actor": "TBox_Field_Iron",
+   "item": "Double Axe",
+   "drop": "Weapon_Lsword_030",
+   "pos": [
+    810.48,
+    147.79,
+    -18.63
+   ]
+  },
+  {
+   "hash": 562547623,
+   "actor": "TBox_Field_Iron",
+   "item": "Iron Sledgehammer",
+   "drop": "Weapon_Lsword_031",
+   "pos": [
+    122.0,
+    149.0,
+    1586.3
+   ]
+  },
+  {
+   "hash": 652873662,
+   "actor": "TBox_Field_Wood",
+   "item": "Shield of the Mind's Eye",
+   "drop": "Weapon_Shield_041",
+   "pos": [
+    1107.1,
+    142.52,
+    1833.33
+   ]
+  },
+  {
+   "hash": 2215561456,
+   "actor": "TBox_Field_Iron",
+   "item": "Soldier's Shield",
+   "drop": "Weapon_Shield_002",
+   "pos": [
+    268.6,
+    115.2,
+    1636.2
+   ]
+  },
+  {
+   "hash": 2973292086,
+   "actor": "TBox_Field_Iron",
+   "item": "Knight's Bow",
+   "drop": "Weapon_Bow_035",
+   "pos": [
+    319.78,
+    128.14,
+    1292.52
+   ]
+  },
+  {
+   "hash": 1594546169,
+   "actor": "TBox_Field_Wood",
+   "item": "Knight's Halberd",
+   "drop": "Weapon_Spear_003",
+   "pos": [
+    61.3,
+    127.0,
+    2067.0
+   ]
+  },
+  {
+   "hash": 1498602253,
+   "actor": "TBox_Field_Wood",
+   "item": "Topaz",
+   "drop": "Item_Ore_D",
+   "pos": [
+    127.5,
+    199.83,
+    3005.0
+   ]
+  },
+  {
+   "hash": 1894318025,
+   "actor": "TBox_Field_Iron",
+   "item": "Fire Rod",
+   "drop": "Weapon_Sword_060",
+   "pos": [
+    123.3,
+    195.82,
+    3023.06
+   ]
+  },
+  {
+   "hash": 3763855960,
+   "actor": "TBox_Field_Iron",
+   "item": "Demon Carver",
+   "drop": "Weapon_Sword_073",
+   "pos": [
+    587.0,
+    170.38,
+    3738.5
+   ]
+  },
+  {
+   "hash": 1382540366,
+   "actor": "TBox_Field_Wood",
+   "item": "Forest Dweller's Sword",
+   "drop": "Weapon_Sword_025",
+   "pos": [
+    1039.23,
+    265.18,
+    -1398.27
+   ]
+  },
+  {
+   "hash": 3137618299,
+   "actor": "TBox_Field_Wood",
+   "item": "Sapphire",
+   "drop": "Item_Ore_C",
+   "pos": [
+    1020.5,
+    275.11,
+    -1397.5
+   ]
+  },
+  {
+   "hash": 232214255,
+   "actor": "TBox_Field_Iron",
+   "item": "Knight's Bow",
+   "drop": "Weapon_Bow_035",
+   "pos": [
+    1307.5,
+    130.32,
+    -685.5
+   ]
+  },
+  {
+   "hash": 2299645687,
+   "actor": "TBox_Field_Iron",
+   "item": "Soldier's Broadsword",
+   "drop": "Weapon_Sword_002",
+   "pos": [
+    1649.56,
+    182.68,
+    1895.55
+   ]
+  },
+  {
+   "hash": 4039997011,
+   "actor": "TBox_Field_Iron",
+   "item": "Boomerang",
+   "drop": "Weapon_Sword_051",
+   "pos": [
+    1804.0,
+    133.42,
+    1525.5
+   ]
+  },
+  {
+   "hash": 520058780,
+   "actor": "TBox_Field_Iron",
+   "item": "Soldier's Claymore",
+   "drop": "Weapon_Lsword_002",
+   "pos": [
+    1711.0,
+    115.41,
+    2171.0
+   ]
+  },
+  {
+   "hash": 1777878794,
+   "actor": "TBox_Field_Iron",
+   "item": "Soldier's Spear",
+   "drop": "Weapon_Spear_002",
+   "pos": [
+    1650.0,
+    115.0,
+    2027.0
+   ]
+  },
+  {
+   "hash": 10976894,
+   "actor": "TBox_Field_Iron",
+   "item": "Thunderblade",
+   "drop": "Weapon_Sword_035",
+   "pos": [
+    1843.5,
+    146.36,
+    3609.0
+   ]
+  },
+  {
+   "hash": 392677133,
+   "actor": "TBox_Field_Wood",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    1315.5,
+    243.5,
+    3180.5
+   ]
+  },
+  {
+   "hash": 848370940,
+   "actor": "TBox_Field_Wood",
+   "item": "Sapphire",
+   "drop": "Item_Ore_C",
+   "pos": [
+    1791.5,
+    193.35,
+    3036.0
+   ]
+  },
+  {
+   "hash": 1123805299,
+   "actor": "TBox_Field_Wood",
+   "item": "Topaz",
+   "drop": "Item_Ore_D",
+   "pos": [
+    1700.0,
+    166.92,
+    3494.0
+   ]
+  },
+  {
+   "hash": 1167469674,
+   "actor": "TBox_Field_Iron",
+   "item": "Forest Dweller's Bow",
+   "drop": "Weapon_Bow_013",
+   "pos": [
+    1809.0,
+    182.41,
+    3189.5
+   ]
+  },
+  {
+   "hash": 1478906314,
+   "actor": "TBox_Field_Iron",
+   "item": "Great Thunderblade",
+   "drop": "Weapon_Lsword_035",
+   "pos": [
+    1777.0,
+    197.86,
+    3027.0
+   ]
+  },
+  {
+   "hash": 1616967579,
+   "actor": "TBox_Field_Wood",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    1830.0,
+    137.84,
+    3611.0
+   ]
+  },
+  {
+   "hash": 2059226658,
+   "actor": "TBox_Field_Iron",
+   "item": "Giant Boomerang",
+   "drop": "Weapon_Lsword_051",
+   "pos": [
+    1631.0,
+    216.78,
+    3301.0
+   ]
+  },
+  {
+   "hash": 2110818875,
+   "actor": "TBox_Field_Iron",
+   "item": "Forest Dweller's Spear",
+   "drop": "Weapon_Spear_025",
+   "pos": [
+    1665.0,
+    312.0,
+    3150.5
+   ]
+  },
+  {
+   "hash": 2279135900,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Shield",
+   "drop": "Weapon_Shield_022",
+   "pos": [
+    1040.5,
+    130.44,
+    3226.0
+   ]
+  },
+  {
+   "hash": 2711765565,
+   "actor": "TBox_Field_Iron",
+   "item": "Vicious Sickle",
+   "drop": "Weapon_Sword_053",
+   "pos": [
+    1298.0,
+    240.0,
+    3179.0
+   ]
+  },
+  {
+   "hash": 2793753996,
+   "actor": "TBox_Field_Iron",
+   "item": "Thunderspear",
+   "drop": "Weapon_Spear_035",
+   "pos": [
+    1795.0,
+    140.89,
+    3289.0
+   ]
+  },
+  {
+   "hash": 3102980308,
+   "actor": "TBox_Field_Iron",
+   "item": "Forest Dweller's Shield",
+   "drop": "Weapon_Shield_023",
+   "pos": [
+    1790.5,
+    182.39,
+    3180.5
+   ]
+  },
+  {
+   "hash": 3820232600,
+   "actor": "TBox_Field_Wood",
+   "item": "Lightning Rod",
+   "drop": "Weapon_Sword_062",
+   "pos": [
+    1640.5,
+    131.59,
+    3366.5
+   ]
+  },
+  {
+   "hash": 3921992523,
+   "actor": "TBox_Field_Iron",
+   "item": "Thunderstorm Rod",
+   "drop": "Weapon_Sword_050",
+   "pos": [
+    1941.0,
+    257.0,
+    3282.5
+   ]
+  },
+  {
+   "hash": 4041206282,
+   "actor": "TBox_Field_Wood",
+   "item": "Duplex Bow",
+   "drop": "Weapon_Bow_040",
+   "pos": [
+    1786.5,
+    165.89,
+    3466.0
+   ]
+  },
+  {
+   "hash": 1347548770,
+   "actor": "TBox_Field_Iron",
+   "item": "Stone Smasher",
+   "drop": "Weapon_Lsword_037",
+   "pos": [
+    2054.29,
+    475.68,
+    -1363.96
+   ]
+  },
+  {
+   "hash": 3107083095,
+   "actor": "TBox_Field_Wood",
+   "item": "Sapphire",
+   "drop": "Item_Ore_C",
+   "pos": [
+    2073.99,
+    454.06,
+    -1394.11
+   ]
+  },
+  {
+   "hash": 20632817,
+   "actor": "TBox_Field_Iron",
+   "item": "Silver Shield",
+   "drop": "Weapon_Shield_025",
+   "pos": [
+    2788.0,
+    184.33,
+    -265.0
+   ]
+  },
+  {
+   "hash": 2139859020,
+   "actor": "TBox_Field_Iron",
+   "item": "Zora Sword",
+   "drop": "Weapon_Sword_027",
+   "pos": [
+    2696.5,
+    164.94,
+    -361.5
+   ]
+  },
+  {
+   "hash": 2560994464,
+   "actor": "TBox_Field_Iron",
+   "item": "Silverscale Spear",
+   "drop": "Weapon_Spear_028",
+   "pos": [
+    2284.5,
+    115.71,
+    -247.0
+   ]
+  },
+  {
+   "hash": 3790552559,
+   "actor": "TBox_Field_Iron",
+   "item": "Zora Spear",
+   "drop": "Weapon_Spear_027",
+   "pos": [
+    2447.0,
+    138.92,
+    -251.0
+   ]
+  },
+  {
+   "hash": 266157088,
+   "actor": "TBox_Field_Wood",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    2103.0,
+    209.39,
+    132.0
+   ]
+  },
+  {
+   "hash": 1979810948,
+   "actor": "TBox_Field_Iron",
+   "item": "Ice Rod",
+   "drop": "Weapon_Sword_061",
+   "pos": [
+    2087.5,
+    198.82,
+    124.0
+   ]
+  },
+  {
+   "hash": 2674008497,
+   "actor": "TBox_Field_Iron",
+   "item": "Silver Bow",
+   "drop": "Weapon_Bow_014",
+   "pos": [
+    2813.02,
+    183.45,
+    -15.92
+   ]
+  },
+  {
+   "hash": 2353666242,
+   "actor": "TBox_Field_Wood",
+   "item": "Royal Broadsword",
+   "drop": "Weapon_Sword_024",
+   "pos": [
+    2675.5,
+    276.93,
+    1385.5
+   ]
+  },
+  {
+   "hash": 4230016077,
+   "actor": "TBox_Field_Iron",
+   "item": "Phrenic Bow",
+   "drop": "Weapon_Bow_029",
+   "pos": [
+    2257.5,
+    238.0,
+    1375.5
+   ]
+  },
+  {
+   "hash": 2243965962,
+   "actor": "TBox_Field_Iron",
+   "item": "Eightfold Longblade",
+   "drop": "Weapon_Lsword_041",
+   "pos": [
+    2910.9,
+    265.8,
+    1993.8
+   ]
+  },
+  {
+   "hash": 382308894,
+   "actor": "TBox_Field_Iron",
+   "item": "Flameblade",
+   "drop": "Weapon_Sword_033",
+   "pos": [
+    3775.5,
+    219.0,
+    -1231.0
+   ]
+  },
+  {
+   "hash": 558118130,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Claymore",
+   "drop": "Weapon_Lsword_024",
+   "pos": [
+    3187.0,
+    395.42,
+    -1422.0
+   ]
+  },
+  {
+   "hash": 837372312,
+   "actor": "TBox_Field_Wood",
+   "item": "Topaz",
+   "drop": "Item_Ore_D",
+   "pos": [
+    3653.0,
+    260.5,
+    -1243.5
+   ]
+  },
+  {
+   "hash": 914656641,
+   "actor": "TBox_Field_Iron",
+   "item": "Stone Smasher",
+   "drop": "Weapon_Lsword_037",
+   "pos": [
+    3689.4,
+    341.0,
+    -991.8
+   ]
+  },
+  {
+   "hash": 1099152663,
+   "actor": "TBox_Field_Iron",
+   "item": "Great Frostblade",
+   "drop": "Weapon_Lsword_034",
+   "pos": [
+    3026.5,
+    388.42,
+    -1247.5
+   ]
+  },
+  {
+   "hash": 1190033678,
+   "actor": "TBox_Field_Wood",
+   "item": "Diamond",
+   "drop": "Item_Ore_A",
+   "pos": [
+    3263.1,
+    439.4,
+    -1801.4
+   ]
+  },
+  {
+   "hash": 1752755875,
+   "actor": "TBox_Field_Iron",
+   "item": "Flamespear",
+   "drop": "Weapon_Spear_033",
+   "pos": [
+    3672.5,
+    254.5,
+    -1230.0
+   ]
+  },
+  {
+   "hash": 2411774884,
+   "actor": "TBox_Field_Iron",
+   "item": "Meteor Rod",
+   "drop": "Weapon_Sword_048",
+   "pos": [
+    3706.0,
+    195.0,
+    -1232.5
+   ]
+  },
+  {
+   "hash": 2833258530,
+   "actor": "TBox_Field_Wood",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    3734.0,
+    199.35,
+    -1229.0
+   ]
+  },
+  {
+   "hash": 2945309755,
+   "actor": "TBox_Field_Wood",
+   "item": "Knight's Broadsword",
+   "drop": "Weapon_Sword_003",
+   "pos": [
+    3610.5,
+    343.44,
+    -1026.0
+   ]
+  },
+  {
+   "hash": 3338410485,
+   "actor": "TBox_Field_Wood",
+   "item": "Royal Broadsword",
+   "drop": "Weapon_Sword_024",
+   "pos": [
+    3257.8,
+    417.14,
+    -1878.8
+   ]
+  },
+  {
+   "hash": 3632983213,
+   "actor": "TBox_Field_Iron",
+   "item": "Drillshaft",
+   "drop": "Weapon_Spear_031",
+   "pos": [
+    3860.0,
+    344.44,
+    -1110.0
+   ]
+  },
+  {
+   "hash": 158219254,
+   "actor": "TBox_Field_Iron",
+   "item": "Soldier's Bow",
+   "drop": "Weapon_Bow_002",
+   "pos": [
+    3577.0,
+    328.85,
+    -567.0
+   ]
+  },
+  {
+   "hash": 574842933,
+   "actor": "TBox_Field_Iron",
+   "item": "Silver Shield",
+   "drop": "Weapon_Shield_025",
+   "pos": [
+    3545.5,
+    505.35,
+    -966.5
+   ]
+  },
+  {
+   "hash": 674475238,
+   "actor": "TBox_Field_Wood",
+   "item": "Ruby",
+   "drop": "Item_Ore_B",
+   "pos": [
+    3382.0,
+    457.78,
+    -750.5
+   ]
+  },
+  {
+   "hash": 1378458810,
+   "actor": "TBox_Field_Iron",
+   "item": "Great Flameblade",
+   "drop": "Weapon_Lsword_033",
+   "pos": [
+    3697.5,
+    329.39,
+    -880.8
+   ]
+  },
+  {
+   "hash": 1597283440,
+   "actor": "TBox_Field_Wood",
+   "item": "Opal",
+   "drop": "Item_Ore_E",
+   "pos": [
+    3597.0,
+    296.96,
+    -553.5
+   ]
+  },
+  {
+   "hash": 2160727846,
+   "actor": "TBox_Field_Iron",
+   "item": "Silver Bow",
+   "drop": "Weapon_Bow_014",
+   "pos": [
+    3714.0,
+    520.35,
+    -599.5
+   ]
+  },
+  {
+   "hash": 2534059605,
+   "actor": "TBox_Field_Iron",
+   "item": "Silver Longsword",
+   "drop": "Weapon_Lsword_027",
+   "pos": [
+    3081.0,
+    348.35,
+    -472.5
+   ]
+  },
+  {
+   "hash": 2973433180,
+   "actor": "TBox_Field_Iron",
+   "item": "Frostspear",
+   "drop": "Weapon_Spear_034",
+   "pos": [
+    3062.5,
+    266.41,
+    12.5
+   ]
+  },
+  {
+   "hash": 3096228215,
+   "actor": "TBox_Field_Iron",
+   "item": "Zora Spear",
+   "drop": "Weapon_Spear_027",
+   "pos": [
+    3372.5,
+    282.34,
+    -692.5
+   ]
+  },
+  {
+   "hash": 3325939146,
+   "actor": "TBox_Field_Wood",
+   "item": "Diamond",
+   "drop": "Item_Ore_A",
+   "pos": [
+    3402.0,
+    407.31,
+    -767.5
+   ]
+  },
+  {
+   "hash": 3497027845,
+   "actor": "TBox_Field_Iron",
+   "item": "Royal Halberd",
+   "drop": "Weapon_Spear_024",
+   "pos": [
+    3378.5,
+    397.86,
+    -776.5
+   ]
+  },
+  {
+   "hash": 4269501339,
+   "actor": "TBox_Field_Iron",
+   "item": "Windcleaver",
+   "drop": "Weapon_Lsword_074",
+   "pos": [
+    3640.5,
+    427.33,
+    -577.0
+   ]
+  },
+  {
+   "hash": 3402792126,
+   "actor": "TBox_Field_Iron",
+   "item": "Knight's Shield",
+   "drop": "Weapon_Shield_003",
+   "pos": [
+    3177.0,
+    238.95,
+    1756.0
+   ]
+  },
+  {
+   "hash": 1338350447,
+   "actor": "TBox_Field_Wood",
+   "item": "Topaz",
+   "drop": "Item_Ore_D",
+   "pos": [
+    4088.0,
+    460.35,
+    -490.0
+   ]
+  },
+  {
+   "hash": 1701427516,
+   "actor": "TBox_Field_Wood",
+   "item": "Demon Carver",
+   "drop": "Weapon_Sword_073",
+   "pos": [
+    4111.0,
+    409.94,
+    -502.0
+   ]
+  },
+  {
+   "hash": 2714499651,
+   "actor": "TBox_Field_Iron",
+   "item": "Frostblade",
+   "drop": "Weapon_Sword_034",
+   "pos": [
+    4013.0,
+    427.93,
+    -333.0
+   ]
+  },
+  {
+   "hash": 3603745493,
+   "actor": "TBox_Field_Wood",
+   "item": "Sapphire",
+   "drop": "Item_Ore_C",
+   "pos": [
+    4049.0,
+    426.94,
+    -305.0
+   ]
+  }
+ ],
+ "platforms": [
+  {
+   "hash": 7166198,
+   "pos": [
+    1309.0,
+    130.0,
+    -687.0
+   ],
+   "chests": [
+    "Knight's Bow"
+   ]
+  },
+  {
+   "hash": 61779772,
+   "pos": [
+    2045.05,
+    441.28,
+    -1372.25
+   ],
+   "chests": []
+  },
+  {
+   "hash": 81117772,
+   "pos": [
+    -2736.6,
+    374.7,
+    -1967.8
+   ],
+   "chests": [
+    "Blizzard Rod"
+   ]
+  },
+  {
+   "hash": 111114975,
+   "pos": [
+    121.81,
+    198.96,
+    3010.62
+   ],
+   "chests": [
+    "Topaz",
+    "Fire Rod"
+   ]
+  },
+  {
+   "hash": 128419820,
+   "pos": [
+    684.62,
+    117.78,
+    977.7
+   ],
+   "chests": [
+    "Serpentine Spear"
+   ]
+  },
+  {
+   "hash": 169870553,
+   "pos": [
+    2695.0,
+    164.5,
+    -360.5
+   ],
+   "chests": [
+    "Zora Sword"
+   ]
+  },
+  {
+   "hash": 298752992,
+   "pos": [
+    3063.0,
+    266.0,
+    11.5
+   ],
+   "chests": [
+    "Frostspear"
+   ]
+  },
+  {
+   "hash": 317712652,
+   "pos": [
+    1076.68,
+    152.41,
+    1810.76
+   ],
+   "chests": []
+  },
+  {
+   "hash": 354760214,
+   "pos": [
+    1650.3,
+    114.6,
+    2028.6
+   ],
+   "chests": [
+    "Soldier's Spear"
+   ]
+  },
+  {
+   "hash": 379805689,
+   "pos": [
+    3633.5,
+    438.5,
+    -591.5
+   ],
+   "chests": [
+    "Windcleaver"
+   ]
+  },
+  {
+   "hash": 437752609,
+   "pos": [
+    -1718.47,
+    302.69,
+    -869.78
+   ],
+   "chests": [
+    "Falcon Bow",
+    "Sapphire"
+   ]
+  },
+  {
+   "hash": 501042235,
+   "pos": [
+    -765.0,
+    167.35,
+    311.64
+   ],
+   "chests": [
+    "Knight's Claymore"
+   ]
+  },
+  {
+   "hash": 538427930,
+   "pos": [
+    3188.0,
+    395.0,
+    -1423.0
+   ],
+   "chests": [
+    "Royal Claymore"
+   ]
+  },
+  {
+   "hash": 580518870,
+   "pos": [
+    -1702.0,
+    106.42,
+    1576.71
+   ],
+   "chests": [
+    "Diamond"
+   ]
+  },
+  {
+   "hash": 623253497,
+   "pos": [
+    1639.5,
+    131.25,
+    3367.0
+   ],
+   "chests": [
+    "Lightning Rod"
+   ]
+  },
+  {
+   "hash": 697919999,
+   "pos": [
+    3548.5,
+    505.0,
+    -966.0
+   ],
+   "chests": [
+    "Silver Shield"
+   ]
+  },
+  {
+   "hash": 698453553,
+   "pos": [
+    3860.0,
+    344.0,
+    -1109.0
+   ],
+   "chests": [
+    "Drillshaft"
+   ]
+  },
+  {
+   "hash": 724324349,
+   "pos": [
+    -1620.96,
+    135.61,
+    1034.29
+   ],
+   "chests": [
+    "Radiant Shield"
+   ]
+  },
+  {
+   "hash": 730551550,
+   "pos": [
+    -89.0,
+    156.5,
+    2425.5
+   ],
+   "chests": []
+  },
+  {
+   "hash": 747658194,
+   "pos": [
+    1784.0,
+    195.25,
+    3032.0
+   ],
+   "chests": [
+    "Sapphire",
+    "Great Thunderblade"
+   ]
+  },
+  {
+   "hash": 787787238,
+   "pos": [
+    3413.5,
+    416.5,
+    -754.0
+   ],
+   "chests": [
+    "Diamond"
+   ]
+  },
+  {
+   "hash": 870556200,
+   "pos": [
+    4047.5,
+    380.5,
+    -304.5
+   ],
+   "chests": []
+  },
+  {
+   "hash": 881747505,
+   "pos": [
+    4098.66,
+    423.25,
+    -499.69
+   ],
+   "chests": [
+    "Demon Carver"
+   ]
+  },
+  {
+   "hash": 909852723,
+   "pos": [
+    1803.0,
+    133.0,
+    1524.5
+   ],
+   "chests": [
+    "Boomerang"
+   ]
+  },
+  {
+   "hash": 988772189,
+   "pos": [
+    1948.03,
+    256.6,
+    3277.07
+   ],
+   "chests": [
+    "Thunderstorm Rod"
+   ]
+  },
+  {
+   "hash": 1014373404,
+   "pos": [
+    2267.5,
+    231.85,
+    1374.65
+   ],
+   "chests": [
+    "Phrenic Bow"
+   ]
+  },
+  {
+   "hash": 1032632604,
+   "pos": [
+    -1479.42,
+    121.49,
+    1824.25
+   ],
+   "chests": [
+    "Golden Claymore"
+   ]
+  },
+  {
+   "hash": 1155830462,
+   "pos": [
+    4013.0,
+    381.5,
+    -331.5
+   ],
+   "chests": []
+  },
+  {
+   "hash": 1190571967,
+   "pos": [
+    66.1,
+    123.1,
+    2081.09
+   ],
+   "chests": [
+    "Knight's Halberd"
+   ]
+  },
+  {
+   "hash": 1250264018,
+   "pos": [
+    1039.5,
+    130.0,
+    3226.5
+   ],
+   "chests": [
+    "Royal Shield"
+   ]
+  },
+  {
+   "hash": 1250658698,
+   "pos": [
+    -1654.84,
+    96.76,
+    1960.13
+   ],
+   "chests": [
+    "Gerudo Shield"
+   ]
+  },
+  {
+   "hash": 1307068363,
+   "pos": [
+    1831.67,
+    141.5,
+    3605.5
+   ],
+   "chests": [
+    "Thunderblade",
+    "Ruby"
+   ]
+  },
+  {
+   "hash": 1309595026,
+   "pos": [
+    -1686.9,
+    206.7,
+    109.0
+   ],
+   "chests": [
+    "Royal Bow"
+   ]
+  },
+  {
+   "hash": 1350383253,
+   "pos": [
+    3766.5,
+    224.25,
+    -1229.25
+   ],
+   "chests": [
+    "Flameblade"
+   ]
+  },
+  {
+   "hash": 1405010271,
+   "pos": [
+    250.54,
+    127.22,
+    -708.95
+   ],
+   "chests": [
+    "Royal Guard's Shield"
+   ]
+  },
+  {
+   "hash": 1431102326,
+   "pos": [
+    1305.48,
+    239.6,
+    3174.4
+   ],
+   "chests": [
+    "Ruby",
+    "Vicious Sickle"
+   ]
+  },
+  {
+   "hash": 1436365632,
+   "pos": [
+    -1648.94,
+    111.03,
+    1551.86
+   ],
+   "chests": [
+    "Diamond"
+   ]
+  },
+  {
+   "hash": 1460728460,
+   "pos": [
+    3025.5,
+    388.0,
+    -1248.5
+   ],
+   "chests": [
+    "Great Frostblade"
+   ]
+  },
+  {
+   "hash": 1509137776,
+   "pos": [
+    3357.5,
+    404.5,
+    -787.0
+   ],
+   "chests": []
+  },
+  {
+   "hash": 1531362162,
+   "pos": [
+    -1599.8,
+    114.7,
+    1033.7
+   ],
+   "chests": []
+  },
+  {
+   "hash": 1536650052,
+   "pos": [
+    1786.0,
+    151.0,
+    3283.0
+   ],
+   "chests": [
+    "Thunderspear"
+   ]
+  },
+  {
+   "hash": 1586032640,
+   "pos": [
+    -3055.8,
+    271.1,
+    -574.8
+   ],
+   "chests": [
+    "Royal Bow"
+   ]
+  },
+  {
+   "hash": 1587435881,
+   "pos": [
+    3697.1,
+    328.99,
+    -882.2
+   ],
+   "chests": [
+    "Great Flameblade"
+   ]
+  },
+  {
+   "hash": 1587986087,
+   "pos": [
+    3610.5,
+    343.0,
+    -1025.0
+   ],
+   "chests": [
+    "Knight's Broadsword"
+   ]
+  },
+  {
+   "hash": 1638166383,
+   "pos": [
+    3640.5,
+    427.0,
+    -579.0
+   ],
+   "chests": [
+    "Windcleaver"
+   ]
+  },
+  {
+   "hash": 1709758874,
+   "pos": [
+    268.6,
+    114.7,
+    1637.8
+   ],
+   "chests": [
+    "Soldier's Shield"
+   ]
+  },
+  {
+   "hash": 1724492662,
+   "pos": [
+    3036.0,
+    266.0,
+    -28.5
+   ],
+   "chests": []
+  },
+  {
+   "hash": 1829807031,
+   "pos": [
+    -1064.2,
+    145.9,
+    -496.2
+   ],
+   "chests": [
+    "Royal Guard's Claymore"
+   ]
+  },
+  {
+   "hash": 1873118645,
+   "pos": [
+    3177.0,
+    238.5,
+    1756.0
+   ],
+   "chests": [
+    "Knight's Shield"
+   ]
+  },
+  {
+   "hash": 1889580922,
+   "pos": [
+    810.76,
+    147.34,
+    -18.6
+   ],
+   "chests": [
+    "Double Axe"
+   ]
+  },
+  {
+   "hash": 1961805276,
+   "pos": [
+    3249.58,
+    422.82,
+    -1851.51
+   ],
+   "chests": []
+  },
+  {
+   "hash": 2099721295,
+   "pos": [
+    2790.0,
+    184.0,
+    -265.0
+   ],
+   "chests": [
+    "Silver Shield"
+   ]
+  },
+  {
+   "hash": 2254519171,
+   "pos": [
+    2890.45,
+    275.69,
+    2026.59
+   ],
+   "chests": []
+  },
+  {
+   "hash": 2294794842,
+   "pos": [
+    3726.5,
+    467.0,
+    -586.0
+   ],
+   "chests": []
+  },
+  {
+   "hash": 2351720364,
+   "pos": [
+    1710.0,
+    115.0,
+    2169.5
+   ],
+   "chests": [
+    "Soldier's Claymore"
+   ]
+  },
+  {
+   "hash": 2357951663,
+   "pos": [
+    319.57,
+    127.64,
+    1291.96
+   ],
+   "chests": [
+    "Knight's Bow"
+   ]
+  },
+  {
+   "hash": 2410286659,
+   "pos": [
+    3586.0,
+    317.38,
+    -573.5
+   ],
+   "chests": [
+    "Soldier's Bow"
+   ]
+  },
+  {
+   "hash": 2431296169,
+   "pos": [
+    1033.49,
+    271.92,
+    -1392.77
+   ],
+   "chests": [
+    "Forest Dweller's Sword",
+    "Sapphire"
+   ]
+  },
+  {
+   "hash": 2442949473,
+   "pos": [
+    -618.2,
+    162.5,
+    1576.85
+   ],
+   "chests": [
+    "Soldier's Broadsword"
+   ]
+  },
+  {
+   "hash": 2468959587,
+   "pos": [
+    2447.5,
+    138.5,
+    -249.5
+   ],
+   "chests": [
+    "Zora Spear"
+   ]
+  },
+  {
+   "hash": 2488416275,
+   "pos": [
+    -2673.8,
+    339.3,
+    -893.6
+   ],
+   "chests": [
+    "Edge of Duality"
+   ]
+  },
+  {
+   "hash": 2677418853,
+   "pos": [
+    587.0,
+    170.0,
+    3737.0
+   ],
+   "chests": [
+    "Demon Carver"
+   ]
+  },
+  {
+   "hash": 2684400830,
+   "pos": [
+    -1320.4,
+    114.6,
+    772.9
+   ],
+   "chests": [
+    "Gerudo Scimitar"
+   ]
+  },
+  {
+   "hash": 2749769447,
+   "pos": [
+    1698.5,
+    166.5,
+    3493.5
+   ],
+   "chests": [
+    "Topaz"
+   ]
+  },
+  {
+   "hash": 2760239270,
+   "pos": [
+    -1112.2,
+    143.1,
+    983.3
+   ],
+   "chests": [
+    "Sapphire"
+   ]
+  },
+  {
+   "hash": 2776583590,
+   "pos": [
+    2684.6,
+    281.13,
+    1389.31
+   ],
+   "chests": [
+    "Royal Broadsword"
+   ]
+  },
+  {
+   "hash": 2815060900,
+   "pos": [
+    -614.5,
+    125.62,
+    -650.5
+   ],
+   "chests": [
+    "Royal Guard's Sword"
+   ]
+  },
+  {
+   "hash": 2911319947,
+   "pos": [
+    4013.0,
+    427.5,
+    -331.5
+   ],
+   "chests": [
+    "Frostblade"
+   ]
+  },
+  {
+   "hash": 2939294089,
+   "pos": [
+    1649.9,
+    182.4,
+    1894.8
+   ],
+   "chests": [
+    "Soldier's Broadsword"
+   ]
+  },
+  {
+   "hash": 2956403526,
+   "pos": [
+    2088.25,
+    191.38,
+    128.88
+   ],
+   "chests": [
+    "Ice Rod"
+   ]
+  },
+  {
+   "hash": 2962241605,
+   "pos": [
+    3378.5,
+    397.5,
+    -776.5
+   ],
+   "chests": [
+    "Royal Halberd"
+   ]
+  },
+  {
+   "hash": 2988777031,
+   "pos": [
+    -1689.71,
+    134.45,
+    1543.04
+   ],
+   "chests": [
+    "Gerudo Shield"
+   ]
+  },
+  {
+   "hash": 2994865476,
+   "pos": [
+    -77.5,
+    157.0,
+    2382.5
+   ],
+   "chests": [
+    "Knight's Halberd"
+   ]
+  },
+  {
+   "hash": 3041450590,
+   "pos": [
+    -1594.8,
+    135.95,
+    1000.68
+   ],
+   "chests": [
+    "Ruby"
+   ]
+  },
+  {
+   "hash": 3105788832,
+   "pos": [
+    3687.5,
+    340.5,
+    -992.0
+   ],
+   "chests": [
+    "Stone Smasher"
+   ]
+  },
+  {
+   "hash": 3106305134,
+   "pos": [
+    3083.0,
+    360.5,
+    -441.0
+   ],
+   "chests": []
+  },
+  {
+   "hash": 3141698138,
+   "pos": [
+    1638.5,
+    217.0,
+    3285.17
+   ],
+   "chests": [
+    "Giant Boomerang"
+   ]
+  },
+  {
+   "hash": 3157214787,
+   "pos": [
+    1808.0,
+    182.0,
+    3189.5
+   ],
+   "chests": [
+    "Forest Dweller's Bow",
+    "Forest Dweller's Shield"
+   ]
+  },
+  {
+   "hash": 3195230137,
+   "pos": [
+    3668.12,
+    261.12,
+    -1238.75
+   ],
+   "chests": [
+    "Topaz",
+    "Flamespear"
+   ]
+  },
+  {
+   "hash": 3237661898,
+   "pos": [
+    3391.15,
+    420.75,
+    -762.97
+   ],
+   "chests": [
+    "Diamond"
+   ]
+  },
+  {
+   "hash": 3260017352,
+   "pos": [
+    -1621.1,
+    114.7,
+    997.7
+   ],
+   "chests": []
+  },
+  {
+   "hash": 3275307776,
+   "pos": [
+    367.16,
+    127.63,
+    -1165.47
+   ],
+   "chests": [
+    "Royal Guard's Bow"
+   ]
+  },
+  {
+   "hash": 3307351761,
+   "pos": [
+    -1144.8,
+    143.9,
+    1044.2
+   ],
+   "chests": [
+    "Knight's Shield"
+   ]
+  },
+  {
+   "hash": 3341816784,
+   "pos": [
+    2814.76,
+    183.05,
+    -13.58
+   ],
+   "chests": [
+    "Silver Bow"
+   ]
+  },
+  {
+   "hash": 3347161530,
+   "pos": [
+    -3178.6,
+    271.2,
+    -567.3
+   ],
+   "chests": [
+    "Ruby"
+   ]
+  },
+  {
+   "hash": 3348564179,
+   "pos": [
+    3371.0,
+    282.0,
+    -693.0
+   ],
+   "chests": [
+    "Zora Spear"
+   ]
+  },
+  {
+   "hash": 3379849007,
+   "pos": [
+    3710.5,
+    199.17,
+    -1225.67
+   ],
+   "chests": [
+    "Meteor Rod"
+   ]
+  },
+  {
+   "hash": 3401027813,
+   "pos": [
+    491.23,
+    139.1,
+    -507.83
+   ],
+   "chests": [
+    "Royal Guard's Spear"
+   ]
+  },
+  {
+   "hash": 3408426709,
+   "pos": [
+    1791.24,
+    187.85,
+    3171.88
+   ],
+   "chests": [
+    "Forest Dweller's Shield"
+   ]
+  },
+  {
+   "hash": 3427119820,
+   "pos": [
+    1665.0,
+    311.7,
+    3150.5
+   ],
+   "chests": [
+    "Forest Dweller's Spear"
+   ]
+  },
+  {
+   "hash": 3457092191,
+   "pos": [
+    -3519.47,
+    401.3,
+    -1112.42
+   ],
+   "chests": [
+    "Swallow Bow"
+   ]
+  },
+  {
+   "hash": 3457786678,
+   "pos": [
+    2988.0,
+    389.5,
+    -1203.0
+   ],
+   "chests": []
+  },
+  {
+   "hash": 3458286840,
+   "pos": [
+    3083.0,
+    348.0,
+    -473.0
+   ],
+   "chests": [
+    "Silver Longsword"
+   ]
+  },
+  {
+   "hash": 3548567600,
+   "pos": [
+    -1792.75,
+    113.75,
+    1477.0
+   ],
+   "chests": [
+    "Golden Bow"
+   ]
+  },
+  {
+   "hash": 3571521137,
+   "pos": [
+    1786.0,
+    165.5,
+    3464.5
+   ],
+   "chests": [
+    "Duplex Bow"
+   ]
+  },
+  {
+   "hash": 3607594024,
+   "pos": [
+    -1691.2,
+    206.2,
+    159.5
+   ],
+   "chests": [
+    "Topaz"
+   ]
+  },
+  {
+   "hash": 3665823517,
+   "pos": [
+    4047.5,
+    426.5,
+    -304.5
+   ],
+   "chests": [
+    "Sapphire"
+   ]
+  },
+  {
+   "hash": 3812860396,
+   "pos": [
+    2284.5,
+    115.5,
+    -248.5
+   ],
+   "chests": [
+    "Silverscale Spear"
+   ]
+  },
+  {
+   "hash": 3868935159,
+   "pos": [
+    -391.0,
+    193.25,
+    1760.75
+   ],
+   "chests": [
+    "Knight's Broadsword"
+   ]
+  },
+  {
+   "hash": 3920225984,
+   "pos": [
+    977.69,
+    148.77,
+    967.67
+   ],
+   "chests": [
+    "Throwing Spear"
+   ]
+  },
+  {
+   "hash": 4050690684,
+   "pos": [
+    -2137.36,
+    423.19,
+    2449.05
+   ],
+   "chests": [
+    "Ruby",
+    "Gerudo Spear"
+   ]
+  },
+  {
+   "hash": 4057446783,
+   "pos": [
+    -3659.51,
+    235.68,
+    1874.91
+   ],
+   "chests": [
+    "Topaz"
+   ]
+  },
+  {
+   "hash": 4095341069,
+   "pos": [
+    -1113.3,
+    147.1,
+    -459.3
+   ],
+   "chests": [
+    "Diamond"
+   ]
+  },
+  {
+   "hash": 4138521615,
+   "pos": [
+    3183.0,
+    227.5,
+    1764.5
+   ],
+   "chests": [
+    "Knight's Shield"
+   ]
+  },
+  {
+   "hash": 4172103381,
+   "pos": [
+    3635.0,
+    378.5,
+    -594.5
+   ],
+   "chests": []
+  },
+  {
+   "hash": 4242638880,
+   "pos": [
+    122.4,
+    148.66,
+    1586.02
+   ],
+   "chests": [
+    "Iron Sledgehammer"
+   ]
+  },
+  {
+   "hash": 4290837196,
+   "pos": [
+    3715.5,
+    520.0,
+    -600.0
+   ],
+   "chests": [
+    "Silver Bow"
+   ]
+  }
+ ],
+ "masterEnemies": [
+  {
+   "hash": 1992889235,
+   "actor": "Enemy_Wizzrobe_Ice",
+   "name": "Ice Wizzrobe",
+   "pos": [
+    -1137.5,
+    144.5,
+    -2624.0
+   ]
+  },
+  {
+   "hash": 1288562591,
+   "actor": "Enemy_Lynel_Senior",
+   "name": "White-Maned Lynel",
+   "pos": [
+    -669.37,
+    190.31,
+    2081.47
+   ]
+  },
+  {
+   "hash": 3344676505,
+   "actor": "Enemy_Wizzrobe_Electric",
+   "name": "Electric Wizzrobe",
+   "pos": [
+    -567.0,
+    165.0,
+    3806.0
+   ]
+  },
+  {
+   "hash": 3896327169,
+   "actor": "Enemy_Wizzrobe_Fire",
+   "name": "Fire Wizzrobe",
+   "pos": [
+    3683.5,
+    296.0,
+    -3481.0
+   ]
+  }
+ ],
+ "edits": [
+  {
+   "marker": {
+    "id": 283,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Koko",
+    "description": "",
+    "x": 156.1796875,
+    "y": -143.85546875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 01:30:52",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;Koko&#039;s Kitchen&lt;/p&gt;\r\n&lt;p&gt;Cooking with Koko&lt;/p&gt;\r\n&lt;p&gt;Koko Cuisine&lt;/p&gt;\r\n&lt;p&gt;Koko&#039;s Specialty&lt;/p&gt;"
+    ]
+   },
+   "name": "Koko's Kitchen",
+   "category": 1935,
+   "site": [
+    156.523,
+    -143.1556
+   ]
+  },
+  {
+   "marker": {
+    "id": 284,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Flown the Coop",
+    "description": "",
+    "x": 156.65234375,
+    "y": -143.01953125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 02:14:19",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;Catch the Cuccos scattared through out Kakariko Village&lt;/p&gt;\r\n&lt;p&gt;Reward: 50 Rupees&lt;/p&gt;"
+    ]
+   },
+   "name": "Flown the Coop",
+   "category": 1935,
+   "site": [
+    156.2514,
+    -143.4036
+   ]
+  },
+  {
+   "marker": {
+    "id": 285,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Playtime with Cottla",
+    "description": "",
+    "x": 157.5546875,
+    "y": -143.02734375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 02:15:38",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;Play with Cottla after noon.&lt;/p&gt;\r\n&lt;p&gt;- Hide and Seek: Rock Salt&lt;br /&gt;- Tag: Amber (x2)&lt;/p&gt;"
+    ]
+   },
+   "name": "Playtime with Cottla",
+   "category": 1935,
+   "site": [
+    157.2292,
+    -142.9619
+   ]
+  },
+  {
+   "marker": {
+    "id": 289,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "My Hero",
+    "description": "",
+    "x": 106.21875,
+    "y": -147.91015625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 04:47:39",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Aliza&lt;/p&gt;\r\n&lt;p&gt;Requires: Master Sword&lt;/p&gt;\r\n&lt;p&gt;Reward: Star Fragment&lt;/p&gt;"
+    ]
+   },
+   "name": "My Hero",
+   "category": 1935,
+   "site": [
+    106.125,
+    -148.0
+   ]
+  },
+  {
+   "marker": {
+    "id": 290,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "A Rare Find",
+    "description": "",
+    "x": 105.515625,
+    "y": -147.75390625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-11 07:49:22",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Trott&lt;/p&gt;\r\n&lt;p&gt;Requires: Raw Gourmet Meat&lt;/p&gt;\r\n&lt;p&gt;Reward: Silver Rupee&lt;/p&gt;"
+    ]
+   },
+   "name": "A Rare Find",
+   "category": 1935,
+   "site": [
+    105.6172,
+    -147.7578
+   ]
+  },
+  {
+   "marker": {
+    "id": 291,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Royal White Stallion",
+    "description": "",
+    "x": 105.5859375,
+    "y": -147.95703125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-11 08:49:15",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Toffa&lt;/p&gt;\r\n&lt;p&gt;Requires: Royal White Horse on Safula Hill&lt;/p&gt;\r\n&lt;p&gt;Reward: Royal Saddle / Royal Bridle&lt;/p&gt;"
+    ]
+   },
+   "name": "The Royal White Stallion",
+   "category": 1935,
+   "site": [
+    105.5117,
+    -147.9758
+   ]
+  },
+  {
+   "marker": {
+    "id": 292,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Wild Horses",
+    "description": "",
+    "x": 155.3671875,
+    "y": -158.16015625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 03:35:03",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Rensa&lt;/p&gt;\r\n&lt;p&gt;Requires: catch a wild horse under 2 minutes.&lt;/p&gt;"
+    ]
+   },
+   "name": "Wild Horses",
+   "category": 1935,
+   "site": [
+    155.3184,
+    -158.0573
+   ]
+  },
+  {
+   "marker": {
+    "id": 293,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Watch Out for the Flowers",
+    "description": "",
+    "x": 140.8671875,
+    "y": -141.16015625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 03:36:15",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Magda&lt;/p&gt;\r\n&lt;p&gt;Requires: Get to the Shrine without stepping on the flowers.&lt;/p&gt;"
+    ]
+   },
+   "name": "Watch Out for the Flowers",
+   "category": 2287,
+   "site": [
+    140.7625,
+    -141.0745
+   ]
+  },
+  {
+   "marker": {
+    "id": 296,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Misko, the Great Bandit",
+    "description": "",
+    "x": 155.71484375,
+    "y": -158.16796875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 06:58:13",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Domidak&lt;/p&gt;\r\n&lt;p&gt;Requires: Inside the tent, pay 100 Rupees to hear the story.&lt;/p&gt;\r\n&lt;p&gt;Reward: Chest with lots of items.&lt;/p&gt;"
+    ]
+   },
+   "name": "Misko, the Great Bandit",
+   "category": 1935,
+   "site": [
+    155.6169,
+    -158.0805
+   ]
+  },
+  {
+   "marker": {
+    "id": 301,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Crowned Beast",
+    "description": "",
+    "x": 168.47265625,
+    "y": -134.953125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 08:24:58",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;Bring a male deer to the pedestal&lt;/p&gt;"
+    ]
+   },
+   "name": "The Crowned Beast",
+   "category": 2287,
+   "site": [
+    168.4638,
+    -134.9414
+   ]
+  },
+  {
+   "marker": {
+    "id": 312,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Lynel Safari",
+    "description": "",
+    "x": 180.296875,
+    "y": -120.02734375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 20:10:23",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Laflat (After Divine BeasT)&lt;/p&gt;\r\n&lt;p&gt;Requires: Picture of Lynel at the top of Ploymus Mountain&lt;/p&gt;\r\n&lt;p&gt;Reward: Zora Greaves&lt;/p&gt;"
+    ]
+   },
+   "name": "Lynel Safari",
+   "category": 1935,
+   "site": [
+    180.0152,
+    -119.6872
+   ]
+  },
+  {
+   "marker": {
+    "id": 314,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Diving is Beauty!",
+    "description": "",
+    "x": 179.44140625,
+    "y": -119.8984375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 20:23:26",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Gruve (After Divine Beast)&lt;/p&gt;\r\n&lt;p&gt;Requires: Dive headfirst from the ledge and come back to speak to him.&lt;/p&gt;\r\n&lt;p&gt;Reward: Fleet-Lotus Seeds (x5)&lt;/p&gt;"
+    ]
+   },
+   "name": "Diving is Beauty!",
+   "category": 1935,
+   "site": [
+    179.4406,
+    -119.8691
+   ]
+  },
+  {
+   "marker": {
+    "id": 315,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Ceremonial Song",
+    "description": "",
+    "x": 179.5859375,
+    "y": -120.0390625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 20:23:16",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Laruta (After Divine Beast - Wanders around)&lt;/p&gt;"
+    ]
+   },
+   "name": "The Ceremonial Song",
+   "category": 2287,
+   "site": [
+    179.5514,
+    -119.8361
+   ]
+  },
+  {
+   "marker": {
+    "id": 316,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "A Wife Washed Away",
+    "description": "",
+    "x": 180.3828125,
+    "y": -119.53515625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-05 20:26:13",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Fronk (After Divine Beast)&lt;/p&gt;"
+    ]
+   },
+   "name": "A Wife Washed Away",
+   "category": 1935,
+   "site": [
+    180.255,
+    -120.6281
+   ]
+  },
+  {
+   "marker": {
+    "id": 318,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Frog Catching",
+    "description": "",
+    "x": 179.8046875,
+    "y": -120.58203125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-06 01:27:37",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Tumbo (After Divine Beast)&lt;br /&gt;Requires: Five hot-footed frogs&lt;br /&gt;Reward: Armoranth&lt;/p&gt;"
+    ]
+   },
+   "name": "Frog Catching",
+   "category": 1935,
+   "site": [
+    179.8842,
+    -120.5936
+   ]
+  },
+  {
+   "marker": {
+    "id": 319,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Luminous Stone Gathering",
+    "description": "",
+    "x": 179.36328125,
+    "y": -120.9453125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-06 05:59:04",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Ledo&lt;/p&gt;\r\n&lt;p&gt;Requires: Ten Luminous Stones&lt;/p&gt;\r\n&lt;p&gt;Reward: Diamond (x2)&lt;/p&gt;"
+    ]
+   },
+   "name": "Luminous Stone Gathering",
+   "category": 1935,
+   "site": [
+    180.0414,
+    -119.7173
+   ]
+  },
+  {
+   "marker": {
+    "id": 321,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Special Delivery",
+    "description": "",
+    "x": 171.05859375,
+    "y": -126.68359375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-06 05:26:33",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Finley (After Divine Beast)&lt;/p&gt;\r\n&lt;p&gt;Requires: Follow the love letter down the river.&lt;/p&gt;\r\n&lt;p&gt;Reward: Gold Rupee&lt;/p&gt;"
+    ]
+   },
+   "name": "Special Delivery",
+   "category": 1935,
+   "site": [
+    171.082,
+    -126.7305
+   ]
+  },
+  {
+   "marker": {
+    "id": 344,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Horseback Hoodlumns",
+    "description": "",
+    "x": 136.171875,
+    "y": -182.2109375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-06 06:57:25",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Perosa&lt;/p&gt;\r\n&lt;p&gt;Requires: Deal with the enemies in front of the stable.&lt;/p&gt;\r\n&lt;p&gt;Reward: Endura Carrot&lt;/p&gt;"
+    ]
+   },
+   "name": "The Horseback Hoodlums",
+   "category": 1935,
+   "site": [
+    136.0744,
+    -181.9642
+   ]
+  },
+  {
+   "marker": {
+    "id": 347,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Thunder Magnet",
+    "description": "",
+    "x": 152.1484375,
+    "y": -183.171875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-13 08:25:52",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;NPC: Cima&lt;/p&gt;\r\n&lt;p&gt;Requires: Remove the Woodcutter&#039;s Axe from atop the stable&lt;/p&gt;\r\n&lt;p&gt;Reward: Rubber Helm&lt;/p&gt;"
+    ]
+   },
+   "name": "Thunder Magnet",
+   "category": 1935,
+   "site": [
+    152.0637,
+    -183.1866
+   ]
+  },
+  {
+   "marker": {
+    "id": 349,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "A Song of Storms",
+    "description": "",
+    "x": 160.54296875,
+    "y": -178.40234375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-06 07:39:48",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "A Song of Storms",
+   "category": 2287,
+   "site": [
+    160.5295,
+    -178.4111
+   ]
+  },
+  {
+   "marker": {
+    "id": 365,
+    "user_id": 2,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Eventide Island",
+    "description": "",
+    "x": 199.390625,
+    "y": -184.84375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-07 03:54:44",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;Eventide Island is a survival challenge. The reward is access to a Shrine and its treasure.&lt;/p&gt;\r\n&lt;p&gt;When you enter the island, you will lose all your equipment. You have to survive and complete the challenge with only what you find on the island. When the challenge is completed, your equipment is returned.&lt;/p&gt;\r\n&lt;p&gt;The challenge involves finding 3 balls and taking them to specific places on the island.&lt;/p&gt;\r\n&lt;p&gt;You cannot save during the trial!&lt;/p&gt;"
+    ]
+   },
+   "name": "Stranded on Eventide",
+   "category": 2287,
+   "site": [
+    198.2839,
+    -186.5053
+   ]
+  },
+  {
+   "marker": {
+    "id": 377,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Hetsu (3rd Encounter)",
+    "description": "",
+    "x": 135.234375,
+    "y": -94.9921875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-07 03:49:06",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Hestu (3rd Encounter)",
+   "category": 1935,
+   "site": [
+    135.234375,
+    -94.9921875
+   ]
+  },
+  {
+   "marker": {
+    "id": 386,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "A Freezing Rod",
+    "description": "",
+    "x": 134.5234375,
+    "y": -94.8515625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-07 07:01:08",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Kula&lt;/p&gt;\r\n&lt;p&gt;Requires: Ice Rod (from Ice Wizzrobes)&lt;/p&gt;\r\n&lt;p&gt;Reward: Silver Rupee&lt;/p&gt;"
+    ]
+   },
+   "name": "A Freezing Rod",
+   "category": 1935,
+   "site": [
+    134.5513,
+    -94.6417
+   ]
+  },
+  {
+   "marker": {
+    "id": 387,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Legendary Rabbit Trial",
+    "description": "",
+    "x": 134.609375,
+    "y": -94.171875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-07 04:35:23",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Peeks&lt;/p&gt;\r\n&lt;p&gt;Requires: Photo o a Blupee (blue rabbit).&lt;/p&gt;\r\n&lt;p&gt;Reward: Silver Rupee&lt;/p&gt;"
+    ]
+   },
+   "name": "Legendary Rabbit Trial",
+   "category": 1935,
+   "site": [
+    134.8906,
+    -94.6711
+   ]
+  },
+  {
+   "marker": {
+    "id": 399,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Master of the Wind",
+    "description": "",
+    "x": 192.9453125,
+    "y": -133.41015625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-07 07:21:40",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Kass&lt;/p&gt;\r\n&lt;p&gt;Requires: Detroy 3 rock formations that are blocking the wind. Then, land while paragliding in the pedestal nearby.&lt;/p&gt;"
+    ]
+   },
+   "name": "Master of the Wind",
+   "category": 2287,
+   "site": [
+    192.8655,
+    -133.4066
+   ]
+  },
+  {
+   "marker": {
+    "id": 402,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Road to Respect",
+    "description": "",
+    "x": 154.68359375,
+    "y": -88.69140625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 06:07:43",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Fugo&lt;/p&gt;\r\n&lt;p&gt;Requires: Defeat Igneo Talus at Darunia Lake&lt;/p&gt;\r\n&lt;p&gt;Reward: Silver Rupee&lt;/p&gt;"
+    ]
+   },
+   "name": "The Road to Respect",
+   "category": 1935,
+   "site": [
+    154.3816,
+    -88.9888
+   ]
+  },
+  {
+   "marker": {
+    "id": 403,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "A Brother&#039;s Roast",
+    "description": "",
+    "x": 153.80859375,
+    "y": -89.45703125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-07 08:29:18",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Bladon&lt;/p&gt;\r\n&lt;p&gt;Requires: Find Bladon&#039;s brother Gonguron at Gorko Tunnel, southwest of Gorko Lake.&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine&lt;/p&gt;"
+    ]
+   },
+   "name": "A Brother's Roast",
+   "category": 1935,
+   "site": [
+    153.7578,
+    -89.3672
+   ]
+  },
+  {
+   "marker": {
+    "id": 404,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Fireproof Lizard Roundup",
+    "description": "",
+    "x": 153.84765625,
+    "y": -97.52734375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 05:52:18",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Kima&lt;/p&gt;\r\n&lt;p&gt;Requires: 10 fireproof lizards.&lt;/p&gt;\r\n&lt;p&gt;Reward: Flamebreaker Armor (Fire Resistance)&lt;/p&gt;"
+    ]
+   },
+   "name": "Fireproof Lizard Roundup",
+   "category": 1935,
+   "site": [
+    153.8961,
+    -97.3656
+   ]
+  },
+  {
+   "marker": {
+    "id": 410,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Trial of the Labyrinth",
+    "description": "",
+    "x": 200.78125,
+    "y": -72.390625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-08 05:23:48",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: ???&lt;/p&gt;\r\n&lt;p&gt;Requires: Reach the end of the maze.&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine.&lt;/p&gt;"
+    ]
+   },
+   "name": "Trial of the Labyrinth",
+   "category": 2287,
+   "site": [
+    201.1906,
+    -70.8344
+   ]
+  },
+  {
+   "marker": {
+    "id": 412,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Gut Check Challenge",
+    "description": "",
+    "x": 169.7421875,
+    "y": -73.83203125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-08 05:26:04",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Bayge&lt;/p&gt;\r\n&lt;p&gt;Requires: Climb the rock before the time runs out and collect more than 100 Rupees.&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine / Mini-game&lt;/p&gt;"
+    ]
+   },
+   "name": "The Gut Check Challenge",
+   "category": 2287,
+   "site": [
+    169.7578,
+    -73.8203
+   ]
+  },
+  {
+   "marker": {
+    "id": 416,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "A Shady Customer",
+    "description": "",
+    "x": 194.23046875,
+    "y": -85.15234375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-08 05:31:39",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Hoz&lt;/p&gt;\r\n&lt;p&gt;Requires: Find the suspicious character running Fang and Bone.&lt;/p&gt;"
+    ]
+   },
+   "name": "A Shady Customer",
+   "category": 1935,
+   "site": [
+    194.308,
+    -85.0836
+   ]
+  },
+  {
+   "marker": {
+    "id": 417,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Cursed Statue",
+    "description": "",
+    "x": 198.4453125,
+    "y": -78.671875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-08 05:32:43",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Jerrin&lt;/p&gt;\r\n&lt;p&gt;Requires: Reach the shrine atop the left eye of Skull Lake&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine.&lt;/p&gt;"
+    ]
+   },
+   "name": "The Cursed Statue",
+   "category": 2287,
+   "site": [
+    165.4837,
+    -156.6614
+   ]
+  },
+  {
+   "marker": {
+    "id": 423,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Weapon Connoisseur",
+    "description": "",
+    "x": 180.015625,
+    "y": -160.94921875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-08 06:27:45",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC:&amp;nbsp;Nebb&lt;/p&gt;\r\n&lt;p&gt;Requires: Traveler Sword (Hinox at Purifier Lake has one) (1st time) / Fire Rod (2nd time)&lt;/p&gt;\r\n&lt;p&gt;Reward: Red Rupee (1st time).&lt;/p&gt;"
+    ]
+   },
+   "name": "The Weapon Connoisseur",
+   "category": 1935,
+   "site": [
+    180.3812,
+    -161.4189
+   ]
+  },
+  {
+   "marker": {
+    "id": 431,
+    "user_id": 5,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Leviathan Bones",
+    "description": "",
+    "x": 103.8671875,
+    "y": -99.89453125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-08 20:11:48",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;Advance paleontology by taking pictures of the leviathan bones in Hebra Mountains, Gerudo Desert, and Death Mountain.&lt;/p&gt;\r\n&lt;p&gt;Reward: Gold Rupee (equal to 300 Rupees)&lt;/p&gt;"
+    ]
+   },
+   "name": "Leviathan Bones",
+   "category": 1935,
+   "site": [
+    103.9087,
+    -99.8033
+   ]
+  },
+  {
+   "marker": {
+    "id": 451,
+    "user_id": 2,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Statue&#039;s Bargain",
+    "description": "",
+    "x": 179.5703125,
+    "y": -161.5546875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-12 05:55:12",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;&lt;img src=&quot;http://zeldauniverse.net/wp-content/uploads/2017/03/map-teebo.jpg&quot; alt=&quot;&quot; width=&quot;1280&quot; height=&quot;720&quot; /&gt;Near the entrance to Hateno Village, speak to Teebo, a young boy, and agree to let him show you what he found. He will lead you around a nearby cliff to the &lt;a title=&quot;Horned Statue&quot; href=&quot;?game=BotW&amp;amp;marker=450&amp;amp;zoom=8&quot;&gt;Horned Statue&lt;/a&gt;.&amp;nbsp;&lt;/p&gt;\r\n&lt;p&gt;Quest can also be started by talking to the statue without meeting the boy.&lt;/p&gt;\r\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;",
+     "&lt;p&gt;&lt;img src=&quot;http://zeldauniverse.net/wp-content/uploads/2017/03/map-horned-statue-heart-removal.jpg&quot; alt=&quot;&quot; width=&quot;1280&quot; height=&quot;720&quot; /&gt;Speak to the Horned Statue, and it will take a Heart Container from you and then tell you the story of how it came to be forgotten.&amp;nbsp;&lt;/p&gt;\r\n&lt;p&gt;Speak to the Horned Statue again and demand that it return your Heart Container. The statue will return the Heart Container and then explain how it will allow you to trade Heart Containers for Stamina Vessels. &amp;nbsp;The side quest will then be marked as completed.&lt;/p&gt;\r\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;",
+     "&lt;p&gt;&lt;img src=&quot;http://zeldauniverse.net/wp-content/uploads/2017/03/map-horned-statue.jpg&quot; alt=&quot;&quot; width=&quot;1280&quot; height=&quot;720&quot; /&gt;You can return to the Horned Statue at any time to exchange Heart Containers and Stamina Vessels.&amp;nbsp;&lt;/p&gt;\r\n&lt;p&gt;&amp;nbsp;&lt;/p&gt;"
+    ]
+   },
+   "name": "The Statue's Bargain",
+   "category": 1935,
+   "site": [
+    179.3438,
+    -162.3438
+   ]
+  },
+  {
+   "marker": {
+    "id": 459,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Jewel Trade",
+    "description": "",
+    "x": 154.6953125,
+    "y": -89.89453125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 06:12:34",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Ramella&lt;/p&gt;\r\n&lt;p&gt;Requires: 10 x Amber&lt;/p&gt;\r\n&lt;p&gt;Reward: 500 Rupees + trade-in)&lt;/p&gt;"
+    ]
+   },
+   "name": "The Jewel Trade",
+   "category": 1935,
+   "site": [
+    154.1739,
+    -90.0241
+   ]
+  },
+  {
+   "marker": {
+    "id": 460,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "A Gift for my Beloved",
+    "description": "",
+    "x": 181.828125,
+    "y": -161.1328125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 06:26:16",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Manny&lt;/p&gt;\r\n&lt;p&gt;Requires: 10 restless crickets&lt;/p&gt;\r\n&lt;p&gt;Reward: Silver Rupee&lt;/p&gt;"
+    ]
+   },
+   "name": "A Gift for My Beloved",
+   "category": 1935,
+   "site": [
+    181.41,
+    -161.1441
+   ]
+  },
+  {
+   "marker": {
+    "id": 466,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Test of Wood",
+    "description": "",
+    "x": 136.7890625,
+    "y": -94.22265625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 07:54:36",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Damia&lt;/p&gt;\r\n&lt;p&gt;Requires: Reach the shrine without changing gear or losing it.&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine&lt;/p&gt;"
+    ]
+   },
+   "name": "The Test of Wood",
+   "category": 2287,
+   "site": [
+    136.828,
+    -94.2398
+   ]
+  },
+  {
+   "marker": {
+    "id": 467,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Lost Pilgrimage",
+    "description": "",
+    "x": 132.06640625,
+    "y": -93.2734375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 07:56:03",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC:&amp;nbsp;Tasho&lt;/p&gt;\r\n&lt;p&gt;Requires: Follow Oaki without been seeing&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine&lt;/p&gt;"
+    ]
+   },
+   "name": "The Lost Pilgrimage",
+   "category": 2287,
+   "site": [
+    131.9719,
+    -92.7172
+   ]
+  },
+  {
+   "marker": {
+    "id": 468,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Trial of Second Sight",
+    "description": "",
+    "x": 131.8671875,
+    "y": -97.109375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 07:59:44",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC:&amp;nbsp;Zooki&lt;/p&gt;\r\n&lt;p&gt;Requires: Follow the trees with iron orb in their mouths.&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine&lt;/p&gt;"
+    ]
+   },
+   "name": "Trial of Second Sight",
+   "category": 2287,
+   "site": [
+    131.9223,
+    -97.0636
+   ]
+  },
+  {
+   "marker": {
+    "id": 469,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "",
+    "description": "",
+    "x": 135.65625,
+    "y": -94.640625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-09 08:01:40",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Chio&lt;/p&gt;\r\n&lt;p&gt;Requires: The Korok Trials&lt;/p&gt;\r\n&lt;p&gt;Reward: Big Hearty Truffle (x3)&lt;/p&gt;"
+    ]
+   },
+   "name": "The Korok Trials",
+   "category": 1935,
+   "site": [
+    134.7447,
+    -94.5695
+   ]
+  },
+  {
+   "marker": {
+    "id": 798,
+    "user_id": 96,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Link&#039;s House",
+    "description": "This is not the actual side quest name. We need to confirm in-game. -Josh",
+    "x": 179.703125,
+    "y": -163.765625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-13 03:59:07",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;So far, the only known house for sale is in Hateno Village, near the back end of the village. If players go to the area, they will see some NPCs working on a broken down house. Players can talk to them and purchase the house if they have right amount of money.&lt;br /&gt;&lt;br /&gt;The house price can be further dropped if players are willing to contribute 30 bundles of wood. Chopping down wood isn&amp;rsquo;t very difficult so players should go for this option instead of spending a huge amount on buying the house. All they need to do is grab an axe and start cutting down any trees they come across.&lt;/p&gt;\r\n&lt;div id=&quot;&amp;ldquo;nativo_middle&amp;rdquo;&quot;&gt;&amp;nbsp;To make up the rest of the money, stones and gems acquired while adventuring can be sold to various vendors. Once players have the funds and 30 bundles of wood, they can go back to the house and purchase it, giving them a place to rest at.&lt;/div&gt;"
+    ]
+   },
+   "name": "Hylian Homeowner",
+   "category": 1935,
+   "site": [
+    180.0503,
+    -163.697
+   ]
+  },
+  {
+   "marker": {
+    "id": 854,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "A Gift for the Great Fairy",
+    "description": "",
+    "x": 82.22265625,
+    "y": -119.296875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-10 06:22:11",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Toren&lt;/p&gt;\r\n&lt;p&gt;Requires: Find the Great Fairy near Piper Ridge.&lt;/p&gt;\r\n&lt;p&gt;Reward: Nothing... although you find the Great Fairy, right?&lt;/p&gt;"
+    ]
+   },
+   "name": "A Gift for the Great Fairy",
+   "category": 1935,
+   "site": [
+    82.4375,
+    -119.2344
+   ]
+  },
+  {
+   "marker": {
+    "id": 875,
+    "user_id": 140,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Royal Guard&#039;s Gear",
+    "description": "Parcy&#039;s Side Quest",
+    "x": 133.140625,
+    "y": -145.296875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-08 20:14:56",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;Talk to Parcy at Riverside Stable to initiate this quest. Being her a royal guard weapon from Hyrule Castle to complete it.&lt;/p&gt;"
+    ]
+   },
+   "name": "The Royal Guard's Gear",
+   "category": 1935,
+   "site": [
+    133.3906,
+    -145.0547
+   ]
+  },
+  {
+   "marker": {
+    "id": 876,
+    "user_id": 140,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Royal Receipes",
+    "description": "Gottah&#039;s quest",
+    "x": 133.4765625,
+    "y": -145.09375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-13 04:42:03",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;Talk to Gottah (only during the day because he is sleeping during the night). He would like you to find receipes from his ancestry in Hyrule castle&lt;/p&gt;"
+    ]
+   },
+   "name": "A Royal Recipe",
+   "category": 1935,
+   "site": [
+    133.0909,
+    -145.0703
+   ]
+  },
+  {
+   "marker": {
+    "id": 1101,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Trial on the Cliff",
+    "description": "",
+    "x": 113.3359375,
+    "y": -72.78125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-11 07:32:39",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;Requires: Reach the center of the maze.&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine&lt;/p&gt;"
+    ]
+   },
+   "name": "Trial on the Cliff",
+   "category": 2287,
+   "site": [
+    115.6266,
+    -72.7938
+   ]
+  },
+  {
+   "marker": {
+    "id": 1105,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Stalhorse: Pictured!",
+    "description": "",
+    "x": 102.16015625,
+    "y": -87.76171875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-11 07:46:25",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Juannelle&lt;/p&gt;\r\n&lt;p&gt;Requires: Photo of a Stalhorse from the North Tabantha Snowfiled&lt;/p&gt;\r\n&lt;p&gt;Reward: Silver Rupee.&lt;/p&gt;"
+    ]
+   },
+   "name": "Stalhorse: Pictured!",
+   "category": 1935,
+   "site": [
+    102.3527,
+    -87.9736
+   ]
+  },
+  {
+   "marker": {
+    "id": 1115,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Find the Fairy Fountain",
+    "description": "",
+    "x": 156.53515625,
+    "y": -143.4609375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-11 08:24:19",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Pikango&lt;/p&gt;\r\n&lt;p&gt;Requires: Photo of the Great Fairy Fountain&lt;/p&gt;\r\n&lt;p&gt;Reward: Locaiton of Memory&lt;/p&gt;"
+    ]
+   },
+   "name": "Find the Fairy Fountain",
+   "category": 2286,
+   "site": [
+    156.5659,
+    -143.4709
+   ]
+  },
+  {
+   "marker": {
+    "id": 1191,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Balloon Flight",
+    "description": "",
+    "x": 144.95703125,
+    "y": -110.4921875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-11 19:32:41",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Shamae&lt;/p&gt;\r\n&lt;p&gt;Requires: Put Octo Ballons in the barrels nearbt&lt;/p&gt;\r\n&lt;p&gt;Reward: Star Fragment&lt;/p&gt;"
+    ]
+   },
+   "name": "Balloon Flight",
+   "category": 1935,
+   "site": [
+    144.8828,
+    -110.4219
+   ]
+  },
+  {
+   "marker": {
+    "id": 1295,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Curry for What Ails You",
+    "description": "",
+    "x": 77,
+    "y": -100.265625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-12 08:53:12",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Lester&lt;/p&gt;\r\n&lt;p&gt;Requires: Goron Spice (buy from the General Store in Goron City)&lt;/p&gt;\r\n&lt;p&gt;Reward: Purple Rupee (1st time) / Hylian Rice (2nd and onwards).&lt;/p&gt;"
+    ]
+   },
+   "name": "Curry for What Ails You",
+   "category": 1935,
+   "site": [
+    76.952,
+    -100.2848
+   ]
+  },
+  {
+   "marker": {
+    "id": 1487,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Find Kheel",
+    "description": "",
+    "x": 70.6953125,
+    "y": -100.3359375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-13 04:13:21",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Amali (After Divine Beast)&lt;/p&gt;\r\n&lt;p&gt;Requires: Find Amali`s daughter Kheel near Warbler`s Nest.&lt;/p&gt;\r\n&lt;p&gt;Reward: Purple Rupee.&lt;/p&gt;"
+    ]
+   },
+   "name": "Find Kheel",
+   "category": 1935,
+   "site": [
+    70.6795,
+    -100.3444
+   ]
+  },
+  {
+   "marker": {
+    "id": 1490,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Apple of My Eye",
+    "description": "",
+    "x": 71.51171875,
+    "y": -99.4296875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-13 04:15:20",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Juney&lt;/p&gt;\r\n&lt;p&gt;Requires: Baked Apple.&lt;/p&gt;\r\n&lt;p&gt;Reward: Silver Rupee.&lt;/p&gt;"
+    ]
+   },
+   "name": "The Apple of My Eye",
+   "category": 1935,
+   "site": [
+    71.5662,
+    -99.1058
+   ]
+  },
+  {
+   "marker": {
+    "id": 1491,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Spark of Romance",
+    "description": "",
+    "x": 71.64453125,
+    "y": -99.26171875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-13 04:17:20",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Jogo&lt;/p&gt;\r\n&lt;p&gt;Requires: Flint&lt;/p&gt;\r\n&lt;p&gt;Reward: Silver Rupee&lt;/p&gt;"
+    ]
+   },
+   "name": "The Spark of Romance",
+   "category": 1935,
+   "site": [
+    71.6694,
+    -99.0558
+   ]
+  },
+  {
+   "marker": {
+    "id": 1492,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "The Bird in the Mountains",
+    "description": "",
+    "x": 71.16796875,
+    "y": -99.46875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-13 04:21:33",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Molli&lt;/p&gt;\r\n&lt;p&gt;Requires: Reach the lone cedar tree on the Hebra Mountains (?)&lt;/p&gt;\r\n&lt;p&gt;Reward: ?&lt;/p&gt;"
+    ]
+   },
+   "name": "The Bird in the Mountains",
+   "category": 2287,
+   "site": [
+    71.462,
+    -99.9155
+   ]
+  },
+  {
+   "marker": {
+    "id": 1495,
+    "user_id": 1,
+    "submap_id": 1901,
+    "category_id": 1935,
+    "name": "Recital at Warbler`s Nest",
+    "description": "",
+    "x": 65.73046875,
+    "y": -100.81640625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2017-03-13 04:44:20",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;NPC: Kheel (After Divine Beast)&lt;/p&gt;\r\n&lt;p&gt;Requires: Find her sisters then, with a Korok Leaf (given by Kheel), stand in the middle of the pedestal an blow wind to the stones in this order: 4, 5, 3, 1, 2&lt;/p&gt;\r\n&lt;p&gt;Reward: Shrine.&lt;/p&gt;"
+    ]
+   },
+   "name": "Recital at Warbler's Nest",
+   "category": 2287,
+   "site": [
+    70.7366,
+    -100.2653
+   ]
+  },
+  {
+   "marker": {
+    "id": 11836,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Ancient Bridle",
+    "description": "Expansion Pack 2. Side Quest \"EX Ancient Horse Rumors\".",
+    "x": 92.17578125,
+    "y": -133.3876744538835,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2020-07-06 21:16:51",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Ancient Bridle",
+   "category": 2289,
+   "site": [
+    92.1272,
+    -133.3667
+   ]
+  },
+  {
+   "marker": {
+    "id": 11848,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Midna's Helmet",
+    "description": "Expansion Pack 1. Side Quest \"EX Treasure: Twilight Relic\".",
+    "x": 106.05859375,
+    "y": -131.4140625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-19 22:09:46",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Midna's Helmet",
+   "category": 2289,
+   "site": [
+    106.0897,
+    -131.4275
+   ]
+  },
+  {
+   "marker": {
+    "id": 11841,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Phantom Helmet",
+    "description": "Expansion Pack 1. Side Quest \"EX Treasure: Phantasma\".",
+    "x": 109.54609370231628,
+    "y": -147.1953123807907,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2020-07-06 22:00:14",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Phantom Helmet",
+   "category": 2289,
+   "site": [
+    109.2427,
+    -147.2069
+   ]
+  },
+  {
+   "marker": {
+    "id": 9487,
+    "user_id": 17309,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Bomb Arrow x5",
+    "description": "Expansion Pass Bonus.",
+    "x": 105.28125,
+    "y": -159.71875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-07 18:18:42",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;&lt;strong&gt;Need DLC to obtain&lt;/strong&gt;&lt;/p&gt;"
+    ]
+   },
+   "name": "Bomb Arrow x5",
+   "category": 2289,
+   "site": [
+    105.3205,
+    -159.6886
+   ]
+  },
+  {
+   "marker": {
+    "id": 11840,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Phantom Armor",
+    "description": "Expansion Pack 1. Side Quest &quot;EX Treasure: Phantasma&quot;.",
+    "x": 123.93593740463,
+    "y": -126.703125,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-07 18:22:05",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;&lt;strong&gt;Need DLC to obtain&amp;nbsp;&lt;/strong&gt;&lt;/p&gt;\r\n&lt;p&gt;Side Quest &quot;EX Treasure: Phantasma&quot;&lt;/p&gt;"
+    ]
+   },
+   "name": "Phantom Armor",
+   "category": 2289,
+   "site": [
+    124.1594,
+    -126.6472
+   ]
+  },
+  {
+   "marker": {
+    "id": 11846,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Royal Guard Uniform",
+    "description": "Expansion Pack 2. Side Quest \"EX Royal Guard Rumors\".",
+    "x": 126.46718764305115,
+    "y": -114.88984370231628,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 17:34:57",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Royal Guard Uniform",
+   "category": 2289,
+   "site": [
+    125.2616,
+    -114.0997
+   ]
+  },
+  {
+   "marker": {
+    "id": 11845,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Royal Guard Cap",
+    "description": "Expansion Pack 2. Side Quest \"EX Royal Guard Rumors\".",
+    "x": 124.328125,
+    "y": -111.4281250834465,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 17:34:57",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;Above Ganon boss fight room.&lt;/p&gt;"
+    ]
+   },
+   "name": "Royal Guard Cap",
+   "category": 2289,
+   "site": [
+    124.0316,
+    -111.1175
+   ]
+  },
+  {
+   "marker": {
+    "id": 11842,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Tingle's Shirt",
+    "description": "Expansion Pack 1. Side Quest \"EX Treasure: Fairy Clothes\".",
+    "x": 117.38046860694885,
+    "y": -115.28593730926514,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2020-07-06 22:02:12",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Tingle's Shirt",
+   "category": 2289,
+   "site": [
+    117.357,
+    -115.295
+   ]
+  },
+  {
+   "marker": {
+    "id": 11847,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Royal Guard Boots",
+    "description": "Expansion Pack 2. Side Quest \"EX Royal Guard Rumors\".",
+    "x": 122.28671860694885,
+    "y": -114.82812488079071,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 17:34:57",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Royal Guard Boots",
+   "category": 2289,
+   "site": [
+    122.3659,
+    -114.6348
+   ]
+  },
+  {
+   "marker": {
+    "id": 11839,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Tingle's Hood",
+    "description": "Expansion Pack 1. Side Quest \"EX Treasure: Fairy Clothes\".",
+    "x": 116.3828125,
+    "y": -141.9375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2020-07-06 21:28:36",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Tingle's Hood",
+   "category": 2289,
+   "site": [
+    116.3744,
+    -141.9083
+   ]
+  },
+  {
+   "marker": {
+    "id": 30336,
+    "user_id": 9133,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Phantom Greaves",
+    "description": "Expansion Pack 1. Side Quest \"EX Treasure: Phantasma\".",
+    "x": 120.05078125,
+    "y": -137.59375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-19 22:05:21",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Phantom Greaves",
+   "category": 2289,
+   "site": [
+    120.0739,
+    -137.5305
+   ]
+  },
+  {
+   "marker": {
+    "id": 11843,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Tingle's Tights",
+    "description": "Expansion Pack 1. Side Quest \"EX Treasure: Fairy Clothes\".",
+    "x": 127.52734375,
+    "y": -131.2890625,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2020-07-06 22:03:32",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Tingle's Tights",
+   "category": 2289,
+   "site": [
+    127.5133,
+    -131.3066
+   ]
+  },
+  {
+   "marker": {
+    "id": 9436,
+    "user_id": 15983,
+    "submap_id": 1901,
+    "category_id": 1943,
+    "name": "Ruby",
+    "description": "Expansion Pass Bonus.",
+    "x": 117.453125,
+    "y": -151.77734375,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-07 18:18:09",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;&lt;strong&gt;Need DLC to obtain&lt;/strong&gt;&lt;/p&gt;"
+    ]
+   },
+   "name": "Ruby",
+   "category": 2289,
+   "site": [
+    117.5055,
+    -151.7908
+   ]
+  },
+  {
+   "marker": {
+    "id": 30337,
+    "user_id": 987,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Majora&#039;s Mask",
+    "description": "Expansion Pack 1. Side Quest &quot;EX Treasure: Ancient Mask&quot;.",
+    "x": 120.87109375,
+    "y": -148.14547936893,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-07 18:15:16",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;&lt;strong&gt;Need DLC to obtain &lt;/strong&gt;&lt;/p&gt;\r\n&lt;p&gt;Side Quest &quot;EX Treasure: Ancient Mask&quot;&lt;/p&gt;"
+    ]
+   },
+   "name": "Majora's Mask",
+   "category": 2289,
+   "site": [
+    120.997,
+    -148.0306
+   ]
+  },
+  {
+   "marker": {
+    "id": 9016,
+    "user_id": 10622,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Switch Shirt",
+    "description": "Expansion Pass Bonus.",
+    "x": 120.69609355927,
+    "y": -159.32578110695,
+    "z": null,
+    "global": 1,
+    "visible": 1,
+    "last_updated": "2026-11-07 18:15:50",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;&lt;strong&gt;Need DLC to obtain&lt;/strong&gt;&lt;/p&gt;"
+    ]
+   },
+   "name": "Switch Shirt",
+   "category": 2289,
+   "site": [
+    120.6786,
+    -159.3672
+   ]
+  },
+  {
+   "marker": {
+    "id": 11856,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Island Lobster Shirt",
+    "description": "Expansion Pack 2. Side Quest \"EX Treasure: Garb of the Winds\".",
+    "x": 125.58984375,
+    "y": -176.12920964805826,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 18:32:38",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Island Lobster Shirt",
+   "category": 2289,
+   "site": [
+    125.4323,
+    -176.1077
+   ]
+  },
+  {
+   "marker": {
+    "id": 11838,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Korok Mask",
+    "description": "Expansion Pack 1. Side Quest \"EX Treasure: Strange Mask\".",
+    "x": 139.22265648841858,
+    "y": -99.11093771457672,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-19 22:17:09",
+    "has_revision": "0",
+    "tabs": [
+     "&lt;p&gt;The Korok Mask shakes and makes noises when you get near a Korok&#039;s hiding spot, similar to the shrine sensor.&lt;/p&gt;"
+    ]
+   },
+   "name": "Korok Mask",
+   "category": 2289,
+   "site": [
+    139.2764,
+    -99.1291
+   ]
+  },
+  {
+   "marker": {
+    "id": 30341,
+    "user_id": 987,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Ravio's Hood",
+    "description": "Expansion Pack 2. Side Quest \"EX Treasure: Merchant Hood\".",
+    "x": 142.46875,
+    "y": -165.5314244538835,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 18:26:13",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Ravio's Hood",
+   "category": 2289,
+   "site": [
+    140.9755,
+    -166.0997
+   ]
+  },
+  {
+   "marker": {
+    "id": 11837,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Ancient Saddle",
+    "description": "Expansion Pack 2. Side Quest &quot;EX Ancient Horse Rumors&quot;.",
+    "x": 140.390625,
+    "y": -185.875,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-13 07:00:20",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;Magnetic chest half-buried.&lt;/p&gt;"
+    ]
+   },
+   "name": "Ancient Saddle",
+   "category": 2289,
+   "site": [
+    140.703,
+    -185.8277
+   ]
+  },
+  {
+   "marker": {
+    "id": 30342,
+    "user_id": 987,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Zant's Helmet",
+    "description": "Expansion Pack 2. Side Quest \"EX Treasure: Usurper King\".",
+    "x": 148.12890625,
+    "y": -166.29600525889967,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 18:39:00",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Zant's Helmet",
+   "category": 2289,
+   "site": [
+    148.1261,
+    -166.3006
+   ]
+  },
+  {
+   "marker": {
+    "id": 30345,
+    "user_id": 987,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Phantom Ganon Skull",
+    "description": "Expansion Pack 2. Side Quest \"EX Treasure: Dark Armor\".",
+    "x": 154.09375,
+    "y": -177.4870196197411,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 18:55:35",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Phantom Ganon Skull",
+   "category": 2289,
+   "site": [
+    154.0811,
+    -177.4222
+   ]
+  },
+  {
+   "marker": {
+    "id": 30343,
+    "user_id": 987,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Phantom Ganon Armor",
+    "description": "Expansion Pack 2. Side Quest \"EX Treasure: Dark Armor\".",
+    "x": 144.02734375,
+    "y": -178.57628944174758,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 18:48:32",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Phantom Ganon Armor",
+   "category": 2289,
+   "site": [
+    144.0345,
+    -178.6233
+   ]
+  },
+  {
+   "marker": {
+    "id": 30344,
+    "user_id": 987,
+    "submap_id": 1901,
+    "category_id": 1944,
+    "name": "Phantom Ganon Greaves",
+    "description": "Expansion Pack 2. Side Quest \"EX Treasure: Dark Armor\".",
+    "x": 156.5234375,
+    "y": -180.35606290453075,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2024-07-23 18:51:48",
+    "has_revision": "0",
+    "tabs": null
+   },
+   "name": "Phantom Ganon Greaves",
+   "category": 2289,
+   "site": [
+    156.6383,
+    -180.4295
+   ]
+  },
+  {
+   "marker": {
+    "id": 11844,
+    "user_id": 102183,
+    "submap_id": 1901,
+    "category_id": 1943,
+    "name": "Travel Medallion",
+    "description": "Expansion Pack 2. Side Quest &quot;EX Teleportation Rumors!&quot;.",
+    "x": 200.71484351158,
+    "y": -72.437499821186,
+    "z": null,
+    "global": 0,
+    "visible": 1,
+    "last_updated": "2026-11-07 18:14:09",
+    "has_revision": "1",
+    "tabs": [
+     "&lt;p&gt;&lt;strong&gt;Need DLC to obtain&amp;nbsp;&lt;/strong&gt;&lt;/p&gt;\r\n&lt;p&gt;Side Quest &quot;EX Teleportation Rumors!&quot;.&lt;/p&gt;",
+     "&lt;p&gt;Allows you to create at your own warp point where you are currently standing. In the same room as the Diamond Circlet.&lt;/p&gt;"
+    ]
+   },
+   "name": "Travel Medallion",
+   "category": 2289,
+   "site": [
+    200.7344,
+    -72.3747
+   ]
+  }
+ ]
+}

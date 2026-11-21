@@ -10,10 +10,12 @@ Data the BotW map was missing, from the game's own files, in
 | Shops, as the game's map shows them | 37 | Shops |
 | Quests: 15 main, 42 shrine, 77 side, 18 DLC | 152 (54 already on the site) | Main Quests, Shrine Quests, Side-Quests, Quests (DLC) |
 | DLC treasure chests (all 24 already on the site) | 24 | Treasure Chest (DLC) |
-| Master Mode chests, floating platforms, enemies | 118, 107, 4 | a **Master Mode** section |
+| Master Mode chests, floating platforms, enemies | 118, 107, 4 + 152 | a **Master Mode** section |
 
-DLC categories look like Shrine of Trials (DLC): blue diamonds. Master Mode
-has its own crimson diamonds and its own menu section.
+DLC quests are blue circles; DLC chests are a
+blue chest glyph with no shape, like the other chests. Master Mode has its own
+menu section in crimson: shapeless chests, circles for its platforms and
+enemies (`20261120170000_botw_dlc_master_mode_icons.sql`).
 
 ## Where it comes from
 
@@ -34,6 +36,44 @@ has its own crimson diamonds and its own menu section.
   the map data; where nobody gives it, at its trigger in the map (the objects
   tagged with its id), or at the place its log names. Kass's songs are at the
   spot he sings each one. The rules are `QUEST_START` in the script.
+
+Master Mode's enemies are its White-Maned Lynel and three Wizzrobes, plus, in a
+second migration (`20261120140000_botw_master_mode_lookouts.sql`), its 152
+minor ones: 93 Bokoblins on tree platforms, 45 Lizalfos lookouts and 14 more
+Bokoblins, Lizalfos and Moblins. They aren't additions to the site's enemy
+camps: only 6 of their 93 groups are within 100 m of one, so each is a marker
+of its own.
+
+## Every enemy
+
+A third migration (`20261120150000_botw_all_enemies.sql`) adds every enemy
+in normal play. The common ones are a **Common Enemies** menu section, so it
+can be hidden: 1,060 Bokoblins, 663 Lizalfos, 435 Chuchus, 333 Keese, 268
+Pebblits, 266 Moblins and 227 Octoroks, named as the game names them (Blue
+Bokoblin, Stalkoblin, Fire Chuchu…). The Yiga Clan (21, Master Kohga among
+them) and seven big enemies the site was missing (three Guardian
+Skywatchers, a Guardian Turret, a Blizzrobe, the Molduking and the Igneo
+Talus Titan) join the rare ones, whose section is now **Rare Enemies &
+Bosses**.
+
+Enemies are shown as placed: the game ranks many of them up as you play.
+The same enemy stacked within 2 m (a spawner) is one marker ("Keese x2").
+Left out: the One-Hit Obliterator trials' stand-ins (`IsIchigekiActor`) and
+the DLC's `_DLC2` copies. The site's 35 enemy camps and its older one-off
+enemies stay as they were. Rebuilding needs one more input beside
+`EXISTING`, `enemy-markers.tsv`: `category, x, y, id` of the site's visible
+BotW markers in categories 1930, 1932, 1933, 1939–1942 and 1947.
+
+A fourth migration (`20261120160000_botw_merge_duplicate_enemies.sql`) hides
+nine older enemy markers the game's now stand for, copying their completions
+to them (`MERGE_TARGETS` in the script): four White Chuchus (the old name for
+Ice Chuchus), three "Enemies" (each the enemies within 20 m of it) and two
+Lynels filed under Enemies that doubled ones in the Lynel category. Each is
+in its history; the copied completions are listed in `marker_merge_backup`
+so the down migration removes exactly those. The enemy camps stay: each has
+game enemies at it, but a camp is one thing to clear. The hidden Boss
+category (19 Hinox, Talus and Lynel markers that double their own
+categories) and the old "DO NOT USE" submap's markers are left as they are.
 
 ## The site's own markers
 
@@ -78,11 +118,8 @@ Then `npm test` (`tests/botw-missing-data.test.js`).
 
 ## Not included
 
-- Twelve Blizzrobes and six Guardians in the map data without a Master Mode
-  flag, which the site doesn't have. Several are One-Hit Obliterator trial
-  actors from The Champions' Ballad; it isn't clear when the others appear.
-- Master Mode's 138 Bokoblin and Lizalfos lookouts: the site doesn't map
-  ordinary enemies.
+- Ten Blizzrobes in the map data with no drop table, unlike every enemy in
+  normal play; it isn't clear when they appear.
 - Secret of the Cedars and The Spring of Power have no trigger in the map
   data; they're placed at the place their log names (Hateno Village, East
   Akkala Stable).

@@ -1,0 +1,5 @@
+-- Master Mode's other extra enemies gone.
+
+DELETE FROM marker_tab WHERE marker_id BETWEEN 19601001 AND 19601152;
+DELETE FROM marker_revision WHERE marker_id BETWEEN 19601001 AND 19601152;
+DELETE FROM marker WHERE id BETWEEN 19601001 AND 19601152;

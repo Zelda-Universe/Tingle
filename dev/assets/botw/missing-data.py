@@ -18,7 +18,8 @@ Two steps:
 
   python3 dev/assets/botw/missing-data.py sql
       Writes migrations/20261120130000_botw_missing_data.sql (+ .down.sql)
-      from missing-data.json alone.
+      and 20261120140000_botw_master_mode_lookouts.sql (+ .down.sql), Master
+      Mode's minor enemies, from missing-data.json alone.
 
 Positions are the game's (X east, Z south) on the site's map, as
 labels-and-regions.cjs: x = X / 64 + 128, y = -Z / 64 - 128.
@@ -38,6 +39,25 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, '..', '..', '..'))
 SOURCE = os.path.join(HERE, 'missing-data.json')
 MIGRATION = '20261120130000_botw_missing_data'
+LOOKOUTS = '20261120140000_botw_master_mode_lookouts'
+LOOKOUT_FIRST_ID = 19601001
+ENEMIES = '20261120150000_botw_all_enemies'
+ENEMY_FIRST_ID = 19610001
+# Common enemies, a menu section of their own (so it can be hidden), and the
+# Yiga Clan with the rare ones. Families by actor name (Enemy_<family>_...).
+ENEMY_FAMILIES = {'Bokoblin': 'Bokoblin', 'Moriblin': 'Moblin', 'Lizalfos': 'Lizalfos', 'Chuchu': 'Chuchu',
+                  'Keese': 'Keese', 'Octarock': 'Octorok', 'Assassin': 'Yiga Clan'}
+ENEMY_CATEGORIES = [
+    dict(id=2293, name='Bokoblin', order=44), dict(id=2294, name='Moblin', order=44),
+    dict(id=2295, name='Lizalfos', order=44), dict(id=2296, name='Chuchu', order=44),
+    dict(id=2297, name='Keese', order=44), dict(id=2298, name='Octorok', order=44),
+    dict(id=2299, name='Pebblit', order=44),
+    dict(id=2300, name='Yiga Clan', order=24, section='Rare Enemies & Bosses'),
+]
+# The site's big-enemy categories, by actor prefix.
+BIG_ENEMIES = [('Enemy_Lynel', 1940), ('Enemy_Giant', 1942), ('Enemy_Wizzrobe', 1939), ('Enemy_Guardian', 1932),
+               ('Enemy_Sandworm', 1947), ('Enemy_Golem_Junior', 1941), ('Enemy_Golem_Middle', 1941),
+               ('Enemy_Golem_Senior', 1941), ('Enemy_Golem_Fire', 1941), ('Enemy_Golem_Ice', 1941)]
 
 GAME, SUBMAP, USER = 19, 1901, 15
 FIRST_ID = 19600001  # this import's markers: 19600001 onwards
@@ -335,6 +355,55 @@ def prepare(radar, questmsg, objmap, existing_path):
     master_enemies = [{'hash': o['HashId'], 'actor': o['UnitConfigName'], 'name': names[o['UnitConfigName']],
                        'pos': [rnd(v, 2) for v in o['Translate']]}
                       for o in hard if o['UnitConfigName'].startswith(('Enemy_Lynel', 'Enemy_Wizzrobe'))]
+    # Its other extra enemies (a second migration, LOOKOUTS): Bokoblins on
+    # tree platforms, Lizalfos lookouts and a few more Bokoblins, Lizalfos
+    # and Moblins. Mostly on their own, not at camps.
+    master_lookouts = [{'hash': o['HashId'], 'actor': o['UnitConfigName'], 'name': names[o['UnitConfigName']],
+                        'lookout': '_Guard_' in o['UnitConfigName'], 'pos': [rnd(v, 2) for v in o['Translate']]}
+                       for o in hard if o['UnitConfigName'].startswith(('Enemy_Bokoblin', 'Enemy_Lizalfos', 'Enemy_Moriblin'))]
+    assert len(master_lookouts) == 152, len(master_lookouts)
+
+    # Every other enemy in normal play (a third migration, ENEMIES): the
+    # common ones by family, and the Yiga Clan. Not the One-Hit Obliterator
+    # trials' stand-ins (IsIchigekiActor) or the DLC's _DLC2 copies. The same
+    # enemy stacked within 2 m (spawners) is one marker, "Keese x2".
+    def family(a):
+        f = a.split('_')[1]
+        if f == 'Golem':
+            return 'Pebblit' if a.startswith('Enemy_Golem_Little') else None
+        return ENEMY_FAMILIES.get(f)
+    common = [o for o in objs if o['UnitConfigName'].startswith('Enemy_') and family(o['UnitConfigName'])
+              and not params(o).get('IsHardModeActor') and not params(o).get('IsIchigekiActor')
+              and 'DLC2' not in o['UnitConfigName']]
+    enemies, taken = [], set()
+    for o in common:
+        if o['HashId'] in taken:
+            continue
+        stack = [s for s in common if s['UnitConfigName'] == o['UnitConfigName'] and s['HashId'] not in taken
+                 and flat(s['Translate'], o['Translate']) < 2 and abs(s['Translate'][1] - o['Translate'][1]) < 2]
+        taken.update(s['HashId'] for s in stack)
+        n = names[o['UnitConfigName']]
+        enemies.append({'hash': o['HashId'], 'actor': o['UnitConfigName'], 'family': family(o['UnitConfigName']),
+                        'name': n if len(stack) == 1 else '%s x%d' % (n, len(stack)), 'count': len(stack),
+                        'pos': [rnd(v, 2) for v in o['Translate']]})
+    # The big enemies the site has categories for, where it's missing one:
+    # in normal play (with a drop table, not a trial stand-in), and no marker
+    # of that category within 25 m.
+    have = defaultdict(list)
+    for line in open(os.path.join(os.path.dirname(existing_path), 'enemy-markers.tsv')):
+        cat, x, y = line.split('\t')[:3]
+        have[int(cat)].append((float(x), float(y)))
+    enemy_fills = []
+    for o in objs:
+        a = o['UnitConfigName']
+        cat = next((c for p, c in BIG_ENEMIES if a.startswith(p)), None)
+        if not cat or params(o).get('IsHardModeActor') or params(o).get('IsIchigekiActor') or 'DropTable' not in params(o):
+            continue
+        sx, sy = to_site(o['Translate'])
+        # (Some sit in the generic Enemies or Boss categories.)
+        if all(math.hypot(x - sx, y - sy) * 64 > 25 for x, y in have[cat] + have[1930] + have[1933]):
+            enemy_fills.append({'hash': o['HashId'], 'actor': a, 'name': names[a], 'category': cat,
+                                'pos': [rnd(v, 2) for v in o['Translate']]})
 
     # The site's markers these change: its quests, and the chests above
     # that it already has (by contents, within 64 m).
@@ -375,7 +444,7 @@ def prepare(radar, questmsg, objmap, existing_path):
         'sources': ['https://github.com/zeldamods/radar (content/)', 'https://objmap.zeldamods.org/game_files',
                     'https://github.com/kenshiisod/botw-gettext (botw-wiiu/USen/QuestMsg)'],
         'dragons': dragons, 'shops': shops, 'quests': quests, 'dlcChests': dlc_chests, 'collabChests': collab_chests,
-        'masterChests': master_chests, 'platforms': platforms, 'masterEnemies': master_enemies, 'edits': edits,
+        'masterChests': master_chests, 'platforms': platforms, 'masterEnemies': master_enemies, 'masterLookouts': master_lookouts, 'enemies': enemies, 'enemyFills': enemy_fills, 'edits': edits,
     }
     json.dump(data, open(SOURCE, 'w'), indent=1, ensure_ascii=False)
     print('quests', dict(kinds), 'edits', len(edits), 'existing quests', sum(1 for q in quests if 'existing' in q),
@@ -606,6 +675,186 @@ def sql():
         open(os.path.join(ROOT, 'migrations', name), 'w').write(text)
         print('%s: %d KB' % (name, len(text) // 1024))
     print('new markers', len(new_ids), '(%d-%d)' % (first, last), 'edits', sum(1 for e in d['edits'] if 'summary' in e))
+    lookouts(d, user)
+
+
+def lookouts(d, user):
+    """Master Mode's minor extra enemies, a migration after the first (which
+    had already run on staging): one marker each, in Enemies (Master Mode)."""
+    up = ["-- Breath of the Wild: Master Mode's other extra enemies, one marker each in",
+          '-- Enemies (Master Mode): 93 Bokoblins on tree platforms, 45 Lizalfos',
+          '-- lookouts, and 14 more Bokoblins, Lizalfos and Moblins. From the game\'s',
+          '-- map data (dev/assets/botw/missing-data.py, docs/BotW-Missing-Data.md).',
+          '-- Markers 19601001 on, credited to account 15. Harmless to run again.', '']
+    mid = LOOKOUT_FIRST_ID - 1
+    for e in d['masterLookouts']:
+        mid += 1
+        x, y = to_site(e['pos'])
+        up.append('-- %s (%s)' % (e['name'], e['actor']))
+        up.append(
+            'INSERT INTO marker (id, submap_id, overlay_id, marker_status_id, marker_category_id, user_id, name, description, '
+            "x, y, z, jump_marker_id, global, path, game_data, visible, last_updated) SELECT %d, %d, NULL, 2, %d, %s, %s, '', "
+            "%s, %s, NULL, 0, 0, '', NULL, 1, NOW() FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM marker WHERE id = %d) "
+            'AND EXISTS (SELECT 1 FROM marker_category WHERE id = %d);' % (
+                mid, SUBMAP, CAT['Enemies (Master Mode)'], user, q(enc(e['name'])), num(x), num(y), mid, CAT['Enemies (Master Mode)']))
+        if e['lookout']:
+            up.append(
+                'INSERT INTO marker_tab (marker_id, marker_tab_status_id, user_id, tab_title, tab_text, tab_order, visible) '
+                'SELECT %d, 2, %s, %s, %s, 1, 1 FROM DUAL WHERE EXISTS (SELECT 1 FROM marker WHERE id = %d) '
+                'AND NOT EXISTS (SELECT 1 FROM marker_tab WHERE marker_id = %d);' % (
+                    mid, user, q(enc(e['name'])), q(enc(tab_html(['A lookout.']))), mid, mid))
+    down = ["-- Master Mode's other extra enemies gone.", '',
+            'DELETE FROM marker_tab WHERE marker_id BETWEEN %d AND %d;' % (LOOKOUT_FIRST_ID, mid),
+            'DELETE FROM marker_revision WHERE marker_id BETWEEN %d AND %d;' % (LOOKOUT_FIRST_ID, mid),
+            'DELETE FROM marker WHERE id BETWEEN %d AND %d;' % (LOOKOUT_FIRST_ID, mid), '']
+    for name, text in ((LOOKOUTS + '.sql', '\n'.join(up) + '\n'), (LOOKOUTS + '.down.sql', '\n'.join(down))):
+        open(os.path.join(ROOT, 'migrations', name), 'w').write(text)
+        print('%s: %d KB' % (name, len(text) // 1024))
+    all_enemies(d, user)
+
+
+def all_enemies(d, user):
+    """Every enemy in normal play: the common ones in a Common Enemies
+    section, the Yiga Clan and the big enemies the site was missing with the
+    rare ones, whose section becomes Rare Enemies & Bosses."""
+    cat_ids = {c['name']: c['id'] for c in ENEMY_CATEGORIES}
+    by_family = Counter(e['family'] for e in d['enemies'])
+    up = ["-- Breath of the Wild: every enemy in normal play, from the game's map data",
+          '-- (dev/assets/botw/missing-data.py, docs/BotW-Missing-Data.md). The common',
+          '-- ones (%s) are a Common Enemies menu section, so it can be hidden; the' % ', '.join(
+              '%d %s' % (by_family[c['name']], c['name']) for c in ENEMY_CATEGORIES if c['name'] != 'Yiga Clan'),
+          '-- Yiga Clan (%d) and the big enemies the site was missing (%d) join the rare' % (
+              by_family['Yiga Clan'], len(d['enemyFills'])),
+          "-- ones, whose section becomes Rare Enemies & Bosses. Enemies show as placed: the",
+          '-- game ranks many up as you play. Markers 19610001 on, credited to account 15.',
+          '-- Harmless to run again.', '',
+          "UPDATE marker_category SET menu_section = 'Rare Enemies & Bosses' WHERE container_id = %d AND menu_section = 'Enemies & Bosses';" % GAME]
+    for c in ENEMY_CATEGORIES:
+        up.append(
+            "INSERT INTO marker_category (id, parent_id, marker_category_type_id, container_id, name, default_checked, img, color, "
+            "visible_zoom, visible, custom_style, shape, glyph_color, menu_section, menu_order) SELECT %d, 1930, 1, %d, %s, 1, "
+            "'BotW_Enemies', '#ff422e', 7, 1, 0, NULL, NULL, %s, %d FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM marker_category WHERE id = %d);" % (
+                c['id'], GAME, q(c['name']), q(c.get('section', 'Common Enemies')), c['order'], c['id']))
+    up.append('')
+    mid = ENEMY_FIRST_ID - 1
+    rows = [(cat_ids[e['family']], e) for e in d['enemies']] + [(e['category'], e) for e in d['enemyFills']]
+    for cat, e in rows:
+        mid += 1
+        x, y = to_site(e['pos'])
+        up.append(
+            'INSERT INTO marker (id, submap_id, overlay_id, marker_status_id, marker_category_id, user_id, name, description, '
+            "x, y, z, jump_marker_id, global, path, game_data, visible, last_updated) SELECT %d, %d, NULL, 2, %d, %s, %s, '', "
+            "%s, %s, NULL, 0, 0, '', NULL, 1, NOW() FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM marker WHERE id = %d) "
+            'AND EXISTS (SELECT 1 FROM marker_category WHERE id = %d);' % (
+                mid, SUBMAP, cat, user, q(enc(e['name'])), num(x), num(y), mid, cat))
+    down = ['-- Every-enemy import gone, and the rare section named as it was.', '',
+            'DELETE FROM marker_tab WHERE marker_id BETWEEN %d AND %d;' % (ENEMY_FIRST_ID, mid),
+            'DELETE FROM marker_revision WHERE marker_id BETWEEN %d AND %d;' % (ENEMY_FIRST_ID, mid),
+            'DELETE FROM marker WHERE id BETWEEN %d AND %d;' % (ENEMY_FIRST_ID, mid),
+            'DELETE c FROM marker_category c WHERE c.id IN (%s) AND NOT EXISTS (SELECT 1 FROM marker m WHERE m.marker_category_id = c.id);' % (
+                ', '.join(str(c['id']) for c in ENEMY_CATEGORIES)),
+            "UPDATE marker_category SET menu_section = 'Enemies & Bosses' WHERE container_id = %d AND menu_section = 'Rare Enemies & Bosses';" % GAME,
+            '']
+    for name, text in ((ENEMIES + '.sql', '\n'.join(up) + '\n'), (ENEMIES + '.down.sql', '\n'.join(down))):
+        open(os.path.join(ROOT, 'migrations', name), 'w').write(text)
+        print('%s: %d KB' % (name, len(text) // 1024))
+    print('enemies', dict(by_family), 'fills', Counter(e['name'] for e in d['enemyFills']))
+    merges()
+    icons()
+
+
+# Restyled after the first migration ran on staging (a fifth migration,
+# ICONS): DLC quests circles; the DLC and Master Mode chests shapeless like the other chests (a
+# glyph in their colour, outlined dark), Master Mode's other categories
+# circles. Only while still as first made, so Map Settings changes stay.
+ICONS = '20261120170000_botw_dlc_master_mode_icons'
+ICON_STYLES = {
+    2288: dict(color='#4395f7', glyph='#ffffff', shape='circle'),  # Quests (DLC): blue circle
+    2289: dict(color='#0d2b52', glyph='#4395f7', shape='none'),   # Treasure Chest (DLC): blue
+    2290: dict(color='#3a0b16', glyph='#a8324a', shape='none'),   # Treasure Chest (Master Mode): crimson
+    2291: dict(color='#a8324a', glyph='#ffffff', shape='circle'),  # Floating Platform (Master Mode)
+    2292: dict(color='#a8324a', glyph='#ffffff', shape='circle'),  # Enemies (Master Mode)
+}
+
+
+def icons():
+    first = {c['id']: c for c in CATEGORIES}
+    up = ['-- Breath of the Wild: DLC quests blue circles; the DLC and Master Mode treasure chests shapeless, like',
+          "-- the other chests (a glyph in their colour, outlined dark), and Master Mode's",
+          '-- platforms and enemies circles. Only while still styled as first made',
+          '-- (20261120130000_botw_missing_data), so Map Settings changes stay.', '']
+    down = ['-- The DLC and Master Mode categories styled as first made.', '']
+    for cid, s in ICON_STYLES.items():
+        c = first[cid]
+        up.append("UPDATE marker_category SET custom_style = 1, shape = %s, color = %s, glyph_color = %s WHERE id = %d "
+                  "AND shape = %s AND color = %s AND glyph_color = %s;" % (
+                      q(s['shape']), q(s['color']), q(s['glyph']), cid, q(c['shape']), q(c['color']), q(c['glyph'])))
+        down.append("UPDATE marker_category SET shape = %s, color = %s, glyph_color = %s WHERE id = %d "
+                    "AND shape = %s AND color = %s AND glyph_color = %s;" % (
+                        q(c['shape']), q(c['color']), q(c['glyph']), cid, q(s['shape']), q(s['color']), q(s['glyph'])))
+    down.append('')
+    for name, text in ((ICONS + '.sql', '\n'.join(up) + '\n'), (ICONS + '.down.sql', '\n'.join(down))):
+        open(os.path.join(ROOT, 'migrations', name), 'w').write(text)
+        print('%s: %d KB' % (name, len(text) // 1024))
+
+
+# The site's older enemy markers that the game's now stand for (a fourth
+# migration, MERGES): hidden, their completions copied to those, each kept
+# in its history. White Chuchu is the old name for Ice Chuchu; each
+# "Enemies" stood for the enemies within 20 m of it; the two Lynels filed
+# under Enemies doubled ones in the Lynel category.
+MERGES = '20261120160000_botw_merge_duplicate_enemies'
+MERGE_TARGETS = {
+    40: [19611178], 49: [19611160],                                       # White Chuchu
+    234: [19611182, 19611186], 235: [19611198, 19611196],                 # White Chuchu x 2
+    368: [19613264],                                                      # Enemies: a Bokoblin
+    369: [19613245, 19613251, 19613252, 19613263, 19613268, 19613269],    # Enemies: Bokoblins, Electric Chuchus
+    370: [19613238, 19613243, 19613255, 19613258, 19613271],              # Enemies: Bokoblins, a Blue Moblin
+    254: [4370], 474: [4372],                                             # Lynel
+}
+
+
+def merges():
+    up = ["-- Breath of the Wild: older enemy markers the game's own now stand for, hidden",
+          '-- with their completions copied to those (dev/assets/botw/missing-data.py',
+          '-- MERGE_TARGETS): four White Chuchus (the old name for Ice Chuchus), three',
+          '-- "Enemies" (each the enemies within 20 m of it) and two Lynels that doubled ones',
+          "-- in the Lynel category. Each is kept in its history as an edit by account 15.",
+          '-- The completions added are listed in marker_merge_backup for the down migration.',
+          '-- Only while the old marker is still shown. Harmless to run again.', '',
+          'CREATE TABLE IF NOT EXISTS `marker_merge_backup` (`user_id` INT NOT NULL, `marker_id` INT NOT NULL, '
+          '`from_marker_id` INT NOT NULL, PRIMARY KEY (`user_id`, `marker_id`));', '']
+    snap = ("JSON_OBJECT('title', m.name, 'description', m.description, 'categoryId', m.marker_category_id, "
+            "'submapId', m.submap_id, 'x', m.x, 'y', m.y, 'z', m.z, 'global', m.global, 'visible', %s, 'tabs', JSON_ARRAY())")
+    down = ["-- The merged enemy markers shown again, and the completions copied from them gone.", '',
+            'DELETE u FROM user_completed_marker u JOIN marker_merge_backup b ON b.user_id = u.user_id AND b.marker_id = u.marker_id;',
+            'DELETE FROM marker_merge_backup;']
+    for old, targets in MERGE_TARGETS.items():
+        shown = 'EXISTS (SELECT 1 FROM marker WHERE id = %d AND visible = 1)' % old
+        summary = 'Hidden: the same as %s, which have its completions' % ', '.join('#%d' % t for t in targets) \
+            if len(targets) > 1 else 'Hidden: the same as #%d, which has its completions' % targets[0]
+        up.append('-- #%d' % old)
+        for t in targets:
+            up.append('INSERT IGNORE INTO marker_merge_backup (user_id, marker_id, from_marker_id) SELECT u.user_id, %d, %d '
+                      'FROM user_completed_marker u WHERE u.marker_id = %d AND %s AND EXISTS (SELECT 1 FROM marker WHERE id = %d) '
+                      'AND NOT EXISTS (SELECT 1 FROM user_completed_marker v WHERE v.user_id = u.user_id AND v.marker_id = %d);' % (
+                          t, old, old, shown, t, t))
+            up.append('INSERT IGNORE INTO user_completed_marker (user_id, marker_id, complete_date, visible) SELECT u.user_id, %d, '
+                      'u.complete_date, u.visible FROM user_completed_marker u WHERE u.marker_id = %d AND %s AND EXISTS '
+                      '(SELECT 1 FROM marker WHERE id = %d);' % (t, old, shown, t))
+        up.append("INSERT INTO marker_revision (marker_id, user_id, action, summary, reverts_revision_id, data, created) "
+                  "SELECT m.id, m.user_id, 'import', NULL, NULL, %s, COALESCE(m.last_updated, NOW()) FROM marker m WHERE m.id = %d "
+                  'AND m.visible = 1 AND NOT EXISTS (SELECT 1 FROM marker_revision WHERE marker_id = %d);' % (snap % 'm.visible', old, old))
+        up.append("INSERT INTO marker_revision (marker_id, user_id, action, summary, reverts_revision_id, data, created) "
+                  "SELECT m.id, %d, 'edit', %s, NULL, %s, NOW() FROM marker m WHERE m.id = %d AND m.visible = 1;" % (
+                      USER, q(summary), snap % '0', old))
+        up.append('UPDATE marker SET visible = 0, last_updated = NOW() WHERE id = %d AND visible = 1;' % old)
+        down.append("DELETE FROM marker_revision WHERE marker_id = %d AND user_id = %d AND action = 'edit' AND summary = %s;" % (old, USER, q(summary)))
+    down.append('UPDATE marker SET visible = 1 WHERE id IN (%s) AND visible = 0;' % ', '.join(str(o) for o in MERGE_TARGETS))
+    down.append('')
+    for name, text in ((MERGES + '.sql', '\n'.join(up) + '\n'), (MERGES + '.down.sql', '\n'.join(down))):
+        open(os.path.join(ROOT, 'migrations', name), 'w').write(text)
+        print('%s: %d KB' % (name, len(text) // 1024))
 
 
 if __name__ == '__main__':

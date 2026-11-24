@@ -294,7 +294,12 @@
         if (!game) { if (!navigator.onLine) return; game = 'OoT'; }
         if (/^ootr?$/i.test(game)) game = 'OoT';
         var ask = function(url) {
-          return early[url] = fetch(url, { credentials: 'same-origin' }).then(function(response) {
+          // Let the app and map settings arrive before the large marker list.
+          // This is a hint only: every request still starts immediately.
+          return early[url] = fetch(url, {
+            credentials: 'same-origin',
+            priority: /command=get_markers(?:&|$)/.test(url) ? 'low' : 'high'
+          }).then(function(response) {
             if (!response.ok) throw new Error(response.status);
             return response.json();
           });
@@ -432,14 +437,17 @@
 
       <script
         defer
+        fetchpriority="high"
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"
       ></script>
       <script
         defer
+        fetchpriority="high"
         src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
       ></script>
       <script
         async
+        fetchpriority="low"
         src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"
         integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
         crossorigin="anonymous"
@@ -479,7 +487,7 @@
         }
       </script>
       <script>var zmapLandingCategoryId = <?= json_encode($landingCategoryId) ?>;</script>
-      <script defer type="text/javascript" src="res.php?type=javascript&amp;v=<?= asset_version() ?>"></script>
+      <script defer fetchpriority="high" type="text/javascript" src="res.php?type=javascript&amp;v=<?= asset_version() ?>"></script>
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

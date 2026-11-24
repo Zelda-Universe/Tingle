@@ -3,6 +3,7 @@
 @font-face {
     font-family: 'BrandonText';
     font-weight: 300;
+    font-display: swap;
     src: url('fonts/brandon/265406_1_0.eot');
     src: url('fonts/brandon/265406_1_0.eot?#iefix') format('embedded-opentype'),url('fonts/brandon/265406_1_0.woff') format('woff'),url('fonts/brandon/265406_1_0.ttf') format('truetype');
 }
@@ -11,6 +12,7 @@
     font-family: 'BrandonText';
     font-weight: 300;
     font-style: italic;
+    font-display: swap;
     src: url('fonts/brandon/265406_0_0.eot');
     src: url('fonts/brandon/265406_0_0.eot?#iefix') format('embedded-opentype'),url('fonts/brandon/265406_0_0.woff') format('woff'),url('fonts/brandon/265406_0_0.ttf') format('truetype');
 }
@@ -27,6 +29,7 @@
     font-family: 'BrandonText';
     font-weight: 400;
     font-style: italic;
+    font-display: swap;
     src: url('fonts/brandon/264CA8_1_0.eot');
     src: url('fonts/brandon/264CA8_1_0.eot?#iefix') format('embedded-opentype'),url('fonts/brandon/264CA8_1_0.woff') format('woff'),url('fonts/brandon/264CA8_1_0.ttf') format('truetype');
 }
@@ -34,6 +37,7 @@
 @font-face {
     font-family: 'BrandonText';
     font-weight: 500;
+    font-display: swap;
     src: url('fonts/brandon/265406_2_0.eot');
     src: url('fonts/brandon/265406_2_0.eot?#iefix') format('embedded-opentype'),url('fonts/brandon/265406_2_0.woff') format('woff'),url('fonts/brandon/265406_2_0.ttf') format('truetype');
 }
@@ -42,6 +46,7 @@
     font-family: 'BrandonText';
     font-weight: 500;
     font-style: italic;
+    font-display: swap;
     src: url('fonts/brandon/265406_3_0.eot');
     src: url('fonts/brandon/265406_3_0.eot?#iefix') format('embedded-opentype'),url('fonts/brandon/265406_3_0.woff') format('woff'),url('fonts/brandon/265406_3_0.ttf') format('truetype');
 }

@@ -12,11 +12,39 @@ test('startup scripts are deferred in dependency order and editor is not eagerly
   expect(html).toContain('href="images/zmaps_white.png" as="image" fetchpriority="high"');
   expect(fs.existsSync('fonts/brandon/264CA8_2_0.woff')).toBe(true);
   expect(html.includes('src="https://cdnjs.cloudflare.com/ajax/libs/tinymce')).toBe(false);
-  expect(/<script\s+async\s+src="https:\/\/use.fontawesome.com/.test(html)).toBe(true);
+  expect(/<script\s+async\s+fetchpriority="low"\s+src="https:\/\/use.fontawesome.com/.test(html)).toBe(true);
   for(const src of ['jquery.min.js','leaflet.js','toastr.min.js','fuse.min.js']) {
     const tag=html.slice(html.lastIndexOf('<script',html.indexOf(src)),html.indexOf('>',html.indexOf(src)));
     expect(tag).toContain('defer');
   }
+});
+test('startup prioritizes the app over marker data without delaying or duplicating requests',async()=>{
+  const html=fs.readFileSync('index.php','utf8');
+  const start=html.indexOf('      (function() {',html.indexOf('var early')-200);
+  const end=html.indexOf('</script>',start);
+  const script=html.slice(start,end).replace(/<\?php[\s\S]*?\?>/g,'');
+  const fetch=jest.fn(url=>Promise.resolve({ok:true,json:()=>Promise.resolve(url.includes('get_container')?[{id:19}]:[])}));
+  const context={window:{fetch,Promise,location:{search:'?game=BotW'}},fetch,navigator:{onLine:true},URLSearchParams,Promise};
+  vm.runInNewContext(script,context);
+  for(let i=0;i<8;i++) await Promise.resolve();
+  expect(fetch).toHaveBeenCalledTimes(4);
+  for(const [url,options] of fetch.mock.calls) {
+    expect(options.credentials).toBe('same-origin');
+    expect(options.priority).toBe(url.includes('get_markers')?'low':'high');
+    expect(context.window.zmEarlyData[url]).toBeDefined();
+  }
+  for(const src of ['jquery.min.js','leaflet.js','res.php?type=javascript']) {
+    const pos=html.indexOf('src="',html.lastIndexOf('<script',html.indexOf(src)));
+    const tag=html.slice(html.lastIndexOf('<script',pos),html.indexOf('>',pos));
+    expect(tag).toContain('fetchpriority="high"');
+    expect(tag).toContain('defer');
+  }
+});
+test('all Brandon font variants display fallback text while downloading',()=>{
+  const css=fs.readFileSync('styles/zmain.css','utf8');
+  const faces=css.match(/@font-face\s*\{[^}]*BrandonText[^}]*\}/g);
+  expect(faces).toHaveLength(7);
+  faces.forEach(face=>expect(face).toContain('font-display: swap;'));
 });
 test('marker batches yield, preserve order and publish the full list exactly once',()=>{
   jest.useFakeTimers();

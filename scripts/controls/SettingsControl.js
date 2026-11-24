@@ -56,10 +56,6 @@ L.Control.Settings = L.Control.extend({
       this.setShowCompleted(!checked);
     });
 
-    this.trackpadZoomCheckbox = this.addCheckbox('Trackpad: Two fingers zoom instead of pan', getCookie('trackpadTwoFingerZoom') === 'true', function(checked) {
-      this.setTrackpadTwoFingerZoom(checked);
-    });
-
     this.labelCategories = this.labelNames.map(function(name) {
       return this.findCategory(name);
     }, this).filter(Boolean);
@@ -101,6 +97,12 @@ L.Control.Settings = L.Control.extend({
         this.setCompletionCounts(!checked);
       }
     );
+
+    if(!this.mapControl.isMobile) {
+      this.trackpadZoomCheckbox = this.addCheckbox('Trackpad: Two fingers zoom instead of pan', getCookie('trackpadTwoFingerZoom') === 'true', function(checked) {
+        this.setTrackpadTwoFingerZoom(checked);
+      });
+    }
 
     this.hideReplacedCategoryButtons();
     var savedRegionAreaNames = getCookie('showRegionAreaNames');

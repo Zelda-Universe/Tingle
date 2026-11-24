@@ -303,12 +303,25 @@ ZMap.prototype._addTileBackdrop = function(layer, tileURL, maxNativeZoom) {
       this._map.project(bounds.getSouthEast(), zoom)
     );
   };
+  // Foreground tiles get the connection first. Loading all 16 backdrop
+  // tiles alongside them made a cold mobile visit slower, especially when
+  // the visible map uses a different native zoom level.
+  var pendingBackdrop = null;
   layer.on('add', function(e) {
     var map = e.target._map;
-    if(!map.getPane('tileBackdropPane')) map.createPane('tileBackdropPane').style.zIndex = '150';
-    map.addLayer(backdrop);
+    var start = pendingBackdrop = function() {
+      layer.off('load', start);
+      pendingBackdrop = null;
+      if(layer._map !== map) return;
+      if(!map.getPane('tileBackdropPane')) map.createPane('tileBackdropPane').style.zIndex = '150';
+      map.addLayer(backdrop);
+    };
+    if(layer.isLoading()) layer.on('load', start);
+    else start();
   });
   layer.on('remove', function() {
+    if(pendingBackdrop) layer.off('load', pendingBackdrop);
+    pendingBackdrop = null;
     if(backdrop._map) backdrop._map.removeLayer(backdrop);
   });
   layer.backdrop = backdrop;

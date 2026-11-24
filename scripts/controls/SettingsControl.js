@@ -56,6 +56,10 @@ L.Control.Settings = L.Control.extend({
       this.setShowCompleted(!checked);
     });
 
+    this.trackpadZoomCheckbox = this.addCheckbox('Trackpad: Two fingers zoom instead of pan', getCookie('trackpadTwoFingerZoom') === 'true', function(checked) {
+      this.setTrackpadTwoFingerZoom(checked);
+    });
+
     this.labelCategories = this.labelNames.map(function(name) {
       return this.findCategory(name);
     }, this).filter(Boolean);
@@ -151,6 +155,16 @@ L.Control.Settings = L.Control.extend({
     if(!skipSave) this.saveSetting('showCompleted', show);
   },
 
+  setTrackpadTwoFingerZoom: function(checked, skipSave) {
+    var handler = this.zMap.trackpadGestureHandler;
+    if(handler) {
+      handler.finishPinch();
+      handler.zoomInsteadOfPan = checked;
+    }
+    if(this.trackpadZoomCheckbox) this.trackpadZoomCheckbox.checked = checked;
+    if(!skipSave) this.saveSetting('trackpadTwoFingerZoom', checked);
+  },
+
   setPoiLabelsChecked: function(checked, skipSave) {
     this.zMap.mapOptions.showPoiLabels = checked;
     this.zMap.refreshMap();
@@ -231,6 +245,9 @@ L.Control.Settings = L.Control.extend({
       showCategoryCompletionCounts: this.showsCompletionCounts(),
       minimalUI: this.isMinimalUI()
     };
+    settings.trackpadTwoFingerZoom = !!(this.zMap.trackpadGestureHandler
+      ? this.zMap.trackpadGestureHandler.zoomInsteadOfPan
+      : getCookie('trackpadTwoFingerZoom') === 'true');
     var regionAreaNames = getCookie('showRegionAreaNames');
     if(regionAreaNames !== '') settings.showRegionAreaNames = regionAreaNames === 'true';
     var regionBorders = getCookie('showRegionBorders');
@@ -289,6 +306,7 @@ L.Control.Settings = L.Control.extend({
     apply('showRegionAreaNames', this.setRegionAreaNames);
     apply('showCategoryCompletionCounts', this.setCompletionCounts);
     apply('showRegionBorders', this.setRegionBorders);
+    apply('trackpadTwoFingerZoom', this.setTrackpadTwoFingerZoom);
     // Leave a page opened by the link (?page=account) showing.
     apply('minimalUI', function(value) {
       if(value && getUrlParam('page')) this.rememberMinimalUI(value, true);

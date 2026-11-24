@@ -433,6 +433,7 @@ ZMap.prototype.addMap = function(vMap) {
           + vMap.subMap[0].mapMapper
         , opacity           : vMap.subMap[0].opacity
         , noWrap            : true
+        , bounds            : this._tilePyramidBounds()
         , tileSize          : this.mapOptions.tileSize
         , updateWhenIdle    : false
         , updateWhenZooming : true
@@ -495,6 +496,7 @@ ZMap.prototype.addMap = function(vMap) {
                                             , attribution:       vMap.mapCopyright + ', ' + vMap.subMap[i].mapMapper
                                             , opacity:           vMap.subMap[i].opacity
                                             , noWrap:            true
+                                            , bounds:            this._tilePyramidBounds()
                                             , tileSize:          this.mapOptions.tileSize
                                             , updateWhenIdle:    false
                                             , updateWhenZooming: true
@@ -525,6 +527,7 @@ ZMap.prototype.addMap = function(vMap) {
                                                                      , { maxZoom:           Math.max(Number(submap.maxZoom || vMap.maxZoom), Number(this.mapOptions.maxZoom) || 0)
                                                                        , maxNativeZoom:     Number(submap.maxZoom || vMap.maxZoom)
                                                                        , noWrap:            true
+                                                                       , bounds:            this._tilePyramidBounds()
                                                                        , attribution:       submap.mapMapper
                                                                        , zIndex:            (submap.type == 'B' ? bgZIdx++ : fgZIdx++)
                                                                        , tileSize:          this.mapOptions.tileSize
@@ -2148,7 +2151,9 @@ ZMap.prototype.buildMap = function(gameId) {
   invalidateMapSize();
 
   if(ZConfig.getConfig('trackpadGestures') != 'false') {
-    this.trackpadGestureHandler = new TrackpadGestureHandler(this.map);
+    this.trackpadGestureHandler = new TrackpadGestureHandler(this.map, {
+      zoomInsteadOfPan: getCookie('trackpadTwoFingerZoom') === 'true'
+    });
   }
 
   // Get all the base maps

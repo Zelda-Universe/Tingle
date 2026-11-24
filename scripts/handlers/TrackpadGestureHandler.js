@@ -49,8 +49,9 @@ function isInteractiveUiEvent(event, container) {
   ) !== null;
 };
 
-function TrackpadGestureHandler(map) {
+function TrackpadGestureHandler(map, options) {
   this.map = map;
+  this.zoomInsteadOfPan = !!(options && options.zoomInsteadOfPan);
   this.container = map.getContainer();
   this.trackpadPanUntil = 0;
   this.panX = 0;
@@ -193,29 +194,23 @@ TrackpadGestureHandler.prototype.onWheel = function(event) {
   }
 
   if(looksLikeTrackpadPinch(event)) {
-    this.stopEvent(event);
-    this.pinchPoint = this.getEventPoint(event);
-
-    if(this.pinchTargetZoom === null) {
-      this.pinchTargetZoom = this.map.getZoom();
-    }
-
-    var zoomChange = Math.max(-0.75, Math.min(0.75, -event.deltaY * 0.025));
-    this.pinchTargetZoom = this.limitZoom(
-      this.pinchTargetZoom + zoomChange
-    );
-    this.requestZoomAround(
-      this.pinchPoint,
-      this.pinchTargetZoom
-    );
-    this.schedulePinchEnd();
+    this.zoomFromWheel(event, 0.025);
     return;
   }
+
+  // A recently detected trackpad must not capture a modified mouse wheel
+  // or line-based scroll event through its short momentum window.
+  if(event.ctrlKey || event.metaKey || event.altKey || event.shiftKey || event.deltaMode !== 0) return;
 
   var now = Date.now();
   if(looksLikeTrackpadPan(event)) {
     this.trackpadPanUntil = now + 250;
   } else if(now > this.trackpadPanUntil) {
+    return;
+  }
+
+  if(this.zoomInsteadOfPan) {
+    this.zoomFromWheel(event, 0.005);
     return;
   }
 
@@ -237,6 +232,17 @@ TrackpadGestureHandler.prototype.onWheel = function(event) {
       noMoveStart: true
     });
   }.bind(this));
+};
+
+TrackpadGestureHandler.prototype.zoomFromWheel = function(event, sensitivity) {
+  this.stopEvent(event);
+  if(!event.deltaY) return;
+  this.pinchPoint = this.getEventPoint(event);
+  if(this.pinchTargetZoom === null) this.pinchTargetZoom = this.map.getZoom();
+  var change = Math.max(-0.75, Math.min(0.75, -event.deltaY * sensitivity));
+  this.pinchTargetZoom = this.limitZoom(this.pinchTargetZoom + change);
+  this.requestZoomAround(this.pinchPoint, this.pinchTargetZoom);
+  this.schedulePinchEnd();
 };
 
 TrackpadGestureHandler.prototype.onGestureStart = function(event) {
@@ -287,6 +293,7 @@ TrackpadGestureHandler.prototype.destroy = function() {
 
 if(typeof module !== 'undefined') {
   module.exports = {
+    TrackpadGestureHandler: TrackpadGestureHandler,
     isInteractiveUiEvent: isInteractiveUiEvent,
     looksLikeTrackpadPan: looksLikeTrackpadPan,
     looksLikeTrackpadPinch: looksLikeTrackpadPinch

@@ -8,6 +8,7 @@
     'showRegionAreaNames',
     'showRegionBorders',
     'showCategoryCompletionCounts',
+    'trackpadTwoFingerZoom',
     'minimalUI'
   ];
 

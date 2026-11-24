@@ -18,6 +18,7 @@ test('Koholint tiles remain visible at map zoom 6 while requesting only download
   ] });
   expect(map.maps[0].options.maxZoom).toBe(6);
   expect(map.maps[0].options.maxNativeZoom).toBe(4);
+  expect(map.maps[0].options.bounds).toEqual([{ lat: 0, lng: 0 }, { lat: -256, lng: 256 }]);
   // Its low-resolution backdrop: one fixed level, in its own pane, inside the
   // artwork, and usable at every zoom the map allows.
   const backdrop = map.maps[0].backdrop.options;

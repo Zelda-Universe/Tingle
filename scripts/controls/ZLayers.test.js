@@ -141,6 +141,15 @@ describe('map selection preserves the originating drawer level and category', ()
   }
 });
 
+test.each(['world',undefined,'dungeon'])('map menu preserves category focus except for dungeon destinations (%s)',kind=>{
+  const methods=drawerMethods();
+  const drawer={currentMapLayer:{mapKind:kind},viewStyleBottomSlide:false,
+    zMap:{selectedCategory:null,_unfocusCategories:jest.fn(),_closeCategoryPage:jest.fn()},reset:jest.fn()};
+  methods._finishMapMenuSelection.call(drawer,null);
+  expect(drawer.zMap._unfocusCategories).toHaveBeenCalledTimes(kind==='dungeon'?1:0);
+  expect(drawer.reset).toHaveBeenCalledTimes(1);
+});
+
 test('a downward pull at the top hands content scrolling to the drawer', () => {
   const handlers={};
   const methods=drawerMethods({performance:{now:()=>0}});

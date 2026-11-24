@@ -1508,7 +1508,9 @@ L.Control.ZLayers = L.Control.Layers.extend({
       this._mapsButton.clear();
       this._gamesButton.clear();
     } else {
-      this.zMap._unfocusCategories();
+      // Clear broad category focus only when entering a dungeon. World
+      // layers (TotK's Sky/Surface/Depths, for example) share that selection.
+      if(this.currentMapLayer && this.currentMapLayer.mapKind === 'dungeon') this.zMap._unfocusCategories();
       this.zMap._closeCategoryPage();
       this.reset();
     }

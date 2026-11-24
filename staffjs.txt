@@ -1,0 +1,5 @@
+scripts/controls/Map3D.js
+scripts/controls/StreetView.js
+scripts/controls/StreetViewGame.js
+scripts/controls/StreetViewTerrain.js
+scripts/controls/StreetViewWater.js

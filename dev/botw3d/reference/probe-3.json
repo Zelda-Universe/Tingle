@@ -1,0 +1,14 @@
+{
+ "7": {
+  "image": "MTLTexture-372804-0-mipmap0-slice0",
+  "format": "rgb10a2",
+  "constants": [
+   [
+    0.99,
+    0.18,
+    0.875,
+    0.0625
+   ]
+  ]
+ }
+}

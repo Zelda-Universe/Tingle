@@ -263,6 +263,8 @@ function getGames() {
 
 function getMaps() {
   startupJSON("ajax.php?command=get_map&game=" + gameId, function(vResults) {
+    // A 3D map (staff only) needs the 3D bundle first (Load3D.js); no one else's list has one
+    ZLoad3D.forMaps(vResults).always(function() {
     $.each(vResults, function(i, map) {
       zMap.addMap(map);
     });
@@ -275,14 +277,18 @@ function getMaps() {
       zMap._builtBeforeMarkers = true;
     }
     getMarkers();
+    });
   }).fail(showOfflineUnavailable);
 };
 
-function getUserInfo() {
+// markersReady: the markers being added (in batches: zmap.js addMarkersInBatches). The account
+// is asked for at once but applied once they're all in: its completed markers, paths and page
+// are looked up among them.
+function getUserInfo(markersReady) {
    var requestedPage = getUrlParam('page');
    // offline: this device's saved account, used when the server can't be
    // reached, so being offline doesn't sign anyone out.
-   var applyUserInfo = function(vResults, offline) {
+   var applyNow = function(vResults, offline) {
     if(vResults.user) zMap.setUser(vResults.user);
     zMap.restoreDrawerPage(requestedPage);
     if(zMap.settingsControl) {
@@ -311,6 +317,9 @@ function getUserInfo() {
     zMap._accountKey = startedAs ? startedAs.id + ':' + startedAs.level : '';
     if(ZConfig.getConfig("changelog") == 'true')
       checkChangelog(vResults.user);
+   };
+   var applyUserInfo = function(vResults, offline) {
+    (markersReady || $.Deferred().resolve().promise()).always(function() { applyNow(vResults, offline); });
    };
    // Only the server saying so signs this device out. Errors (a database
    // hiccup, a bad gateway) keep the account this device last saw.
@@ -368,10 +377,9 @@ function getMarkers(categories) {
 
       if(!zMap._builtBeforeMarkers) zMap.buildMap(gameId);
 
-      getUserInfo();
-      if(vResults && vResults.length > 0) {
-        zMap.addMarkers(vResults);
-      }
+      var ready=vResults && vResults.length ? zMap.addMarkersInBatches(vResults) : $.Deferred().resolve().promise();
+      getUserInfo(ready);
+      ready.done(function() {
       zMap.refreshMap();
       zMap.setupOfflineMapMessage();
 
@@ -380,6 +388,10 @@ function getMarkers(categories) {
       // (index.php: analytics).
       window.zmMapReady = true;
       try { document.dispatchEvent(new Event('zeldamaps:ready')); } catch(e) {}
+      }).fail(function(error) {
+        zLogger.error('Unable to initialize map markers: '+error);
+        toastr.error('The map could not finish loading. Please reload to try again.');
+      });
     }.bind(this, gameId)
   ).fail(showOfflineUnavailable);
 };

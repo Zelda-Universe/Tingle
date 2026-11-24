@@ -461,3 +461,19 @@
 .zm-slate-legend span { display:flex; align-items:center; gap:6px; }
 .zm-slate-key { display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; border-radius:50%; background:#dce9f5; color:#04121e; font-style:normal; font-size:10px; font-weight:700; }
 .zm-3d-joint[hidden] { display:none; }
+/* Street view (scripts/controls/StreetView.js): over the map, the sidebar
+   beside it, a close button where the map's own controls are. */
+.zm-streetview { position:absolute; inset:0; z-index:460; background:#c9d6e2; }
+.zm-streetview-canvas, .zm-streetview-canvas canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+.zm-streetview-canvas canvas { cursor:grab; }
+.zm-streetview-canvas canvas:active { cursor:grabbing; }
+.zm-streetview .zm-3d-labels { position:absolute; top:0; left:0; pointer-events:none; }
+.zm-streetview-close { position:absolute; top:calc(64px + env(safe-area-inset-top, 0px)); right:calc(12px + env(safe-area-inset-right, 0px)); width:44px; height:44px; border:0; border-radius:50%; background:rgba(0,0,0,.8); color:#fff; font-size:18px; cursor:pointer; box-shadow:0 4px 18px #0005; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
+.zm-streetview-close:hover { background:#000; }
+.zm-streetview-status { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); padding:10px 16px; border-radius:20px; background:rgba(0,0,0,.75); color:#fff; font-size:14px; }
+.zm-streetview-status[hidden] { display:none; }
+.zm-streetview-help { position:absolute; left:50%; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%); padding:6px 12px; border-radius:16px; background:rgba(0,0,0,.55); color:#eee; font-size:12px; white-space:nowrap; pointer-events:none; }
+.zm-streetview-time { position:absolute; top:calc(64px + env(safe-area-inset-top, 0px)); left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:10px; height:44px; padding:0 16px; border-radius:22px; background:rgba(0,0,0,.8); color:#fff; font-size:14px; box-shadow:0 4px 18px #0005; -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
+.zm-streetview-time input { width:160px; accent-color:#fff; cursor:pointer; }
+.zm-streetview-time output { min-width:64px; font-variant-numeric:tabular-nums; }
+@media (max-width: 600px) { .zm-streetview-help { display:none; } .zm-streetview-time input { width:110px; } }

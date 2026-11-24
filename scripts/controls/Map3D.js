@@ -9,6 +9,7 @@
 // (environment.glb, when the folder has one: the field's terrain and water
 // around it, already in the model's own frame).
 var ZMap3D = (function() {
+  var SHEIKAH = /Dgn|Remains|Terminal|MapTower|FirstShrine|DRC|Ancient|Entrance|Monyo|WarpPoint|Ibt/;
   var THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.160.0/';
   var libs = null;
   function load() {
@@ -181,7 +182,10 @@ var ZMap3D = (function() {
         o.castShadow = o.receiveShadow = true;
         var m = o.material, x = m.userData || {};
         if(m.emissiveMap) m.emissiveIntensity = 3;
-        // Lights the state colours (build's glow: a mask).
+        // Lights the state colours (build's glow: a mask). The Sheikah's
+        // lights (shrines, towers, terminals) are masks too, whatever older
+        // builds say.
+        if(!x.glow && m.emissiveMap && SHEIKAH.test(m.name)) x.glow = true;
         if(x.glow) { (layer._glowing = layer._glowing || []).push(m); m.emissive.setHex(layer.STATES[layer.state].glow); }
         // Malice: near-black, wet, its veins glowing (build's malice).
         if(x.malice) {
@@ -209,6 +213,11 @@ var ZMap3D = (function() {
           });
         }
         if(x.metal != null) tex(x.metal).then(function(t) { m.metalnessMap = t; m.metalness = 1; m.roughness = 0.45; m.needsUpdate = true; });
+        // Seals (a tower floor's ring, a pedestal's pattern) lie on the surface
+        // beneath them: drawn just in front of it, not fighting it.
+        if(/Seal/.test(m.name)) { m.polygonOffset = true; m.polygonOffsetFactor = -1; m.polygonOffsetUnits = -2; o.castShadow = false; }
+        // The Sheikah's dark stone has a sheen in the game; flat, it reads as a hole.
+        if(/Blackbase/.test(m.name)) { m.roughness = 0.5; m.envMapIntensity = 1.0; }
         if(x.layer2Albedo == null || !o.geometry.attributes._blend) return;
         Promise.all([tex(x.layer2Albedo, true), tex(x.layer2Normal)]).then(function(t) {
           var map2 = t[0], normal2 = t[1];
@@ -800,5 +809,7 @@ var ZMap3D = (function() {
       });
     }
   });
-  return { layer: function(zmap, vMap) { return new Layer(zmap, vMap); } };
+  // (load and Layer for street view, StreetView.js: the same three.js, the
+  // same look and game materials.)
+  return { layer: function(zmap, vMap) { return new Layer(zmap, vMap); }, load: load, Layer: Layer };
 })();

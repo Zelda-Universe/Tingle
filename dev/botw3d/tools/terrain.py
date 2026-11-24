@@ -5,7 +5,7 @@ units of 500 (the world is 32 wide, centred on 0) and the name of its height
 tile. Tiles are 256 x 256 little-endian u16 heights (x 800 / 65535), packed in
 fours into Yaz0 SARCs named after the first. Rows run along z, columns along x.
 """
-import os, struct
+import json, os, struct
 import nin
 
 SCALE, MAXH, N = 500.0, 800.0, 256
@@ -33,6 +33,14 @@ class Terrain:
         for i in range(u(0x18)):
             p = 0x34 + 4 * i; e = p + u(p)
             self.materials.append((u(e), f(e + 4), f(e + 8)))
+        # The .tscb's first field is the material's own index, not its texture: the game maps
+        # materials to MaterialAlb layers at runtime (88 materials onto 83 layers, some sharing),
+        # in the terrain shader's material table (terrain-materials.json, read from a capture).
+        # Its layers, with the same scales.
+        table = os.path.join(os.path.dirname(__file__), 'terrain-materials.json')
+        if os.path.exists(table):
+            rows = json.load(open(table))['materials']
+            self.materials = [(int(round(r[2])), r[0], r[1]) for r in rows]
 
     def tile(self, name):
         if name not in self._tiles:

@@ -273,6 +273,13 @@
 <!DOCTYPE html>
 <html lang="en"<?= $zmEmbed ? ' class="zm-framed zm-embed"' : '' ?>>
   <head>
+    <?php /* Discover styles before any script download can block parsing. */ ?>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=<?= asset_version() ?>" />
+    <link rel="preload" href="fonts/brandon/264CA8_2_0.woff" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="images/zmaps_white.png" as="image" fetchpriority="high" />
     <?php /* The game's data asked for at once, while the page's scripts are
          still on their way, rather than once they've all loaded and run
          (zmain.lib.js startupJSON takes these in place of asking again).
@@ -424,34 +431,31 @@
     <?php /* Third-Party Code */ ?>
 
       <script
+        defer
         src="https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js"
       ></script>
       <script
+        defer
         src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
       ></script>
       <script
-        defer
+        async
         src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"
         integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
         crossorigin="anonymous"
       ></script>
       <script
+        defer
         src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
       ></script>
       <script
+        defer
         src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js"
-      ></script>
-      <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.9/tinymce.min.js"
-        referrerpolicy="origin"
       ></script>
 
 
     <?php /* Third-Party Styles */ ?>
 
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
 
     <?php /* First-Party Code & Style */ ?>
@@ -475,8 +479,7 @@
         }
       </script>
       <script>var zmapLandingCategoryId = <?= json_encode($landingCategoryId) ?>;</script>
-      <script type="text/javascript" src="res.php?type=javascript&amp;v=<?= asset_version() ?>"></script>
-      <link rel="stylesheet" type="text/css" href="res.php?type=css&amp;v=<?= asset_version() ?>" />
+      <script defer type="text/javascript" src="res.php?type=javascript&amp;v=<?= asset_version() ?>"></script>
       <script>
         if ('serviceWorker' in navigator) {
           var hadServiceWorkerController = !!navigator.serviceWorker.controller;

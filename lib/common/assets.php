@@ -17,7 +17,7 @@
     // The registries, by content: which files are bundled, in what order.
     // (Content, not timestamp, so merely touching a registry doesn't change
     // the version while a same-content edit does.)
-    foreach (array('javascript.txt', 'css.txt') as $registry) {
+    foreach (array('javascript.txt', 'css.txt', 'staffjs.txt') as $registry) {
       $path = $root . '/' . $registry;
       $hash .= 'registry ' . $registry . ' ';
       if (!file_exists($path)) {

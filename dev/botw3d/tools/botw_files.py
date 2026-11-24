@@ -64,7 +64,13 @@ class Files:
         return out
 
     def model(self, folder, name):
-        src = self.model_files(folder).get(name)
+        files = self.model_files(folder)
+        src = files.get(name)
+        if src is None and len(set(files.values())) == 1:   # a folder of one model (decals): its own name differs
+            src = next(iter(files.values()))
+            if src not in self._models: self.model(folder, next(iter(files)))
+            ms = self._models.get(src, {})
+            return next(iter(ms.values())) if len(ms) == 1 else None
         if src is None: return None
         if src not in self._models:
             if isinstance(src, tuple):

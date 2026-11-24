@@ -1,0 +1,41 @@
+{
+ "pos": [
+  -638.8287,
+  165.2091,
+  1557.1395
+ ],
+ "fwd": [
+  0.71714,
+  -0.0,
+  0.69693
+ ],
+ "up": [
+  0.0,
+  1.0,
+  0.0
+ ],
+ "fovy": 50.0001,
+ "w": 1280,
+ "h": 720,
+ "light": [
+  -0.83081,
+  0.46089,
+  -0.31197
+ ],
+ "light_strength": 4.0,
+ "light_colour": [
+  3.5922,
+  2.1316,
+  2.1647
+ ],
+ "night": null,
+ "weather": null,
+ "hour": 18.67,
+ "hud_in_frame": false,
+ "frames": {
+  "final": "MTLTexture-197045-0-mipmap0-slice0",
+  "hud": "MTLTexture-6712-0-mipmap0-slice0"
+ },
+ "note": "Great Plateau, the pond 80 m from field-day, from its south shore, 6:40 PM",
+ "gbuffer": "matches"
+}

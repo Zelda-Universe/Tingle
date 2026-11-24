@@ -1,0 +1,42 @@
+{
+ "pos": [
+  -812.7029,
+  223.8619,
+  1970.4204
+ ],
+ "fwd": [
+  -0.16684,
+  -0.0,
+  0.98598
+ ],
+ "up": [
+  0.0,
+  1.0,
+  0.0
+ ],
+ "fovy": 50.0001,
+ "w": 1280,
+ "h": 720,
+ "light": [
+  -0.88516,
+  0.46482,
+  -0.02077
+ ],
+ "light_strength": 1.0,
+ "light_colour": [
+  1.0,
+  0.63,
+  0.638
+ ],
+ "night": true,
+ "weather": "clear",
+ "hour": 20.833,
+ "hud_in_frame": true,
+ "frames": {
+  "final": "MTLTexture-3834-0-mipmap0-slice0",
+  "hud": "MTLTexture-3834-0-mipmap0-slice0"
+ },
+ "note": "Temple of Time, 8:50 PM, dusk afterglow",
+ "gbuffer": "stale",
+ "srgb": true
+}

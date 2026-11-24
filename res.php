@@ -67,17 +67,20 @@
   {
     $type = strtolower($_GET['type']);
     $type = preg_replace("#[^a-z]#", "", $type);
+    // staffjs: the scripts only staff load (staffjs.txt: 3D maps and street view,
+    // scripts/controls/Load3D.js), a bundle of their own so no one else downloads them.
     if(
           $type != "javascript"
+      &&  $type != "staffjs"
       &&  $type != "css"
     ) {
       $output = "Invalid type! ($type)";
       return;
     }
-    $mtype = "text/$type";
+    $mtype = $type == "css" ? "text/css" : "text/javascript";
     $ext = ".css";
 
-    if($type == "javascript") {
+    if($type == "javascript" || $type == "staffjs") {
       $ext = ".js";
     }
 
@@ -225,7 +228,7 @@
 
     ### cacheDestFile
     {
-      $cacheDestFile = "$cacheFolder/index$ext";
+      $cacheDestFile = $type == "staffjs" ? "$cacheFolder/staff$ext" : "$cacheFolder/index$ext";
       // debug_log("cacheDestFile          : $cacheDestFile");
       $cacheDestFileExists = file_exists("$cacheDestFile");
       // debug_log("cacheDestFileExists    : $cacheDestFileExists");
@@ -298,7 +301,7 @@
       if(!$minify) $output .= "/* Source: $resFile */\n";
       $resFileData = file_get_contents($resFilePath);
       if($minify) {
-        if($type == "javascript") {
+        if($ext == ".js") {
           // debug_log('Minifying javascript...');
           $resFileData = minify_js($resFileData);
         } else {

@@ -1,0 +1,41 @@
+{
+ "pos": [
+  -655.1778,
+  172.5967,
+  1526.2455
+ ],
+ "fwd": [
+  -0.80842,
+  0.16323,
+  -0.56552
+ ],
+ "up": [
+  0.13375,
+  0.98659,
+  0.09356
+ ],
+ "fovy": 50.0001,
+ "w": 1280,
+ "h": 720,
+ "light": [
+  -0.41976,
+  0.61054,
+  -0.67159
+ ],
+ "light_strength": 4.5,
+ "light_colour": [
+  3.8294,
+  4.5,
+  3.5235
+ ],
+ "night": false,
+ "hour": 15.75,
+ "frames": {
+  "final": "MTLTexture-26672183-0-mipmap0-slice0",
+  "hud": "MTLTexture-3834-0-mipmap0-slice0"
+ },
+ "weather": "overcast",
+ "note": "The shrine by the Shrine of Resurrection, 3:45 PM, overcast: its Sheikah glow",
+ "gbuffer": "stale",
+ "srgb": true
+}

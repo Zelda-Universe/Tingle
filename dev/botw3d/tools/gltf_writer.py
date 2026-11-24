@@ -17,7 +17,7 @@ for nearly every material.
 Used by build_model.py (a Divine Beast) and build_field.py (what stands
 around it).
 """
-import json, math, os, struct, subprocess, tempfile
+import json, re, math, os, struct, subprocess, tempfile
 import numpy as np
 import nin, bfres, gx2
 
@@ -97,9 +97,19 @@ class TerrainArrays:
         w, h, fmt, size, tile, swz, pitch, depth = (r.u32(t + 8), r.u32(t + 12), r.u32(t + 0x18), r.u32(t + 0x24),
                                                     r.u32(t + 0x34), r.u32(t + 0x38), r.u32(t + 0x40), r.u32(t + 0x10))
         lin = gx2.untile(self.d[r.rel(t + 0xB0):r.rel(t + 0xB0) + size], w, h, pitch, fmt, tile, swz, min(layer, depth - 1))
+        if fmt & 0x3f == 0x34:   # BC4 (the water's WaterEmm), BC5 (WaterNrm): decoded here (ImageMagick doesn't)
+            g = gx2.decode_bc4(lin, w, h)
+            return np.dstack([g, g, g, np.full_like(g, 255)])
+        if fmt & 0x3f == 0x35:
+            rr, gg = gx2.decode_bc5(lin, w, h)
+            return np.dstack([rr, gg, np.zeros_like(rr), np.full_like(rr, 255)])
         p = os.path.join(tmp, 'a.dds'); open(p, 'wb').write(gx2.dds(lin, w, h, fmt))
         return np.frombuffer(magick(p, '-depth', '8', 'rgba:-'), np.uint8).reshape(h, w, 4)
 
+
+# The Sheikah's lights (shrines, towers, terminals, Divine Beasts): their
+# colour is the page's to give, by state (blue once activated).
+SHEIKAH = re.compile(r'Dgn|Remains|Terminal|MapTower|FirstShrine|DRC|Ancient|Entrance|Monyo|WarpPoint|Ibt')
 
 class Builder:
     def __init__(self, out_dir, max_px=512, tex_dir='textures', emission_tint=(1.0, 1.0, 1.0), terrain=None, webp=True):
@@ -162,8 +172,12 @@ class Builder:
             px = np.dstack([px[..., 0], px[..., 1], ((z + 1) / 2 * 255).astype(np.uint8), px[..., 3]])
             rel = self._save(px, name, quality=92)
         elif role == 'emission':
-            self.tex_mask[name] = base == 0x34
-            if base == 0x34:   # a mask: tinted
+            # Sheikah lights are masks the game colours by state (red and green
+            # channels for off and on, or plain white): one mask, any channel.
+            sheikah = SHEIKAH.search(name) is not None
+            if sheikah and base != 0x34: px = np.dstack([px[..., :3].max(-1)] * 3 + [px[..., 3]])
+            self.tex_mask[name] = base == 0x34 or sheikah
+            if self.tex_mask[name]:   # a mask: tinted
                 g = px[..., 0].astype(np.float32)
                 px = np.dstack([(g * c).astype(np.uint8) for c in self.tint] + [px[..., 3]])
             rel = self._save(px, name)
@@ -171,6 +185,22 @@ class Builder:
             rel = self._save(px, name)
         else:
             rel = self._save(px, name, alpha=(base == 0x33))
+        self._add_image(rel)
+        self.tex_index[key] = len(self.textures) - 1
+        return self.tex_index[key]
+
+    def masked_texture(self, texs, alb, msk):
+        """An albedo with its alpha from a mask texture's red (cut out)."""
+        key = (alb, 'masked', msk)
+        if key in self.tex_index: return self.tex_index[key]
+        if alb not in texs.entries or msk not in texs.entries: return self.texture(texs, alb, 'albedo')
+        px, _ = texs.decode(alb, self.tmp); mk, _ = texs.decode(msk, self.tmp)
+        if mk.shape[:2] != px.shape[:2]:
+            mk = np.frombuffer(magick('-size', '%dx%d' % (mk.shape[1], mk.shape[0]), '-depth', '8', 'rgba:-',
+                                      '-resize', '%dx%d!' % (px.shape[1], px.shape[0]), 'rgba:-', data=mk.tobytes()), np.uint8).reshape(px.shape[0], px.shape[1], 4)
+        px = np.dstack([px[..., :3], mk[..., 0]])
+        self.tex_alpha[alb] = True
+        rel = self._save(px, alb, alpha=True)
         self._add_image(rel)
         self.tex_index[key] = len(self.textures) - 1
         return self.tex_index[key]
@@ -232,7 +262,9 @@ class Builder:
         if self.terrain and 'MaterialAlb' in mat['textures'].values():
             self._terrain_material(mat, m)
         elif roles['Alb']:
-            i = self.texture(texs, roles['Alb'][0], 'albedo')
+            # Leaves and the like: their shape in a mask of its own (_Msk, red).
+            msk = next((v for v in mat['textures'].values() if v.endswith('_Msk')), None)
+            i = self.masked_texture(texs, roles['Alb'][0], msk) if msk else self.texture(texs, roles['Alb'][0], 'albedo')
             if i is not None:
                 m['pbrMetallicRoughness']['baseColorTexture'] = dict(index=i)
                 if self.tex_alpha.get(roles['Alb'][0]):
@@ -296,7 +328,9 @@ class Builder:
             col = s['attrs'].get('_c0', (0, None))[1]
             if col and len(col) == n:
                 clamp = lambda x: max(0, min(255, int(round(x * 255))))
-                attrs['COLOR_0'] = self.add(b''.join(struct.pack('<4B', clamp(c[0]), clamp(c[1]), clamp(c[2]), 255) for c in col),
+                # (Colours with fewer than three channels: grey from the first.)
+                rgb = lambda c: (c[0], c[1], c[2]) if len(c) >= 3 else (c[0], c[0], c[0])
+                attrs['COLOR_0'] = self.add(b''.join(struct.pack('<4B', *(clamp(v) for v in rgb(c)), 255) for c in col),
                                             34962, n, 'VEC4', 5121, normalized=True)
                 if len(col[0]) > 3:
                     attrs['_BLEND'] = self.add(b''.join(struct.pack('<f', min(1, max(0, c[3]))) for c in col), 34962, n, 'SCALAR', 5126)
@@ -306,6 +340,36 @@ class Builder:
             if mat: prim['material'] = self.material(mat, texs, material_extras)
             prims.append(prim)
         self.meshes.append(dict(name=model['name'], primitives=prims))
+        return len(self.meshes) - 1
+
+    # --- meshes of our own (terrain, water): numpy arrays
+    def image_texture(self, rel):
+        """A texture from an image file already written (its path from out_dir)."""
+        self._add_image(rel)
+        return len(self.textures) - 1
+
+    def raw_material(self, m):
+        self.materials.append(m)
+        return len(self.materials) - 1
+
+    def raw_mesh(self, name, prims):
+        """prims: dicts of pos (n x 3), nrm (n x 3), uv (n x 2, optional),
+        idx (m) and material. Indices are 16-bit where they fit."""
+        import numpy as np
+        out = []
+        for p in prims:
+            pos = np.ascontiguousarray(p['pos'], np.float32); n = len(pos)
+            attrs = dict(POSITION=self.add(pos.tobytes(), 34962, n, 'VEC3', 5126,
+                                           mm=(pos.min(0).tolist(), pos.max(0).tolist())))
+            if p.get('nrm') is not None:
+                attrs['NORMAL'] = self.add(np.ascontiguousarray(p['nrm'], np.float32).tobytes(), 34962, n, 'VEC3', 5126)
+            if p.get('uv') is not None:
+                attrs['TEXCOORD_0'] = self.add(np.ascontiguousarray(p['uv'], np.float32).tobytes(), 34962, n, 'VEC2', 5126)
+            idx = np.asarray(p['idx'])
+            if n < 65536: ib = self.add(idx.astype(np.uint16).tobytes(), 34963, len(idx), 'SCALAR', 5123)
+            else: ib = self.add(idx.astype(np.uint32).tobytes(), 34963, len(idx), 'SCALAR', 5125)
+            out.append(dict(attributes=attrs, indices=ib, material=p['material']))
+        self.meshes.append(dict(name=name, primitives=out))
         return len(self.meshes) - 1
 
     def node(self, name, mesh, translation, rotation, scale=None):

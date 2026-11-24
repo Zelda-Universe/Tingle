@@ -1,0 +1,41 @@
+{
+ "pos": [
+  -589.3554,
+  184.5568,
+  1511.1442
+ ],
+ "fwd": [
+  0.2435,
+  0.08527,
+  -0.96614
+ ],
+ "up": [
+  -0.02084,
+  0.99636,
+  0.08269
+ ],
+ "fovy": 50.0001,
+ "w": 1280,
+ "h": 720,
+ "light": [
+  -0.81498,
+  0.45979,
+  -0.35272
+ ],
+ "light_strength": 4.0852,
+ "light_colour": [
+  3.6805,
+  2.1907,
+  2.2002
+ ],
+ "night": false,
+ "weather": "cloudy",
+ "hour": 18.917,
+ "frames": {
+  "final": "MTLTexture-26672183-0-mipmap0-slice0",
+  "hud": "MTLTexture-3834-0-mipmap0-slice0"
+ },
+ "note": "The overlook by the Shrine of Resurrection, 6:55 PM, sunset, looking north over Hyrule (beyond the plateau: street view's horizon only)",
+ "gbuffer": "stale",
+ "srgb": true
+}

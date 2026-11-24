@@ -1,0 +1,42 @@
+{
+ "pos": [
+  -753.3729,
+  173.2713,
+  1626.9943
+ ],
+ "fwd": [
+  -0.95535,
+  0.00168,
+  -0.29546
+ ],
+ "up": [
+  0.0016,
+  1.0,
+  0.0005
+ ],
+ "fovy": 50.0001,
+ "w": 1280,
+ "h": 720,
+ "light": [
+  -0.65508,
+  0.50824,
+  -0.55907
+ ],
+ "light_strength": 7.0,
+ "light_colour": [
+  7.0,
+  4.5569,
+  3.15
+ ],
+ "night": false,
+ "weather": "cloudy",
+ "hour": 16.833,
+ "hud_in_frame": true,
+ "frames": {
+  "final": "MTLTexture-462755-0-mipmap0-slice0",
+  "hud": "MTLTexture-462755-0-mipmap0-slice0"
+ },
+ "note": "Trees and grass on the plateau, 4:50 PM, low sun, partly cloudy (Link running)",
+ "gbuffer": "stale",
+ "srgb": true
+}

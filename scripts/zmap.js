@@ -549,13 +549,39 @@ ZMap.prototype.addMarkers = function(vMarkers) {
   vMarkers.forEach(function(vMarker) {
     this.addMarker(vMarker);
   }, this);
+  this._markersAdded(vMarkers);
+};
 
+ZMap.prototype._markersAdded = function(vMarkers) {
   this.handlers["markersAdded"].forEach(function(handler) {
     handler(vMarkers); // or markers..
   }, this);
   if(this.mapControl) this.mapControl._categoryMenu.categoryButtons.forEach(function(button) {
     button.updateCategoryLabel();
   });
+};
+
+// Initial data can contain thousands of markers. Give rendering and input a
+// turn between short batches, but publish markersAdded only once, as before.
+ZMap.prototype.addMarkersInBatches = function(vMarkers) {
+  var zmap=this,index=0,done=$.Deferred();
+  var batch=function() {
+    // A game switched to meanwhile (GameSwitch.js: a new ZMap): this one's markers are no
+    // longer wanted, and nothing waiting on them should run.
+    if(window.zMap && window.zMap!==zmap) return;
+    try {
+      var started=performance.now();
+      do {zmap.addMarker(vMarkers[index++]);}
+      while(index<vMarkers.length && performance.now()-started<8);
+      if(index<vMarkers.length) {window.setTimeout(batch,0);return;}
+      zmap._markersAdded(vMarkers);
+      // Consumers need the complete imported list, not one event per batch.
+      done.resolve(vMarkers);
+    } catch(error) {done.reject(error);}
+  };
+  if(!vMarkers.length) {done.resolve(vMarkers);return done.promise();}
+  window.setTimeout(batch,0);
+  return done.promise();
 };
 
 ZMap.prototype.addMarker = function(vMarker) {
@@ -1002,6 +1028,9 @@ ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
           "<span class='marker-action-label'>Embed Code</span>" +
         "</button>" +
       "</div>" +
+      // Street view from here, where there is one (StreetView.js: filled in
+      // once it's known, hidden otherwise).
+      "<div class='marker-actions-row street-view-row' hidden></div>" +
       // The paths this marker is a step of, and starting one from it.
       (this._markerPathsHTML ? this._markerPathsHTML(marker) : '');
     content = content + "<div class='popupContent'>";
@@ -1081,6 +1110,7 @@ ZMap.prototype._createMarkerPopup = function(marker, forcePartial) {
   content += "</div>";
 
   this.mapControl.setContent(content, 'm'+marker.id);
+  this._streetViewButton(marker.getLatLng(), marker);
   // Its links to other markers open them, with a way back here.
   var markerContent = this.mapControl._contents.querySelector('.menu-cat-content-inner > .popupContent');
   if(markerContent && this._wireWikiLinks) {
@@ -2534,6 +2564,42 @@ ZMap.prototype._embedGamePillHTML = function() {
   return "<p class='marker-coordinate-pill zm-embed-game-pill'>" + icon + $('<span>').text(name).html() + "</p>";
 };
 
+// A Street view button on the page shown (a marker's or a dropped pin's),
+// where there's street view at that spot (StreetView.js).
+ZMap.prototype._streetViewButton = function(latlng, marker) {
+  // (Staff only, where it's built: no one else loads or runs any of it. Load3D.js)
+  if(!window.ZLoad3D || !ZLoad3D.streetViewHere(this, this.getUser())) return;
+  var zmap = this, page = this.mapControl._contents;
+  this._streetViewTarget = { latlng: latlng, marker: marker };
+  if(!window.ZStreetView) {
+    var target = this._streetViewTarget;
+    ZLoad3D.ensure(this.getUser()).done(function() { if(zmap._streetViewTarget === target) zmap._streetViewButton(latlng, marker); });
+    return;
+  }
+  var fill = function() {
+    var t = zmap._streetViewTarget, rows = page ? page.querySelectorAll('.street-view-row') : [];
+    if(!t) return;
+    Array.prototype.forEach.call(rows, function(row) {
+      if(row.childElementCount) return;
+      ZStreetView.available(zmap, t.latlng).then(function(yes) {
+        if(!yes || row.childElementCount || zmap._streetViewTarget !== t) return;
+        row.innerHTML = "<button type='button' class='marker-action-button infoWindowIcn street-view-button'>" +
+          "<span class='marker-action-icon'><i class='fas fa-street-view' aria-hidden='true'></i></span>" +
+          "<span class='marker-action-label'>Street View</span></button>";
+        row.hidden = false;
+        row.querySelector('button').onclick = function() { ZStreetView.open(zmap, t.latlng, t.marker); return false; };
+      });
+    });
+  };
+  fill();
+  // (The page can be drawn again after this, a marker's once its details
+  // are in: its new, empty row filled for the same spot.)
+  if(page && !this._streetViewWatch && window.MutationObserver) {
+    this._streetViewWatch = new MutationObserver(fill);
+    this._streetViewWatch.observe(page, { childList: true, subtree: true });
+  }
+};
+
 ZMap.prototype._openDroppedPin = function(latlng) {
   this._closeNewMarker();
   newMarker = this._createPin(latlng).addTo(this.map);
@@ -2584,9 +2650,11 @@ ZMap.prototype._openDroppedPin = function(latlng) {
           "<span class='marker-action-label'>Make New Path From Here</span>" +
         "</button>" +
       "</div>" : '') +
+    "<div class='marker-actions-row street-view-row' hidden></div>" +
     "<div class='popupContent'></div>";
 
   this.mapControl.setContent(content, 'droppedPin-' + L.Util.stamp(newMarker));
+  this._streetViewButton(latlng, null);
   this.mapControl.openDrawerSmall();
 
   var zmap = this;
@@ -3714,10 +3782,38 @@ ZMap.prototype.editMarker = function(vMarkerId) {
 
 // Adding or editing a marker: the standard field bars, a rich-text editor
 // for each content section, and, for editors, an edit summary for History.
+ZMap.prototype._loadRichTextEditor = function() {
+  if(window.tinymce) return $.Deferred().resolve().promise();
+  if(this._richTextEditorLoading) return this._richTextEditorLoading;
+  var zmap=this,ready=$.Deferred(),script=document.createElement('script');
+  this._richTextEditorLoading=ready.promise();
+  script.src='https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.10.9/tinymce.min.js';
+  script.referrerPolicy='origin';
+  script.onload=function() {
+    if(window.tinymce) ready.resolve();
+    else failed();
+  };
+  function failed() {
+    script.remove();zmap._richTextEditorLoading=null;ready.reject();
+  }
+  script.onerror=failed;
+  document.head.appendChild(script);
+  return this._richTextEditorLoading;
+};
+
 ZMap.prototype._createMarkerForm = function(vMarker, vLatLng, vPoly) {
   var _this = this;
   if (user == null) {
     toastr.error(_this.langMsgs.GENERAL_ERROR.format('You are not logged!'));
+    return;
+  }
+  if(!window.tinymce) {
+    var request=this._editorLoadRequest=(this._editorLoadRequest || 0)+1;
+    var origin=this.mapControl.getContentType();
+    this._loadRichTextEditor().done(function() {
+      if(_this._editorLoadRequest===request && _this.mapControl.getContentType()===origin)
+        _this._createMarkerForm(vMarker,vLatLng,vPoly);
+    }).fail(function() {toastr.error('The text editor could not load. Check your connection and try again.');});
     return;
   }
   if (window.tinymce) tinymce.remove();

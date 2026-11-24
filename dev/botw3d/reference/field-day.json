@@ -1,0 +1,35 @@
+{
+ "pos": [
+  -669.2918,
+  174.891,
+  1516.1479
+ ],
+ "fwd": [
+  0.78328,
+  -0.0,
+  0.62167
+ ],
+ "up": [
+  0.0,
+  1.0,
+  0.0
+ ],
+ "fovy": 50.0001,
+ "w": 1280,
+ "h": 720,
+ "hour": 15.583,
+ "frames": {
+  "final": "MTLTexture-102853-0-mipmap0-slice0",
+  "hud": "MTLTexture-5549-0-mipmap0-slice0"
+ },
+ "note": "Great Plateau, outside the Shrine of Resurrection, 3:35 PM, sunny",
+ "light": [
+  -0.40566,
+  0.61484,
+  -0.67632
+ ],
+ "night": false,
+ "weather": "clear",
+ "gbuffer": "matches",
+ "srgb": true
+}

@@ -102,5 +102,15 @@ src = as_2d(convert(open(os.path.join(DUMP, next(n for n in names if n.startswit
 src = re.sub(r'void main\(\)\s*\{', 'void main()\n{\nif(texture(textureUnitPS10, passParameterSem6.zw).a < 0.5) discard;', src, 1)
 open(os.path.join(OUT, 'gpu', 'water_composite_ps.glsl'), 'w').write(src)
 
+# The sky (shader-notes.md: the game's sky): its table shader (250cb5a0: the sky's light for every angle to
+# the sun and height above the horizon, for the sun's height now, from the precomputed 3D scattering table,
+# gpu/sky-inscatter.bin, extract_sky.py), and the sky's colour in a direction from that table (4e21d093: what the
+# game fills its sky cube with). Their constants as probe-6 read them (rows 51, 109); the sun's made each hour.
+for name, h in (('sky_lut_ps', '250cb5a06cab6534'), ('sky_ps', '4e21d093c6136a15')):
+    f = next(n for n in names if n.startswith(h + '_') and n.endswith('_ps.txt'))
+    open(os.path.join(OUT, 'gpu', name + '.glsl'), 'w').write(convert(open(os.path.join(DUMP, f)).read()))
+consts['sky_lut'] = probe['51']['constants']
+consts['sky'] = probe['109']['constants']
+
 json.dump(consts, open(os.path.join(OUT, 'gpu', 'constants.json'), 'w'))
-print('gpu/:', ', '.join(n + '_ps.glsl' for n in SHADERS), '+', ', '.join(n + '.glsl' for n in list(TERRAIN) + list(WATER) + ['water_composite_ps']), '+ constants.json')
+print('gpu/:', ', '.join(n + '_ps.glsl' for n in SHADERS), '+', ', '.join(n + '.glsl' for n in list(TERRAIN) + list(WATER) + ['water_composite_ps', 'sky_lut_ps', 'sky_ps']), '+ constants.json')

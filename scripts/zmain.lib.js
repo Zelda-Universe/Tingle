@@ -269,10 +269,11 @@ function getMaps() {
       zMap.addMap(map);
     });
 
-    // Switching games without a reload: the map and its sidebar now, from
-    // what's in (they don't need the markers), the markers once they're in.
-    // (A page load builds them with the markers, as always.)
-    if(window.zmGameSwitchBuildEarly) {
+    // The map tiles and sidebar need maps/categories, not the complete marker
+    // payload. Paint them while markers download on a cold load too, as we
+    // already do when switching games. Marker-dependent URL restoration stays
+    // in finalLoad(), after all batches have completed.
+    if(window.zmGameSwitchBuildEarly || !zMap.map) {
       zMap.buildMap(gameId);
       zMap._builtBeforeMarkers = true;
     }

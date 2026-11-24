@@ -49,6 +49,18 @@ var ZStreetViewGame = (function() {
         game.src = { light: f[0], upsample: f[1], tonemap: f[2], bright: f[3], water: f[5] }; game.C = JSON.parse(f[4]);
         game._build();
         game.ready = true;
+        // the sky as the game makes it (its table shader and its sky shader, from its precomputed scattering);
+        // street view's own until it's in, or with ?streetview-sky=own
+        if(!/[?&]streetview-sky=own\b/.test(location.search)) {
+          Promise.all([get('sky_lut_ps.glsl'), get('sky_ps.glsl'), fetch(ROOT + 'sky-inscatter.bin').then(function(r) { if(!r.ok) throw new Error('sky'); return r.arrayBuffer(); }),
+                       get('sky-palettes.json')])
+            .then(function(k) {
+              if(!game.view.renderer) return;
+              game.palettes = JSON.parse(k[3]);
+              game._buildSky(k[0], k[1], k[2]);
+              if(game.view.hour != null) game.view._setTime(game.view.hour);   // the sky now painted the game's way
+            }).catch(function(e) { console.warn('Street view: the game\'s sky didn\'t load', e); });
+        }
         // the ground as the game draws it (StreetViewTerrain.js); street view's own until it's in
         if(window.ZStreetViewTerrain && !/[?&]streetview-ground=own\b/.test(location.search)) {
           var t = ZStreetViewTerrain.create(game);
@@ -308,6 +320,86 @@ var ZStreetViewGame = (function() {
 
     // The sky into the light pass's cube (three r160 can't draw into one layer
     // of an array target: each face drawn into a plain target and read back).
+    // The game's sky (shader-notes.md, "The sky"): the table of the sky's light for every angle to the sun and
+    // height above the horizon, for the sun's height now (sky_lut_ps: 250cb5a0, from the game's precomputed 3D
+    // scattering table), and the sky's colour in any direction from it (sky_ps: 4e21d093, what the game fills its
+    // sky cube with). The table is also the light pass's haze (its PS11).
+    _buildSky: function(lutSrc, skySrc, inscatter) {
+      var THREE = this.lib.THREE;
+      var tex = new THREE.Data3DTexture(new Uint16Array(inscatter), 256, 32, 16);
+      tex.type = THREE.HalfFloatType; tex.format = THREE.RGBAFormat;
+      tex.minFilter = tex.magFilter = THREE.LinearFilter; tex.wrapS = tex.wrapT = tex.wrapR = THREE.ClampToEdgeWrapping;
+      tex.unpackAlignment = 1; tex.needsUpdate = true;
+      this.skyTable = tex;
+      this.skyLut = new THREE.WebGLRenderTarget(256, 256, { type: THREE.HalfFloatType, depthBuffer: false, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter });
+      var raw = function(uniforms, vs, src) {
+        return new THREE.RawShaderMaterial({ glslVersion: THREE.GLSL3, uniforms: uniforms, depthTest: false, depthWrite: false,
+          vertexShader: vs, fragmentShader: src.replace(/^#version 300 es\n/, '') });
+      };
+      // its vertex shader (2e5c98a2): the camera's distance from the planet's centre (6360 km + 60 km x uAlt), the
+      // horizon's angle from there, and where the ground cuts the table off
+      this.skyLutU = { uf_remappedPS: { value: floatsToInts(flat(this.C.sky_lut)) }, uf_fragCoordScale: { value: new THREE.Vector2(1, 1) },
+                       textureUnitPS0: { value: tex }, uAlt: { value: 0 }, uVS1w: { value: 1 / 256 }, uVS2x: { value: 0 } };   // (uVS1w: the horizon cut, as the game's: its Sem3.x = 1 / 256 - the horizon's angle)
+      this.skyLutScene = this._quad(raw(this.skyLutU, [
+        'in vec3 position; uniform float uAlt, uVS1w, uVS2x;',
+        'out vec4 passParameterSem0; out vec4 passParameterSem2; out vec4 passParameterSem3;',
+        'void main() {',
+        '  float r = 60.0 * min(max(uAlt, 0.0001), 0.9999) + 6360.0, q = 6360.0 / r, h = -sqrt(clamp(1.0 - q * q, 0.0, 1.0));',
+        '  passParameterSem0 = vec4(r, h, h, h); passParameterSem2 = vec4(h); passParameterSem3 = vec4(uVS2x == 0.0 ? uVS1w + h : -1.0, h, h, h);',
+        '  gl_Position = vec4(position.xy, 0.0, 1.0);',
+        '}'].join('\n'), lutSrc));
+      // the sky panorama (street view's, StreetView.js _sky: its dome and the sky cube read it), a direction a texel
+      // (three's panorama layout, as street view's own sky draws it)
+      this.skyU = { uf_remappedPS: { value: floatsToInts(flat(this.C.sky)) }, uf_fragCoordScale: { value: new THREE.Vector2(1, 1) },
+                    textureUnitPS0: { value: this.skyLut.texture } };
+      // (the direction made per pixel, in place of the game's interpolated Sem6: a panorama's corners are its poles)
+      var skyPS = skySrc.replace('in vec4 passParameterSem6;', 'in vec2 zmUv;')
+        .replace('R0f = passParameterSem6;', 'float zmAz = (zmUv.x - 0.5) * 6.2831853, zmEl = (zmUv.y - 0.5) * 3.14159265;\n' +
+                 'R0f = vec4(cos(zmEl) * cos(zmAz), sin(zmEl), cos(zmEl) * sin(zmAz), 0.0);');
+      if(skyPS.indexOf('zmUv;') < 0 || skyPS.indexOf('R0f = vec4(cos(zmEl)') < 0) throw new Error('sky_ps.glsl: its input not found');
+      this.skyPaintScene = this._quad(raw(this.skyU, [
+        'in vec3 position; in vec2 uv; out vec2 zmUv;',
+        'void main() { zmUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }'].join('\n'), skyPS));
+      this.lightU.textureUnitPS11.value = this.skyLut.texture;
+    },
+
+    // The sky's constants for where the sun is: the game's environment palettes (gpu/sky-palettes.json, from
+    // WorldMgr/normal.bwinfo), set 0 (the Great Plateau's clear sky), the time slots blended by the sun's height
+    // as the game blends them (probed through a day: shader-notes.md, "The sky"), morning while the sun is in the
+    // east (+x), afternoon in the west. Each range [sun height from, to, slot from, slot to]; between, one slot.
+    // (Morning 2 -> 3 not probed: the afternoon's 3 -> 4 mirrored, as 1 -> 2 mirrors 4 -> 5.)
+    _palette: function(s) {
+      var P = this.palettes, set = P.sets[0], y = s[1];
+      var R = s[0] > 0 ? [[-1, 0.0034, 0, 0], [0.0034, 0.1804, 0, 1], [0.1804, 0.336, 1, 1], [0.336, 0.467, 1, 2], [0.467, 0.540, 2, 2], [0.540, 0.614, 2, 3], [0.614, 2, 3, 3]]
+                       : [[0.614, 2, 3, 3], [0.540, 0.614, 4, 3], [0.459, 0.540, 4, 4], [0.340, 0.459, 5, 4], [-1, 0.340, 5, 5]];
+      var g = R.filter(function(q) { return y >= q[0] && y <= q[1]; })[0] || R[R.length - 1];
+      var t = g[2] === g[3] ? 0 : (y - g[0]) / (g[1] - g[0]), a = P.palettes[set[g[2]]], b = P.palettes[set[g[3]]];
+      var m = function(i) { return a[i] + (b[i] - a[i]) * t; };
+      var w = m(5);   // (the colour and its strength each blended: the probe's 7 PM sun, 0.607 x 13.3, is that)
+      return { c7: m(0), c9: m(1), c10: [m(2) * w, m(3) * w, m(4) * w] };
+    },
+
+    // At an hour (StreetView.js _setTime): the sky's table for the sun's height, then the sky panorama from it.
+    // s: toward the sun (world); alt: the camera's height (m). At night (the sun under the horizon) the game draws
+    // its sky another way (not ported): street view's own sky stays.
+    paintSky: function(rt, s, alt) {
+      if(!this.skyLut || s[1] < 0) return false;
+      var r = this.view.renderer, keep = r.getRenderTarget(), c = flat(this.C.sky_lut), k = flat(this.C.sky);
+      c[4] = s[1];                                       // C1.x: the sun's height
+      if(this.palettes) {
+        var pal = this._palette(s);
+        c[28] = pal.c7; c[36] = pal.c9; c[40] = pal.c10[0]; c[41] = pal.c10[1]; c[42] = pal.c10[2];
+      }
+      this.skyLutU.uf_remappedPS.value = floatsToInts(c);
+      this.skyLutU.uAlt.value = Math.max(0, alt || 0) / 60000;
+      r.setRenderTarget(this.skyLut); r.render(this.skyLutScene, this.quadCam);
+      k[0] = s[0]; k[1] = s[1]; k[2] = s[2];             // C0: toward the sun
+      this.skyU.uf_remappedPS.value = floatsToInts(k);
+      r.setRenderTarget(rt); r.render(this.skyPaintScene, this.quadCam);
+      r.setRenderTarget(keep);
+      return true;
+    },
+
     _cube: function() {
       var r = this.view.renderer, gl = r.getContext();
       for(var f = 0; f < 6; f++) {

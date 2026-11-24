@@ -684,3 +684,62 @@ into the frame's full-size RG11B10 picture in pond-probe12 (the probe's pattern 
 the water. Street view draws it with the same shader into a picture of its own (waterT, sharing the G-buffer's
 depth: less-or-equal, no depth write; what's under the water the last frame's picture, hdr2, as the game's is a
 picture of before), then the full-screen pass over the light pass's upsampled picture where waterT's alpha is set.
+
+## The sky (2026-11-23)
+
+**How the game makes it.** A precomputed-atmosphere sky (the planet 6360 km, the air 60 km):
+- a 3D scattering table, 256 x 32 x 16 RGBA16F, fixed game data (byte-identical in every capture; the game's
+  `System/KSys/sky.skybin` in Bootup_Graphics.pack, 1.2 MB, is likely its source, in the Wii U's tiled layout:
+  not decoded). `tools/extract_sky.py` takes it from a capture: the capture keeps it starting 480 texels from
+  its first (rolled back; 256 x 256 pictures' rows start 32 texels in);
+- the table shader `250cb5a0` (vertex shader `2e5c98a2`: the camera's distance from the planet's centre,
+  6360 km + 60 km x C0.x; Sem3.x = 1/256 - the horizon's angle) turns it, for the sun's height now (C1.x: the
+  light's world y), into a 256 x 256 sky table: the sky's light for every angle to the sun (x, 1 toward it) and
+  height above the horizon (y = dir.y x 0.5 + 0.5). Its other constants: table sizes (C0, C2-C5), Rayleigh
+  (C6), and three that change with the hour: C7.x (Mie direction), C9.x (Mie strength), C10 (the sun's colour x
+  its strength);
+- `4e21d093` the sky's colour in a direction from that table (what fills the sky cube; `53422d4f` the same with
+  the ground's colour below the horizon). The light pass also reads the sky table (its PS11) for its haze.
+
+**Checked.** The table shader run in street view with a frame's own constants (probe at the pond, 7 PM:
+`captures/sky-probe.gputrace`, probe row 30) gives that frame's own sky table to within 4% (mean log error
+0.037), the remainder the sun's movement between the frame that made the table and the probed one.
+
+**Its constants by the hour: the game's environment palettes.** `WorldMgr/normal.bwinfo` (TitleBG.pack) holds
+207 palettes `EnvPalette_0` .. `EnvPalette_206` (56 values each: AAMP keys are the names' CRC32s) and 59 palette
+sets of 8 (one palette per time slot). In a palette: `a0088c85` = C7.x, `9c276059` = C9.x, `c96e75b3` = the
+sun's colour and strength (C10 = rgb x w). The probe at 3:25 PM (probe-6) is set 0's slot 3 (`EnvPalette_3`)
+exactly; at 7 PM it's slots 4 and 5 blended at 0.47, colour and strength each blended (C10.g: 0.607 x 13.3 =
+8.07, probed 8.06). Set 0: slot 0 (C7 0.6, C9 128, sun (0.30, 0.63, 1) x 12), 1 (0.8, 32, (0.74, 0.73, 1) x 15),
+2 (0.75, 18, (0.80, 1, 0.74) x 15), 3 (0.75, 12, (1, 0.92, 0.85) x 18), 4 (0.65, 48, (1, 0.65, 0.35) x 18),
+5 (0.6, 128, (1, 0.56, 0.56) x 8), 6 (0.4, 96, (0.53, 0.54, 1) x 8), 7 (0.8, 0, (0.35, 1, 1) x 7).
+Not known yet: the slots' hours (a probe at a few more times gives them), and which set each climate and
+weather takes (the climates, 20 objects, and the sets' other fields; names not yet recovered).
+
+**Street view** (`StreetViewGame.js` `_buildSky`, `paintSky`): the table shader and `4e21d093` paint the sky
+panorama street view's dome and the game renderer's sky cube read, when the hour changes; the light pass's
+haze reads the sky table. For now with probe-6's constants (3:25 PM) at every hour. Field-day ΔE 23.7 -> 17.1
+(sky 14.2, its bias (+0.5, -1.6, +6)); the pond (7 PM) stays a daytime sky until the hour's palettes are in.
+
+**The time slots, probed through a day** (sky-probe series: every save slot's `WM_Time` set, the game's time in
+degrees, 15 an hour; `WM_TimeDivision` the slot; each capture advances the game ~40 minutes). Clear weather, set 0;
+by the sun's height (C1.x), the blend t from the first slot to the second, all three constants agreeing each time:
+- morning (sun in the east): slot 0 -> 1 t 0.52 at 0.095, 0.96 at 0.173; slot 1 at 0.212 .. 0.301; 1 -> 2 t 0.04 at
+  0.342, 0.36 at 0.383; slot 2 at 0.547; slot 3 at 0.66 .. 0.667 (11:29 AM, 1:50 PM);
+- afternoon: slot 3 at 0.6145 (3:25 PM); 3 -> 4 t 0.81 at 0.554; slot 4 at 0.501; 4 -> 5 t 0.31 at 0.422, 0.47 at
+  0.404, 0.67 at 0.379; slot 5 at 0.330, 0.288;
+- linear in the sun's height: 0 -> 1 from 0.003 to 0.180, 1 -> 2 0.336 to 0.467, 3 -> 4 0.614 to 0.540, 4 -> 5 0.459
+  to 0.340 (1 -> 2 mirrors 4 -> 5; 2 -> 3 not probed, taken as 3 -> 4 mirrored);
+- at night (1:15 AM) the game runs the sky table shader only for its default scene (sun overhead, the bksky
+  defaults): the night sky is drawn another way, not ported;
+- at 1:50 PM another set (palettes 8 .. 15, slot 3): the save's weather (set by weather, slot by hour).
+- the sun: a tilted circle, (cos a, 0.6727 sin a, -0.7397 sin a), crossing the northern sky (street view's own
+  `_sunAt` has it in the south); its angle against the hour not pinned (the clock read after each capture lags
+  10-30 minutes: a linear fit leaves 6.6 degrees).
+`tools/build_sky_palettes.py` writes `gpu/sky-palettes.json` (every palette's [C7.x, C9.x, r, g, b, strength] and
+the 59 sets); `StreetViewGame.js _palette` blends set 0 by the sun's height.
+
+**Scores** (ΔE, street view's own sky -> the game's, same build): field-day 16.0 -> 17.1, dusk-temple 19.2 -> 18.6,
+pond 36.6 -> 41.6, wide-sunset 31.1 -> 23.5, glow-shrine 33.8 -> 36.1, trees-afternoon 31.5 -> 36.7. Mixed: the
+references' weather isn't set 0's clear sky everywhere (the pond's frame is overcast), the clouds are still ours,
+and the light pass's sky cube below the horizon is street view's clamp, not the game's ground tint (53422d4f).

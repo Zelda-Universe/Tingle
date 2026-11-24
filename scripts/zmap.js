@@ -3507,6 +3507,8 @@ ZMap.prototype._addMapGridBackground = function() {
   pane.style.zIndex = '190';
   pane.style.pointerEvents = 'none';
   var image = new Image();
+  image.decoding = 'async';
+  var texture = null;
   var bounds = map.options.maxBounds ? L.latLngBounds(map.options.maxBounds) : null;
   var gridCenter = bounds ? bounds.getCenter() : L.latLng(0, 0);
   var minimumZoom = map.getMinZoom();
@@ -3522,21 +3524,34 @@ ZMap.prototype._addMapGridBackground = function() {
     var context = tile.getContext('2d');
     context.fillStyle = '#000';
     context.fillRect(0, 0, 256, 256);
-    if(image.complete && image.naturalWidth) {
+    if(texture) {
       // Place the texture's center on the map bounds' center at each zoom.
       var center = map.project(gridCenter, coords.z);
       var offsetX = ((coords.x * 256 - center.x + image.width / 2) % image.width + image.width) % image.width;
       var offsetY = ((coords.y * 256 - center.y + image.height / 2) % image.height + image.height) % image.height;
       context.translate(-offsetX, -offsetY);
-      context.fillStyle = context.createPattern(image, 'repeat');
-      context.fillRect(-image.width, -image.height, image.width * 2 + 256, image.height * 2 + 256);
+      context.fillStyle = context.createPattern(texture, 'repeat');
+      // After translating the pattern, paint only this tile's visible pixels.
+      context.fillRect(offsetX, offsetY, 256, 256);
     }
     return tile;
   };
   image.onload = function() {
-    layer.redraw();
-    mainElBackground();
+    // First use of a compressed image in canvas can synchronously decode it
+    // in the redraw task. Prepare a decoded bitmap before painting the grid.
+    var decoded=window.createImageBitmap ? window.createImageBitmap(image) :
+      (image.decode ? image.decode().then(function() {return image;}) : Promise.resolve(image));
+    decoded.catch(function() {return image;}).then(function(ready) {
+      if(!map.hasLayer(layer)) {if(ready.close) ready.close();return;}
+      texture=ready;
+      layer.redraw();
+      mainElBackground();
+    });
   };
+  layer.on('remove',function() {
+    if(texture && texture.close) texture.close();
+    texture=null;
+  });
   function mainElBackground() {
     map.getContainer().style.backgroundImage = 'none';
   }

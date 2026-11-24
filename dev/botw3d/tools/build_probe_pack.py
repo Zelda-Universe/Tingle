@@ -28,7 +28,7 @@ HASHES = sys.argv[3:]   # none: every pixel shader dumped
 os.makedirs(PACK, exist_ok=True)
 
 OWN = r'''
-			if(zp.y == %(row)d && zp.x < 400) {
+			if(zp.y == %(row)d && zp.x < %(x0)d) {
 				zmine = true; vec3 zn;
 				int k = zp.x;
 				if(k == 0) zn = vec3(5.0, 10.0, 3.0);
@@ -44,14 +44,15 @@ OWN = r'''
 				zo = vec4(zn / 16.0, 1.0);
 			}
 '''
-# A second stretch of the shader's row (x 400..639): its inputs at this pixel
+# A second stretch of the shader's row (from just after its constants, x0 = 4 + 12 n: 400 for the light pass's
+# 33; a 256-wide picture, the sky's table, then holds both): its inputs at this pixel
 # (passParameterSemN), then each 2D image it reads: its size and the value at
 # its centre, as floats like the constants (marker 5, 10, 4; then the count).
 EXTRA = r'''
-			if(zp.y == %(row)d && zp.x >= 400) {
+			if(zp.y == %(row)d && zp.x >= %(x0)d) {
 				zmine = true; vec3 zn; float zv[%(m)d];
 %(fill)s
-				int k = zp.x - 400;
+				int k = zp.x - %(x0)d;
 				if(k == 0) zn = vec3(5.0, 10.0, 4.0);
 				else if(k == 1) zn = vec3(float(%(row)d & 15), float((%(row)d >> 4) & 15), 12.0);
 				else if(k == 2) zn = vec3(float(%(m)d & 15), float(%(m)d >> 4), 6.0);
@@ -78,7 +79,7 @@ PROBE = r'''
 		if(zp.y >= 1 && zp.y <= 255 && zp.x < 640) {
 			bool zmine = false, zgot = false; vec4 zo = vec4(0.0);
 %(own)s%(extra)s%(copies)s
-			if(!zmine && !zgot) discard;   // keep the row already there
+%(keep)s
 %(writes)s
 		}
 	}
@@ -100,7 +101,8 @@ for f in files:
     own = extra = ''
     if m and row < 255:
         row += 1; index[row] = f
-        own = OWN % dict(row=row, n=int(m.group(2)), arr=m.group(1))
+        x0 = 4 + 12 * int(m.group(2))
+        own = OWN % dict(row=row, n=int(m.group(2)), arr=m.group(1), x0=x0)
         ins = sorted(set(re.findall(r'in vec4 (passParameterSem\d+);', src)), key=lambda x: int(x[16:]))
         vals = []
         for i in ins: vals += ['%s.%s' % (i, c) for c in 'xyzw']
@@ -111,13 +113,20 @@ for f in files:
         vals = vals[:79]
         if vals:
             fill = '\n'.join('\t\t\t\tzv[%d] = %s;' % (i, v) for i, v in enumerate(vals))
-            extra = EXTRA % dict(row=row, m=len(vals), fill=fill)
+            extra = EXTRA % dict(row=row, m=len(vals), fill=fill, x0=x0)
             index[str(row) + 'x'] = dict(inputs=ins, samplers=[sm for sm in samplers][:max(0, (len(vals) - 4 * len(ins)) // 6)], values=len(vals))
     copies = ''.join(COPY % dict(s=sm) for sm in samplers)
     if not own and not copies: continue
-    writes = '\n'.join('\t\t\t%s = zo;' % o for o in outs)
+    # (A shader reading no 2D pictures carries no rows through: everything but its own row is left as it draws
+    # it, so its output stays usable: the sky's table, 256 tall, would otherwise be all probe area.)
+    if copies:
+        keep = '\t\t\tif(!zmine && !zgot) discard;   // keep the row already there'
+        writes = '\n'.join('\t\t\t%s = zo;' % o for o in outs)
+    else:
+        keep = ''
+        writes = '\t\t\tif(zmine) { ' + ' '.join('%s = zo;' % o for o in outs) + ' }'
     end = src.rstrip().rfind('}')
-    open(os.path.join(PACK, f), 'w').write(src[:end] + PROBE % dict(own=own, extra=extra, copies=copies, writes=writes) + src[end:])
+    open(os.path.join(PACK, f), 'w').write(src[:end] + PROBE % dict(own=own, extra=extra, copies=copies, keep=keep, writes=writes) + src[end:])
     done.append(f)
 
 json.dump(index, open(os.path.join(PACK, 'probe-index.json'), 'w'), indent=0)
@@ -126,6 +135,6 @@ titleIds = 00050000101C9300,00050000101C9400,00050000101C9500
 name = Zelda Maps probe
 path = "The Legend of Zelda: Breath of the Wild/Debug/Zelda Maps probe"
 description = Writes the game's shader constants into a row of pixels for Zelda Maps to read (development only).
-version = 7
+version = 9
 ''')
 print(len(done), 'shaders patched,', len(index), 'with their own row (probe-index.json)')

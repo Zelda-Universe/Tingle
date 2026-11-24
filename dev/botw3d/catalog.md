@@ -182,7 +182,8 @@ same dark teal, the same flat normal; pond albedo deltaE overall 23 -> 19.7).
 
 | Status | Now | The game |
 |---|---|---|
-| Ours | Sky: our own scattering model (`ATMO_GLSL`), tuned to look like the game. | The game's sky shaders and their LUT, with `master_field.bksky` params. |
+| Ported | Sky: the game's own (its precomputed scattering table, its table shader 250cb5a0, its sky shader 4e21d093), checked to 4% against a frame's own sky table. Paints street view's sky dome, the sky cube and the light pass's haze. Field-day ΔE 23.7 -> 17.1. | The game's. |
+| Partial | The sky's hour: the game's palettes (set 0, clear weather) blended by the sun's height as probed through a day. Night: street view's own sky. Scores mixed (2 references better, 4 worse). | Each climate's and weather's palette set (not yet known: the pond's reference is overcast), the night sky's own shaders, the game's clouds, the sky cube's ground tint (53422d4f), and the sun's path by the hour (north, not south; timing not pinned). |
 | Partial | Clouds: the game's cloud texture and params (`master_field.baglclwd`) drawn by our own shader. | The game's cloud shader. |
 | Partial | Cloud shadows: the game's texture and projector, our own scrolling. | Game's own. |
 | Missing | Weather: none (rain, storms, fog, snow, overcast). | Weather per climate area (`Climate` data), each its own env set. |

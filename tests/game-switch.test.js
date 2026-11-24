@@ -100,9 +100,9 @@ test('a switch\'s answers are used at once; a page load asks, as always',()=>{
   window.zmGameSwitchData=null;
 });
 
-test('switching builds the map and sidebar before the markers; a page load with them',()=>{
+test('switching and cold loads build the map and sidebar before the markers',()=>{
   const src=read('scripts/zmain.lib.js');
-  expect(src).toContain('if(window.zmGameSwitchBuildEarly) {\n      zMap.buildMap(gameId);');
+  expect(src).toContain('if(window.zmGameSwitchBuildEarly || !zMap.map) {\n      zMap.buildMap(gameId);');
   expect(src).toContain('if(!zMap._builtBeforeMarkers) zMap.buildMap(gameId);');
   // (A sidebar built before the games were in gets them.)
   expect(src).toContain('if(zMap.mapControl && zMap.mapControl.refreshGameMenu) zMap.mapControl.refreshGameMenu();');

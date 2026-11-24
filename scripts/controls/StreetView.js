@@ -396,6 +396,8 @@ var ZStreetView = (function() {
       U.uMie.value = P.mie; U.uHr.value = P.Hr; U.uHm.value = P.Hm; U.uG.value = P.g;
       var rt = this.renderer.getRenderTarget(); this.renderer.setRenderTarget(this._skyRT);
       this.renderer.render(this._skyScene, this._skyCam); this.renderer.setRenderTarget(rt);
+      // the game's own sky, once the game renderer has it (StreetViewGame.js paintSky)
+      if(this.game && this.game.paintSky) this.game.paintSky(this._skyRT, s, this.camera ? this.camera.position.y : 0);
       if(this._envRT) this._envRT.dispose();
       this._envRT = this._pmrem.fromEquirectangular(this._skyRT.texture); this.scene.environment = this._envRT.texture;
       // The sky's light: overhead and round the horizon, against noon's.

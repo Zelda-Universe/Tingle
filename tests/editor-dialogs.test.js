@@ -6,7 +6,7 @@ test('dialog centering overrides the TinyMCE mobile top-alignment selector',()=>
   expect(/body:not\(\.tox-force-desktop\) \.tox \.tox-dialog\s*\{[^}]*align-self:\s*center/.test(css)).toBe(true);
 });
 test('new media dialogs start on Upload without changing existing-media dialogs',()=>{
-  const source=fs.readFileSync(path.join(__dirname,'../scripts/zmap.js'),'utf8');
+  const source=fs.readFileSync(path.join(__dirname,'../scripts/features/MarkerEditor.js'),'utf8');
   const start=source.indexOf("    editor.on('init',function() {");
   const end=source.indexOf('    var positionEditorDialogs=',start);
   const open=jest.fn();

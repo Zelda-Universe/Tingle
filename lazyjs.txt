@@ -1,0 +1,3 @@
+scripts/features/MarkerEditor.js
+scripts/zmapsettings.js
+scripts/vendor/fontawesome-subset.js

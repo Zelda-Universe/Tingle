@@ -2,7 +2,7 @@
 const fs = require('fs');
 const vm = require('vm');
 const $ = require('jquery');
-const source = fs.readFileSync(__dirname + '/zmap.js', 'utf8');
+const source = fs.readFileSync(__dirname + '/features/MarkerEditor.js', 'utf8');
 
 // A stand-in for the TinyMCE 5.10.9 the page loads from its CDN. It records
 // editors by textarea id, calls setup() synchronously like the real one, and
@@ -80,7 +80,7 @@ vm.runInNewContext(editorHelpers.slice(editorHelpers.indexOf('ZMap.prototype._ed
 vm.runInNewContext(
   source.slice(
     source.indexOf('ZMap.prototype._createMarkerForm ='),
-    source.indexOf('ZMap.prototype.clearCompletedMarkers')
+    source.length
   ),
   context
 );

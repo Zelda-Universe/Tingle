@@ -12,7 +12,7 @@ test('startup scripts are deferred in dependency order and editor is not eagerly
   expect(html).toContain('href="images/zmaps_white.png" as="image" fetchpriority="high"');
   expect(fs.existsSync('fonts/brandon/264CA8_2_0.woff')).toBe(true);
   expect(html.includes('src="https://cdnjs.cloudflare.com/ajax/libs/tinymce')).toBe(false);
-  expect(/<script\s+async\s+fetchpriority="low"\s+src="https:\/\/use.fontawesome.com/.test(html)).toBe(true);
+  expect(html).toContain('src="scripts/vendor/fontawesome-subset.js?v=');
   for(const src of ['jquery.min.js','leaflet.js','toastr.min.js','fuse.min.js']) {
     const tag=html.slice(html.lastIndexOf('<script',html.indexOf(src)),html.indexOf('>',html.indexOf(src)));
     expect(tag).toContain('defer');
@@ -67,7 +67,7 @@ test('marker batches yield, preserve order and publish the full list exactly onc
   jest.useRealTimers();
 });
 test('editor downloads once on demand, retries failures, and resolves only when available',()=>{
-  const proto=methods('ZMap.prototype._loadRichTextEditor =','ZMap.prototype._createMarkerForm =');
+  const proto=methods('ZMap.prototype._loadRichTextEditor =','// Marker editor form:');
   const map=Object.create(proto);
   delete window.tinymce;
   const first=map._loadRichTextEditor();

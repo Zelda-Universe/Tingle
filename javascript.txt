@@ -42,6 +42,8 @@ scripts/leaflet.contextmenu.js
 scripts/controls/ZLayers.js
 scripts/controls/SettingsControl.js
 scripts/zmap.js
+scripts/services/FeatureLoader.js
+scripts/services/SettingsFields.js
 scripts/services/MapMotion.js
 scripts/services/OfflineDownloads.js
 scripts/services/ImageCarousel.js
@@ -59,7 +61,6 @@ scripts/services/EmbedDialog.js
 scripts/services/GameSwitch.js
 scripts/services/BrowserBack.js
 scripts/zbeta.js
-scripts/zmapsettings.js
 scripts/zreports.js
 scripts/zvideo.js
 scripts/znotifications.js

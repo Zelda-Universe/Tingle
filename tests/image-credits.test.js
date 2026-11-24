@@ -40,7 +40,7 @@ test('only editors set credits, and the editor offers Credit on a selected image
   const save=read('ajax/save_image_credit.php');
   expect(save).toContain('$editor = wikiRequireEditor($db, $map_prefix);');
   expect(save).toContain("'HTTP_SEC_FETCH_SITE'");
-  const zmap=read('scripts/zmap.js');
+  const zmap=read('scripts/zmap.js')+read('scripts/features/MarkerEditor.js');
   expect(zmap).toContain("mediaToolbar('imagecredit', 'image', false, 'addcredit | imagesettings');");
   expect(zmap).toContain("mediaToolbar('videocredited', 'video', true, 'changecredit | videosettings');");
   expect(zmap).toContain('this._watchImageCredits(this.mapControl._contents);');

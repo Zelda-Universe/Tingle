@@ -16,6 +16,7 @@ const CORE_ASSETS = [
   './manifest.webmanifest',
   './res.php?type=javascript&v=' + ASSET_VERSION,
   './res.php?type=css&v=' + ASSET_VERSION,
+  './scripts/vendor/fontawesome-subset.js?v=' + ASSET_VERSION,
   './images/favicon.ico',
   './images/apple-touch-icon-precomposed.png',
   './images/zmaps_white.png',
@@ -29,6 +30,9 @@ const CORE_ASSETS = [
 ];
 
 const OPTIONAL_ASSETS = [
+  // Download secondary tools after the page loads, retaining offline editing.
+  './scripts/features/MarkerEditor.js?v=' + ASSET_VERSION,
+  './scripts/zmapsettings.js?v=' + ASSET_VERSION,
   './images/icons/oot/Poe.svg',
   './images/icons/oot/Kaepora.svg',
   './images/icons/oot/SilverRupee.svg',
@@ -48,7 +52,6 @@ const OPTIONAL_ASSETS = [
   'https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js',
   'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css',
-  'https://use.fontawesome.com/releases/v5.0.13/js/all.js',
   'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.0.4/fuse.min.js',

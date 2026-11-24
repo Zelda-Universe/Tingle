@@ -21,7 +21,7 @@ test('photos and videos share the dialog; photos are sent as pasting one is',()=
 });
 
 test('editors get Insert Photo; a photo already in the content opens TinyMCE\'s own dialog',()=>{
-  const zmap=read('scripts/zmap.js');
+  const zmap=read('scripts/features/MarkerEditor.js');
   expect(zmap).toContain("(isEditor ? 'uploadphoto' : 'image')");
   expect(zmap).toContain("if(node && node.nodeName === 'IMG') editor.execCommand('mceImage');");
   expect(zmap).toContain('else _this._uploadEditorPhoto(editor);');
@@ -29,7 +29,7 @@ test('editors get Insert Photo; a photo already in the content opens TinyMCE\'s 
 
 test('photos and videos dropped into the editor upload where they land',()=>{
   const js=read('scripts/zvideo.js');
-  expect(read('scripts/zmap.js')).toContain('if(_this._wireEditorDrops) _this._wireEditorDrops(editor);');
+  expect(read('scripts/features/MarkerEditor.js')).toContain('if(_this._wireEditorDrops) _this._wireEditorDrops(editor);');
   // A progress line meanwhile, all at once, never saved.
   expect(js).toContain("editor.serializer.addAttributeFilter('data-zm-uploading', function(nodes) {");
   expect(js).toContain("}).join(''));");
